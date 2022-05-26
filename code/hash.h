@@ -1,16 +1,16 @@
 
 struct hash_link {
-  int	key;
-  struct hash_link *next;
-  void	*data;
+    int key;
+    struct hash_link *next;
+    void *data;
 };
 
 struct hash_header {
-  int	rec_size;
-  int	table_size;
-  int	*keylist, klistsize, klistlen; /* this is really lame,
-					  AMAZINGLY lame */
-  struct hash_link	**buckets;
+    int rec_size;
+    int table_size;
+    int *keylist, klistsize, klistlen; /* this is really lame,
+              AMAZINGLY lame */
+    struct hash_link **buckets;
 };
 
 void *hash_find(struct hash_header *ht, int key);

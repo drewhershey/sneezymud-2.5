@@ -1,8 +1,8 @@
 /* ************************************************************************
-*  file: signals.c , trapping of signals from Unix.       Part of DIKUMUD *
-*  Usage : Signal Trapping.                                               *
-*  Copyright (C) 1990, 1991 - see 'license.doc' for complete information. *
-************************************************************************* */
+ *  file: signals.c , trapping of signals from Unix.       Part of DIKUMUD *
+ *  Usage : Signal Trapping.                                               *
+ *  Copyright (C) 1990, 1991 - see 'license.doc' for complete information. *
+ ************************************************************************* */
 
 #include <signal.h>
 #include <stdio.h>
@@ -16,37 +16,33 @@ void shutdown_request(int);
 void logsig(int);
 void hupsig(int);
 
-void signal_setup(void)
-{
-	struct itimerval itime;
-	struct timeval interval;
+void signal_setup(void) {
+  struct itimerval itime;
+  struct timeval interval;
 
-	signal(SIGUSR2, shutdown_request);
+  signal(SIGUSR2, shutdown_request);
 
-	/* just to be on the safe side: */
+  /* just to be on the safe side: */
 
-	signal(SIGHUP, hupsig);
-	signal(SIGPIPE, SIG_IGN);
-	signal(SIGINT, hupsig);
-	signal(SIGALRM, logsig);
-	signal(SIGTERM, hupsig);
+  signal(SIGHUP, hupsig);
+  signal(SIGPIPE, SIG_IGN);
+  signal(SIGINT, hupsig);
+  signal(SIGALRM, logsig);
+  signal(SIGTERM, hupsig);
 
-	/* set up the deadlock-protection */
+  /* set up the deadlock-protection */
 
-	interval.tv_sec = 900;    /* 15 minutes */
-	interval.tv_usec = 0;
-	itime.it_interval = interval;
-	itime.it_value = interval;
-	setitimer(ITIMER_VIRTUAL, &itime, 0);
-	signal(SIGVTALRM, checkpointing);
+  interval.tv_sec = 900; /* 15 minutes */
+  interval.tv_usec = 0;
+  itime.it_interval = interval;
+  itime.it_value = interval;
+  setitimer(ITIMER_VIRTUAL, &itime, 0);
+  signal(SIGVTALRM, checkpointing);
 }
 
-
-
-void checkpointing(int tmp)
-{
+void checkpointing(int tmp) {
   extern int tics;
-	
+
   if (!tics) {
     vlog("CHECKPOINT shutdown: tics not updated");
     abort();
@@ -54,31 +50,21 @@ void checkpointing(int tmp)
     tics = 0;
 }
 
+void shutdown_request(int tmp) {
+  extern int Shutdown;
 
-
-
-void shutdown_request(int tmp)
-{
-	extern int Shutdown;
-
-	vlog("Received USR2 - shutdown request");
-	Shutdown = 1;
+  vlog("Received USR2 - shutdown request");
+  Shutdown = 1;
 }
-
-
 
 /* kick out players etc */
-void hupsig(int tmp)
-{
-	extern int Shutdown;
+void hupsig(int tmp) {
+  extern int Shutdown;
 
-	vlog("Received SIGHUP, SIGINT, or SIGTERM. Shutting down");
-	exit(0);   /* something more elegant should perhaps be substituted */
+  vlog("Received SIGHUP, SIGINT, or SIGTERM. Shutting down");
+  exit(0); /* something more elegant should perhaps be substituted */
 }
 
-
-
-void logsig(int tmp)
-{
-	vlog("Signal received. Ignoring.");
+void logsig(int tmp) {
+  vlog("Signal received. Ignoring.");
 }
