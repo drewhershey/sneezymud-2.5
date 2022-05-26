@@ -1,5 +1,8 @@
 /* Games.h  :  Stuff to include for the casino. Russ Russell  02/18/93 */
 
+#ifndef GAMES_H
+#define GAMES_H
+
 #define BET_OPTIONS \
   "\n\rSyntax :  bet <option> <amount> \n\r\n\r\
 Options :\n\r\n\r\
@@ -123,3 +126,5 @@ Field : Bet on a one roll field bet. Type help field for help on this bet.\n\r"
  # *   * #\n\r\
  # *   * #\n\r\
  #########\n\r\n\r"
+
+#endif

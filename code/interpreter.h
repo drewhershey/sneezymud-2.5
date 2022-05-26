@@ -3,6 +3,9 @@
  *  Usage: Procedures interpreting user command                            *
  ************************************************************************* */
 
+#ifndef INTERPRETER_H
+#define INTERPRETER_H
+
 void command_interpreter(struct char_data *ch, char *argument);
 int search_block(char *arg, char **list, bool exact);
 int old_search_block(char *argument, int begin, int length, char **list, int mode);
@@ -80,3 +83,5 @@ Gnomes:   Shorter. Less movement. More intelligent. Less wise.\n\r"
 #define STORY \
   " SneezyMUD is a creation of the Public broadcasting System. \n \
   Brought to you today by the letters X and B, and the number 69\n\n\r"
+
+#endif

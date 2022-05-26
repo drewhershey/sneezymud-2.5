@@ -3,6 +3,9 @@
  *  Usage: Utility macros                                                  *
  ************************************************************************* */
 
+#ifndef UTILS_H
+#define UTILS_H
+
 int CAN_SEE(struct char_data *s, struct char_data *o);
 
 #if DEBUG
@@ -265,3 +268,5 @@ int exit_ok(struct room_direction_data *, struct room_data **);
 
 void vlog(char *str);
 void vlogf(char *errorMsg, ...);
+
+#endif

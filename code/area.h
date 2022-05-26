@@ -1,5 +1,5 @@
-#ifndef _AREA_
-#define _AREA_
+#ifndef AREA_H
+#define AREA_H
 
 /*
  *  these defines are to make differentiation easier

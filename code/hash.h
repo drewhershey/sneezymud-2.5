@@ -1,3 +1,5 @@
+#ifndef HASH_H
+#define HASH_H
 
 struct hash_link {
     int key;
@@ -24,3 +26,5 @@ struct room_data *room_find_or_create(struct room_data *rb[], int key);
 int room_remove(struct room_data *rb[], int key);
 
 #define WORLD_SIZE 30000
+
+#endif

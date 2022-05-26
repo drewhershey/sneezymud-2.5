@@ -3,6 +3,9 @@
  *  Usage: Declarations of central data structures                         *
  ************************************************************************* */
 
+#ifndef STRUCTS_H
+#define STRUCTS_H
+
 #include <sys/types.h>
 
 typedef signed char sbyte;
@@ -1190,3 +1193,5 @@ typedef struct room_data Room;
 typedef struct descriptor_data Descriptor;
 
 #define OBJECT_HITTING -1
+
+#endif

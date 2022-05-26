@@ -1,3 +1,6 @@
+#ifndef RACE_H
+#define RACE_H
+
 /* Race -- Npc, otherwise */
 #define RACE_NORACE 0 /* Named after Brutius's 1st cousin :) */
 #define RACE_HUMAN 1
@@ -47,3 +50,5 @@
 #define RACE_SARTAN 42
 #define RACE_TYTAN 43
 #define RACE_MONK 44
+
+#endif

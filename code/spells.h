@@ -3,6 +3,9 @@
  *  Usage : Spells                                                         *
  ************************************************************************* */
 
+#ifndef SPELLS_H
+#define SPELLS_H
+
 #define MAX_BUF_LENGTH 240
 
 #define TYPE_UNDEFINED -1
@@ -303,3 +306,5 @@ struct attack_hit_type {
 #define CRITICAL_FAILURE -1
 #define CRITICAL_SUCCESS 1
 #define NORMAL_RESULT 0
+
+#endif

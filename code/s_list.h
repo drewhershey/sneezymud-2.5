@@ -1,5 +1,5 @@
-#ifndef __S_LIST_H
-#define __S_LIST_H
+#ifndef S_LIST_H
+#define S_LIST_H
 
 void spell_burning_hands(byte level, struct char_data *ch, struct char_data *victim, struct obj_data *obj);
 void spell_call_lightning(byte level, struct char_data *ch, struct char_data *victim, struct obj_data *obj);

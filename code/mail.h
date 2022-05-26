@@ -3,6 +3,9 @@
  ****   compliments of CircleMUD (circle.cs.jhu.edu 4000) ****
  ************************************************************/
 
+#ifndef MAIL_H
+#define MAIL_H
+
 /* INSTALLATION INSTRUCTIONS in MAIL.C */
 
 /* You can modify the following constants to fit your own MUD.  */
@@ -94,3 +97,5 @@ struct mail_index_type_d {
 };
 
 typedef struct mail_index_type_d mail_index_type;
+
+#endif

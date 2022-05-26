@@ -3,6 +3,9 @@
  *  Usage: Various routines for moving about objects/players               *
  ************************************************************************* */
 
+#ifndef HANDLER_H
+#define HANDLER_H
+
 /* handling the affected-structures */
 void affect_total(struct char_data *ch);
 void affect_modify(struct char_data *ch, byte loc, long mod, long bitv, bool add);
@@ -67,3 +70,5 @@ int generic_find(char *arg, int bitvector, struct char_data *ch, struct char_dat
 #define FIND_OBJ_ROOM 8
 #define FIND_OBJ_WORLD 16
 #define FIND_OBJ_EQUIP 32
+
+#endif

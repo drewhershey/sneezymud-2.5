@@ -5,6 +5,9 @@
 /*## THE NEW STRUCTURE IN YOU MUD. REMEMBER, ALWAYS TEST BEFORE INSTALLING ##*/
 /*###########################################################################*/
 
+#ifndef C_F_U_NEW_H
+#define C_F_U_NEW_H
+
 struct char_file_u_new {
     byte sex;
     unsigned char class;
@@ -47,3 +50,5 @@ struct char_file_u_new {
     sh_int apply_saving_throw[5];
     int conditions[3];
 };
+
+#endif

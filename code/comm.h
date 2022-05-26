@@ -3,6 +3,9 @@
  *  Usage: Prototypes for the common functions in comm.c                   *
  ************************************************************************* */
 
+#ifndef COMM_H
+#define COMM_H
+
 void send_to_all(char *messg);
 void send_to_char(char *messg, struct char_data *ch);
 void send_to_except(char *messg, struct char_data *ch);
@@ -46,7 +49,7 @@ void write_to_q(char *txt, struct txt_q *queue);
 #define ANSI_WH_ON_PR "\033[45m" /* white on purple text */
 #define ANSI_WH_ON_RD "\033[41m" /* white on red text */
 
-#define VT_GRAPHBR "²" /* test for bar graph */
+#define VT_GRAPHBR "ï¿½" /* test for bar graph */
 #define VT_INITSEQ "\033[1;24r" /* fixes up margins */
 #define VT_CURSPOS "\033[%d;%dH" /* respositions cursor */
 #define VT_CURSRIG "\033[%dC" /* moves cursor right */
@@ -58,3 +61,5 @@ void write_to_q(char *txt, struct txt_q *queue);
 #define VT_MARGSET "\033[%d;%dr" /* sets margins */
 #define VT_CURSAVE "\0337" /* saves cursor position */
 #define VT_CURREST "\0338" /* restores cursor position */
+
+#endif

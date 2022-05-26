@@ -3,6 +3,9 @@
  *  Usage: Loading/Saving chars booting world.                             *
  ************************************************************************* */
 
+#ifndef DB_H
+#define DB_H
+
 /* data files used by the game system */
 
 #define DFLT_DIR "lib" /* default data directory     */
@@ -125,3 +128,5 @@ struct help_index_element {
     char *keyword;
     long pos;
 };
+
+#endif

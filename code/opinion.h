@@ -1,4 +1,5 @@
-
+#ifndef OPINION_H
+#define OPINION_H
 
 int FreeFears(struct char_data *ch);
 int FreeHates(struct char_data *ch);
@@ -17,3 +18,5 @@ int Fears(struct char_data *ch, struct char_data *v);
 
 struct char_data *FindAFearee(struct char_data *ch);
 struct char_data *FindAHatee(struct char_data *ch);
+
+#endif
