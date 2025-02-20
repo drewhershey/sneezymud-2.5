@@ -1,52 +1,52 @@
-#!/bin/csh
+#!/bin/bash
 
-limit descriptors 256
+ulimit -n 256
 
-set DIR=/mud/home/sneezy/sun
+DIR=/mud/home/sneezy/sun
+LIB=$DIR/lib
+CRASH=$DIR/crash
+TINYNEXT=$LIB/tinyworld.next
+TINYOLD=$LIB/tinyworld.old
+AREAS=$LIB/areas
 
-set LIB=$DIR/lib
-set CRASH=$DIR/crash
-set TINYNEXT=$LIB/tinyworld.next
-set TINYOLD=$LIB/tinyworld.old
-set AREAS=$LIB/areas
+DATE=$(date "+%m%d%y.%H%M")
+theLine=$(ps -x | egrep 'dmserver 7900|dbx |mv ' | grep -v grep | wc -l)
 
-set DATE=`/bin/date "+%m%d%y.%H%M"`
-set theLine = `ps -x|egrep 'dmserver 7900|dbx |mv ' | grep -v grep | wc -l`
+if [ "$theLine" -eq 0 ]; then
+    if [ -f "$DIR/dmserver.next" ]; then 
+        mv "$DIR/dmserver" "$DIR/dmserver.old"
+        mv "$DIR/dmserver.next" "$DIR/dmserver"
+    fi
 
-if ( $theLine == 0 ) then
-  if ( -f $DIR/dmserver.next ) then 
-    mv $DIR/dmserver $DIR/dmserver.old
-    mv $DIR/dmserver.next $DIR/dmserver
-  endif
+    if [ -f "$LIB/core" ]; then
+        mv "$LIB/core" "$CRASH/core.$DATE"
+    fi
 
-  if ( -f $LIB/core ) then
-    mv $LIB/core $CRASH/core.$DATE
-  endif
+    rm -f log
 
-  /bin/rm -f log
+    if [ -f "$DIR/log.err" ]; then
+        mv "$DIR/log.err" "$CRASH/log$DATE"
+    fi
 
-  if ( -f $DIR/log.err ) then
-    mv $DIR/log.err $CRASH/log$DATE
-  endif
+    for FILE in "$TINYNEXT"/*; do
+        BASE=$(basename "$FILE")
+        mv "$LIB/$BASE" "$TINYOLD/$BASE"
+        mv "$FILE" "$LIB/$BASE"
+    done
 
-  foreach FILE ( `ls $TINYNEXT` )
-    mv $LIB/$FILE $TINYOLD/$FILE
-    mv $TINYNEXT/$FILE $LIB/$FILE
-  end
+    for FILE in "${AREAS}.next"/*; do
+        BASE=$(basename "$FILE")
+        mv "$AREAS/$BASE" "$AREAS/${BASE}.bkp"
+        mv "$FILE" "$AREAS/$BASE"
+    done
 
-  foreach FILE ( `ls ${AREAS}.next` )
-    mv $AREAS/$FILE $AREAS/${FILE}.bkp
-    mv ${AREAS}.next/$FILE $AREAS/$FILE
-  end
+    ccn_7900 &
 
-  ccn_7900 &
-
-#  if ( -f LogWatcher.pid ) then
-#    kill `cat LogWatcher.pid`
-#  endif
-#  ./LogWatcher &
-
-endif
+    #if [ -f LogWatcher.pid ]; then
+    #    kill $(cat LogWatcher.pid)
+    #fi
+    #./LogWatcher &
+fi
 
 sleep 15
 
