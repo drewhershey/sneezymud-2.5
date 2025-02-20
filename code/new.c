@@ -13,7 +13,7 @@
 #include "structs.h"
 #include "utils.h"
 
-extern struct index_data *obj_index;
+extern struct index_data* obj_index;
 extern struct dex_app_type dex_app[];
 
 /* These are some new skills for the new classes and for thiefs and warriors */
@@ -47,11 +47,11 @@ extern struct dex_app_type dex_app[];
 #define SAC2_FOR_WIND 29929
 #define SAC3_FOR_WIND 29930
 
-void do_brew(struct char_data *ch, char *arg, int cmd) {
+void do_brew(struct char_data* ch, char* arg, int cmd) {
   char buf[MAX_STRING_LENGTH];
   int obj, sacr, sacr1, sacr2, percent;
   struct obj_data *obje, *sac, *sac1, *sac2;
-  struct obj_data *next_obj;
+  struct obj_data* next_obj;
   struct affected_type af;
 
   if (!ch->skills)
@@ -140,7 +140,8 @@ void do_brew(struct char_data *ch, char *arg, int cmd) {
           }
         } else {
           send_to_char("You try to mix a potion.\n\r", ch);
-          send_to_char("Your incompetence results in an unusable potion.\n\r", ch);
+          send_to_char("Your incompetence results in an unusable potion.\n\r",
+            ch);
           obj_from_char(sac);
           extract_obj(sac);
           obj_from_char(sac1);
@@ -154,7 +155,8 @@ void do_brew(struct char_data *ch, char *arg, int cmd) {
         return;
       }
     } else {
-      send_to_char("You must have the correct items to make the potion.\n\r", ch);
+      send_to_char("You must have the correct items to make the potion.\n\r",
+        ch);
       return;
     }
   } else {
@@ -163,12 +165,12 @@ void do_brew(struct char_data *ch, char *arg, int cmd) {
   }
 }
 
-void do_search(struct char_data *ch, char *arg, int cmd) {
+void do_search(struct char_data* ch, char* arg, int cmd) {
   int j, num, learned;
   char buf[256];
-  struct room_data *rp;
-  struct room_direction_data *fdd;
-  extern char *exits[];
+  struct room_data* rp;
+  struct room_direction_data* fdd;
+  extern char* exits[];
   *buf = '\0';
 
   if (!HasClass(ch, CLASS_THIEF)) {
@@ -187,20 +189,26 @@ void do_search(struct char_data *ch, char *arg, int cmd) {
         sprintf(buf, "$n searches the %s wall for secret doors.", exits[j]);
         act(buf, FALSE, ch, 0, 0, TO_ROOM);
       } else if (j < 5) {
-        act("$n searches the ceiling for secret doors.", FALSE, ch, 0, 0, TO_ROOM);
+        act("$n searches the ceiling for secret doors.", FALSE, ch, 0, 0,
+          TO_ROOM);
       } else {
-        act("$n searches the floor for secret doors.", FALSE, ch, 0, 0, TO_ROOM);
+        act("$n searches the floor for secret doors.", FALSE, ch, 0, 0,
+          TO_ROOM);
       }
 
-      learned =
-        ((GET_DEX(ch) + GET_INT(ch) + GET_LEVEL(ch, THIEF_LEVEL_IND) + ch->skills[SKILL_DETECT_SECRET].learned) / 2);
+      learned = ((GET_DEX(ch) + GET_INT(ch) + GET_LEVEL(ch, THIEF_LEVEL_IND) +
+                   ch->skills[SKILL_DETECT_SECRET].learned) /
+                 2);
       if ((IS_SET(fdd->exit_info, EX_SECRET)) && (num <= learned)) {
-        sprintf(buf, "Secret door found %s! Door is named %s.\n\r", exits[j], fname(fdd->keyword));
+        sprintf(buf, "Secret door found %s! Door is named %s.\n\r", exits[j],
+          fname(fdd->keyword));
         send_to_char(buf, ch);
-        sprintf(buf, "$n exclaims 'Look %s! A SECRET door named %s!\n\r", exits[j], fname(fdd->keyword));
+        sprintf(buf, "$n exclaims 'Look %s! A SECRET door named %s!\n\r",
+          exits[j], fname(fdd->keyword));
         act(buf, FALSE, ch, 0, 0, TO_ROOM);
         send_to_char("You are totally exhausted from your searching!\n\r", ch);
-        act("$n is totally exhausted from $s search.", FALSE, ch, 0, 0, TO_ROOM);
+        act("$n is totally exhausted from $s search.", FALSE, ch, 0, 0,
+          TO_ROOM);
         GET_MOVE(ch) = MAX(0, (GET_MOVE(ch) - 75));
         return;
       }
@@ -213,13 +221,13 @@ void do_search(struct char_data *ch, char *arg, int cmd) {
   return;
 }
 
-void do_set_traps(struct char_data *ch, char *arg, int cmd) {
+void do_set_traps(struct char_data* ch, char* arg, int cmd) {
   char buf[80];
-  struct obj_data *trap;
+  struct obj_data* trap;
 }
 
-void do_grapple(struct char_data *ch, char *arg, int cmd) {
-  struct char_data *victim;
+void do_grapple(struct char_data* ch, char* arg, int cmd) {
+  struct char_data* victim;
   char name[256];
   byte percent;
   struct affected_type af;
@@ -256,8 +264,10 @@ void do_grapple(struct char_data *ch, char *arg, int cmd) {
     percent += ((GetMaxLevel(victim) - 18) * 5);
 
   if (percent < ch->skills[SKILL_GRAPPLE].learned) {
-    send_to_char("You tie your opponent up, with an excellent maneuver.\n\r", ch);
-    act("$n wrestles $N to the ground with an excellent maneuver.", TRUE, ch, 0, victim, TO_NOTVICT);
+    send_to_char("You tie your opponent up, with an excellent maneuver.\n\r",
+      ch);
+    act("$n wrestles $N to the ground with an excellent maneuver.", TRUE, ch, 0,
+      victim, TO_NOTVICT);
     act("$n wrestles you to the ground.", TRUE, ch, 0, 0, TO_VICT);
 
     SET_BIT(ch->specials.affected_by, AFF_GRAPPLE);
@@ -277,8 +287,10 @@ void do_grapple(struct char_data *ch, char *arg, int cmd) {
     SET_BIT(ch->specials.affected_by, AFF_GRAPPLE);
     GET_POS(ch) = POSITION_SITTING;
     WAIT_STATE(ch, 3 * PULSE_VIOLENCE);
-    act("You try to wrestle $N to the ground, but end up falling on your butt.", TRUE, ch, 0, victim, TO_CHAR);
-    act("$n makes a nice wrestling move, but falls on his butt.", TRUE, ch, 0, 0, TO_ROOM);
+    act("You try to wrestle $N to the ground, but end up falling on your butt.",
+      TRUE, ch, 0, victim, TO_CHAR);
+    act("$n makes a nice wrestling move, but falls on his butt.", TRUE, ch, 0,
+      0, TO_ROOM);
 
     if (ch->specials.fighting)
       stop_fighting(ch);
@@ -302,11 +314,11 @@ void do_grapple(struct char_data *ch, char *arg, int cmd) {
 #define SAC_FOR_WIND 29939
 #define SAC_FOR_TRUE 29940
 
-void do_scribe(struct char_data *ch, char *arg, int cmd) {
+void do_scribe(struct char_data* ch, char* arg, int cmd) {
   char buf[MAX_STRING_LENGTH];
   int obj, sacr, pen, paper, percent;
   struct obj_data *obje, *sac, *penw, *paperw;
-  struct obj_data *next_obj;
+  struct obj_data* next_obj;
   struct affected_type af;
 
   if (!ch->skills)
@@ -353,7 +365,8 @@ void do_scribe(struct char_data *ch, char *arg, int cmd) {
         if (percent < ch->skills[SKILL_SCRIBE].learned) {
           obje = read_object(obj, VIRTUAL);
           if (!obje) {
-            send_to_char("There are no scrolls of that type available.\n\r", ch);
+            send_to_char("There are no scrolls of that type available.\n\r",
+              ch);
             return;
           } else {
             send_to_char("You start to write your scroll.\n\r", ch);
@@ -377,7 +390,8 @@ void do_scribe(struct char_data *ch, char *arg, int cmd) {
           }
         } else {
           send_to_char("You try to write a scroll.\n\r", ch);
-          send_to_char("Your incompetence results in an unusable scroll.\n\r", ch);
+          send_to_char("Your incompetence results in an unusable scroll.\n\r",
+            ch);
           obj_from_char(sac);
           obj_from_char(paperw);
         }
@@ -395,18 +409,18 @@ void do_scribe(struct char_data *ch, char *arg, int cmd) {
   }
 }
 
-void do_glance(struct char_data *ch, char *argument, int cmd) {
+void do_glance(struct char_data* ch, char* argument, int cmd) {
   char buffer[MAX_STRING_LENGTH];
   int bits, percent;
-  struct char_data *tmp_char;
-  struct obj_data *found_object;
+  struct char_data* tmp_char;
+  struct obj_data* found_object;
 
   tmp_char = 0;
   found_object = 0;
   if (*argument) {
-    bits = generic_find(
-      argument, FIND_OBJ_INV | FIND_OBJ_ROOM | FIND_OBJ_EQUIP | FIND_CHAR_ROOM, ch, &tmp_char, &found_object
-    );
+    bits = generic_find(argument,
+      FIND_OBJ_INV | FIND_OBJ_ROOM | FIND_OBJ_EQUIP | FIND_CHAR_ROOM, ch,
+      &tmp_char, &found_object);
     if (tmp_char) {
       if (GET_MAX_HIT(tmp_char) > 0)
         percent = (100 * GET_HIT(tmp_char)) / GET_MAX_HIT(tmp_char);
@@ -443,8 +457,8 @@ void do_glance(struct char_data *ch, char *argument, int cmd) {
   }
 }
 
-void do_deathstroke(struct char_data *ch, char *argument, int cmd) {
-  struct char_data *victim;
+void do_deathstroke(struct char_data* ch, char* argument, int cmd) {
+  struct char_data* victim;
   char name[256];
   byte percent;
 
@@ -477,7 +491,8 @@ void do_deathstroke(struct char_data *ch, char *argument, int cmd) {
 
   /* to prevent from misuse in groups ... */
   if (ch->attackers > 3) {
-    send_to_char("You can't get a clear shot at your opponents vitals!\n\r", ch);
+    send_to_char("You can't get a clear shot at your opponents vitals!\n\r",
+      ch);
 
     return;
   }
@@ -497,10 +512,10 @@ void do_deathstroke(struct char_data *ch, char *argument, int cmd) {
     if (GET_POS(victim) > POSITION_DEAD)
       damage(ch, victim, 0, SKILL_DEATHSTROKE);
     /* with great failure, comes great sorrow *grin* */
-    WAIT_STATE(ch, PULSE_VIOLENCE * 10); /* player stuck
-for 10 rounds */
-    GET_MOVE(ch) = 0; /* player
-exhausted */
+    WAIT_STATE(ch, PULSE_VIOLENCE * 10);                       /* player stuck
+                      for 10 rounds */
+    GET_MOVE(ch) = 0;                                          /* player
+                                         exhausted */
     percent = ((10 - (GET_AC(ch) / 5)) << 1) + number(1, 101); /* 101% is a
        complete failure */
     percent -= dex_app[GET_DEX(victim)].reaction * 10;
@@ -509,11 +524,16 @@ exhausted */
     /* ... fair is fair right?  */
     if (percent > ch->skills[SKILL_DEATHSTROKE].learned) {
       /* monster hits player vitals while player is exposed */
-      damage(victim, ch, (3 * GET_STR(victim) + 3 * (GetMaxLevel(victim) + GET_ADD(victim))), SKILL_DEATHSTROKE);
+      damage(victim, ch,
+        (3 * GET_STR(victim) + 3 * (GetMaxLevel(victim) + GET_ADD(victim))),
+        SKILL_DEATHSTROKE);
     }
   } else {
     if (GET_POS(victim) > POSITION_DEAD)
-      damage(ch, victim, (3 * GET_STR(ch) + 3 * (GET_LEVEL(ch, WARRIOR_LEVEL_IND)) + GET_ADD(ch)), SKILL_DEATHSTROKE);
+      damage(ch, victim,
+        (3 * GET_STR(ch) + 3 * (GET_LEVEL(ch, WARRIOR_LEVEL_IND)) +
+          GET_ADD(ch)),
+        SKILL_DEATHSTROKE);
     /* success is not without drawbacks */
     WAIT_STATE(ch, PULSE_VIOLENCE * 2);
     GET_MOVE(ch) -= 50;
@@ -530,8 +550,8 @@ exhausted */
   set_fighting(victim, ch);
 }
 
-void do_bodyslam(struct char_data *ch, char *argument, int cmd) {
-  struct char_data *victim;
+void do_bodyslam(struct char_data* ch, char* argument, int cmd) {
+  struct char_data* victim;
   char name[256];
   byte percent;
 
@@ -592,13 +612,16 @@ stuck for 4 rounds */
       /* player does 1/4 the damage to himself that he would have done to
 enemy */
       send_to_char("You hurt yourself as you fall on your face.\n\r", ch);
-      damage(victim, ch, ((victim->player.weight / 10) * GET_STR(victim) / 4), TYPE_HIT);
+      damage(victim, ch, ((victim->player.weight / 10) * GET_STR(victim) / 4),
+        TYPE_HIT);
       GET_POS(ch) = POSITION_SITTING;
       /* idea... force all things in room to "giggle" at this ch */
     }
   } else {
     if (GET_POS(victim) > POSITION_DEAD) {
-      damage(ch, victim, (((ch->player.weight / 10) * GET_STR(ch) * (GET_MOVE(ch) / 10)) / 30), SKILL_BODYSLAM);
+      damage(ch, victim,
+        (((ch->player.weight / 10) * GET_STR(ch) * (GET_MOVE(ch) / 10)) / 30),
+        SKILL_BODYSLAM);
       GET_POS(victim) = POSITION_SITTING;
       WAIT_STATE(ch, PULSE_VIOLENCE * 2);
     }

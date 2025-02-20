@@ -13,12 +13,12 @@
 
 /* extern variables */
 
-extern struct room_data *world;
-extern struct descriptor_data *descriptor_list;
-extern struct room_data *world;
+extern struct room_data* world;
+extern struct descriptor_data* descriptor_list;
+extern struct room_data* world;
 extern struct dex_app_type dex_app[];
 
-int GetClassLevel(struct char_data *ch, int class) {
+int GetClassLevel(struct char_data* ch, int class) {
   if (IS_SET(ch->player.class, class)) {
     return (GET_LEVEL(ch, CountBits(class) - 1));
   }
@@ -36,7 +36,7 @@ int CountBits(int class) {
     return (4);
 }
 
-int OnlyClass(struct char_data *ch, int class) {
+int OnlyClass(struct char_data* ch, int class) {
   int i;
 
   for (i = 1; i <= 8; i *= 2) {
@@ -47,7 +47,7 @@ int OnlyClass(struct char_data *ch, int class) {
   return (TRUE);
 }
 
-int HasClass(struct char_data *ch, int class) {
+int HasClass(struct char_data* ch, int class) {
 #if 0
   if (IS_SET(class, ch->player.class))
      return(TRUE);

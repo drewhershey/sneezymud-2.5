@@ -24,14 +24,14 @@ struct crap_players {
 
 static struct crap_players crap_data[MAX_CRAPS];
 
-int check_craps(struct char_data *ch) {
+int check_craps(struct char_data* ch) {
   if (ch->in_room == CRAPS)
     return 1;
   else
     return 0;
 }
 
-int do_craps_enter(struct char_data *ch) {
+int do_craps_enter(struct char_data* ch) {
   int l1, l2, inx;
   extern struct time_info_data time_info;
 
@@ -57,7 +57,7 @@ int do_craps_enter(struct char_data *ch) {
   return 1;
 }
 
-int do_craps_exit(struct char_data *ch) {
+int do_craps_exit(struct char_data* ch) {
   char log_msg[80];
   int inx;
 

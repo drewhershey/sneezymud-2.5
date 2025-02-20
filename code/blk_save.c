@@ -13,19 +13,17 @@
 #include "structs.h"
 #include "utils.h"
 
-char *path[] = {"wizards/", "\n"};
+char* path[] = {"wizards/", "\n"};
 
 struct blk_save {
-    char *poofin;
-    char *poofout;
+    char* poofin;
+    char* poofout;
 };
 
-void pput(char *buf, char *temp) {
-  sprintf(temp, "%s", buf);
-}
+void pput(char* buf, char* temp) { sprintf(temp, "%s", buf); }
 
-void blk_read(struct char_data *ch) {
-  FILE *fl;
+void blk_read(struct char_data* ch) {
+  FILE* fl;
   char buf[MAX_STRING_LENGTH];
   char buf2[MAX_STRING_LENGTH];
   int len, i;
@@ -55,19 +53,19 @@ void blk_read(struct char_data *ch) {
   len = strlen(buf);
   if (ch->poof.poofin && len >= strlen(ch->poof.poofin)) {
     free(ch->poof.poofin);
-    ch->poof.poofin = (char *)malloc(len + 1);
+    ch->poof.poofin = (char*)malloc(len + 1);
   } else {
     if (!ch->poof.poofin)
-      ch->poof.poofin = (char *)malloc(len + 1);
+      ch->poof.poofin = (char*)malloc(len + 1);
   }
   strcpy(ch->poof.poofin, buf);
   len = strlen(buf2);
   if (ch->poof.poofout && len >= strlen(ch->poof.poofout)) {
     free(ch->poof.poofout);
-    ch->poof.poofout = (char *)malloc(len + 1);
+    ch->poof.poofout = (char*)malloc(len + 1);
   } else {
     if (!ch->poof.poofout)
-      ch->poof.poofout = (char *)malloc(len + 1);
+      ch->poof.poofout = (char*)malloc(len + 1);
   }
   strcpy(ch->poof.poofout, buf2);
   vlog("Restoring wizard file.");
@@ -75,16 +73,17 @@ void blk_read(struct char_data *ch) {
   return;
 }
 
-void blk_save(struct char_data *ch) {
-  FILE *fl;
-  struct blk_save *blk;
+void blk_save(struct char_data* ch) {
+  FILE* fl;
+  struct blk_save* blk;
   char buf[MAX_STRING_LENGTH];
   char buf2[MAX_STRING_LENGTH];
 
   if (IS_NPC(ch))
     return;
 
-  if (IS_SET(ch->poof.pmask, BIT_POOF_IN) && (IS_SET(ch->poof.pmask, BIT_POOF_OUT))) {
+  if (IS_SET(ch->poof.pmask, BIT_POOF_IN) &&
+      (IS_SET(ch->poof.pmask, BIT_POOF_OUT))) {
     sprintf(buf, "%s%s.blk", path[0], GET_NAME(ch));
     unlink(buf);
     if (!(fl = fopen(buf, "wa+"))) {

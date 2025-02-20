@@ -9,11 +9,11 @@
 #include "structs.h"
 #include "utils.h"
 
-extern struct char_data *character_list;
-struct room_data *real_roomp(int);
+extern struct char_data* character_list;
+struct room_data* real_roomp(int);
 extern int TrapDir[];
 
-void do_settrap(struct char_data *ch, char *arg, int cmd) {
+void do_settrap(struct char_data* ch, char* arg, int cmd) {
   /* parse for directions */
 
   /* trap that affects all directions is an AE trap */
@@ -22,45 +22,49 @@ void do_settrap(struct char_data *ch, char *arg, int cmd) {
   /* parse for level      */
 }
 
-int CheckForMoveTrap(struct char_data *ch, int dir) {
-  struct obj_data *i;
+int CheckForMoveTrap(struct char_data* ch, int dir) {
+  struct obj_data* i;
 
   for (i = real_roomp(ch->in_room)->contents; i; i = i->next_content) {
-    if ((ITEM_TYPE(i) == ITEM_TRAP) && (IS_SET(GET_TRAP_EFF(i), TRAP_EFF_MOVE)) && (GET_TRAP_CHARGES(i) > 0))
+    if ((ITEM_TYPE(i) == ITEM_TRAP) &&
+        (IS_SET(GET_TRAP_EFF(i), TRAP_EFF_MOVE)) && (GET_TRAP_CHARGES(i) > 0))
       if (IS_SET(GET_TRAP_EFF(i), TrapDir[dir]))
         return (TriggerTrap(ch, i));
   }
   return (FALSE);
 }
 
-int CheckForInsideTrap(struct char_data *ch, struct obj_data *i) {
-  struct obj_data *t;
+int CheckForInsideTrap(struct char_data* ch, struct obj_data* i) {
+  struct obj_data* t;
 
   for (t = i->contains; t; t = t->next_content) {
-    if ((ITEM_TYPE(t) == ITEM_TRAP) && (IS_SET(GET_TRAP_EFF(t), TRAP_EFF_OBJECT)) && (GET_TRAP_CHARGES(t) > 0)) {
+    if ((ITEM_TYPE(t) == ITEM_TRAP) &&
+        (IS_SET(GET_TRAP_EFF(t), TRAP_EFF_OBJECT)) &&
+        (GET_TRAP_CHARGES(t) > 0)) {
       return (TriggerTrap(ch, t));
     }
   }
   return (FALSE);
 }
 
-int CheckForAnyTrap(struct char_data *ch, struct obj_data *i) {
+int CheckForAnyTrap(struct char_data* ch, struct obj_data* i) {
   if ((ITEM_TYPE(i) == ITEM_TRAP) && (GET_TRAP_CHARGES(i) > 0))
     return (TriggerTrap(ch, i));
 
   return (FALSE);
 }
 
-int CheckForGetTrap(struct char_data *ch, struct obj_data *i) {
-  if ((ITEM_TYPE(i) == ITEM_TRAP) && (IS_SET(GET_TRAP_EFF(i), TRAP_EFF_OBJECT)) && (GET_TRAP_CHARGES(i) > 0)) {
+int CheckForGetTrap(struct char_data* ch, struct obj_data* i) {
+  if ((ITEM_TYPE(i) == ITEM_TRAP) &&
+      (IS_SET(GET_TRAP_EFF(i), TRAP_EFF_OBJECT)) && (GET_TRAP_CHARGES(i) > 0)) {
     return (TriggerTrap(ch, i));
   }
   return (FALSE);
 }
 
-int TriggerTrap(struct char_data *ch, struct obj_data *i) {
+int TriggerTrap(struct char_data* ch, struct obj_data* i) {
   int adj, fireperc, roll;
-  struct char_data *v;
+  struct char_data* v;
 
   extern struct dex_app_type dex_app[];
 
@@ -91,7 +95,7 @@ int TriggerTrap(struct char_data *ch, struct obj_data *i) {
   return (FALSE);
 }
 
-void FindTrapDamage(struct char_data *v, struct obj_data *i) {
+void FindTrapDamage(struct char_data* v, struct obj_data* i) {
   /*
      trap types < 0 are special
   */
@@ -103,8 +107,9 @@ void FindTrapDamage(struct char_data *v, struct obj_data *i) {
   }
 }
 
-void TrapDamage(struct char_data *v, int damtype, int amnt, struct obj_data *t) {
-  struct char_data *tmp_ch;
+void TrapDamage(struct char_data* v, int damtype, int amnt,
+  struct obj_data* t) {
+  struct char_data* tmp_ch;
   char buf[132];
 
   amnt = SkipImmortals(v, amnt);
@@ -132,7 +137,8 @@ void TrapDamage(struct char_data *v, int damtype, int amnt, struct obj_data *t) 
   if (GET_POS(v) == POSITION_DEAD) {
     if (!IS_NPC(v)) {
       if (real_roomp(v->in_room)->name)
-        sprintf(buf, "%s killed by a trap at %s", GET_NAME(v), real_roomp(v->in_room)->name);
+        sprintf(buf, "%s killed by a trap at %s", GET_NAME(v),
+          real_roomp(v->in_room)->name);
       vlog(buf);
 
       /* remove the hatreds of this character */
@@ -147,7 +153,7 @@ void TrapDamage(struct char_data *v, int damtype, int amnt, struct obj_data *t) 
   }
 }
 
-void TrapDam(struct char_data *v, int damtype, int amnt, struct obj_data *t) {
+void TrapDam(struct char_data* v, int damtype, int amnt, struct obj_data* t) {
   char desc[20];
   char buf[132];
 
@@ -206,7 +212,7 @@ void TrapDam(struct char_data *v, int damtype, int amnt, struct obj_data *t) {
   }
 }
 
-void TrapTeleport(struct char_data *v) {
+void TrapTeleport(struct char_data* v) {
   int to_room;
   extern int top_of_world; /* ref to the top element of world */
 
@@ -226,14 +232,15 @@ void TrapTeleport(struct char_data *v) {
 
   do_look(v, "", 0);
 
-  if (IS_SET(real_roomp(to_room)->room_flags, DEATH) && GetMaxLevel(v) < LOW_IMMORTAL) {
+  if (IS_SET(real_roomp(to_room)->room_flags, DEATH) &&
+      GetMaxLevel(v) < LOW_IMMORTAL) {
     death_cry(v);
     zero_rent(v);
     extract_char(v);
   }
 }
 
-void TrapSleep(struct char_data *v) {
+void TrapSleep(struct char_data* v) {
   struct affected_type af;
 
   if (!saves_spell(v, SAVING_SPELL)) {
@@ -254,19 +261,25 @@ void TrapSleep(struct char_data *v) {
   }
 }
 
-void InformMess(struct char_data *v) {
+void InformMess(struct char_data* v) {
   switch (GET_POS(v)) {
     case POSITION_MORTALLYW:
-      act("$n is mortally wounded, and will die soon, if not aided.", TRUE, v, 0, 0, TO_ROOM);
-      act("You are mortally wounded, and will die soon, if not aided.", FALSE, v, 0, 0, TO_CHAR);
+      act("$n is mortally wounded, and will die soon, if not aided.", TRUE, v,
+        0, 0, TO_ROOM);
+      act("You are mortally wounded, and will die soon, if not aided.", FALSE,
+        v, 0, 0, TO_CHAR);
       break;
     case POSITION_INCAP:
-      act("$n is incapacitated and will slowly die, if not aided.", TRUE, v, 0, 0, TO_ROOM);
-      act("You are incapacitated and you will slowly die, if not aided.", FALSE, v, 0, 0, TO_CHAR);
+      act("$n is incapacitated and will slowly die, if not aided.", TRUE, v, 0,
+        0, TO_ROOM);
+      act("You are incapacitated and you will slowly die, if not aided.", FALSE,
+        v, 0, 0, TO_CHAR);
       break;
     case POSITION_STUNNED:
-      act("$n is stunned, but will probably regain consciousness.", TRUE, v, 0, 0, TO_ROOM);
-      act("You're stunned, but you will probably regain consciousness.", FALSE, v, 0, 0, TO_CHAR);
+      act("$n is stunned, but will probably regain consciousness.", TRUE, v, 0,
+        0, TO_ROOM);
+      act("You're stunned, but you will probably regain consciousness.", FALSE,
+        v, 0, 0, TO_CHAR);
       break;
     case POSITION_DEAD:
       act("$n is dead! R.I.P.", TRUE, v, 0, 0, TO_ROOM);

@@ -17,14 +17,14 @@
 
 /* extern variables */
 
-extern struct room_data *world;
-extern struct descriptor_data *descriptor_list;
+extern struct room_data* world;
+extern struct descriptor_data* descriptor_list;
 extern char *ch_violate_msg1[], *ch_violate_msg2[];
 
-void do_say(struct char_data *ch, char *argument, int cmd) {
+void do_say(struct char_data* ch, char* argument, int cmd) {
   int i;
   char buf[MAX_INPUT_LENGTH + 40] = "\0\0\0\0";
-  struct affected_type *af;
+  struct affected_type* af;
 
   if (apply_soundproof(ch))
     return;
@@ -34,7 +34,8 @@ void do_say(struct char_data *ch, char *argument, int cmd) {
 
   if (IS_AFFECTED(ch, AFF_SILENT)) {
     send_to_char("You can't make a sound!\n\r", ch);
-    act("$n waves $s hands and points silently toward his $s mouth.", FALSE, ch, 0, 0, TO_ROOM);
+    act("$n waves $s hands and points silently toward his $s mouth.", FALSE, ch,
+      0, 0, TO_ROOM);
     return;
   }
 
@@ -48,14 +49,15 @@ void do_say(struct char_data *ch, char *argument, int cmd) {
   }
 }
 
-void do_shout(struct char_data *ch, char *argument, int cmd) {
+void do_shout(struct char_data* ch, char* argument, int cmd) {
   char buf1[MAX_INPUT_LENGTH + 40];
-  struct descriptor_data *i;
+  struct descriptor_data* i;
   extern int Silence;
 
   if (IS_AFFECTED(ch, AFF_SILENT)) {
     send_to_char("You can't make a sound!\n\r", ch);
-    act("$n waves $s hands and points silently toward his $s mouth.", FALSE, ch, 0, 0, TO_ROOM);
+    act("$n waves $s hands and points silently toward his $s mouth.", FALSE, ch,
+      0, 0, TO_ROOM);
     return;
   }
 
@@ -89,20 +91,24 @@ void do_shout(struct char_data *ch, char *argument, int cmd) {
     sprintf(buf1, "$n shouts '%s'", argument);
 
     for (i = descriptor_list; i; i = i->next)
-      if (i->character != ch && !i->connected && (IS_NPC(i->character) || (!IS_SET(i->character->specials.act, PLR_NOSHOUT))) && !check_soundproof(i->character))
+      if (i->character != ch && !i->connected &&
+          (IS_NPC(i->character) ||
+            (!IS_SET(i->character->specials.act, PLR_NOSHOUT))) &&
+          !check_soundproof(i->character))
         act(buf1, 0, ch, 0, i->character, TO_VICT);
   }
 }
 
-void do_grouptell(struct char_data *ch, char *argument, int cmd) {
+void do_grouptell(struct char_data* ch, char* argument, int cmd) {
   static char buf1[MAX_INPUT_LENGTH];
-  struct follow_type *f;
-  struct char_data *k;
+  struct follow_type* f;
+  struct char_data* k;
   bool found;
 
   if (IS_AFFECTED(ch, AFF_SILENT)) {
     send_to_char("You can't make a sound!\n\r", ch);
-    act("$n waves $s hands and points silently toward his $s mouth.", FALSE, ch, 0, 0, TO_ROOM);
+    act("$n waves $s hands and points silently toward his $s mouth.", FALSE, ch,
+      0, 0, TO_ROOM);
     return;
   }
 
@@ -112,7 +118,10 @@ void do_grouptell(struct char_data *ch, char *argument, int cmd) {
     ;
 
   if (!(*argument))
-    send_to_char("Grouptell is a good command, but you need to tell your group SOMEthing!\n\r", ch);
+    send_to_char(
+      "Grouptell is a good command, but you need to tell your group "
+      "SOMEthing!\n\r",
+      ch);
   else {
     sprintf(buf1, "You tell your group: %s\n\r", argument);
     send_to_char(buf1, ch);
@@ -127,9 +136,9 @@ void do_grouptell(struct char_data *ch, char *argument, int cmd) {
   }
 }
 
-void do_commune(struct char_data *ch, char *argument, int cmd) {
+void do_commune(struct char_data* ch, char* argument, int cmd) {
   static char buf1[MAX_INPUT_LENGTH];
-  struct descriptor_data *i;
+  struct descriptor_data* i;
 
   for (; *argument == ' '; argument++)
     ;
@@ -141,9 +150,11 @@ void do_commune(struct char_data *ch, char *argument, int cmd) {
     send_to_char(buf1, ch);
 
     for (i = descriptor_list; i; i = i->next)
-      if (i->character != ch && !i->connected && !IS_NPC(i->character) && (GetMaxLevel(i->character) >= 52)) {
+      if (i->character != ch && !i->connected && !IS_NPC(i->character) &&
+          (GetMaxLevel(i->character) >= 52)) {
         if (IS_SET(i->character->specials.act, PLR_COLOR))
-          sprintf(buf1, "%s$n: %s%s%s", ANSI_VIOLET, ANSI_CYAN, argument, ANSI_NORMAL);
+          sprintf(buf1, "%s$n: %s%s%s", ANSI_VIOLET, ANSI_CYAN, argument,
+            ANSI_NORMAL);
         else
           sprintf(buf1, "$n: %s", argument);
         act(buf1, 0, ch, 0, i->character, TO_VICT);
@@ -151,71 +162,31 @@ void do_commune(struct char_data *ch, char *argument, int cmd) {
   }
 }
 
-char *RandomWord() {
-  static char *string[50] = {
-    "argle",
-    "bargle",
-    "glop",
-    "glyph",
-    "hussamah", /* 5 */
-    "rodina",
-    "mustafah",
-    "angina",
-    "the",
-    "fribble", /* 10 */
-    "fnort",
-    "frobozz",
-    "zarp",
-    "ripple",
-    "yrk", /* 15 */
-    "yid",
-    "yerf",
-    "oork",
-    "grapple",
-    "red", /* 20 */
-    "blue",
-    "you",
-    "me",
-    "ftagn",
-    "hastur", /* 25 */
-    "brob",
-    "gnort",
-    "lram",
-    "truck",
-    "kill", /* 30 */
-    "cthulhu",
-    "huzzah",
-    "acetacytacylic",
-    "hydrooxypropyl",
-    "summah", /* 35 */
-    "hummah",
-    "cookies",
-    "stan",
-    "will",
-    "wadapatang", /* 40 */
-    "pterodactyl",
-    "frob",
-    "yuma",
-    "gumma",
-    "lo-pan", /* 45 */
-    "sushi",
-    "yaya",
-    "yoyodine",
-    "your",
-    "mother" /* 50 */
+char* RandomWord() {
+  static char* string[50] = {
+    "argle", "bargle", "glop", "glyph", "hussamah",                    /* 5 */
+    "rodina", "mustafah", "angina", "the", "fribble",                  /* 10 */
+    "fnort", "frobozz", "zarp", "ripple", "yrk",                       /* 15 */
+    "yid", "yerf", "oork", "grapple", "red",                           /* 20 */
+    "blue", "you", "me", "ftagn", "hastur",                            /* 25 */
+    "brob", "gnort", "lram", "truck", "kill",                          /* 30 */
+    "cthulhu", "huzzah", "acetacytacylic", "hydrooxypropyl", "summah", /* 35 */
+    "hummah", "cookies", "stan", "will", "wadapatang",                 /* 40 */
+    "pterodactyl", "frob", "yuma", "gumma", "lo-pan",                  /* 45 */
+    "sushi", "yaya", "yoyodine", "your", "mother"                      /* 50 */
   };
 
   return (string[number(0, 49)]);
 }
 
-void do_sign(struct char_data *ch, char *argument, int cmd) {
+void do_sign(struct char_data* ch, char* argument, int cmd) {
   int i;
   char buf[MAX_INPUT_LENGTH + 40];
   char buf2[MAX_INPUT_LENGTH];
-  char *p;
+  char* p;
   int diff;
-  struct char_data *t;
-  struct room_data *rp;
+  struct char_data* t;
+  struct room_data* rp;
 
   for (i = 0; *(argument + i) == ' '; i++)
     ;
@@ -243,7 +214,8 @@ void do_sign(struct char_data *ch, char *argument, int cmd) {
     diff = strlen(buf);
 
     while (p) {
-      if (ch->skills && number(1, 75 + strlen(p)) < ch->skills[SKILL_SIGN].learned) {
+      if (ch->skills &&
+          number(1, 75 + strlen(p)) < ch->skills[SKILL_SIGN].learned) {
         strcat(buf2, p);
       } else {
         strcat(buf2, RandomWord());
@@ -277,12 +249,13 @@ void do_sign(struct char_data *ch, char *argument, int cmd) {
   }
 }
 
-void do_send(struct char_data *ch, char *argument, int cmd) {
+void do_send(struct char_data* ch, char* argument, int cmd) {
   char buf1[MAX_INPUT_LENGTH + 40];
-  struct descriptor_data *i;
+  struct descriptor_data* i;
   struct obj_data *radio, *radio2;
 
-  if (!IS_NPC(ch) && (IS_SET(ch->specials.act, PLR_NOSHOUT) || IS_AFFECTED(ch, AFF_SILENT))) {
+  if (!IS_NPC(ch) &&
+      (IS_SET(ch->specials.act, PLR_NOSHOUT) || IS_AFFECTED(ch, AFF_SILENT))) {
     send_to_char("You can't send any messages at the moment!!\n\r", ch);
     return;
   }
@@ -312,13 +285,13 @@ void do_send(struct char_data *ch, char *argument, int cmd) {
     sprintf(buf1, "$n [Channel %d] : %s", radio->obj_flags.value[3], argument);
 
     for (i = descriptor_list; i; i = i->next) {
-      if (i->character && (i->character != ch) &&
-                     (i->connected == CON_PLYNG) &&
-                     !check_soundproof(i->character) &&
-                     (i->character->in_room != NOWHERE)) {
+      if (i->character && (i->character != ch) && (i->connected == CON_PLYNG) &&
+          !check_soundproof(i->character) &&
+          (i->character->in_room != NOWHERE)) {
         radio2 = i->character->equipment[WEAR_RADIO];
 
-        if ((radio2) && (radio->obj_flags.value[3] == radio2->obj_flags.value[3])) {
+        if ((radio2) &&
+            (radio->obj_flags.value[3] == radio2->obj_flags.value[3])) {
           act(buf1, 0, ch, 0, i->character, TO_VICT);
         }
       }
@@ -326,13 +299,14 @@ void do_send(struct char_data *ch, char *argument, int cmd) {
   }
 }
 
-void do_tell(struct char_data *ch, char *argument, int cmd) {
-  struct char_data *vict;
+void do_tell(struct char_data* ch, char* argument, int cmd) {
+  struct char_data* vict;
   char name[100], message[MAX_INPUT_LENGTH + 20], buf[MAX_INPUT_LENGTH + 20];
 
   if (IS_AFFECTED(ch, AFF_SILENT)) {
     send_to_char("You can't make a sound!\n\r", ch);
-    act("$n waves $s hands and points silently toward his $s mouth.", FALSE, ch, 0, 0, TO_ROOM);
+    act("$n waves $s hands and points silently toward his $s mouth.", FALSE, ch,
+      0, 0, TO_ROOM);
     return;
   }
 
@@ -362,38 +336,40 @@ void do_tell(struct char_data *ch, char *argument, int cmd) {
   }
 
   if (check_soundproof(vict)) {
-    send_to_char("Your words dont reach them, must be in a silent zone.\n\r", ch);
+    send_to_char("Your words dont reach them, must be in a silent zone.\n\r",
+      ch);
     return;
   }
 
   if (IS_SET(vict->specials.act, PLR_COLOR)) {
-    sprintf(
-      buf, "%s%s%s tells you %s'%s'%s\n\r", ANSI_VIOLET, (IS_NPC(ch) ? ch->player.short_descr : GET_NAME(ch)),
-      ANSI_NORMAL, ANSI_CYAN, message, ANSI_NORMAL
-    );
+    sprintf(buf, "%s%s%s tells you %s'%s'%s\n\r", ANSI_VIOLET,
+      (IS_NPC(ch) ? ch->player.short_descr : GET_NAME(ch)), ANSI_NORMAL,
+      ANSI_CYAN, message, ANSI_NORMAL);
     send_to_char(buf, vict);
   } else if (IS_SET(vict->specials.act, PLR_VT100)) {
-    sprintf(
-      buf, "%s%s%s tells you '%s'\n\r", VT_BOLDTEX, (IS_NPC(ch) ? ch->player.short_descr : GET_NAME(ch)), ANSI_NORMAL,
-      message
-    );
+    sprintf(buf, "%s%s%s tells you '%s'\n\r", VT_BOLDTEX,
+      (IS_NPC(ch) ? ch->player.short_descr : GET_NAME(ch)), ANSI_NORMAL,
+      message);
     send_to_char(buf, vict);
   } else {
-    sprintf(buf, "%s tells you '%s'\n\r", (IS_NPC(ch) ? ch->player.short_descr : GET_NAME(ch)), message);
+    sprintf(buf, "%s tells you '%s'\n\r",
+      (IS_NPC(ch) ? ch->player.short_descr : GET_NAME(ch)), message);
     send_to_char(buf, vict);
   }
 
-  sprintf(buf, "You tell %s '%s'\n\r", (IS_NPC(vict) ? vict->player.short_descr : GET_NAME(vict)), message);
+  sprintf(buf, "You tell %s '%s'\n\r",
+    (IS_NPC(vict) ? vict->player.short_descr : GET_NAME(vict)), message);
   send_to_char(buf, ch);
 }
 
-void do_whisper(struct char_data *ch, char *argument, int cmd) {
-  struct char_data *vict;
+void do_whisper(struct char_data* ch, char* argument, int cmd) {
+  struct char_data* vict;
   char name[100], message[MAX_INPUT_LENGTH], buf[MAX_INPUT_LENGTH];
 
   if (IS_AFFECTED(ch, AFF_SILENT)) {
     send_to_char("You can't make a sound!\n\r", ch);
-    act("$n waves $s hands and points silently toward his $s mouth.", FALSE, ch, 0, 0, TO_ROOM);
+    act("$n waves $s hands and points silently toward his $s mouth.", FALSE, ch,
+      0, 0, TO_ROOM);
     return;
   }
 
@@ -408,26 +384,29 @@ void do_whisper(struct char_data *ch, char *argument, int cmd) {
     send_to_char("No-one by that name here..\n\r", ch);
   else if (vict == ch) {
     act("$n whispers quietly to $mself.", FALSE, ch, 0, 0, TO_ROOM);
-    send_to_char("You can't seem to get your mouth close enough to your ear...\n\r", ch);
+    send_to_char(
+      "You can't seem to get your mouth close enough to your ear...\n\r", ch);
   } else {
     if (check_soundproof(vict))
       return;
 
     sprintf(buf, "$n whispers to you, '%s'", message);
     act(buf, FALSE, ch, 0, vict, TO_VICT);
-    sprintf(buf, "You whisper to %s, '%s'\n\r", (IS_NPC(vict) ? vict->player.name : GET_NAME(vict)), message);
+    sprintf(buf, "You whisper to %s, '%s'\n\r",
+      (IS_NPC(vict) ? vict->player.name : GET_NAME(vict)), message);
     send_to_char(buf, ch);
     act("$n whispers something to $N.", FALSE, ch, 0, vict, TO_NOTVICT);
   }
 }
 
-void do_ask(struct char_data *ch, char *argument, int cmd) {
-  struct char_data *vict;
+void do_ask(struct char_data* ch, char* argument, int cmd) {
+  struct char_data* vict;
   char name[100], message[MAX_INPUT_LENGTH], buf[MAX_INPUT_LENGTH];
 
   if (IS_AFFECTED(ch, AFF_SILENT)) {
     send_to_char("You can't make a sound!\n\r", ch);
-    act("$n waves $s hands and points silently toward his $s mouth.", FALSE, ch, 0, 0, TO_ROOM);
+    act("$n waves $s hands and points silently toward his $s mouth.", FALSE, ch,
+      0, 0, TO_ROOM);
     return;
   }
 
@@ -450,7 +429,8 @@ void do_ask(struct char_data *ch, char *argument, int cmd) {
     sprintf(buf, "$n asks you '%s'", message);
     act(buf, FALSE, ch, 0, vict, TO_VICT);
 
-    sprintf(buf, "You ask %s, '%s'\n\r", (IS_NPC(vict) ? vict->player.name : GET_NAME(vict)), message);
+    sprintf(buf, "You ask %s, '%s'\n\r",
+      (IS_NPC(vict) ? vict->player.name : GET_NAME(vict)), message);
     send_to_char(buf, ch);
     act("$n asks $N a question.", FALSE, ch, 0, vict, TO_NOTVICT);
   }
@@ -458,9 +438,10 @@ void do_ask(struct char_data *ch, char *argument, int cmd) {
 
 #define MAX_NOTE_LENGTH 1000 /* arbitrary */
 
-void do_write(struct char_data *ch, char *argument, int cmd) {
+void do_write(struct char_data* ch, char* argument, int cmd) {
   struct obj_data *paper = 0, *pen = 0;
-  char papername[MAX_INPUT_LENGTH], penname[MAX_INPUT_LENGTH], buf[MAX_STRING_LENGTH];
+  char papername[MAX_INPUT_LENGTH], penname[MAX_INPUT_LENGTH],
+    buf[MAX_STRING_LENGTH];
 
   argument_interpreter(argument, papername, penname);
 

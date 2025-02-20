@@ -20,32 +20,35 @@
 #if HASH
 extern struct hash_header room_db;
 #else
-extern struct room_data *room_db;
+extern struct room_data* room_db;
 #endif
-extern struct obj_data *object_list;
-extern struct char_data *character_list;
+extern struct obj_data* object_list;
+extern struct char_data* character_list;
 
 /* Extern procedures */
 
-extern void add_follower(struct char_data *ch, struct char_data *leader);
-extern void stop_follower(struct char_data *ch);
-extern void gain_exp(struct char_data *ch, int gain);
-void damage(struct char_data *ch, struct char_data *victim, int damage, int weapontype);
-void MissileDamage(struct char_data *ch, struct char_data *victim, int damage, int weapontype);
-bool saves_spell(struct char_data *ch, sh_int spell);
-void weight_change_object(struct obj_data *obj, int weight);
-char *strdup(char *source);
+extern void add_follower(struct char_data* ch, struct char_data* leader);
+extern void stop_follower(struct char_data* ch);
+extern void gain_exp(struct char_data* ch, int gain);
+void damage(struct char_data* ch, struct char_data* victim, int damage,
+  int weapontype);
+void MissileDamage(struct char_data* ch, struct char_data* victim, int damage,
+  int weapontype);
+bool saves_spell(struct char_data* ch, sh_int spell);
+void weight_change_object(struct obj_data* obj, int weight);
+char* strdup(char* source);
 int dice(int number, int size);
-char in_group(struct char_data *ch1, struct char_data *ch2);
-void set_fighting(struct char_data *ch, struct char_data *vict);
-bool ImpSaveSpell(struct char_data *ch, sh_int save_type, int mod);
-int IsPerson(struct char_data *ch);
-int IsExtraPlanar(struct char_data *ch);
-void RawSummon(struct char_data *v, struct char_data *c);
+char in_group(struct char_data* ch1, struct char_data* ch2);
+void set_fighting(struct char_data* ch, struct char_data* vict);
+bool ImpSaveSpell(struct char_data* ch, sh_int save_type, int mod);
+int IsPerson(struct char_data* ch);
+int IsExtraPlanar(struct char_data* ch);
+void RawSummon(struct char_data* v, struct char_data* c);
 
 /* Offensive Spells */
 
-void spell_magic_missile(byte level, struct char_data *ch, struct char_data *victim, struct obj_data *obj) {
+void spell_magic_missile(byte level, struct char_data* ch,
+  struct char_data* victim, struct obj_data* obj) {
   int dam;
 
   assert(victim && ch);
@@ -59,7 +62,8 @@ void spell_magic_missile(byte level, struct char_data *ch, struct char_data *vic
   MissileDamage(ch, victim, dam, SPELL_MAGIC_MISSILE);
 }
 
-void spell_chill_touch(byte level, struct char_data *ch, struct char_data *victim, struct obj_data *obj) {
+void spell_chill_touch(byte level, struct char_data* ch,
+  struct char_data* victim, struct obj_data* obj) {
   struct affected_type af;
   int dam;
 
@@ -81,7 +85,8 @@ void spell_chill_touch(byte level, struct char_data *ch, struct char_data *victi
   damage(ch, victim, dam, SPELL_CHILL_TOUCH);
 }
 
-void spell_burning_hands(byte level, struct char_data *ch, struct char_data *victim, struct obj_data *obj) {
+void spell_burning_hands(byte level, struct char_data* ch,
+  struct char_data* victim, struct obj_data* obj) {
   int dam;
   struct char_data *tmp_victim, *temp;
 
@@ -91,25 +96,30 @@ void spell_burning_hands(byte level, struct char_data *ch, struct char_data *vic
   dam = dice(1, 6) + level + 1;
 
   send_to_char("Searing flame fans out in front of you!\n\r", ch);
-  act("$n sends a fan of flame shooting from the fingertips!\n\r", FALSE, ch, 0, 0, TO_ROOM);
+  act("$n sends a fan of flame shooting from the fingertips!\n\r", FALSE, ch, 0,
+    0, TO_ROOM);
 
-  for (tmp_victim = real_roomp(ch->in_room)->people; tmp_victim; tmp_victim = tmp_victim->next_in_room) {
+  for (tmp_victim = real_roomp(ch->in_room)->people; tmp_victim;
+       tmp_victim = tmp_victim->next_in_room) {
     if ((ch->in_room == tmp_victim->in_room) && (ch != tmp_victim)) {
       if ((GetMaxLevel(tmp_victim) > LOW_IMMORTAL) && (!IS_NPC(tmp_victim)))
         return;
       if (!in_group(ch, tmp_victim)) {
-        act("You are seared by the burning flame!\n\r", FALSE, ch, 0, tmp_victim, TO_VICT);
+        act("You are seared by the burning flame!\n\r", FALSE, ch, 0,
+          tmp_victim, TO_VICT);
         if (saves_spell(tmp_victim, SAVING_SPELL))
           dam >>= 1;
         MissileDamage(ch, tmp_victim, dam, SPELL_BURNING_HANDS);
       } else {
-        act("You are able to avoid the flames!\n\r", FALSE, ch, 0, tmp_victim, TO_VICT);
+        act("You are able to avoid the flames!\n\r", FALSE, ch, 0, tmp_victim,
+          TO_VICT);
       }
     }
   }
 }
 
-void spell_shocking_grasp(byte level, struct char_data *ch, struct char_data *victim, struct obj_data *obj) {
+void spell_shocking_grasp(byte level, struct char_data* ch,
+  struct char_data* victim, struct obj_data* obj) {
   int dam;
 
   assert(victim && ch);
@@ -123,7 +133,8 @@ void spell_shocking_grasp(byte level, struct char_data *ch, struct char_data *vi
   damage(ch, victim, dam, SPELL_SHOCKING_GRASP);
 }
 
-void spell_lightning_bolt(byte level, struct char_data *ch, struct char_data *victim, struct obj_data *obj) {
+void spell_lightning_bolt(byte level, struct char_data* ch,
+  struct char_data* victim, struct obj_data* obj) {
   int dam;
 
   assert(victim && ch);
@@ -137,7 +148,8 @@ void spell_lightning_bolt(byte level, struct char_data *ch, struct char_data *vi
   MissileDamage(ch, victim, dam, SPELL_LIGHTNING_BOLT);
 }
 
-void spell_colour_spray(byte level, struct char_data *ch, struct char_data *victim, struct obj_data *obj) {
+void spell_colour_spray(byte level, struct char_data* ch,
+  struct char_data* victim, struct obj_data* obj) {
   int dam;
 
   assert(victim && ch);
@@ -152,7 +164,8 @@ void spell_colour_spray(byte level, struct char_data *ch, struct char_data *vict
 }
 
 /* Drain XP, MANA, HP - caster gains HP and MANA */
-void spell_energy_drain(byte level, struct char_data *ch, struct char_data *victim, struct obj_data *obj) {
+void spell_energy_drain(byte level, struct char_data* ch,
+  struct char_data* victim, struct obj_data* obj) {
   int dam, xp, mana;
 
   void set_title(struct char_data * ch);
@@ -188,7 +201,8 @@ void spell_energy_drain(byte level, struct char_data *ch, struct char_data *vict
   }
 }
 
-void spell_fireball(byte level, struct char_data *ch, struct char_data *victim, struct obj_data *obj) {
+void spell_fireball(byte level, struct char_data* ch, struct char_data* victim,
+  struct obj_data* obj) {
   int dam;
   struct char_data *tmp_victim, *temp;
 
@@ -205,8 +219,10 @@ void spell_fireball(byte level, struct char_data *ch, struct char_data *victim, 
     temp = tmp_victim->next;
     if ((ch->in_room == tmp_victim->in_room) && (ch != tmp_victim)) {
       if (!in_group(ch, tmp_victim)) {
-        if ((GetMaxLevel(tmp_victim) >= LOW_IMMORTAL) && (!IS_NPC(tmp_victim))) {
-          send_to_char("Some puny mortal tries to toast you with a fireball", tmp_victim);
+        if ((GetMaxLevel(tmp_victim) >= LOW_IMMORTAL) &&
+            (!IS_NPC(tmp_victim))) {
+          send_to_char("Some puny mortal tries to toast you with a fireball",
+            tmp_victim);
           return;
         } else {
           if (saves_spell(tmp_victim, SAVING_SPELL))
@@ -214,11 +230,13 @@ void spell_fireball(byte level, struct char_data *ch, struct char_data *victim, 
           MissileDamage(ch, tmp_victim, dam, SPELL_FIREBALL);
         }
       } else {
-        act("You dodge the mass of flame!!\n\r", FALSE, ch, 0, tmp_victim, TO_VICT);
+        act("You dodge the mass of flame!!\n\r", FALSE, ch, 0, tmp_victim,
+          TO_VICT);
       }
     } else {
       if (tmp_victim->in_room != NOWHERE) {
-        if (real_roomp(ch->in_room)->zone == real_roomp(tmp_victim->in_room)->zone) {
+        if (real_roomp(ch->in_room)->zone ==
+            real_roomp(tmp_victim->in_room)->zone) {
           send_to_char("You feel a blast of hot air.\n\r", tmp_victim);
         }
       }
@@ -226,7 +244,8 @@ void spell_fireball(byte level, struct char_data *ch, struct char_data *victim, 
   }
 }
 
-void spell_earthquake(byte level, struct char_data *ch, struct char_data *victim, struct obj_data *obj) {
+void spell_earthquake(byte level, struct char_data* ch,
+  struct char_data* victim, struct obj_data* obj) {
   int dam;
 
   struct char_data *tmp_victim, *temp;
@@ -245,20 +264,24 @@ void spell_earthquake(byte level, struct char_data *ch, struct char_data *victim
       if (!in_group(ch, tmp_victim)) {
         if ((GetMaxLevel(tmp_victim) < LOW_IMMORTAL) || (IS_NPC(tmp_victim))) {
           MissileDamage(ch, tmp_victim, dam, SPELL_EARTHQUAKE);
-          act("You fall and hurt yourself!!\n\r", FALSE, ch, 0, tmp_victim, TO_VICT);
+          act("You fall and hurt yourself!!\n\r", FALSE, ch, 0, tmp_victim,
+            TO_VICT);
         }
 
       } else {
-        act("You almost fall and hurt yourself!!\n\r", FALSE, ch, 0, tmp_victim, TO_VICT);
+        act("You almost fall and hurt yourself!!\n\r", FALSE, ch, 0, tmp_victim,
+          TO_VICT);
       }
     else {
-      if (real_roomp(ch->in_room)->zone == real_roomp(tmp_victim->in_room)->zone)
+      if (real_roomp(ch->in_room)->zone ==
+          real_roomp(tmp_victim->in_room)->zone)
         send_to_char("The earth trembles...", tmp_victim);
     }
   }
 }
 
-void spell_dispel_evil(byte level, struct char_data *ch, struct char_data *victim, struct obj_data *obj) {
+void spell_dispel_evil(byte level, struct char_data* ch,
+  struct char_data* victim, struct obj_data* obj) {
   int dam;
 
   assert(ch && victim);
@@ -287,7 +310,8 @@ void spell_dispel_evil(byte level, struct char_data *ch, struct char_data *victi
   }
 }
 
-void spell_call_lightning(byte level, struct char_data *ch, struct char_data *victim, struct obj_data *obj) {
+void spell_call_lightning(byte level, struct char_data* ch,
+  struct char_data* victim, struct obj_data* obj) {
   int dam;
 
   extern struct weather_data weather_info;
@@ -305,7 +329,8 @@ void spell_call_lightning(byte level, struct char_data *ch, struct char_data *vi
   }
 }
 
-void spell_harm(byte level, struct char_data *ch, struct char_data *victim, struct obj_data *obj) {
+void spell_harm(byte level, struct char_data* ch, struct char_data* victim,
+  struct obj_data* obj) {
   int dam;
 
   assert(victim && ch);
@@ -326,7 +351,8 @@ void spell_harm(byte level, struct char_data *ch, struct char_data *victim, stru
 
 /* spells2.c - Not directly offensive spells */
 
-void spell_armor(byte level, struct char_data *ch, struct char_data *victim, struct obj_data *obj) {
+void spell_armor(byte level, struct char_data* ch, struct char_data* victim,
+  struct obj_data* obj) {
   struct affected_type af;
 
   assert(victim);
@@ -346,16 +372,20 @@ void spell_armor(byte level, struct char_data *ch, struct char_data *victim, str
   }
 }
 
-void spell_astral_walk(byte level, struct char_data *ch, struct char_data *victim, struct obj_data *obj) {
+void spell_astral_walk(byte level, struct char_data* ch,
+  struct char_data* victim, struct obj_data* obj) {
   int location;
-  struct room_data *rp;
+  struct room_data* rp;
 
   assert(ch && victim);
 
   location = victim->in_room;
   rp = real_roomp(location);
 
-  if (GetMaxLevel(victim) > MAX_MORT || !rp || IS_SET(rp->room_flags, PRIVATE) || IS_SET(rp->room_flags, NO_SUM) || IS_SET(rp->room_flags, HAVE_TO_WALK) || IS_NPC(victim) || IS_SET(rp->room_flags, NO_MAGIC)) {
+  if (GetMaxLevel(victim) > MAX_MORT || !rp ||
+      IS_SET(rp->room_flags, PRIVATE) || IS_SET(rp->room_flags, NO_SUM) ||
+      IS_SET(rp->room_flags, HAVE_TO_WALK) || IS_NPC(victim) ||
+      IS_SET(rp->room_flags, NO_MAGIC)) {
     send_to_char("You failed.\n\r", ch);
     return;
   }
@@ -364,18 +394,21 @@ void spell_astral_walk(byte level, struct char_data *ch, struct char_data *victi
     send_to_char("You failed.\n\r", ch);
     return;
   } else {
-    act("$n opens a door to another dimension and steps through!", FALSE, ch, 0, 0, TO_ROOM);
+    act("$n opens a door to another dimension and steps through!", FALSE, ch, 0,
+      0, TO_ROOM);
     char_from_room(ch);
     char_to_room(ch, location);
-    act("You are blinded for a moment as $n appears in a flash of light!", FALSE, ch, 0, 0, TO_ROOM);
+    act("You are blinded for a moment as $n appears in a flash of light!",
+      FALSE, ch, 0, 0, TO_ROOM);
     do_look(ch, "", 15);
   }
 }
 
-void spell_teleport(byte level, struct char_data *ch, struct char_data *victim, struct obj_data *obj) {
+void spell_teleport(byte level, struct char_data* ch, struct char_data* victim,
+  struct obj_data* obj) {
   int to_room;
   extern int top_of_world; /* ref to the top element of world */
-  struct room_data *room;
+  struct room_data* room;
 
   assert(ch && victim);
 
@@ -411,26 +444,31 @@ void spell_teleport(byte level, struct char_data *ch, struct char_data *victim, 
 
   do_look(ch, "", 0);
 
-  if (IS_SET(real_roomp(to_room)->room_flags, DEATH) && GetMaxLevel(ch) < LOW_IMMORTAL) {
+  if (IS_SET(real_roomp(to_room)->room_flags, DEATH) &&
+      GetMaxLevel(ch) < LOW_IMMORTAL) {
     death_cry(ch);
     zero_rent(ch);
     extract_char(ch);
   }
 }
 
-void spell_bless(byte level, struct char_data *ch, struct char_data *victim, struct obj_data *obj) {
+void spell_bless(byte level, struct char_data* ch, struct char_data* victim,
+  struct obj_data* obj) {
   struct affected_type af;
 
   assert(ch && (victim || obj));
   assert((level >= 0) && (level <= ABS_MAX_LVL));
 
   if (obj) {
-    if ((5 * GET_LEVEL(ch, CLERIC_LEVEL_IND) > GET_OBJ_WEIGHT(obj)) && (GET_POS(ch) != POSITION_FIGHTING) && !IS_OBJ_STAT(obj, ITEM_ANTI_GOOD)) {
+    if ((5 * GET_LEVEL(ch, CLERIC_LEVEL_IND) > GET_OBJ_WEIGHT(obj)) &&
+        (GET_POS(ch) != POSITION_FIGHTING) &&
+        !IS_OBJ_STAT(obj, ITEM_ANTI_GOOD)) {
       SET_BIT(obj->obj_flags.extra_flags, ITEM_BLESS);
       act("$p briefly glows.", FALSE, ch, obj, 0, TO_CHAR);
     }
   } else {
-    if ((GET_POS(victim) != POSITION_FIGHTING) && (!affected_by_spell(victim, SPELL_BLESS))) {
+    if ((GET_POS(victim) != POSITION_FIGHTING) &&
+        (!affected_by_spell(victim, SPELL_BLESS))) {
       send_to_char("You feel righteous.\n\r", victim);
       af.type = SPELL_BLESS;
       af.duration = 6;
@@ -446,13 +484,15 @@ void spell_bless(byte level, struct char_data *ch, struct char_data *victim, str
   }
 }
 
-void spell_blindness(byte level, struct char_data *ch, struct char_data *victim, struct obj_data *obj) {
+void spell_blindness(byte level, struct char_data* ch, struct char_data* victim,
+  struct obj_data* obj) {
   struct affected_type af;
 
   assert(ch && victim);
   assert((level >= 0) && (level <= ABS_MAX_LVL));
 
-  if (saves_spell(victim, SAVING_SPELL) || affected_by_spell(victim, SPELL_BLINDNESS))
+  if (saves_spell(victim, SAVING_SPELL) ||
+      affected_by_spell(victim, SPELL_BLINDNESS))
     return;
 
   act("$n seems to be blinded!", TRUE, victim, 0, 0, TO_ROOM);
@@ -473,7 +513,8 @@ void spell_blindness(byte level, struct char_data *ch, struct char_data *victim,
     set_fighting(victim, ch);
 }
 
-void spell_clone(byte level, struct char_data *ch, struct char_data *victim, struct obj_data *obj) {
+void spell_clone(byte level, struct char_data* ch, struct char_data* victim,
+  struct obj_data* obj) {
   assert(ch && (victim || obj));
   assert((level >= 0) && (level <= ABS_MAX_LVL));
 
@@ -485,14 +526,16 @@ void spell_clone(byte level, struct char_data *ch, struct char_data *victim, str
   }
 }
 
-void spell_control_weather(byte level, struct char_data *ch, struct char_data *victim, struct obj_data *obj) {
+void spell_control_weather(byte level, struct char_data* ch,
+  struct char_data* victim, struct obj_data* obj) {
   /* Control Weather is not possible here!!! */
   /* Better/Worse can not be transferred     */
 }
 
-void spell_create_food(byte level, struct char_data *ch, struct char_data *victim, struct obj_data *obj) {
+void spell_create_food(byte level, struct char_data* ch,
+  struct char_data* victim, struct obj_data* obj) {
   int foodnum;
-  struct obj_data *tmp_obj;
+  struct obj_data* tmp_obj;
 
   assert(ch);
   assert((level >= 0) && (level <= ABS_MAX_LVL));
@@ -505,11 +548,13 @@ void spell_create_food(byte level, struct char_data *ch, struct char_data *victi
   if (foodnum == 1) {
     tmp_obj->name = strdup("piece cake");
     tmp_obj->short_description = strdup("A piece of strawberry cake");
-    tmp_obj->description = strdup("A scrumptous looking piece of cake lies here.");
+    tmp_obj->description =
+      strdup("A scrumptous looking piece of cake lies here.");
   } else {
     tmp_obj->name = strdup("mushroom");
     tmp_obj->short_description = strdup("A Magic Mushroom");
-    tmp_obj->description = strdup("A really delicious looking magic mushroom lies here.");
+    tmp_obj->description =
+      strdup("A really delicious looking magic mushroom lies here.");
   }
 
   tmp_obj->obj_flags.type_flag = ITEM_FOOD;
@@ -531,7 +576,8 @@ void spell_create_food(byte level, struct char_data *ch, struct char_data *victi
   act("$p suddenly appears.", TRUE, ch, tmp_obj, 0, TO_CHAR);
 }
 
-void spell_create_water(byte level, struct char_data *ch, struct char_data *victim, struct obj_data *obj) {
+void spell_create_water(byte level, struct char_data* ch,
+  struct char_data* victim, struct obj_data* obj) {
   int water;
 
   extern struct weather_data weather_info;
@@ -541,7 +587,8 @@ void spell_create_water(byte level, struct char_data *ch, struct char_data *vict
   assert(ch && obj);
 
   if (GET_ITEM_TYPE(obj) == ITEM_DRINKCON) {
-    if ((obj->obj_flags.value[2] != LIQ_WATER) && (obj->obj_flags.value[1] != 0)) {
+    if ((obj->obj_flags.value[2] != LIQ_WATER) &&
+        (obj->obj_flags.value[1] != 0)) {
       name_from_drinkcon(obj);
       obj->obj_flags.value[2] = LIQ_SLIME;
       name_to_drinkcon(obj, LIQ_SLIME);
@@ -566,7 +613,8 @@ void spell_create_water(byte level, struct char_data *ch, struct char_data *vict
   }
 }
 
-void spell_cure_blind(byte level, struct char_data *ch, struct char_data *victim, struct obj_data *obj) {
+void spell_cure_blind(byte level, struct char_data* ch,
+  struct char_data* victim, struct obj_data* obj) {
   assert(victim);
   assert((level >= 0) && (level <= ABS_MAX_LVL));
 
@@ -577,7 +625,8 @@ void spell_cure_blind(byte level, struct char_data *ch, struct char_data *victim
   }
 }
 
-void spell_cure_critic(byte level, struct char_data *ch, struct char_data *victim, struct obj_data *obj) {
+void spell_cure_critic(byte level, struct char_data* ch,
+  struct char_data* victim, struct obj_data* obj) {
   int healpoints;
 
   assert(victim);
@@ -595,7 +644,8 @@ void spell_cure_critic(byte level, struct char_data *ch, struct char_data *victi
   update_pos(victim);
 }
 
-void spell_cure_light(byte level, struct char_data *ch, struct char_data *victim, struct obj_data *obj) {
+void spell_cure_light(byte level, struct char_data* ch,
+  struct char_data* victim, struct obj_data* obj) {
   int healpoints;
 
   assert(victim);
@@ -613,7 +663,8 @@ void spell_cure_light(byte level, struct char_data *ch, struct char_data *victim
   update_pos(victim);
 }
 
-void spell_curse(byte level, struct char_data *ch, struct char_data *victim, struct obj_data *obj) {
+void spell_curse(byte level, struct char_data* ch, struct char_data* victim,
+  struct obj_data* obj) {
   struct affected_type af;
 
   assert(victim || obj);
@@ -628,7 +679,8 @@ void spell_curse(byte level, struct char_data *ch, struct char_data *victim, str
       obj->obj_flags.value[2]--;
     act("$p glows red.", FALSE, ch, obj, 0, TO_CHAR);
   } else {
-    if (saves_spell(victim, SAVING_SPELL) || affected_by_spell(victim, SPELL_CURSE))
+    if (saves_spell(victim, SAVING_SPELL) ||
+        affected_by_spell(victim, SPELL_CURSE))
       return;
 
     af.type = SPELL_CURSE;
@@ -649,7 +701,8 @@ void spell_curse(byte level, struct char_data *ch, struct char_data *victim, str
   }
 }
 
-void spell_detect_evil(byte level, struct char_data *ch, struct char_data *victim, struct obj_data *obj) {
+void spell_detect_evil(byte level, struct char_data* ch,
+  struct char_data* victim, struct obj_data* obj) {
   struct affected_type af;
 
   assert(victim);
@@ -670,7 +723,8 @@ void spell_detect_evil(byte level, struct char_data *ch, struct char_data *victi
   send_to_char("Your eyes tingle.\n\r", victim);
 }
 
-void spell_detect_invisibility(byte level, struct char_data *ch, struct char_data *victim, struct obj_data *obj) {
+void spell_detect_invisibility(byte level, struct char_data* ch,
+  struct char_data* victim, struct obj_data* obj) {
   struct affected_type af;
 
   assert(ch && victim);
@@ -690,7 +744,8 @@ void spell_detect_invisibility(byte level, struct char_data *ch, struct char_dat
   send_to_char("Your eyes tingle.\n\r", victim);
 }
 
-void spell_detect_magic(byte level, struct char_data *ch, struct char_data *victim, struct obj_data *obj) {
+void spell_detect_magic(byte level, struct char_data* ch,
+  struct char_data* victim, struct obj_data* obj) {
   struct affected_type af;
 
   assert(victim);
@@ -709,7 +764,8 @@ void spell_detect_magic(byte level, struct char_data *ch, struct char_data *vict
   send_to_char("Your eyes tingle.\n\r", victim);
 }
 
-void spell_detect_poison(byte level, struct char_data *ch, struct char_data *victim, struct obj_data *obj) {
+void spell_detect_poison(byte level, struct char_data* ch,
+  struct char_data* victim, struct obj_data* obj) {
   assert(ch && (victim || obj));
 
   if (victim) {
@@ -724,7 +780,8 @@ void spell_detect_poison(byte level, struct char_data *ch, struct char_data *vic
       act("You sense that $E is poisoned", FALSE, ch, 0, victim, TO_CHAR);
     }
   } else { /* It's an object */
-    if ((obj->obj_flags.type_flag == ITEM_DRINKCON) || (obj->obj_flags.type_flag == ITEM_FOOD)) {
+    if ((obj->obj_flags.type_flag == ITEM_DRINKCON) ||
+        (obj->obj_flags.type_flag == ITEM_FOOD)) {
       if (obj->obj_flags.value[3])
         act("Poisonous fumes are revealed.", FALSE, ch, 0, 0, TO_CHAR);
       else
@@ -733,13 +790,15 @@ void spell_detect_poison(byte level, struct char_data *ch, struct char_data *vic
   }
 }
 
-void spell_enchant_weapon(byte level, struct char_data *ch, struct char_data *victim, struct obj_data *obj) {
+void spell_enchant_weapon(byte level, struct char_data* ch,
+  struct char_data* victim, struct obj_data* obj) {
   int i;
 
   assert(ch && obj);
   assert(MAX_OBJ_AFFECT >= 2);
 
-  if ((GET_ITEM_TYPE(obj) == ITEM_WEAPON) && !IS_SET(obj->obj_flags.extra_flags, ITEM_MAGIC)) {
+  if ((GET_ITEM_TYPE(obj) == ITEM_WEAPON) &&
+      !IS_SET(obj->obj_flags.extra_flags, ITEM_MAGIC)) {
     for (i = 0; i < MAX_OBJ_AFFECT; i++)
       if (obj->affected[i].location != APPLY_NONE)
         return;
@@ -776,7 +835,8 @@ void spell_enchant_weapon(byte level, struct char_data *ch, struct char_data *vi
   }
 }
 
-void spell_synostodweomer(byte level, struct char_data *ch, struct char_data *victim, struct obj_data *obj) {
+void spell_synostodweomer(byte level, struct char_data* ch,
+  struct char_data* victim, struct obj_data* obj) {
   int hitp;
   assert(victim);
 
@@ -801,7 +861,8 @@ void spell_synostodweomer(byte level, struct char_data *ch, struct char_data *vi
   send_to_char("You give half of your hit points to a needy person!\n\r", ch);
 }
 
-void spell_heal(byte level, struct char_data *ch, struct char_data *victim, struct obj_data *obj) {
+void spell_heal(byte level, struct char_data* ch, struct char_data* victim,
+  struct obj_data* obj) {
   assert(victim);
 
   spell_cure_blind(level, ch, victim, obj);
@@ -816,7 +877,8 @@ void spell_heal(byte level, struct char_data *ch, struct char_data *victim, stru
   send_to_char("A warm feeling fills your body.\n\r", victim);
 }
 
-void spell_vampiric_touch(byte level, struct char_data *ch, struct char_data *victim, struct obj_data *obj) {
+void spell_vampiric_touch(byte level, struct char_data* ch,
+  struct char_data* victim, struct obj_data* obj) {
   int hitp;
 
   assert(victim && ch);
@@ -857,7 +919,8 @@ void spell_vampiric_touch(byte level, struct char_data *ch, struct char_data *vi
   }
 }
 
-void spell_life_leech(byte level, struct char_data *ch, struct char_data *victim, struct obj_data *obj) {
+void spell_life_leech(byte level, struct char_data* ch,
+  struct char_data* victim, struct obj_data* obj) {
   int hitp;
   struct char_data *tmp_victim, *temp;
 
@@ -869,8 +932,10 @@ void spell_life_leech(byte level, struct char_data *ch, struct char_data *victim
     temp = tmp_victim->next;
     if ((ch->in_room == tmp_victim->in_room) && (ch != tmp_victim)) {
       if (!in_group(ch, tmp_victim)) {
-        if ((GetMaxLevel(tmp_victim) >= LOW_IMMORTAL) && (!IS_NPC(tmp_victim))) {
-          send_to_char("Some puny mortal tried to drink you blood!\n\r", tmp_victim);
+        if ((GetMaxLevel(tmp_victim) >= LOW_IMMORTAL) &&
+            (!IS_NPC(tmp_victim))) {
+          send_to_char("Some puny mortal tried to drink you blood!\n\r",
+            tmp_victim);
           return;
         } else {
           hitp = MIN(dice(level, 2), GET_MAX_HIT(tmp_victim));
@@ -880,16 +945,18 @@ void spell_life_leech(byte level, struct char_data *ch, struct char_data *victim
           SetVictFighting(ch, tmp_victim);
         }
       } else {
-        act("You dodge your groupmembers attempt to leech your life!!!\n\r", FALSE, ch, 0, tmp_victim, TO_VICT);
+        act("You dodge your groupmembers attempt to leech your life!!!\n\r",
+          FALSE, ch, 0, tmp_victim, TO_VICT);
       }
       WAIT_STATE(ch, 2 * PULSE_VIOLENCE);
     }
   }
 }
 
-void spell_heal_spray(byte level, struct char_data *ch, struct char_data *victim, struct obj_data *obj) {
-  struct room_data *rp;
-  struct char_data *tch;
+void spell_heal_spray(byte level, struct char_data* ch,
+  struct char_data* victim, struct obj_data* obj) {
+  struct room_data* rp;
+  struct char_data* tch;
 
   if (real_roomp(ch->in_room) == NULL) {
     return;
@@ -906,7 +973,8 @@ void spell_heal_spray(byte level, struct char_data *ch, struct char_data *victim
   }
 }
 
-void spell_full_heal(byte level, struct char_data *ch, struct char_data *victim, struct obj_data *obj) {
+void spell_full_heal(byte level, struct char_data* ch, struct char_data* victim,
+  struct obj_data* obj) {
   assert(victim);
 
   spell_cure_blind(level, ch, victim, obj);
@@ -921,7 +989,8 @@ void spell_full_heal(byte level, struct char_data *ch, struct char_data *victim,
   send_to_char("A hot rush runs through your body.\n\r", victim);
 }
 
-void spell_invisibility(byte level, struct char_data *ch, struct char_data *victim, struct obj_data *obj) {
+void spell_invisibility(byte level, struct char_data* ch,
+  struct char_data* victim, struct obj_data* obj) {
   struct affected_type af;
 
   assert((ch && obj) || victim);
@@ -947,8 +1016,9 @@ void spell_invisibility(byte level, struct char_data *ch, struct char_data *vict
   }
 }
 
-void spell_locate_object(byte level, struct char_data *ch, struct char_data *victim, char *obj) {
-  struct obj_data *i;
+void spell_locate_object(byte level, struct char_data* ch,
+  struct char_data* victim, char* obj) {
+  struct obj_data* i;
   char name[256];
   char buf[MAX_STRING_LENGTH];
   int j;
@@ -963,22 +1033,24 @@ void spell_locate_object(byte level, struct char_data *ch, struct char_data *vic
     if (isname(name, i->name)) {
       if (i->carried_by) {
         if (strlen(PERS(i->carried_by, ch)) > 0) {
-          sprintf(buf, "%s carried by %s.\n\r", i->short_description, PERS(i->carried_by, ch));
+          sprintf(buf, "%s carried by %s.\n\r", i->short_description,
+            PERS(i->carried_by, ch));
           send_to_char(buf, ch);
         }
       } else if (i->equipped_by) {
         if (strlen(PERS(i->equipped_by, ch)) > 0) {
-          sprintf(buf, "%s equipped by %s.\n\r", i->short_description, PERS(i->equipped_by, ch));
+          sprintf(buf, "%s equipped by %s.\n\r", i->short_description,
+            PERS(i->equipped_by, ch));
           send_to_char(buf, ch);
         }
       } else if (i->in_obj) {
-        sprintf(buf, "%s in %s.\n\r", i->short_description, i->in_obj->short_description);
+        sprintf(buf, "%s in %s.\n\r", i->short_description,
+          i->in_obj->short_description);
         send_to_char(buf, ch);
       } else {
-        sprintf(
-          buf, "%s in %s.\n\r", i->short_description,
-          (i->in_room == NOWHERE ? "use but uncertain." : real_roomp(i->in_room)->name)
-        );
+        sprintf(buf, "%s in %s.\n\r", i->short_description,
+          (i->in_room == NOWHERE ? "use but uncertain."
+                                 : real_roomp(i->in_room)->name));
         send_to_char(buf, ch);
         j--;
       }
@@ -990,7 +1062,8 @@ void spell_locate_object(byte level, struct char_data *ch, struct char_data *vic
     send_to_char("No such object.\n\r", ch);
 }
 
-void spell_poison(byte level, struct char_data *ch, struct char_data *victim, struct obj_data *obj) {
+void spell_poison(byte level, struct char_data* ch, struct char_data* victim,
+  struct obj_data* obj) {
   struct affected_type af;
 
   assert(victim || obj);
@@ -1042,19 +1115,22 @@ void spell_poison(byte level, struct char_data *ch, struct char_data *victim, st
     if (!victim->specials.fighting)
       set_fighting(victim, ch);
   } else { /* Object poison */
-    if ((obj->obj_flags.type_flag == ITEM_DRINKCON) || (obj->obj_flags.type_flag == ITEM_FOOD)) {
+    if ((obj->obj_flags.type_flag == ITEM_DRINKCON) ||
+        (obj->obj_flags.type_flag == ITEM_FOOD)) {
       obj->obj_flags.value[3] = 1;
     }
   }
 }
 
-void spell_protection_from_evil(byte level, struct char_data *ch, struct char_data *victim, struct obj_data *obj) {
+void spell_protection_from_evil(byte level, struct char_data* ch,
+  struct char_data* victim, struct obj_data* obj) {
   struct affected_type af;
 
   assert(victim);
 
   if (IS_EVIL(victim)) {
-    act("$N's evilness disallows use of this spell.", FALSE, ch, 0, victim, TO_CHAR);
+    act("$N's evilness disallows use of this spell.", FALSE, ch, 0, victim,
+      TO_CHAR);
     return;
   }
 
@@ -1069,7 +1145,8 @@ void spell_protection_from_evil(byte level, struct char_data *ch, struct char_da
   }
 }
 
-void spell_protection_from_good(byte level, struct char_data *ch, struct char_data *victim, struct obj_data *obj) {
+void spell_protection_from_good(byte level, struct char_data* ch,
+  struct char_data* victim, struct obj_data* obj) {
   struct affected_type af;
 
   assert(victim);
@@ -1090,7 +1167,8 @@ void spell_protection_from_good(byte level, struct char_data *ch, struct char_da
   }
 }
 
-void spell_remove_curse(byte level, struct char_data *ch, struct char_data *victim, struct obj_data *obj) {
+void spell_remove_curse(byte level, struct char_data* ch,
+  struct char_data* victim, struct obj_data* obj) {
   struct affected_type af;
 
   assert(ch && (victim || obj));
@@ -1109,24 +1187,28 @@ void spell_remove_curse(byte level, struct char_data *ch, struct char_data *vict
   }
 }
 
-void spell_remove_poison(byte level, struct char_data *ch, struct char_data *victim, struct obj_data *obj) {
+void spell_remove_poison(byte level, struct char_data* ch,
+  struct char_data* victim, struct obj_data* obj) {
   assert(ch && (victim || obj));
 
   if (victim) {
     if (affected_by_spell(victim, SPELL_POISON)) {
       affect_from_char(victim, SPELL_POISON);
-      act("A warm feeling runs through your body.", FALSE, victim, 0, 0, TO_CHAR);
+      act("A warm feeling runs through your body.", FALSE, victim, 0, 0,
+        TO_CHAR);
       act("$N looks better.", FALSE, ch, 0, victim, TO_ROOM);
     }
   } else {
-    if ((obj->obj_flags.type_flag == ITEM_DRINKCON) || (obj->obj_flags.type_flag == ITEM_FOOD)) {
+    if ((obj->obj_flags.type_flag == ITEM_DRINKCON) ||
+        (obj->obj_flags.type_flag == ITEM_FOOD)) {
       obj->obj_flags.value[3] = 0;
       act("The $p steams briefly.", FALSE, ch, obj, 0, TO_CHAR);
     }
   }
 }
 
-void spell_fireshield(byte level, struct char_data *ch, struct char_data *victim, struct obj_data *obj) {
+void spell_fireshield(byte level, struct char_data* ch,
+  struct char_data* victim, struct obj_data* obj) {
   struct affected_type af;
 
   if (!affected_by_spell(victim, SPELL_FIRESHIELD)) {
@@ -1142,10 +1224,12 @@ void spell_fireshield(byte level, struct char_data *ch, struct char_data *victim
   }
 }
 
-void spell_sanctuary(byte level, struct char_data *ch, struct char_data *victim, struct obj_data *obj) {
+void spell_sanctuary(byte level, struct char_data* ch, struct char_data* victim,
+  struct obj_data* obj) {
   struct affected_type af;
 
-  if ((!affected_by_spell(victim, SPELL_SANCTUARY)) && (!IS_AFFECTED(victim, AFF_SANCTUARY))) {
+  if ((!affected_by_spell(victim, SPELL_SANCTUARY)) &&
+      (!IS_AFFECTED(victim, AFF_SANCTUARY))) {
     act("$n is surrounded by a white aura.", TRUE, victim, 0, 0, TO_ROOM);
     act("You start glowing.", TRUE, victim, 0, 0, TO_CHAR);
 
@@ -1158,7 +1242,8 @@ void spell_sanctuary(byte level, struct char_data *ch, struct char_data *victim,
   }
 }
 
-void spell_silence(byte level, struct char_data *ch, struct char_data *victim, struct obj_data *obj) {
+void spell_silence(byte level, struct char_data* ch, struct char_data* victim,
+  struct obj_data* obj) {
   struct affected_type af;
 
   if (GetMaxLevel(victim) > GetMaxLevel(ch)) {
@@ -1167,7 +1252,8 @@ void spell_silence(byte level, struct char_data *ch, struct char_data *victim, s
     return;
   }
 
-  if ((!affected_by_spell(victim, SPELL_SILENCE)) && (!IS_AFFECTED(victim, AFF_SILENT))) {
+  if ((!affected_by_spell(victim, SPELL_SILENCE)) &&
+      (!IS_AFFECTED(victim, AFF_SILENT))) {
     act("$n has been muzzled!", TRUE, victim, 0, 0, TO_ROOM);
     act("You have been muzzled!", TRUE, victim, 0, 0, TO_CHAR);
 
@@ -1180,7 +1266,8 @@ void spell_silence(byte level, struct char_data *ch, struct char_data *victim, s
   }
 }
 
-void spell_sleep(byte level, struct char_data *ch, struct char_data *victim, struct obj_data *obj) {
+void spell_sleep(byte level, struct char_data* ch, struct char_data* victim,
+  struct obj_data* obj) {
   struct affected_type af;
 
   assert(victim);
@@ -1219,7 +1306,8 @@ void spell_sleep(byte level, struct char_data *ch, struct char_data *victim, str
   }
 }
 
-void spell_strength(byte level, struct char_data *ch, struct char_data *victim, struct obj_data *obj) {
+void spell_strength(byte level, struct char_data* ch, struct char_data* victim,
+  struct obj_data* obj) {
   struct affected_type af;
 
   assert(victim);
@@ -1250,15 +1338,17 @@ void spell_strength(byte level, struct char_data *ch, struct char_data *victim, 
   }
 }
 
-void spell_ventriloquate(byte level, struct char_data *ch, struct char_data *victim, struct obj_data *obj) {
+void spell_ventriloquate(byte level, struct char_data* ch,
+  struct char_data* victim, struct obj_data* obj) {
   /* Not possible!! No argument! */
 }
 
-void spell_word_of_recall(byte level, struct char_data *ch, struct char_data *victim, struct obj_data *obj) {
+void spell_word_of_recall(byte level, struct char_data* ch,
+  struct char_data* victim, struct obj_data* obj) {
   extern int top_of_world;
   int location, premove;
   bool found = FALSE;
-  struct room_data *rp;
+  struct room_data* rp;
 
   assert(victim);
 
@@ -1297,8 +1387,9 @@ void spell_word_of_recall(byte level, struct char_data *ch, struct char_data *vi
   update_pos(victim);
 }
 
-void spell_summon(byte level, struct char_data *ch, struct char_data *victim, struct obj_data *obj) {
-  struct char_data *tmp;
+void spell_summon(byte level, struct char_data* ch, struct char_data* victim,
+  struct obj_data* obj) {
+  struct char_data* tmp;
   int count;
   assert(ch && victim);
 
@@ -1314,34 +1405,42 @@ void spell_summon(byte level, struct char_data *ch, struct char_data *victim, st
 
   if (!IS_IMMORTAL(ch)) {
     if (IS_NPC(victim)) {
-      send_to_char("You hear a booming voice echo 'due to abuse, that is impossible.'\n\r", ch);
+      send_to_char(
+        "You hear a booming voice echo 'due to abuse, that is impossible.'\n\r",
+        ch);
       return;
     }
     if (IS_SET(real_roomp(victim->in_room)->room_flags, NO_SUM)) {
-      send_to_char("You cannot penetrate the magical defenses of that area.\n\r", ch);
+      send_to_char(
+        "You cannot penetrate the magical defenses of that area.\n\r", ch);
       return;
     }
 
     if (IS_SET(victim->specials.act, ACT_AGGRESSIVE)) {
-      send_to_char("Sorry, due to problems, you can no longer summon aggressives.\n\r", ch);
+      send_to_char(
+        "Sorry, due to problems, you can no longer summon aggressives.\n\r",
+        ch);
       return;
     }
     if (IS_SET(real_roomp(victim->in_room)->room_flags, ARENA)) {
-      send_to_char("That person is fighting in the arena. NO SUMMONING!\n\r", ch);
+      send_to_char("That person is fighting in the arena. NO SUMMONING!\n\r",
+        ch);
       return;
     }
   }
   RawSummon(victim, ch);
 }
 
-void RawSummon(struct char_data *v, struct char_data *c) {
+void RawSummon(struct char_data* v, struct char_data* c) {
   sh_int target;
-  struct char_data *tmp;
+  struct char_data* tmp;
   struct obj_data *o, *n;
   int j, i;
 
-  if (IS_NPC(v) && (!IS_SET(v->specials.act, ACT_POLYSELF)) && (GetMaxLevel(v) > GetMaxLevel(c) + 3)) {
-    act("$N struggles, and all of $S items are destroyed!", TRUE, c, 0, v, TO_CHAR);
+  if (IS_NPC(v) && (!IS_SET(v->specials.act, ACT_POLYSELF)) &&
+      (GetMaxLevel(v) > GetMaxLevel(c) + 3)) {
+    act("$N struggles, and all of $S items are destroyed!", TRUE, c, 0, v,
+      TO_CHAR);
     /* remove objects from victim */
     for (j = 0; j < MAX_WEAR; j++) {
       if (v->equipment[j]) {
@@ -1369,9 +1468,9 @@ void RawSummon(struct char_data *v, struct char_data *c) {
   do_look(v, "", 15);
 
   for (tmp = real_roomp(v->in_room)->people; tmp; tmp = tmp->next_in_room) {
-    if (IS_NPC(tmp) && !(IS_SET(tmp->specials.act,ACT_POLYSELF)) &&
-   ((IS_SET(tmp->specials.act, ACT_AGGRESSIVE) ||
-    (IS_SET(tmp->specials.act, ACT_META_AGG))))) {
+    if (IS_NPC(tmp) && !(IS_SET(tmp->specials.act, ACT_POLYSELF)) &&
+        ((IS_SET(tmp->specials.act, ACT_AGGRESSIVE) ||
+          (IS_SET(tmp->specials.act, ACT_META_AGG))))) {
       act("$n growls at you", 1, tmp, 0, c, TO_VICT);
       act("$n growls at $N", 1, tmp, 0, c, TO_NOTVICT);
       i = number(0, 6);
@@ -1384,7 +1483,8 @@ void RawSummon(struct char_data *v, struct char_data *c) {
   }
 }
 
-void spell_charm_person(byte level, struct char_data *ch, struct char_data *victim, struct obj_data *obj) {
+void spell_charm_person(byte level, struct char_data* ch,
+  struct char_data* victim, struct obj_data* obj) {
   struct affected_type af;
 
   void add_follower(struct char_data * ch, struct char_data * leader);
@@ -1458,7 +1558,8 @@ void spell_charm_person(byte level, struct char_data *ch, struct char_data *vict
   }
 }
 
-void spell_control_undead(byte level, struct char_data *ch, struct char_data *victim, struct obj_data *obj) {
+void spell_control_undead(byte level, struct char_data* ch,
+  struct char_data* victim, struct obj_data* obj) {
   struct affected_type af;
 
   void add_follower(struct char_data * ch, struct char_data * leader);
@@ -1529,7 +1630,8 @@ void spell_control_undead(byte level, struct char_data *ch, struct char_data *vi
   }
 }
 
-void spell_charm_monster(byte level, struct char_data *ch, struct char_data *victim, struct obj_data *obj) {
+void spell_charm_monster(byte level, struct char_data* ch,
+  struct char_data* victim, struct obj_data* obj) {
   struct affected_type af;
 
   void add_follower(struct char_data * ch, struct char_data * leader);
@@ -1597,7 +1699,8 @@ void spell_charm_monster(byte level, struct char_data *ch, struct char_data *vic
   }
 }
 
-void spell_sense_life(byte level, struct char_data *ch, struct char_data *victim, struct obj_data *obj) {
+void spell_sense_life(byte level, struct char_data* ch,
+  struct char_data* victim, struct obj_data* obj) {
   struct affected_type af;
 
   assert(victim);
@@ -1618,9 +1721,10 @@ void spell_sense_life(byte level, struct char_data *ch, struct char_data *victim
  *                     Not cast-able spells                                  *
  * ************************************************************************* */
 
-void sprintbit(unsigned long, char *[], char *);
+void sprintbit(unsigned long, char*[], char*);
 
-void spell_identify(byte level, struct char_data *ch, struct char_data *victim, struct obj_data *obj) {
+void spell_identify(byte level, struct char_data* ch, struct char_data* victim,
+  struct obj_data* obj) {
   char buf[256], buf2[256];
   int i;
   bool found;
@@ -1630,13 +1734,13 @@ void spell_identify(byte level, struct char_data *ch, struct char_data *victim, 
   struct time_info_data age(struct char_data * ch);
 
   /* Spell Names */
-  extern char *spells[];
+  extern char* spells[];
 
   /* For Objects */
-  extern char *item_types[];
-  extern char *extra_bits[];
-  extern char *apply_types[];
-  extern char *affected_bits[];
+  extern char* item_types[];
+  extern char* extra_bits[];
+  extern char* apply_types[];
+  extern char* affected_bits[];
 
   assert(ch && (obj || victim));
 
@@ -1661,7 +1765,8 @@ void spell_identify(byte level, struct char_data *ch, struct char_data *victim, 
     strcat(buf, "\n\r");
     send_to_char(buf, ch);
 
-    sprintf(buf, "Item is made out of %s.    ", material_types[obj->obj_flags.material_points]);
+    sprintf(buf, "Item is made out of %s.    ",
+      material_types[obj->obj_flags.material_points]);
     send_to_char(buf, ch);
 
     send_to_char("Item will be ", ch);
@@ -1676,10 +1781,10 @@ void spell_identify(byte level, struct char_data *ch, struct char_data *victim, 
     else if (obj->obj_flags.decay_time < 100)
       send_to_char("gone in no time.\n\r", ch);
 
-    sprintf(
-      buf, "Volume: %d, Weight: %d, Value: %d, Rent cost: %d  %s\n\r", obj->obj_flags.volume, obj->obj_flags.weight,
-      obj->obj_flags.cost, obj->obj_flags.cost_per_day, obj->obj_flags.cost_per_day > LIM_ITEM_COST_MIN ? "[RARE]" : " "
-    );
+    sprintf(buf, "Volume: %d, Weight: %d, Value: %d, Rent cost: %d  %s\n\r",
+      obj->obj_flags.volume, obj->obj_flags.weight, obj->obj_flags.cost,
+      obj->obj_flags.cost_per_day,
+      obj->obj_flags.cost_per_day > LIM_ITEM_COST_MIN ? "[RARE]" : " ");
     send_to_char(buf, ch);
 
     switch (GET_ITEM_TYPE(obj)) {
@@ -1706,7 +1811,8 @@ void spell_identify(byte level, struct char_data *ch, struct char_data *victim, 
 
       case ITEM_WAND:
       case ITEM_STAFF:
-        sprintf(buf, "Has %d charges, with %d charges left.\n\r", obj->obj_flags.value[1], obj->obj_flags.value[2]);
+        sprintf(buf, "Has %d charges, with %d charges left.\n\r",
+          obj->obj_flags.value[1], obj->obj_flags.value[2]);
         send_to_char(buf, ch);
 
         sprintf(buf, "Level %d spell of:\n\r", obj->obj_flags.value[0]);
@@ -1720,7 +1826,8 @@ void spell_identify(byte level, struct char_data *ch, struct char_data *victim, 
         break;
 
       case ITEM_WEAPON:
-        av_dam = obj->obj_flags.value[1] * (obj->obj_flags.value[2] / 2.0 + 0.5);
+        av_dam =
+          obj->obj_flags.value[1] * (obj->obj_flags.value[2] / 2.0 + 0.5);
         sprintf(buf, "The weapon does %s\n\r", GET_WEAPON_DAMAGE(av_dam));
         send_to_char(buf, ch);
         break;
@@ -1728,7 +1835,8 @@ void spell_identify(byte level, struct char_data *ch, struct char_data *victim, 
       case ITEM_FIREWEAPON:
         sprintf(buf, "Bullet number is %d\n\r", obj->obj_flags.value[0]);
         send_to_char(buf, ch);
-        sprintf(buf, "Damage Dice is %dD%d\n\r", obj->obj_flags.value[1], obj->obj_flags.value[2]);
+        sprintf(buf, "Damage Dice is %dD%d\n\r", obj->obj_flags.value[1],
+          obj->obj_flags.value[2]);
         break;
 
       case ITEM_ARMOR:
@@ -1740,14 +1848,16 @@ void spell_identify(byte level, struct char_data *ch, struct char_data *victim, 
     found = FALSE;
 
     for (i = 0; i < MAX_OBJ_AFFECT; i++) {
-      if ((obj->affected[i].location != APPLY_NONE) && (obj->affected[i].modifier != 0)) {
+      if ((obj->affected[i].location != APPLY_NONE) &&
+          (obj->affected[i].modifier != 0)) {
         if (!found) {
           send_to_char("Can affect you as :\n\r", ch);
           found = TRUE;
         }
 
         sprinttype(obj->affected[i].location, apply_types, buf2);
-        sprintf(buf, "    Affects : %s By %d\n\r", buf2, obj->affected[i].modifier);
+        sprintf(buf, "    Affects : %s By %d\n\r", buf2,
+          obj->affected[i].modifier);
         send_to_char(buf, ch);
       }
     }
@@ -1755,16 +1865,17 @@ void spell_identify(byte level, struct char_data *ch, struct char_data *victim, 
   } else { /* victim */
 
     if (!IS_NPC(victim)) {
-      sprintf(
-        buf, "%d Years,  %d Months,  %d Days,  %d Hours old.\n\r", age(victim).year, age(victim).month, age(victim).day,
-        age(victim).hours
-      );
+      sprintf(buf, "%d Years,  %d Months,  %d Days,  %d Hours old.\n\r",
+        age(victim).year, age(victim).month, age(victim).day,
+        age(victim).hours);
       send_to_char(buf, ch);
 
-      sprintf(buf, "Height %dcm  Weight %dpounds \n\r", GET_HEIGHT(victim), GET_WEIGHT(victim));
+      sprintf(buf, "Height %dcm  Weight %dpounds \n\r", GET_HEIGHT(victim),
+        GET_WEIGHT(victim));
       send_to_char(buf, ch);
 
-      sprintf(buf, "%s is %s\n\r", GET_NAME(victim), ac_for_score(GET_AC(victim)));
+      sprintf(buf, "%s is %s\n\r", GET_NAME(victim),
+        ac_for_score(GET_AC(victim)));
       send_to_char(buf, ch);
 
       /*
@@ -1787,10 +1898,11 @@ void spell_identify(byte level, struct char_data *ch, struct char_data *victim, 
  *                     NPC spells..                                          *
  * ************************************************************************* */
 
-void spell_fire_breath(byte level, struct char_data *ch, struct char_data *victim, struct obj_data *obj) {
+void spell_fire_breath(byte level, struct char_data* ch,
+  struct char_data* victim, struct obj_data* obj) {
   int dam;
   int hpch;
-  struct obj_data *burn;
+  struct obj_data* burn;
 
   assert(victim && ch);
   assert((level >= 1) && (level <= ABS_MAX_LVL));
@@ -1809,8 +1921,10 @@ void spell_fire_breath(byte level, struct char_data *ch, struct char_data *victi
   */
 
   for (burn = victim->carrying;
-       burn && (burn->obj_flags.type_flag != ITEM_SCROLL) && (burn->obj_flags.type_flag != ITEM_WAND) &&
-       (burn->obj_flags.type_flag != ITEM_STAFF) && (burn->obj_flags.type_flag != ITEM_BOAT);
+       burn && (burn->obj_flags.type_flag != ITEM_SCROLL) &&
+       (burn->obj_flags.type_flag != ITEM_WAND) &&
+       (burn->obj_flags.type_flag != ITEM_STAFF) &&
+       (burn->obj_flags.type_flag != ITEM_BOAT);
        burn = burn->next_content) {
     if (!saves_spell(victim, SAVING_BREATH)) {
       if (burn) {
@@ -1821,10 +1935,11 @@ void spell_fire_breath(byte level, struct char_data *ch, struct char_data *victi
   }
 }
 
-void spell_frost_breath(byte level, struct char_data *ch, struct char_data *victim, struct obj_data *obj) {
+void spell_frost_breath(byte level, struct char_data* ch,
+  struct char_data* victim, struct obj_data* obj) {
   int dam;
   int hpch;
-  struct obj_data *frozen;
+  struct obj_data* frozen;
 
   assert(victim && ch);
   assert((level >= 1) && (level <= ABS_MAX_LVL));
@@ -1839,7 +1954,8 @@ void spell_frost_breath(byte level, struct char_data *ch, struct char_data *vict
   /* And now for the damage on inventory */
 
   for (frozen = victim->carrying;
-       frozen && (frozen->obj_flags.type_flag != ITEM_DRINKCON) && (frozen->obj_flags.type_flag != ITEM_ARMOR) &&
+       frozen && (frozen->obj_flags.type_flag != ITEM_DRINKCON) &&
+       (frozen->obj_flags.type_flag != ITEM_ARMOR) &&
        (frozen->obj_flags.type_flag != ITEM_POTION);
        frozen = frozen->next_content) {
     if (!saves_spell(victim, SAVING_BREATH)) {
@@ -1851,7 +1967,8 @@ void spell_frost_breath(byte level, struct char_data *ch, struct char_data *vict
   }
 }
 
-void spell_acid_breath(byte level, struct char_data *ch, struct char_data *victim, struct obj_data *obj) {
+void spell_acid_breath(byte level, struct char_data* ch,
+  struct char_data* victim, struct obj_data* obj) {
   int dam;
   int hpch;
   int damaged;
@@ -1869,7 +1986,8 @@ void spell_acid_breath(byte level, struct char_data *ch, struct char_data *victi
   MissileDamage(ch, victim, dam, SPELL_ACID_BREATH);
 }
 
-void spell_gas_breath(byte level, struct char_data *ch, struct char_data *victim, struct obj_data *obj) {
+void spell_gas_breath(byte level, struct char_data* ch,
+  struct char_data* victim, struct obj_data* obj) {
   int dam;
   int hpch;
 
@@ -1884,7 +2002,8 @@ void spell_gas_breath(byte level, struct char_data *ch, struct char_data *victim
   MissileDamage(ch, victim, dam, SPELL_GAS_BREATH);
 }
 
-void spell_lightning_breath(byte level, struct char_data *ch, struct char_data *victim, struct obj_data *obj) {
+void spell_lightning_breath(byte level, struct char_data* ch,
+  struct char_data* victim, struct obj_data* obj) {
   int dam;
   int hpch;
 
@@ -1908,15 +2027,19 @@ void spell_lightning_breath(byte level, struct char_data *ch, struct char_data *
 #define IRON_COMPONENT 28
 #define DIAMOND_COMPONENT 29
 
-void spell_create_golem(byte level, struct char_data *ch, struct char_data *victim, struct obj_data *obj) {
+void spell_create_golem(byte level, struct char_data* ch,
+  struct char_data* victim, struct obj_data* obj) {
   int control, power, nc, modifier = 0, target;
   struct affected_type af;
-  struct char_data *golem;
+  struct char_data* golem;
 
   if (!ch)
     return;
 
-  if (check_peaceful(ch, "The peaceful force protecting this room breaks your concentration!\n\r") || !enforce_verbal(ch) || !perform_gestural(ch)) {
+  if (check_peaceful(ch,
+        "The peaceful force protecting this room breaks your "
+        "concentration!\n\r") ||
+      !enforce_verbal(ch) || !perform_gestural(ch)) {
     send_to_char("The spell has failed!\n\r", ch);
     return;
   }
@@ -1935,7 +2058,8 @@ void spell_create_golem(byte level, struct char_data *ch, struct char_data *vict
     target = DIAMOND_GOLEM;
   } else {
     send_to_char("You have nothing to create the golem with!\n\r", ch);
-    act("$n looks around stupidly, as if trying to find something.", TRUE, ch, 0, golem, TO_ROOM);
+    act("$n looks around stupidly, as if trying to find something.", TRUE, ch,
+      0, golem, TO_ROOM);
     return;
   }
 
@@ -1945,16 +2069,18 @@ void spell_create_golem(byte level, struct char_data *ch, struct char_data *vict
     return;
   }
 
-  GET_HIT(golem) = golem->points.max_hit += power; /* quality of component figures in */
+  GET_HIT(golem) = golem->points.max_hit +=
+    power; /* quality of component figures in */
   golem->points.exp = 0;
 
   char_to_room(golem, ch->in_room);
   act("$n arrives in a puff of blue smoke!", TRUE, golem, 0, ch, TO_ROOM);
 
   /* spell requires high INT and WIS  */
-  modifier += (GET_WIS(ch) > 17) + (GET_WIS(ch) > 16) + (GET_WIS(ch) > 15) + -(GET_WIS(ch) < 14) + -(GET_WIS(ch) < 13) +
-              -(GET_WIS(ch) < 12) + (GET_INT(ch) > 17) + (GET_INT(ch) > 16) + (GET_INT(ch) > 15) + -(GET_INT(ch) < 14) +
-              -(GET_INT(ch) < 13) + -(GET_INT(ch) < 12);
+  modifier += (GET_WIS(ch) > 17) + (GET_WIS(ch) > 16) + (GET_WIS(ch) > 15) +
+              -(GET_WIS(ch) < 14) + -(GET_WIS(ch) < 13) + -(GET_WIS(ch) < 12) +
+              (GET_INT(ch) > 17) + (GET_INT(ch) > 16) + (GET_INT(ch) > 15) +
+              -(GET_INT(ch) < 14) + -(GET_INT(ch) < 13) + -(GET_INT(ch) < 12);
 
   if ((nc = num_classes(ch)) == 2) {
     modifier -= 2; /* penalty for dual-class */
@@ -1965,8 +2091,10 @@ void spell_create_golem(byte level, struct char_data *ch, struct char_data *vict
   }
 
   if ((control = task_check(ch, control, modifier)) == CRITICAL_FAILURE) {
-    act("$n loses control of the magic he has unleashed!", TRUE, ch, 0, golem, TO_ROOM);
-    act("You lose control of the magic you have unleased!", TRUE, ch, 0, golem, TO_CHAR);
+    act("$n loses control of the magic he has unleashed!", TRUE, ch, 0, golem,
+      TO_ROOM);
+    act("You lose control of the magic you have unleased!", TRUE, ch, 0, golem,
+      TO_CHAR);
     hit(golem, ch, TYPE_UNDEFINED);
   } else { /* golem has permanent charm */
     if (golem->master)

@@ -27,10 +27,10 @@
 #include "utils.h"
 
 #define COMMANDO(number, min_pos, pointer, min_level) \
-  { \
-    cmd_info[(number)].command_pointer = (pointer); \
-    cmd_info[(number)].minimum_position = (min_pos); \
-    cmd_info[(number)].minimum_level = (min_level); \
+  {                                                   \
+    cmd_info[(number)].command_pointer = (pointer);   \
+    cmd_info[(number)].minimum_position = (min_pos);  \
+    cmd_info[(number)].minimum_level = (min_level);   \
   }
 
 #define NOT !
@@ -40,21 +40,21 @@
 #define STATE(d) ((d)->connected)
 #define MAX_CMD_LIST 400
 
-extern char *crypt(const char *, const char *);
+extern char* crypt(const char*, const char*);
 extern const struct title_type titles[8][ABS_MAX_LVL];
 extern char motd[MAX_STRING_LENGTH];
-extern struct char_data *character_list;
-extern struct player_index_element *player_table;
+extern struct char_data* character_list;
+extern struct player_index_element* player_table;
 extern int top_of_p_table;
 extern char ansi[MAX_STRING_LENGTH];
-extern struct index_data *mob_index;
-extern struct index_data *obj_index;
+extern struct index_data* mob_index;
+extern struct index_data* obj_index;
 #if HASH
 extern struct hash_header room_db;
 #else
-extern struct room_data *room_db;
+extern struct room_data* room_db;
 #endif
-extern struct char_data *board_kludge_char;
+extern struct char_data* board_kludge_char;
 struct command_info cmd_info[MAX_CMD_LIST];
 
 char echo_on[] = {IAC, WONT, TELOPT_ECHO, '\r', '\n', '\0'};
@@ -65,475 +65,304 @@ int plr_tick_count = 0;
 
 /* external fcntls */
 
-void set_title(struct char_data *ch);
-void init_char(struct char_data *ch);
-void store_to_char(struct char_file_u *st, struct char_data *ch);
-int create_entry(char *name);
+void set_title(struct char_data* ch);
+void init_char(struct char_data* ch);
+void store_to_char(struct char_file_u* st, struct char_data* ch);
+int create_entry(char* name);
 /* int special(struct char_data *ch, int cmd, char *arg);
  */
-void vlog(char *str);
+void vlog(char* str);
 
-void do_move(struct char_data *ch, char *argument, int cmd);
-void do_look(struct char_data *ch, char *argument, int cmd);
-void do_read(struct char_data *ch, char *argument, int cmd);
-void do_say(struct char_data *ch, char *argument, int cmd);
-void do_exit(struct char_data *ch, char *argument, int cmd);
-void do_snoop(struct char_data *ch, char *argument, int cmd);
-void do_insult(struct char_data *ch, char *argument, int cmd);
-void do_quit(struct char_data *ch, char *argument, int cmd);
-void do_qui(struct char_data *ch, char *argument, int cmd);
-void do_help(struct char_data *ch, char *argument, int cmd);
-void do_who(struct char_data *ch, char *argument, int cmd);
-void do_whozone(struct char_data *ch, char *argument, int cmd);
-void do_emote(struct char_data *ch, char *argument, int cmd);
-void do_echo(struct char_data *ch, char *argument, int cmd);
-void do_trans(struct char_data *ch, char *argument, int cmd);
-void do_kill(struct char_data *ch, char *argument, int cmd);
-void do_stand(struct char_data *ch, char *argument, int cmd);
-void do_sit(struct char_data *ch, char *argument, int cmd);
-void do_rest(struct char_data *ch, char *argument, int cmd);
-void do_sleep(struct char_data *ch, char *argument, int cmd);
-void do_wake(struct char_data *ch, char *argument, int cmd);
-void do_force(struct char_data *ch, char *argument, int cmd);
-void do_get(struct char_data *ch, char *argument, int cmd);
-void do_drop(struct char_data *ch, char *argument, int cmd);
-void do_news(struct char_data *ch, char *argument, int cmd);
-void do_wiznews(struct char_data *ch, char *argument, int cmd); /* SG */
-void do_atlas(struct char_data *ch, char *argument, int cmd);
-void do_monitor(struct char_data *ch, char *argument, int cmd);
-void do_score(struct char_data *ch, char *argument, int cmd);
-void do_loglist(struct char_data *ch, char *argument, int cmd);
-void do_checklog(struct char_data *ch, char *argument, int cmd);
-void do_deathcheck(struct char_data *ch, char *argument, int cmd);
-void do_inventory(struct char_data *ch, char *argument, int cmd);
-void do_equipment(struct char_data *ch, char *argument, int cmd);
-void do_shout(struct char_data *ch, char *argument, int cmd);
-void do_not_here(struct char_data *ch, char *argument, int cmd);
-void do_tell(struct char_data *ch, char *argument, int cmd);
-void do_wear(struct char_data *ch, char *argument, int cmd);
-void do_wield(struct char_data *ch, char *argument, int cmd);
-void do_grab(struct char_data *ch, char *argument, int cmd);
-void do_remove(struct char_data *ch, char *argument, int cmd);
-void do_put(struct char_data *ch, char *argument, int cmd);
-void do_shutdown(struct char_data *ch, char *argument, int cmd);
-void do_save(struct char_data *ch, char *argument, int cmd);
-void do_hit(struct char_data *ch, char *argument, int cmd);
-void do_string(struct char_data *ch, char *arg, int cmd);
-void do_give(struct char_data *ch, char *arg, int cmd);
-void do_stat(struct char_data *ch, char *arg, int cmd);
-void do_guard(struct char_data *ch, char *arg, int cmd);
-void do_time(struct char_data *ch, char *arg, int cmd);
-void do_weather(struct char_data *ch, char *arg, int cmd);
-void do_load(struct char_data *ch, char *arg, int cmd);
-void do_purge(struct char_data *ch, char *arg, int cmd);
-void do_shutdow(struct char_data *ch, char *arg, int cmd);
-void do_idea(struct char_data *ch, char *arg, int cmd);
-void do_typo(struct char_data *ch, char *arg, int cmd);
-void do_bug(struct char_data *ch, char *arg, int cmd);
-void do_whisper(struct char_data *ch, char *arg, int cmd);
-void do_cast(struct char_data *ch, char *arg, int cmd);
-void do_at(struct char_data *ch, char *arg, int cmd);
-void do_goto(struct char_data *ch, char *arg, int cmd);
-void do_ask(struct char_data *ch, char *arg, int cmd);
-void do_drink(struct char_data *ch, char *arg, int cmd);
-void do_eat(struct char_data *ch, char *arg, int cmd);
-void do_pour(struct char_data *ch, char *arg, int cmd);
-void do_sip(struct char_data *ch, char *arg, int cmd);
-void do_taste(struct char_data *ch, char *arg, int cmd);
-void do_order(struct char_data *ch, char *arg, int cmd);
-void do_follow(struct char_data *ch, char *arg, int cmd);
-void do_rent(struct char_data *ch, char *arg, int cmd);
-void do_bload(struct char_data *ch, char *arg, int cmd);
-void do_advance(struct char_data *ch, char *arg, int cmd);
-void do_close(struct char_data *ch, char *arg, int cmd);
-void do_open(struct char_data *ch, char *arg, int cmd);
-void do_lock(struct char_data *ch, char *arg, int cmd);
-void do_unlock(struct char_data *ch, char *arg, int cmd);
-void do_exits(struct char_data *ch, char *arg, int cmd);
-void do_enter(struct char_data *ch, char *arg, int cmd);
-void do_leave(struct char_data *ch, char *arg, int cmd);
-void do_write(struct char_data *ch, char *arg, int cmd);
-void do_flee(struct char_data *ch, char *arg, int cmd);
-void do_sneak(struct char_data *ch, char *arg, int cmd);
-void do_hide(struct char_data *ch, char *arg, int cmd);
-void do_backstab(struct char_data *ch, char *arg, int cmd);
-void do_pick(struct char_data *ch, char *arg, int cmd);
-void do_steal(struct char_data *ch, char *arg, int cmd);
-void do_bash(struct char_data *ch, char *arg, int cmd);
-void do_rescue(struct char_data *ch, char *arg, int cmd);
-void do_kick(struct char_data *ch, char *arg, int cmd);
-void do_examine(struct char_data *ch, char *arg, int cmd);
-void do_info(struct char_data *ch, char *arg, int cmd);
-void do_users(struct char_data *ch, char *arg, int cmd);
-void do_where(struct char_data *ch, char *arg, int cmd);
-void do_levels(struct char_data *ch, char *arg, int cmd);
-void do_reroll(struct char_data *ch, char *arg, int cmd);
-void do_pray(struct char_data *ch, char *arg, int cmd);
-void do_brief(struct char_data *ch, char *arg, int cmd);
-void do_cls(struct char_data *ch, char *arg, int cmd);
-void do_bamfin(struct char_data *ch, char *arg, int cmd);
-void do_bamfout(struct char_data *ch, char *arg, int cmd);
-void do_terminal(struct char_data *ch, char *arg, int cmd);
-void do_prompt(struct char_data *ch, char *arg, int cmd);
-void do_glance(struct char_data *ch, char *arg, int cmd);
-void do_wizlist(struct char_data *ch, char *arg, int cmd);
-void do_consider(struct char_data *ch, char *arg, int cmd);
-void do_group(struct char_data *ch, char *arg, int cmd);
-void do_restore(struct char_data *ch, char *arg, int cmd);
-void do_return(struct char_data *ch, char *argument, int cmd);
-void do_switch(struct char_data *ch, char *argument, int cmd);
-void do_quaff(struct char_data *ch, char *argument, int cmd);
-void do_recite(struct char_data *ch, char *argument, int cmd);
-void do_use(struct char_data *ch, char *argument, int cmd);
-void do_pose(struct char_data *ch, char *argument, int cmd);
-void do_noshout(struct char_data *ch, char *argument, int cmd);
-void do_plr_noshout(struct char_data *ch, char *argument, int cmd);
-void do_wizhelp(struct char_data *ch, char *argument, int cmd);
-void do_credits(struct char_data *ch, char *argument, int cmd);
-void do_compact(struct char_data *ch, char *argument, int cmd);
-void do_wimpy(struct char_data *ch, char *argument, int cmd); /* jdb -8-16 */
-void do_commune(struct char_data *ch, char *argument, int cmd); /* jdb - 9-1 */
-void do_nohassle(struct char_data *ch, char *argument, int cmd); /* jdb 9-6 */
-void do_system(struct char_data *ch, char *argument, int cmd); /* jdb 9-16 */
-void do_pull(struct char_data *ch, char *argument, int cmd); /* jdb 9-16 */
-void do_stealth(struct char_data *ch, char *argument, int cmd); /* jdb 9-17 */
-void do_edit(struct char_data *ch, char *arg, int cmd); /* jdb 9-29 */
-void do_set(struct char_data *ch, char *arg, int cmd); /* jdb 9-29 */
-void do_rsave(struct char_data *ch, char *arg, int cmd); /* jdb 10-5 */
-void do_rload(struct char_data *ch, char *arg, int cmd); /* jdb 10-5 */
-void do_wizlock(struct char_data *ch, char *arg, int cmd); /* jdb 10-15 */
-void do_highfive(struct char_data *ch, char *arg, int cmd); /* jdb 10-30 */
-void do_title(struct char_data *ch, char *arg, int cmd); /* jdb 11-3 */
-void do_uptime(struct char_data *ch, char *arg, int cmd); /* jdb 12-3 */
-void do_instazone(struct char_data *ch, char *arg, int cmd); /* jdb 12-3 */
-void do_disarm(struct char_data *ch, char *arg, int cmd); /* jdb 12-3 */
-void do_junk(struct char_data *ch, char *arg, int cmd); /* jdb 12-17 */
-void do_gain(struct char_data *ch, char *arg, int cmd); /* jdb 1-19 */
-void do_passwd(struct char_data *ch, char *arg, int cmd); /* jdb 2-6 */
-void do_fill(struct char_data *ch, char *arg, int cmd); /* jdb 2-9 */
-void do_imptest(struct char_data *ch, char *arg, int cmd); /* jdb 2-13 */
-void do_silence(struct char_data *ch, char *arg, int cmd); /* smg 4-26 */
-void do_teams(struct char_data *ch, char *arg, int cmd); /* smg 5-26 */
-void do_auth(struct char_data *ch, char *arg, int cmd); /* jdb 3-1 */
-void do_shoot(struct char_data *ch, char *arg, int cmd); /* jdb 3-8 */
-void do_swim(struct char_data *ch, char *arg, int cmd); /* jdb 8-4 */
-void do_reload(struct char_data *ch, char *arg, int cmd); /* jhh 7-24 */
-void do_oset(struct char_data *ch, char *arg, int cmd); /* jfr2 10-15*/
-void do_bet(struct char_data *ch, char *arg, int cmd); /* jhh 8-22 */
-void do_stay(struct char_data *ch, char *arg, int cmd); /* jhh 8-22 */
-void do_peek(struct char_data *ch, char *arg, int cmd); /* jhh 8-22 */
-void do_color(struct char_data *ch, char *arg, int cmd); /*jfr 8-28 */
-void do_search(struct char_data *ch, char *arg, int cmd); /* jfr2 1-16-93*/
-void do_send(struct char_data *ch, char *arg, int cmd); /* jfr2 12-30 */
-void do_spy(struct char_data *ch, char *arg, int cmd); /*jfr2 1-23-93*/
-void do_sign(struct char_data *ch, char *arg, int cmd);
-void do_play(struct char_data *ch, char *arg, int cmd); /*jfr2 2-11-93 */
-void do_flag(struct char_data *ch, char *arg, int cmd); /*jfr2 1-30-93 */
-void do_link(struct char_data *ch, char *arg, int cmd); /* jfr2 1-24-93 */
-void do_doorbash(struct char_data *ch, char *arg, int cmd);
-void do_springleap(struct char_data *ch, char *arg, int cmd);
-void do_lay_hands(struct char_data *ch, char *arg, int cmd);
-void do_quivering_palm(struct char_data *ch, char *arg, int cmd);
-void do_feign_death(struct char_data *ch, char *arg, int cmd);
-void do_first_aid(struct char_data *ch, char *arg, int cmd);
-void do_channel(struct char_data *ch, char *arg, int cmd); /*jfr2 12-30 */
-void do_headbutt(struct char_data *ch, char *arg, int cmd); /*jfr2 9-21 */
-void do_log(struct char_data *ch, char *arg, int cmd); /*jfr2 12/29/92 */
-void do_subterfuge(struct char_data *ch, char *arg, int cmd); /* jfr2 10-3 */
-void do_throw(struct char_data *ch, char *arg, int cmd); /* jfr2 10-4 */
-void do_scribe(struct char_data *ch, char *arg, int cmd); /* jfr2 10-4 */
-void do_brew(struct char_data *ch, char *arg, int cmd); /* jfr2 10-15*/
-void do_grapple(struct char_data *ch, char *arg, int cmd); /*jfr2 10-16*/
+void do_move(struct char_data* ch, char* argument, int cmd);
+void do_look(struct char_data* ch, char* argument, int cmd);
+void do_read(struct char_data* ch, char* argument, int cmd);
+void do_say(struct char_data* ch, char* argument, int cmd);
+void do_exit(struct char_data* ch, char* argument, int cmd);
+void do_snoop(struct char_data* ch, char* argument, int cmd);
+void do_insult(struct char_data* ch, char* argument, int cmd);
+void do_quit(struct char_data* ch, char* argument, int cmd);
+void do_qui(struct char_data* ch, char* argument, int cmd);
+void do_help(struct char_data* ch, char* argument, int cmd);
+void do_who(struct char_data* ch, char* argument, int cmd);
+void do_whozone(struct char_data* ch, char* argument, int cmd);
+void do_emote(struct char_data* ch, char* argument, int cmd);
+void do_echo(struct char_data* ch, char* argument, int cmd);
+void do_trans(struct char_data* ch, char* argument, int cmd);
+void do_kill(struct char_data* ch, char* argument, int cmd);
+void do_stand(struct char_data* ch, char* argument, int cmd);
+void do_sit(struct char_data* ch, char* argument, int cmd);
+void do_rest(struct char_data* ch, char* argument, int cmd);
+void do_sleep(struct char_data* ch, char* argument, int cmd);
+void do_wake(struct char_data* ch, char* argument, int cmd);
+void do_force(struct char_data* ch, char* argument, int cmd);
+void do_get(struct char_data* ch, char* argument, int cmd);
+void do_drop(struct char_data* ch, char* argument, int cmd);
+void do_news(struct char_data* ch, char* argument, int cmd);
+void do_wiznews(struct char_data* ch, char* argument, int cmd); /* SG */
+void do_atlas(struct char_data* ch, char* argument, int cmd);
+void do_monitor(struct char_data* ch, char* argument, int cmd);
+void do_score(struct char_data* ch, char* argument, int cmd);
+void do_loglist(struct char_data* ch, char* argument, int cmd);
+void do_checklog(struct char_data* ch, char* argument, int cmd);
+void do_deathcheck(struct char_data* ch, char* argument, int cmd);
+void do_inventory(struct char_data* ch, char* argument, int cmd);
+void do_equipment(struct char_data* ch, char* argument, int cmd);
+void do_shout(struct char_data* ch, char* argument, int cmd);
+void do_not_here(struct char_data* ch, char* argument, int cmd);
+void do_tell(struct char_data* ch, char* argument, int cmd);
+void do_wear(struct char_data* ch, char* argument, int cmd);
+void do_wield(struct char_data* ch, char* argument, int cmd);
+void do_grab(struct char_data* ch, char* argument, int cmd);
+void do_remove(struct char_data* ch, char* argument, int cmd);
+void do_put(struct char_data* ch, char* argument, int cmd);
+void do_shutdown(struct char_data* ch, char* argument, int cmd);
+void do_save(struct char_data* ch, char* argument, int cmd);
+void do_hit(struct char_data* ch, char* argument, int cmd);
+void do_string(struct char_data* ch, char* arg, int cmd);
+void do_give(struct char_data* ch, char* arg, int cmd);
+void do_stat(struct char_data* ch, char* arg, int cmd);
+void do_guard(struct char_data* ch, char* arg, int cmd);
+void do_time(struct char_data* ch, char* arg, int cmd);
+void do_weather(struct char_data* ch, char* arg, int cmd);
+void do_load(struct char_data* ch, char* arg, int cmd);
+void do_purge(struct char_data* ch, char* arg, int cmd);
+void do_shutdow(struct char_data* ch, char* arg, int cmd);
+void do_idea(struct char_data* ch, char* arg, int cmd);
+void do_typo(struct char_data* ch, char* arg, int cmd);
+void do_bug(struct char_data* ch, char* arg, int cmd);
+void do_whisper(struct char_data* ch, char* arg, int cmd);
+void do_cast(struct char_data* ch, char* arg, int cmd);
+void do_at(struct char_data* ch, char* arg, int cmd);
+void do_goto(struct char_data* ch, char* arg, int cmd);
+void do_ask(struct char_data* ch, char* arg, int cmd);
+void do_drink(struct char_data* ch, char* arg, int cmd);
+void do_eat(struct char_data* ch, char* arg, int cmd);
+void do_pour(struct char_data* ch, char* arg, int cmd);
+void do_sip(struct char_data* ch, char* arg, int cmd);
+void do_taste(struct char_data* ch, char* arg, int cmd);
+void do_order(struct char_data* ch, char* arg, int cmd);
+void do_follow(struct char_data* ch, char* arg, int cmd);
+void do_rent(struct char_data* ch, char* arg, int cmd);
+void do_bload(struct char_data* ch, char* arg, int cmd);
+void do_advance(struct char_data* ch, char* arg, int cmd);
+void do_close(struct char_data* ch, char* arg, int cmd);
+void do_open(struct char_data* ch, char* arg, int cmd);
+void do_lock(struct char_data* ch, char* arg, int cmd);
+void do_unlock(struct char_data* ch, char* arg, int cmd);
+void do_exits(struct char_data* ch, char* arg, int cmd);
+void do_enter(struct char_data* ch, char* arg, int cmd);
+void do_leave(struct char_data* ch, char* arg, int cmd);
+void do_write(struct char_data* ch, char* arg, int cmd);
+void do_flee(struct char_data* ch, char* arg, int cmd);
+void do_sneak(struct char_data* ch, char* arg, int cmd);
+void do_hide(struct char_data* ch, char* arg, int cmd);
+void do_backstab(struct char_data* ch, char* arg, int cmd);
+void do_pick(struct char_data* ch, char* arg, int cmd);
+void do_steal(struct char_data* ch, char* arg, int cmd);
+void do_bash(struct char_data* ch, char* arg, int cmd);
+void do_rescue(struct char_data* ch, char* arg, int cmd);
+void do_kick(struct char_data* ch, char* arg, int cmd);
+void do_examine(struct char_data* ch, char* arg, int cmd);
+void do_info(struct char_data* ch, char* arg, int cmd);
+void do_users(struct char_data* ch, char* arg, int cmd);
+void do_where(struct char_data* ch, char* arg, int cmd);
+void do_levels(struct char_data* ch, char* arg, int cmd);
+void do_reroll(struct char_data* ch, char* arg, int cmd);
+void do_pray(struct char_data* ch, char* arg, int cmd);
+void do_brief(struct char_data* ch, char* arg, int cmd);
+void do_cls(struct char_data* ch, char* arg, int cmd);
+void do_bamfin(struct char_data* ch, char* arg, int cmd);
+void do_bamfout(struct char_data* ch, char* arg, int cmd);
+void do_terminal(struct char_data* ch, char* arg, int cmd);
+void do_prompt(struct char_data* ch, char* arg, int cmd);
+void do_glance(struct char_data* ch, char* arg, int cmd);
+void do_wizlist(struct char_data* ch, char* arg, int cmd);
+void do_consider(struct char_data* ch, char* arg, int cmd);
+void do_group(struct char_data* ch, char* arg, int cmd);
+void do_restore(struct char_data* ch, char* arg, int cmd);
+void do_return(struct char_data* ch, char* argument, int cmd);
+void do_switch(struct char_data* ch, char* argument, int cmd);
+void do_quaff(struct char_data* ch, char* argument, int cmd);
+void do_recite(struct char_data* ch, char* argument, int cmd);
+void do_use(struct char_data* ch, char* argument, int cmd);
+void do_pose(struct char_data* ch, char* argument, int cmd);
+void do_noshout(struct char_data* ch, char* argument, int cmd);
+void do_plr_noshout(struct char_data* ch, char* argument, int cmd);
+void do_wizhelp(struct char_data* ch, char* argument, int cmd);
+void do_credits(struct char_data* ch, char* argument, int cmd);
+void do_compact(struct char_data* ch, char* argument, int cmd);
+void do_wimpy(struct char_data* ch, char* argument, int cmd);    /* jdb -8-16 */
+void do_commune(struct char_data* ch, char* argument, int cmd);  /* jdb - 9-1 */
+void do_nohassle(struct char_data* ch, char* argument, int cmd); /* jdb 9-6 */
+void do_system(struct char_data* ch, char* argument, int cmd);   /* jdb 9-16 */
+void do_pull(struct char_data* ch, char* argument, int cmd);     /* jdb 9-16 */
+void do_stealth(struct char_data* ch, char* argument, int cmd);  /* jdb 9-17 */
+void do_edit(struct char_data* ch, char* arg, int cmd);          /* jdb 9-29 */
+void do_set(struct char_data* ch, char* arg, int cmd);           /* jdb 9-29 */
+void do_rsave(struct char_data* ch, char* arg, int cmd);         /* jdb 10-5 */
+void do_rload(struct char_data* ch, char* arg, int cmd);         /* jdb 10-5 */
+void do_wizlock(struct char_data* ch, char* arg, int cmd);       /* jdb 10-15 */
+void do_highfive(struct char_data* ch, char* arg, int cmd);      /* jdb 10-30 */
+void do_title(struct char_data* ch, char* arg, int cmd);         /* jdb 11-3 */
+void do_uptime(struct char_data* ch, char* arg, int cmd);        /* jdb 12-3 */
+void do_instazone(struct char_data* ch, char* arg, int cmd);     /* jdb 12-3 */
+void do_disarm(struct char_data* ch, char* arg, int cmd);        /* jdb 12-3 */
+void do_junk(struct char_data* ch, char* arg, int cmd);          /* jdb 12-17 */
+void do_gain(struct char_data* ch, char* arg, int cmd);          /* jdb 1-19 */
+void do_passwd(struct char_data* ch, char* arg, int cmd);        /* jdb 2-6 */
+void do_fill(struct char_data* ch, char* arg, int cmd);          /* jdb 2-9 */
+void do_imptest(struct char_data* ch, char* arg, int cmd);       /* jdb 2-13 */
+void do_silence(struct char_data* ch, char* arg, int cmd);       /* smg 4-26 */
+void do_teams(struct char_data* ch, char* arg, int cmd);         /* smg 5-26 */
+void do_auth(struct char_data* ch, char* arg, int cmd);          /* jdb 3-1 */
+void do_shoot(struct char_data* ch, char* arg, int cmd);         /* jdb 3-8 */
+void do_swim(struct char_data* ch, char* arg, int cmd);          /* jdb 8-4 */
+void do_reload(struct char_data* ch, char* arg, int cmd);        /* jhh 7-24 */
+void do_oset(struct char_data* ch, char* arg, int cmd);          /* jfr2 10-15*/
+void do_bet(struct char_data* ch, char* arg, int cmd);           /* jhh 8-22 */
+void do_stay(struct char_data* ch, char* arg, int cmd);          /* jhh 8-22 */
+void do_peek(struct char_data* ch, char* arg, int cmd);          /* jhh 8-22 */
+void do_color(struct char_data* ch, char* arg, int cmd);         /*jfr 8-28 */
+void do_search(struct char_data* ch, char* arg, int cmd); /* jfr2 1-16-93*/
+void do_send(struct char_data* ch, char* arg, int cmd);   /* jfr2 12-30 */
+void do_spy(struct char_data* ch, char* arg, int cmd);    /*jfr2 1-23-93*/
+void do_sign(struct char_data* ch, char* arg, int cmd);
+void do_play(struct char_data* ch, char* arg, int cmd); /*jfr2 2-11-93 */
+void do_flag(struct char_data* ch, char* arg, int cmd); /*jfr2 1-30-93 */
+void do_link(struct char_data* ch, char* arg, int cmd); /* jfr2 1-24-93 */
+void do_doorbash(struct char_data* ch, char* arg, int cmd);
+void do_springleap(struct char_data* ch, char* arg, int cmd);
+void do_lay_hands(struct char_data* ch, char* arg, int cmd);
+void do_quivering_palm(struct char_data* ch, char* arg, int cmd);
+void do_feign_death(struct char_data* ch, char* arg, int cmd);
+void do_first_aid(struct char_data* ch, char* arg, int cmd);
+void do_channel(struct char_data* ch, char* arg, int cmd);    /*jfr2 12-30 */
+void do_headbutt(struct char_data* ch, char* arg, int cmd);   /*jfr2 9-21 */
+void do_log(struct char_data* ch, char* arg, int cmd);        /*jfr2 12/29/92 */
+void do_subterfuge(struct char_data* ch, char* arg, int cmd); /* jfr2 10-3 */
+void do_throw(struct char_data* ch, char* arg, int cmd);      /* jfr2 10-4 */
+void do_scribe(struct char_data* ch, char* arg, int cmd);     /* jfr2 10-4 */
+void do_brew(struct char_data* ch, char* arg, int cmd);       /* jfr2 10-15*/
+void do_grapple(struct char_data* ch, char* arg, int cmd);    /*jfr2 10-16*/
 
 /*
   depth first seach procedure donated by WhiteGold
   */
 
-void do_track(struct char_data *ch, char *arg, int cmd); /* jdb 10-9 */
+void do_track(struct char_data* ch, char* arg, int cmd); /* jdb 10-9 */
 
 /*
   These 3 were donated by sequent
   */
 
-void do_attribute(struct char_data *ch, char *arg, int cmd); /* jdb 11-6 */
-void do_world(struct char_data *ch, char *arg, int cmd); /* jdb 11-6 */
-void do_spells(struct char_data *ch, char *arg, int cmd); /* jdb 11-6 */
+void do_attribute(struct char_data* ch, char* arg, int cmd); /* jdb 11-6 */
+void do_world(struct char_data* ch, char* arg, int cmd);     /* jdb 11-6 */
+void do_spells(struct char_data* ch, char* arg, int cmd);    /* jdb 11-6 */
 
-void do_action(struct char_data *ch, char *arg, int cmd);
-void do_practice(struct char_data *ch, char *arg, int cmd);
+void do_action(struct char_data* ch, char* arg, int cmd);
+void do_practice(struct char_data* ch, char* arg, int cmd);
 
 /* Hammor commands */
-void do_assist(struct char_data *ch, char *arg, int cmd);
-void do_fire(struct char_data *ch, char *arg, int cmd);
-void do_show(struct char_data *ch, char *arg, int cmd);
-void do_bodyslam(struct char_data *ch, char *arg, int cmd);
-void do_invis(struct char_data *ch, char *arg, int cmd);
-void do_grouptell(struct char_data *ch, char *arg, int cmd);
+void do_assist(struct char_data* ch, char* arg, int cmd);
+void do_fire(struct char_data* ch, char* arg, int cmd);
+void do_show(struct char_data* ch, char* arg, int cmd);
+void do_bodyslam(struct char_data* ch, char* arg, int cmd);
+void do_invis(struct char_data* ch, char* arg, int cmd);
+void do_grouptell(struct char_data* ch, char* arg, int cmd);
 
 /* Brutius commands */
 
-void do_report(struct char_data *ch, char *arg, int cmd);
-void do_demote(struct char_data *ch, char *arg, int cmd);
-void do_split(struct char_data *ch, char *arg, int cmd);
-void do_command(struct char_data *ch, char *arg, int cmd);
-void do_deathstroke(struct char_data *ch, char *arg, int cmd);
+void do_report(struct char_data* ch, char* arg, int cmd);
+void do_demote(struct char_data* ch, char* arg, int cmd);
+void do_split(struct char_data* ch, char* arg, int cmd);
+void do_command(struct char_data* ch, char* arg, int cmd);
+void do_deathstroke(struct char_data* ch, char* arg, int cmd);
 
-char *command[] = {
-  "north", /* 1 */
-  "east",
-  "south",
-  "west",
-  "up",
-  "down",
-  "enter",
-  "exits",
-  "kiss",
-  "get",
+char* command[] = {"north", /* 1 */
+  "east", "south", "west", "up", "down", "enter", "exits", "kiss", "get",
   "drink", /* 11 */
-  "eat",
-  "wear",
-  "wield",
-  "look",
-  "score",
-  "say",
-  "shout",
-  "tell",
-  "inventory",
+  "eat", "wear", "wield", "look", "score", "say", "shout", "tell", "inventory",
   "qui", /* 21 */
-  "bounce",
-  "smile",
-  "dance",
-  "kill",
-  "cackle",
-  "laugh",
-  "giggle",
-  "shake",
-  "puke",
-  "growl", /* 31 */
-  "scream",
-  "insult",
-  "comfort",
-  "nod",
-  "sigh",
-  "sulk",
-  "help",
-  "who",
-  "emote",
+  "bounce", "smile", "dance", "kill", "cackle", "laugh", "giggle", "shake",
+  "puke", "growl", /* 31 */
+  "scream", "insult", "comfort", "nod", "sigh", "sulk", "help", "who", "emote",
   "echo", /* 41 */
-  "stand",
-  "sit",
-  "rest",
-  "sleep",
-  "wake",
-  "force",
-  "transfer",
-  "hug",
-  "snuggle",
-  "cuddle", /* 51 */
-  "nuzzle",
-  "cry",
-  "news",
-  "equipment",
-  "buy",
-  "sell",
-  "value",
-  "list",
-  "drop",
+  "stand", "sit", "rest", "sleep", "wake", "force", "transfer", "hug",
+  "snuggle", "cuddle", /* 51 */
+  "nuzzle", "cry", "news", "equipment", "buy", "sell", "value", "list", "drop",
   "goto", /* 61 */
-  "weather",
-  "read",
-  "pour",
-  "grab",
-  "remove",
-  "put",
-  "shutdow",
-  "save",
-  "hit",
+  "weather", "read", "pour", "grab", "remove", "put", "shutdow", "save", "hit",
   "string", /* 71 */
-  "give",
-  "quit",
-  "stat",
-  "guard",
-  "time",
-  "load",
-  "purge",
-  "shutdown",
-  "idea",
+  "give", "quit", "stat", "guard", "time", "load", "purge", "shutdown", "idea",
   "typo", /* 81 */
-  "bug",
-  "whisper",
-  "cast",
-  "at",
-  "ask",
-  "order",
-  "sip",
-  "taste",
-  "snoop",
+  "bug", "whisper", "cast", "at", "ask", "order", "sip", "taste", "snoop",
   "follow", /* 91 */
-  "rent",
-  "bload",
-  "poke",
-  "advance",
-  "accuse",
-  "grin",
-  "bow",
-  "open",
-  "close",
+  "rent", "bload", "poke", "advance", "accuse", "grin", "bow", "open", "close",
   "lock", /* 101 */
-  "unlock",
-  "leave",
-  "applaud",
-  "blush",
-  "burp",
-  "chuckle",
-  "clap",
-  "cough",
-  "curtsey",
-  "fart", /* 111 */
-  "flip",
-  "fondle",
-  "frown",
-  "gasp",
-  "glare",
-  "groan",
-  "grope",
-  "hiccup",
-  "lick",
-  "love", /* 121 */
-  "moan",
-  "nibble",
-  "pout",
-  "purr",
-  "ruffle",
-  "shiver",
-  "shrug",
-  "sing",
-  "slap",
+  "unlock", "leave", "applaud", "blush", "burp", "chuckle", "clap", "cough",
+  "curtsey", "fart", /* 111 */
+  "flip", "fondle", "frown", "gasp", "glare", "groan", "grope", "hiccup",
+  "lick", "love", /* 121 */
+  "moan", "nibble", "pout", "purr", "ruffle", "shiver", "shrug", "sing", "slap",
   "smirk", /* 131 */
-  "snap",
-  "sneeze",
-  "snicker",
-  "sniff",
-  "snore",
-  "spit",
-  "squeeze",
-  "stare",
-  "strut",
-  "thank", /* 141 */
-  "twiddle",
-  "wave",
-  "whistle",
-  "wiggle",
-  "wink",
-  "yawn",
-  "snowball",
-  "write",
-  "hold",
-  "flee", /* 151 */
-  "sneak",
-  "hide",
-  "backstab",
-  "pick",
-  "steal",
-  "bash",
-  "rescue",
-  "kick",
-  "french",
-  "comb", /* 161 */
-  "massage",
-  "tickle",
-  "practice",
-  "pat",
-  "examine",
-  "take",
-  "info",
-  "'",
-  "practise",
-  "curse", /* 171 */
-  "use",
-  "where",
-  "levels",
-  "reroll",
-  "pray",
-  ",",
-  "beg",
-  "bleed",
-  "cringe",
+  "snap", "sneeze", "snicker", "sniff", "snore", "spit", "squeeze", "stare",
+  "strut", "thank", /* 141 */
+  "twiddle", "wave", "whistle", "wiggle", "wink", "yawn", "snowball", "write",
+  "hold", "flee", /* 151 */
+  "sneak", "hide", "backstab", "pick", "steal", "bash", "rescue", "kick",
+  "french", "comb", /* 161 */
+  "massage", "tickle", "practice", "pat", "examine", "take", "info", "'",
+  "practise", "curse", /* 171 */
+  "use", "where", "levels", "reroll", "pray", ",", "beg", "bleed", "cringe",
   "daydream", /* 181 */
-  "fume",
-  "grovel",
-  "hop",
-  "nudge",
-  "peer",
-  "point",
-  "ponder",
-  "punch",
-  "snarl",
+  "fume", "grovel", "hop", "nudge", "peer", "point", "ponder", "punch", "snarl",
   "spank", /* 191 */
-  "steam",
-  "tackle",
-  "taunt",
-  "wiznet",
-  "whine",
-  "worship",
-  "yodel",
-  "brief",
-  "wizlist",
-  "consider", /* 201 */
-  "group",
-  "restore",
-  "return",
-  "switch", /* 205 */
-  "quaff",
-  "recite",
-  "users",
-  "pose",
-  "noshout",
-  "wizhelp", /* 211 */
-  "credits", /* 212 */
-  "compact", /* 213 */
+  "steam", "tackle", "taunt", "wiznet", "whine", "worship", "yodel", "brief",
+  "wizlist", "consider",                                    /* 201 */
+  "group", "restore", "return", "switch",                   /* 205 */
+  "quaff", "recite", "users", "pose", "noshout", "wizhelp", /* 211 */
+  "credits",                                                /* 212 */
+  "compact",                                                /* 213 */
   ":", /* emote   (jdb - 7/31/91)     */
   "deafen",
   /* plr_noshout  (jdb - 7/31)   */ /*215*/
   "slay",
   /* instead of "kill" for immorts (8/16) */ /*216*/
-  "wimpy", /* 217 */
-  "junk", /* 218 */
+  "wimpy",                                   /* 217 */
+  "junk",                                    /* 218 */
   "deposit",
-  /* 219 */ /* 9 - 4ish */
-  "withdraw", /* 220 */
-  "balance",
-  "nohassle", /* 9 - 6 */
-  "system", /* 9 - 16 */
-  "pull",
-  "stealth", /* 225 */
-  "edit", /* 226 */
-  "@set", /* 227 */
-  "rsave", /* 228 */
-  "rload", /* 229 */
-  "track", /* 230 */
-  "wizlock", /* 231 */
-  "highfive", /* 232 */
-  "title", /* 233 */
-  "whozone", /* 234 */
-  "assist", /* 235 */
-  "attribute", /* 236 */
-  "world", /* 237 */
-  "allspells", /* 238 */
-  "fire", /* 239 */
-  "show", /* 240 */
-  "bodyslam", /* 241 */
-  "invisible", /* 242 */
-  "gain", /* 243 */
-  "instazone", /* 244 */
-  "disarm", /* 245 */
-  "think", /* 246 */
+  /* 219 */              /* 9 - 4ish */
+  "withdraw",            /* 220 */
+  "balance", "nohassle", /* 9 - 6 */
+  "system",              /* 9 - 16 */
+  "pull", "stealth",     /* 225 */
+  "edit",                /* 226 */
+  "@set",                /* 227 */
+  "rsave",               /* 228 */
+  "rload",               /* 229 */
+  "track",               /* 230 */
+  "wizlock",             /* 231 */
+  "highfive",            /* 232 */
+  "title",               /* 233 */
+  "whozone",             /* 234 */
+  "assist",              /* 235 */
+  "attribute",           /* 236 */
+  "world",               /* 237 */
+  "allspells",           /* 238 */
+  "fire",                /* 239 */
+  "show",                /* 240 */
+  "bodyslam",            /* 241 */
+  "invisible",           /* 242 */
+  "gain",                /* 243 */
+  "instazone",           /* 244 */
+  "disarm",              /* 245 */
+  "think",               /* 246 */
   "chpwd",
   /* 247 */ /* 2-6-92 jdb */
   "fill",
   /* 248 */ /* 2-9-92 jdb */
   "imptest",
-  /* 249 */ /* 2-13-92 jdb */
+/* 249 */ /* 2-13-92 jdb */
 #if PLAYER_AUTH
   "auth",
   /* 250 */ /* 3-1-92 jdb */
@@ -542,7 +371,7 @@ char *command[] = {
   "silence",
   /* 252 */ /* 4-26-92 smg */
   "teams",
-  /* 253 */ /* 5-26-92 smg */
+/* 253 */ /* 5-26-92 smg */
 #else
   "shoot",
   /* 250 */ /* 3-8-92 jdb */
@@ -551,79 +380,52 @@ char *command[] = {
   "teams",
   /* 252 */ /* 5-26-92 smg */
   "gt",
-  /*253*/ /*jfr2 6/25/92*/
-  "send", /*254*/
-  "log", /*255*/
-  "monitor", /*256*/
-  "channel", /*257*/
-  "report", /*258*/
-  "demote", /*259*/
-  "atlas", /*260*/
-  "bonk", /*261*/
-  "scold", /*262*/
-  "drool", /*263*/
-  "rip", /*264*/
-  "stretch", /*265*/
-  "split", /*266*/
-  "command", /*267*/
+  /*253*/        /*jfr2 6/25/92*/
+  "send",        /*254*/
+  "log",         /*255*/
+  "monitor",     /*256*/
+  "channel",     /*257*/
+  "report",      /*258*/
+  "demote",      /*259*/
+  "atlas",       /*260*/
+  "bonk",        /*261*/
+  "scold",       /*262*/
+  "drool",       /*263*/
+  "rip",         /*264*/
+  "stretch",     /*265*/
+  "split",       /*266*/
+  "command",     /*267*/
   "deathstroke", /*268*/
-  "pimp", /*269*/
-  "reload", /*270*/
-  "belittle", /*271*/
-  "piledrive", /*272*/
-  "tap", /*273*/
-  "bet", /*274*/
-  "stay", /*275*/
-  "peek", /*276*/
-  "color", /*277*/
-  "headbutt",
-  "subterfuge",
-  "throw",
-  "oset",
-  "scribe",
-  "brew",
-  "grapple", /*284*/
-  "flipoff",
-  "moon",
-  "pinch",
-  "bite",
-  "search", /*289*/
-  "spy",
-  "doorbash",
-  "play",
-  "flag",
-  "quivering palm",
-  "feign death",
-  "springleap",
-  "first aid",
-  "swim",
-  "sign",
-  "cutlink",
-  "lay hands",
-  "wiznews", /* 302 - SG */
-  "mail",
-  "check",
-  "receive",
-  "cls", /* 306 - jfr2 */
-  "glance", /* 307 - jfr2 */
-  "terminal",
-  "prompt",
-  "bamfin",
-  "bamfout",
-  "board",
-  "checklog", /* 313 - SG */
-  "loglist", /* 314 - SG */
-  "deathcheck", /* SG */
-  "whap", /* 316 Batopr */
-  "beam", /* 317 Bat */
+  "pimp",        /*269*/
+  "reload",      /*270*/
+  "belittle",    /*271*/
+  "piledrive",   /*272*/
+  "tap",         /*273*/
+  "bet",         /*274*/
+  "stay",        /*275*/
+  "peek",        /*276*/
+  "color",       /*277*/
+  "headbutt", "subterfuge", "throw", "oset", "scribe", "brew",
+  "grapple",                                    /*284*/
+  "flipoff", "moon", "pinch", "bite", "search", /*289*/
+  "spy", "doorbash", "play", "flag", "quivering palm", "feign death",
+  "springleap", "first aid", "swim", "sign", "cutlink", "lay hands",
+  "wiznews",                         /* 302 - SG */
+  "mail", "check", "receive", "cls", /* 306 - jfr2 */
+  "glance",                          /* 307 - jfr2 */
+  "terminal", "prompt", "bamfin", "bamfout", "board", "checklog", /* 313 - SG */
+  "loglist",                                                      /* 314 - SG */
+  "deathcheck",                                                   /* SG */
+  "whap",    /* 316 Batopr */
+  "beam",    /* 317 Bat */
   "chortle", /* 318 Bat */
 
 #endif
   "\n"};
 
-char *fill[] = {"in", "from", "with", "the", "on", "at", "to", "\n"};
+char* fill[] = {"in", "from", "with", "the", "on", "at", "to", "\n"};
 
-int search_block(char *arg, char **list, bool exact) {
+int search_block(char* arg, char** list, bool exact) {
   register int i, l;
 
   /* Make into lower case, and get length of string */
@@ -645,7 +447,8 @@ int search_block(char *arg, char **list, bool exact) {
   return (-1);
 }
 
-int old_search_block(char *argument, int begin, int length, char **list, int mode) {
+int old_search_block(char* argument, int begin, int length, char** list,
+  int mode) {
   int guess, found, search;
 
   /* If the word contain 0 letters, then a match is already found */
@@ -674,11 +477,11 @@ int old_search_block(char *argument, int begin, int length, char **list, int mod
   return (found ? guess : -1);
 }
 
-void command_interpreter(struct char_data *ch, char *argument) {
+void command_interpreter(struct char_data* ch, char* argument) {
   int look_at, cmd, begin;
   char buf[200];
   extern int no_specials;
-  extern struct char_data *board_kludge_char;
+  extern struct char_data* board_kludge_char;
 
   REMOVE_BIT(ch->specials.affected_by, AFF_HIDE);
 
@@ -690,7 +493,7 @@ void command_interpreter(struct char_data *ch, char *argument) {
     if ((!ch->player.name[0]) || (ch->player.name[0] < ' ')) {
       vlog("Error in character name.  Changed to 'Error'");
       free(ch->player.name);
-      ch->player.name = (char *)malloc(6);
+      ch->player.name = (char*)malloc(6);
       strcpy(ch->player.name, "Error");
       SET_BIT(ch->specials.act, PLR_BANISHED);
       char_from_room(ch);
@@ -706,7 +509,7 @@ void command_interpreter(struct char_data *ch, char *argument) {
     if (found) {
       vlog("Error in character name.  Changed to 'Error'");
       free(ch->player.name);
-      ch->player.name = (char *)malloc(6);
+      ch->player.name = (char*)malloc(6);
       strcpy(ch->player.name, "Error");
       return;
     }
@@ -745,7 +548,8 @@ void command_interpreter(struct char_data *ch, char *argument) {
 
   if (cmd > 0 && (cmd_info[cmd].command_pointer != 0)) {
     if (!IS_AFFECTED(ch, AFF_BREWING)) {
-      if ((!IS_AFFECTED(ch, AFF_PARALYSIS)) || (cmd_info[cmd].minimum_position <= POSITION_STUNNED)) {
+      if ((!IS_AFFECTED(ch, AFF_PARALYSIS)) ||
+          (cmd_info[cmd].minimum_position <= POSITION_STUNNED)) {
         if (GET_POS(ch) < cmd_info[cmd].minimum_position) {
           switch (GET_POS(ch)) {
             case POSITION_DEAD:
@@ -753,11 +557,14 @@ void command_interpreter(struct char_data *ch, char *argument) {
               break;
             case POSITION_INCAP:
             case POSITION_MORTALLYW:
-              send_to_char("You are in a pretty bad shape, unable to do anything!\n\r", ch);
+              send_to_char(
+                "You are in a pretty bad shape, unable to do anything!\n\r",
+                ch);
               break;
 
             case POSITION_STUNNED:
-              send_to_char("All you can do right now, is think about the stars!\n\r", ch);
+              send_to_char(
+                "All you can do right now, is think about the stars!\n\r", ch);
               break;
             case POSITION_SLEEPING:
               send_to_char("In your dreams, or what?\n\r", ch);
@@ -776,7 +583,8 @@ void command_interpreter(struct char_data *ch, char *argument) {
           if (!no_specials && special(ch, cmd, argument + begin + look_at))
             return;
 
-          if ((GetMaxLevel(ch) >= LOW_IMMORTAL) && (cmd > 6) && (GetMaxLevel(ch) < 60)) {
+          if ((GetMaxLevel(ch) >= LOW_IMMORTAL) && (cmd > 6) &&
+              (GetMaxLevel(ch) < 60)) {
             sprintf(buf, "%s:%s", ch->player.name, argument);
             slog(buf);
           }
@@ -786,25 +594,29 @@ void command_interpreter(struct char_data *ch, char *argument) {
             slog(buf);
           }
 
-          ((*cmd_info[cmd].command_pointer)(ch, argument + begin + look_at, cmd));
+          ((*cmd_info[cmd].command_pointer)(ch, argument + begin + look_at,
+            cmd));
         }
         return;
       } else {
-        send_to_char("You are paralyzed, you can't do much of anything!\n\r", ch);
+        send_to_char("You are paralyzed, you can't do much of anything!\n\r",
+          ch);
         return;
       }
     } else {
-      send_to_char("You are brewing, you MUST concentrate on your potion.\n\r", ch);
+      send_to_char("You are brewing, you MUST concentrate on your potion.\n\r",
+        ch);
       return;
     }
   }
   if (cmd > 0 && (cmd_info[cmd].command_pointer == 0))
-    send_to_char("Sorry, but that command has yet to be implemented...\n\r", ch);
+    send_to_char("Sorry, but that command has yet to be implemented...\n\r",
+      ch);
   else
     send_to_char("Pardon? \n\r", ch);
 }
 
-void argument_interpreter(char *argument, char *first_arg, char *second_arg) {
+void argument_interpreter(char* argument, char* first_arg, char* second_arg) {
   int look_at, found, begin;
 
   found = begin = 0;
@@ -844,7 +656,7 @@ void argument_interpreter(char *argument, char *first_arg, char *second_arg) {
   } while (fill_word(second_arg));
 }
 
-int is_number(char *str) {
+int is_number(char* str) {
   int look_at;
 
   if (*str == '\0')
@@ -872,7 +684,7 @@ int is_number(char *str) {
 
 /* find the first sub-argument of a string, return pointer to first char in
    primary argument, following the sub-arg			            */
-char *one_argument(char *argument, char *first_arg) {
+char* one_argument(char* argument, char* first_arg) {
   int found, begin, look_at;
 
   found = begin = 0;
@@ -896,18 +708,18 @@ char *one_argument(char *argument, char *first_arg) {
   return (argument + begin);
 }
 
-void only_argument(char *argument, char *dest) {
+void only_argument(char* argument, char* dest) {
   while (*argument && isspace(*argument))
     argument++;
   strcpy(dest, argument);
 }
 
-int fill_word(char *argument) {
+int fill_word(char* argument) {
   return (search_block(argument, fill, TRUE) >= 0);
 }
 
 /* determine if a given string is an abbreviation of another */
-int is_abbrev(char *arg1, char *arg2) {
+int is_abbrev(char* arg1, char* arg2) {
   if (!*arg1)
     return (0);
 
@@ -919,7 +731,7 @@ int is_abbrev(char *arg1, char *arg2) {
 }
 
 /* return first 'word' plus trailing substring of input string */
-void half_chop(char *string, char *arg1, char *arg2) {
+void half_chop(char* string, char* arg1, char* arg2) {
   for (; isspace(*string); string++)
     ;
 
@@ -935,9 +747,9 @@ void half_chop(char *string, char *arg1, char *arg2) {
     ;
 }
 
-int special(struct char_data *ch, int cmd, char *arg) {
-  register struct obj_data *i;
-  register struct char_data *k;
+int special(struct char_data* ch, int cmd, char* arg) {
+  register struct obj_data* i;
+  register struct char_data* k;
   int j;
 
   if (ch->in_room == NOWHERE) {
@@ -954,7 +766,8 @@ int special(struct char_data *ch, int cmd, char *arg) {
   for (j = 0; j <= (MAX_WEAR - 1); j++)
     if (ch->equipment[j] && ch->equipment[j]->item_number >= 0)
       if (obj_index[ch->equipment[j]->item_number].func)
-        if ((*obj_index[ch->equipment[j]->item_number].func)(ch, cmd, arg, ch->equipment[j]))
+        if ((*obj_index[ch->equipment[j]->item_number].func)(ch, cmd, arg,
+              ch->equipment[j]))
           return (1);
 
   /* special in inventory? */
@@ -1278,7 +1091,7 @@ void assign_command_pointers(void) {
   COMMANDO(289, POSITION_STANDING, do_search, 1);
   COMMANDO(290, POSITION_STANDING, do_spy, 1);
   COMMANDO(291, POSITION_STANDING, do_doorbash, 1);
-  COMMANDO(292, POSITION_DEAD, do_play, 1); /*Russ*/
+  COMMANDO(292, POSITION_DEAD, do_play, 1);      /*Russ*/
   COMMANDO(293, POSITION_SLEEPING, do_flag, 52); /*Russ*/
   COMMANDO(294, POSITION_FIGHTING, do_quivering_palm, 30);
   COMMANDO(295, POSITION_FIGHTING, do_feign_death, 1);
@@ -1312,7 +1125,7 @@ void assign_command_pointers(void) {
  ************************************************************************* */
 
 /* locate entry in p_table with entry->name == name. -1 mrks failed search */
-int find_name(char *name) {
+int find_name(char* name) {
   int i;
 
   for (i = 0; i <= top_of_p_table; i++) {
@@ -1323,7 +1136,7 @@ int find_name(char *name) {
   return (-1);
 }
 
-int _parse_name(char *arg, char *name) {
+int _parse_name(char* arg, char* name) {
   int i;
 
   /* skip whitespaces */
@@ -1341,20 +1154,20 @@ int _parse_name(char *arg, char *name) {
 }
 
 /* deal with newcomers and other non-playing sockets */
-void nanny(struct descriptor_data *d, char *arg) {
+void nanny(struct descriptor_data* d, char* arg) {
   char buf[100], buf2[100], recipient[100], *tmp;
   int player_i, index = 0, count = 0, oops = FALSE;
   char tmp_name[20];
   struct char_file_u tmp_store;
-  struct char_data *tmp_ch;
-  struct descriptor_data *k;
-  extern struct descriptor_data *descriptor_list;
+  struct char_data* tmp_ch;
+  struct descriptor_data* k;
+  extern struct descriptor_data* descriptor_list;
   extern int WizLock;
   extern int plr_tick_count;
 
-  void do_look(struct char_data * ch, char *argument, int cmd);
+  void do_look(struct char_data * ch, char* argument, int cmd);
   void load_char_objs(struct char_data * ch);
-  int load_char(char *name, struct char_file_u *char_element);
+  int load_char(char* name, struct char_file_u* char_element);
 
   write(d->descriptor, echo_on, 6);
 
@@ -1456,13 +1269,15 @@ void nanny(struct descriptor_data *d, char *arg) {
         for (k = descriptor_list; k; k = k->next) {
           if ((k->character != d->character) && k->character) {
             if (k->original) {
-              if (GET_NAME(k->original) && (str_cmp(GET_NAME(k->original), tmp_name) == 0)) {
+              if (GET_NAME(k->original) &&
+                  (str_cmp(GET_NAME(k->original), tmp_name) == 0)) {
                 SEND_TO_Q("Already playing, cannot connect\n\r", d);
                 SEND_TO_Q("Name: ", d);
                 return;
               }
             } else { /* No switch has been made */
-              if (GET_NAME(k->character) && (str_cmp(GET_NAME(k->character), tmp_name) == 0)) {
+              if (GET_NAME(k->character) &&
+                  (str_cmp(GET_NAME(k->character), tmp_name) == 0)) {
                 SEND_TO_Q("Already playing, cannot connect\n\r", d);
                 SEND_TO_Q("Name: ", d);
                 return;
@@ -1500,7 +1315,8 @@ void nanny(struct descriptor_data *d, char *arg) {
             SEND_TO_Q(buf, d);
             STATE(d) = CON_NMECNF;
           } else {
-            sprintf(buf, "Sorry, %s, no new characters at this time\n\r", GET_NAME(d->character));
+            sprintf(buf, "Sorry, %s, no new characters at this time\n\r",
+              GET_NAME(d->character));
             SEND_TO_Q(buf, d);
             STATE(d) = CON_WIZLOCK;
           }
@@ -1553,10 +1369,9 @@ void nanny(struct descriptor_data *d, char *arg) {
         d->max_str = 0;
         for (tmp_ch = character_list; tmp_ch; tmp_ch = tmp_ch->next)
           if ((!str_cmp(GET_NAME(d->character), GET_NAME(tmp_ch)) &&
-	     !tmp_ch->desc && !IS_NPC(tmp_ch)) || 
-	    (IS_NPC(tmp_ch) && tmp_ch->orig && 
-	     !str_cmp(GET_NAME(d->character), 
-		      GET_NAME(tmp_ch->orig)))) {
+                !tmp_ch->desc && !IS_NPC(tmp_ch)) ||
+              (IS_NPC(tmp_ch) && tmp_ch->orig &&
+                !str_cmp(GET_NAME(d->character), GET_NAME(tmp_ch->orig)))) {
             write(d->descriptor, echo_on, 6);
             SEND_TO_Q("Reconnecting.\n\r", d);
 
@@ -1575,14 +1390,16 @@ void nanny(struct descriptor_data *d, char *arg) {
             d->screen_size = 24;
 
             act("$n has reconnected.", TRUE, tmp_ch, 0, 0, TO_ROOM);
-            sprintf(buf, "%s[%s] has reconnected.", GET_NAME(d->character), d->host);
+            sprintf(buf, "%s[%s] has reconnected.", GET_NAME(d->character),
+              d->host);
             vlog(buf);
             return;
           }
 
         sprintf(buf, "%s[%s] has connected.", GET_NAME(d->character), d->host);
         vlog(buf);
-        if ((IS_SET(d->character->specials.act, PLR_ANSI)) || (IS_SET(d->character->specials.act, PLR_VT100))) {
+        if ((IS_SET(d->character->specials.act, PLR_ANSI)) ||
+            (IS_SET(d->character->specials.act, PLR_VT100))) {
           SEND_TO_Q(VT_CLENSEQ, d);
         }
         SEND_TO_Q(motd, d);
@@ -1663,7 +1480,10 @@ void nanny(struct descriptor_data *d, char *arg) {
 
       SEND_TO_Q("\n\rNow you get to choose your stat preference.\n\r", d);
       SEND_TO_Q("Put them in order from highest to lowest.\n\r", d);
-      SEND_TO_Q("for example: 'S I W D Co' would put the highest roll in Strength, \n\r", d);
+      SEND_TO_Q(
+        "for example: 'S I W D Co' would put the highest roll in Strength, "
+        "\n\r",
+        d);
       SEND_TO_Q("next in intelligence, Wisdom, Dex, and Con\n\r", d);
       SEND_TO_Q("Your choices? ", d);
       STATE(d) = CON_STAT_LIST;
@@ -1690,10 +1510,18 @@ void nanny(struct descriptor_data *d, char *arg) {
             d->stat[index++] = 'o';
           } else {
             SEND_TO_Q("That was an invalid choice.\n\r", d);
-            SEND_TO_Q("\n\rSelect your stat priority, by listing them from highest to lowest\n\r", d);
+            SEND_TO_Q(
+              "\n\rSelect your stat priority, by listing them from highest to "
+              "lowest\n\r",
+              d);
             SEND_TO_Q("Seperated by spaces.  don't duplicate letters \n\r", d);
-            SEND_TO_Q("for example: 'S I W D Co Ch' would put the highest roll in Strength, \n\r", d);
-            SEND_TO_Q("next in intelligence, Wisdom, Dex, Con and lastly Charisma\n\r", d);
+            SEND_TO_Q(
+              "for example: 'S I W D Co Ch' would put the highest roll in "
+              "Strength, \n\r",
+              d);
+            SEND_TO_Q(
+              "next in intelligence, Wisdom, Dex, Con and lastly Charisma\n\r",
+              d);
             SEND_TO_Q("Your choice? ", d);
             STATE(d) = CON_STAT_LIST;
             break;
@@ -1705,26 +1533,41 @@ void nanny(struct descriptor_data *d, char *arg) {
       if (index < MAX_STAT) {
         SEND_TO_Q("You did not enter enough legal stats\n\r", d);
         SEND_TO_Q("That was an invalid choice.\n\r", d);
-        SEND_TO_Q("\n\rSelect your stat priority, by listing them from highest to lowest\n\r", d);
+        SEND_TO_Q(
+          "\n\rSelect your stat priority, by listing them from highest to "
+          "lowest\n\r",
+          d);
         SEND_TO_Q("Seperated by spaces, don't duplicate letters \n\r", d);
-        SEND_TO_Q("for example: 'S I W D Co' would put the highest roll in Strength, \n\r", d);
+        SEND_TO_Q(
+          "for example: 'S I W D Co' would put the highest roll in Strength, "
+          "\n\r",
+          d);
         SEND_TO_Q("next in intelligence, Wisdom, Dex and Con.\n\r", d);
         SEND_TO_Q("Your choice? ", d);
         STATE(d) = CON_STAT_LIST;
         break;
       } else {
-        SEND_TO_Q("Please pick one of the following combinations for your class.\n\r", d);
+        SEND_TO_Q(
+          "Please pick one of the following combinations for your class.\n\r",
+          d);
         SEND_TO_Q("1. Warrior                    A. Antipaladin\n\r", d);
         SEND_TO_Q("2. Cleric                     B. Paladin\n\r", d);
         SEND_TO_Q("3. Magic-user                 C. Monk\n\r", d);
         SEND_TO_Q("4. Thief                      D. Ranger\n\r", d);
         SEND_TO_Q("5. Warrior/Thief              E. Mage/Cleric\n\r", d);
-        SEND_TO_Q("6. Warrior/Cleric             F. Warrior/Cleric/Thief\n\r", d);
+        SEND_TO_Q("6. Warrior/Cleric             F. Warrior/Cleric/Thief\n\r",
+          d);
         SEND_TO_Q("7. Mage/thief                 G. Mage/Cleric/Thief\n\r", d);
-        SEND_TO_Q("8. Mage/Warrior               H. Mage/Cleric/Warrior\n\r", d);
-        SEND_TO_Q("9. Cleric/Thief               I. Mage/Thief/Warrior\n\r\n\r", d);
-        SEND_TO_Q("There are advantages and disadvantages to each choice.\n\r", d);
-        SEND_TO_Q("Type ? to see a help file telling you these advantages and disadvantages.\n\r", d);
+        SEND_TO_Q("8. Mage/Warrior               H. Mage/Cleric/Warrior\n\r",
+          d);
+        SEND_TO_Q("9. Cleric/Thief               I. Mage/Thief/Warrior\n\r\n\r",
+          d);
+        SEND_TO_Q("There are advantages and disadvantages to each choice.\n\r",
+          d);
+        SEND_TO_Q(
+          "Type ? to see a help file telling you these advantages and "
+          "disadvantages.\n\r",
+          d);
         SEND_TO_Q("Class :", d);
         STATE(d) = CON_QCLASS;
         break;
@@ -1801,22 +1644,26 @@ void nanny(struct descriptor_data *d, char *arg) {
         } break;
         case 'f':
         case 'F': {
-          d->character->player.class = CLASS_WARRIOR + CLASS_THIEF + CLASS_CLERIC;
+          d->character->player.class =
+            CLASS_WARRIOR + CLASS_THIEF + CLASS_CLERIC;
           STATE(d) = CON_RMOTD;
         } break;
         case 'g':
         case 'G': {
-          d->character->player.class = CLASS_MAGIC_USER + CLASS_CLERIC + CLASS_THIEF;
+          d->character->player.class =
+            CLASS_MAGIC_USER + CLASS_CLERIC + CLASS_THIEF;
           STATE(d) = CON_RMOTD;
         } break;
         case 'h':
         case 'H': {
-          d->character->player.class = CLASS_MAGIC_USER + CLASS_CLERIC + CLASS_WARRIOR;
+          d->character->player.class =
+            CLASS_MAGIC_USER + CLASS_CLERIC + CLASS_WARRIOR;
           STATE(d) = CON_RMOTD;
         } break;
         case 'i':
         case 'I': {
-          d->character->player.class = CLASS_MAGIC_USER + CLASS_THIEF + CLASS_WARRIOR;
+          d->character->player.class =
+            CLASS_MAGIC_USER + CLASS_THIEF + CLASS_WARRIOR;
           STATE(d) = CON_RMOTD;
         } break;
         case '?': {
@@ -1852,7 +1699,8 @@ void nanny(struct descriptor_data *d, char *arg) {
 #endif
 
     case CON_RMOTD: /* read CR after printing motd	*/
-      if (IS_SET(d->character->specials.act, PLR_ANSI) || (IS_SET(d->character->specials.act, PLR_VT100))) {
+      if (IS_SET(d->character->specials.act, PLR_ANSI) ||
+          (IS_SET(d->character->specials.act, PLR_VT100))) {
         SEND_TO_Q(VT_CLENSEQ, d);
         sprintf(buf, VT_MARGSET, 1, 22);
         SEND_TO_Q(buf, d);
@@ -1877,7 +1725,8 @@ void nanny(struct descriptor_data *d, char *arg) {
       for (; isspace(*arg); arg++)
         ;
       if (d->character->in_room != NOWHERE) {
-        SEND_TO_Q("This choice is only valid when you have been auto-saved\n\r", d);
+        SEND_TO_Q("This choice is only valid when you have been auto-saved\n\r",
+          d);
         STATE(d) = CON_SLCT;
       } else {
         switch (*arg) {
@@ -1967,7 +1816,8 @@ void nanny(struct descriptor_data *d, char *arg) {
               if (plr_tick_count == PLR_TICK_WRAP)
                 plr_tick_count = 0;
 
-              act("$n has entered the game.", TRUE, d->character, 0, 0, TO_ROOM);
+              act("$n has entered the game.", TRUE, d->character, 0, 0,
+                TO_ROOM);
               STATE(d) = CON_PLYNG;
               if (!GetMaxLevel(d->character))
                 do_start(d->character);
@@ -2003,7 +1853,8 @@ void nanny(struct descriptor_data *d, char *arg) {
               if (plr_tick_count == PLR_TICK_WRAP)
                 plr_tick_count = 0;
 
-              act("$n has entered the game.", TRUE, d->character, 0, 0, TO_ROOM);
+              act("$n has entered the game.", TRUE, d->character, 0, 0,
+                TO_ROOM);
               STATE(d) = CON_PLYNG;
               if (!GetMaxLevel(d->character))
                 do_start(d->character);
@@ -2039,7 +1890,8 @@ void nanny(struct descriptor_data *d, char *arg) {
               if (plr_tick_count == PLR_TICK_WRAP)
                 plr_tick_count = 0;
 
-              act("$n has entered the game.", TRUE, d->character, 0, 0, TO_ROOM);
+              act("$n has entered the game.", TRUE, d->character, 0, 0,
+                TO_ROOM);
               STATE(d) = CON_PLYNG;
               if (!GetMaxLevel(d->character))
                 do_start(d->character);
@@ -2078,7 +1930,8 @@ void nanny(struct descriptor_data *d, char *arg) {
           send_to_char(WELC_MESSG, d->character);
           d->character->next = character_list;
           character_list = d->character;
-          if (d->character->in_room == NOWHERE || d->character->in_room == AUTO_RENT) {
+          if (d->character->in_room == NOWHERE ||
+              d->character->in_room == AUTO_RENT) {
             if (IS_SET(d->character->specials.act, PLR_BANISHED)) {
               char_to_room(d->character, 2);
               d->character->player.hometown = 2;
@@ -2118,7 +1971,9 @@ void nanny(struct descriptor_data *d, char *arg) {
           break;
 
         case '2':
-          SEND_TO_Q("Enter a text you'd like others to see when they look at you.\n\r", d);
+          SEND_TO_Q(
+            "Enter a text you'd like others to see when they look at you.\n\r",
+            d);
           SEND_TO_Q("Terminate with a '@'.\n\r", d);
           if (d->character->player.description) {
             SEND_TO_Q("Old description :\n\r", d);
@@ -2206,7 +2061,8 @@ void nanny(struct descriptor_data *d, char *arg) {
       }
       write(d->descriptor, echo_on, 6);
 
-      SEND_TO_Q("\n\rDone. You must enter the game to make the change final\n\r", d);
+      SEND_TO_Q(
+        "\n\rDone. You must enter the game to make the change final\n\r", d);
       SEND_TO_Q(MENU, d);
       STATE(d) = CON_SLCT;
       break;

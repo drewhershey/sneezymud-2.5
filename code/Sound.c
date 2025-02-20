@@ -17,10 +17,10 @@
 
 /* extern variables */
 
-extern struct obj_data *object_list;
-extern struct char_data *character_list;
+extern struct obj_data* object_list;
+extern struct char_data* character_list;
 
-int RecGetObjRoom(struct obj_data *obj) {
+int RecGetObjRoom(struct obj_data* obj) {
   if (obj->in_room != NOWHERE) {
     return (obj->in_room);
   }
@@ -35,9 +35,9 @@ int RecGetObjRoom(struct obj_data *obj) {
   }
 }
 
-void MakeNoise(int room, char *local_snd, char *distant_snd) {
+void MakeNoise(int room, char* local_snd, char* distant_snd) {
   int door;
-  struct char_data *ch;
+  struct char_data* ch;
   struct room_data *rp, *orp;
 
   rp = real_roomp(room);
@@ -48,7 +48,8 @@ void MakeNoise(int room, char *local_snd, char *distant_snd) {
     }
   }
   for (door = 0; door <= 5; door++) {
-    if (rp->dir_option[door] && (orp = real_roomp(rp->dir_option[door]->to_room))) {
+    if (rp->dir_option[door] &&
+        (orp = real_roomp(rp->dir_option[door]->to_room))) {
       for (ch = orp->people; ch; ch = ch->next_in_room) {
         if (!IS_NPC(ch) && (!IS_SET(ch->specials.act, PLR_NOSHOUT))) {
           send_to_char(distant_snd, ch);
@@ -61,8 +62,8 @@ void MakeNoise(int room, char *local_snd, char *distant_snd) {
 MakeSound(int pulse) {
   int room;
   char buffer[128];
-  struct obj_data *obj;
-  struct char_data *ch;
+  struct obj_data* obj;
+  struct char_data* ch;
 
   /*
    *  objects
@@ -70,7 +71,9 @@ MakeSound(int pulse) {
 
   for (obj = object_list; obj; obj = obj->next) {
     if (ITEM_TYPE(obj) == ITEM_AUDIO) {
-      if (((obj->obj_flags.value[0]) && (pulse % obj->obj_flags.value[0]) == 0) || (!number(0, 5))) {
+      if (((obj->obj_flags.value[0]) &&
+            (pulse % obj->obj_flags.value[0]) == 0) ||
+          (!number(0, 5))) {
         if (obj->carried_by) {
           room = obj->carried_by->in_room;
         } else if (obj->equipped_by) {

@@ -22,27 +22,28 @@
 #define TP_OBJ 1
 #define TP_ERROR 2
 
-struct room_data *world; /* dyn alloc'ed array of rooms     */
+struct room_data* world; /* dyn alloc'ed array of rooms     */
 
-void show_string(struct descriptor_data *d, char *input);
-void store_mail(char *to, char *from, char *message_pointer);
+void show_string(struct descriptor_data* d, char* input);
+void store_mail(char* to, char* from, char* message_pointer);
 
-char *string_fields[] = {"name", "short", "long", "description", "title", "delete-description", "\n"};
+char* string_fields[] = {"name", "short", "long", "description", "title",
+  "delete-description", "\n"};
 
-char *room_fields[] = {"name", /* 1 */
-                       "desc",  "fs", "exit", "exdsc", /* 5 */
-                       "extra", /* 6 */
-                       "riv", /* 7 */
-                       "tele", /* 8 */
-                       "tunn", /* 9 */
-                       "\n"};
+char* room_fields[] = {"name",   /* 1 */
+  "desc", "fs", "exit", "exdsc", /* 5 */
+  "extra",                       /* 6 */
+  "riv",                         /* 7 */
+  "tele",                        /* 8 */
+  "tunn",                        /* 9 */
+  "\n"};
 
 /* maximum length for text field x+1 */
 int length[] = {15, 60, 256, 240, 60};
 
 int room_length[] = {80, 1024, 50, 50, 512, 512, 50, 100, 50};
 
-char *skill_fields[] = {"learned", "affected", "duration", "recognize", "\n"};
+char* skill_fields[] = {"learned", "affected", "duration", "recognize", "\n"};
 
 int max_value[] = {255, 255, 10000, 1};
 
@@ -52,8 +53,8 @@ int max_value[] = {255, 255, 10000, 1};
 
 /* Add user input to the 'current' string (as defined by d->str) */
 
-void string_add(struct descriptor_data *d, char *str) {
-  char *scan;
+void string_add(struct descriptor_data* d, char* str) {
+  char* scan;
   int terminator = 0;
 
   /* determine if this is the terminal string, and truncate if so */
@@ -76,7 +77,8 @@ void string_add(struct descriptor_data *d, char *str) {
       send_to_char("String too long. Last line skipped.\n\r", d->character);
       terminator = 1;
     } else {
-      if (!(*d->str = (char *)realloc(*d->str, strlen(*d->str) + strlen(str) + 3))) {
+      if (!(*d->str =
+              (char*)realloc(*d->str, strlen(*d->str) + strlen(str) + 3))) {
         perror("string_add");
         exit(1);
       }
@@ -108,7 +110,7 @@ void string_add(struct descriptor_data *d, char *str) {
 #undef MAX_STR
 
 /* interpret an argument for do_string */
-void quad_arg(char *arg, int *type, char *name, int *field, char *string) {
+void quad_arg(char* arg, int* type, char* name, int* field, char* string) {
   char buf[MAX_STRING_LENGTH];
   int i;
 
@@ -141,19 +143,20 @@ void quad_arg(char *arg, int *type, char *name, int *field, char *string) {
 }
 
 /* modification of malloc'ed strings in chars/objects */
-void do_string(struct char_data *ch, char *arg, int cmd) {
+void do_string(struct char_data* ch, char* arg, int cmd) {
   char name[MAX_STRING_LENGTH], string[MAX_STRING_LENGTH];
   struct extra_descr_data *ed, *tmp;
   int field, type;
-  struct char_data *mob;
-  struct obj_data *obj;
+  struct char_data* mob;
+  struct obj_data* obj;
   if (IS_NPC(ch))
     return;
 
   quad_arg(arg, &type, name, &field, string);
 
   if (type == TP_ERROR) {
-    send_to_char("Syntax:\n\rstring ('obj'|'char') <name> <field> [<string>].", ch);
+    send_to_char("Syntax:\n\rstring ('obj'|'char') <name> <field> [<string>].",
+      ch);
     return;
   }
 
@@ -181,7 +184,8 @@ void do_string(struct char_data *ch, char *arg, int cmd) {
         }
         ch->desc->str = &mob->player.name;
         if (!IS_NPC(mob))
-          send_to_char("WARNING: You have changed the name of a player.\n\r", ch);
+          send_to_char("WARNING: You have changed the name of a player.\n\r",
+            ch);
         break;
       case 2:
         if (!IS_NPC(mob)) {
@@ -212,7 +216,8 @@ void do_string(struct char_data *ch, char *arg, int cmd) {
         if ((GetMaxLevel(ch) >= GetMaxLevel(mob)) && (ch != mob))
           ch->desc->str = &mob->player.title;
         else {
-          send_to_char("Sorry, can't set the title of someone of higher level.\n\r", ch);
+          send_to_char(
+            "Sorry, can't set the title of someone of higher level.\n\r", ch);
           return;
         }
         break;
@@ -333,7 +338,7 @@ void do_string(struct char_data *ch, char *arg, int cmd) {
   }
 }
 
-void bisect_arg(char *arg, int *field, char *string) {
+void bisect_arg(char* arg, int* field, char* string) {
   char buf[MAX_INPUT_LENGTH];
   int i;
 
@@ -351,13 +356,14 @@ void bisect_arg(char *arg, int *field, char *string) {
   return;
 }
 
-void do_edit(struct char_data *ch, char *arg, int cmd) {
-  int field, dflags, dir, exroom, dkey, room, rspeed, rdir, tele_room, tele_time, tele_look, moblim;
+void do_edit(struct char_data* ch, char* arg, int cmd) {
+  int field, dflags, dir, exroom, dkey, room, rspeed, rdir, tele_room,
+    tele_time, tele_look, moblim;
   unsigned r_flags;
   int zone, s_type;
   char name[MAX_INPUT_LENGTH], string[512], buf[132];
   struct extra_descr_data *ed, *tmp;
-  struct room_data *rp;
+  struct room_data* rp;
 
   rp = real_roomp(ch->in_room);
 
@@ -365,7 +371,7 @@ void do_edit(struct char_data *ch, char *arg, int cmd) {
     return;
 
   if (!ch->desc) /* someone is forced to do something. can be bad! */
-    return; /* the ch->desc->str field will cause problems... */
+    return;      /* the ch->desc->str field will cause problems... */
 
   bisect_arg(arg, &field, string);
 
@@ -388,7 +394,9 @@ void do_edit(struct char_data *ch, char *arg, int cmd) {
       sscanf(string, "%u %d ", &r_flags, &s_type);
       if ((r_flags < 0) || (s_type < 0) || (s_type > 9)) {
         send_to_char("didn't quite get those, please try again.\n\r", ch);
-        send_to_char("flags must be 0 or positive, and sectors must be from 0 to 9\n\r", ch);
+        send_to_char(
+          "flags must be 0 or positive, and sectors must be from 0 to 9\n\r",
+          ch);
         send_to_char("edit fs <flags> <sector_type>\n\r", ch);
         return;
       }
@@ -625,7 +633,7 @@ void do_edit(struct char_data *ch, char *arg, int cmd) {
  *  Modification of character skills                                     *
  ********************************************************************** */
 
-void do_setskill(struct char_data *ch, char *arg, int cmd) {
+void do_setskill(struct char_data* ch, char* arg, int cmd) {
   send_to_char("This routine is disabled untill it fitts\n\r", ch);
   send_to_char("The new structures (sorry Quinn) ....Bombman\n\r", ch);
   return;
@@ -636,7 +644,7 @@ void do_setskill(struct char_data *ch, char *arg, int cmd) {
 /* One_Word is like one_argument, execpt that words in quotes "" are */
 /* regarded as ONE word                                              */
 
-char *one_word(char *argument, char *first_arg) {
+char* one_word(char* argument, char* first_arg) {
   int found, begin, look_at;
 
   found = begin = 0;
@@ -649,7 +657,9 @@ char *one_word(char *argument, char *first_arg) {
 
       begin++;
 
-      for (look_at = 0; (*(argument + begin + look_at) >= ' ') && (*(argument + begin + look_at) != '\"'); look_at++)
+      for (look_at = 0; (*(argument + begin + look_at) >= ' ') &&
+                        (*(argument + begin + look_at) != '\"');
+           look_at++)
         *(first_arg + look_at) = LOWER(*(argument + begin + look_at));
 
       if (*(argument + begin + look_at) == '\"')
@@ -667,13 +677,14 @@ char *one_word(char *argument, char *first_arg) {
   return (argument + begin);
 }
 
-int start_page_file(struct descriptor_data *d, const char *fpath, char *errormsg) {
+int start_page_file(struct descriptor_data* d, const char* fpath,
+  char* errormsg) {
   if (!d || !(d->character))
     return FALSE;
 
   if (d->pagedfile)
     free(d->pagedfile);
-  d->pagedfile = (char *)calloc(strlen(fpath) + 1, 1);
+  d->pagedfile = (char*)calloc(strlen(fpath) + 1, 1);
   strcpy(d->pagedfile, fpath);
   d->position = 0;
   if (!page_file(d, "")) { /* couldn't open file, etc. */
@@ -686,8 +697,8 @@ int start_page_file(struct descriptor_data *d, const char *fpath, char *errormsg
 
 /* page_file returns TRUE if something was paged, FALSE if nothing got sent */
 /* if (d->position) comes back < 0 then EOF was hit when outputing file.    */
-int page_file(struct descriptor_data *d, char *input) {
-  FILE *fp;
+int page_file(struct descriptor_data* d, char* input) {
+  FILE* fp;
   static char buffer[256];
   int i, numlines;
   int sent_something = FALSE;
@@ -700,7 +711,8 @@ int page_file(struct descriptor_data *d, char *input) {
     return FALSE;
   }
 
-  if (d->connected || (!d->pagedfile) || ((d->position) < 0) || (!(fp = fopen(d->pagedfile, "r"))))
+  if (d->connected || (!d->pagedfile) || ((d->position) < 0) ||
+      (!(fp = fopen(d->pagedfile, "r"))))
     return FALSE;
 
   numlines = (d->screen_size) ? d->screen_size - 2 : 24;
@@ -726,7 +738,7 @@ int page_file(struct descriptor_data *d, char *input) {
   return sent_something;
 }
 
-void page_string(struct descriptor_data *d, char *str, int keep_internal) {
+void page_string(struct descriptor_data* d, char* str, int keep_internal) {
   if (!d)
     return;
 
@@ -740,7 +752,7 @@ void page_string(struct descriptor_data *d, char *str, int keep_internal) {
   show_string(d, "");
 }
 
-void show_string(struct descriptor_data *d, char *input) {
+void show_string(struct descriptor_data* d, char* input) {
   char buffer[MAX_STRING_LENGTH], buf[MAX_INPUT_LENGTH];
   register char *scan, *chk;
   int lines = 0, toggle = 1;
@@ -758,7 +770,8 @@ void show_string(struct descriptor_data *d, char *input) {
 
   /* show a chunk */
   for (scan = buffer;; scan++, d->showstr_point++) {
-    if ((((*scan = *d->showstr_point) == '\n') || (*scan == '\r')) && ((toggle = -toggle) < 0))
+    if ((((*scan = *d->showstr_point) == '\n') || (*scan == '\r')) &&
+        ((toggle = -toggle) < 0))
       lines++;
     else if (!*scan || (d->screen_size && (lines >= (d->screen_size - 2)))) {
       *scan = '\0';
@@ -781,11 +794,11 @@ void show_string(struct descriptor_data *d, char *input) {
 
 void night_watchman(void) {
   long tc;
-  struct tm *t_info;
+  struct tm* t_info;
 
   extern int Shutdown;
 
-  void send_to_all(char *messg);
+  void send_to_all(char* messg);
 
   tc = time(0);
   t_info = localtime(&tc);
@@ -803,9 +816,9 @@ void night_watchman(void) {
 
 void check_reboot(void) {
   long tc;
-  struct tm *t_info;
+  struct tm* t_info;
   char dummy;
-  FILE *boot;
+  FILE* boot;
 
   extern int Shutdown, rebootmud;
 
@@ -835,7 +848,8 @@ void check_reboot(void) {
       } else if (t_info->tm_min > 40)
         send_to_all("ATTENTION: DikuMUD will reboot in 10 minutes.\n\r");
       else if (t_info->tm_min > 30)
-        send_to_all("Warning: The game will close and reboot in 20 minutes.\n\r");
+        send_to_all(
+          "Warning: The game will close and reboot in 20 minutes.\n\r");
 
       fclose(boot);
     }
@@ -847,12 +861,13 @@ void check_reboot(void) {
 
 int workhours() {
   long tc;
-  struct tm *t_info;
+  struct tm* t_info;
 
   tc = time(0);
   t_info = localtime(&tc);
 
-  return ((t_info->tm_wday > 0) && (t_info->tm_wday < 6) && (t_info->tm_hour >= 9) && (t_info->tm_hour < 17));
+  return ((t_info->tm_wday > 0) && (t_info->tm_wday < 6) &&
+          (t_info->tm_hour >= 9) && (t_info->tm_hour < 17));
 }
 
 /*
@@ -865,13 +880,13 @@ int workhours() {
 
 int load(void) {
   struct syslinfo {
-      char sl_date[12]; /* "Tue Sep 16\0" */
-      char sl_time[8]; /* "11:10\0" */
-      char sl_load1[6]; /* "12.0\0" */
+      char sl_date[12];  /* "Tue Sep 16\0" */
+      char sl_time[8];   /* "11:10\0" */
+      char sl_load1[6];  /* "12.0\0" */
       char sl_load2[10]; /* "+2.3 14u\0" */
   } info;
 
-  FILE *fl;
+  FILE* fl;
   int ld, i, sum;
   static int previous[5];
   static int p_point = -1;
@@ -907,9 +922,9 @@ int load(void) {
   }
 }
 
-char *nogames(void) {
+char* nogames(void) {
   static char text[200];
-  FILE *fl;
+  FILE* fl;
 
   if (fl = fopen("lib/nogames", "r")) {
     vlog("/usr/games/nogames exists");
@@ -923,7 +938,7 @@ char *nogames(void) {
 #ifdef OLD_COMA
 
 void coma(void) {
-  extern struct descriptor_data *descriptor_list;
+  extern struct descriptor_data* descriptor_list;
   extern int tics;
 
   void close_socket(struct descriptor_data * d);
@@ -951,14 +966,15 @@ void coma(void) {
 void gr(int s) {
   char *txt = 0, buf[1024];
   int ld = 0;
-  static char *warnings[3] = {
+  static char* warnings[3] = {
     "If things don't look better within 3 minutes, the game will pause.\n\r",
-    "The game will close temporarily 2 minutes from now.\n\r", "WARNING: The game will close in 1 minute.\n\r"};
+    "The game will close temporarily 2 minutes from now.\n\r",
+    "WARNING: The game will close in 1 minute.\n\r"};
   static int wnr = 0;
 
   extern int slow_death, Shutdown;
 
-  void send_to_all(char *messg);
+  void send_to_all(char* messg);
 
   void coma(int s);
 

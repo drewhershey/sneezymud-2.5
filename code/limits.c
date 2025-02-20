@@ -15,26 +15,24 @@
 #include "structs.h"
 #include "utils.h"
 
-struct room_data *real_roomp(int);
+struct room_data* real_roomp(int);
 
-extern struct char_data *character_list;
-extern struct obj_data *object_list;
+extern struct char_data* character_list;
+extern struct obj_data* object_list;
 extern struct title_type titles[8][ABS_MAX_LVL];
-extern struct room_data *world;
-extern const char *RaceName[];
+extern struct room_data* world;
+extern const char* RaceName[];
 extern const int RacialMax[][4];
 
 /* External procedures */
 
-void update_pos(struct char_data *victim); /* in fight.c */
-void damage(
-  struct char_data *ch, struct char_data *victim, /*    "       */
-  int damage, int weapontype
-);
-struct time_info_data age(struct char_data *ch);
-int ClassSpecificStuff(struct char_data *ch);
+void update_pos(struct char_data* victim);                  /* in fight.c */
+void damage(struct char_data* ch, struct char_data* victim, /*    "       */
+  int damage, int weapontype);
+struct time_info_data age(struct char_data* ch);
+int ClassSpecificStuff(struct char_data* ch);
 
-char *ClassTitles(struct char_data *ch) {
+char* ClassTitles(struct char_data* ch) {
   int i, count = 0;
   static char buf[256];
 
@@ -42,7 +40,8 @@ char *ClassTitles(struct char_data *ch) {
     if (GET_LEVEL(ch, i)) {
       count++;
       if (count > 1) {
-        sprintf(buf + strlen(buf), "/%s", GET_CLASS_TITLE(ch, i, GET_LEVEL(ch, i)));
+        sprintf(buf + strlen(buf), "/%s",
+          GET_CLASS_TITLE(ch, i, GET_LEVEL(ch, i)));
       } else {
         sprintf(buf, "%s", GET_CLASS_TITLE(ch, i, GET_LEVEL(ch, i)));
       }
@@ -74,7 +73,7 @@ int graf(int age, int p0, int p1, int p2, int p3, int p4, int p5, int p6) {
 
 /* The three MAX functions define a characters Effective maximum */
 /* Which is NOT the same as the ch->points.max_xxxx !!!          */
-int mana_limit(struct char_data *ch) {
+int mana_limit(struct char_data* ch) {
   int max;
 
   max = 100;
@@ -86,7 +85,8 @@ int mana_limit(struct char_data *ch) {
     max += GET_LEVEL(ch, MAGE_LEVEL_IND) * 6;
   } else if (HasClass(ch, CLASS_CLERIC)) {
     max += GET_LEVEL(ch, CLERIC_LEVEL_IND) * 5;
-  } else if ((HasClass(ch, CLASS_ANTIPALADIN)) || (HasClass(ch, CLASS_PALADIN)) || (HasClass(ch, CLASS_RANGER))) {
+  } else if ((HasClass(ch, CLASS_ANTIPALADIN)) ||
+             (HasClass(ch, CLASS_PALADIN)) || (HasClass(ch, CLASS_RANGER))) {
     max += GetMaxLevel(ch) * 3;
   } else {
     max = 100;
@@ -97,7 +97,7 @@ int mana_limit(struct char_data *ch) {
   return (max);
 }
 
-int hit_limit(struct char_data *ch) {
+int hit_limit(struct char_data* ch) {
   int max;
 
   if (!IS_NPC(ch))
@@ -112,7 +112,7 @@ int hit_limit(struct char_data *ch) {
   return (max);
 }
 
-int move_limit(struct char_data *ch) {
+int move_limit(struct char_data* ch) {
   int max;
 
   if (!IS_NPC(ch))
@@ -137,7 +137,7 @@ int move_limit(struct char_data *ch) {
 }
 
 /* manapoint gain pr. game hour */
-int mana_gain(struct char_data *ch) {
+int mana_gain(struct char_data* ch) {
   int gain;
 
   if (IS_NPC(ch)) {
@@ -180,7 +180,7 @@ int mana_gain(struct char_data *ch) {
   return (gain);
 }
 
-int hit_gain(struct char_data *ch)
+int hit_gain(struct char_data* ch)
 /* Hitpoint gain pr. game hour */
 {
   int gain;
@@ -227,7 +227,7 @@ int hit_gain(struct char_data *ch)
   return (gain);
 }
 
-int move_gain(struct char_data *ch)
+int move_gain(struct char_data* ch)
 /* move gain pr. game hour */
 {
   int gain;
@@ -270,13 +270,14 @@ int move_gain(struct char_data *ch)
 }
 
 /* Gain maximum in various points */
-void advance_level(struct char_data *ch, int class) {
+void advance_level(struct char_data* ch, int class) {
   int add_hp, i;
 
   extern struct wis_app_type wis_app[];
   extern struct con_app_type con_app[];
 
-  if (GET_LEVEL(ch, class) > 0 && GET_EXP(ch) < titles[class][GET_LEVEL(ch, class) + 1].exp) {
+  if (GET_LEVEL(ch, class) > 0 &&
+      GET_EXP(ch) < titles[class][GET_LEVEL(ch, class) + 1].exp) {
     /*  they can't advance here */
     vlog("Bad advance_level");
     return;
@@ -312,7 +313,8 @@ void advance_level(struct char_data *ch, int class) {
     } break;
 
     case WARRIOR_LEVEL_IND: {
-      if ((!HasClass(ch, CLASS_THIEF)) && (!HasClass(ch, CLASS_MAGIC_USER)) && (!HasClass(ch, CLASS_CLERIC)))
+      if ((!HasClass(ch, CLASS_THIEF)) && (!HasClass(ch, CLASS_MAGIC_USER)) &&
+          (!HasClass(ch, CLASS_CLERIC)))
         add_hp += number(1, 12);
       else if (GET_LEVEL(ch, WARRIOR_LEVEL_IND) < 10)
         add_hp += number(6, 10);
@@ -364,7 +366,7 @@ void advance_level(struct char_data *ch, int class) {
 ** Damn tricky for multi-class...
 */
 
-void drop_level(struct char_data *ch, int class) {
+void drop_level(struct char_data* ch, int class) {
   int add_hp, lin_class;
 
   extern struct wis_app_type wis_app[];
@@ -441,18 +443,19 @@ void drop_level(struct char_data *ch, int class) {
 
   ch->specials.spells_to_learn -= MAX(2, wis_app[GET_WIS(ch)].bonus);
 
-  ch->points.exp = MIN(titles[lin_class][GET_LEVEL(ch, lin_class)].exp, GET_EXP(ch));
+  ch->points.exp =
+    MIN(titles[lin_class][GET_LEVEL(ch, lin_class)].exp, GET_EXP(ch));
 }
 
-void set_title(struct char_data *ch) {
+void set_title(struct char_data* ch) {
   char buf[256];
 
   sprintf(buf, "the %s %s", RaceName[ch->race], ClassTitles(ch));
 
-  ch->player.title = (char *)strdup(buf);
+  ch->player.title = (char*)strdup(buf);
 }
 
-void gain_exp(struct char_data *ch, int gain) {
+void gain_exp(struct char_data* ch, int gain) {
   int i;
   bool is_altered = FALSE;
   char buf[256];
@@ -470,15 +473,23 @@ void gain_exp(struct char_data *ch, int gain) {
         for (i = MAGE_LEVEL_IND; i <= RANGER_LEVEL_IND; i++) {
           if (GET_LEVEL(ch, i)) {
             if (GET_EXP(ch) >= titles[i][GET_LEVEL(ch, i) + 2].exp) {
-              send_to_char("You must practice at a guild before you can gain any more experience\n\r", ch);
+              send_to_char(
+                "You must practice at a guild before you can gain any more "
+                "experience\n\r",
+                ch);
               GET_EXP(ch) = titles[i][GET_LEVEL(ch, i) + 2].exp - 1;
               return;
             } else if (GET_EXP(ch) >= titles[i][GET_LEVEL(ch, i) + 1].exp) {
               /* do nothing..this is cool */
-            } else if (GET_EXP(ch) + gain >= titles[i][GET_LEVEL(ch, i) + 1].exp) {
-              sprintf(buf, "You have gained enough to be a(n) %s\n\r", GET_CLASS_TITLE(ch, i, GET_LEVEL(ch, i) + 1));
+            } else if (GET_EXP(ch) + gain >=
+                       titles[i][GET_LEVEL(ch, i) + 1].exp) {
+              sprintf(buf, "You have gained enough to be a(n) %s\n\r",
+                GET_CLASS_TITLE(ch, i, GET_LEVEL(ch, i) + 1));
               send_to_char(buf, ch);
-              send_to_char("You must practice at a guild before you can gain any more experience\n\r", ch);
+              send_to_char(
+                "You must practice at a guild before you can gain any more "
+                "experience\n\r",
+                ch);
               if (GET_EXP(ch) + gain >= titles[i][GET_LEVEL(ch, i) + 2].exp) {
                 GET_EXP(ch) = titles[i][GET_LEVEL(ch, i) + 2].exp - 1;
                 return;
@@ -508,7 +519,7 @@ void gain_exp(struct char_data *ch, int gain) {
   }
 }
 
-void gain_exp_regardless(struct char_data *ch, int gain, int class) {
+void gain_exp_regardless(struct char_data* ch, int gain, int class) {
   int i;
   bool is_altered = FALSE;
 
@@ -517,7 +528,8 @@ void gain_exp_regardless(struct char_data *ch, int gain, int class) {
     if (gain > 0) {
       GET_EXP(ch) += gain;
 
-      for (i = 0; (i < ABS_MAX_LVL) && (titles[class][i].exp <= GET_EXP(ch)); i++) {
+      for (i = 0; (i < ABS_MAX_LVL) && (titles[class][i].exp <= GET_EXP(ch));
+           i++) {
         if (i > GET_LEVEL(ch, class)) {
           send_to_char("You raise a level\n\r", ch);
           GET_LEVEL(ch, class) = i;
@@ -535,7 +547,7 @@ void gain_exp_regardless(struct char_data *ch, int gain, int class) {
     set_title(ch);
 }
 
-void gain_condition(struct char_data *ch, int condition, int value) {
+void gain_condition(struct char_data* ch, int condition, int value) {
   bool intoxicated;
 
   if (GET_COND(ch, condition) == -1) /* No change */
@@ -570,12 +582,13 @@ void gain_condition(struct char_data *ch, int condition, int value) {
   }
 }
 
-void check_idling(struct char_data *ch) {
+void check_idling(struct char_data* ch) {
   int save_room;
-  void do_save(struct char_data * ch, char *argument, int cmd);
+  void do_save(struct char_data * ch, char* argument, int cmd);
 
   if (ch->specials.timer == 10) {
-    if (ch->specials.was_in_room == NOWHERE && ch->in_room != NOWHERE && ch->in_room != 3) {
+    if (ch->specials.was_in_room == NOWHERE && ch->in_room != NOWHERE &&
+        ch->in_room != 3) {
       ch->specials.was_in_room = ch->in_room;
       if (ch->specials.fighting) {
         stop_fighting(ch->specials.fighting);
@@ -607,7 +620,7 @@ void check_idling(struct char_data *ch) {
   }
 }
 
-int ObjFromCorpse(struct obj_data *c) {
+int ObjFromCorpse(struct obj_data* c) {
   struct obj_data *jj, *next_thing;
 
   for (jj = c->contains; jj; jj = next_thing) {
@@ -635,7 +648,7 @@ int ObjFromCorpse(struct obj_data *c) {
   extract_obj(c);
 }
 
-int ClassSpecificStuff(struct char_data *ch) {
+int ClassSpecificStuff(struct char_data* ch) {
   if (HasClass(ch, CLASS_WARRIOR) || HasClass(ch, CLASS_MONK)) {
     ch->mult_att = 1.0;
     if (HasClass(ch, CLASS_MONK)) {

@@ -8,43 +8,43 @@
 #include "structs.h"
 #include "utils.h"
 
-#define MAX_MSGS 50 /* Max number of messages.          */
+#define MAX_MSGS 50             /* Max number of messages.          */
 #define MAX_MESSAGE_LENGTH 2048 /* that should be enough            */
 
 struct Board {
-    char *msgs[MAX_MSGS];
-    char *head[MAX_MSGS];
+    char* msgs[MAX_MSGS];
+    char* head[MAX_MSGS];
     int msg_num;
     char filename[40];
-    FILE *file; /* file that is opened */
-    int Rnum; /* Real # of object that this board hooks to */
-    struct Board *next;
+    FILE* file; /* file that is opened */
+    int Rnum;   /* Real # of object that this board hooks to */
+    struct Board* next;
 };
 
-struct char_data *board_kludge_char;
-struct Board *board_list;
+struct char_data* board_kludge_char;
+struct Board* board_list;
 
-extern struct obj_data *object_list;
-extern struct index_data *obj_index;
+extern struct obj_data* object_list;
+extern struct index_data* obj_index;
 
-int board_show_board(struct char_data *ch, char *arg, struct Board *b);
-void board_fix_long_desc(struct Board *b);
-int board_display_msg(struct char_data *ch, char *arg, struct Board *b);
-void error_log(char *str);
-void board_reset_board(struct Board *b);
-void board_load_board(struct Board *b);
-void board_save_board(struct Board *b);
-int board_remove_msg(struct char_data *ch, char *arg, struct Board *b);
-void board_write_msg(struct char_data *ch, char *arg, struct Board *b);
-int board(struct char_data *ch, int cmd, char *arg, Obj *me);
-struct Board *FindBoardInRoom(int room);
-void OpenBoardFile(struct Board *b);
-void InitABoard(struct obj_data *obj);
+int board_show_board(struct char_data* ch, char* arg, struct Board* b);
+void board_fix_long_desc(struct Board* b);
+int board_display_msg(struct char_data* ch, char* arg, struct Board* b);
+void error_log(char* str);
+void board_reset_board(struct Board* b);
+void board_load_board(struct Board* b);
+void board_save_board(struct Board* b);
+int board_remove_msg(struct char_data* ch, char* arg, struct Board* b);
+void board_write_msg(struct char_data* ch, char* arg, struct Board* b);
+int board(struct char_data* ch, int cmd, char* arg, Obj* me);
+struct Board* FindBoardInRoom(int room);
+void OpenBoardFile(struct Board* b);
+void InitABoard(struct obj_data* obj);
 void InitBoards();
 
 void InitBoards() {
-  struct obj_data *obj;
-  extern struct Board *board_list;
+  struct obj_data* obj;
+  extern struct Board* board_list;
 
   /*
    **  this is called at the very beginning, like shopkeepers
@@ -52,9 +52,9 @@ void InitBoards() {
   board_list = 0;
 }
 
-void InitABoard(struct obj_data *obj) {
-  extern struct Board *board_list;
-  struct Board *new, *tmp;
+void InitABoard(struct obj_data* obj) {
+  extern struct Board* board_list;
+  struct Board* new, *tmp;
   int i;
 
   if (board_list) {
@@ -72,7 +72,7 @@ void InitABoard(struct obj_data *obj) {
     }
   }
 
-  new = (struct Board *)malloc(sizeof(*new));
+  new = (struct Board*)malloc(sizeof(*new));
   if (!new) {
     perror("InitABoard(malloc)");
     exit(0);
@@ -102,7 +102,7 @@ void InitABoard(struct obj_data *obj) {
   fclose(new->file);
 }
 
-void OpenBoardFile(struct Board *b) {
+void OpenBoardFile(struct Board* b) {
   b->file = fopen(b->filename, "r+");
 
   if (!b->file) {
@@ -111,10 +111,10 @@ void OpenBoardFile(struct Board *b) {
   }
 }
 
-struct Board *FindBoardInRoom(int room) {
-  struct obj_data *o;
-  struct Board *nb;
-  extern struct Board *board_list;
+struct Board* FindBoardInRoom(int room) {
+  struct obj_data* o;
+  struct Board* nb;
+  extern struct Board* board_list;
 
   if (!real_roomp(room))
     return (NULL);
@@ -131,8 +131,8 @@ struct Board *FindBoardInRoom(int room) {
   return (NULL);
 }
 
-int board(struct char_data *ch, int cmd, char *arg, Obj *me) {
-  struct Board *nb;
+int board(struct char_data* ch, int cmd, char* arg, Obj* me) {
+  struct Board* nb;
 
   if (!ch)
     return FALSE;
@@ -160,10 +160,10 @@ int board(struct char_data *ch, int cmd, char *arg, Obj *me) {
   }
 }
 
-void board_write_msg(struct char_data *ch, char *arg, struct Board *b) {
+void board_write_msg(struct char_data* ch, char* arg, struct Board* b) {
   static char buf[100];
   long ot;
-  char *otmstr;
+  char* otmstr;
 
   if (b->msg_num > MAX_MSGS - 1) {
     send_to_char("The board is full already.\n\r", ch);
@@ -171,7 +171,8 @@ void board_write_msg(struct char_data *ch, char *arg, struct Board *b) {
   }
 
   if (board_kludge_char) {
-    send_to_char("Sorry, but someone has stolen the pen.. wait a few minutes.\n\r", ch);
+    send_to_char(
+      "Sorry, but someone has stolen the pen.. wait a few minutes.\n\r", ch);
     return;
   }
 
@@ -191,7 +192,8 @@ void board_write_msg(struct char_data *ch, char *arg, struct Board *b) {
   otmstr = asctime(localtime(&ot));
   *(otmstr + strlen(otmstr) - 1) = '\0';
   sprintf(buf, "%s", otmstr);
-  b->head[b->msg_num] = (char *)malloc(strlen(buf) + strlen(arg) + strlen(GET_NAME(ch)) + 8);
+  b->head[b->msg_num] =
+    (char*)malloc(strlen(buf) + strlen(arg) + strlen(GET_NAME(ch)) + 8);
 
   /* +8 is for a space and '()' around the character name. */
 
@@ -213,7 +215,7 @@ void board_write_msg(struct char_data *ch, char *arg, struct Board *b) {
   b->msg_num++;
 }
 
-int board_remove_msg(struct char_data *ch, char *arg, struct Board *b) {
+int board_remove_msg(struct char_data* ch, char* arg, struct Board* b) {
   int ind, msg;
   char buf[256], number[MAX_INPUT_LENGTH];
 
@@ -233,7 +235,8 @@ int board_remove_msg(struct char_data *ch, char *arg, struct Board *b) {
   }
 
   if (GetMaxLevel(ch) < 51) {
-    send_to_char("Due to misuse of the REMOVE command, only 51st level\n\r", ch);
+    send_to_char("Due to misuse of the REMOVE command, only 51st level\n\r",
+      ch);
     send_to_char("and above can remove messages.\n\r", ch);
     return;
   }
@@ -255,7 +258,7 @@ int board_remove_msg(struct char_data *ch, char *arg, struct Board *b) {
   return (1);
 }
 
-void board_save_board(struct Board *b) {
+void board_save_board(struct Board* b) {
   int ind, len;
 
   if (!b)
@@ -274,7 +277,7 @@ void board_save_board(struct Board *b) {
     fwrite(&len, sizeof(int), 1, b->file);
     fwrite(b->head[ind], sizeof(char), len, b->file);
     if (!b->msgs[ind]) {
-      if (b->msgs[ind] = (char *)Mymalloc(50)) {
+      if (b->msgs[ind] = (char*)Mymalloc(50)) {
         strcpy(b->msgs[ind], "Generic Message");
       } else {
         exit(1);
@@ -289,7 +292,7 @@ void board_save_board(struct Board *b) {
   return;
 }
 
-void board_load_board(struct Board *b) {
+void board_load_board(struct Board* b) {
   int ind, len = 0;
 
   return;
@@ -306,7 +309,7 @@ void board_load_board(struct Board *b) {
   }
   for (ind = 0; ind < b->msg_num; ind++) {
     fread(&len, sizeof(int), 1, b->file);
-    b->head[ind] = (char *)Mymalloc(len + 1);
+    b->head[ind] = (char*)Mymalloc(len + 1);
     if (!b->head[ind]) {
       error_log("Malloc for board header failed.\n\r");
       board_reset_board(b);
@@ -315,7 +318,7 @@ void board_load_board(struct Board *b) {
     }
     fread(b->head[ind], sizeof(char), len, b->file);
     fread(&len, sizeof(int), 1, b->file);
-    b->msgs[ind] = (char *)Mymalloc(len + 1);
+    b->msgs[ind] = (char*)Mymalloc(len + 1);
     if (!b->msgs[ind]) {
       error_log("Malloc for board msg failed..\n\r");
       board_reset_board(b);
@@ -329,7 +332,7 @@ void board_load_board(struct Board *b) {
   return;
 }
 
-void board_reset_board(struct Board *b) {
+void board_reset_board(struct Board* b) {
   int ind;
 
   for (ind = 0; ind < MAX_MSGS; ind++) {
@@ -344,13 +347,13 @@ void board_reset_board(struct Board *b) {
   return;
 }
 
-void error_log(char *str) { /* The original error-handling was MUCH */
+void error_log(char* str) {  /* The original error-handling was MUCH */
   fputs("Board : ", stderr); /* more competent than the current but  */
-  fputs(str, stderr); /* I got the advice to cut it out..;)   */
+  fputs(str, stderr);        /* I got the advice to cut it out..;)   */
   return;
 }
 
-int board_display_msg(struct char_data *ch, char *arg, struct Board *b) {
+int board_display_msg(struct char_data* ch, char* arg, struct Board* b) {
   char buf[512], number[MAX_INPUT_LENGTH], buffer[MAX_STRING_LENGTH];
   int msg;
 
@@ -373,16 +376,15 @@ int board_display_msg(struct char_data *ch, char *arg, struct Board *b) {
 
   /* Bad news */
 
-  sprintf(buffer, "Message %d : %s\n\r\n\r%s", msg, b->head[msg - 1], b->msgs[msg - 1]);
+  sprintf(buffer, "Message %d : %s\n\r\n\r%s", msg, b->head[msg - 1],
+    b->msgs[msg - 1]);
   page_string(ch->desc, buffer, 1);
   return (1);
 }
 
-void board_fix_long_desc(struct Board *b) {
-  return;
-}
+void board_fix_long_desc(struct Board* b) { return; }
 
-int board_show_board(struct char_data *ch, char *arg, struct Board *b) {
+int board_show_board(struct char_data* ch, char* arg, struct Board* b) {
   int i;
   char buf[MAX_STRING_LENGTH], tmp[MAX_INPUT_LENGTH];
 
@@ -398,13 +400,16 @@ int board_show_board(struct char_data *ch, char *arg, struct Board *b) {
 
   act("$n studies the board.", TRUE, ch, 0, 0, TO_ROOM);
 
-  strcpy(buf, "This is a bulletin board. Usage: READ/REMOVE <messg #>, WRITE <header>\n\r");
+  strcpy(buf,
+    "This is a bulletin board. Usage: READ/REMOVE <messg #>, WRITE "
+    "<header>\n\r");
   if (!b->msg_num) {
     strcat(buf, "The board is empty.\n\r");
   } else if (b->msg_num == 1) {
     sprintf(buf + strlen(buf), "There is 1 message on the board.\n\r");
   } else {
-    sprintf(buf + strlen(buf), "There are %d messages on the board.\n\r", b->msg_num);
+    sprintf(buf + strlen(buf), "There are %d messages on the board.\n\r",
+      b->msg_num);
     for (i = 0; i < b->msg_num; i++)
       sprintf(buf + strlen(buf), "%-2d : %s\n\r", i + 1, b->head[i]);
   }

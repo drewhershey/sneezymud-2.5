@@ -17,13 +17,14 @@
 
 /* extern variables */
 
-extern struct descriptor_data *descriptor_list;
+extern struct descriptor_data* descriptor_list;
 
 /* extern functions */
 
-void parse_string(char *input, char *output, struct char_data *ch1, struct char_data *ch2, struct char_data *to);
+void parse_string(char* input, char* output, struct char_data* ch1,
+  struct char_data* ch2, struct char_data* to);
 int action(int cmd);
-char *fread_action(FILE *fl);
+char* fread_action(FILE* fl);
 
 struct social_messg {
     int act_nr;
@@ -31,31 +32,31 @@ struct social_messg {
     int min_victim_position; /* Position of victim */
 
     /* No argument was supplied */
-    char *char_no_arg;
-    char *others_no_arg;
+    char* char_no_arg;
+    char* others_no_arg;
 
     /* An argument was there, and a victim was found */
-    char *char_found; /* if NULL, read no further, ignore args */
-    char *others_found;
-    char *vict_found;
+    char* char_found; /* if NULL, read no further, ignore args */
+    char* others_found;
+    char* vict_found;
 
     /* An argument was there, but no victim was found */
-    char *not_found;
+    char* not_found;
 
     /* The victim turned out to be the character */
-    char *char_auto;
-    char *others_auto;
-} *soc_mess_list = 0;
+    char* char_auto;
+    char* others_auto;
+}* soc_mess_list = 0;
 
 struct pose_type {
-    int level; /* minimum level for poser */
-    char *poser_msg[4]; /* message to poser        */
-    char *room_msg[4]; /* message to room         */
+    int level;          /* minimum level for poser */
+    char* poser_msg[4]; /* message to poser        */
+    char* room_msg[4];  /* message to room         */
 } pose_messages[MAX_MESSAGES];
 
 static int list_top = -1;
 
-char *fread_action(FILE *fl) {
+char* fread_action(FILE* fl) {
   char buf[MAX_STRING_LENGTH], *rslt;
 
   for (;;) {
@@ -77,7 +78,7 @@ char *fread_action(FILE *fl) {
 }
 
 void boot_social_messages(void) {
-  FILE *fl;
+  FILE* fl;
   int tmp, hide, min_pos;
 
   if (!(fl = fopen(SOCMESS_FILE, "r"))) {
@@ -96,8 +97,8 @@ void boot_social_messages(void) {
     if (!soc_mess_list) {
       CREATE(soc_mess_list, struct social_messg, 1);
       list_top = 0;
-    } else if (!(soc_mess_list =
-                   (struct social_messg *)realloc(soc_mess_list, sizeof(struct social_messg) * (++list_top + 1)))) {
+    } else if (!(soc_mess_list = (struct social_messg*)realloc(soc_mess_list,
+                   sizeof(struct social_messg) * (++list_top + 1)))) {
       perror("boot_social_messages. realloc");
       exit(1);
     }
@@ -152,10 +153,10 @@ int find_action(int cmd) {
   }
 }
 
-void do_action(struct char_data *ch, char *argument, int cmd) {
+void do_action(struct char_data* ch, char* argument, int cmd) {
   int act_nr;
   char buf[MAX_INPUT_LENGTH], tmp[MAX_STRING_LENGTH];
-  struct social_messg *action;
+  struct social_messg* action;
   struct char_data *i, *vict;
 
   if ((act_nr = find_action(cmd)) < 0) {
@@ -186,7 +187,8 @@ void do_action(struct char_data *ch, char *argument, int cmd) {
     act(action->others_auto, action->hide, ch, 0, 0, TO_ROOM);
   } else {
     if (GET_POS(vict) < action->min_victim_position) {
-      act("$N is not in a proper position for that.", FALSE, ch, 0, vict, TO_CHAR);
+      act("$N is not in a proper position for that.", FALSE, ch, 0, vict,
+        TO_CHAR);
     } else {
       act(action->char_found, 0, ch, 0, vict, TO_CHAR);
 
@@ -197,10 +199,10 @@ void do_action(struct char_data *ch, char *argument, int cmd) {
   }
 }
 
-void do_insult(struct char_data *ch, char *argument, int cmd) {
+void do_insult(struct char_data* ch, char* argument, int cmd) {
   static char buf[100];
   static char arg[MAX_STRING_LENGTH];
-  struct char_data *victim;
+  struct char_data* victim;
 
   only_argument(argument, arg);
 
@@ -216,14 +218,20 @@ void do_insult(struct char_data *ch, char *argument, int cmd) {
           case 0: {
             if (GET_SEX(ch) == SEX_MALE) {
               if (GET_SEX(victim) == SEX_MALE)
-                act("$n accuses you of fighting like a woman!", FALSE, ch, 0, victim, TO_VICT);
+                act("$n accuses you of fighting like a woman!", FALSE, ch, 0,
+                  victim, TO_VICT);
               else
-                act("$n says that women can't fight.", FALSE, ch, 0, victim, TO_VICT);
+                act("$n says that women can't fight.", FALSE, ch, 0, victim,
+                  TO_VICT);
             } else { /* Ch == Woman */
               if (GET_SEX(victim) == SEX_MALE)
-                act("$n accuses you of having the smallest.... (brain?)", FALSE, ch, 0, victim, TO_VICT);
+                act("$n accuses you of having the smallest.... (brain?)", FALSE,
+                  ch, 0, victim, TO_VICT);
               else
-                act("$n tells you that you'd loose a beautycontest against a troll.", FALSE, ch, 0, victim, TO_VICT);
+                act(
+                  "$n tells you that you'd loose a beautycontest against a "
+                  "troll.",
+                  FALSE, ch, 0, victim, TO_VICT);
             }
           } break;
           case 1: {
@@ -244,7 +252,7 @@ void do_insult(struct char_data *ch, char *argument, int cmd) {
 }
 
 void boot_pose_messages(void) {
-  FILE *fl;
+  FILE* fl;
   byte counter;
   int tmp;
   byte class;
@@ -267,7 +275,7 @@ void boot_pose_messages(void) {
   fclose(fl);
 }
 
-do_pose(struct char_data *ch, char *argument, int cmd) {
+do_pose(struct char_data* ch, char* argument, int cmd) {
   byte to_pose;
   byte counter;
 
@@ -279,7 +287,9 @@ do_pose(struct char_data *ch, char *argument, int cmd) {
     return;
   }
 
-  for (counter = 0; (pose_messages[counter].level < GetMaxLevel(ch)) && (pose_messages[counter].level > 0); counter++)
+  for (counter = 0; (pose_messages[counter].level < GetMaxLevel(ch)) &&
+                    (pose_messages[counter].level > 0);
+       counter++)
     ;
   counter--;
 

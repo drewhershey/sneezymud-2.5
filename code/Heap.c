@@ -8,7 +8,7 @@
 #include "heap.h"
 #include "structs.h"
 
-void SmartStrCpy(char *s1, const char *s2) /* ignore trailing spaces and \n */
+void SmartStrCpy(char* s1, const char* s2) /* ignore trailing spaces and \n */
 {
   int i;
 
@@ -25,7 +25,7 @@ void SmartStrCpy(char *s1, const char *s2) /* ignore trailing spaces and \n */
   }
 }
 
-void StringHeap(char *string, struct StrHeap *Heap) {
+void StringHeap(char* string, struct StrHeap* Heap) {
   unsigned char found = FALSE;
   int i;
 
@@ -42,21 +42,22 @@ void StringHeap(char *string, struct StrHeap *Heap) {
   if (!found) {
     if (Heap->str) {
       /* increase size by 1 */
-      Heap->str = (struct StrHeapList *)realloc(Heap->str, sizeof(struct StrHeapList) * Heap->uniq + 1);
+      Heap->str = (struct StrHeapList*)realloc(Heap->str,
+        sizeof(struct StrHeapList) * Heap->uniq + 1);
     } else {
-      Heap->str = (struct StrHeapList *)malloc(sizeof(struct StrHeapList));
+      Heap->str = (struct StrHeapList*)malloc(sizeof(struct StrHeapList));
     }
-    Heap->str[Heap->uniq].string = (char *)malloc(strlen(string) + 1);
+    Heap->str[Heap->uniq].string = (char*)malloc(strlen(string) + 1);
     SmartStrCpy(Heap->str[Heap->uniq].string, string);
     Heap->str[Heap->uniq].total = 1;
     Heap->uniq++;
   }
 }
 
-struct StrHeap *InitHeap() {
-  struct StrHeap *Heap = 0;
+struct StrHeap* InitHeap() {
+  struct StrHeap* Heap = 0;
 
-  Heap = (struct StrHeap *)malloc(sizeof(struct StrHeap));
+  Heap = (struct StrHeap*)malloc(sizeof(struct StrHeap));
   Heap->str = 0;
   /*
      Heap->str = (struct StrHeapList *)malloc(sizeof(struct StrHeapList));
@@ -67,7 +68,8 @@ struct StrHeap *InitHeap() {
   return (Heap);
 }
 
-void DisplayStringHeap(struct StrHeap *Heap, struct char_data *ch, int type, int destroy) {
+void DisplayStringHeap(struct StrHeap* Heap, struct char_data* ch, int type,
+  int destroy) {
   char buf[256];
   int i;
 

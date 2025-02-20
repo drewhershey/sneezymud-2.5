@@ -9,62 +9,62 @@
 #define MAX_BUF_LENGTH 240
 
 #define TYPE_UNDEFINED -1
-#define SPELL_RESERVED_DBC 0 /* SKILL NUMBER ZERO */
-#define SPELL_ARMOR 1 /* Reserved Skill[] DO NOT CHANGE */
-#define SPELL_TELEPORT 2 /* Reserved Skill[] DO NOT CHANGE */
-#define SPELL_BLESS 3 /* Reserved Skill[] DO NOT CHANGE */
-#define SPELL_BLINDNESS 4 /* Reserved Skill[] DO NOT CHANGE */
-#define SPELL_BURNING_HANDS 5 /* Reserved Skill[] DO NOT CHANGE */
-#define SPELL_CALL_LIGHTNING 6 /* Reserved Skill[] DO NOT CHANGE */
-#define SPELL_CHARM_PERSON 7 /* Reserved Skill[] DO NOT CHANGE */
-#define SPELL_CHILL_TOUCH 8 /* Reserved Skill[] DO NOT CHANGE */
-#define SPELL_CLONE 9 /* Reserved Skill[] DO NOT CHANGE */
-#define SPELL_COLOUR_SPRAY 10 /* Reserved Skill[] DO NOT CHANGE */
-#define SPELL_CONTROL_WEATHER 11 /* Reserved Skill[] DO NOT CHANGE */
-#define SPELL_CREATE_FOOD 12 /* Reserved Skill[] DO NOT CHANGE */
-#define SPELL_CREATE_WATER 13 /* Reserved Skill[] DO NOT CHANGE */
-#define SPELL_CURE_BLIND 14 /* Reserved Skill[] DO NOT CHANGE */
-#define SPELL_CURE_CRITIC 15 /* Reserved Skill[] DO NOT CHANGE */
-#define SPELL_CURE_LIGHT 16 /* Reserved Skill[] DO NOT CHANGE */
-#define SPELL_CURSE 17 /* Reserved Skill[] DO NOT CHANGE */
-#define SPELL_DETECT_EVIL 18 /* Reserved Skill[] DO NOT CHANGE */
-#define SPELL_DETECT_INVISIBLE 19 /* Reserved Skill[] DO NOT CHANGE */
-#define SPELL_DETECT_MAGIC 20 /* Reserved Skill[] DO NOT CHANGE */
-#define SPELL_DETECT_POISON 21 /* Reserved Skill[] DO NOT CHANGE */
-#define SPELL_DISPEL_EVIL 22 /* Reserved Skill[] DO NOT CHANGE */
-#define SPELL_EARTHQUAKE 23 /* Reserved Skill[] DO NOT CHANGE */
-#define SPELL_ENCHANT_WEAPON 24 /* Reserved Skill[] DO NOT CHANGE */
-#define SPELL_ENERGY_DRAIN 25 /* Reserved Skill[] DO NOT CHANGE */
-#define SPELL_FIREBALL 26 /* Reserved Skill[] DO NOT CHANGE */
-#define SPELL_HARM 27 /* Reserved Skill[] DO NOT CHANGE */
-#define SPELL_HEAL 28 /* Reserved Skill[] DO NOT CHANGE */
-#define SPELL_INVISIBLE 29 /* Reserved Skill[] DO NOT CHANGE */
-#define SPELL_LIGHTNING_BOLT 30 /* Reserved Skill[] DO NOT CHANGE */
-#define SPELL_LOCATE_OBJECT 31 /* Reserved Skill[] DO NOT CHANGE */
-#define SPELL_MAGIC_MISSILE 32 /* Reserved Skill[] DO NOT CHANGE */
-#define SPELL_POISON 33 /* Reserved Skill[] DO NOT CHANGE */
+#define SPELL_RESERVED_DBC 0       /* SKILL NUMBER ZERO */
+#define SPELL_ARMOR 1              /* Reserved Skill[] DO NOT CHANGE */
+#define SPELL_TELEPORT 2           /* Reserved Skill[] DO NOT CHANGE */
+#define SPELL_BLESS 3              /* Reserved Skill[] DO NOT CHANGE */
+#define SPELL_BLINDNESS 4          /* Reserved Skill[] DO NOT CHANGE */
+#define SPELL_BURNING_HANDS 5      /* Reserved Skill[] DO NOT CHANGE */
+#define SPELL_CALL_LIGHTNING 6     /* Reserved Skill[] DO NOT CHANGE */
+#define SPELL_CHARM_PERSON 7       /* Reserved Skill[] DO NOT CHANGE */
+#define SPELL_CHILL_TOUCH 8        /* Reserved Skill[] DO NOT CHANGE */
+#define SPELL_CLONE 9              /* Reserved Skill[] DO NOT CHANGE */
+#define SPELL_COLOUR_SPRAY 10      /* Reserved Skill[] DO NOT CHANGE */
+#define SPELL_CONTROL_WEATHER 11   /* Reserved Skill[] DO NOT CHANGE */
+#define SPELL_CREATE_FOOD 12       /* Reserved Skill[] DO NOT CHANGE */
+#define SPELL_CREATE_WATER 13      /* Reserved Skill[] DO NOT CHANGE */
+#define SPELL_CURE_BLIND 14        /* Reserved Skill[] DO NOT CHANGE */
+#define SPELL_CURE_CRITIC 15       /* Reserved Skill[] DO NOT CHANGE */
+#define SPELL_CURE_LIGHT 16        /* Reserved Skill[] DO NOT CHANGE */
+#define SPELL_CURSE 17             /* Reserved Skill[] DO NOT CHANGE */
+#define SPELL_DETECT_EVIL 18       /* Reserved Skill[] DO NOT CHANGE */
+#define SPELL_DETECT_INVISIBLE 19  /* Reserved Skill[] DO NOT CHANGE */
+#define SPELL_DETECT_MAGIC 20      /* Reserved Skill[] DO NOT CHANGE */
+#define SPELL_DETECT_POISON 21     /* Reserved Skill[] DO NOT CHANGE */
+#define SPELL_DISPEL_EVIL 22       /* Reserved Skill[] DO NOT CHANGE */
+#define SPELL_EARTHQUAKE 23        /* Reserved Skill[] DO NOT CHANGE */
+#define SPELL_ENCHANT_WEAPON 24    /* Reserved Skill[] DO NOT CHANGE */
+#define SPELL_ENERGY_DRAIN 25      /* Reserved Skill[] DO NOT CHANGE */
+#define SPELL_FIREBALL 26          /* Reserved Skill[] DO NOT CHANGE */
+#define SPELL_HARM 27              /* Reserved Skill[] DO NOT CHANGE */
+#define SPELL_HEAL 28              /* Reserved Skill[] DO NOT CHANGE */
+#define SPELL_INVISIBLE 29         /* Reserved Skill[] DO NOT CHANGE */
+#define SPELL_LIGHTNING_BOLT 30    /* Reserved Skill[] DO NOT CHANGE */
+#define SPELL_LOCATE_OBJECT 31     /* Reserved Skill[] DO NOT CHANGE */
+#define SPELL_MAGIC_MISSILE 32     /* Reserved Skill[] DO NOT CHANGE */
+#define SPELL_POISON 33            /* Reserved Skill[] DO NOT CHANGE */
 #define SPELL_PROTECT_FROM_EVIL 34 /* Reserved Skill[] DO NOT CHANGE */
-#define SPELL_REMOVE_CURSE 35 /* Reserved Skill[] DO NOT CHANGE */
-#define SPELL_SANCTUARY 36 /* Reserved Skill[] DO NOT CHANGE */
-#define SPELL_SHOCKING_GRASP 37 /* Reserved Skill[] DO NOT CHANGE */
-#define SPELL_SLEEP 38 /* Reserved Skill[] DO NOT CHANGE */
-#define SPELL_STRENGTH 39 /* Reserved Skill[] DO NOT CHANGE */
-#define SPELL_SUMMON 40 /* Reserved Skill[] DO NOT CHANGE */
-#define SPELL_VENTRILOQUATE 41 /* Reserved Skill[] DO NOT CHANGE */
-#define SPELL_WORD_OF_RECALL 42 /* Reserved Skill[] DO NOT CHANGE */
-#define SPELL_REMOVE_POISON 43 /* Reserved Skill[] DO NOT CHANGE */
-#define SPELL_SENSE_LIFE 44 /* Reserved Skill[] DO NOT CHANGE */
+#define SPELL_REMOVE_CURSE 35      /* Reserved Skill[] DO NOT CHANGE */
+#define SPELL_SANCTUARY 36         /* Reserved Skill[] DO NOT CHANGE */
+#define SPELL_SHOCKING_GRASP 37    /* Reserved Skill[] DO NOT CHANGE */
+#define SPELL_SLEEP 38             /* Reserved Skill[] DO NOT CHANGE */
+#define SPELL_STRENGTH 39          /* Reserved Skill[] DO NOT CHANGE */
+#define SPELL_SUMMON 40            /* Reserved Skill[] DO NOT CHANGE */
+#define SPELL_VENTRILOQUATE 41     /* Reserved Skill[] DO NOT CHANGE */
+#define SPELL_WORD_OF_RECALL 42    /* Reserved Skill[] DO NOT CHANGE */
+#define SPELL_REMOVE_POISON 43     /* Reserved Skill[] DO NOT CHANGE */
+#define SPELL_SENSE_LIFE 44        /* Reserved Skill[] DO NOT CHANGE */
 
 /* types of attacks and skills must NOT use same numbers as spells! */
 
-#define SKILL_SNEAK 45 /* Reserved Skill[] DO NOT CHANGE */
-#define SKILL_HIDE 46 /* Reserved Skill[] DO NOT CHANGE */
-#define SKILL_STEAL 47 /* Reserved Skill[] DO NOT CHANGE */
-#define SKILL_BACKSTAB 48 /* Reserved Skill[] DO NOT CHANGE */
+#define SKILL_SNEAK 45     /* Reserved Skill[] DO NOT CHANGE */
+#define SKILL_HIDE 46      /* Reserved Skill[] DO NOT CHANGE */
+#define SKILL_STEAL 47     /* Reserved Skill[] DO NOT CHANGE */
+#define SKILL_BACKSTAB 48  /* Reserved Skill[] DO NOT CHANGE */
 #define SKILL_PICK_LOCK 49 /* Reserved Skill[] DO NOT CHANGE */
 
-#define SKILL_KICK 50 /* Reserved Skill[] DO NOT CHANGE */
-#define SKILL_BASH 51 /* Reserved Skill[] DO NOT CHANGE */
+#define SKILL_KICK 50   /* Reserved Skill[] DO NOT CHANGE */
+#define SKILL_BASH 51   /* Reserved Skill[] DO NOT CHANGE */
 #define SKILL_RESCUE 52 /* MAXIMUM SKILL NUMBER  */
 
 /* END OF SKILL RESERVED "NO TOUCH" NUMBERS */
@@ -215,9 +215,9 @@
 #define TYPE_BLUDGEON 207
 #define TYPE_PIERCE 208
 #define TYPE_SLASH 209
-#define TYPE_WHIP 210 /* EXAMPLE */
-#define TYPE_CLAW 211 /* NO MESSAGES WRITTEN YET! */
-#define TYPE_BITE 212 /* NO MESSAGES WRITTEN YET! */
+#define TYPE_WHIP 210  /* EXAMPLE */
+#define TYPE_CLAW 211  /* NO MESSAGES WRITTEN YET! */
+#define TYPE_BITE 212  /* NO MESSAGES WRITTEN YET! */
 #define TYPE_STING 213 /* NO MESSAGES WRITTEN YET! */
 #define TYPE_CRUSH 214 /* NO MESSAGES WRITTEN YET! */
 #define TYPE_CLEAVE 215
@@ -252,22 +252,22 @@
 #define TAR_OBJ_EQUIP (1 << 10)
 #define TAR_NAME (1 << 11)
 #define TAR_VIOLENT (1 << 12)
-#define TAR_ROOM (1 << 13) /* spells which target the room  */
+#define TAR_ROOM (1 << 13)   /* spells which target the room  */
 #define TAR_SINGLE (1 << 14) /* spells made specifically for single classes */
 
 struct spell_info_type {
-    void (*spell_pointer
-    )(byte level, struct char_data *ch, char *arg, int type, struct char_data *tar_ch, struct obj_data *tar_obj);
-    byte minimum_position; /* Position for caster 			*/
+    void (*spell_pointer)(byte level, struct char_data* ch, char* arg, int type,
+      struct char_data* tar_ch, struct obj_data* tar_obj);
+    byte minimum_position;     /* Position for caster 			*/
     unsigned int min_usesmana; /* Amount of mana used by a spell	 */
-    byte beats; /* Heartbeats until ready for next */
+    byte beats;                /* Heartbeats until ready for next */
 
     byte min_level_cleric; /* Level required for cleric       */
-    byte min_level_magic; /* Level required for magic user   */
-    byte min_level_anti; /* Level for antipaladins          */
-    byte min_level_pal; /* Level for paladins              */
+    byte min_level_magic;  /* Level required for magic user   */
+    byte min_level_anti;   /* Level for antipaladins          */
+    byte min_level_pal;    /* Level for paladins              */
     byte min_level_ranger; /* Level for rangers               */
-    sh_int targets; /* See below for use with TAR_XXX  */
+    sh_int targets;        /* See below for use with TAR_XXX  */
 };
 
 /* Possible Targets:
@@ -294,8 +294,8 @@ struct spell_info_type {
 /* Attacktypes with grammar */
 
 struct attack_hit_type {
-    char *singular;
-    char *plural;
+    char* singular;
+    char* plural;
 };
 
 #define TASK_TRIVIAL 0

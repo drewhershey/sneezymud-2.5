@@ -15,32 +15,32 @@
 #include "trap.h"
 #include "utils.h"
 
-extern struct char_data *character_list;
-extern struct index_data *mob_index;
+extern struct char_data* character_list;
+extern struct index_data* mob_index;
 #if HASH
 extern struct hash_header room_db;
 #else
-extern struct room_data *room_db;
+extern struct room_data* room_db;
 #endif
 extern struct str_app_type str_app[];
 extern struct dex_skill_type dex_app_skill[];
-extern struct index_data *mob_index;
+extern struct index_data* mob_index;
 extern int vol_mult[];
 
-void do_get(struct char_data *ch, char *argument, int cmd);
-void hit(struct char_data *ch, struct char_data *victim, int type);
-struct char_data *FindVictim(struct char_data *ch);
-struct char_data *FindMetaVictim(struct char_data *ch);
-struct char_data *FindAnAttacker(struct char_data *ch);
-int SameRace(struct char_data *ch1, struct char_data *ch2);
-char in_group(struct char_data *ch1, struct char_data *ch2);
-int dir_track(struct char_data *ch, struct char_data *vict);
-int IsHumanoid(struct char_data *ch);
-struct char_data *FindAnyVictim(struct char_data *ch);
-void mobile_activity(struct char_data *ch);
+void do_get(struct char_data* ch, char* argument, int cmd);
+void hit(struct char_data* ch, struct char_data* victim, int type);
+struct char_data* FindVictim(struct char_data* ch);
+struct char_data* FindMetaVictim(struct char_data* ch);
+struct char_data* FindAnAttacker(struct char_data* ch);
+int SameRace(struct char_data* ch1, struct char_data* ch2);
+char in_group(struct char_data* ch1, struct char_data* ch2);
+int dir_track(struct char_data* ch, struct char_data* vict);
+int IsHumanoid(struct char_data* ch);
+struct char_data* FindAnyVictim(struct char_data* ch);
+void mobile_activity(struct char_data* ch);
 
-void mobile_guardian(struct char_data *ch) {
-  struct char_data *targ;
+void mobile_guardian(struct char_data* ch) {
+  struct char_data* targ;
   int i, found = FALSE;
 
   if (ch->in_room > -1) {
@@ -58,7 +58,8 @@ void mobile_guardian(struct char_data *ch) {
 
       if (!SameRace(targ, ch)) {
         if (IsHumanoid(ch)) {
-          act("$n screams 'I must protect my master!'", FALSE, ch, 0, 0, TO_ROOM);
+          act("$n screams 'I must protect my master!'", FALSE, ch, 0, 0,
+            TO_ROOM);
         } else {
           act("$n growls angrily!", FALSE, ch, 0, 0, TO_ROOM);
         }
@@ -69,20 +70,23 @@ void mobile_guardian(struct char_data *ch) {
   }
 }
 
-void mobile_wander(struct char_data *ch) {
+void mobile_wander(struct char_data* ch) {
   int door;
-  struct room_direction_data *exitp;
-  struct room_data *rp;
+  struct room_direction_data* exitp;
+  struct room_data* rp;
 
-  if (!((GET_POS(ch) == POSITION_STANDING) && ((door = number(0, 15)) <= 5) && exit_ok(exitp = EXIT(ch, door), &rp) &&
-        (!IS_SET(rp->room_flags, NO_MOB) || IS_POLICE(ch)) && !IS_SET(rp->room_flags, DEATH)))
+  if (!((GET_POS(ch) == POSITION_STANDING) && ((door = number(0, 15)) <= 5) &&
+        exit_ok(exitp = EXIT(ch, door), &rp) &&
+        (!IS_SET(rp->room_flags, NO_MOB) || IS_POLICE(ch)) &&
+        !IS_SET(rp->room_flags, DEATH)))
     return;
 
   if (IsHumanoid(ch) ? CAN_GO_HUMAN(ch, door) : CAN_GO(ch, door)) {
     if (ch->specials.last_direction == door) {
       ch->specials.last_direction = -1;
     } else {
-      if (!IS_SET(ch->specials.act, ACT_STAY_ZONE) || (rp->zone == real_roomp(ch->in_room)->zone)) {
+      if (!IS_SET(ch->specials.act, ACT_STAY_ZONE) ||
+          (rp->zone == real_roomp(ch->in_room)->zone)) {
         ch->specials.last_direction = door;
         go_direction(ch, door);
       }
@@ -90,7 +94,7 @@ void mobile_wander(struct char_data *ch) {
   }
 }
 
-void MobHunt(struct char_data *ch) {
+void MobHunt(struct char_data* ch) {
   int res, k;
 
 #if NOTRACK
@@ -104,12 +108,16 @@ void MobHunt(struct char_data *ch) {
     } else {
       if (ch->specials.hunting) {
         if (ch->specials.hunting->in_room == ch->in_room) {
-          if (Hates(ch, ch->specials.hunting) && (!IS_AFFECTED(ch->specials.hunting, AFF_HIDE))) {
-            if (check_peaceful(ch, "You'd love to tear your quarry to bits, but you just CAN'T\n\r")) {
+          if (Hates(ch, ch->specials.hunting) &&
+              (!IS_AFFECTED(ch->specials.hunting, AFF_HIDE))) {
+            if (check_peaceful(ch,
+                  "You'd love to tear your quarry to bits, but you just "
+                  "CAN'T\n\r")) {
               act("$n fumes at $N", TRUE, ch, 0, ch->specials.hunting, TO_ROOM);
             } else {
               if (IsHumanoid(ch)) {
-                act("$n screams 'Time to die, $N'", TRUE, ch, 0, ch->specials.hunting, TO_ROOM);
+                act("$n screams 'Time to die, $N'", TRUE, ch, 0,
+                  ch->specials.hunting, TO_ROOM);
               } else if (IsAnimal(ch)) {
                 act("$n growls.", TRUE, ch, 0, 0, TO_ROOM);
               }
@@ -142,12 +150,13 @@ void MobHunt(struct char_data *ch) {
   }
 }
 
-void MobScavenge(struct char_data *ch) {
+void MobScavenge(struct char_data* ch) {
   struct obj_data *best_obj = 0, *obj = 0;
   int max;
 
   if ((real_roomp(ch->in_room))->contents && !number(0, 5)) {
-    for (max = 1, best_obj = 0, obj = (real_roomp(ch->in_room))->contents; obj; obj = obj->next_content) {
+    for (max = 1, best_obj = 0, obj = (real_roomp(ch->in_room))->contents; obj;
+         obj = obj->next_content) {
       if (CAN_GET_OBJ(ch, obj)) {
         if (obj->obj_flags.cost > max) {
           best_obj = obj;
@@ -168,7 +177,7 @@ void MobScavenge(struct char_data *ch) {
 }
 
 void check_mobile_activity(int pulse) {
-  register struct char_data *ch;
+  register struct char_data* ch;
   int tick, tm;
 
   tm = pulse % PULSE_MOBILE; /* this is dependent on P_M = 3*P_T */
@@ -190,16 +199,16 @@ void check_mobile_activity(int pulse) {
   }
 }
 
-void mobile_activity(struct char_data *ch) {
-  struct char_data *tmp_ch;
+void mobile_activity(struct char_data* ch) {
+  struct char_data* tmp_ch;
   struct char_data *damsel, *targ;
   struct obj_data *obj, *best_obj, *worst_obj;
   int door, found, max, min, t, res, k;
   char buf[80];
   extern int no_specials;
 
-  void do_move(struct char_data * ch, char *argument, int cmd);
-  void do_get(struct char_data * ch, char *argument, int cmd);
+  void do_move(struct char_data * ch, char* argument, int cmd);
+  void do_get(struct char_data * ch, char* argument, int cmd);
 
   /* Examine call for special procedure */
 
@@ -227,7 +236,8 @@ void mobile_activity(struct char_data *ch) {
 
   /* check to see if the monster is possessed */
 
-  if (AWAKE(ch) && (!ch->specials.fighting) && (!ch->desc) && (!IS_SET(ch->specials.act, ACT_POLYSELF))) {
+  if (AWAKE(ch) && (!ch->specials.fighting) && (!ch->desc) &&
+      (!IS_SET(ch->specials.act, ACT_POLYSELF))) {
     AssistFriend(ch);
 
     if (IS_SET(ch->specials.act, ACT_SCAVENGER)) {
@@ -243,10 +253,13 @@ void mobile_activity(struct char_data *ch) {
       if (IS_SET(ch->specials.act, ACT_HATEFUL)) {
         tmp_ch = FindAHatee(ch);
         if (tmp_ch) {
-          if (check_peaceful(ch, "You ask your mortal enemy to step outside to settle matters.\n\r")) {
+          if (check_peaceful(ch,
+                "You ask your mortal enemy to step outside to settle "
+                "matters.\n\r")) {
             act(
-              "$n growls '$N, would you care to step outside where we can settle this?'", TRUE, ch, 0, tmp_ch, TO_ROOM
-            );
+              "$n growls '$N, would you care to step outside where we can "
+              "settle this?'",
+              TRUE, ch, 0, tmp_ch, TO_ROOM);
           } else {
             if (IsHumanoid(ch)) {
               act("$n screams 'I'm gonna kill you!'", TRUE, ch, 0, 0, TO_ROOM);
@@ -272,14 +285,17 @@ void mobile_activity(struct char_data *ch) {
           if (IS_SET(ch->specials.act, ACT_HATEFUL)) {
             tmp_ch = FindAHatee(ch);
             if (tmp_ch) {
-              if (check_peaceful(ch, "You ask your mortal enemy to step outside to settle matters.\n\r")) {
+              if (check_peaceful(ch,
+                    "You ask your mortal enemy to step outside to settle "
+                    "matters.\n\r")) {
                 act(
-                  "$n growls '$N, would you care to step outside where we can settle this?'", TRUE, ch, 0, tmp_ch,
-                  TO_ROOM
-                );
+                  "$n growls '$N, would you care to step outside where we can "
+                  "settle this?'",
+                  TRUE, ch, 0, tmp_ch, TO_ROOM);
               } else {
                 if (IsHumanoid(ch)) {
-                  act("$n screams 'I'm gonna get you!'", TRUE, ch, 0, 0, TO_ROOM);
+                  act("$n screams 'I'm gonna get you!'", TRUE, ch, 0, 0,
+                    TO_ROOM);
                 } else if (IsAnimal(ch)) {
                   act("$n growls", TRUE, ch, 0, 0, TO_ROOM);
                 }
@@ -294,7 +310,8 @@ void mobile_activity(struct char_data *ch) {
       for (k = 0; k <= 5; k++) {
         tmp_ch = FindVictim(ch);
         if (tmp_ch) {
-          if (check_peaceful(ch, "You can't seem to exercise your violent tendencies.\n\r")) {
+          if (check_peaceful(ch,
+                "You can't seem to exercise your violent tendencies.\n\r")) {
             act("$n growls impotently", TRUE, ch, 0, 0, TO_ROOM);
             return;
           }
@@ -307,7 +324,8 @@ void mobile_activity(struct char_data *ch) {
       for (k = 0; k <= 5; k++) {
         tmp_ch = FindMetaVictim(ch);
         if (tmp_ch) {
-          if (check_peaceful(ch, "You can't seem to exercise your violent tendencies.\n\r")) {
+          if (check_peaceful(ch,
+                "You can't seem to exercise your violent tendencies.\n\r")) {
             act("$n growls impotently", TRUE, ch, 0, 0, TO_ROOM);
             return;
           }
@@ -323,7 +341,7 @@ void mobile_activity(struct char_data *ch) {
   } /* If AWAKE(ch)   */
 }
 
-int SameRace(struct char_data *ch1, struct char_data *ch2) {
+int SameRace(struct char_data* ch1, struct char_data* ch2) {
   if ((!ch1) || (!ch2))
     return (FALSE);
 
@@ -345,7 +363,7 @@ int SameRace(struct char_data *ch1, struct char_data *ch2) {
   return (FALSE);
 }
 
-int AssistFriend(struct char_data *ch) {
+int AssistFriend(struct char_data* ch) {
   struct char_data *damsel, *targ, *tmp_ch, *next;
   int t, found;
 
@@ -398,7 +416,7 @@ int AssistFriend(struct char_data *ch) {
   }
 }
 
-FindABetterWeapon(struct char_data *mob) {
+FindABetterWeapon(struct char_data* mob) {
   struct obj_data *o, *best;
   /*
     pick up and wield weapons
@@ -478,7 +496,7 @@ out with the old, in with the new
   }
 }
 
-int GetDamage(struct obj_data *w, struct char_data *ch) {
+int GetDamage(struct obj_data* w, struct char_data* ch) {
   float ave;
   int num, size, iave;
   /*
@@ -501,19 +519,20 @@ int GetDamage(struct obj_data *w, struct char_data *ch) {
   return (iave);
 }
 
-int GetDamBonus(struct obj_data *w) {
+int GetDamBonus(struct obj_data* w) {
   int j, tot = 0;
 
   /* return the damage bonus from a weapon */
   for (j = 0; j < MAX_OBJ_AFFECT; j++) {
-    if (w->affected[j].location == APPLY_DAMROLL || w->affected[j].location == APPLY_HITNDAM) {
+    if (w->affected[j].location == APPLY_DAMROLL ||
+        w->affected[j].location == APPLY_HITNDAM) {
       tot += w->affected[j].modifier;
     }
   }
   return (tot);
 }
 
-int GetHandDamage(struct char_data *ch) {
+int GetHandDamage(struct char_data* ch) {
   float ave;
   int num, size, iave;
   /*
@@ -544,7 +563,7 @@ int GetHandDamage(struct char_data *ch) {
   check to see if a mob is a friend
 */
 
-int MobFriend(struct char_data *ch, struct char_data *f) {
+int MobFriend(struct char_data* ch, struct char_data* f) {
   if (SameRace(ch, f)) {
     if (IS_GOOD(ch)) {
       if (IS_GOOD(f)) {

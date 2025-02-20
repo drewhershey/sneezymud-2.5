@@ -25,13 +25,13 @@
 #if HASH
 extern struct hash_header room_db;
 #else
-extern struct room_data *room_db;
+extern struct room_data* room_db;
 #endif
-extern struct descriptor_data *descriptor_list;
-extern struct index_data *obj_index;
-extern struct char_data *character_list;
-extern struct obj_data *object_list;
-extern struct room_data *world;
+extern struct descriptor_data* descriptor_list;
+extern struct index_data* obj_index;
+extern struct char_data* character_list;
+extern struct obj_data* object_list;
+extern struct room_data* world;
 extern struct str_app_type str_app[];
 extern struct dex_skill_type dex_app_skill[];
 
@@ -41,31 +41,31 @@ extern int top_of_mobt;
 extern int top_of_objt;
 extern int top_of_p_table;
 
-extern char *dirs[];
-extern char *where[];
-extern char *color_liquid[];
-extern char *fullness[];
-extern const char *RaceName[];
+extern char* dirs[];
+extern char* where[];
+extern char* color_liquid[];
+extern char* fullness[];
+extern const char* RaceName[];
 extern const int RacialMax[][4];
 
 /* extern functions */
 
-struct time_info_data age(struct char_data *ch);
-void page_string(struct descriptor_data *d, char *str, int keep_internal);
-int track(struct char_data *ch, struct char_data *vict);
+struct time_info_data age(struct char_data* ch);
+void page_string(struct descriptor_data* d, char* str, int keep_internal);
+int track(struct char_data* ch, struct char_data* vict);
 int clearpath(int room, int direc);
 
 /* intern functions */
-void read_book(Mob *ch, Obj *o, char *arg);
-char *DescDamage(float dam);
-char *DescMoves(float a);
-char *ac_for_score(int a);
-char *DescRatio(float f); /* theirs / yours */
-char *DescAttacks(float a);
+void read_book(Mob* ch, Obj* o, char* arg);
+char* DescDamage(float dam);
+char* DescMoves(float a);
+char* ac_for_score(int a);
+char* DescRatio(float f); /* theirs / yours */
+char* DescAttacks(float a);
 
 /* Procedures related to 'look' */
 
-void argument_split_2(char *argument, char *first_arg, char *second_arg) {
+void argument_split_2(char* argument, char* first_arg, char* second_arg) {
   int look_at, found, begin;
   found = begin = 0;
 
@@ -94,7 +94,8 @@ void argument_split_2(char *argument, char *first_arg, char *second_arg) {
   begin += look_at;
 }
 
-struct obj_data *get_object_in_equip_vis(struct char_data *ch, char *arg, struct obj_data *equipment[], int *j) {
+struct obj_data* get_object_in_equip_vis(struct char_data* ch, char* arg,
+  struct obj_data* equipment[], int* j) {
   for ((*j) = 0; (*j) < MAX_WEAR; (*j)++)
     if (equipment[(*j)])
       if (CAN_SEE_OBJ(ch, equipment[(*j)]))
@@ -104,8 +105,8 @@ struct obj_data *get_object_in_equip_vis(struct char_data *ch, char *arg, struct
   return (0);
 }
 
-char *find_ex_description(char *word, struct extra_descr_data *list) {
-  struct extra_descr_data *i;
+char* find_ex_description(char* word, struct extra_descr_data* list) {
+  struct extra_descr_data* i;
 
   for (i = list; i; i = i->next)
     if (isname(word, i->keyword))
@@ -114,19 +115,20 @@ char *find_ex_description(char *word, struct extra_descr_data *list) {
   return NULL;
 }
 
-void do_whozone(Mob *ch, char *argument, int cmd) {
-  Descriptor *d;
-  Room *rp;
+void do_whozone(Mob* ch, char* argument, int cmd) {
+  Descriptor* d;
+  Room* rp;
   char buf[256];
-  Mob *person;
+  Mob* person;
   int count = 0;
 
   send_to_char("Players:\n\r--------\n\r", ch);
   for (d = descriptor_list; d; d = d->next)
     if (!d->connected && CAN_SEE(ch, d->character) &&
-         (rp = real_roomp((person = (d->original ? d->original : d->character))->in_room)) &&
-         (rp->zone == real_roomp(ch->in_room)->zone) &&
-         ((!IS_AFFECTED(person, AFF_HIDE)) || (IS_IMMORTAL(ch)))) {
+        (rp = real_roomp(
+           (person = (d->original ? d->original : d->character))->in_room)) &&
+        (rp->zone == real_roomp(ch->in_room)->zone) &&
+        ((!IS_AFFECTED(person, AFF_HIDE)) || (IS_IMMORTAL(ch)))) {
       sprintf(buf, "%-25s - %s ", GET_NAME(person), rp->name);
       if (GetMaxLevel(ch) >= LOW_IMMORTAL)
         sprintf(buf + strlen(buf), "[%d]", person->in_room);
@@ -138,11 +140,11 @@ void do_whozone(Mob *ch, char *argument, int cmd) {
   send_to_char(buf, ch);
 }
 
-void do_who(struct char_data *ch, char *argument, int cmd) {
-  struct char_data *k;
-  struct descriptor_data *d;
+void do_who(struct char_data* ch, char* argument, int cmd) {
+  struct char_data* k;
+  struct descriptor_data* d;
   char buf[256], buf2[256];
-  struct char_data *person;
+  struct char_data* person;
   struct string_block sb;
   int listed = 0, count, lcount, l;
   char arg[256], tempbuf[256];
@@ -158,25 +160,20 @@ void do_who(struct char_data *ch, char *argument, int cmd) {
         count++;
         if (CAN_SEE_FOR_WHO(ch, person)) {
           if (IS_SET(ch->specials.act, PLR_COLOR))
-            sprintf(
-              buf, "%s%s%s %s", ANSI_CYAN, GET_NAME(person), ANSI_NORMAL,
-              (person->player.title ? person->player.title : "(null)")
-            );
+            sprintf(buf, "%s%s%s %s", ANSI_CYAN, GET_NAME(person), ANSI_NORMAL,
+              (person->player.title ? person->player.title : "(null)"));
           else if (IS_SET(ch->specials.act, PLR_VT100))
-            sprintf(
-              buf, "%s%s%s %s", VT_BOLDTEX, GET_NAME(person), ANSI_NORMAL,
-              (person->player.title ? person->player.title : "(null)")
-            );
+            sprintf(buf, "%s%s%s %s", VT_BOLDTEX, GET_NAME(person), ANSI_NORMAL,
+              (person->player.title ? person->player.title : "(null)"));
           else
-            sprintf(buf, "%s %s", GET_NAME(person), (person->player.title ? person->player.title : "(null)"));
+            sprintf(buf, "%s %s", GET_NAME(person),
+              (person->player.title ? person->player.title : "(null)"));
           if ((IS_IMMORTAL(ch)) && (person->specials.timer >= 4)) {
             if (!IS_SET(ch->specials.act, PLR_COLOR))
               sprintf(buf + strlen(buf), " (Idle[%d])", person->specials.timer);
             else
-              sprintf(
-                buf + strlen(buf), " (%sIdle%s[%s%d%s])", ANSI_VIOLET, ANSI_NORMAL, ANSI_CYAN, person->specials.timer,
-                ANSI_NORMAL
-              );
+              sprintf(buf + strlen(buf), " (%sIdle%s[%s%d%s])", ANSI_VIOLET,
+                ANSI_NORMAL, ANSI_CYAN, person->specials.timer, ANSI_NORMAL);
           }
           strcat(buf, "\n\r");
           send_to_char(buf, ch);
@@ -192,7 +189,8 @@ void do_who(struct char_data *ch, char *argument, int cmd) {
         send_to_char("\n\rTotal Players : [0]\n\r", ch);
         return;
       }
-      sprintf(buf, "%s %s   ", GET_NAME(k), (k->player.title ? k->player.title : "(NULL)"));
+      sprintf(buf, "%s %s   ", GET_NAME(k),
+        (k->player.title ? k->player.title : "(NULL)"));
       if (!strcmp(k->player.name, "Spawn"))
         sprintf(tempbuf, "Level:[God O' da Jank] ");
       else if (!strcmp(k->player.name, "Stargazer"))
@@ -230,10 +228,8 @@ void do_who(struct char_data *ch, char *argument, int cmd) {
       else if (HasClass(k, CLASS_RANGER))
         sprintf(tempbuf, "Level:[Ranger   %d] ", k->player.level[7]);
       else
-        sprintf(
-          tempbuf, "Level:[%-2d/%-2d/%-2d/%-2d] ", k->player.level[0], k->player.level[1], k->player.level[2],
-          k->player.level[3]
-        );
+        sprintf(tempbuf, "Level:[%-2d/%-2d/%-2d/%-2d] ", k->player.level[0],
+          k->player.level[1], k->player.level[2], k->player.level[3]);
       strcat(buf, tempbuf);
       strcat(buf, "\n\r");
       send_to_char(buf, ch);
@@ -243,10 +239,18 @@ void do_who(struct char_data *ch, char *argument, int cmd) {
         if (IS_IMMORTAL(ch)) {
           send_to_char("[-]i=idle l=levels t=title h=hit/mana/move\n\r", ch);
           send_to_char("[-]d=linkdead g=God o=Mort s=stats\n\r", ch);
-          send_to_char("[-] [1]Mage[2]Cleric[3]War[4]Thief[5]Anti[6]Paladin[7]Monk[8]Ranger\n\r\n\r", ch);
+          send_to_char(
+            "[-] "
+            "[1]Mage[2]Cleric[3]War[4]Thief[5]Anti[6]Paladin[7]Monk[8]"
+            "Ranger\n\r\n\r",
+            ch);
         } else {
           send_to_char("[-]l=levels t=title g=god o=mort\n\r", ch);
-          send_to_char("[-] [1]Mage[2]Cleric[3]War[4]Thief[5]Anti[6]Paladin[7]Monk[8]Ranger\n\r\n\r", ch);
+          send_to_char(
+            "[-] "
+            "[1]Mage[2]Cleric[3]War[4]Thief[5]Anti[6]Paladin[7]Monk[8]"
+            "Ranger\n\r\n\r",
+            ch);
         }
       }
       for (person = character_list; person; person = person->next) {
@@ -254,20 +258,24 @@ void do_who(struct char_data *ch, char *argument, int cmd) {
           count++;
           if (!person->desc)
             lcount++;
-          if (!(!CAN_SEE(ch, person) || (index(arg, 'g') && !IS_IMMORTAL(person)) ||
+          if (!(!CAN_SEE(ch, person) ||
+                (index(arg, 'g') && !IS_IMMORTAL(person)) ||
                 (index(arg, 'k') && !IS_SET(person->specials.act, PLR_KILLER) &&
-                 !IS_SET(person->specials.act, PLR_OUTLAW)) ||
-                (index(arg, 'o') && IS_IMMORTAL(person)) || (index(arg, '1') && !HasClass(person, CLASS_MAGIC_USER)) ||
+                  !IS_SET(person->specials.act, PLR_OUTLAW)) ||
+                (index(arg, 'o') && IS_IMMORTAL(person)) ||
+                (index(arg, '1') && !HasClass(person, CLASS_MAGIC_USER)) ||
                 (index(arg, '2') && !HasClass(person, CLASS_CLERIC)) ||
                 (index(arg, '3') && !HasClass(person, CLASS_WARRIOR)) ||
                 (index(arg, '4') && !HasClass(person, CLASS_THIEF)) ||
                 (index(arg, '5') && !HasClass(person, CLASS_ANTIPALADIN)) ||
-                (index(arg, '6') && !HasClass(person, CLASS_PALADIN)) || (!index(arg, 'd') && !person->desc) ||
+                (index(arg, '6') && !HasClass(person, CLASS_PALADIN)) ||
+                (!index(arg, 'd') && !person->desc) ||
                 (index(arg, '7') && !HasClass(person, CLASS_MONK)) ||
                 (index(arg, '8') && !HasClass(person, CLASS_RANGER)))) {
             if (!person->desc)
               sprintf(buf, "[%-12s] ", GET_NAME(person));
-            else if (IS_NPC(person) && IS_SET(person->specials.act, ACT_POLYSELF))
+            else if (IS_NPC(person) &&
+                     IS_SET(person->specials.act, ACT_POLYSELF))
               sprintf(buf, "(%-14s) ", GET_NAME(person));
             else
               sprintf(buf, "%-14s ", GET_NAME(person));
@@ -302,40 +310,41 @@ void do_who(struct char_data *ch, char *argument, int cmd) {
                   else if (GetMaxLevel(person) == 51)
                     sprintf(tempbuf, "Level:[Area Design] ");
                   else if (HasClass(person, CLASS_MONK))
-                    sprintf(tempbuf, "Level:[Monk Lev %d] ", person->player.level[6]);
+                    sprintf(tempbuf, "Level:[Monk Lev %d] ",
+                      person->player.level[6]);
                   else if (HasClass(person, CLASS_ANTIPALADIN))
-                    sprintf(tempbuf, "Level:[Anti Lev %d] ", person->player.level[4]);
+                    sprintf(tempbuf, "Level:[Anti Lev %d] ",
+                      person->player.level[4]);
                   else if (HasClass(person, CLASS_PALADIN))
-                    sprintf(tempbuf, "Level:[Pala Lev %d] ", person->player.level[5]);
+                    sprintf(tempbuf, "Level:[Pala Lev %d] ",
+                      person->player.level[5]);
                   else if (HasClass(person, CLASS_RANGER))
-                    sprintf(tempbuf, "Level:[Rang Lev %d] ", person->player.level[7]);
+                    sprintf(tempbuf, "Level:[Rang Lev %d] ",
+                      person->player.level[7]);
                   else
-                    sprintf(
-                      tempbuf, "Level:[%-2d/%-2d/%-2d/%-2d] ", person->player.level[0], person->player.level[1],
-                      person->player.level[2], person->player.level[3]
-                    );
+                    sprintf(tempbuf, "Level:[%-2d/%-2d/%-2d/%-2d] ",
+                      person->player.level[0], person->player.level[1],
+                      person->player.level[2], person->player.level[3]);
                   strcat(buf, tempbuf);
                   break;
                 case 'h':
                   if (IS_IMMORTAL(ch)) {
-                    sprintf(
-                      tempbuf, "Hit:[%-3d] Mana:[%-3d] Move:[%-3d] ", GET_HIT(person), GET_MANA(person),
-                      GET_MOVE(person)
-                    );
+                    sprintf(tempbuf, "Hit:[%-3d] Mana:[%-3d] Move:[%-3d] ",
+                      GET_HIT(person), GET_MANA(person), GET_MOVE(person));
                     strcat(buf, tempbuf);
                   }
                   break;
                 case 's':
                   if (IS_IMMORTAL(ch)) {
-                    sprintf(
-                      tempbuf, "[S:%-2d I:%-2d W:%-2d C:%-2d D:%-2d] ", GET_STR(person), GET_INT(person),
-                      GET_WIS(person), GET_CON(person), GET_DEX(person)
-                    );
+                    sprintf(tempbuf, "[S:%-2d I:%-2d W:%-2d C:%-2d D:%-2d] ",
+                      GET_STR(person), GET_INT(person), GET_WIS(person),
+                      GET_CON(person), GET_DEX(person));
                     strcat(buf, tempbuf);
                   }
                   break;
                 case 't':
-                  sprintf(tempbuf, " %-16s ", (person->player.title ? person->player.title : "(null)"));
+                  sprintf(tempbuf, " %-16s ",
+                    (person->player.title ? person->player.title : "(null)"));
                   strcat(buf, tempbuf);
                   break;
                 default:
@@ -350,14 +359,13 @@ void do_who(struct char_data *ch, char *argument, int cmd) {
     }
     if (IS_IMMORTAL(ch)) {
       if (!listed)
-        sprintf(
-          buf, "\n\rTotal players / Link dead [%d/%d] (%2.0f%%)\n\r", count, lcount, ((float)lcount / (int)count) * 100
-        );
+        sprintf(buf, "\n\rTotal players / Link dead [%d/%d] (%2.0f%%)\n\r",
+          count, lcount, ((float)lcount / (int)count) * 100);
       else
-        sprintf(
-          buf, "\n\rTotal players / Link dead [%d/%d] (%2.0f%%) Number Listed: %d\n\r", count, lcount,
-          ((float)lcount / (int)count) * 100, listed
-        );
+        sprintf(buf,
+          "\n\rTotal players / Link dead [%d/%d] (%2.0f%%) Number Listed: "
+          "%d\n\r",
+          count, lcount, ((float)lcount / (int)count) * 100, listed);
     } else
       sprintf(buf, "\n\rTotal players [%d]\n\r", count);
     send_to_char(buf, ch);
@@ -377,7 +385,7 @@ void do_who(struct char_data *ch, char *argument, int cmd) {
 #define HEADER_TXT_NOTE "There is something written upon it:\n\r\n\r"
 #define DRINKCON_TXT_NOTE "It looks like a drink container."
 
-void show_obj_to_char(Obj *object, Mob *ch, int mode) {
+void show_obj_to_char(Obj* object, Mob* ch, int mode) {
   char buffer[MAX_STRING_LENGTH];
 
   if (!mode && object->description) /* mode = 0 */
@@ -418,7 +426,8 @@ void show_obj_to_char(Obj *object, Mob *ch, int mode) {
   send_to_char(buffer, ch);
 }
 
-void show_mult_obj_to_char(struct obj_data *object, struct char_data *ch, int mode, int num) {
+void show_mult_obj_to_char(struct obj_data* object, struct char_data* ch,
+  int mode, int num) {
   char buffer[MAX_STRING_LENGTH];
   char tmp[10];
 
@@ -426,7 +435,8 @@ void show_mult_obj_to_char(struct obj_data *object, struct char_data *ch, int mo
 
   if (!mode && object->description)
     strcpy(buffer, object->description);
-  else if (object->short_description && ((mode == 1) || (mode == 2) || (mode == 3) || (mode == 4)))
+  else if (object->short_description &&
+           ((mode == 1) || (mode == 2) || (mode == 3) || (mode == 4)))
     strcpy(buffer, object->short_description);
   else if (mode == 5) {
     if (object->obj_flags.type_flag == ITEM_NOTE) {
@@ -448,7 +458,8 @@ void show_mult_obj_to_char(struct obj_data *object, struct char_data *ch, int mo
     if (IS_OBJ_STAT(object, ITEM_INVISIBLE)) {
       strcat(buffer, "(invisible)");
     }
-    if (IS_OBJ_STAT(object, ITEM_ANTI_GOOD) && IS_AFFECTED(ch, AFF_DETECT_EVIL)) {
+    if (IS_OBJ_STAT(object, ITEM_ANTI_GOOD) &&
+        IS_AFFECTED(ch, AFF_DETECT_EVIL)) {
       strcat(buffer, "..It glows red!");
     }
     if (IS_OBJ_STAT(object, ITEM_MAGIC) && IS_AFFECTED(ch, AFF_DETECT_MAGIC)) {
@@ -470,7 +481,7 @@ void show_mult_obj_to_char(struct obj_data *object, struct char_data *ch, int mo
   page_string(ch->desc, buffer, 1);
 }
 
-void list_obj_in_room(struct obj_data *list, struct char_data *ch) {
+void list_obj_in_room(struct obj_data* list, struct char_data* ch) {
   struct obj_data *i, *cond_ptr[50];
   int Inventory_Num = 1, num;
   int k, cond_top, cond_tot[50], found = FALSE;
@@ -485,8 +496,8 @@ void list_obj_in_room(struct obj_data *list, struct char_data *ch) {
         for (k = 0; (k < cond_top && !found); k++) {
           if (cond_top > 0) {
             if ((i->item_number == cond_ptr[k]->item_number) &&
-      (i->description && cond_ptr[k]->description &&
-       !strcmp(i->description,cond_ptr[k]->description))){
+                (i->description && cond_ptr[k]->description &&
+                  !strcmp(i->description, cond_ptr[k]->description))) {
               cond_tot[k] += 1;
               found = TRUE;
             }
@@ -511,7 +522,8 @@ void list_obj_in_room(struct obj_data *list, struct char_data *ch) {
 
   if (cond_top) {
     for (k = 0; k < cond_top; k++) {
-      if ((ITEM_TYPE(cond_ptr[k]) == ITEM_TRAP) && (GET_TRAP_CHARGES(cond_ptr[k]) > 0)) {
+      if ((ITEM_TYPE(cond_ptr[k]) == ITEM_TRAP) &&
+          (GET_TRAP_CHARGES(cond_ptr[k]) > 0)) {
         num = number(1, 100);
         if (ch->skills && num < ch->skills[SKILL_FIND_TRAP].learned / 10)
           if (cond_tot[k] > 1) {
@@ -534,7 +546,7 @@ void list_obj_in_room(struct obj_data *list, struct char_data *ch) {
   }
 }
 
-void list_obj_in_heap(struct obj_data *list, struct char_data *ch) {
+void list_obj_in_heap(struct obj_data* list, struct char_data* ch) {
   struct obj_data *i, *cond_ptr[50];
   int k, cond_top, cond_tot[50], found = FALSE;
   char buf[MAX_STRING_LENGTH];
@@ -549,8 +561,9 @@ void list_obj_in_heap(struct obj_data *list, struct char_data *ch) {
         for (k = 0; (k < cond_top && !found); k++) {
           if (cond_top > 0) {
             if ((i->item_number == cond_ptr[k]->item_number) &&
-      (i->short_description && cond_ptr[k]->short_description &&
-       (!strcmp(i->short_description,cond_ptr[k]->short_description)))){
+                (i->short_description && cond_ptr[k]->short_description &&
+                  (!strcmp(i->short_description,
+                    cond_ptr[k]->short_description)))) {
               cond_tot[k] += 1;
               found = TRUE;
             }
@@ -602,10 +615,10 @@ void list_obj_to_char(struct obj_data *list,struct char_data *ch, int mode,
 }
 #endif
 
-void show_char_to_char(struct char_data *i, struct char_data *ch, int mode) {
+void show_char_to_char(struct char_data* i, struct char_data* ch, int mode) {
   char buffer[MAX_STRING_LENGTH];
   int j, found, percent;
-  struct obj_data *tmp_obj;
+  struct obj_data* tmp_obj;
 
   if (!mode) {
     if (IS_AFFECTED(i, AFF_HIDE) || !CAN_SEE(ch, i)) {
@@ -773,7 +786,8 @@ void show_char_to_char(struct char_data *i, struct char_data *ch, int mode) {
       found = FALSE;
       send_to_char("\n\rYou attempt to peek at the inventory:\n\r", ch);
       for (tmp_obj = i->carrying; tmp_obj; tmp_obj = tmp_obj->next_content) {
-        if (CAN_SEE_OBJ(ch, tmp_obj) && (number(0, MAX_MORT) < GetMaxLevel(ch))) {
+        if (CAN_SEE_OBJ(ch, tmp_obj) &&
+            (number(0, MAX_MORT) < GetMaxLevel(ch))) {
           show_obj_to_char(tmp_obj, ch, 1);
           found = TRUE;
         }
@@ -798,11 +812,12 @@ void show_char_to_char(struct char_data *i, struct char_data *ch, int mode) {
   }
 }
 
-void show_mult_char_to_char(struct char_data *i, struct char_data *ch, int mode, int num) {
+void show_mult_char_to_char(struct char_data* i, struct char_data* ch, int mode,
+  int num) {
   char buffer[MAX_STRING_LENGTH];
   char tmp[10];
   int j, found, percent;
-  struct obj_data *tmp_obj;
+  struct obj_data* tmp_obj;
 
   if (!mode) {
     if (IS_AFFECTED(i, AFF_HIDE) || !CAN_SEE(ch, i)) {
@@ -905,7 +920,8 @@ void show_mult_char_to_char(struct char_data *i, struct char_data *ch, int mode,
       /* this gets a little annoying */
 
       if (num > 1) {
-        while ((buffer[strlen(buffer) - 1] == '\r') || (buffer[strlen(buffer) - 1] == '\n') ||
+        while ((buffer[strlen(buffer) - 1] == '\r') ||
+               (buffer[strlen(buffer) - 1] == '\n') ||
                (buffer[strlen(buffer) - 1] == ' ')) {
           buffer[strlen(buffer) - 1] = '\0';
         }
@@ -984,7 +1000,8 @@ void show_mult_char_to_char(struct char_data *i, struct char_data *ch, int mode,
       found = FALSE;
       send_to_char("\n\rYou attempt to peek at the inventory:\n\r", ch);
       for (tmp_obj = i->carrying; tmp_obj; tmp_obj = tmp_obj->next_content) {
-        if (CAN_SEE_OBJ(ch, tmp_obj) && (number(0, MAX_MORT) < GetMaxLevel(ch))) {
+        if (CAN_SEE_OBJ(ch, tmp_obj) &&
+            (number(0, MAX_MORT) < GetMaxLevel(ch))) {
           show_obj_to_char(tmp_obj, ch, 1);
           found = TRUE;
         }
@@ -1000,25 +1017,28 @@ void show_mult_char_to_char(struct char_data *i, struct char_data *ch, int mode,
   }
 }
 
-void list_char_in_room(struct char_data *list, struct char_data *ch) {
+void list_char_in_room(struct char_data* list, struct char_data* ch) {
   struct char_data *i, *cond_ptr[50];
   int k, cond_top, cond_tot[50], found = FALSE;
 
   cond_top = 0;
 
   for (i = list; i; i = i->next_in_room) {
-    if ((ch != i) && (IS_AFFECTED(ch, AFF_SENSE_LIFE) || (CAN_SEE(ch, i) && !IS_AFFECTED(i, AFF_HIDE)))) {
+    if ((ch != i) && (IS_AFFECTED(ch, AFF_SENSE_LIFE) ||
+                       (CAN_SEE(ch, i) && !IS_AFFECTED(i, AFF_HIDE)))) {
       if (cond_top < 50) {
         found = FALSE;
         if (IS_NPC(i)) {
           for (k = 0; (k < cond_top && !found); k++) {
             if (cond_top > 0) {
               if (i->nr == cond_ptr[k]->nr &&
-        (GET_POS(i) == GET_POS(cond_ptr[k])) &&
-        (i->specials.affected_by==cond_ptr[k]->specials.affected_by) &&
-        (i->specials.fighting == cond_ptr[k]->specials.fighting) &&
-        (i->player.short_descr && cond_ptr[k]->player.short_descr &&
-         0==strcmp(i->player.short_descr,cond_ptr[k]->player.short_descr))) {
+                  (GET_POS(i) == GET_POS(cond_ptr[k])) &&
+                  (i->specials.affected_by ==
+                    cond_ptr[k]->specials.affected_by) &&
+                  (i->specials.fighting == cond_ptr[k]->specials.fighting) &&
+                  (i->player.short_descr && cond_ptr[k]->player.short_descr &&
+                    0 == strcmp(i->player.short_descr,
+                           cond_ptr[k]->player.short_descr))) {
                 cond_tot[k] += 1;
                 found = TRUE;
               }
@@ -1047,16 +1067,17 @@ void list_char_in_room(struct char_data *list, struct char_data *ch) {
   }
 }
 
-void list_char_to_char(struct char_data *list, struct char_data *ch, int mode) {
-  struct char_data *i;
+void list_char_to_char(struct char_data* list, struct char_data* ch, int mode) {
+  struct char_data* i;
 
   for (i = list; i; i = i->next_in_room) {
-    if ((ch != i) && (IS_AFFECTED(ch, AFF_SENSE_LIFE) || (CAN_SEE(ch, i) && !IS_AFFECTED(i, AFF_HIDE))))
+    if ((ch != i) && (IS_AFFECTED(ch, AFF_SENSE_LIFE) ||
+                       (CAN_SEE(ch, i) && !IS_AFFECTED(i, AFF_HIDE))))
       show_char_to_char(i, ch, 0);
   }
 }
 
-void do_look(struct char_data *ch, char *argument, int cmd) {
+void do_look(struct char_data* ch, char* argument, int cmd) {
   char buffer[MAX_STRING_LENGTH];
   char arg1[MAX_INPUT_LENGTH];
   char arg2[MAX_INPUT_LENGTH];
@@ -1064,10 +1085,11 @@ void do_look(struct char_data *ch, char *argument, int cmd) {
   int j, bits, temp;
   bool found;
   struct obj_data *tmp_object, *found_object;
-  struct char_data *tmp_char;
-  char *tmp_desc;
-  static char *keywords[] = {"north", "east", "south", "west", "up", "down", "in", "at", "", /* Look at '' case */
-                             "room",  "test", "\n"};
+  struct char_data* tmp_char;
+  char* tmp_desc;
+  static char* keywords[] = {"north", "east", "south", "west", "up", "down",
+    "in", "at", "", /* Look at '' case */
+    "room", "test", "\n"};
 
   if (!ch->desc)
     return;
@@ -1078,7 +1100,8 @@ void do_look(struct char_data *ch, char *argument, int cmd) {
     send_to_char("You can't see anything, you're sleeping!\n\r", ch);
   else if (IS_AFFECTED(ch, AFF_BLIND))
     send_to_char("You can't see a damn thing, you're blinded!\n\r", ch);
-  else if ((IS_DARK(ch->in_room)) && (!IS_IMMORTAL(ch)) && (!IS_AFFECTED(ch, AFF_TRUE_SIGHT))) {
+  else if ((IS_DARK(ch->in_room)) && (!IS_IMMORTAL(ch)) &&
+           (!IS_AFFECTED(ch, AFF_TRUE_SIGHT))) {
     send_to_char("It is very dark in here...\n\r", ch);
     if (IS_AFFECTED(ch, AFF_INFRAVISION)) {
       list_char_in_room(real_roomp(ch->in_room)->people, ch);
@@ -1114,7 +1137,7 @@ void do_look(struct char_data *ch, char *argument, int cmd) {
       case 3:
       case 4:
       case 5: {
-        struct room_direction_data *exitp;
+        struct room_direction_data* exitp;
         exitp = EXIT(ch, keyword_no);
         if (exitp) {
           if (exitp->general_description) {
@@ -1124,7 +1147,8 @@ void do_look(struct char_data *ch, char *argument, int cmd) {
           }
 
           if (IS_SET(exitp->exit_info, EX_CLOSED) && (exitp->keyword)) {
-            if ((strcmp(fname(exitp->keyword), "secret")) && (!IS_SET(exitp->exit_info, EX_SECRET))) {
+            if ((strcmp(fname(exitp->keyword), "secret")) &&
+                (!IS_SET(exitp->exit_info, EX_SECRET))) {
               sprintf(buffer, "The %s is closed.\n\r", fname(exitp->keyword));
               send_to_char(buffer, ch);
             }
@@ -1137,9 +1161,11 @@ void do_look(struct char_data *ch, char *argument, int cmd) {
         } else {
           send_to_char("You see nothing special.\n\r", ch);
         }
-        if (exitp && exitp->to_room && (!IS_SET(exitp->exit_info, EX_ISDOOR) || (!IS_SET(exitp->exit_info, EX_CLOSED)))) {
+        if (exitp && exitp->to_room &&
+            (!IS_SET(exitp->exit_info, EX_ISDOOR) ||
+              (!IS_SET(exitp->exit_info, EX_CLOSED)))) {
           if (IS_AFFECTED(ch, AFF_SCRYING) || IS_IMMORTAL(ch)) {
-            struct room_data *rp;
+            struct room_data* rp;
             sprintf(buffer, "You look %swards.\n\r", dirs[keyword_no]);
             send_to_char(buffer, ch);
 
@@ -1163,18 +1189,19 @@ void do_look(struct char_data *ch, char *argument, int cmd) {
       case 6: {
         if (*arg2) {
           /* Item carried */
-          bits = generic_find(arg2, FIND_OBJ_INV | FIND_OBJ_ROOM | FIND_OBJ_EQUIP, ch, &tmp_char, &tmp_object);
+          bits =
+            generic_find(arg2, FIND_OBJ_INV | FIND_OBJ_ROOM | FIND_OBJ_EQUIP,
+              ch, &tmp_char, &tmp_object);
 
           if (bits) { /* Found something */
             if (GET_ITEM_TYPE(tmp_object) == ITEM_DRINKCON) {
               if (tmp_object->obj_flags.value[1] <= 0) {
                 act("It is empty.", FALSE, ch, 0, 0, TO_CHAR);
               } else {
-                temp = ((tmp_object->obj_flags.value[1] * 3) / tmp_object->obj_flags.value[0]);
-                sprintf(
-                  buffer, "It's %sfull of a %s liquid.\n\r", fullness[temp],
-                  color_liquid[tmp_object->obj_flags.value[2]]
-                );
+                temp = ((tmp_object->obj_flags.value[1] * 3) /
+                        tmp_object->obj_flags.value[0]);
+                sprintf(buffer, "It's %sfull of a %s liquid.\n\r",
+                  fullness[temp], color_liquid[tmp_object->obj_flags.value[2]]);
                 send_to_char(buffer, ch);
               }
             } else if (GET_ITEM_TYPE(tmp_object) == ITEM_CONTAINER) {
@@ -1208,9 +1235,9 @@ void do_look(struct char_data *ch, char *argument, int cmd) {
         /* look 'at'      */
       case 7: {
         if (*arg2) {
-          bits = generic_find(
-            arg2, FIND_OBJ_INV | FIND_OBJ_ROOM | FIND_OBJ_EQUIP | FIND_CHAR_ROOM, ch, &tmp_char, &found_object
-          );
+          bits = generic_find(arg2,
+            FIND_OBJ_INV | FIND_OBJ_ROOM | FIND_OBJ_EQUIP | FIND_CHAR_ROOM, ch,
+            &tmp_char, &found_object);
           if (tmp_char) {
             show_char_to_char(tmp_char, ch, 1);
             if (ch != tmp_char) {
@@ -1235,7 +1262,8 @@ void do_look(struct char_data *ch, char *argument, int cmd) {
 
           /* Extra description in room?? */
           if (!found) {
-            tmp_desc = find_ex_description(arg2, real_roomp(ch->in_room)->ex_description);
+            tmp_desc = find_ex_description(arg2,
+              real_roomp(ch->in_room)->ex_description);
             if (tmp_desc) {
               page_string(ch->desc, tmp_desc, 0);
               return;
@@ -1249,7 +1277,8 @@ void do_look(struct char_data *ch, char *argument, int cmd) {
             for (j = 0; j < MAX_WEAR && !found; j++) {
               if (ch->equipment[j]) {
                 if (CAN_SEE_OBJ(ch, ch->equipment[j])) {
-                  tmp_desc = find_ex_description(arg2, ch->equipment[j]->ex_description);
+                  tmp_desc =
+                    find_ex_description(arg2, ch->equipment[j]->ex_description);
                   if (tmp_desc) {
                     page_string(ch->desc, tmp_desc, 1);
                     found = TRUE;
@@ -1260,9 +1289,11 @@ void do_look(struct char_data *ch, char *argument, int cmd) {
           }
           /* In inventory */
           if (!found) {
-            for (tmp_object = ch->carrying; tmp_object && !found; tmp_object = tmp_object->next_content) {
+            for (tmp_object = ch->carrying; tmp_object && !found;
+                 tmp_object = tmp_object->next_content) {
               if CAN_SEE_OBJ (ch, tmp_object) {
-                tmp_desc = find_ex_description(arg2, tmp_object->ex_description);
+                tmp_desc =
+                  find_ex_description(arg2, tmp_object->ex_description);
                 if (tmp_desc) {
                   page_string(ch->desc, tmp_desc, 1);
                   found = TRUE;
@@ -1273,10 +1304,11 @@ void do_look(struct char_data *ch, char *argument, int cmd) {
           /* Object In room */
 
           if (!found) {
-            for (tmp_object = real_roomp(ch->in_room)->contents; tmp_object && !found;
-                 tmp_object = tmp_object->next_content) {
+            for (tmp_object = real_roomp(ch->in_room)->contents;
+                 tmp_object && !found; tmp_object = tmp_object->next_content) {
               if CAN_SEE_OBJ (ch, tmp_object) {
-                tmp_desc = find_ex_description(arg2, tmp_object->ex_description);
+                tmp_desc =
+                  find_ex_description(arg2, tmp_object->ex_description);
                 if (tmp_desc) {
                   page_string(ch->desc, tmp_desc, 1);
                   found = TRUE;
@@ -1288,10 +1320,10 @@ void do_look(struct char_data *ch, char *argument, int cmd) {
           /* wrong argument */
           if (bits) { /* If an object was found */
             if (!found) {
-              /* note this is here, instead of in show_obj_to_char, because we need
-                 to consider what section (if any) the player specified in the book
-                 and that can ONLY be found via arg2, which isn't passed into
-                 show_obj_to_char  - SG */
+              /* note this is here, instead of in show_obj_to_char, because we
+                 need to consider what section (if any) the player specified in
+                 the book and that can ONLY be found via arg2, which isn't
+                 passed into show_obj_to_char  - SG */
               if (GET_ITEM_TYPE(found_object) == ITEM_BOOK)
                 read_book(ch, found_object, arg2);
               else
@@ -1464,7 +1496,7 @@ void do_look(struct char_data *ch, char *argument, int cmd) {
 
 /* end of look */
 
-void do_read(struct char_data *ch, char *argument, int cmd) {
+void do_read(struct char_data* ch, char* argument, int cmd) {
   char buf[100];
 
   /* This is just for now - To be changed later.! */
@@ -1472,11 +1504,11 @@ void do_read(struct char_data *ch, char *argument, int cmd) {
   do_look(ch, buf, 15);
 }
 
-void do_examine(struct char_data *ch, char *argument, int cmd) {
+void do_examine(struct char_data* ch, char* argument, int cmd) {
   char name[100], buf[100];
   int bits;
-  struct char_data *tmp_char;
-  struct obj_data *tmp_object;
+  struct char_data* tmp_char;
+  struct obj_data* tmp_object;
 
   sprintf(buf, "at %s", argument);
   do_look(ch, buf, 15);
@@ -1488,26 +1520,29 @@ void do_examine(struct char_data *ch, char *argument, int cmd) {
     return;
   }
 
-  bits = generic_find(name, FIND_OBJ_INV | FIND_OBJ_ROOM | FIND_OBJ_EQUIP, ch, &tmp_char, &tmp_object);
+  bits = generic_find(name, FIND_OBJ_INV | FIND_OBJ_ROOM | FIND_OBJ_EQUIP, ch,
+    &tmp_char, &tmp_object);
 
   if (tmp_object) {
-    if ((GET_ITEM_TYPE(tmp_object) == ITEM_DRINKCON) || (GET_ITEM_TYPE(tmp_object) == ITEM_CONTAINER)) {
+    if ((GET_ITEM_TYPE(tmp_object) == ITEM_DRINKCON) ||
+        (GET_ITEM_TYPE(tmp_object) == ITEM_CONTAINER)) {
       send_to_char("When you look inside, you see:\n\r", ch);
       sprintf(buf, "in %s", argument);
       do_look(ch, buf, 15);
     }
     if (tmp_object->obj_flags.type_flag == ITEM_FIREWEAPON) {
-      sprintf(buf, "There are %d shots remaining.\n\r", tmp_object->obj_flags.value[3]);
+      sprintf(buf, "There are %d shots remaining.\n\r",
+        tmp_object->obj_flags.value[3]);
       send_to_char(buf, ch);
     }
   }
 }
 
-void do_exits(struct char_data *ch, char *argument, int cmd) {
+void do_exits(struct char_data* ch, char* argument, int cmd) {
   int door;
   char buf[256];
-  struct room_direction_data *exitdata;
-  extern char *exits[];
+  struct room_direction_data* exitdata;
+  extern char* exits[];
 
   *buf = '\0';
 
@@ -1517,13 +1552,16 @@ void do_exits(struct char_data *ch, char *argument, int cmd) {
       if (!real_roomp(exitdata->to_room)) {
         /* don't print unless immortal */
         if (IS_IMMORTAL(ch)) {
-          sprintf(buf + strlen(buf), "%s - swirling chaos of #%d\n\r", exits[door], exitdata->to_room);
+          sprintf(buf + strlen(buf), "%s - swirling chaos of #%d\n\r",
+            exits[door], exitdata->to_room);
         }
-      } else if (exitdata->to_room != NOWHERE && (!IS_SET(exitdata->exit_info, EX_CLOSED) || IS_IMMORTAL(ch))) {
+      } else if (exitdata->to_room != NOWHERE &&
+                 (!IS_SET(exitdata->exit_info, EX_CLOSED) || IS_IMMORTAL(ch))) {
         if (IS_DARK(exitdata->to_room))
           sprintf(buf + strlen(buf), "%s - Too dark to tell", exits[door]);
         else
-          sprintf(buf + strlen(buf), "%s - %s", exits[door], real_roomp(exitdata->to_room)->name);
+          sprintf(buf + strlen(buf), "%s - %s", exits[door],
+            real_roomp(exitdata->to_room)->name);
         if (IS_SET(exitdata->exit_info, EX_CLOSED))
           strcat(buf, " (closed)");
         strcat(buf, "\n\r");
@@ -1539,7 +1577,7 @@ void do_exits(struct char_data *ch, char *argument, int cmd) {
     send_to_char("None.\n\r", ch);
 }
 
-void do_score(struct char_data *ch, char *argument, int cmd) {
+void do_score(struct char_data* ch, char* argument, int cmd) {
   struct time_info_data playing_time;
   static char buf[100];
   extern const struct title_type titles[8][ABS_MAX_LVL];
@@ -1554,12 +1592,10 @@ void do_score(struct char_data *ch, char *argument, int cmd) {
     strcat(buf, "\n\r");
   send_to_char(buf, ch);
 
-  sprintf(
-    buf, "You have %.1f%% hit points and %.1f%% mana. You are %s.\n\r",
+  sprintf(buf, "You have %.1f%% hit points and %.1f%% mana. You are %s.\n\r",
     (((float)(GET_HIT(ch))) / ((float)GET_MAX_HIT(ch)) * 100),
     (((float)(GET_MANA(ch))) / ((float)GET_MAX_MANA(ch)) * 100),
-    DescMoves(((float)GET_MOVE(ch)) / ((float)GET_MAX_MOVE(ch)))
-  );
+    DescMoves(((float)GET_MOVE(ch)) / ((float)GET_MAX_MOVE(ch))));
   send_to_char(buf, ch);
 
   if (GET_ALIGNMENT(ch) < -750)
@@ -1579,30 +1615,37 @@ void do_score(struct char_data *ch, char *argument, int cmd) {
   else
     send_to_char("Your alignment is TOTALLY PURE.\n\r", ch);
 
-  sprintf(buf, "You have scored %d exp, and have %d gold coins.\n\r", GET_EXP(ch), GET_GOLD(ch));
+  sprintf(buf, "You have scored %d exp, and have %d gold coins.\n\r",
+    GET_EXP(ch), GET_GOLD(ch));
   send_to_char(buf, ch);
 
-  if ((HasClass(ch, CLASS_MAGIC_USER)) || (HasClass(ch, CLASS_CLERIC)) || (HasClass(ch, CLASS_THIEF)) || (HasClass(ch, CLASS_WARRIOR))) {
-    sprintf(
-      buf, "Your levels: %d/%d/%d/%d\n\r", GET_LEVEL(ch, MAGE_LEVEL_IND), GET_LEVEL(ch, CLERIC_LEVEL_IND),
-      GET_LEVEL(ch, WARRIOR_LEVEL_IND), GET_LEVEL(ch, THIEF_LEVEL_IND)
-    );
+  if ((HasClass(ch, CLASS_MAGIC_USER)) || (HasClass(ch, CLASS_CLERIC)) ||
+      (HasClass(ch, CLASS_THIEF)) || (HasClass(ch, CLASS_WARRIOR))) {
+    sprintf(buf, "Your levels: %d/%d/%d/%d\n\r", GET_LEVEL(ch, MAGE_LEVEL_IND),
+      GET_LEVEL(ch, CLERIC_LEVEL_IND), GET_LEVEL(ch, WARRIOR_LEVEL_IND),
+      GET_LEVEL(ch, THIEF_LEVEL_IND));
   } else if (HasClass(ch, CLASS_ANTIPALADIN)) {
-    sprintf(buf, "Your levels: ANTI lev %2d\n\r", GET_LEVEL(ch, ANTIPALADIN_LEVEL_IND));
+    sprintf(buf, "Your levels: ANTI lev %2d\n\r",
+      GET_LEVEL(ch, ANTIPALADIN_LEVEL_IND));
   } else if (HasClass(ch, CLASS_PALADIN)) {
-    sprintf(buf, "Your levels: PALA lev %2d\n\r", GET_LEVEL(ch, PALADIN_LEVEL_IND));
+    sprintf(buf, "Your levels: PALA lev %2d\n\r",
+      GET_LEVEL(ch, PALADIN_LEVEL_IND));
   } else if (HasClass(ch, CLASS_MONK)) {
-    sprintf(buf, "Your levels: MONK lev %2d\n\r", GET_LEVEL(ch, MONK_LEVEL_IND));
+    sprintf(buf, "Your levels: MONK lev %2d\n\r",
+      GET_LEVEL(ch, MONK_LEVEL_IND));
   } else if (HasClass(ch, CLASS_RANGER)) {
-    sprintf(buf, "Your levels: RANG lev %2d\n\r", GET_LEVEL(ch, RANGER_LEVEL_IND));
+    sprintf(buf, "Your levels: RANG lev %2d\n\r",
+      GET_LEVEL(ch, RANGER_LEVEL_IND));
   }
   send_to_char(buf, ch);
 
   sprintf(buf, "This ranks you as %s %s\n\r", GET_NAME(ch), GET_TITLE(ch));
   send_to_char(buf, ch);
 
-  playing_time = real_time_passed((time(0) - ch->player.time.logon) + ch->player.time.played, 0);
-  sprintf(buf, "You have been playing for %d days and %d hours.\n\r", playing_time.day, playing_time.hours);
+  playing_time = real_time_passed(
+    (time(0) - ch->player.time.logon) + ch->player.time.played, 0);
+  sprintf(buf, "You have been playing for %d days and %d hours.\n\r",
+    playing_time.day, playing_time.hours);
   send_to_char(buf, ch);
 
   switch (GET_POS(ch)) {
@@ -1629,7 +1672,8 @@ void do_score(struct char_data *ch, char *argument, int cmd) {
       break;
     case POSITION_FIGHTING:
       if (ch->specials.fighting)
-        act("You are fighting $N.\n\r", FALSE, ch, 0, ch->specials.fighting, TO_CHAR);
+        act("You are fighting $N.\n\r", FALSE, ch, 0, ch->specials.fighting,
+          TO_CHAR);
       else
         send_to_char("You are fighting thin air.\n\r", ch);
       break;
@@ -1642,19 +1686,19 @@ void do_score(struct char_data *ch, char *argument, int cmd) {
   }
 }
 
-void do_time(struct char_data *ch, char *argument, int cmd) {
+void do_time(struct char_data* ch, char* argument, int cmd) {
   char buf[100], *suf;
   int weekday, day;
   extern struct time_info_data time_info;
-  extern const char *weekdays[];
-  extern const char *month_name[];
+  extern const char* weekdays[];
+  extern const char* month_name[];
 
-  sprintf(
-    buf, "It is %d o'clock %s, on ", ((time_info.hours % 12 == 0) ? 12 : ((time_info.hours) % 12)),
-    ((time_info.hours >= 12) ? "pm" : "am")
-  );
+  sprintf(buf, "It is %d o'clock %s, on ",
+    ((time_info.hours % 12 == 0) ? 12 : ((time_info.hours) % 12)),
+    ((time_info.hours >= 12) ? "pm" : "am"));
 
-  weekday = ((35 * time_info.month) + time_info.day + 1) % 7; /* 35 days in a month */
+  weekday =
+    ((35 * time_info.month) + time_info.day + 1) % 7; /* 35 days in a month */
 
   strcat(buf, weekdays[weekday]);
   strcat(buf, "\n\r");
@@ -1679,30 +1723,31 @@ void do_time(struct char_data *ch, char *argument, int cmd) {
   else
     suf = "th";
 
-  sprintf(buf, "The %d%s Day of the %s, Year %d.\n\r", day, suf, month_name[time_info.month], time_info.year);
+  sprintf(buf, "The %d%s Day of the %s, Year %d.\n\r", day, suf,
+    month_name[time_info.month], time_info.year);
 
   send_to_char(buf, ch);
 }
 
-void do_weather(struct char_data *ch, char *argument, int cmd) {
+void do_weather(struct char_data* ch, char* argument, int cmd) {
   extern struct weather_data weather_info;
   static char buf[100];
-  static char *sky_look[4] = {"cloudless", "cloudy", "rainy", "lit by flashes of lightning"};
+  static char* sky_look[4] = {"cloudless", "cloudy", "rainy",
+    "lit by flashes of lightning"};
 
   if (OUTSIDE(ch)) {
-    sprintf(
-      buf, "The sky is %s and %s.\n\r", sky_look[weather_info.sky],
-      (weather_info.change >= 0 ? "you feel a warm wind from south" : "your foot tells you bad weather is due")
-    );
+    sprintf(buf, "The sky is %s and %s.\n\r", sky_look[weather_info.sky],
+      (weather_info.change >= 0 ? "you feel a warm wind from south"
+                                : "your foot tells you bad weather is due"));
     send_to_char(buf, ch);
   } else
     send_to_char("You have no feeling about the weather at all.\n\r", ch);
 }
 
-void do_help(struct char_data *ch, char *argument, int cmd) {
+void do_help(struct char_data* ch, char* argument, int cmd) {
   static char helppath[200];
   static char topic[MAX_INPUT_LENGTH];
-  char *cp;
+  char* cp;
 
   if (!ch)
     return;
@@ -1712,7 +1757,8 @@ void do_help(struct char_data *ch, char *argument, int cmd) {
   if (*argument == '\0')
     start_page_file(ch->desc, HELP_PAGE_FILE, "General help unavailable.\n\r");
   else {
-    for (cp = topic; (isalnum(*argument) || (*argument == '@') || (*argument == ' ') || (*argument == '-'));
+    for (cp = topic; (isalnum(*argument) || (*argument == '@') ||
+                      (*argument == ' ') || (*argument == '-'));
          cp++, argument++)
       if (isupper(*argument))
         *cp = tolower(*argument);
@@ -1738,10 +1784,10 @@ void do_help(struct char_data *ch, char *argument, int cmd) {
   }
 }
 
-do_wizhelp(struct char_data *ch, char *argument, int cmd) {
+do_wizhelp(struct char_data* ch, char* argument, int cmd) {
   char buf[MAX_STRING_LENGTH];
   int no, i;
-  extern char *command[]; /* The list of commands (interpreter.c)  */
+  extern char* command[]; /* The list of commands (interpreter.c)  */
   /* First command is command[0]           */
   extern struct command_info cmd_info[];
   /* cmd_info[1] ~~ commando[0]            */
@@ -1754,7 +1800,8 @@ do_wizhelp(struct char_data *ch, char *argument, int cmd) {
   *buf = '\0';
 
   for (no = 1, i = 0; *command[i] != '\n'; i++)
-    if ((GetMaxLevel(ch) >= cmd_info[i + 1].minimum_level) && (cmd_info[i + 1].minimum_level >= LOW_IMMORTAL)) {
+    if ((GetMaxLevel(ch) >= cmd_info[i + 1].minimum_level) &&
+        (cmd_info[i + 1].minimum_level >= LOW_IMMORTAL)) {
       sprintf(buf + strlen(buf), "%-10s", command[i]);
       if (!(no % 7))
         strcat(buf, "\n\r");
@@ -1764,10 +1811,10 @@ do_wizhelp(struct char_data *ch, char *argument, int cmd) {
   page_string(ch->desc, buf, 1);
 }
 
-void do_users(struct char_data *ch, char *argument, int cmd) {
+void do_users(struct char_data* ch, char* argument, int cmd) {
   char buf[MAX_STRING_LENGTH], line[200];
 
-  struct descriptor_data *d;
+  struct descriptor_data* d;
 
   strcpy(buf, "Connections:\n\r------------\n\r");
 
@@ -1785,12 +1832,12 @@ void do_users(struct char_data *ch, char *argument, int cmd) {
   send_to_char(buf, ch);
 }
 
-void do_inventory(struct char_data *ch, char *argument, int cmd) {
+void do_inventory(struct char_data* ch, char* argument, int cmd) {
   send_to_char("You are carrying:\n\r", ch);
   list_obj_in_heap(ch->carrying, ch);
 }
 
-void do_equipment(struct char_data *ch, char *argument, int cmd) {
+void do_equipment(struct char_data* ch, char* argument, int cmd) {
   int j, Worn_Index;
   bool found;
   char String[256];
@@ -1816,19 +1863,21 @@ void do_equipment(struct char_data *ch, char *argument, int cmd) {
   }
 }
 
-void do_credits(struct char_data *ch, char *argument, int cmd) {
+void do_credits(struct char_data* ch, char* argument, int cmd) {
   if (ch)
     start_page_file(ch->desc, CREDITS_FILE, "Credits file being revised!\n\r");
 }
 
-void do_atlas(struct char_data *ch, char *argument, int cmd) {
+void do_atlas(struct char_data* ch, char* argument, int cmd) {
   char name[200];
   int volume;
 
   only_argument(argument, name);
 
   if (!*name) {
-    send_to_char("An argument (1-4) is needed to look at different atlas volumes.\n\r", ch);
+    send_to_char(
+      "An argument (1-4) is needed to look at different atlas volumes.\n\r",
+      ch);
     return;
   } else if (isdigit(*name)) {
     volume = atoi(name);
@@ -1855,24 +1904,25 @@ void do_atlas(struct char_data *ch, char *argument, int cmd) {
   }
 }
 
-void do_news(struct char_data *ch, char *argument, int cmd) {
+void do_news(struct char_data* ch, char* argument, int cmd) {
   if (ch)
     start_page_file(ch->desc, NEWS_FILE, "No news is good news!\n\r");
 }
 
-void do_info(struct char_data *ch, char *argument, int cmd) {
+void do_info(struct char_data* ch, char* argument, int cmd) {
   if (ch)
     start_page_file(ch->desc, INFO_FILE, "No info available!\n\r");
 }
 
-void do_wizlist(struct char_data *ch, char *argument, int cmd) {
+void do_wizlist(struct char_data* ch, char* argument, int cmd) {
   if (ch)
-    start_page_file(ch->desc, WIZLIST_FILE, "Sorry, wizlist under construction!\n\r");
+    start_page_file(ch->desc, WIZLIST_FILE,
+      "Sorry, wizlist under construction!\n\r");
 }
 
-static int which_number_mobile(struct char_data *ch, struct char_data *mob) {
-  struct char_data *i;
-  char *name;
+static int which_number_mobile(struct char_data* ch, struct char_data* mob) {
+  struct char_data* i;
+  char* name;
   int number;
 
   name = fname(mob->player.name);
@@ -1886,20 +1936,23 @@ static int which_number_mobile(struct char_data *ch, struct char_data *mob) {
   return 0;
 }
 
-char *numbered_person(struct char_data *ch, struct char_data *person) {
+char* numbered_person(struct char_data* ch, struct char_data* person) {
   static char buf[MAX_STRING_LENGTH];
   if (IS_NPC(person) && IS_IMMORTAL(ch)) {
-    sprintf(buf, "%d.%s", which_number_mobile(ch, person), fname(person->player.name));
+    sprintf(buf, "%d.%s", which_number_mobile(ch, person),
+      fname(person->player.name));
   } else {
     strcpy(buf, PERS(person, ch));
   }
   return buf;
 }
 
-static void do_where_person(struct char_data *ch, struct char_data *person, struct string_block *sb) {
+static void do_where_person(struct char_data* ch, struct char_data* person,
+  struct string_block* sb) {
   char buf[MAX_STRING_LENGTH];
 
-  sprintf(buf, "%-30s- %s ", PERS(person, ch), (person->in_room > -1 ? real_roomp(person->in_room)->name : "Nowhere"));
+  sprintf(buf, "%-30s- %s ", PERS(person, ch),
+    (person->in_room > -1 ? real_roomp(person->in_room)->name : "Nowhere"));
 
   if (GetMaxLevel(ch) >= LOW_IMMORTAL)
     sprintf(buf + strlen(buf), "[%d]", person->in_room);
@@ -1909,18 +1962,24 @@ static void do_where_person(struct char_data *ch, struct char_data *person, stru
   append_to_string_block(sb, buf);
 }
 
-static void do_where_object(struct char_data *ch, struct obj_data *obj, int recurse, struct string_block *sb) {
+static void do_where_object(struct char_data* ch, struct obj_data* obj,
+  int recurse, struct string_block* sb) {
   char buf[MAX_STRING_LENGTH];
   if (obj->in_room != NOWHERE) { /* object in a room */
-    sprintf(buf, "%-30s- %s [%d]\n\r", obj->short_description, real_roomp(obj->in_room)->name, obj->in_room);
+    sprintf(buf, "%-30s- %s [%d]\n\r", obj->short_description,
+      real_roomp(obj->in_room)->name, obj->in_room);
   } else if (obj->carried_by != NULL) { /* object carried by monster */
-    sprintf(buf, "%-30s- carried by %s\n\r", obj->short_description, numbered_person(ch, obj->carried_by));
+    sprintf(buf, "%-30s- carried by %s\n\r", obj->short_description,
+      numbered_person(ch, obj->carried_by));
   } else if (obj->equipped_by != NULL) { /* object equipped by monster */
-    sprintf(buf, "%-30s- equipped by %s\n\r", obj->short_description, numbered_person(ch, obj->equipped_by));
+    sprintf(buf, "%-30s- equipped by %s\n\r", obj->short_description,
+      numbered_person(ch, obj->equipped_by));
   } else if (obj->in_obj) { /* object in object */
-    sprintf(buf, "%-30s- in %s\n\r", obj->short_description, obj->in_obj->short_description);
+    sprintf(buf, "%-30s- in %s\n\r", obj->short_description,
+      obj->in_obj->short_description);
   } else {
-    sprintf(buf, "%-30s- god doesn't even know where...\n\r", obj->short_description);
+    sprintf(buf, "%-30s- god doesn't even know where...\n\r",
+      obj->short_description);
   }
   if (*buf)
     append_to_string_block(sb, buf);
@@ -1937,12 +1996,12 @@ static void do_where_object(struct char_data *ch, struct obj_data *obj, int recu
   }
 }
 
-void do_where(struct char_data *ch, char *argument, int cmd) {
+void do_where(struct char_data* ch, char* argument, int cmd) {
   char name[MAX_INPUT_LENGTH], buf[MAX_STRING_LENGTH];
-  char *nameonly;
-  register struct char_data *i;
-  register struct obj_data *k;
-  struct descriptor_data *d;
+  char* nameonly;
+  register struct char_data* i;
+  register struct obj_data* k;
+  struct descriptor_data* d;
   int number, count;
   struct string_block sb;
 
@@ -1957,17 +2016,15 @@ void do_where(struct char_data *ch, char *argument, int cmd) {
       append_to_string_block(&sb, "Players:\n\r--------\n\r");
 
       for (d = descriptor_list; d; d = d->next) {
-        if (d->character && (d->connected == CON_PLYNG) && (d->character->in_room != NOWHERE)) {
+        if (d->character && (d->connected == CON_PLYNG) &&
+            (d->character->in_room != NOWHERE)) {
           if (d->original) /* If switched */
-            sprintf(
-              buf, "%-20s - %s [%d] In body of %s\n\r", d->original->player.name,
-              real_roomp(d->character->in_room)->name, d->character->in_room, fname(d->character->player.name)
-            );
+            sprintf(buf, "%-20s - %s [%d] In body of %s\n\r",
+              d->original->player.name, real_roomp(d->character->in_room)->name,
+              d->character->in_room, fname(d->character->player.name));
           else
-            sprintf(
-              buf, "%-20s - %s [%d]\n\r", d->character->player.name, real_roomp(d->character->in_room)->name,
-              d->character->in_room
-            );
+            sprintf(buf, "%-20s - %s [%d]\n\r", d->character->player.name,
+              real_roomp(d->character->in_room)->name, d->character->in_room);
 
           append_to_string_block(&sb, buf);
         }
@@ -1992,8 +2049,8 @@ void do_where(struct char_data *ch, char *argument, int cmd) {
   for (i = character_list; i; i = i->next)
     if (isname(name, i->player.name) && CAN_SEE(ch, i)) {
       if ((i->in_room != NOWHERE) &&
-     ((GetMaxLevel(ch)>=LOW_IMMORTAL) || (real_roomp(i->in_room)->zone ==
-                    real_roomp(ch->in_room)->zone))) {
+          ((GetMaxLevel(ch) >= LOW_IMMORTAL) ||
+            (real_roomp(i->in_room)->zone == real_roomp(ch->in_room)->zone))) {
         if (number == 0 || (--count) == 0) {
           if (number == 0) {
             sprintf(buf, "[%2d] ", ++count); /* I love short circuiting :) */
@@ -2034,7 +2091,7 @@ void do_where(struct char_data *ch, char *argument, int cmd) {
   destroy_string_block(&sb);
 }
 
-void do_levels(struct char_data *ch, char *argument, int cmd) {
+void do_levels(struct char_data* ch, char* argument, int cmd) {
   int i, RaceMax, class;
   char buf[MAX_STRING_LENGTH];
   char buf2[MAX_STRING_LENGTH];
@@ -2100,18 +2157,17 @@ void do_levels(struct char_data *ch, char *argument, int cmd) {
   RaceMax = RacialMax[GET_RACE(ch)][class];
 
   for (i = 1; i <= 50; i++) {
-    sprintf(
-      buf, "[%2d] %9d : %s\n\r", i, titles[class][i].exp,
-      (GET_SEX(ch) == SEX_FEMALE ? titles[class][i].title_f : titles[class][i].title_m)
-    );
+    sprintf(buf, "[%2d] %9d : %s\n\r", i, titles[class][i].exp,
+      (GET_SEX(ch) == SEX_FEMALE ? titles[class][i].title_f
+                                 : titles[class][i].title_m));
     send_to_char(buf, ch);
   }
 
   return;
 }
 
-void do_consider(struct char_data *ch, char *argument, int cmd) {
-  struct char_data *victim;
+void do_consider(struct char_data* ch, char* argument, int cmd) {
+  struct char_data* victim;
   char name[256], buf[256];
   int diff;
 
@@ -2161,7 +2217,8 @@ void do_consider(struct char_data *ch, char *argument, int cmd) {
   else if (diff <= 30)
     send_to_char("You ARE mad!\n\r", ch);
   else
-    send_to_char("Why don't I just kill you right now and save you the trouble?\n\r", ch);
+    send_to_char(
+      "Why don't I just kill you right now and save you the trouble?\n\r", ch);
 
   if (ch->skills) {
     int skill = 0;
@@ -2178,7 +2235,8 @@ void do_consider(struct char_data *ch, char *argument, int cmd) {
       if (!skill)
         skill = SKILL_CONS_VEGGIE;
       learn = MAX(learn, ch->skills[SKILL_CONS_VEGGIE].learned);
-      act("$N seems to be an ambulatory vegetable", FALSE, ch, 0, victim, TO_CHAR);
+      act("$N seems to be an ambulatory vegetable", FALSE, ch, 0, victim,
+        TO_CHAR);
     }
     if (IsDiabolic(victim) && ch->skills[SKILL_CONS_DEMON].learned) {
       if (!skill)
@@ -2209,13 +2267,15 @@ void do_consider(struct char_data *ch, char *argument, int cmd) {
       if (!skill)
         skill = SKILL_CONS_PEOPLE;
       learn = MAX(learn, ch->skills[SKILL_CONS_PEOPLE].learned);
-      act("$N seems to be a human or demi-human", FALSE, ch, 0, victim, TO_CHAR);
+      act("$N seems to be a human or demi-human", FALSE, ch, 0, victim,
+        TO_CHAR);
     }
     if (IsOther(victim) && ch->skills[SKILL_CONS_OTHER].learned) {
       if (!skill)
         skill = SKILL_CONS_OTHER;
       learn = MAX(learn, ch->skills[SKILL_CONS_OTHER].learned / 2);
-      act("$N seems to be a monster you know about", FALSE, ch, 0, victim, TO_CHAR);
+      act("$N seems to be a monster you know about", FALSE, ch, 0, victim,
+        TO_CHAR);
     }
 
     if (learn > 95)
@@ -2239,7 +2299,8 @@ void do_consider(struct char_data *ch, char *argument, int cmd) {
     send_to_char(buf, ch);
 
     if (learn > 60) {
-      sprintf(buf, "Est. # of attacks: %s\n\r", DescAttacks(GetApprox((int)victim->mult_att, learn)));
+      sprintf(buf, "Est. # of attacks: %s\n\r",
+        DescAttacks(GetApprox((int)victim->mult_att, learn)));
       send_to_char(buf, ch);
     }
     if (learn > 70) {
@@ -2275,10 +2336,10 @@ void do_consider(struct char_data *ch, char *argument, int cmd) {
   }
 }
 
-void do_spells(struct char_data *ch, char *argument, int cmd) {
+void do_spells(struct char_data* ch, char* argument, int cmd) {
   int spl, i;
   char buf[16384];
-  extern char *spells[];
+  extern char* spells[];
   extern int spell_status[];
   extern struct spell_info_type spell_info[MAX_SKILLS];
 
@@ -2290,18 +2351,19 @@ void do_spells(struct char_data *ch, char *argument, int cmd) {
   *buf = 0;
 
   for (i = 1, spl = 0; i <= MAX_EXIST_SPELL; i++, spl++) {
-    if (GetMaxLevel(ch) > LOW_IMMORTAL || spell_info[i].min_level_cleric < ABS_MAX_LVL)
-      sprintf(
-        buf + strlen(buf), "[%2d] %-20s Mana:%3d, Cl:%2d, Mu:%2d, An:%2d, Pa:%2d, Ra:%2d\n\r", i, spells[spl],
-        spell_info[i].min_usesmana, spell_info[i].min_level_cleric, spell_info[i].min_level_magic,
-        spell_info[i].min_level_anti, spell_info[i].min_level_pal, spell_info[i].min_level_ranger
-      );
+    if (GetMaxLevel(ch) > LOW_IMMORTAL ||
+        spell_info[i].min_level_cleric < ABS_MAX_LVL)
+      sprintf(buf + strlen(buf),
+        "[%2d] %-20s Mana:%3d, Cl:%2d, Mu:%2d, An:%2d, Pa:%2d, Ra:%2d\n\r", i,
+        spells[spl], spell_info[i].min_usesmana, spell_info[i].min_level_cleric,
+        spell_info[i].min_level_magic, spell_info[i].min_level_anti,
+        spell_info[i].min_level_pal, spell_info[i].min_level_ranger);
   }
   strcat(buf, "\n\r");
   page_string(ch->desc, buf, 1);
 }
 
-void do_world(struct char_data *ch, char *argument, int cmd) {
+void do_world(struct char_data* ch, char* argument, int cmd) {
   static char buf[100];
   long ct, ot;
   char *tmstr, *otmstr;
@@ -2327,13 +2389,17 @@ void do_world(struct char_data *ch, char *argument, int cmd) {
   sprintf(buf, "Total number of rooms in world: %d\n\r", room_count);
 #endif
   send_to_char(buf, ch);
-  sprintf(buf, "Total number of zones in world: %d\n\r\n\r", top_of_zone_table + 1);
+  sprintf(buf, "Total number of zones in world: %d\n\r\n\r",
+    top_of_zone_table + 1);
   send_to_char(buf, ch);
-  sprintf(buf, "Total number of distinct mobiles in world: %d\n\r", top_of_mobt + 1);
+  sprintf(buf, "Total number of distinct mobiles in world: %d\n\r",
+    top_of_mobt + 1);
   send_to_char(buf, ch);
-  sprintf(buf, "Total number of distinct objects in world: %d\n\r\n\r", top_of_objt + 1);
+  sprintf(buf, "Total number of distinct objects in world: %d\n\r\n\r",
+    top_of_objt + 1);
   send_to_char(buf, ch);
-  sprintf(buf, "Total number of registered players: %d\n\r", top_of_p_table + 1);
+  sprintf(buf, "Total number of registered players: %d\n\r",
+    top_of_p_table + 1);
   send_to_char(buf, ch);
 
   sprintf(buf, "Total number of monsters in game: %d\n\r", mob_count);
@@ -2343,61 +2409,56 @@ void do_world(struct char_data *ch, char *argument, int cmd) {
   send_to_char(buf, ch);
 }
 
-void do_attribute(struct char_data *ch, char *argument, int cmd) {
+void do_attribute(struct char_data* ch, char* argument, int cmd) {
   char buf[MAX_STRING_LENGTH], buf2[MAX_STRING_LENGTH];
-  extern char *attr_player_bits[];
-  struct affected_type *aff;
-  extern char *spells[];
+  extern char* attr_player_bits[];
+  struct affected_type* aff;
+  extern char* spells[];
 
-  sprintf(
-    buf, "You are %d years and %d months, %d cms, and you weigh %d lbs.\n\r", GET_AGE(ch), age(ch).month,
-    ch->player.height, ch->player.weight
-  );
+  sprintf(buf,
+    "You are %d years and %d months, %d cms, and you weigh %d lbs.\n\r",
+    GET_AGE(ch), age(ch).month, ch->player.height, ch->player.weight);
   send_to_char(buf, ch);
 
   if (GetMaxLevel(ch) > 10) {
-    sprintf(
-      buf,
+    sprintf(buf,
       "You have %d lbs of equipment, and can carry upto "
       "%d lbs - %d spare lbs.\n\r",
-      IS_CARRYING_W(ch), CAN_CARRY_W(ch), CAN_CARRY_W(ch) - IS_CARRYING_W(ch)
-    );
+      IS_CARRYING_W(ch), CAN_CARRY_W(ch), CAN_CARRY_W(ch) - IS_CARRYING_W(ch));
     send_to_char(buf, ch);
 
-    sprintf(
-      buf, "You have %d volume in inventory.\n\rYou can carry up to %d volume - You have %d spare volume capacity.\n\r",
-      IS_CARRYING_N(ch), CAN_CARRY_N(ch), CAN_CARRY_N(ch) - IS_CARRYING_N(ch)
-    );
+    sprintf(buf,
+      "You have %d volume in inventory.\n\rYou can carry up to %d volume - You "
+      "have %d spare volume capacity.\n\r",
+      IS_CARRYING_N(ch), CAN_CARRY_N(ch), CAN_CARRY_N(ch) - IS_CARRYING_N(ch));
     send_to_char(buf, ch);
   }
 
-  sprintf(
-    buf, "Your alignment is %d (-1000 to 1000), and armor is %s.\n\r", ch->specials.alignment,
-    ac_for_score(ch->points.armor)
-  );
+  sprintf(buf, "Your alignment is %d (-1000 to 1000), and armor is %s.\n\r",
+    ch->specials.alignment, ac_for_score(ch->points.armor));
   send_to_char(buf, ch);
 
   if (GetMaxLevel(ch) > 9) {
-    sprintf(
-      buf, "Your natural stats : %d/%d STR, %d INT, %d WIS, %d DEX and %d CON.\n\r", GET_RSTR(ch), GET_ADD(ch),
-      GET_RINT(ch), GET_RWIS(ch), GET_RDEX(ch), GET_RCON(ch)
-    );
+    sprintf(buf,
+      "Your natural stats : %d/%d STR, %d INT, %d WIS, %d DEX and %d CON.\n\r",
+      GET_RSTR(ch), GET_ADD(ch), GET_RINT(ch), GET_RWIS(ch), GET_RDEX(ch),
+      GET_RCON(ch));
     send_to_char(buf, ch);
-    sprintf(
-      buf, "Your current stats : %d/%d STR, %d INT, %d WIS, %d DEX and %d CON.\n\r", GET_STR(ch), GET_ADD(ch),
-      GET_INT(ch), GET_WIS(ch), GET_DEX(ch), GET_CON(ch)
-    );
+    sprintf(buf,
+      "Your current stats : %d/%d STR, %d INT, %d WIS, %d DEX and %d CON.\n\r",
+      GET_STR(ch), GET_ADD(ch), GET_INT(ch), GET_WIS(ch), GET_DEX(ch),
+      GET_CON(ch));
     send_to_char(buf, ch);
   }
 
-  sprintf(buf, "Your To-Hit and To-Dam are %d and %d respectively.\n\r", GET_HITROLL(ch), GET_DAMROLL(ch));
+  sprintf(buf, "Your To-Hit and To-Dam are %d and %d respectively.\n\r",
+    GET_HITROLL(ch), GET_DAMROLL(ch));
   send_to_char(buf, ch);
 
-  sprintf(
-    buf, "Your five saving throws are: %d, %d, %d, %d, %d.\n\r", ch->specials.apply_saving_throw[0],
-    ch->specials.apply_saving_throw[1], ch->specials.apply_saving_throw[2], ch->specials.apply_saving_throw[3],
-    ch->specials.apply_saving_throw[4]
-  );
+  sprintf(buf, "Your five saving throws are: %d, %d, %d, %d, %d.\n\r",
+    ch->specials.apply_saving_throw[0], ch->specials.apply_saving_throw[1],
+    ch->specials.apply_saving_throw[2], ch->specials.apply_saving_throw[3],
+    ch->specials.apply_saving_throw[4]);
   send_to_char(buf, ch);
 
   strcpy(buf, "Your social flags are: ");
@@ -2444,7 +2505,7 @@ void do_attribute(struct char_data *ch, char *argument, int cmd) {
     send_to_char("You are drunk.\n\r", ch);
 }
 
-void do_scan(struct char_data *ch, char *argument, int cmd) {
+void do_scan(struct char_data* ch, char* argument, int cmd) {
   send_to_char("Sorry, scan has again been temporarily disabled.\n\r", ch);
 }
 
@@ -2577,7 +2638,7 @@ real_roomp(w)->dir_option[3]->to_room != NOWHERE &&
 }
 */
 
-char *DescRatio(float f) /* theirs / yours */
+char* DescRatio(float f) /* theirs / yours */
 {
   if (f > 1.0) {
     return ("More than twice yours");
@@ -2596,7 +2657,7 @@ char *DescRatio(float f) /* theirs / yours */
   }
 }
 
-char *DescDamage(float dam) {
+char* DescDamage(float dam) {
   if (dam < 1.0) {
     return ("Minimal Damage");
   } else if (dam <= 2.0) {
@@ -2616,7 +2677,7 @@ char *DescDamage(float dam) {
   }
 }
 
-char *DescAttacks(float a) {
+char* DescAttacks(float a) {
   if (a < 1.0) {
     return ("Not many");
   } else if (a < 2.0) {
@@ -2632,7 +2693,7 @@ char *DescAttacks(float a) {
   }
 }
 
-char *DescMoves(float a) {
+char* DescMoves(float a) {
   if (a < .1)
     return ("very tired");
   else if (a < .3)
@@ -2645,7 +2706,7 @@ char *DescMoves(float a) {
     return ("totally rested");
 }
 
-char *ac_for_score(int a) {
+char* ac_for_score(int a) {
   if (a > 75) {
     return ("scantily clothed");
   } else if (a > 50) {
@@ -2665,7 +2726,7 @@ char *ac_for_score(int a) {
   }
 }
 
-void read_book(Mob *ch, Obj *o, char *arg) {
+void read_book(Mob* ch, Obj* o, char* arg) {
   char buf[256];
   int vnum, section = 0;
 

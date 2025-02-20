@@ -12,7 +12,7 @@ J. Hendrickson
 #include "structs.h"
 #include "utils.h"
 
-#define BLACKJACK 8401 /* Room to play black jack in. */
+#define BLACKJACK 8401  /* Room to play black jack in. */
 #define MAX_BLACKJACK 1 /* Max number of Blackjack players */
 #define HEARTS 128
 #define DIAMONDS 64
@@ -29,17 +29,17 @@ struct bj_players {
 
 static struct bj_players bj_data[MAX_BLACKJACK];
 
-char *card_names[14] = {"Nothing", "Ace",   "Two",  "Three", "Four", "Five",  "Six",
-                        "Seven",   "Eight", "Nine", "Ten",   "Jack", "Queen", "King"};
+char* card_names[14] = {"Nothing", "Ace", "Two", "Three", "Four", "Five", "Six",
+  "Seven", "Eight", "Nine", "Ten", "Jack", "Queen", "King"};
 
-int check_blackjack(struct char_data *ch) {
+int check_blackjack(struct char_data* ch) {
   if (ch->in_room == BLACKJACK)
     return 1;
   else
     return 0;
 }
 
-void bj_shuffle(int inx, struct char_data *ch) {
+void bj_shuffle(int inx, struct char_data* ch) {
   char log_msg[256];
   int l1, l2, l3, tmp;
 
@@ -75,7 +75,7 @@ void bj_shuffle(int inx, struct char_data *ch) {
   bj_data[inx].deck_inx = 0;
 }
 
-int do_blackjack_enter(struct char_data *ch) {
+int do_blackjack_enter(struct char_data* ch) {
   int l1, l2, inx;
   extern struct time_info_data time_info;
 
@@ -102,7 +102,7 @@ int do_blackjack_enter(struct char_data *ch) {
   return 1;
 }
 
-int do_blackjack_exit(struct char_data *ch) {
+int do_blackjack_exit(struct char_data* ch) {
   char log_msg[80];
   int inx;
 
@@ -119,7 +119,7 @@ int do_blackjack_exit(struct char_data *ch) {
   send_to_char("You leave the blackjack table.\n\r", ch);
 }
 
-void do_bj_bet(struct char_data *ch, char *arg, int cmd) {
+void do_bj_bet(struct char_data* ch, char* arg, int cmd) {
   int inx, bet_amt, l1, l2;
   char coin_str[20], log_msg[2048];
 
@@ -151,17 +151,22 @@ void do_bj_bet(struct char_data *ch, char *arg, int cmd) {
     GET_GOLD(ch) -= bet_amt;
     bj_data[inx].nd = 0;
     bj_data[inx].np = 0;
-    for (l1 = 0; l1 < 12; bj_data[inx].hand[l1] = 0, bj_data[inx].dealer[l1] = 0, l1++)
+    for (l1 = 0; l1 < 12;
+         bj_data[inx].hand[l1] = 0, bj_data[inx].dealer[l1] = 0, l1++)
       ;
 
     if (bj_data[inx].deck_inx > 30)
       bj_shuffle(inx, ch);
 
-    bj_data[inx].hand[bj_data[inx].np++] = bj_data[inx].deck[bj_data[inx].deck_inx++];
-    bj_data[inx].hand[bj_data[inx].np++] = bj_data[inx].deck[bj_data[inx].deck_inx++];
+    bj_data[inx].hand[bj_data[inx].np++] =
+      bj_data[inx].deck[bj_data[inx].deck_inx++];
+    bj_data[inx].hand[bj_data[inx].np++] =
+      bj_data[inx].deck[bj_data[inx].deck_inx++];
 
-    bj_data[inx].dealer[bj_data[inx].nd++] = bj_data[inx].deck[bj_data[inx].deck_inx++];
-    bj_data[inx].dealer[bj_data[inx].nd++] = bj_data[inx].deck[bj_data[inx].deck_inx++];
+    bj_data[inx].dealer[bj_data[inx].nd++] =
+      bj_data[inx].deck[bj_data[inx].deck_inx++];
+    bj_data[inx].dealer[bj_data[inx].nd++] =
+      bj_data[inx].deck[bj_data[inx].deck_inx++];
 
     sprintf(log_msg, "You are dealt:\n\r");
     strcat(log_msg, card_names[bj_data[inx].hand[0] & 0x0f]);
@@ -179,21 +184,19 @@ void do_bj_bet(struct char_data *ch, char *arg, int cmd) {
 
     send_to_char(log_msg, ch);
 
-    if ((((bj_data[inx].hand[0] & 0x0f)==1 ) &&
-			 ((bj_data[inx].hand[1] & 0x0f)>= 10) ) ||
-		    (((bj_data[inx].hand[1] & 0x0f)==1 ) &&
-			 ((bj_data[inx].hand[0] & 0x0f)>= 10) ))
-		{
+    if ((((bj_data[inx].hand[0] & 0x0f) == 1) &&
+          ((bj_data[inx].hand[1] & 0x0f) >= 10)) ||
+        (((bj_data[inx].hand[1] & 0x0f) == 1) &&
+          ((bj_data[inx].hand[0] & 0x0f) >= 10))) {
       send_to_char("You get a blackjack!\n\r", ch);
       GET_GOLD(ch) += bj_data[inx].bet * 2;
       bj_data[inx].bet = 0;
     }
 
-    if ((((bj_data[inx].dealer[0] & 0x0f)==1 ) &&
-			 ((bj_data[inx].dealer[1] & 0x0f)>= 10) ) ||
-		    (((bj_data[inx].dealer[1] & 0x0f)==1 ) &&
-			 ((bj_data[inx].dealer[0] & 0x0f)>= 10) ))
-		{
+    if ((((bj_data[inx].dealer[0] & 0x0f) == 1) &&
+          ((bj_data[inx].dealer[1] & 0x0f) >= 10)) ||
+        (((bj_data[inx].dealer[1] & 0x0f) == 1) &&
+          ((bj_data[inx].dealer[0] & 0x0f) >= 10))) {
       send_to_char("The dealer gets a blackjack!\n\r", ch);
       bj_data[inx].bet = 0;
     }
@@ -203,7 +206,7 @@ void do_bj_bet(struct char_data *ch, char *arg, int cmd) {
   }
 }
 
-void do_stay(struct char_data *ch, char *arg, int cmd) {
+void do_stay(struct char_data* ch, char* arg, int cmd) {
   int inx, pbest, dbest, l1;
   char log_msg[2048];
 
@@ -220,9 +223,11 @@ void do_stay(struct char_data *ch, char *arg, int cmd) {
 
     l1 = best_bj_dealer(inx);
     while (l1 < 17) {
-      bj_data[inx].dealer[bj_data[inx].nd++] = bj_data[inx].deck[bj_data[inx].deck_inx++];
+      bj_data[inx].dealer[bj_data[inx].nd++] =
+        bj_data[inx].deck[bj_data[inx].deck_inx++];
       sprintf(log_msg, "The dealer is dealt the ");
-      strcat(log_msg, card_names[bj_data[inx].dealer[bj_data[inx].nd - 1] & 0x0f]);
+      strcat(log_msg,
+        card_names[bj_data[inx].dealer[bj_data[inx].nd - 1] & 0x0f]);
       add_suit(log_msg, bj_data[inx].dealer[bj_data[inx].nd - 1]);
       strcat(log_msg, ".\n\r");
 
@@ -273,7 +278,7 @@ void do_stay(struct char_data *ch, char *arg, int cmd) {
   }
 }
 
-void do_peek(struct char_data *ch, char *arg, int cmd) {
+void do_peek(struct char_data* ch, char* arg, int cmd) {
   char log_msg[2048], tmp[10];
   int l1, inx;
 
@@ -309,7 +314,7 @@ void do_peek(struct char_data *ch, char *arg, int cmd) {
   }
 }
 
-void do_bj_hit(struct char_data *ch, char *arg, int cmd) {
+void do_bj_hit(struct char_data* ch, char* arg, int cmd) {
   int inx;
   char log_msg[2048];
 
@@ -323,7 +328,8 @@ void do_bj_hit(struct char_data *ch, char *arg, int cmd) {
     return;
   }
 
-  bj_data[inx].hand[bj_data[inx].np++] = bj_data[inx].deck[bj_data[inx].deck_inx++];
+  bj_data[inx].hand[bj_data[inx].np++] =
+    bj_data[inx].deck[bj_data[inx].deck_inx++];
 
   sprintf(log_msg, "You are dealt the ");
   strcat(log_msg, card_names[bj_data[inx].hand[bj_data[inx].np - 1] & 0x0f]);
@@ -338,7 +344,7 @@ void do_bj_hit(struct char_data *ch, char *arg, int cmd) {
   }
 }
 
-int bj_index(struct char_data *ch) {
+int bj_index(struct char_data* ch) {
   int l1, inx;
 
   for (l1 = 0, inx = -1; inx < 0 && l1 < MAX_BLACKJACK; l1++) {
@@ -348,7 +354,7 @@ int bj_index(struct char_data *ch) {
   return inx;
 }
 
-int add_suit(char *cat_msg, int card) {
+int add_suit(char* cat_msg, int card) {
   if (card & HEARTS)
     strcat(cat_msg, " of Hearts");
   if (card & DIAMONDS)

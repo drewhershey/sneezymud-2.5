@@ -13,16 +13,16 @@
 #if HASH
 extern struct hash_header room_db;
 #else
-extern struct room_data *room_db;
+extern struct room_data* room_db;
 #endif
-extern struct index_data *mob_index;
-extern struct index_data *obj_index;
+extern struct index_data* mob_index;
+extern struct index_data* obj_index;
 extern void boot_the_shops();
 extern void assign_the_shopkeepers();
 
 struct special_proc_entry {
     int vnum;
-    int (*proc)(struct char_data *, int, char *);
+    int (*proc)(struct char_data*, int, char*);
 };
 
 /* ********************************************************************
@@ -31,125 +31,126 @@ struct special_proc_entry {
 
 /* assign special procedures to mobiles */
 void assign_mobiles(void) {
-  extern int cityguard(struct char_data * ch, int cmd, char *arg);
-  extern int craps_table_man(struct char_data * ch, int cmd, char *arg);
-  extern int aunt_bee(struct char_data * ch, int cmd, char *arg);
-  extern int sheriff(struct char_data * ch, int cmd, char *arg);
-  extern int bow_shooter(struct char_data * ch, int cmd, char *arg);
-  extern int magneto(struct char_data * ch, int cmd, char *arg);
-  extern int ThalosGuildGuard(struct char_data * ch, int cmd, char *arg);
-  extern int SultanGuard(struct char_data * ch, int cmd, char *arg);
-  extern int NewThalosCitzen(struct char_data * ch, int cmd, char *arg);
-  extern int NewThalosMayor(struct char_data * ch, int cmd, char *arg);
-  extern int MordGuard(struct char_data * ch, int cmd, char *arg);
-  extern int MordGuildGuard(struct char_data * ch, int cmd, char *arg);
-  extern int CaravanGuildGuard(struct char_data * ch, int cmd, char *arg);
-  extern int StatTeller(struct char_data * ch, int cmd, char *arg);
-  extern int ThrowerMob(struct char_data * ch, int cmd, char *arg);
-  extern int Demon(struct char_data * ch, int cmd, char *arg);
-  extern int Devil(struct char_data * ch, int cmd, char *arg);
-  extern int Inquisitor(struct char_data * ch, int cmd, char *arg);
-  extern int temple_labrynth_liar(struct char_data * ch, int cmd, char *arg);
-  extern int AbyssGateKeeper(struct char_data * ch, int cmd, char *arg);
-  extern int postmaster(struct char_data * ch, int cmd, char *arg);
-  extern int temple_labrynth_sentry(struct char_data * ch, int cmd, char *arg);
-  extern int NudgeNudge(struct char_data * ch, int cmd, char *arg);
-  extern int RustMonster(struct char_data * ch, int cmd, char *arg);
-  extern int PaladinGuildGuard(struct char_data * ch, int cmd, char *arg);
-  extern int tormentor(struct char_data * ch, int cmd, char *arg);
-  extern int receptionist(struct char_data * ch, int cmd, char *arg);
-  extern int receptionist_for_outlaws(struct char_data * ch, int cmd, char *arg);
-  extern int MageGuildMaster(struct char_data * ch, int cmd, char *arg);
-  extern int ThiefGuildMaster(struct char_data * ch, int cmd, char *arg);
-  extern int ClericGuildMaster(struct char_data * ch, int cmd, char *arg);
-  extern int WarriorGuildMaster(struct char_data * ch, int cmd, char *arg);
-  extern int AntiGuildMaster(struct char_data * ch, int cmd, char *arg);
-  extern int PaladinGuildMaster(struct char_data * ch, int cmd, char *arg);
-  extern int RangerGuildMaster(struct char_data * ch, int cmd, char *arg);
-  extern int guild_guard(struct char_data * ch, int cmd, char *arg);
-  extern int puff(struct char_data * ch, int cmd, char *arg);
-  extern int fido(struct char_data * ch, int cmd, char *arg);
-  extern int janitor(struct char_data * ch, int cmd, char *arg);
-  extern int mayor(struct char_data * ch, int cmd, char *arg);
-  extern int eric_johnson(struct char_data * ch, int cmd, char *arg);
-  extern int andy_wilcox(struct char_data * ch, int cmd, char *arg);
-  extern int zombie_master(struct char_data * ch, int cmd, char *arg);
-  extern int snake(struct char_data * ch, int cmd, char *arg);
-  extern int thief(struct char_data * ch, int cmd, char *arg);
-  extern int monk_master(struct char_data * ch, int cmd, char *arg);
-  extern int monk(struct char_data * ch, int cmd, char *arg);
-  extern int magic_user(struct char_data * ch, int cmd, char *arg);
-  extern int magic_user2(struct char_data * ch, int cmd, char *arg);
-  extern int cleric(struct char_data * ch, int cmd, char *arg);
-  extern int ghoul(struct char_data * ch, int cmd, char *arg);
-  extern int vampire(struct char_data * ch, int cmd, char *arg);
-  extern int arch_vampire(struct char_data * ch, int cmd, char *arg);
-  extern int wraith(struct char_data * ch, int cmd, char *arg);
-  extern int shadow(struct char_data * ch, int cmd, char *arg);
-  extern int geyser(struct char_data * ch, int cmd, char *arg);
-  extern int green_slime(struct char_data * ch, int cmd, char *arg);
-  extern int BreathWeapon(struct char_data * ch, int cmd, char *arg);
-  extern int dragon(struct char_data * ch, int cmd, char *arg);
-  extern int DracoLich(struct char_data * ch, int cmd, char *arg);
-  extern int Drow(struct char_data * ch, int cmd, char *arg);
-  extern int Leader(struct char_data * ch, int cmd, char *arg);
-  extern int MidgaardCitizen(struct char_data * ch, int cmd, char *arg);
-  extern int NewThalosMayor(struct char_data * ch, int cmd, char *arg);
-  extern int NewThalosCitizen(struct char_data * ch, int cmd, char *arg);
-  extern int citizen(struct char_data * ch, int cmd, char *arg);
-  extern int SultanGuard(struct char_data * ch, int cmd, char *arg);
-  extern int NewThalosGuildGuard(struct char_data * ch, int cmd, char *arg);
-  extern int new_ninja_master(struct char_data * ch, int cmd, char *arg);
-  extern int loremaster(struct char_data * ch, int cmd, char *arg);
-  extern int hunter(struct char_data * ch, int cmd, char *arg);
-  extern int WizardGuard(struct char_data * ch, int cmd, char *arg);
-  extern int AbbarachDragon(struct char_data * ch, int cmd, char *arg);
-  extern int Tytan(struct char_data * ch, int cmd, char *arg);
-  extern int replicant(struct char_data * ch, int cmd, char *arg);
-  extern int nightcrawler(struct char_data * ch, int cmd, char *arg);
-  extern int regenerator(struct char_data * ch, int cmd, char *arg);
-  extern int mega_regenerator(struct char_data * ch, int cmd, char *arg);
-  extern int web_slinger(struct char_data * ch, int cmd, char *arg);
-  extern int juggernaut(struct char_data * ch, int cmd, char *arg);
-  extern int storm(struct char_data * ch, int cmd, char *arg);
-  extern int prof_x(struct char_data * ch, int cmd, char *arg);
-  extern int elektro(struct char_data * ch, int cmd, char *arg);
-  extern int iceman(struct char_data * ch, int cmd, char *arg);
-  extern int blink(struct char_data * ch, int cmd, char *arg);
-  extern int RepairGuy(struct char_data * ch, int cmd, char *arg);
-  extern int Ringwraith(struct char_data * ch, int cmd, char *arg);
-  extern int bounty_hunter(struct char_data * ch, int cmd, char *arg);
-  extern int sisyphus(struct char_data * ch, int cmd, char *arg);
-  extern int jabberwocky(struct char_data * ch, int cmd, char *arg);
-  extern int flame(struct char_data * ch, int cmd, char *arg);
-  extern int banana(struct char_data * ch, int cmd, char *arg);
-  extern int paramedics(struct char_data * ch, int cmd, char *arg);
-  extern int delivery_elf(struct char_data * ch, int cmd, char *arg);
-  extern int delivery_beast(struct char_data * ch, int cmd, char *arg);
-  extern int Keftab(struct char_data * ch, int cmd, char *arg);
-  extern int StormGiant(struct char_data * ch, int cmd, char *arg);
-  extern int Kraken(struct char_data * ch, int cmd, char *arg);
-  extern int Manticore(struct char_data * ch, int cmd, char *arg);
-  extern int i_am_police(struct char_data * ch, int cmd, char *arg);
-  extern int fighter(struct char_data * ch, int cmd, char *arg);
-  extern int zombie_hater(struct char_data * ch, int cmd, char *arg);
-  extern int toilet_thing(struct char_data * ch, int cmd, char *arg);
-  extern int gilbert(struct char_data * ch, int cmd, char *arg);
-  extern int bouncer(struct char_data * ch, int cmd, char *arg);
-  extern int dishboy(struct char_data * ch, int cmd, char *arg);
-  extern int game_wizard(struct char_data * ch, int cmd, char *arg);
-  extern int AGGRESSIVE(struct char_data * ch, int cmd, char *arg);
-  extern int CarrionCrawler(struct char_data * ch, int cmd, char *arg);
-  extern int guardian(struct char_data * ch, int cmd, char *arg);
-  extern int lattimore(struct char_data * ch, int cmd, char *arg);
-  extern int coldcaster(struct char_data * ch, int cmd, char *arg);
-  extern int trapper(struct char_data * ch, int cmd, char *arg);
-  extern int keystone(struct char_data * ch, int cmd, char *arg);
-  extern int ghostsoldier(struct char_data * ch, int cmd, char *arg);
-  extern int troguard(struct char_data * ch, int cmd, char *arg);
-  extern int shaman(struct char_data * ch, int cmd, char *arg);
-  extern int golgar(struct char_data * ch, int cmd, char *arg);
-  extern int trogcook(struct char_data * ch, int cmd, char *arg);
+  extern int cityguard(struct char_data * ch, int cmd, char* arg);
+  extern int craps_table_man(struct char_data * ch, int cmd, char* arg);
+  extern int aunt_bee(struct char_data * ch, int cmd, char* arg);
+  extern int sheriff(struct char_data * ch, int cmd, char* arg);
+  extern int bow_shooter(struct char_data * ch, int cmd, char* arg);
+  extern int magneto(struct char_data * ch, int cmd, char* arg);
+  extern int ThalosGuildGuard(struct char_data * ch, int cmd, char* arg);
+  extern int SultanGuard(struct char_data * ch, int cmd, char* arg);
+  extern int NewThalosCitzen(struct char_data * ch, int cmd, char* arg);
+  extern int NewThalosMayor(struct char_data * ch, int cmd, char* arg);
+  extern int MordGuard(struct char_data * ch, int cmd, char* arg);
+  extern int MordGuildGuard(struct char_data * ch, int cmd, char* arg);
+  extern int CaravanGuildGuard(struct char_data * ch, int cmd, char* arg);
+  extern int StatTeller(struct char_data * ch, int cmd, char* arg);
+  extern int ThrowerMob(struct char_data * ch, int cmd, char* arg);
+  extern int Demon(struct char_data * ch, int cmd, char* arg);
+  extern int Devil(struct char_data * ch, int cmd, char* arg);
+  extern int Inquisitor(struct char_data * ch, int cmd, char* arg);
+  extern int temple_labrynth_liar(struct char_data * ch, int cmd, char* arg);
+  extern int AbyssGateKeeper(struct char_data * ch, int cmd, char* arg);
+  extern int postmaster(struct char_data * ch, int cmd, char* arg);
+  extern int temple_labrynth_sentry(struct char_data * ch, int cmd, char* arg);
+  extern int NudgeNudge(struct char_data * ch, int cmd, char* arg);
+  extern int RustMonster(struct char_data * ch, int cmd, char* arg);
+  extern int PaladinGuildGuard(struct char_data * ch, int cmd, char* arg);
+  extern int tormentor(struct char_data * ch, int cmd, char* arg);
+  extern int receptionist(struct char_data * ch, int cmd, char* arg);
+  extern int receptionist_for_outlaws(struct char_data * ch, int cmd,
+    char* arg);
+  extern int MageGuildMaster(struct char_data * ch, int cmd, char* arg);
+  extern int ThiefGuildMaster(struct char_data * ch, int cmd, char* arg);
+  extern int ClericGuildMaster(struct char_data * ch, int cmd, char* arg);
+  extern int WarriorGuildMaster(struct char_data * ch, int cmd, char* arg);
+  extern int AntiGuildMaster(struct char_data * ch, int cmd, char* arg);
+  extern int PaladinGuildMaster(struct char_data * ch, int cmd, char* arg);
+  extern int RangerGuildMaster(struct char_data * ch, int cmd, char* arg);
+  extern int guild_guard(struct char_data * ch, int cmd, char* arg);
+  extern int puff(struct char_data * ch, int cmd, char* arg);
+  extern int fido(struct char_data * ch, int cmd, char* arg);
+  extern int janitor(struct char_data * ch, int cmd, char* arg);
+  extern int mayor(struct char_data * ch, int cmd, char* arg);
+  extern int eric_johnson(struct char_data * ch, int cmd, char* arg);
+  extern int andy_wilcox(struct char_data * ch, int cmd, char* arg);
+  extern int zombie_master(struct char_data * ch, int cmd, char* arg);
+  extern int snake(struct char_data * ch, int cmd, char* arg);
+  extern int thief(struct char_data * ch, int cmd, char* arg);
+  extern int monk_master(struct char_data * ch, int cmd, char* arg);
+  extern int monk(struct char_data * ch, int cmd, char* arg);
+  extern int magic_user(struct char_data * ch, int cmd, char* arg);
+  extern int magic_user2(struct char_data * ch, int cmd, char* arg);
+  extern int cleric(struct char_data * ch, int cmd, char* arg);
+  extern int ghoul(struct char_data * ch, int cmd, char* arg);
+  extern int vampire(struct char_data * ch, int cmd, char* arg);
+  extern int arch_vampire(struct char_data * ch, int cmd, char* arg);
+  extern int wraith(struct char_data * ch, int cmd, char* arg);
+  extern int shadow(struct char_data * ch, int cmd, char* arg);
+  extern int geyser(struct char_data * ch, int cmd, char* arg);
+  extern int green_slime(struct char_data * ch, int cmd, char* arg);
+  extern int BreathWeapon(struct char_data * ch, int cmd, char* arg);
+  extern int dragon(struct char_data * ch, int cmd, char* arg);
+  extern int DracoLich(struct char_data * ch, int cmd, char* arg);
+  extern int Drow(struct char_data * ch, int cmd, char* arg);
+  extern int Leader(struct char_data * ch, int cmd, char* arg);
+  extern int MidgaardCitizen(struct char_data * ch, int cmd, char* arg);
+  extern int NewThalosMayor(struct char_data * ch, int cmd, char* arg);
+  extern int NewThalosCitizen(struct char_data * ch, int cmd, char* arg);
+  extern int citizen(struct char_data * ch, int cmd, char* arg);
+  extern int SultanGuard(struct char_data * ch, int cmd, char* arg);
+  extern int NewThalosGuildGuard(struct char_data * ch, int cmd, char* arg);
+  extern int new_ninja_master(struct char_data * ch, int cmd, char* arg);
+  extern int loremaster(struct char_data * ch, int cmd, char* arg);
+  extern int hunter(struct char_data * ch, int cmd, char* arg);
+  extern int WizardGuard(struct char_data * ch, int cmd, char* arg);
+  extern int AbbarachDragon(struct char_data * ch, int cmd, char* arg);
+  extern int Tytan(struct char_data * ch, int cmd, char* arg);
+  extern int replicant(struct char_data * ch, int cmd, char* arg);
+  extern int nightcrawler(struct char_data * ch, int cmd, char* arg);
+  extern int regenerator(struct char_data * ch, int cmd, char* arg);
+  extern int mega_regenerator(struct char_data * ch, int cmd, char* arg);
+  extern int web_slinger(struct char_data * ch, int cmd, char* arg);
+  extern int juggernaut(struct char_data * ch, int cmd, char* arg);
+  extern int storm(struct char_data * ch, int cmd, char* arg);
+  extern int prof_x(struct char_data * ch, int cmd, char* arg);
+  extern int elektro(struct char_data * ch, int cmd, char* arg);
+  extern int iceman(struct char_data * ch, int cmd, char* arg);
+  extern int blink(struct char_data * ch, int cmd, char* arg);
+  extern int RepairGuy(struct char_data * ch, int cmd, char* arg);
+  extern int Ringwraith(struct char_data * ch, int cmd, char* arg);
+  extern int bounty_hunter(struct char_data * ch, int cmd, char* arg);
+  extern int sisyphus(struct char_data * ch, int cmd, char* arg);
+  extern int jabberwocky(struct char_data * ch, int cmd, char* arg);
+  extern int flame(struct char_data * ch, int cmd, char* arg);
+  extern int banana(struct char_data * ch, int cmd, char* arg);
+  extern int paramedics(struct char_data * ch, int cmd, char* arg);
+  extern int delivery_elf(struct char_data * ch, int cmd, char* arg);
+  extern int delivery_beast(struct char_data * ch, int cmd, char* arg);
+  extern int Keftab(struct char_data * ch, int cmd, char* arg);
+  extern int StormGiant(struct char_data * ch, int cmd, char* arg);
+  extern int Kraken(struct char_data * ch, int cmd, char* arg);
+  extern int Manticore(struct char_data * ch, int cmd, char* arg);
+  extern int i_am_police(struct char_data * ch, int cmd, char* arg);
+  extern int fighter(struct char_data * ch, int cmd, char* arg);
+  extern int zombie_hater(struct char_data * ch, int cmd, char* arg);
+  extern int toilet_thing(struct char_data * ch, int cmd, char* arg);
+  extern int gilbert(struct char_data * ch, int cmd, char* arg);
+  extern int bouncer(struct char_data * ch, int cmd, char* arg);
+  extern int dishboy(struct char_data * ch, int cmd, char* arg);
+  extern int game_wizard(struct char_data * ch, int cmd, char* arg);
+  extern int AGGRESSIVE(struct char_data * ch, int cmd, char* arg);
+  extern int CarrionCrawler(struct char_data * ch, int cmd, char* arg);
+  extern int guardian(struct char_data * ch, int cmd, char* arg);
+  extern int lattimore(struct char_data * ch, int cmd, char* arg);
+  extern int coldcaster(struct char_data * ch, int cmd, char* arg);
+  extern int trapper(struct char_data * ch, int cmd, char* arg);
+  extern int keystone(struct char_data * ch, int cmd, char* arg);
+  extern int ghostsoldier(struct char_data * ch, int cmd, char* arg);
+  extern int troguard(struct char_data * ch, int cmd, char* arg);
+  extern int shaman(struct char_data * ch, int cmd, char* arg);
+  extern int golgar(struct char_data * ch, int cmd, char* arg);
+  extern int trogcook(struct char_data * ch, int cmd, char* arg);
 
   struct special_proc_entry specials[] = {
 
@@ -187,28 +188,28 @@ void assign_mobiles(void) {
     **  D&D standard
     */
 
-    {210, snake}, /* spider */
-    {211, fighter}, /* gnoll  */
-    {220, fighter}, /* fighter */
-    {221, fighter}, /* bugbear */
-    {223, ghoul}, /* ghoul */
-    {226, fighter}, /* ogre */
-    {236, ghoul}, /* ghast */
-    {227, snake}, /* spider */
+    {210, snake},        /* spider */
+    {211, fighter},      /* gnoll  */
+    {220, fighter},      /* fighter */
+    {221, fighter},      /* bugbear */
+    {223, ghoul},        /* ghoul */
+    {226, fighter},      /* ogre */
+    {236, ghoul},        /* ghast */
+    {227, snake},        /* spider */
     {230, BreathWeapon}, /* baby black */
-    {232, blink}, /* blink dog */
+    {232, blink},        /* blink dog */
     {233, BreathWeapon}, /* baby blue */
-    {234, cleric}, /* cleric */
-    {239, shadow}, /* shadow    */
-    {240, snake}, /* toad      */
+    {234, cleric},       /* cleric */
+    {239, shadow},       /* shadow    */
+    {240, snake},        /* toad      */
     {243, BreathWeapon}, /* teenage white */
-    {247, fighter}, /* minotaur */
+    {247, fighter},      /* minotaur */
     {251, CarrionCrawler},
     {261, fighter},
     {271, regenerator},
-    {248, snake}, /* snake       */
-    {249, snake}, /* snake       */
-    {250, snake}, /* snake       */
+    {248, snake},      /* snake       */
+    {249, snake},      /* snake       */
+    {250, snake},      /* snake       */
     {257, magic_user}, /* magic_user  */
 
     {650, monk},
@@ -257,10 +258,10 @@ void assign_mobiles(void) {
     /*
     **  Abyss part II
     */
-    {25126, magic_user}, /* Vascar */
-    {25127, cleric}, /* ralthar */
-    {25128, fighter}, /*draco */
-    {25131, Demon}, /*Balrog */
+    {25126, magic_user},   /* Vascar */
+    {25127, cleric},       /* ralthar */
+    {25128, fighter},      /*draco */
+    {25131, Demon},        /*Balrog */
     {25134, BreathWeapon}, /*rainbow d. */
     {25147, fighter},
     {25148, magic_user},
@@ -433,21 +434,21 @@ void assign_mobiles(void) {
     {3632, fighter},
     {3634, fighter},
     {3636, fighter},
-    {3639, fighter}, /* caramon */
-    {3641, cleric}, /* curley g. */
+    {3639, fighter},    /* caramon */
+    {3641, cleric},     /* curley g. */
     {3640, magic_user}, /* raist */
     {3656, NewThalosGuildGuard},
     {3657, NewThalosGuildGuard},
     {3658, NewThalosGuildGuard},
     {3659, NewThalosGuildGuard},
-    {3661, SultanGuard}, /* wandering */
-    {3662, SultanGuard}, /* not */
-    {3682, SultanGuard}, /* royal */
-    {3670, BreathWeapon}, /* Cryohydra */
-    {3674, BreathWeapon}, /* Behir */
-    {3675, BreathWeapon}, /* Chimera */
-    {3676, BreathWeapon}, /* Couatl */
-    {3681, cleric}, /* High priest */
+    {3661, SultanGuard},    /* wandering */
+    {3662, SultanGuard},    /* not */
+    {3682, SultanGuard},    /* royal */
+    {3670, BreathWeapon},   /* Cryohydra */
+    {3674, BreathWeapon},   /* Behir */
+    {3675, BreathWeapon},   /* Chimera */
+    {3676, BreathWeapon},   /* Couatl */
+    {3681, cleric},         /* High priest */
     {3689, NewThalosMayor}, /* Guess */
     {3644, fido},
     {3635, thief},
@@ -485,14 +486,14 @@ void assign_mobiles(void) {
     */
     {25000, magic_user}, /* Demi-lich  */
     {25001, Keftab},
-    {25009, BreathWeapon}, /* hydra */
-    {25002, vampire}, /* Crimson */
-    {25003, StormGiant}, /* MistDaemon */
-    {25006, StormGiant}, /* Storm giant */
-    {25014, StormGiant}, /* DeathKnight */
-    {25009, BreathWeapon}, /* hydra */
+    {25009, BreathWeapon},    /* hydra */
+    {25002, vampire},         /* Crimson */
+    {25003, StormGiant},      /* MistDaemon */
+    {25006, StormGiant},      /* Storm giant */
+    {25014, StormGiant},      /* DeathKnight */
+    {25009, BreathWeapon},    /* hydra */
     {25017, AbyssGateKeeper}, /* Abyss Gate Keeper */
-    {25013, fighter}, /* kalas */
+    {25013, fighter},         /* kalas */
 
     /*
     **  Paladin's guild
@@ -808,12 +809,12 @@ void assign_mobiles(void) {
     {7009, fighter},
     {7006, snake},
     {7008, snake},
-    {7042, magic_user}, /* naga       */
+    {7042, magic_user},   /* naga       */
     {7040, BreathWeapon}, /* Red    */
-    {7041, magic_user}, /* sea hag    */
-    {7200, magic_user}, /* mindflayer */
-    {7201, magic_user}, /* senior     */
-    {7202, magic_user}, /* junior     */
+    {7041, magic_user},   /* sea hag    */
+    {7200, magic_user},   /* mindflayer */
+    {7201, magic_user},   /* senior     */
+    {7202, magic_user},   /* junior     */
 
     /*
     ** FOREST
@@ -828,11 +829,11 @@ void assign_mobiles(void) {
     /*
     **  Great Eastern Desert
     */
-    {5000, thief}, /* rag. dervish */
-    {5002, snake}, /* coral snake */
-    {5003, snake}, /* scorpion    */
-    {5004, snake}, /* purple worm  */
-    {5014, cleric}, /* myconoid */
+    {5000, thief},        /* rag. dervish */
+    {5002, snake},        /* coral snake */
+    {5003, snake},        /* scorpion    */
+    {5004, snake},        /* purple worm  */
+    {5014, cleric},       /* myconoid */
     {5005, BreathWeapon}, /* brass */
 
     /*
@@ -841,9 +842,9 @@ void assign_mobiles(void) {
     {5010, magic_user}, /* dracolich */
     {5104, cleric},
     {5103, magic_user}, /* drow mage */
-    {5107, cleric}, /* drow mat. mot */
+    {5107, cleric},     /* drow mat. mot */
     {5108, magic_user}, /* drow mat. mot */
-    {5109, cleric}, /* yochlol */
+    {5109, cleric},     /* yochlol */
 
     /*
     **   Thalos
@@ -880,23 +881,23 @@ void assign_mobiles(void) {
     **  White Plume Mountain
     */
 
-    {17004, magic_user}, /* gnyosphinx   */
-    {17017, magic_user}, /* ogre magi   */
-    {17014, ghoul}, /* ghoul  */
-    {17009, geyser}, /* geyser  */
-    {17011, vampire}, /* vampire Amelia  */
-    {17002, wraith}, /* wight*/
-    {17005, shadow}, /* shadow */
+    {17004, magic_user},  /* gnyosphinx   */
+    {17017, magic_user},  /* ogre magi   */
+    {17014, ghoul},       /* ghoul  */
+    {17009, geyser},      /* geyser  */
+    {17011, vampire},     /* vampire Amelia  */
+    {17002, wraith},      /* wight*/
+    {17005, shadow},      /* shadow */
     {17010, green_slime}, /* green slime */
 
     /*
     **  Arachnos
     */
-    {20001, snake}, /* Young (large) spider */
-    {20003, snake}, /* wolf (giant) spider  */
-    {20005, snake}, /* queen wasp      */
-    {20006, snake}, /* drone spider    */
-    {20010, snake}, /* bird spider     */
+    {20001, snake},      /* Young (large) spider */
+    {20003, snake},      /* wolf (giant) spider  */
+    {20005, snake},      /* queen wasp      */
+    {20006, snake},      /* drone spider    */
+    {20010, snake},      /* bird spider     */
     {20009, magic_user}, /* quasit         */
     {20014, magic_user}, /* Arachnos        */
     {20015, magic_user}, /* Ki Rin          */
@@ -944,7 +945,8 @@ void assign_mobiles(void) {
 
   for (i = 0; specials[i].vnum >= 0; i++)
     if ((rnum = real_mobile(specials[i].vnum)) < 0) {
-      sprintf(buf, "mobile_assign: Mobile %d not found in database.", specials[i].vnum);
+      sprintf(buf, "mobile_assign: Mobile %d not found in database.",
+        specials[i].vnum);
       vlog(buf);
     } else
       mob_index[rnum].func = specials[i].proc;
@@ -955,13 +957,13 @@ void assign_mobiles(void) {
 
 /* assign special procedures to objects */
 void assign_objects(void) {
-  extern int board(Mob * ch, int cmd, char *arg, Obj *me);
-  extern int nodrop(Mob * ch, int cmd, char *arg, Obj *me);
-  extern int soap(Mob * ch, int cmd, char *arg, Obj *me);
-  extern int vorpal(Mob * ch, int cmd, char *arg, Obj *me);
-  extern int jive_box(Mob * ch, int cmd, char *arg, Obj *me);
-  extern int warMaker(Mob * ch, int cmd, char *arg, Obj *o);
-  extern int orbOfDestruction(Mob * ch, int cmd, char *arg, Obj *o);
+  extern int board(Mob * ch, int cmd, char* arg, Obj* me);
+  extern int nodrop(Mob * ch, int cmd, char* arg, Obj* me);
+  extern int soap(Mob * ch, int cmd, char* arg, Obj* me);
+  extern int vorpal(Mob * ch, int cmd, char* arg, Obj* me);
+  extern int jive_box(Mob * ch, int cmd, char* arg, Obj* me);
+  extern int warMaker(Mob * ch, int cmd, char* arg, Obj* o);
+  extern int orbOfDestruction(Mob * ch, int cmd, char* arg, Obj* o);
 
   obj_index[real_object(3095)].func = board;
   obj_index[real_object(3097)].func = board;
@@ -978,23 +980,23 @@ void assign_objects(void) {
 
 /* assign special procedures to rooms */
 void assign_rooms(void) {
-  extern int dump(Mob * ch, int cmd, char *arg);
-  extern int train_station(Mob * ch, int cmd, char *arg);
-  extern int pet_shops(Mob * ch, int cmd, char *arg);
-  extern int bank(Mob * ch, int cmd, char *arg);
-  extern int House(Mob * ch, int cmd, char *arg);
-  extern int mirror_room(Mob * ch, int cmd, char *arg);
-  extern int Magic_Fountain(Mob * ch, int cmd, char *arg);
-  extern int board_room_entrance(Mob * ch, int cmd, char *arg);
-  extern int hospital_entrance(Mob * ch, int cmd, char *arg);
-  extern int hospital(Mob * ch, int cmd, char *arg);
-  extern int Fountain(Mob * ch, int cmd, char *arg);
-  extern int Donation(Mob * ch, int cmd, char *arg);
-  extern int monk_challenge_prep_room(Mob * ch, int cmd, char *arg);
-  extern int monk_challenge_room(Mob * ch, int cmd, char *arg);
-  extern int metahospital(Mob * ch, int cmd, char *arg);
-  extern int no_order(Mob * ch, int cmd, char *arg);
-  extern int mag_room(Mob * ch, int cmd, char *arg);
+  extern int dump(Mob * ch, int cmd, char* arg);
+  extern int train_station(Mob * ch, int cmd, char* arg);
+  extern int pet_shops(Mob * ch, int cmd, char* arg);
+  extern int bank(Mob * ch, int cmd, char* arg);
+  extern int House(Mob * ch, int cmd, char* arg);
+  extern int mirror_room(Mob * ch, int cmd, char* arg);
+  extern int Magic_Fountain(Mob * ch, int cmd, char* arg);
+  extern int board_room_entrance(Mob * ch, int cmd, char* arg);
+  extern int hospital_entrance(Mob * ch, int cmd, char* arg);
+  extern int hospital(Mob * ch, int cmd, char* arg);
+  extern int Fountain(Mob * ch, int cmd, char* arg);
+  extern int Donation(Mob * ch, int cmd, char* arg);
+  extern int monk_challenge_prep_room(Mob * ch, int cmd, char* arg);
+  extern int monk_challenge_room(Mob * ch, int cmd, char* arg);
+  extern int metahospital(Mob * ch, int cmd, char* arg);
+  extern int no_order(Mob * ch, int cmd, char* arg);
+  extern int mag_room(Mob * ch, int cmd, char* arg);
 
   struct special_proc_entry specials[] = {
     {99, Donation},
@@ -1051,7 +1053,7 @@ void assign_rooms(void) {
     {-1, NULL},
   };
   int i;
-  struct room_data *rp;
+  struct room_data* rp;
 
   for (i = 0; specials[i].vnum >= 0; i++)
     if (rp = real_roomp(specials[i].vnum))

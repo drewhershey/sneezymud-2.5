@@ -21,18 +21,19 @@
 
 extern struct str_app_type str_app[];
 extern struct dex_skill_type dex_app_skill[];
-extern struct descriptor_data *descriptor_list;
-extern char *drinks[];
+extern struct descriptor_data* descriptor_list;
+extern char* drinks[];
 extern int drink_aff[][3];
 extern struct spell_info_type spell_info[];
 
 /* extern functions */
 
-struct obj_data *get_object_in_equip_vis(struct char_data *ch, char *arg, struct obj_data **equipment, int *j);
+struct obj_data* get_object_in_equip_vis(struct char_data* ch, char* arg,
+  struct obj_data** equipment, int* j);
 
-void weight_change_object(struct obj_data *obj, int weight) {
-  struct obj_data *tmp_obj;
-  struct char_data *tmp_ch;
+void weight_change_object(struct obj_data* obj, int weight) {
+  struct obj_data* tmp_obj;
+  struct char_data* tmp_ch;
 
   if (GET_OBJ_WEIGHT(obj) + weight < 1) {
     weight = 0 - (GET_OBJ_WEIGHT(obj) - 1);
@@ -53,9 +54,9 @@ void weight_change_object(struct obj_data *obj, int weight) {
   }
 }
 
-void name_from_drinkcon(struct obj_data *obj) {
+void name_from_drinkcon(struct obj_data* obj) {
   int i;
-  char *new_name;
+  char* new_name;
 
   for (i = 0; (*((obj->name) + i) != ' ') && (*((obj->name) + i) != '\0'); i++)
     ;
@@ -67,9 +68,9 @@ void name_from_drinkcon(struct obj_data *obj) {
   }
 }
 
-void name_to_drinkcon(struct obj_data *obj, int type) {
-  char *new_name;
-  extern char *drinknames[];
+void name_to_drinkcon(struct obj_data* obj, int type) {
+  char* new_name;
+  extern char* drinknames[];
 
   CREATE(new_name, char, strlen(obj->name) + strlen(drinknames[type]) + 2);
   sprintf(new_name, "%s %s", drinknames[type], obj->name);
@@ -77,9 +78,9 @@ void name_to_drinkcon(struct obj_data *obj, int type) {
   obj->name = new_name;
 }
 
-void do_drink(struct char_data *ch, char *argument, int cmd) {
+void do_drink(struct char_data* ch, char* argument, int cmd) {
   char buf[255];
-  struct obj_data *temp;
+  struct obj_data* temp;
   struct affected_type af;
   int amount;
 
@@ -102,7 +103,8 @@ void do_drink(struct char_data *ch, char *argument, int cmd) {
     return;
   }
 
-  if ((GET_COND(ch, FULL) > 20) && (GET_COND(ch, THIRST) > 0)) /* Stomach full */
+  if ((GET_COND(ch, FULL) > 20) &&
+      (GET_COND(ch, THIRST) > 0)) /* Stomach full */
   {
     act("Your stomach can't contain anymore!", FALSE, ch, 0, 0, TO_CHAR);
     return;
@@ -116,22 +118,27 @@ void do_drink(struct char_data *ch, char *argument, int cmd) {
       send_to_char(buf, ch);
 
       if (drink_aff[temp->obj_flags.value[2]][DRUNK] > 0)
-        amount = (25 - GET_COND(ch, THIRST)) / drink_aff[temp->obj_flags.value[2]][DRUNK];
+        amount = (25 - GET_COND(ch, THIRST)) /
+                 drink_aff[temp->obj_flags.value[2]][DRUNK];
       else
         amount = number(3, 10);
 
       amount = MIN(amount, temp->obj_flags.value[1]);
       /* Subtract amount, if not a never-emptying container */
-      if (!IS_SET(temp->obj_flags.value[3], DRINK_PERM) && (temp->obj_flags.value[0] > 20))
+      if (!IS_SET(temp->obj_flags.value[3], DRINK_PERM) &&
+          (temp->obj_flags.value[0] > 20))
         weight_change_object(temp, -amount);
 
-      gain_condition(ch, DRUNK, (int)((int)drink_aff[temp->obj_flags.value[2]][DRUNK] * amount) / 4);
+      gain_condition(ch, DRUNK,
+        (int)((int)drink_aff[temp->obj_flags.value[2]][DRUNK] * amount) / 4);
 
       if (GET_COND(ch, FULL) >= 0)
-        gain_condition(ch, FULL, (int)((int)drink_aff[temp->obj_flags.value[2]][FULL] * amount) / 4);
+        gain_condition(ch, FULL,
+          (int)((int)drink_aff[temp->obj_flags.value[2]][FULL] * amount) / 4);
 
       if (GET_COND(ch, THIRST) >= 0)
-        gain_condition(ch, THIRST, (int)((int)drink_aff[temp->obj_flags.value[2]][THIRST] * amount) / 4);
+        gain_condition(ch, THIRST,
+          (int)((int)drink_aff[temp->obj_flags.value[2]][THIRST] * amount) / 4);
 
       if (GET_COND(ch, DRUNK) > 10)
         act("You feel drunk.", FALSE, ch, 0, 0, TO_CHAR);
@@ -145,7 +152,8 @@ void do_drink(struct char_data *ch, char *argument, int cmd) {
       /* The shit was poisoned ! */
       if (IS_SET(temp->obj_flags.value[3], DRINK_POISON)) {
         act("Oops, it tasted rather strange ?!!?", FALSE, ch, 0, 0, TO_CHAR);
-        act("$n chokes and utters some strange sounds.", TRUE, ch, 0, 0, TO_ROOM);
+        act("$n chokes and utters some strange sounds.", TRUE, ch, 0, 0,
+          TO_ROOM);
         af.type = SPELL_POISON;
         af.duration = amount * 3;
         af.modifier = 0;
@@ -175,10 +183,10 @@ void do_drink(struct char_data *ch, char *argument, int cmd) {
   }
 }
 
-void do_eat(struct char_data *ch, char *argument, int cmd) {
+void do_eat(struct char_data* ch, char* argument, int cmd) {
   char buf[100];
   int j, num;
-  struct obj_data *temp;
+  struct obj_data* temp;
   struct affected_type af;
 
   one_argument(argument, buf);
@@ -231,12 +239,12 @@ void do_eat(struct char_data *ch, char *argument, int cmd) {
   extract_obj(temp);
 }
 
-void do_pour(struct char_data *ch, char *argument, int cmd) {
+void do_pour(struct char_data* ch, char* argument, int cmd) {
   char arg1[132];
   char arg2[132];
   char buf[256];
-  struct obj_data *from_obj;
-  struct obj_data *to_obj;
+  struct obj_data* from_obj;
+  struct obj_data* to_obj;
   int temp;
 
   argument_interpreter(argument, arg1, arg2);
@@ -290,7 +298,8 @@ void do_pour(struct char_data *ch, char *argument, int cmd) {
     return;
   }
 
-  if ((to_obj->obj_flags.value[1] != 0) && (to_obj->obj_flags.value[2] != from_obj->obj_flags.value[2])) {
+  if ((to_obj->obj_flags.value[1] != 0) &&
+      (to_obj->obj_flags.value[2] != from_obj->obj_flags.value[2])) {
     act("There is already another liquid in it!", FALSE, ch, 0, 0, TO_CHAR);
     return;
   }
@@ -300,7 +309,8 @@ void do_pour(struct char_data *ch, char *argument, int cmd) {
     return;
   }
 
-  sprintf(buf, "You pour %s into %s.", drinks[from_obj->obj_flags.value[2]], arg2);
+  sprintf(buf, "You pour %s into %s.", drinks[from_obj->obj_flags.value[2]],
+    arg2);
   send_to_char(buf, ch);
 
   /* New alias */
@@ -328,16 +338,17 @@ void do_pour(struct char_data *ch, char *argument, int cmd) {
     from_obj->obj_flags.value[1] = from_obj->obj_flags.value[0];
 
   /* Then the poison boogie */
-  to_obj->obj_flags.value[3] = (to_obj->obj_flags.value[3] || from_obj->obj_flags.value[3]);
+  to_obj->obj_flags.value[3] =
+    (to_obj->obj_flags.value[3] || from_obj->obj_flags.value[3]);
 
   return;
 }
 
-void do_sip(struct char_data *ch, char *argument, int cmd) {
+void do_sip(struct char_data* ch, char* argument, int cmd) {
   struct affected_type af;
   char arg[MAX_STRING_LENGTH];
   char buf[MAX_STRING_LENGTH];
-  struct obj_data *temp;
+  struct obj_data* temp;
 
   one_argument(argument, arg);
 
@@ -368,13 +379,17 @@ void do_sip(struct char_data *ch, char *argument, int cmd) {
   sprintf(buf, "It tastes like %s.\n\r", drinks[temp->obj_flags.value[2]]);
   send_to_char(buf, ch);
 
-  gain_condition(ch, DRUNK, (int)(drink_aff[temp->obj_flags.value[2]][DRUNK] / 4));
+  gain_condition(ch, DRUNK,
+    (int)(drink_aff[temp->obj_flags.value[2]][DRUNK] / 4));
 
-  gain_condition(ch, FULL, (int)(drink_aff[temp->obj_flags.value[2]][FULL] / 4));
+  gain_condition(ch, FULL,
+    (int)(drink_aff[temp->obj_flags.value[2]][FULL] / 4));
 
-  gain_condition(ch, THIRST, (int)(drink_aff[temp->obj_flags.value[2]][THIRST] / 4));
+  gain_condition(ch, THIRST,
+    (int)(drink_aff[temp->obj_flags.value[2]][THIRST] / 4));
 
-  if (!IS_SET(temp->obj_flags.value[3], DRINK_PERM) || (temp->obj_flags.value[0] > 19))
+  if (!IS_SET(temp->obj_flags.value[3], DRINK_PERM) ||
+      (temp->obj_flags.value[0] > 19))
     weight_change_object(temp, -1); /* Subtract one unit, unless permanent */
 
   if (GET_COND(ch, DRUNK) > 10)
@@ -386,7 +401,8 @@ void do_sip(struct char_data *ch, char *argument, int cmd) {
   if (GET_COND(ch, FULL) > 20)
     act("You are full.", FALSE, ch, 0, 0, TO_CHAR);
 
-  if (IS_SET(temp->obj_flags.value[3], DRINK_POISON) && !IS_AFFECTED(ch, AFF_POISON)) /* The shit was poisoned ! */
+  if (IS_SET(temp->obj_flags.value[3], DRINK_POISON) &&
+      !IS_AFFECTED(ch, AFF_POISON)) /* The shit was poisoned ! */
   {
     act("But it also had a strange taste!", FALSE, ch, 0, 0, TO_CHAR);
 
@@ -411,10 +427,10 @@ void do_sip(struct char_data *ch, char *argument, int cmd) {
   return;
 }
 
-void do_taste(struct char_data *ch, char *argument, int cmd) {
+void do_taste(struct char_data* ch, char* argument, int cmd) {
   struct affected_type af;
   char arg[80];
-  struct obj_data *temp;
+  struct obj_data* temp;
 
   one_argument(argument, arg);
 
@@ -441,7 +457,8 @@ void do_taste(struct char_data *ch, char *argument, int cmd) {
   if (GET_COND(ch, FULL) > 20)
     act("You are full.", FALSE, ch, 0, 0, TO_CHAR);
 
-  if (temp->obj_flags.value[3] && !IS_AFFECTED(ch, AFF_POISON)) /* The shit was poisoned ! */
+  if (temp->obj_flags.value[3] &&
+      !IS_AFFECTED(ch, AFF_POISON)) /* The shit was poisoned ! */
   {
     act("Ooups, it did not taste good at all!", FALSE, ch, 0, 0, TO_CHAR);
 
@@ -465,7 +482,7 @@ void do_taste(struct char_data *ch, char *argument, int cmd) {
 
 /* functions related to wear */
 
-perform_wear(struct char_data *ch, struct obj_data *obj_object, int keyword) {
+perform_wear(struct char_data* ch, struct obj_data* obj_object, int keyword) {
   switch (keyword) {
     case 0:
       act("$n lights $p and holds it.", FALSE, ch, obj_object, 0, TO_ROOM);
@@ -550,13 +567,14 @@ int IsRestricted(int Mask, int Class) {
   return (FALSE);
 }
 
-void wear(struct char_data *ch, struct obj_data *obj_object, int keyword) {
+void wear(struct char_data* ch, struct obj_data* obj_object, int keyword) {
   char buffer[MAX_STRING_LENGTH];
   int BitMask;
 
   if (!IS_IMMORTAL(ch)) {
     BitMask = GetItemClassRestrictions(obj_object);
-    if (IsRestricted(BitMask, ch->player.class) && (!IS_NPC(ch) || IS_SET(ch->specials.act, ACT_POLYSELF))) {
+    if (IsRestricted(BitMask, ch->player.class) &&
+        (!IS_NPC(ch) || IS_SET(ch->specials.act, ACT_POLYSELF))) {
       send_to_char("You are forbidden to do that.\n\r", ch);
       return;
     }
@@ -579,16 +597,19 @@ void wear(struct char_data *ch, struct obj_data *obj_object, int keyword) {
     case 1: {
       if (CAN_WEAR(obj_object, ITEM_WEAR_FINGER)) {
         if ((ch->equipment[WEAR_FINGER_L]) && (ch->equipment[WEAR_FINGER_R])) {
-          send_to_char("You are already wearing something on your fingers.\n\r", ch);
+          send_to_char("You are already wearing something on your fingers.\n\r",
+            ch);
         } else {
           perform_wear(ch, obj_object, keyword);
           if (ch->equipment[WEAR_FINGER_L]) {
-            sprintf(buffer, "You put %s on your right finger.\n\r", obj_object->short_description);
+            sprintf(buffer, "You put %s on your right finger.\n\r",
+              obj_object->short_description);
             send_to_char(buffer, ch);
             obj_from_char(obj_object);
             equip_char(ch, obj_object, WEAR_FINGER_R);
           } else {
-            sprintf(buffer, "You put %s on your left finger.\n\r", obj_object->short_description);
+            sprintf(buffer, "You put %s on your left finger.\n\r",
+              obj_object->short_description);
             send_to_char(buffer, ch);
             obj_from_char(obj_object);
             equip_char(ch, obj_object, WEAR_FINGER_L);
@@ -732,16 +753,19 @@ void wear(struct char_data *ch, struct obj_data *obj_object, int keyword) {
     case 11: {
       if (CAN_WEAR(obj_object, ITEM_WEAR_WRIST)) {
         if ((ch->equipment[WEAR_WRIST_L]) && (ch->equipment[WEAR_WRIST_R])) {
-          send_to_char("You already wear something around both your wrists.\n\r", ch);
+          send_to_char(
+            "You already wear something around both your wrists.\n\r", ch);
         } else {
           perform_wear(ch, obj_object, keyword);
           obj_from_char(obj_object);
           if (ch->equipment[WEAR_WRIST_L]) {
-            sprintf(buffer, "You wear %s around your right wrist.\n\r", obj_object->short_description);
+            sprintf(buffer, "You wear %s around your right wrist.\n\r",
+              obj_object->short_description);
             send_to_char(buffer, ch);
             equip_char(ch, obj_object, WEAR_WRIST_R);
           } else {
-            sprintf(buffer, "You wear %s around your left wrist.\n\r", obj_object->short_description);
+            sprintf(buffer, "You wear %s around your left wrist.\n\r",
+              obj_object->short_description);
             send_to_char(buffer, ch);
             equip_char(ch, obj_object, WEAR_WRIST_L);
           }
@@ -755,11 +779,16 @@ void wear(struct char_data *ch, struct obj_data *obj_object, int keyword) {
       if (CAN_WEAR(obj_object, ITEM_WIELD)) {
         if (ch->equipment[WIELD]) {
           send_to_char("You are already wielding something.\n\r", ch);
-        } else if (GET_OBJ_WEIGHT(obj_object) > str_app[STRENGTH_APPLY_INDEX(ch)].wield_w) {
+        } else if (GET_OBJ_WEIGHT(obj_object) >
+                   str_app[STRENGTH_APPLY_INDEX(ch)].wield_w) {
           send_to_char("It is too heavy for you to use.\n\r", ch);
-        } else if ((ch->equipment[WEAR_SHIELD]) && ((CAN_CARRY_N(ch) - (CAN_CARRY_N(ch) / 3)) < (IS_CARRYING_N(ch) - GET_OBJ_VOLUME(obj_object)))) {
+        } else if ((ch->equipment[WEAR_SHIELD]) &&
+                   ((CAN_CARRY_N(ch) - (CAN_CARRY_N(ch) / 3)) <
+                     (IS_CARRYING_N(ch) - GET_OBJ_VOLUME(obj_object)))) {
           send_to_char("Your hands are too full to wield anything!\n\r", ch);
-        } else if (!ch->equipment[WEAR_SHIELD] && ((CAN_CARRY_N(ch) / 2) < IS_CARRYING_N(ch) - GET_OBJ_VOLUME(obj_object))) {
+        } else if (!ch->equipment[WEAR_SHIELD] &&
+                   ((CAN_CARRY_N(ch) / 2) <
+                     IS_CARRYING_N(ch) - GET_OBJ_VOLUME(obj_object))) {
           send_to_char("Your hands are too full to wield anything!\n\r", ch);
         } else {
           send_to_char("OK.\n\r", ch);
@@ -790,13 +819,18 @@ void wear(struct char_data *ch, struct obj_data *obj_object, int keyword) {
       if (CAN_WEAR(obj_object, ITEM_WEAR_SHIELD)) {
         if ((ch->equipment[WEAR_SHIELD])) {
           send_to_char("You are already using a shield\n\r", ch);
-        } else if ((ch->equipment[WIELD]) && ((2 * (CAN_CARRY_N(ch)) / 3) < IS_CARRYING_N(ch) - GET_OBJ_VOLUME(obj_object))) {
+        } else if ((ch->equipment[WIELD]) &&
+                   ((2 * (CAN_CARRY_N(ch)) / 3) <
+                     IS_CARRYING_N(ch) - GET_OBJ_VOLUME(obj_object))) {
           send_to_char("Your hands are too full to wear a shield!\n\r", ch);
-        } else if (!ch->equipment[WIELD] && ((CAN_CARRY_N(ch) / 2) < IS_CARRYING_N(ch) - GET_OBJ_VOLUME(obj_object))) {
+        } else if (!ch->equipment[WIELD] &&
+                   ((CAN_CARRY_N(ch) / 2) <
+                     IS_CARRYING_N(ch) - GET_OBJ_VOLUME(obj_object))) {
           send_to_char("Your hands are too full to wear a shield!\n\r", ch);
         } else {
           perform_wear(ch, obj_object, keyword);
-          sprintf(buffer, "You start using %s.\n\r", obj_object->short_description);
+          sprintf(buffer, "You start using %s.\n\r",
+            obj_object->short_description);
           send_to_char(buffer, ch);
           obj_from_char(obj_object);
           equip_char(ch, obj_object, WEAR_SHIELD);
@@ -811,7 +845,8 @@ void wear(struct char_data *ch, struct obj_data *obj_object, int keyword) {
           send_to_char("You are already wearing an earring\n\r", ch);
         } else {
           perform_wear(ch, obj_object, keyword);
-          sprintf(buffer, "You put %s in your ear.\n\r", obj_object->short_description);
+          sprintf(buffer, "You put %s in your ear.\n\r",
+            obj_object->short_description);
           send_to_char(buffer, ch);
           obj_from_char(obj_object);
           equip_char(ch, obj_object, WEAR_EAR);
@@ -823,7 +858,8 @@ void wear(struct char_data *ch, struct obj_data *obj_object, int keyword) {
     case 16: {
       if (CAN_WEAR(obj_object, ITEM_WEAR_FACE)) {
         if ((ch->equipment[WEAR_FACE])) {
-          send_to_char("You are already wearing something on your face.\n\r", ch);
+          send_to_char("You are already wearing something on your face.\n\r",
+            ch);
         } else {
           perform_wear(ch, obj_object, keyword);
           sprintf(buffer, "You put on %s.\n\r", obj_object->short_description);
@@ -863,15 +899,15 @@ void wear(struct char_data *ch, struct obj_data *obj_object, int keyword) {
   }
 }
 
-void do_wear(struct char_data *ch, char *argument, int cmd) {
+void do_wear(struct char_data* ch, char* argument, int cmd) {
   char arg1[MAX_INPUT_LENGTH];
   char arg2[MAX_INPUT_LENGTH];
   char buf[256];
   char buffer[MAX_INPUT_LENGTH];
   struct obj_data *obj_object, *next_obj;
   int keyword;
-  static char *keywords[] = {"finger", "neck",  "body",  "head",  "legs",   "feet", "hands",
-                             "arms",   "about", "waist", "wrist", "shield", "\n"};
+  static char* keywords[] = {"finger", "neck", "body", "head", "legs", "feet",
+    "hands", "arms", "about", "waist", "wrist", "shield", "\n"};
 
   argument_interpreter(argument, arg1, arg2);
   if (*arg1) {
@@ -981,11 +1017,11 @@ void do_wear(struct char_data *ch, char *argument, int cmd) {
   }
 }
 
-void do_wield(struct char_data *ch, char *argument, int cmd) {
+void do_wield(struct char_data* ch, char* argument, int cmd) {
   char arg1[MAX_INPUT_LENGTH];
   char arg2[MAX_INPUT_LENGTH];
   char buffer[MAX_INPUT_LENGTH];
-  struct obj_data *obj_object;
+  struct obj_data* obj_object;
   int keyword = 12;
 
   argument_interpreter(argument, arg1, arg2);
@@ -1002,11 +1038,11 @@ void do_wield(struct char_data *ch, char *argument, int cmd) {
   }
 }
 
-void do_grab(struct char_data *ch, char *argument, int cmd) {
+void do_grab(struct char_data* ch, char* argument, int cmd) {
   char arg1[128];
   char arg2[128];
   char buffer[256];
-  struct obj_data *obj_object;
+  struct obj_data* obj_object;
 
   argument_interpreter(argument, arg1, arg2);
 
@@ -1026,11 +1062,11 @@ void do_grab(struct char_data *ch, char *argument, int cmd) {
   }
 }
 
-void do_remove(struct char_data *ch, char *argument, int cmd) {
+void do_remove(struct char_data* ch, char* argument, int cmd) {
   char arg1[128], *T, *P;
   char buffer[256];
   int Rem_List[20], Num_Equip;
-  struct obj_data *obj_object;
+  struct obj_data* obj_object;
   int j;
 
   one_argument(argument, arg1);

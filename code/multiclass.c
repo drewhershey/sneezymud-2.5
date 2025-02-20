@@ -27,12 +27,12 @@
 
 /* extern variables */
 
-extern struct room_data *world;
-extern struct descriptor_data *descriptor_list;
-extern struct room_data *world;
+extern struct room_data* world;
+extern struct descriptor_data* descriptor_list;
+extern struct room_data* world;
 extern struct dex_app_type dex_app[];
 
-int GetClassLevel(struct char_data *ch, int class) {
+int GetClassLevel(struct char_data* ch, int class) {
   if (IS_SET(ch->player.class, class)) {
     return (GET_LEVEL(ch, CountBits(class) - 1));
   }
@@ -58,7 +58,7 @@ int CountBits(int class) {
     return (8);
 }
 
-int OnlyClass(struct char_data *ch, int class) {
+int OnlyClass(struct char_data* ch, int class) {
   int i;
 
   for (i = 1; i <= 8; i *= 2) {
@@ -69,7 +69,7 @@ int OnlyClass(struct char_data *ch, int class) {
   return (TRUE);
 }
 
-int IsSingleClass(struct char_data *ch) {
+int IsSingleClass(struct char_data* ch) {
   int i;
 
   for (i = 1; i <= 8; i *= 2) {
@@ -79,7 +79,7 @@ int IsSingleClass(struct char_data *ch) {
   return (FALSE);
 }
 
-int HasClass(struct char_data *ch, int class) {
+int HasClass(struct char_data* ch, int class) {
   if (!IS_PC(ch)) {
     if (!IS_SET(class, CLASS_MONK)) {
       return (TRUE);
@@ -92,7 +92,7 @@ int HasClass(struct char_data *ch, int class) {
   return FALSE;
 }
 
-int HowManyClasses(struct char_data *ch) {
+int HowManyClasses(struct char_data* ch) {
   short i, tot = 0;
 
   for (i = 0; i < 8; i++) {
@@ -129,7 +129,7 @@ int HowManyClasses(struct char_data *ch) {
   }
 }
 
-int BestFightingClass(struct char_data *ch) {
+int BestFightingClass(struct char_data* ch) {
   if (GET_LEVEL(ch, WARRIOR_LEVEL_IND))
     return (WARRIOR_LEVEL_IND);
   if (GET_LEVEL(ch, PALADIN_LEVEL_IND))
@@ -153,7 +153,7 @@ int BestFightingClass(struct char_data *ch) {
   return (1);
 }
 
-int BestThiefClass(struct char_data *ch) {
+int BestThiefClass(struct char_data* ch) {
   if (GET_LEVEL(ch, THIEF_LEVEL_IND))
     return (THIEF_LEVEL_IND);
   if (GET_LEVEL(ch, MONK_LEVEL_IND))
@@ -177,7 +177,7 @@ int BestThiefClass(struct char_data *ch) {
   return (1);
 }
 
-int BestMagicClass(struct char_data *ch) {
+int BestMagicClass(struct char_data* ch) {
   if (GET_LEVEL(ch, MAGE_LEVEL_IND))
     return (MAGE_LEVEL_IND);
   if (GET_LEVEL(ch, CLERIC_LEVEL_IND))
@@ -201,14 +201,16 @@ int BestMagicClass(struct char_data *ch) {
   return (1);
 }
 
-int GetSecMaxLev(struct char_data *ch) {
-  if (GET_LEVEL(ch, PALADIN_LEVEL_IND) || (GET_LEVEL(ch, ANTIPALADIN_LEVEL_IND)) || (GET_LEVEL(ch, RANGER_LEVEL_IND)) || (GET_LEVEL(ch, MONK_LEVEL_IND))) {
+int GetSecMaxLev(struct char_data* ch) {
+  if (GET_LEVEL(ch, PALADIN_LEVEL_IND) ||
+      (GET_LEVEL(ch, ANTIPALADIN_LEVEL_IND)) ||
+      (GET_LEVEL(ch, RANGER_LEVEL_IND)) || (GET_LEVEL(ch, MONK_LEVEL_IND))) {
     return;
   } else
     return (GetALevel(ch, 2));
 }
 
-int GetALevel(struct char_data *ch, int which) {
+int GetALevel(struct char_data* ch, int which) {
   byte ind[4], j, k, i;
 
   for (i = MAGE_LEVEL_IND; i <= THIEF_LEVEL_IND; i++) {
@@ -234,11 +236,9 @@ int GetALevel(struct char_data *ch, int which) {
   }
 }
 
-int GetThirdMaxLev(struct char_data *ch) {
-  return (GetALevel(ch, 3));
-}
+int GetThirdMaxLev(struct char_data* ch) { return (GetALevel(ch, 3)); }
 
-int GetMaxLevel(struct char_data *ch) {
+int GetMaxLevel(struct char_data* ch) {
   register int max = 0, i;
 
   for (i = MAGE_LEVEL_IND; i <= RANGER_LEVEL_IND; i++) {
@@ -249,14 +249,13 @@ int GetMaxLevel(struct char_data *ch) {
   return (max);
 }
 
-int GetTotLevel(struct char_data *ch) {
-  return (
-    GET_LEVEL(ch, 0) + GET_LEVEL(ch, 1) + GET_LEVEL(ch, 2) + GET_LEVEL(ch, 3) + GET_LEVEL(ch, 4) + GET_LEVEL(ch, 5) +
-    GET_LEVEL(ch, 6) + GET_LEVEL(ch, 7)
-  );
+int GetTotLevel(struct char_data* ch) {
+  return (GET_LEVEL(ch, 0) + GET_LEVEL(ch, 1) + GET_LEVEL(ch, 2) +
+          GET_LEVEL(ch, 3) + GET_LEVEL(ch, 4) + GET_LEVEL(ch, 5) +
+          GET_LEVEL(ch, 6) + GET_LEVEL(ch, 7));
 }
 
-void StartLevels(struct char_data *ch) {
+void StartLevels(struct char_data* ch) {
   if (IS_SET(ch->player.class, CLASS_MAGIC_USER)) {
     advance_level(ch, MAGE_LEVEL_IND);
   }
@@ -283,7 +282,7 @@ void StartLevels(struct char_data *ch) {
   }
 }
 
-int BestClass(struct char_data *ch) {
+int BestClass(struct char_data* ch) {
   int max = 0, class = 0, i;
 
   for (i = MAGE_LEVEL_IND; i <= RANGER_LEVEL_IND; i++)

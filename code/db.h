@@ -11,62 +11,62 @@
 #define DFLT_DIR "lib" /* default data directory     */
 
 #define WORLD_FILE "tinyworld.wld" /* room definitions           */
-#define MOB_FILE "tinyworld.mob" /* monster prototypes         */
-#define OBJ_FILE "tinyworld.obj" /* object prototypes          */
-#define ATLAS1_FILE "zone1" /* New atlas made by stagazer */
+#define MOB_FILE "tinyworld.mob"   /* monster prototypes         */
+#define OBJ_FILE "tinyworld.obj"   /* object prototypes          */
+#define ATLAS1_FILE "zone1"        /* New atlas made by stagazer */
 #define ATLAS2_FILE "zone2"
 #define ATLAS3_FILE "zone3"
 #define ATLAS4_FILE "zone4"
 #define ZONE_FILE "tinyworld.zon" /* zone defs & command tables */
-#define CREDITS_FILE "credits" /* for the 'credits' command  */
-#define NEWS_FILE "news" /* for the 'news' command     */
+#define CREDITS_FILE "credits"    /* for the 'credits' command  */
+#define NEWS_FILE "news"          /* for the 'news' command     */
 #define WIZNEWS_FILE "wiznews"
 #define MOTD_FILE "motd" /* messages of today          */
 #define ANSI_FILE "ansi"
-#define PLAYER_FILE "players" /* the player database        */
-#define TIME_FILE "time" /* game calendar information  */
-#define IDEA_FILE "ideas" /* for the 'idea'-command     */
-#define TYPO_FILE "typos" /*         'typo'             */
-#define BUG_FILE "bugs" /*         'bug'              */
-#define MESS_FILE "messages" /* damage message             */
+#define PLAYER_FILE "players"  /* the player database        */
+#define TIME_FILE "time"       /* game calendar information  */
+#define IDEA_FILE "ideas"      /* for the 'idea'-command     */
+#define TYPO_FILE "typos"      /*         'typo'             */
+#define BUG_FILE "bugs"        /*         'bug'              */
+#define MESS_FILE "messages"   /* damage message             */
 #define SOCMESS_FILE "actions" /* messgs for social acts     */
-#define HELP_PATH "help/" /* for HELP <keywrd>          */
+#define HELP_PATH "help/"      /* for HELP <keywrd>          */
 #define IMMORTAL_HELP_PATH "help/_immortal"
 #define BUILDER_HELP_PATH "help/_builder"
 #define HELP_PAGE_FILE "help/general" /* for HELP <CR>              */
-#define INFO_FILE "info" /* for INFO                   */
-#define WIZLIST_FILE "wizlist" /* for WIZLIST                */
-#define POSEMESS_FILE "poses" /* for 'pose'-command         */
+#define INFO_FILE "info"              /* for INFO                   */
+#define WIZLIST_FILE "wizlist"        /* for WIZLIST                */
+#define POSEMESS_FILE "poses"         /* for 'pose'-command         */
 
 /* public procedures in db.c */
 
 void boot_db(void);
-void save_char(struct char_data *ch, sh_int load_room);
-int create_entry(char *name);
+void save_char(struct char_data* ch, sh_int load_room);
+int create_entry(char* name);
 void zone_update(void);
-void init_char(struct char_data *ch);
-void clear_char(struct char_data *ch);
-void clear_object(struct obj_data *obj);
-void reset_char(struct char_data *ch);
-void free_char(struct char_data *ch);
-struct room_data *real_roomp(int virtual);
-char *fread_string(FILE *fl);
+void init_char(struct char_data* ch);
+void clear_char(struct char_data* ch);
+void clear_object(struct obj_data* obj);
+void reset_char(struct char_data* ch);
+void free_char(struct char_data* ch);
+struct room_data* real_roomp(int virtual);
+char* fread_string(FILE* fl);
 int real_object(int virtual);
 int real_mobile(int virtual);
 
 #define REAL 0
 #define VIRTUAL 1
 
-struct obj_data *read_object(int nr, int type);
-struct char_data *read_mobile(int nr, int type);
+struct obj_data* read_object(int nr, int type);
+struct char_data* read_mobile(int nr, int type);
 
 /* structure for the reset commands */
 struct reset_com {
     char command; /* current command                      */
     bool if_flag; /* if TRUE: exe only if preceding exe'd */
-    int arg1; /*                                      */
-    int arg2; /* Arguments to the command             */
-    int arg3; /*                                      */
+    int arg1;     /*                                      */
+    int arg2;     /* Arguments to the command             */
+    int arg3;     /*                                      */
 
     /*
      *  Commands:              *
@@ -82,13 +82,13 @@ struct reset_com {
 
 /* zone definition structure. for the 'zone-table'   */
 struct zone_data {
-    char *name; /* name of this zone                  */
+    char* name;   /* name of this zone                  */
     int lifespan; /* how long between resets (minutes)  */
-    int age; /* current age of this zone (minutes) */
-    int top; /* upper limit for rooms in this zone */
+    int age;      /* current age of this zone (minutes) */
+    int top;      /* upper limit for rooms in this zone */
 
-    int reset_mode; /* conditions for reset (see below)   */
-    struct reset_com *cmd; /* command table for reset	           */
+    int reset_mode;        /* conditions for reset (see below)   */
+    struct reset_com* cmd; /* command table for reset	           */
 
     /*
      *  Reset mode:                              *
@@ -100,32 +100,32 @@ struct zone_data {
 
 /* element in monster and object index-tables   */
 struct index_data {
-    int virtual; /* virtual number of this mob/obj           */
-    long pos; /* file position of this field              */
-    int number; /* number of existing units of this mob/obj	*/
+    int virtual;   /* virtual number of this mob/obj           */
+    long pos;      /* file position of this field              */
+    int number;    /* number of existing units of this mob/obj	*/
     int (*func)(); /* special procedure for this mob/obj       */
-    char *name;
+    char* name;
 };
 
 /* for queueing zones for update   */
 struct reset_q_element {
     int zone_to_reset; /* ref to zone_data */
-    struct reset_q_element *next;
+    struct reset_q_element* next;
 };
 
 /* structure for the update queue     */
 struct reset_q_type {
-    struct reset_q_element *head;
-    struct reset_q_element *tail;
+    struct reset_q_element* head;
+    struct reset_q_element* tail;
 } reset_q;
 
 struct player_index_element {
-    char *name;
+    char* name;
     int nr;
 };
 
 struct help_index_element {
-    char *keyword;
+    char* keyword;
     long pos;
 };
 

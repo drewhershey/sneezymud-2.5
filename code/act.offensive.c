@@ -21,16 +21,16 @@
 
 /* extern variables */
 
-extern struct descriptor_data *descriptor_list;
+extern struct descriptor_data* descriptor_list;
 extern struct dex_app_type dex_app[];
 
-void raw_kill(struct char_data *ch);
-int check_peaceful(struct char_data *ch, char *msg);
-int check_no_order(struct char_data *ch, char *msg);
+void raw_kill(struct char_data* ch);
+int check_peaceful(struct char_data* ch, char* msg);
+int check_no_order(struct char_data* ch, char* msg);
 
-void do_hit(struct char_data *ch, char *argument, int cmd) {
+void do_hit(struct char_data* ch, char* argument, int cmd) {
   char arg[80];
-  struct char_data *victim;
+  struct char_data* victim;
   int ch_level, vict_level;
 
   if (check_blackjack(ch)) {
@@ -55,11 +55,13 @@ void do_hit(struct char_data *ch, char *argument, int cmd) {
         act("$n hits $mself, and says OUCH!", FALSE, ch, 0, victim, TO_ROOM);
       } else {
         if (IS_AFFECTED(ch, AFF_CHARM) && (ch->master == victim)) {
-          act("$N is just such a good friend, you simply can't hit $M.", FALSE, ch, 0, victim, TO_CHAR);
+          act("$N is just such a good friend, you simply can't hit $M.", FALSE,
+            ch, 0, victim, TO_CHAR);
           return;
         }
 
-        if ((GET_POS(ch) == POSITION_STANDING) && (victim != ch->specials.fighting)) {
+        if ((GET_POS(ch) == POSITION_STANDING) &&
+            (victim != ch->specials.fighting)) {
           hit(ch, victim, TYPE_UNDEFINED);
           WAIT_STATE(ch, PULSE_VIOLENCE + 2);
 
@@ -77,7 +79,9 @@ void do_hit(struct char_data *ch, char *argument, int cmd) {
                 act("$n switches targets", FALSE, ch, 0, 0, TO_ROOM);
                 WAIT_STATE(ch, PULSE_VIOLENCE + 2);
               } else {
-                send_to_char("You try to switch opponents, but you become confused!\n\r", ch);
+                send_to_char(
+                  "You try to switch opponents, but you become confused!\n\r",
+                  ch);
                 stop_fighting(ch);
                 LearnFromMistake(ch, SKILL_SWITCH_OPP, 0, 95);
                 WAIT_STATE(ch, PULSE_VIOLENCE * 2);
@@ -98,9 +102,9 @@ void do_hit(struct char_data *ch, char *argument, int cmd) {
   }
 }
 
-void do_kill(struct char_data *ch, char *argument, int cmd) {
+void do_kill(struct char_data* ch, char* argument, int cmd) {
   static char arg[MAX_INPUT_LENGTH];
-  struct char_data *victim;
+  struct char_data* victim;
 
   if (check_peaceful(ch, "You feel to peaceful to contemplate violence!\n\r"))
     return;
@@ -120,7 +124,8 @@ void do_kill(struct char_data *ch, char *argument, int cmd) {
     else if (ch == victim)
       send_to_char("Your mother would be so sad.. :(\n\r", ch);
     else {
-      act("You chop $M to pieces! Ah! The blood!", FALSE, ch, 0, victim, TO_CHAR);
+      act("You chop $M to pieces! Ah! The blood!", FALSE, ch, 0, victim,
+        TO_CHAR);
       act("$N chops you to pieces!", FALSE, victim, 0, ch, TO_CHAR);
       act("$n brutally slays $N", FALSE, ch, 0, victim, TO_NOTVICT);
       raw_kill(victim);
@@ -128,8 +133,8 @@ void do_kill(struct char_data *ch, char *argument, int cmd) {
   }
 }
 
-void do_backstab(struct char_data *ch, char *argument, int cmd) {
-  struct char_data *victim;
+void do_backstab(struct char_data* ch, char* argument, int cmd) {
+  struct char_data* victim;
   char name[256];
   byte percent, base = 0;
 
@@ -154,7 +159,8 @@ void do_backstab(struct char_data *ch, char *argument, int cmd) {
   }
 
   if (ch->attackers) {
-    send_to_char("There's no way to reach that back while you're fighting!\n\r", ch);
+    send_to_char("There's no way to reach that back while you're fighting!\n\r",
+      ch);
     return;
   }
 
@@ -164,9 +170,11 @@ void do_backstab(struct char_data *ch, char *argument, int cmd) {
   }
 
   if (ch->equipment[WIELD]->obj_flags.value[3] != 11 &&
-      ch->equipment[WIELD]->obj_flags.value[3] != 1  &&
+      ch->equipment[WIELD]->obj_flags.value[3] != 1 &&
       ch->equipment[WIELD]->obj_flags.value[3] != 10) {
-    send_to_char("Only piercing or stabbing weapons can be used for backstabbing.\n\r", ch);
+    send_to_char(
+      "Only piercing or stabbing weapons can be used for backstabbing.\n\r",
+      ch);
     return;
   }
 
@@ -210,13 +218,13 @@ void do_backstab(struct char_data *ch, char *argument, int cmd) {
   WAIT_STATE(ch, 2 * PULSE_VIOLENCE);
 }
 
-void do_order(struct char_data *ch, char *argument, int cmd) {
+void do_order(struct char_data* ch, char* argument, int cmd) {
   char name[100], message[256];
   char buf[256];
   bool found = FALSE;
   int org_room;
-  struct char_data *victim;
-  struct follow_type *k;
+  struct char_data* victim;
+  struct follow_type* k;
 
   if (apply_soundproof(ch))
     return;
@@ -228,14 +236,17 @@ void do_order(struct char_data *ch, char *argument, int cmd) {
 
   if (!*name || !*message)
     send_to_char("Order who to do what?\n\r", ch);
-  else if (!(victim = get_char_room_vis(ch, name)) && str_cmp("follower", name) && str_cmp("followers", name))
+  else if (!(victim = get_char_room_vis(ch, name)) &&
+           str_cmp("follower", name) && str_cmp("followers", name))
     send_to_char("That person isn't here.\n\r", ch);
   else if (ch == victim)
-    send_to_char("You obviously suffer from Multiple Personality Disorder.\n\r", ch);
+    send_to_char("You obviously suffer from Multiple Personality Disorder.\n\r",
+      ch);
 
   else {
     if (IS_AFFECTED(ch, AFF_CHARM)) {
-      send_to_char("Your superior would not aprove of you giving orders.\n\r", ch);
+      send_to_char("Your superior would not aprove of you giving orders.\n\r",
+        ch);
       return;
     }
 
@@ -273,12 +284,12 @@ void do_order(struct char_data *ch, char *argument, int cmd) {
   }
 }
 
-void do_flee(struct char_data *ch, char *argument, int cmd) {
-  struct obj_data *weapon;
+void do_flee(struct char_data* ch, char* argument, int cmd) {
+  struct obj_data* weapon;
   int i, lev_check, attempt, loose, die, percent, losedie;
 
   void gain_exp(struct char_data * ch, int gain);
-  int special(struct char_data * ch, int cmd, char *arg);
+  int special(struct char_data * ch, int cmd, char* arg);
 
   if (IS_AFFECTED(ch, AFF_PARALYSIS))
     return;
@@ -287,11 +298,13 @@ void do_flee(struct char_data *ch, char *argument, int cmd) {
     if (!saves_spell(ch, SAVING_PARA)) {
       WAIT_STATE(ch, PULSE_VIOLENCE);
       send_to_char("You are ensared in webs, you cannot move!\n\r", ch);
-      act("$n struggles against the webs that hold $m", FALSE, ch, 0, 0, TO_ROOM);
+      act("$n struggles against the webs that hold $m", FALSE, ch, 0, 0,
+        TO_ROOM);
       return;
     } else {
       send_to_char("You pull free from the sticky webbing!\n\r", ch);
-      act("$n manages to pull free from the sticky webbing!", FALSE, ch, 0, 0, TO_ROOM);
+      act("$n manages to pull free from the sticky webbing!", FALSE, ch, 0, 0,
+        TO_ROOM);
       GET_MOVE(ch) -= 50;
     }
   }
@@ -300,9 +313,12 @@ void do_flee(struct char_data *ch, char *argument, int cmd) {
     lev_check = (GetMaxLevel(ch->specials.fighting) - GetMaxLevel(ch));
     if (number(1, 100) < lev_check) {
       WAIT_STATE(ch, PULSE_VIOLENCE);
-      act("$N grabs you by the collar and stops you from fleeing!", FALSE, ch, 0, ch->specials.fighting, TO_CHAR);
-      act("You grab $N by the collar and stop them from fleeing!", FALSE, ch->specials.fighting, 0, ch, TO_CHAR);
-      act("$N grabs $n by the collar and stops $m from fleeing!", FALSE, ch, 0, ch->specials.fighting, TO_NOTVICT);
+      act("$N grabs you by the collar and stops you from fleeing!", FALSE, ch,
+        0, ch->specials.fighting, TO_CHAR);
+      act("You grab $N by the collar and stop them from fleeing!", FALSE,
+        ch->specials.fighting, 0, ch, TO_CHAR);
+      act("$N grabs $n by the collar and stops $m from fleeing!", FALSE, ch, 0,
+        ch->specials.fighting, TO_NOTVICT);
       return;
     }
   }
@@ -319,7 +335,8 @@ void do_flee(struct char_data *ch, char *argument, int cmd) {
   if (!(ch->specials.fighting)) {
     for (i = 0; i < 6; i++) {
       attempt = number(0, 5); /* Select a random direction */
-      if (CAN_GO(ch, attempt) && !IS_SET(real_roomp(EXIT(ch, attempt)->to_room)->room_flags, DEATH)) {
+      if (CAN_GO(ch, attempt) &&
+          !IS_SET(real_roomp(EXIT(ch, attempt)->to_room)->room_flags, DEATH)) {
         act("$n panics, and attempts to flee.", TRUE, ch, 0, 0, TO_ROOM);
         if ((die = MoveOne(ch, attempt, FALSE)) == 1) {
           /* The escape has succeded */
@@ -327,7 +344,8 @@ void do_flee(struct char_data *ch, char *argument, int cmd) {
           return;
         } else {
           if (!die)
-            act("$n tries to flee, but is too exhausted!", TRUE, ch, 0, 0, TO_ROOM);
+            act("$n tries to flee, but is too exhausted!", TRUE, ch, 0, 0,
+              TO_ROOM);
           return;
         }
       }
@@ -339,7 +357,8 @@ void do_flee(struct char_data *ch, char *argument, int cmd) {
 
   for (i = 0; i < 6; i++) {
     attempt = number(0, 5); /* Select a random direction */
-    if (CAN_GO(ch, attempt) && !IS_SET(real_roomp(EXIT(ch, attempt)->to_room)->room_flags, DEATH)) {
+    if (CAN_GO(ch, attempt) &&
+        !IS_SET(real_roomp(EXIT(ch, attempt)->to_room)->room_flags, DEATH)) {
       int panic, j;
 
       if (!ch->skills || (number(1, 101) > ch->skills[SKILL_RETREAT].learned)) {
@@ -354,7 +373,8 @@ void do_flee(struct char_data *ch, char *argument, int cmd) {
       if (IS_PC(ch)) {
         if (ch->equipment[WIELD]) {
           if (number(1, 3) == 1) {
-            send_to_char("In your haste to flee, you drop your weapon.\n\r", ch);
+            send_to_char("In your haste to flee, you drop your weapon.\n\r",
+              ch);
             obj_to_room(unequip_char(ch, WIELD), ch->in_room);
           }
         }
@@ -373,10 +393,13 @@ void do_flee(struct char_data *ch, char *argument, int cmd) {
         if (loose < 0)
           loose = 1;
 
-        if (IS_NPC(ch) && !(IS_SET(ch->specials.act, ACT_POLYSELF) && !ch->desc && !(IS_SET(ch->specials.act, ACT_AGGRESSIVE)))) {
+        if (IS_NPC(ch) &&
+            !(IS_SET(ch->specials.act, ACT_POLYSELF) && !ch->desc &&
+              !(IS_SET(ch->specials.act, ACT_AGGRESSIVE)))) {
           AddFeared(ch, ch->specials.fighting);
         } else {
-          percent = (int)100 * (float)GET_HIT(ch->specials.fighting) / (float)GET_MAX_HIT(ch->specials.fighting);
+          percent = (int)100 * (float)GET_HIT(ch->specials.fighting) /
+                    (float)GET_MAX_HIT(ch->specials.fighting);
           if (number(1, 101) < percent) {
             if ((Hates(ch->specials.fighting, ch)) ||
                 (IS_GOOD(ch) && (IS_EVIL(ch->specials.fighting))) ||
@@ -403,7 +426,8 @@ void do_flee(struct char_data *ch, char *argument, int cmd) {
         return;
       } else {
         if (!die)
-          act("$n tries to flee, but is too exhausted!", TRUE, ch, 0, 0, TO_ROOM);
+          act("$n tries to flee, but is too exhausted!", TRUE, ch, 0, 0,
+            TO_ROOM);
         return;
       }
     }
@@ -413,8 +437,8 @@ void do_flee(struct char_data *ch, char *argument, int cmd) {
   send_to_char("PANIC! You couldn't escape!\n\r", ch);
 }
 
-void do_bash(struct char_data *ch, char *argument, int cmd) {
-  struct char_data *victim;
+void do_bash(struct char_data* ch, char* argument, int cmd) {
+  struct char_data* victim;
   char name[256];
   byte percent;
 
@@ -482,7 +506,7 @@ void do_bash(struct char_data *ch, char *argument, int cmd) {
   WAIT_STATE(ch, PULSE_VIOLENCE * 2);
 }
 
-void do_rescue(struct char_data *ch, char *argument, int cmd) {
+void do_rescue(struct char_data* ch, char* argument, int cmd) {
   struct char_data *victim, *tmp_ch;
   int percent;
   char victim_name[240];
@@ -520,7 +544,8 @@ void do_rescue(struct char_data *ch, char *argument, int cmd) {
     return;
   }
 
-  for (tmp_ch = real_roomp(ch->in_room)->people; tmp_ch && (tmp_ch->specials.fighting != victim);
+  for (tmp_ch = real_roomp(ch->in_room)->people;
+       tmp_ch && (tmp_ch->specials.fighting != victim);
        tmp_ch = tmp_ch->next_in_room)
     ;
 
@@ -529,7 +554,8 @@ void do_rescue(struct char_data *ch, char *argument, int cmd) {
     return;
   }
 
-  if (!HasClass(ch, CLASS_WARRIOR) && (!HasClass(ch, CLASS_PALADIN)) && (!HasClass(ch, CLASS_RANGER)))
+  if (!HasClass(ch, CLASS_WARRIOR) && (!HasClass(ch, CLASS_PALADIN)) &&
+      (!HasClass(ch, CLASS_RANGER)))
     send_to_char("But only true warriors can do this!", ch);
   else {
     percent = number(1, 101); /* 101% is a complete failure */
@@ -540,7 +566,8 @@ void do_rescue(struct char_data *ch, char *argument, int cmd) {
     }
 
     send_to_char("Banzai! To the rescue...\n\r", ch);
-    act("You are rescued by $N, you are confused!", FALSE, victim, 0, ch, TO_CHAR);
+    act("You are rescued by $N, you are confused!", FALSE, victim, 0, ch,
+      TO_CHAR);
     act("$n heroically rescues $N.", FALSE, ch, 0, victim, TO_NOTVICT);
 
     if (victim->specials.fighting == tmp_ch)
@@ -557,7 +584,7 @@ void do_rescue(struct char_data *ch, char *argument, int cmd) {
   }
 }
 
-void do_assist(struct char_data *ch, char *argument, int cmd) {
+void do_assist(struct char_data* ch, char* argument, int cmd) {
   struct char_data *victim, *tmp_ch;
   char victim_name[240];
 
@@ -610,8 +637,8 @@ void do_assist(struct char_data *ch, char *argument, int cmd) {
   WAIT_STATE(victim, PULSE_VIOLENCE + 2); /* same as hit */
 }
 
-void do_kick(struct char_data *ch, char *argument, int cmd) {
-  struct char_data *victim;
+void do_kick(struct char_data* ch, char* argument, int cmd) {
+  struct char_data* victim;
   char name[256];
   byte percent;
   int dam;
@@ -650,7 +677,8 @@ void do_kick(struct char_data *ch, char *argument, int cmd) {
 
   setKillerFlag(ch, victim);
 
-  percent = ((10 - (GET_AC(victim) / 10)) << 1) + number(1, 101); /* 101% is a complete failure */
+  percent = ((10 - (GET_AC(victim) / 10)) << 1) +
+            number(1, 101); /* 101% is a complete failure */
 
   if (percent > ch->skills[SKILL_KICK].learned) {
     if (GET_POS(victim) > POSITION_DEAD)
@@ -665,7 +693,7 @@ void do_kick(struct char_data *ch, char *argument, int cmd) {
   WAIT_STATE(ch, PULSE_VIOLENCE * 3);
 }
 
-void do_wimpy(struct char_data *ch, char *arg, int cmd) {
+void do_wimpy(struct char_data* ch, char* arg, int cmd) {
   char buff[MAX_STRING_LENGTH];
 
   if (IS_NPC(ch))
@@ -678,25 +706,26 @@ void do_wimpy(struct char_data *ch, char *arg, int cmd) {
   } else {
     SET_BIT(ch->specials.act, PLR_WIMPY);
   }
-  sprintf(buff, "Your min hit point before fleeing is %d\n\r", (hit_limit(ch) / 5));
+  sprintf(buff, "Your min hit point before fleeing is %d\n\r",
+    (hit_limit(ch) / 5));
 
   send_to_char("You are now a wimp!!\n\r", ch);
   send_to_char(buff, ch);
 }
 
 extern struct breather breath_monsters[];
-extern struct index_data *mob_index;
+extern struct index_data* mob_index;
 void cast_geyser();
 void cast_fire_breath();
 void cast_frost_breath();
 void cast_acid_breath();
 void cast_gas_breath();
 void cast_lightning_breath();
-funcp bweapons[] = {cast_geyser,       cast_fire_breath, cast_gas_breath,
-                    cast_frost_breath, cast_acid_breath, cast_lightning_breath};
+funcp bweapons[] = {cast_geyser, cast_fire_breath, cast_gas_breath,
+  cast_frost_breath, cast_acid_breath, cast_lightning_breath};
 
-void do_breath(struct char_data *ch, char *argument, int cmd) {
-  struct char_data *victim;
+void do_breath(struct char_data* ch, char* argument, int cmd) {
+  struct char_data* victim;
   char buf[MAX_STRING_LENGTH], name[MAX_STRING_LENGTH];
   int count, manacost;
   funcp weapon;
@@ -706,13 +735,15 @@ void do_breath(struct char_data *ch, char *argument, int cmd) {
 
   only_argument(argument, name);
 
-  for (count = FIRST_BREATH_WEAPON; count <= LAST_BREATH_WEAPON && !affected_by_spell(ch, count); count++)
+  for (count = FIRST_BREATH_WEAPON;
+       count <= LAST_BREATH_WEAPON && !affected_by_spell(ch, count); count++)
     ;
 
   if (count > LAST_BREATH_WEAPON) {
-    struct breather *scan;
+    struct breather* scan;
 
-    for (scan = breath_monsters; scan->vnum >= 0 && scan->vnum != mob_index[ch->nr].virtual; scan++)
+    for (scan = breath_monsters;
+         scan->vnum >= 0 && scan->vnum != mob_index[ch->nr].virtual; scan++)
       ;
 
     if (scan->vnum < 0) {
@@ -755,9 +786,9 @@ void do_breath(struct char_data *ch, char *argument, int cmd) {
   WAIT_STATE(ch, PULSE_VIOLENCE * 2);
 }
 
-void do_fire(struct char_data *ch, char *argument, int cmd) {
+void do_fire(struct char_data* ch, char* argument, int cmd) {
   char arg[80];
-  struct char_data *victim;
+  struct char_data* victim;
 
   if (check_peaceful(ch, "You feel too peaceful to contemplate violence.\n\r"))
     return;
@@ -772,7 +803,8 @@ void do_fire(struct char_data *ch, char *argument, int cmd) {
         return;
       } else {
         if (IS_AFFECTED(ch, AFF_CHARM) && (ch->master == victim)) {
-          act("$N is just such a good friends, you simply can't fire at $M.", FALSE, ch, 0, victim, TO_CHAR);
+          act("$N is just such a good friends, you simply can't fire at $M.",
+            FALSE, ch, 0, victim, TO_CHAR);
           return;
         }
         fire(ch, victim);
@@ -786,9 +818,9 @@ void do_fire(struct char_data *ch, char *argument, int cmd) {
   }
 }
 
-void do_shoot(struct char_data *ch, char *argument, int cmd) {
+void do_shoot(struct char_data* ch, char* argument, int cmd) {
   char arg[80];
-  struct char_data *victim;
+  struct char_data* victim;
 
   if (check_peaceful(ch, "You feel too peaceful to contemplate violence.\n\r"))
     return;
@@ -803,7 +835,8 @@ void do_shoot(struct char_data *ch, char *argument, int cmd) {
         return;
       } else {
         if (IS_AFFECTED(ch, AFF_CHARM) && (ch->master == victim)) {
-          act("$N is just such a good friend, you simply can't shoot at $M.", FALSE, ch, 0, victim, TO_CHAR);
+          act("$N is just such a good friend, you simply can't shoot at $M.",
+            FALSE, ch, 0, victim, TO_CHAR);
           return;
         }
 
@@ -824,8 +857,8 @@ void do_shoot(struct char_data *ch, char *argument, int cmd) {
   }
 }
 
-void do_springleap(struct char_data *ch, char *argument, int cmd) {
-  struct char_data *victim;
+void do_springleap(struct char_data* ch, char* argument, int cmd) {
+  struct char_data* victim;
   char name[256];
   byte percent;
 
@@ -873,7 +906,8 @@ void do_springleap(struct char_data *ch, char *argument, int cmd) {
 
   percent = number(1, 101);
 
-  act("$n does a really nifty move, and aims a leg towards $N", FALSE, ch, 0, victim, TO_ROOM);
+  act("$n does a really nifty move, and aims a leg towards $N", FALSE, ch, 0,
+    victim, TO_ROOM);
   act("You leap off the ground at $N", FALSE, ch, 0, victim, TO_CHAR);
   act("$n leaps off the ground at you", FALSE, ch, 0, victim, TO_VICT);
 
@@ -890,7 +924,8 @@ void do_springleap(struct char_data *ch, char *argument, int cmd) {
   } else {
     if (HitOrMiss(ch, victim, CalcThaco(ch))) {
       if (GET_POS(victim) > POSITION_DEAD)
-        damage(ch, victim, GET_LEVEL(ch, BestFightingClass(ch)) >> 1, SKILL_KICK);
+        damage(ch, victim, GET_LEVEL(ch, BestFightingClass(ch)) >> 1,
+          SKILL_KICK);
     } else {
       damage(ch, victim, 0, SKILL_KICK);
     }
@@ -901,8 +936,8 @@ void do_springleap(struct char_data *ch, char *argument, int cmd) {
   update_pos(ch);
 }
 
-void do_quivering_palm(struct char_data *ch, char *arg, int cmd) {
-  struct char_data *victim;
+void do_quivering_palm(struct char_data* ch, char* arg, int cmd) {
+  struct char_data* victim;
   struct affected_type af;
   byte percent;
   char name[256];
@@ -965,7 +1000,8 @@ void do_quivering_palm(struct char_data *ch, char *arg, int cmd) {
     return;
 
   } else {
-    if (GET_MAX_HIT(victim) > GET_MAX_HIT(ch) * 2 || GetMaxLevel(victim) > GetMaxLevel(ch)) {
+    if (GET_MAX_HIT(victim) > GET_MAX_HIT(ch) * 2 ||
+        GetMaxLevel(victim) > GetMaxLevel(ch)) {
       damage(ch, victim, 0, SKILL_QUIV_PALM);
       return;
     }

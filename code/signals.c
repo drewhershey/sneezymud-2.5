@@ -65,6 +65,4 @@ void hupsig(int tmp) {
   exit(0); /* something more elegant should perhaps be substituted */
 }
 
-void logsig(int tmp) {
-  vlog("Signal received. Ignoring.");
-}
+void logsig(int tmp) { vlog("Signal received. Ignoring."); }

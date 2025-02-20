@@ -23,45 +23,45 @@
 
 /*   external vars  */
 
-extern char *crypt(const char *, const char *);
-extern struct zone_data *zone_table;
+extern char* crypt(const char*, const char*);
+extern struct zone_data* zone_table;
 extern int top_of_zone_table;
 #if HASH
 extern struct hash_header room_db;
 #else
-extern struct room_data *room_db[];
+extern struct room_data* room_db[];
 #endif
-extern struct char_data *character_list;
-extern struct descriptor_data *descriptor_list;
+extern struct char_data* character_list;
+extern struct descriptor_data* descriptor_list;
 extern struct title_type titles[8][ABS_MAX_LVL];
-extern struct index_data *mob_index;
-extern struct index_data *obj_index;
+extern struct index_data* mob_index;
+extern struct index_data* obj_index;
 extern int top_of_mobt;
 extern int top_of_objt;
 extern struct int_app_type int_app[26];
 extern struct wis_app_type wis_app[26];
-extern struct player_index_element *player_table;
-extern struct obj_data *object_list;
-extern char *material_types[];
+extern struct player_index_element* player_table;
+extern struct obj_data* object_list;
+extern char* material_types[];
 /* external functs */
 
-void set_title(struct char_data *ch);
-int str_cmp(char *arg1, char *arg2);
-struct time_info_data age(struct char_data *ch);
-void sprinttype(int type, char *names[], char *result);
-void sprintbit(unsigned long, char *[], char *);
-int mana_limit(struct char_data *ch);
-int hit_limit(struct char_data *ch);
-int move_limit(struct char_data *ch);
-int mana_gain(struct char_data *ch);
-int hit_gain(struct char_data *ch);
-int move_gain(struct char_data *ch);
-void RoomSave(struct char_data *ch, int start, int end);
-void RoomLoad(struct char_data *ch, int start, int end);
-struct StrHeap *InitHeap();
+void set_title(struct char_data* ch);
+int str_cmp(char* arg1, char* arg2);
+struct time_info_data age(struct char_data* ch);
+void sprinttype(int type, char* names[], char* result);
+void sprintbit(unsigned long, char*[], char*);
+int mana_limit(struct char_data* ch);
+int hit_limit(struct char_data* ch);
+int move_limit(struct char_data* ch);
+int mana_gain(struct char_data* ch);
+int hit_gain(struct char_data* ch);
+int move_gain(struct char_data* ch);
+void RoomSave(struct char_data* ch, int start, int end);
+void RoomLoad(struct char_data* ch, int start, int end);
+struct StrHeap* InitHeap();
 
 void CreateOneRoom(int loc_nr) {
-  struct room_data *rp;
+  struct room_data* rp;
   extern int top_of_zone_table;
 
   char buf[256];
@@ -74,7 +74,8 @@ void CreateOneRoom(int loc_nr) {
   if (top_of_zone_table >= 0) {
     int zone;
 
-    for (zone = 0; rp->number > zone_table[zone].top && zone <= top_of_zone_table; zone++)
+    for (zone = 0;
+         rp->number > zone_table[zone].top && zone <= top_of_zone_table; zone++)
       ;
     if (zone > top_of_zone_table) {
       fprintf(stderr, "Room %d is outside of any zone.\n", rp->number);
@@ -83,17 +84,17 @@ void CreateOneRoom(int loc_nr) {
     rp->zone = zone;
   }
   sprintf(buf, "%d", loc_nr);
-  rp->name = (char *)strdup(buf);
-  rp->description = (char *)strdup("Empty\n");
+  rp->name = (char*)strdup(buf);
+  rp->description = (char*)strdup("Empty\n");
 }
 
 #if PLAYER_AUTH
-void do_auth(struct char_data *ch, char *argument, int cmd) {
+void do_auth(struct char_data* ch, char* argument, int cmd) {
   char name[50], word[20];
-  char *code;
+  char* code;
   char buf[256];
   int done = FALSE;
-  struct descriptor_data *d;
+  struct descriptor_data* d;
 
   if (IS_NPC(ch))
     return;
@@ -106,7 +107,8 @@ void do_auth(struct char_data *ch, char *argument, int cmd) {
   */
   for (d = descriptor_list; d && !done; d = d->next) {
     if (d->character)
-      if (GET_NAME(d->character) && (str_cmp(GET_NAME(d->character), name) == 0)) {
+      if (GET_NAME(d->character) &&
+          (str_cmp(GET_NAME(d->character), name) == 0)) {
         done = TRUE;
         break;
       }
@@ -142,10 +144,10 @@ void do_auth(struct char_data *ch, char *argument, int cmd) {
 }
 #endif
 
-void do_demote(struct char_data *ch, char *argument, int cmd) {
+void do_demote(struct char_data* ch, char* argument, int cmd) {
   char person[MAX_STRING_LENGTH];
   char buf[MAX_STRING_LENGTH];
-  struct char_data *victim;
+  struct char_data* victim;
   int i;
   if (IS_NPC(ch))
     return;
@@ -165,13 +167,13 @@ void do_demote(struct char_data *ch, char *argument, int cmd) {
   ch->player.time.birth -= SECS_PER_MUD_YEAR;
 }
 
-void do_imptest(struct char_data *ch, char *arg, int cmd) {
-  struct char_data *i;
-  struct StrHeap *H = 0;
+void do_imptest(struct char_data* ch, char* arg, int cmd) {
+  struct char_data* i;
+  struct StrHeap* H = 0;
   int x = 0;
 
   if (strcmp(arg, " test test test")) { /* don't use this command on the */
-    return; /* regular game */
+    return;                             /* regular game */
   }
 
   if (GetMaxLevel(ch) < IMPLEMENTOR)
@@ -186,11 +188,11 @@ void do_imptest(struct char_data *ch, char *arg, int cmd) {
   DisplayStringHeap(H, ch, TO_CHAR, TRUE);
 }
 
-void do_passwd(struct char_data *ch, char *argument, int cmdnum) {
+void do_passwd(struct char_data* ch, char* argument, int cmdnum) {
   int player_i, pos;
   char name[30], npasswd[20], pass[20];
   struct char_file_u tmp_store;
-  FILE *fl;
+  FILE* fl;
 
   /*
    *  sets the specified user's password.
@@ -250,7 +252,7 @@ void do_passwd(struct char_data *ch, char *argument, int cmdnum) {
 }
 
 /* Bamfin and bamfout - courtesy of DM from Epic */
-void dsearch(char *string, char *tmp) {
+void dsearch(char* string, char* tmp) {
   char *c, buf[255], buf2[255], buf3[255];
   int i, j;
 
@@ -282,7 +284,7 @@ void dsearch(char *string, char *tmp) {
   }
 }
 
-void do_bamfin(struct char_data *ch, char *arg, int cmd) {
+void do_bamfin(struct char_data* ch, char* arg, int cmd) {
   char buf[255];
   int len;
 
@@ -292,7 +294,8 @@ void do_bamfin(struct char_data *ch, char *arg, int cmd) {
   if (!*arg) {
     send_to_char("Bamfin <bamf definition>\n\r", ch);
     send_to_char(" Additional arguments can include ~N for where you\n\r", ch);
-    send_to_char(" Want your name (if you want your name).  If you use\n\r", ch);
+    send_to_char(" Want your name (if you want your name).  If you use\n\r",
+      ch);
     send_to_char(" ~H, it puts in either his or her depending on your\n\r", ch);
     send_to_char(" sex.  If you use the keyword 'def' for your bamf,\n\r", ch);
     send_to_char(" it turns on the default bamf.  \n\r", ch);
@@ -319,10 +322,10 @@ void do_bamfin(struct char_data *ch, char *arg, int cmd) {
 
   if (ch->poof.poofin && len >= strlen(ch->poof.poofin)) {
     free(ch->poof.poofin);
-    ch->poof.poofin = (char *)malloc(len + 1);
+    ch->poof.poofin = (char*)malloc(len + 1);
   } else {
     if (!ch->poof.poofin)
-      ch->poof.poofin = (char *)malloc(len + 1);
+      ch->poof.poofin = (char*)malloc(len + 1);
   }
 
   strcpy(buf, arg);
@@ -332,15 +335,17 @@ void do_bamfin(struct char_data *ch, char *arg, int cmd) {
   return;
 }
 
-void do_bamfout(struct char_data *ch, char *arg, int cmd) {
+void do_bamfout(struct char_data* ch, char* arg, int cmd) {
   char buf[255];
   int len;
 
   if (!*arg) {
     send_to_char("Bamfout <bamf definition>\n\r", ch);
     send_to_char("  Additional arguments can include ~N for where you\n\r", ch);
-    send_to_char("  Want your name (if you want your name). If you use\n\r", ch);
-    send_to_char("  ~H, it puts in either his or her depending on your\n\r", ch);
+    send_to_char("  Want your name (if you want your name). If you use\n\r",
+      ch);
+    send_to_char("  ~H, it puts in either his or her depending on your\n\r",
+      ch);
     send_to_char("  sex.  If you use the keyword 'def' for your bamf,\n\r", ch);
     send_to_char("  it turns on the default bamf.  \n\r", ch);
     return;
@@ -368,9 +373,9 @@ void do_bamfout(struct char_data *ch, char *arg, int cmd) {
 
   if (ch->poof.poofout && len >= strlen(ch->poof.poofout)) {
     free(ch->poof.poofout);
-    ch->poof.poofout = (char *)malloc(len + 1);
+    ch->poof.poofout = (char*)malloc(len + 1);
   } else if (!ch->poof.poofout) {
-    ch->poof.poofout = (char *)malloc(len + 1);
+    ch->poof.poofout = (char*)malloc(len + 1);
   }
 
   strcpy(buf, arg);
@@ -380,13 +385,13 @@ void do_bamfout(struct char_data *ch, char *arg, int cmd) {
   return;
 }
 
-void do_instazone(struct char_data *ch, char *argument, int cmdnum) {
+void do_instazone(struct char_data* ch, char* argument, int cmdnum) {
   char cmd, c, buf[80];
   int i, start_room, end_room, j, arg1, arg2, arg3;
-  struct char_data *p;
-  struct obj_data *o;
-  struct room_data *room;
-  FILE *fp;
+  struct char_data* p;
+  struct obj_data* o;
+  struct room_data* room;
+  FILE* fp;
 
   if (IS_NPC(ch))
     return;
@@ -403,7 +408,7 @@ void do_instazone(struct char_data *ch, char *argument, int cmdnum) {
     return;
   }
 
-  fp = (FILE *)MakeZoneFile(ch);
+  fp = (FILE*)MakeZoneFile(ch);
 
   if (!fp) {
     send_to_char("Couldn't make file.. try again later\n\r", ch);
@@ -492,16 +497,18 @@ void do_instazone(struct char_data *ch, char *argument, int cmdnum) {
   fclose(fp);
 }
 
-do_highfive(struct char_data *ch, char *argument, int cmd) {
+do_highfive(struct char_data* ch, char* argument, int cmd) {
   char buf[80];
   char mess[120];
-  struct char_data *tch;
+  struct char_data* tch;
 
   if (argument) {
     only_argument(argument, buf);
     if ((tch = get_char_room_vis(ch, buf)) != 0) {
-      if ((GetMaxLevel(tch) >= DEMIGOD) && (!IS_NPC(tch)) && (GetMaxLevel(ch) >= DEMIGOD) && (!IS_NPC(ch))) {
-        sprintf(mess, "Time stops for a moment as %s and %s high five.\n\r", ch->player.name, tch->player.name);
+      if ((GetMaxLevel(tch) >= DEMIGOD) && (!IS_NPC(tch)) &&
+          (GetMaxLevel(ch) >= DEMIGOD) && (!IS_NPC(ch))) {
+        sprintf(mess, "Time stops for a moment as %s and %s high five.\n\r",
+          ch->player.name, tch->player.name);
         send_to_all(mess);
       } else {
         act("$n gives you a high five", TRUE, ch, 0, tch, TO_VICT);
@@ -515,22 +522,22 @@ do_highfive(struct char_data *ch, char *argument, int cmd) {
   }
 }
 
-do_addhost(struct char_data *ch, char *argument, int command) {
+do_addhost(struct char_data* ch, char* argument, int command) {
   int a, length;
-  char *test;
+  char* test;
   char buf[255];
 }
 
-do_removehost(struct char_data *ch, char *argument, int command) {
+do_removehost(struct char_data* ch, char* argument, int command) {
   int a, length, b;
-  char *test;
+  char* test;
   char buf[255];
 
   if IS_NPC (ch)
     return (FALSE);
 }
 
-do_listhosts(struct char_data *ch, char *argument, int command) {
+do_listhosts(struct char_data* ch, char* argument, int command) {
   int a;
   char buf[255];
 
@@ -538,7 +545,7 @@ do_listhosts(struct char_data *ch, char *argument, int command) {
     return (FALSE);
 }
 
-do_silence(struct char_data *ch, char *argument, int cmd) {
+do_silence(struct char_data* ch, char* argument, int cmd) {
   char buf[255];
   extern int Silence;
   if ((GetMaxLevel(ch) < DEMIGOD) || (IS_NPC(ch))) {
@@ -559,9 +566,9 @@ do_silence(struct char_data *ch, char *argument, int cmd) {
   }
 }
 
-do_wizlock(struct char_data *ch, char *argument, int cmd) {
+do_wizlock(struct char_data* ch, char* argument, int cmd) {
 #if SITELOCK
-  char *test;
+  char* test;
   int a, length, b;
   char buf[255];
 
@@ -592,7 +599,8 @@ do_wizlock(struct char_data *ch, char *argument, int cmd) {
 
   argument = one_argument(argument, buf);
   if (!*buf) {
-    send_to_char("Wizlock {all | off | add <host> | rem <host> | list}\n\r", ch);
+    send_to_char("Wizlock {all | off | add <host> | rem <host> | list}\n\r",
+      ch);
     return;
   }
 
@@ -632,7 +640,8 @@ do_wizlock(struct char_data *ch, char *argument, int cmd) {
       }
     }
     strcpy(hostlist[numberhosts], buf);
-    sprintf(buf, "%s has added host %s to the access denied list.", GET_NAME(ch), hostlist[numberhosts]);
+    sprintf(buf, "%s has added host %s to the access denied list.",
+      GET_NAME(ch), hostlist[numberhosts]);
     vlog(buf);
     numberhosts++;
     return;
@@ -670,7 +679,9 @@ do_wizlock(struct char_data *ch, char *argument, int cmd) {
 
         for (b = a; b <= numberhosts; b++)
           strcpy(hostlist[b], hostlist[b + 1]);
-        sprintf(tempstring, "%s has removed host %s from the access denied list.", GET_NAME(ch), buf);
+        sprintf(tempstring,
+          "%s has removed host %s from the access denied list.", GET_NAME(ch),
+          buf);
         vlog(tempstring);
         numberhosts--;
         return;
@@ -709,7 +720,7 @@ do_wizlock(struct char_data *ch, char *argument, int cmd) {
   return;
 }
 
-do_rload(struct char_data *ch, char *argument, int cmd) {
+do_rload(struct char_data* ch, char* argument, int cmd) {
   char i;
   int start = -1, end = -2;
 
@@ -731,7 +742,7 @@ do_rload(struct char_data *ch, char *argument, int cmd) {
   }
 }
 
-do_rsave(struct char_data *ch, char *argument, int cmd) {
+do_rsave(struct char_data* ch, char* argument, int cmd) {
   char i, buf[256];
   int start = -1, end = -2;
 
@@ -753,7 +764,7 @@ do_rsave(struct char_data *ch, char *argument, int cmd) {
   }
 }
 
-do_emote(struct char_data *ch, char *argument, int cmd) {
+do_emote(struct char_data* ch, char* argument, int cmd) {
   int i;
   char buf[MAX_INPUT_LENGTH];
 
@@ -776,9 +787,9 @@ do_emote(struct char_data *ch, char *argument, int cmd) {
   }
 }
 
-void do_flag(struct char_data *ch, char *argument, int cmd) {
+void do_flag(struct char_data* ch, char* argument, int cmd) {
   char buf[80], buf2[80];
-  struct char_data *victim;
+  struct char_data* victim;
 
   half_chop(argument, buf, buf2);
 
@@ -812,19 +823,21 @@ void do_flag(struct char_data *ch, char *argument, int cmd) {
     } else if (is_abbrev(buf2, "banished")) {
       if (IS_SET(victim->specials.act, PLR_BANISHED)) {
         REMOVE_BIT(victim->specials.act, PLR_BANISHED);
-        act("You just removed $N's banished flag", FALSE, ch, 0, victim, TO_CHAR);
+        act("You just removed $N's banished flag", FALSE, ch, 0, victim,
+          TO_CHAR);
       } else {
         SET_BIT(victim->specials.act, PLR_BANISHED);
         act("You just set $N's banished flag.", FALSE, ch, 0, victim, TO_CHAR);
       }
     } else {
-      send_to_char("Syntax: flag <player> <flag> (killer,outlaw,banished)\n\r", ch);
+      send_to_char("Syntax: flag <player> <flag> (killer,outlaw,banished)\n\r",
+        ch);
       return;
     }
   }
 }
 
-void do_echo(struct char_data *ch, char *argument, int cmd) {
+void do_echo(struct char_data* ch, char* argument, int cmd) {
   int i;
   char buf[MAX_INPUT_LENGTH];
 
@@ -841,7 +854,7 @@ void do_echo(struct char_data *ch, char *argument, int cmd) {
   }
 }
 
-void do_system(struct char_data *ch, char *argument, int cmd) {
+void do_system(struct char_data* ch, char* argument, int cmd) {
   int i;
   char buf[256];
 
@@ -859,9 +872,9 @@ void do_system(struct char_data *ch, char *argument, int cmd) {
   }
 }
 
-void do_trans(struct char_data *ch, char *argument, int cmd) {
-  struct descriptor_data *i;
-  struct char_data *victim;
+void do_trans(struct char_data* ch, char* argument, int cmd) {
+  struct descriptor_data* i;
+  struct char_data* victim;
   char buf[100];
   sh_int target;
 
@@ -875,7 +888,8 @@ void do_trans(struct char_data *ch, char *argument, int cmd) {
     if (!(victim = get_char_vis_world(ch, buf, NULL)))
       send_to_char("No-one by that name around.\n\r", ch);
     else {
-      act("$n disappears in a cloud of mushrooms.", FALSE, victim, 0, 0, TO_ROOM);
+      act("$n disappears in a cloud of mushrooms.", FALSE, victim, 0, 0,
+        TO_ROOM);
       target = ch->in_room;
       char_from_room(victim);
       char_to_room(victim, target);
@@ -888,7 +902,8 @@ void do_trans(struct char_data *ch, char *argument, int cmd) {
     for (i = descriptor_list; i; i = i->next)
       if (i->character != ch && !i->connected) {
         victim = i->character;
-        act("$n disappears in a cloud of mushrooms.", FALSE, victim, 0, 0, TO_ROOM);
+        act("$n disappears in a cloud of mushrooms.", FALSE, victim, 0, 0,
+          TO_ROOM);
         target = ch->in_room;
         char_from_room(victim);
         char_to_room(victim, target);
@@ -901,11 +916,11 @@ void do_trans(struct char_data *ch, char *argument, int cmd) {
   }
 }
 
-void do_at(struct char_data *ch, char *argument, int cmd) {
+void do_at(struct char_data* ch, char* argument, int cmd) {
   char command[MAX_INPUT_LENGTH], loc_str[MAX_INPUT_LENGTH];
   int loc_nr, location, original_loc;
-  struct char_data *target_mob;
-  struct obj_data *target_obj;
+  struct char_data* target_mob;
+  struct obj_data* target_obj;
 
   if (IS_NPC(ch))
     return;
@@ -945,18 +960,19 @@ void do_at(struct char_data *ch, char *argument, int cmd) {
   command_interpreter(ch, command);
 
   /* check if the guy's still there */
-  for (target_mob = real_roomp(location)->people; target_mob; target_mob = target_mob->next_in_room)
+  for (target_mob = real_roomp(location)->people; target_mob;
+       target_mob = target_mob->next_in_room)
     if (ch == target_mob) {
       char_from_room(ch);
       char_to_room(ch, original_loc);
     }
 }
 
-void do_goto(struct char_data *ch, char *argument, int cmd) {
+void do_goto(struct char_data* ch, char* argument, int cmd) {
   char buf[MAX_INPUT_LENGTH];
   int loc_nr, location, i;
   struct char_data *target_mob, *pers, *v;
-  struct obj_data *target_obj;
+  struct obj_data* target_obj;
   extern int top_of_world;
 
   if (IS_NPC(ch))
@@ -1015,10 +1031,12 @@ void do_goto(struct char_data *ch, char *argument, int cmd) {
   }
 
   if (IS_SET(real_roomp(location)->room_flags, PRIVATE)) {
-    for (i = 0, pers = real_roomp(location)->people; pers; pers = pers->next_in_room, i++)
+    for (i = 0, pers = real_roomp(location)->people; pers;
+         pers = pers->next_in_room, i++)
       ;
     if (i > 1) {
-      send_to_char("There's a private conversation going on in that room.\n\r", ch);
+      send_to_char("There's a private conversation going on in that room.\n\r",
+        ch);
       return;
     }
   }
@@ -1027,7 +1045,8 @@ void do_goto(struct char_data *ch, char *argument, int cmd) {
     for (v = real_roomp(ch->in_room)->people; v; v = v->next_in_room) {
       if ((ch != v) && (GetMaxLevel(v) >= LOW_IMMORTAL)) {
         if (!IS_SET(ch->poof.pmask, BIT_POOF_OUT) || !ch->poof.poofout)
-          act("$n disappears in a cloud of mushrooms.", FALSE, ch, 0, v, TO_VICT);
+          act("$n disappears in a cloud of mushrooms.", FALSE, ch, 0, v,
+            TO_VICT);
         else {
           act(ch->poof.poofout, FALSE, ch, 0, v, TO_VICT);
         }
@@ -1051,14 +1070,16 @@ void do_goto(struct char_data *ch, char *argument, int cmd) {
     for (v = real_roomp(ch->in_room)->people; v; v = v->next_in_room) {
       if ((ch != v) && (GetMaxLevel(v) >= LOW_IMMORTAL)) {
         if (!IS_SET(ch->poof.pmask, BIT_POOF_IN) || !ch->poof.poofin)
-          act("$n appears with an explosion of rose-petals.", FALSE, ch, 0, v, TO_VICT);
+          act("$n appears with an explosion of rose-petals.", FALSE, ch, 0, v,
+            TO_VICT);
         else
           act(ch->poof.poofin, FALSE, ch, 0, v, TO_VICT);
       }
     }
   } else {
     if (!IS_SET(ch->poof.pmask, BIT_POOF_IN) || !ch->poof.poofin)
-      act("$n appears with an explosion of rose-petals.", FALSE, ch, 0, v, TO_ROOM);
+      act("$n appears with an explosion of rose-petals.", FALSE, ch, 0, v,
+        TO_ROOM);
     else if (*ch->poof.poofin != '!')
       act(ch->poof.poofin, FALSE, ch, 0, v, TO_ROOM);
     else
@@ -1067,46 +1088,46 @@ void do_goto(struct char_data *ch, char *argument, int cmd) {
   do_look(ch, "", 15);
 }
 
-void do_stat(struct char_data *ch, char *argument, int cmd) {
-  extern char *spells[];
-  struct affected_type *aff;
+void do_stat(struct char_data* ch, char* argument, int cmd) {
+  extern char* spells[];
+  struct affected_type* aff;
   char arg1[MAX_STRING_LENGTH];
   char buf[MAX_STRING_LENGTH];
   char buf2[MAX_STRING_LENGTH];
-  struct room_data *rm = 0;
-  struct char_data *k = 0;
-  struct obj_data *j = 0;
-  struct obj_data *j2 = 0;
-  struct extra_descr_data *desc;
-  struct follow_type *fol;
+  struct room_data* rm = 0;
+  struct char_data* k = 0;
+  struct obj_data* j = 0;
+  struct obj_data* j2 = 0;
+  struct extra_descr_data* desc;
+  struct follow_type* fol;
   int i, virtual;
   int i2, count;
   bool found;
 
   /* for objects */
-  extern char *item_types[];
-  extern char *wear_bits[];
-  extern char *extra_bits[];
-  extern char *drinks[];
+  extern char* item_types[];
+  extern char* wear_bits[];
+  extern char* extra_bits[];
+  extern char* drinks[];
 
   /* for rooms */
-  extern char *dirs[];
-  extern char *room_bits[];
-  extern char *exit_bits[];
-  extern char *sector_types[];
+  extern char* dirs[];
+  extern char* room_bits[];
+  extern char* exit_bits[];
+  extern char* sector_types[];
 
   /* for chars */
-  extern char *equipment_types[];
-  extern char *affected_bits[];
-  extern char *immunity_names[];
-  extern char *apply_types[];
-  extern char *pc_class_types[];
-  extern char *npc_class_types[];
-  extern char *action_bits[];
-  extern char *player_bits[];
-  extern char *position_types[];
-  extern char *connected_types[];
-  extern char *RaceName[];
+  extern char* equipment_types[];
+  extern char* affected_bits[];
+  extern char* immunity_names[];
+  extern char* apply_types[];
+  extern char* pc_class_types[];
+  extern char* npc_class_types[];
+  extern char* action_bits[];
+  extern char* player_bits[];
+  extern char* position_types[];
+  extern char* connected_types[];
+  extern char* RaceName[];
 
   if (IS_NPC(ch))
     return;
@@ -1121,10 +1142,9 @@ void do_stat(struct char_data *ch, char *argument, int cmd) {
     /* stats on room */
     if (!str_cmp("room", arg1)) {
       rm = real_roomp(ch->in_room);
-      sprintf(
-        buf, "Room name: %s, Of zone : %d. V-Number : %d, R-number : %d\n\r", rm->name, rm->zone, rm->number,
-        ch->in_room
-      );
+      sprintf(buf,
+        "Room name: %s, Of zone : %d. V-Number : %d, R-number : %d\n\r",
+        rm->name, rm->zone, rm->number, ch->in_room);
       send_to_char(buf, ch);
 
       sprinttype(rm->sector_type, sector_types, buf2);
@@ -1160,7 +1180,8 @@ void do_stat(struct char_data *ch, char *argument, int cmd) {
       strcpy(buf, "------- Chars present -------\n\r");
       for (k = rm->people; k; k = k->next_in_room) {
         strcat(buf, GET_NAME(k));
-        strcat(buf, (!IS_NPC(k) ? "(PC)\n\r" : (!IS_MOB(k) ? "(NPC)\n\r" : "(MOB)\n\r")));
+        strcat(buf,
+          (!IS_NPC(k) ? "(PC)\n\r" : (!IS_MOB(k) ? "(NPC)\n\r" : "(MOB)\n\r")));
       }
       strcat(buf, "\n\r");
       send_to_char(buf, ch);
@@ -1176,7 +1197,8 @@ void do_stat(struct char_data *ch, char *argument, int cmd) {
       send_to_char("------- Exits defined -------\n\r", ch);
       for (i = 0; i <= 5; i++) {
         if (rm->dir_option[i]) {
-          sprintf(buf, "Direction %s . Keyword : %s\n\r", dirs[i], rm->dir_option[i]->keyword);
+          sprintf(buf, "Direction %s . Keyword : %s\n\r", dirs[i],
+            rm->dir_option[i]->keyword);
           send_to_char(buf, ch);
           strcpy(buf, "Description:\n\r  ");
           if (rm->dir_option[i]->general_description)
@@ -1185,10 +1207,9 @@ void do_stat(struct char_data *ch, char *argument, int cmd) {
             strcat(buf, "UNDEFINED\n\r");
           send_to_char(buf, ch);
           sprintbit(rm->dir_option[i]->exit_info, exit_bits, buf2);
-          sprintf(
-            buf, "Exit flag: %s \n\rKey no: %d\n\rTo room (R-Number): %d\n\r", buf2, rm->dir_option[i]->key,
-            rm->dir_option[i]->to_room
-          );
+          sprintf(buf,
+            "Exit flag: %s \n\rKey no: %d\n\rTo room (R-Number): %d\n\r", buf2,
+            rm->dir_option[i]->key, rm->dir_option[i]->to_room);
           send_to_char(buf, ch);
         }
       }
@@ -1214,10 +1235,9 @@ void do_stat(struct char_data *ch, char *argument, int cmd) {
           break;
       }
 
-      sprintf(
-        buf2, " %s - Name : %s [R-Number%d], In room [%d]\n\r", (!IS_NPC(k) ? "PC" : (!IS_MOB(k) ? "NPC" : "MOB")),
-        GET_NAME(k), k->nr, k->in_room
-      );
+      sprintf(buf2, " %s - Name : %s [R-Number%d], In room [%d]\n\r",
+        (!IS_NPC(k) ? "PC" : (!IS_MOB(k) ? "NPC" : "MOB")), GET_NAME(k), k->nr,
+        k->in_room);
       strcat(buf, buf2);
       send_to_char(buf, ch);
       if (IS_MOB(k)) {
@@ -1251,33 +1271,33 @@ void do_stat(struct char_data *ch, char *argument, int cmd) {
       }
       strcat(buf, buf2);
 
-      if ((IS_NPC(k)) || ((HasClass(k, CLASS_MAGIC_USER)) || (HasClass(k, CLASS_CLERIC)) || (HasClass(k, CLASS_THIEF)) || (HasClass(k, CLASS_WARRIOR)))) {
-        sprintf(
-          buf2, "   Level [%d/%d/%d/%d] Alignment[%d]\n\r", k->player.level[0], k->player.level[1], k->player.level[2],
-          k->player.level[3], GET_ALIGNMENT(k)
-        );
+      if ((IS_NPC(k)) ||
+          ((HasClass(k, CLASS_MAGIC_USER)) || (HasClass(k, CLASS_CLERIC)) ||
+            (HasClass(k, CLASS_THIEF)) || (HasClass(k, CLASS_WARRIOR)))) {
+        sprintf(buf2, "   Level [%d/%d/%d/%d] Alignment[%d]\n\r",
+          k->player.level[0], k->player.level[1], k->player.level[2],
+          k->player.level[3], GET_ALIGNMENT(k));
       } else if (HasClass(k, CLASS_ANTIPALADIN)) {
-        sprintf(buf2, "   Level [ANTI lev %d] Alignment[%d]\n\r", k->player.level[4], GET_ALIGNMENT(k));
+        sprintf(buf2, "   Level [ANTI lev %d] Alignment[%d]\n\r",
+          k->player.level[4], GET_ALIGNMENT(k));
       } else if (HasClass(k, CLASS_PALADIN)) {
-        sprintf(buf2, "   Level [PAL  lev %d] Alignment[%d]\n\r", k->player.level[5], GET_ALIGNMENT(k));
+        sprintf(buf2, "   Level [PAL  lev %d] Alignment[%d]\n\r",
+          k->player.level[5], GET_ALIGNMENT(k));
       } else if (HasClass(k, CLASS_RANGER)) {
-        sprintf(buf2, "   Level [RANGER lev %d] Alignment[%d]\n\r", k->player.level[7], GET_ALIGNMENT(k));
+        sprintf(buf2, "   Level [RANGER lev %d] Alignment[%d]\n\r",
+          k->player.level[7], GET_ALIGNMENT(k));
       }
 
       strcat(buf, buf2);
       send_to_char(buf, ch);
 
-      sprintf(
-        buf, "Birth : [%ld]secs, Logon[%ld]secs, Played[%ld]secs\n\r", k->player.time.birth, k->player.time.logon,
-        k->player.time.played
-      );
+      sprintf(buf, "Birth : [%ld]secs, Logon[%ld]secs, Played[%ld]secs\n\r",
+        k->player.time.birth, k->player.time.logon, k->player.time.played);
 
       send_to_char(buf, ch);
 
-      sprintf(
-        buf, "Age: [%d] Years,  [%d] Months,  [%d] Days,  [%d] Hours\n\r", age(k).year, age(k).month, age(k).day,
-        age(k).hours
-      );
+      sprintf(buf, "Age: [%d] Years,  [%d] Months,  [%d] Days,  [%d] Hours\n\r",
+        age(k).year, age(k).month, age(k).day, age(k).hours);
       send_to_char(buf, ch);
 
       if (IS_PC(ch)) {
@@ -1285,31 +1305,29 @@ void do_stat(struct char_data *ch, char *argument, int cmd) {
         send_to_char(buf, ch);
       }
 
-      sprintf(buf, "Height [%d]cm  Weight [%d]pounds \n\r", GET_HEIGHT(k), GET_WEIGHT(k));
+      sprintf(buf, "Height [%d]cm  Weight [%d]pounds \n\r", GET_HEIGHT(k),
+        GET_WEIGHT(k));
       send_to_char(buf, ch);
 
-      sprintf(
-        buf, "Str:[%d/%d]  Int:[%d]  Wis:[%d]  Dex:[%d]  Con:[%d]\n\r", GET_STR(k), GET_ADD(k), GET_INT(k), GET_WIS(k),
-        GET_DEX(k), GET_CON(k)
-      );
+      sprintf(buf, "Str:[%d/%d]  Int:[%d]  Wis:[%d]  Dex:[%d]  Con:[%d]\n\r",
+        GET_STR(k), GET_ADD(k), GET_INT(k), GET_WIS(k), GET_DEX(k), GET_CON(k));
       send_to_char(buf, ch);
 
-      sprintf(
-        buf, "Mana p.:[%d/%d+%d]  Hit p.:[%d/%d+%d]  Move p.:[%d/%d+%d]\n\r", GET_MANA(k), mana_limit(k), mana_gain(k),
-        GET_HIT(k), hit_limit(k), hit_gain(k), GET_MOVE(k), move_limit(k), move_gain(k)
-      );
+      sprintf(buf,
+        "Mana p.:[%d/%d+%d]  Hit p.:[%d/%d+%d]  Move p.:[%d/%d+%d]\n\r",
+        GET_MANA(k), mana_limit(k), mana_gain(k), GET_HIT(k), hit_limit(k),
+        hit_gain(k), GET_MOVE(k), move_limit(k), move_gain(k));
       send_to_char(buf, ch);
 
-      sprintf(
-        buf, "AC:[%d/10], Coins: [%d], Exp: [%d], Hitroll: [%d], Damroll: [%d]\n\r", GET_AC(k), GET_GOLD(k), GET_EXP(k),
-        k->points.hitroll, k->points.damroll
-      );
+      sprintf(buf,
+        "AC:[%d/10], Coins: [%d], Exp: [%d], Hitroll: [%d], Damroll: [%d]\n\r",
+        GET_AC(k), GET_GOLD(k), GET_EXP(k), k->points.hitroll,
+        k->points.damroll);
       send_to_char(buf, ch);
 
       sprinttype(GET_POS(k), position_types, buf2);
-      sprintf(
-        buf, "Position: %s, Fighting: %s", buf2, ((k->specials.fighting) ? GET_NAME(k->specials.fighting) : "Nobody")
-      );
+      sprintf(buf, "Position: %s, Fighting: %s", buf2,
+        ((k->specials.fighting) ? GET_NAME(k->specials.fighting) : "Nobody"));
       if (k->desc) {
         sprinttype(k->desc->connected, connected_types, buf2);
         strcat(buf, ", Connected: ");
@@ -1342,11 +1360,13 @@ void do_stat(struct char_data *ch, char *argument, int cmd) {
       }
 
       if (IS_NPC(k)) {
-        sprintf(buf, "NPC Bare Hand Damage %dd%d.\n\r", k->specials.damnodice, k->specials.damsizedice);
+        sprintf(buf, "NPC Bare Hand Damage %dd%d.\n\r", k->specials.damnodice,
+          k->specials.damsizedice);
         send_to_char(buf, ch);
       }
 
-      sprintf(buf, "Carried weight: %d   Carried volume: %d\n\r", IS_CARRYING_W(k), IS_CARRYING_N(k));
+      sprintf(buf, "Carried weight: %d   Carried volume: %d\n\r",
+        IS_CARRYING_W(k), IS_CARRYING_N(k));
       send_to_char(buf, ch);
 
       for (i = 0, j = k->carrying; j; j = j->next_content, i++)
@@ -1360,20 +1380,19 @@ void do_stat(struct char_data *ch, char *argument, int cmd) {
       strcat(buf, buf2);
       send_to_char(buf, ch);
 
-      sprintf(
-        buf, "Apply saving throws: [%d] [%d] [%d] [%d] [%d]\n\r", k->specials.apply_saving_throw[0],
-        k->specials.apply_saving_throw[1], k->specials.apply_saving_throw[2], k->specials.apply_saving_throw[3],
-        k->specials.apply_saving_throw[4]
-      );
+      sprintf(buf, "Apply saving throws: [%d] [%d] [%d] [%d] [%d]\n\r",
+        k->specials.apply_saving_throw[0], k->specials.apply_saving_throw[1],
+        k->specials.apply_saving_throw[2], k->specials.apply_saving_throw[3],
+        k->specials.apply_saving_throw[4]);
       send_to_char(buf, ch);
 
-      sprintf(
-        buf, "Thirst: %d, Hunger: %d, Drunk: %d\n\r", k->specials.conditions[THIRST], k->specials.conditions[FULL],
-        k->specials.conditions[DRUNK]
-      );
+      sprintf(buf, "Thirst: %d, Hunger: %d, Drunk: %d\n\r",
+        k->specials.conditions[THIRST], k->specials.conditions[FULL],
+        k->specials.conditions[DRUNK]);
       send_to_char(buf, ch);
 
-      sprintf(buf, "Master is '%s'\n\r", ((k->master) ? GET_NAME(k->master) : "NOBODY"));
+      sprintf(buf, "Master is '%s'\n\r",
+        ((k->master) ? GET_NAME(k->master) : "NOBODY"));
       send_to_char(buf, ch);
       send_to_char("Followers are:\n\r", ch);
       for (fol = k->followers; fol; fol = fol->next)
@@ -1428,7 +1447,8 @@ void do_stat(struct char_data *ch, char *argument, int cmd) {
         for (aff = k->affected; aff; aff = aff->next) {
           sprintf(buf, "Spell : '%s'\n\r", spells[aff->type - 1]);
           send_to_char(buf, ch);
-          sprintf(buf, "     Modifies %s by %d points\n\r", apply_types[aff->location], aff->modifier);
+          sprintf(buf, "     Modifies %s by %d points\n\r",
+            apply_types[aff->location], aff->modifier);
           send_to_char(buf, ch);
           sprintf(buf, "     Expires in %3d hours, Bits set ", aff->duration);
           send_to_char(buf, ch);
@@ -1440,17 +1460,18 @@ void do_stat(struct char_data *ch, char *argument, int cmd) {
       return;
     }
     /* stat on object */
-    if (j = (struct obj_data *)get_obj_vis_world(ch, arg1, &count)) {
+    if (j = (struct obj_data*)get_obj_vis_world(ch, arg1, &count)) {
       virtual = (j->item_number >= 0) ? obj_index[j->item_number].virtual : 0;
-      sprintf(buf, "Object name: [%s], R-number: [%d], V-number: [%d] Item type: ", j->name, j->item_number, virtual);
+      sprintf(buf,
+        "Object name: [%s], R-number: [%d], V-number: [%d] Item type: ",
+        j->name, j->item_number, virtual);
       sprinttype(GET_ITEM_TYPE(j), item_types, buf2);
       strcat(buf, buf2);
       strcat(buf, "\n\r");
       send_to_char(buf, ch);
-      sprintf(
-        buf, "Short description: %s\n\rLong description:\n\r%s\n\r",
-        ((j->short_description) ? j->short_description : "None"), ((j->description) ? j->description : "None")
-      );
+      sprintf(buf, "Short description: %s\n\rLong description:\n\r%s\n\r",
+        ((j->short_description) ? j->short_description : "None"),
+        ((j->description) ? j->description : "None"));
       send_to_char(buf, ch);
       if (j->ex_description) {
         strcpy(buf, "Extra description keyword(s):\n\r----------\n\r");
@@ -1480,19 +1501,18 @@ void do_stat(struct char_data *ch, char *argument, int cmd) {
       strcat(buf, "\n\r");
       send_to_char(buf, ch);
 
-      sprintf(
-        buf, "Volume: %d, Weight: %d, Value: %d, Cost/day: %d\n\r", j->obj_flags.volume, j->obj_flags.weight,
-        j->obj_flags.cost, j->obj_flags.cost_per_day
-      );
+      sprintf(buf, "Volume: %d, Weight: %d, Value: %d, Cost/day: %d\n\r",
+        j->obj_flags.volume, j->obj_flags.weight, j->obj_flags.cost,
+        j->obj_flags.cost_per_day);
       send_to_char(buf, ch);
 
-      sprintf(
-        buf, "Decay :%d, Max Struct :%d, Struct Left %d\n\r", j->obj_flags.decay_time, j->obj_flags.max_struct_points,
-        j->obj_flags.struct_points
-      );
+      sprintf(buf, "Decay :%d, Max Struct :%d, Struct Left %d\n\r",
+        j->obj_flags.decay_time, j->obj_flags.max_struct_points,
+        j->obj_flags.struct_points);
       send_to_char(buf, ch);
 
-      sprintf(buf, "Material Type : %s\n\r", material_types[j->obj_flags.material_points]);
+      sprintf(buf, "Material Type : %s\n\r",
+        material_types[j->obj_flags.material_points]);
       send_to_char(buf, ch);
 
       strcpy(buf, "In room: ");
@@ -1525,69 +1545,65 @@ void do_stat(struct char_data *ch, char *argument, int cmd) {
   */
       switch (j->obj_flags.type_flag) {
         case ITEM_LIGHT:
-          sprintf(
-            buf, "Colour : [%d]\n\rType : [%d]\n\rHours : [%d]", j->obj_flags.value[0], j->obj_flags.value[1],
-            j->obj_flags.value[2]
-          );
+          sprintf(buf, "Colour : [%d]\n\rType : [%d]\n\rHours : [%d]",
+            j->obj_flags.value[0], j->obj_flags.value[1],
+            j->obj_flags.value[2]);
           break;
         case ITEM_SCROLL:
-          sprintf(
-            buf, "Spells : %d, %d, %d, %d", j->obj_flags.value[0], j->obj_flags.value[1], j->obj_flags.value[2],
-            j->obj_flags.value[3]
-          );
+          sprintf(buf, "Spells : %d, %d, %d, %d", j->obj_flags.value[0],
+            j->obj_flags.value[1], j->obj_flags.value[2],
+            j->obj_flags.value[3]);
           break;
         case ITEM_WAND:
-          sprintf(buf, "Spell : %d\n\rMana : %d", j->obj_flags.value[0], j->obj_flags.value[1]);
+          sprintf(buf, "Spell : %d\n\rMana : %d", j->obj_flags.value[0],
+            j->obj_flags.value[1]);
           break;
         case ITEM_STAFF:
-          sprintf(buf, "Spell : %d\n\rMana : %d", j->obj_flags.value[0], j->obj_flags.value[1]);
+          sprintf(buf, "Spell : %d\n\rMana : %d", j->obj_flags.value[0],
+            j->obj_flags.value[1]);
           break;
         case ITEM_WEAPON:
-          sprintf(
-            buf, "Tohit : %d\n\rTodam : %dD%d\n\rType : %d", j->obj_flags.value[0], j->obj_flags.value[1],
-            j->obj_flags.value[2], j->obj_flags.value[3]
-          );
+          sprintf(buf, "Tohit : %d\n\rTodam : %dD%d\n\rType : %d",
+            j->obj_flags.value[0], j->obj_flags.value[1], j->obj_flags.value[2],
+            j->obj_flags.value[3]);
           break;
         case ITEM_FIREWEAPON:
-          sprintf(
-            buf, "Bullet # : %d\n\rTodam : %dD%d\n\rShots left : %d", j->obj_flags.value[0], j->obj_flags.value[1],
-            j->obj_flags.value[2], j->obj_flags.value[3]
-          );
+          sprintf(buf, "Bullet # : %d\n\rTodam : %dD%d\n\rShots left : %d",
+            j->obj_flags.value[0], j->obj_flags.value[1], j->obj_flags.value[2],
+            j->obj_flags.value[3]);
           break;
         case ITEM_MISSILE:
-          sprintf(
-            buf, "Tohit : %d\n\rTodam : %d\n\rType : %d", j->obj_flags.value[0], j->obj_flags.value[1],
-            j->obj_flags.value[3]
-          );
+          sprintf(buf, "Tohit : %d\n\rTodam : %d\n\rType : %d",
+            j->obj_flags.value[0], j->obj_flags.value[1],
+            j->obj_flags.value[3]);
           break;
         case ITEM_ARMOR:
-          sprintf(buf, "AC-apply : [%d]\n\rFull Strength : [%d]", j->obj_flags.value[0], j->obj_flags.value[1]);
+          sprintf(buf, "AC-apply : [%d]\n\rFull Strength : [%d]",
+            j->obj_flags.value[0], j->obj_flags.value[1]);
 
           break;
         case ITEM_POTION:
-          sprintf(
-            buf, "Spells : %d, %d, %d, %d", j->obj_flags.value[0], j->obj_flags.value[1], j->obj_flags.value[2],
-            j->obj_flags.value[3]
-          );
+          sprintf(buf, "Spells : %d, %d, %d, %d", j->obj_flags.value[0],
+            j->obj_flags.value[1], j->obj_flags.value[2],
+            j->obj_flags.value[3]);
           break;
         case ITEM_TRAP:
-          sprintf(
-            buf, "level: %d, att type: %d, damage class: %d, charges: %d", j->obj_flags.value[0], j->obj_flags.value[1],
-            j->obj_flags.value[2], j->obj_flags.value[3]
-          );
+          sprintf(buf, "level: %d, att type: %d, damage class: %d, charges: %d",
+            j->obj_flags.value[0], j->obj_flags.value[1], j->obj_flags.value[2],
+            j->obj_flags.value[3]);
           break;
         case ITEM_CONTAINER:
-          sprintf(
-            buf, "Max-contains : %d\n\rLocktype : %d\n\rVolume : %d", j->obj_flags.value[0], j->obj_flags.value[1],
-            j->obj_flags.value[3]
-          );
+          sprintf(buf, "Max-contains : %d\n\rLocktype : %d\n\rVolume : %d",
+            j->obj_flags.value[0], j->obj_flags.value[1],
+            j->obj_flags.value[3]);
           break;
         case ITEM_DRINKCON:
           sprinttype(j->obj_flags.value[2], drinks, buf2);
-          sprintf(
-            buf, "Max-contains : %d\n\rContains : %d\n\rPoisoned : %d\n\rLiquid : %s", j->obj_flags.value[0],
-            j->obj_flags.value[1], j->obj_flags.value[3], buf2
-          );
+          sprintf(buf,
+            "Max-contains : %d\n\rContains : %d\n\rPoisoned : %d\n\rLiquid : "
+            "%s",
+            j->obj_flags.value[0], j->obj_flags.value[1], j->obj_flags.value[3],
+            buf2);
           break;
         case ITEM_NOTE:
           sprintf(buf, "Tounge : %d", j->obj_flags.value[0]);
@@ -1596,16 +1612,17 @@ void do_stat(struct char_data *ch, char *argument, int cmd) {
           sprintf(buf, "Keytype : %d", j->obj_flags.value[0]);
           break;
         case ITEM_FOOD:
-          sprintf(buf, "Makes full : %d\n\rPoisoned : %d", j->obj_flags.value[0], j->obj_flags.value[3]);
+          sprintf(buf, "Makes full : %d\n\rPoisoned : %d",
+            j->obj_flags.value[0], j->obj_flags.value[3]);
           break;
         case ITEM_ARROW:
-          sprintf(buf, "Damage done : %dD%d", j->obj_flags.value[1], j->obj_flags.value[2]);
+          sprintf(buf, "Damage done : %dD%d", j->obj_flags.value[1],
+            j->obj_flags.value[2]);
           break;
         default:
-          sprintf(
-            buf, "Values 0-3 : [%d] [%d] [%d] [%d]", j->obj_flags.value[0], j->obj_flags.value[1],
-            j->obj_flags.value[2], j->obj_flags.value[3]
-          );
+          sprintf(buf, "Values 0-3 : [%d] [%d] [%d] [%d]",
+            j->obj_flags.value[0], j->obj_flags.value[1], j->obj_flags.value[2],
+            j->obj_flags.value[3]);
           break;
       }
       send_to_char(buf, ch);
@@ -1648,7 +1665,8 @@ void do_stat(struct char_data *ch, char *argument, int cmd) {
       send_to_char("Can affect char :\n\r", ch);
       for (i = 0; i < MAX_OBJ_AFFECT; i++) {
         sprinttype(j->affected[i].location, apply_types, buf2);
-        sprintf(buf, "    Affects : %s By %d\n\r", buf2, j->affected[i].modifier);
+        sprintf(buf, "    Affects : %s By %d\n\r", buf2,
+          j->affected[i].modifier);
         send_to_char(buf, ch);
       }
       return;
@@ -1658,13 +1676,13 @@ void do_stat(struct char_data *ch, char *argument, int cmd) {
   }
 }
 
-void do_set(struct char_data *ch, char *argument, int cmd) {
+void do_set(struct char_data* ch, char* argument, int cmd) {
   char field[20], name[20], parmstr[50];
-  struct char_data *mob;
+  struct char_data* mob;
   int parm, parm2;
   char buf[256];
 
-  extern struct char_data *board_kludge_char;
+  extern struct char_data* board_kludge_char;
 
   if ((GetMaxLevel(ch) < SILLYLORD) || (IS_NPC(ch)))
     return;
@@ -1835,11 +1853,11 @@ void do_set(struct char_data *ch, char *argument, int cmd) {
   }
 }
 
-void do_shutdow(struct char_data *ch, char *argument, int cmd) {
+void do_shutdow(struct char_data* ch, char* argument, int cmd) {
   send_to_char("If you want to shut something down - say so!\n\r", ch);
 }
 
-void do_shutdown(struct char_data *ch, char *argument, int cmd) {
+void do_shutdown(struct char_data* ch, char* argument, int cmd) {
   extern int Shutdown, rebootmud;
   char buf[100], arg[MAX_INPUT_LENGTH];
 
@@ -1862,9 +1880,9 @@ void do_shutdown(struct char_data *ch, char *argument, int cmd) {
     send_to_char("Go shut down someone your own size.\n\r", ch);
 }
 
-void do_snoop(struct char_data *ch, char *argument, int cmd) {
+void do_snoop(struct char_data* ch, char* argument, int cmd) {
   static char arg[MAX_STRING_LENGTH];
-  struct char_data *victim;
+  struct char_data* victim;
 
   if (!ch->desc)
     return;
@@ -1895,10 +1913,8 @@ void do_snoop(struct char_data *ch, char *argument, int cmd) {
         ch->desc->snoop.snooping->desc->snoop.snoop_by = 0;
       else {
         char buf[MAX_STRING_LENGTH];
-        sprintf(
-          buf, "caught %s snooping %s who didn't have a descriptor!", ch->player.name,
-          ch->desc->snoop.snooping->player.name
-        );
+        sprintf(buf, "caught %s snooping %s who didn't have a descriptor!",
+          ch->player.name, ch->desc->snoop.snooping->player.name);
         vlog(buf);
       }
       ch->desc->snoop.snooping = 0;
@@ -1927,9 +1943,9 @@ void do_snoop(struct char_data *ch, char *argument, int cmd) {
   return;
 }
 
-void do_switch(struct char_data *ch, char *argument, int cmd) {
+void do_switch(struct char_data* ch, char* argument, int cmd) {
   static char arg[80];
-  struct char_data *victim;
+  struct char_data* victim;
 
   if (IS_NPC(ch))
     return;
@@ -1967,7 +1983,7 @@ void do_switch(struct char_data *ch, char *argument, int cmd) {
   }
 }
 
-void do_return(struct char_data *ch, char *argument, int cmd) {
+void do_return(struct char_data* ch, char* argument, int cmd) {
   struct char_data *mob, *per;
 
   if (!ch->desc)
@@ -2003,10 +2019,10 @@ void do_return(struct char_data *ch, char *argument, int cmd) {
   }
 }
 
-void do_force(struct char_data *ch, char *argument, int cmd) {
-  struct descriptor_data *i;
-  struct char_data *vict;
-  extern struct char_data *board_kludge_char;
+void do_force(struct char_data* ch, char* argument, int cmd) {
+  struct descriptor_data* i;
+  struct char_data* vict;
+  extern struct char_data* board_kludge_char;
   char name[100], to_force[100], buf[100];
 
   if (IS_NPC(ch) && (cmd != 0))
@@ -2031,7 +2047,8 @@ void do_force(struct char_data *ch, char *argument, int cmd) {
     }
   } else { /* force all */
     for (i = descriptor_list; i; i = i->next)
-      if (i->character != ch && !i->connected && i->character != board_kludge_char) {
+      if (i->character != ch && !i->connected &&
+          i->character != board_kludge_char) {
         vict = i->character;
         if ((GetMaxLevel(ch) <= GetMaxLevel(vict)) && (!IS_NPC(vict)))
           send_to_char("Oh no you don't!!\n\r", ch);
@@ -2045,9 +2062,9 @@ void do_force(struct char_data *ch, char *argument, int cmd) {
   }
 }
 
-void do_load(struct char_data *ch, char *argument, int cmd) {
-  struct char_data *mob;
-  struct obj_data *obj;
+void do_load(struct char_data* ch, char* argument, int cmd) {
+  struct char_data* mob;
+  struct obj_data* obj;
   char type[100], num[100];
   int number;
 
@@ -2084,9 +2101,11 @@ void do_load(struct char_data *ch, char *argument, int cmd) {
     mob = read_mobile(number, REAL);
     char_to_room(mob, ch->in_room);
 
-    act("$n makes a quaint, magical gesture with one hand.", TRUE, ch, 0, 0, TO_ROOM);
+    act("$n makes a quaint, magical gesture with one hand.", TRUE, ch, 0, 0,
+      TO_ROOM);
     act("$n has summoned $N from the ether!", FALSE, ch, 0, mob, TO_ROOM);
-    act("You bring forth $N from the the cosmic ether.", FALSE, ch, 0, mob, TO_CHAR);
+    act("You bring forth $N from the the cosmic ether.", FALSE, ch, 0, mob,
+      TO_CHAR);
 
   } else if (is_abbrev(type, "object")) {
     if (!IS_IMMORTAL(ch))
@@ -2108,15 +2127,18 @@ void do_load(struct char_data *ch, char *argument, int cmd) {
     if (GetMaxLevel(ch) < BRUTIUS) {
       switch (obj_index[number].virtual) {
         case 5021:
-          send_to_char("no.  No more bows!  And don't kill the worm either!\n\r", ch);
+          send_to_char(
+            "no.  No more bows!  And don't kill the worm either!\n\r", ch);
           return;
         case 5112:
-          send_to_char("no, no more Ruby rings!  And don't kill for it either!\n\r", ch);
+          send_to_char(
+            "no, no more Ruby rings!  And don't kill for it either!\n\r", ch);
           return;
         case 9002:
           send_to_char(
-            "These dice are unloadable by anyone but Brutius. More than one pair in the game could wreck havok!\n\r", ch
-          );
+            "These dice are unloadable by anyone but Brutius. More than one "
+            "pair in the game could wreck havok!\n\r",
+            ch);
           return;
         case 233:
         case 15831:
@@ -2176,19 +2198,23 @@ void do_load(struct char_data *ch, char *argument, int cmd) {
   }
 }
 
-static void purge_one_room(int rnum, struct room_data *rp, int *range) {
-  struct char_data *ch;
-  struct obj_data *obj;
+static void purge_one_room(int rnum, struct room_data* rp, int* range) {
+  struct char_data* ch;
+  struct obj_data* obj;
   extern long room_count;
 
-  if (rnum==0 ||		/* purge the void?  I think not */
+  if (rnum == 0 || /* purge the void?  I think not */
       rnum < range[0] || rnum > range[1])
     return;
 
   while (rp->people) {
     ch = rp->people;
-    send_to_char("A god strikes the heavens making the ground around you erupt into a", ch);
-    send_to_char("fluid fountain boiling into the ether.  All that's left is the Void.", ch);
+    send_to_char(
+      "A god strikes the heavens making the ground around you erupt into a",
+      ch);
+    send_to_char(
+      "fluid fountain boiling into the ether.  All that's left is the Void.",
+      ch);
     char_from_room(ch);
     char_to_room(ch, 0); /* send character to the void */
     do_look(ch, "", 15);
@@ -2210,9 +2236,9 @@ static void purge_one_room(int rnum, struct room_data *rp, int *range) {
   room_count--;
 }
 
-void do_link(struct char_data *ch, char *argument, int cmd) {
-  struct char_data *victim;
-  struct descriptor_data *d;
+void do_link(struct char_data* ch, char* argument, int cmd) {
+  struct char_data* victim;
+  struct descriptor_data* d;
   int done = FALSE;
   char name[100];
 
@@ -2230,7 +2256,8 @@ void do_link(struct char_data *ch, char *argument, int cmd) {
   } else {
     for (d = descriptor_list; d && !done; d = d->next) {
       if (d->character)
-        if (GET_NAME(d->character) && (str_cmp(GET_NAME(d->character), name) == 0)) {
+        if (GET_NAME(d->character) &&
+            (str_cmp(GET_NAME(d->character), name) == 0)) {
           done = TRUE;
           break;
         }
@@ -2242,7 +2269,7 @@ void do_link(struct char_data *ch, char *argument, int cmd) {
 }
 
 /* clean a room of all mobiles and objects */
-void do_purge(struct char_data *ch, char *argument, int cmd) {
+void do_purge(struct char_data* ch, char* argument, int cmd) {
   struct char_data *vict, *next_v;
   struct obj_data *obj, *next_o;
 
@@ -2255,7 +2282,7 @@ void do_purge(struct char_data *ch, char *argument, int cmd) {
 
   if (*name) { /* argument supplied. destroy single object or char */
     if (strcmp(name, "links") == 0 && GetMaxLevel(ch) >= IMPLEMENTOR) {
-      struct descriptor_data *d;
+      struct descriptor_data* d;
 
       for (d = descriptor_list; d; d = d->next) {
         if (d->character->specials.timer > 10)
@@ -2265,7 +2292,8 @@ void do_purge(struct char_data *ch, char *argument, int cmd) {
     }
 
     if (vict = get_char_room_vis(ch, name)) {
-      if ((!IS_NPC(vict) || IS_SET(vict->specials.act, ACT_POLYSELF)) && (GetMaxLevel(ch) < 53)) {
+      if ((!IS_NPC(vict) || IS_SET(vict->specials.act, ACT_POLYSELF)) &&
+          (GetMaxLevel(ch) < 53)) {
         send_to_char("I can't let you do that.\n\r", ch);
         return;
       }
@@ -2283,7 +2311,8 @@ void do_purge(struct char_data *ch, char *argument, int cmd) {
           extract_char(vict);
         }
       }
-    } else if (obj = get_obj_in_list_vis(ch, name, real_roomp(ch->in_room)->contents)) {
+    } else if (obj = get_obj_in_list_vis(ch, name,
+                 real_roomp(ch->in_room)->contents)) {
       act("$n destroys $p.", FALSE, ch, obj, 0, TO_ROOM);
       extract_obj(obj);
     } else {
@@ -2291,7 +2320,7 @@ void do_purge(struct char_data *ch, char *argument, int cmd) {
       if (0 == str_cmp("room", name)) {
         int range[2];
         register int i;
-        struct room_data *rp;
+        struct room_data* rp;
         if (GetMaxLevel(ch) < IMPLEMENTOR) {
           send_to_char("I'm sorry, Dave.  I can't let you do that.\n\r", ch);
           return;
@@ -2340,7 +2369,10 @@ void do_purge(struct char_data *ch, char *argument, int cmd) {
       return;
     }
 
-    act("$n gestures... You are surrounded by thousands of tiny scrubbing bubbles!", FALSE, ch, 0, 0, TO_ROOM);
+    act(
+      "$n gestures... You are surrounded by thousands of tiny scrubbing "
+      "bubbles!",
+      FALSE, ch, 0, 0, TO_ROOM);
     send_to_room("The world seems a little cleaner.\n\r", ch->in_room);
 
     for (vict = real_roomp(ch->in_room)->people; vict; vict = next_v) {
@@ -2357,7 +2389,7 @@ void do_purge(struct char_data *ch, char *argument, int cmd) {
 }
 
 /* Give pointers to the five abilities */
-void roll_abilities(struct char_data *ch) {
+void roll_abilities(struct char_data* ch) {
   int i, j, k, temp;
   ubyte table[MAX_STAT];
   ubyte rools[4];
@@ -2370,7 +2402,8 @@ void roll_abilities(struct char_data *ch) {
     for (j = 0; j < 4; j++)
       rools[j] = number(1, 6);
 
-    temp = rools[0] + rools[1] + rools[2] + rools[3] - MIN(rools[0], MIN(rools[1], MIN(rools[2], rools[3])));
+    temp = rools[0] + rools[1] + rools[2] + rools[3] -
+           MIN(rools[0], MIN(rools[1], MIN(rools[2], rools[3])));
 
     for (k = 0; k < MAX_STAT; k++)
       if (table[k] < temp)
@@ -2457,17 +2490,17 @@ void roll_abilities(struct char_data *ch) {
   ch->tmpabilities = ch->abilities;
 }
 
-void do_reroll(struct char_data *ch, char *argument, int cmd) {
-  struct char_data *victim;
+void do_reroll(struct char_data* ch, char* argument, int cmd) {
+  struct char_data* victim;
   char buf[100];
 
   if (IS_NPC(ch))
     return;
 }
 
-void do_start(struct char_data *ch) {
+void do_start(struct char_data* ch) {
   int i, r_num;
-  struct obj_data *obj;
+  struct obj_data* obj;
   struct affected_type af;
 
   extern struct dex_skill_type dex_app_skill[];
@@ -2537,8 +2570,8 @@ void do_start(struct char_data *ch) {
   ch->player.time.logon = time(0);
 }
 
-void do_advance(struct char_data *ch, char *argument, int cmd) {
-  struct char_data *victim;
+void do_advance(struct char_data* ch, char* argument, int cmd) {
+  struct char_data* victim;
   char name[100], level[100], class[100];
   int adv, newlevel, lin_class;
 
@@ -2621,7 +2654,8 @@ void do_advance(struct char_data *ch, char *argument, int cmd) {
     adv = newlevel - GET_LEVEL(victim, lin_class);
   }
 
-  if (((adv + GET_LEVEL(victim, lin_class)) > 1) && (GetMaxLevel(ch) < IMPLEMENTOR)) {
+  if (((adv + GET_LEVEL(victim, lin_class)) > 1) &&
+      (GetMaxLevel(ch) < IMPLEMENTOR)) {
     send_to_char("Thou art not godly enough.\n\r", ch);
     return;
   }
@@ -2631,7 +2665,8 @@ void do_advance(struct char_data *ch, char *argument, int cmd) {
     return;
   }
 
-  if (((adv + GET_LEVEL(victim, lin_class)) < 1) && ((adv + GET_LEVEL(victim, lin_class)) != 1)) {
+  if (((adv + GET_LEVEL(victim, lin_class)) < 1) &&
+      ((adv + GET_LEVEL(victim, lin_class)) != 1)) {
     send_to_char("1 is the lowest possible level.\n\r", ch);
     return;
   }
@@ -2645,16 +2680,16 @@ void do_advance(struct char_data *ch, char *argument, int cmd) {
     " body dissolves\n\rinto the elements of time and space itself.\n\rSudde"
     "nly a silent explosion of light snaps\n\ryou back to reality. You fee"
     "l slightly\n\rdifferent.",
-    FALSE, ch, 0, victim, TO_VICT
-  );
+    FALSE, ch, 0, victim, TO_VICT);
 
   if (GET_LEVEL(victim, lin_class) == 0) {
     do_start(victim);
   } else {
     if (GET_LEVEL(victim, lin_class) < IMPLEMENTOR) {
-      gain_exp_regardless(
-        victim, (titles[lin_class][GET_LEVEL(victim, lin_class) + adv].exp) - GET_EXP(victim), lin_class
-      );
+      gain_exp_regardless(victim,
+        (titles[lin_class][GET_LEVEL(victim, lin_class) + adv].exp) -
+          GET_EXP(victim),
+        lin_class);
 
       send_to_char("Character is now advanced.\n\r", ch);
     } else {
@@ -2664,15 +2699,15 @@ void do_advance(struct char_data *ch, char *argument, int cmd) {
   }
 }
 
-void do_wiznews(struct char_data *ch, char *argument, int cmd) {
+void do_wiznews(struct char_data* ch, char* argument, int cmd) {
   if ((cmd == 0) || (!ch->desc) || (ch->desc->connected))
     return;
 
   start_page_file(ch->desc, WIZNEWS_FILE, "No news for the immorts!\n\r");
 }
 
-void do_restore(struct char_data *ch, char *argument, int cmd) {
-  struct char_data *victim;
+void do_restore(struct char_data* ch, char* argument, int cmd) {
+  struct char_data* victim;
   char buf[100];
   int i;
 
@@ -2722,9 +2757,9 @@ void do_restore(struct char_data *ch, char *argument, int cmd) {
   }
 }
 
-do_noshout(struct char_data *ch, char *argument, int cmd) {
-  struct char_data *vict;
-  struct obj_data *dummy;
+do_noshout(struct char_data* ch, char* argument, int cmd) {
+  struct char_data* vict;
+  struct obj_data* dummy;
   char buf[MAX_INPUT_LENGTH];
 
   if (IS_NPC(ch))
@@ -2746,7 +2781,8 @@ do_noshout(struct char_data *ch, char *argument, int cmd) {
     send_to_char("Can't do that to a beast.\n\r", ch);
   else if (GetMaxLevel(vict) >= GetMaxLevel(ch))
     act("$E might object to that.. better not.", 0, ch, 0, vict, TO_CHAR);
-  else if (IS_SET(vict->specials.act, PLR_NOSHOUT) && (GetMaxLevel(ch) >= SAINT)) {
+  else if (IS_SET(vict->specials.act, PLR_NOSHOUT) &&
+           (GetMaxLevel(ch) >= SAINT)) {
     send_to_char("You can shout again.\n\r", vict);
     send_to_char("NOSHOUT removed.\n\r", ch);
     REMOVE_BIT(vict->specials.act, PLR_NOSHOUT);
@@ -2759,9 +2795,9 @@ do_noshout(struct char_data *ch, char *argument, int cmd) {
   }
 }
 
-void do_nohassle(struct char_data *ch, char *argument, int cmd) {
-  struct char_data *vict;
-  struct obj_data *dummy;
+void do_nohassle(struct char_data* ch, char* argument, int cmd) {
+  struct char_data* vict;
+  struct obj_data* dummy;
   char buf[MAX_INPUT_LENGTH];
 
   if (IS_NPC(ch))
@@ -2784,12 +2820,13 @@ void do_nohassle(struct char_data *ch, char *argument, int cmd) {
   else if (GetMaxLevel(vict) > GetMaxLevel(ch))
     act("$E might object to that.. better not.", 0, ch, 0, vict, TO_CHAR);
   else
-    send_to_char("The implementor won't let you set this on mortals...\n\r", ch);
+    send_to_char("The implementor won't let you set this on mortals...\n\r",
+      ch);
 }
 
-void do_stealth(struct char_data *ch, char *argument, int cmd) {
-  struct char_data *vict;
-  struct obj_data *dummy;
+void do_stealth(struct char_data* ch, char* argument, int cmd) {
+  struct char_data* vict;
+  struct obj_data* dummy;
   char buf[MAX_INPUT_LENGTH];
 
   if (IS_NPC(ch))
@@ -2812,19 +2849,21 @@ void do_stealth(struct char_data *ch, char *argument, int cmd) {
   else if (GetMaxLevel(vict) > GetMaxLevel(ch))
     act("$E might object to that.. better not.", 0, ch, 0, vict, TO_CHAR);
   else
-    send_to_char("The implementor won't let you set this on mortals...\n\r", ch);
+    send_to_char("The implementor won't let you set this on mortals...\n\r",
+      ch);
 }
 
-static print_room(int rnum, struct room_data *rp, struct string_block *sb) {
+static print_room(int rnum, struct room_data* rp, struct string_block* sb) {
   char buf[MAX_STRING_LENGTH];
   int dink, bits, scan;
-  extern char *room_bits[];
-  extern char *sector_types[];
+  extern char* room_bits[];
+  extern char* sector_types[];
 
   if ((rp->sector_type < 0) || (rp->sector_type > 9)) { /* non-optimal */
     rp->sector_type = 0;
   }
-  sprintf(buf, "%5d %4d %-12s %s", rp->number, rnum, sector_types[rp->sector_type], (rp->name ? rp->name : "Empty"));
+  sprintf(buf, "%5d %4d %-12s %s", rp->number, rnum,
+    sector_types[rp->sector_type], (rp->name ? rp->name : "Empty"));
   strcat(buf, " [");
 
   dink = 0;
@@ -2842,12 +2881,14 @@ static print_room(int rnum, struct room_data *rp, struct string_block *sb) {
   append_to_string_block(sb, buf);
 }
 
-static void print_death_room(int rnum, struct room_data *rp, struct string_block *sb) {
+static void print_death_room(int rnum, struct room_data* rp,
+  struct string_block* sb) {
   if (rp && rp->room_flags & DEATH)
     print_room(rnum, rp, sb);
 }
 
-static void print_private_room(int rnum, struct room_data *rp, struct string_block *sb) {
+static void print_private_room(int rnum, struct room_data* rp,
+  struct string_block* sb) {
   if (rp && rp->room_flags & PRIVATE)
     print_room(rnum, rp, sb);
 }
@@ -2856,31 +2897,35 @@ struct show_room_zone_struct {
     int blank;
     int startblank, lastblank;
     int bottom, top;
-    struct string_block *sb;
+    struct string_block* sb;
 };
 
-static void show_room_zone(int rnum, struct room_data *rp, struct show_room_zone_struct *srzs) {
+static void show_room_zone(int rnum, struct room_data* rp,
+  struct show_room_zone_struct* srzs) {
   char buf[MAX_STRING_LENGTH];
 
   if (!rp || rp->number < srzs->bottom || rp->number > srzs->top)
     return; /* optimize later*/
 
   if (srzs->blank && (srzs->lastblank + 1 != rp->number)) {
-    sprintf(buf, "rooms %d-%d are blank\n\r", srzs->startblank, srzs->lastblank);
+    sprintf(buf, "rooms %d-%d are blank\n\r", srzs->startblank,
+      srzs->lastblank);
     append_to_string_block(srzs->sb, buf);
     srzs->blank = 0;
   }
   if (rp->name == NULL) {
     sprintf(buf, "room %d's name is screwed!\n\r", rp->number);
     return;
-  } else if (1 == sscanf(rp->name, "%d", &srzs->lastblank) && srzs->lastblank == rp->number) {
+  } else if (1 == sscanf(rp->name, "%d", &srzs->lastblank) &&
+             srzs->lastblank == rp->number) {
     if (!srzs->blank) {
       srzs->startblank = srzs->lastblank;
       srzs->blank = 1;
     }
     return;
   } else if (srzs->blank) {
-    sprintf(buf, "rooms %d-%d are blank\n\r", srzs->startblank, srzs->lastblank);
+    sprintf(buf, "rooms %d-%d are blank\n\r", srzs->startblank,
+      srzs->lastblank);
     append_to_string_block(srzs->sb, buf);
     srzs->blank = 0;
   }
@@ -2888,10 +2933,10 @@ static void show_room_zone(int rnum, struct room_data *rp, struct show_room_zone
   print_room(rnum, rp, srzs->sb);
 }
 
-void do_show(struct char_data *ch, char *argument, int cmd) {
+void do_show(struct char_data* ch, char* argument, int cmd) {
   int zone;
   char buf[MAX_STRING_LENGTH], zonenum[MAX_INPUT_LENGTH];
-  struct index_data *which_i;
+  struct index_data* which_i;
   int bottom, top, topi;
   struct string_block sb;
 
@@ -2903,12 +2948,14 @@ void do_show(struct char_data *ch, char *argument, int cmd) {
   init_string_block(&sb);
 
   if (is_abbrev(buf, "zones")) {
-    struct zone_data *zd;
+    struct zone_data* zd;
     int bottom = 0;
-    append_to_string_block(&sb, "# Zone   name                                lifespan age     rooms     reset\n\r");
+    append_to_string_block(&sb,
+      "# Zone   name                                lifespan age     rooms     "
+      "reset\n\r");
 
     for (zone = 0; zone <= top_of_zone_table; zone++) {
-      char *mode;
+      char* mode;
 
       zd = zone_table + zone;
       switch (zd->reset_mode) {
@@ -2925,18 +2972,23 @@ void do_show(struct char_data *ch, char *argument, int cmd) {
           mode = "!unknown!";
           break;
       }
-      sprintf(buf, "%4d %-40s %4dm %4dm %6d-%-6d %s\n\r", zone, zd->name, zd->lifespan, zd->age, bottom, zd->top, mode);
+      sprintf(buf, "%4d %-40s %4dm %4dm %6d-%-6d %s\n\r", zone, zd->name,
+        zd->lifespan, zd->age, bottom, zd->top, mode);
       append_to_string_block(&sb, buf);
       bottom = zd->top + 1;
     }
 
-  } else if (is_abbrev(buf, "objects") && (which_i = obj_index, topi = top_of_objt) || is_abbrev(buf, "mobiles") && (which_i = mob_index, topi = top_of_mobt)) {
+  } else if (is_abbrev(buf, "objects") &&
+               (which_i = obj_index, topi = top_of_objt) ||
+             is_abbrev(buf, "mobiles") &&
+               (which_i = mob_index, topi = top_of_mobt)) {
     int objn;
-    struct index_data *oi;
+    struct index_data* oi;
 
     only_argument(argument, zonenum);
     zone = -1;
-    if (1 == sscanf(zonenum, "%i", &zone) && (zone < 0 || zone > top_of_zone_table)) {
+    if (1 == sscanf(zonenum, "%i", &zone) &&
+        (zone < 0 || zone > top_of_zone_table)) {
       append_to_string_block(&sb, "That is not a valid zone_number\n\r");
       return;
     }
@@ -2949,10 +3001,12 @@ void do_show(struct char_data *ch, char *argument, int cmd) {
     for (objn = 0; objn <= topi; objn++) {
       oi = which_i + objn;
 
-      if (zone >= 0 && (oi->virtual < bottom || oi->virtual > top) || zone < 0 && !isname(zonenum, oi->name))
+      if (zone >= 0 && (oi->virtual < bottom || oi->virtual > top) ||
+          zone < 0 && !isname(zonenum, oi->name))
         continue; /* optimize later*/
 
-      sprintf(buf, "%5d %4d %3d  %s\n\r", oi->virtual, objn, oi->number, oi->name);
+      sprintf(buf, "%5d %4d %3d  %s\n\r", oi->virtual, objn, oi->number,
+        oi->name);
       append_to_string_block(&sb, buf);
     }
 
@@ -2974,7 +3028,8 @@ void do_show(struct char_data *ch, char *argument, int cmd) {
       room_iterate(room_db, print_private_room, &sb);
 #endif
 
-    } else if (1 != sscanf(zonenum, "%i", &zone) || zone < 0 || zone > top_of_zone_table) {
+    } else if (1 != sscanf(zonenum, "%i", &zone) || zone < 0 ||
+               zone > top_of_zone_table) {
       append_to_string_block(&sb, "I need a zone number with this command\n\r");
 
     } else {
@@ -2992,21 +3047,22 @@ void do_show(struct char_data *ch, char *argument, int cmd) {
 #endif
 
       if (srzs.blank) {
-        sprintf(buf, "rooms %d-%d are blank\n\r", srzs.startblank, srzs.lastblank);
+        sprintf(buf, "rooms %d-%d are blank\n\r", srzs.startblank,
+          srzs.lastblank);
         append_to_string_block(&sb, buf);
         srzs.blank = 0;
       }
     }
   } else {
-    append_to_string_block(
-      &sb, "Usage:\n\r  show zones\n\r  show (objects|mobiles) (zone#|name)\n\r  show rooms (zone#|death|private)\n\r"
-    );
+    append_to_string_block(&sb,
+      "Usage:\n\r  show zones\n\r  show (objects|mobiles) (zone#|name)\n\r  "
+      "show rooms (zone#|death|private)\n\r");
   }
   page_string_block(&sb, ch);
   destroy_string_block(&sb);
 }
 
-void do_debug(struct char_data *ch, char *argument, int cmd) {
+void do_debug(struct char_data* ch, char* argument, int cmd) {
   char arg[MAX_INPUT_LENGTH];
   int i;
 
@@ -3027,7 +3083,7 @@ void do_debug(struct char_data *ch, char *argument, int cmd) {
   }
 }
 
-void do_invis(struct char_data *ch, char *argument, int cmd) {
+void do_invis(struct char_data* ch, char* argument, int cmd) {
   char buf[MAX_INPUT_LENGTH];
   int level;
 
@@ -3053,7 +3109,7 @@ void do_invis(struct char_data *ch, char *argument, int cmd) {
   }
 }
 
-void do_loglist(struct char_data *ch, char *arg, int cmd) {
+void do_loglist(struct char_data* ch, char* arg, int cmd) {
   char buf[256];
 
   if (IS_NPC(ch))
@@ -3069,11 +3125,11 @@ void do_loglist(struct char_data *ch, char *arg, int cmd) {
   start_page_file(ch->desc, buf, "No logs could be found.\n\r");
 }
 
-void do_checklog(struct char_data *ch, char *arg, int cmd) {
+void do_checklog(struct char_data* ch, char* arg, int cmd) {
   char string[256];
   char file[256];
   char buf[256];
-  char *s;
+  char* s;
   int i = 0;
 
   if (IS_NPC(ch))
@@ -3092,7 +3148,9 @@ void do_checklog(struct char_data *ch, char *arg, int cmd) {
   string[i] = '\0';
 
   if (!*arg) {
-    send_to_char("You need to terminate your search string with another quote mark.\n\r", ch);
+    send_to_char(
+      "You need to terminate your search string with another quote mark.\n\r",
+      ch);
     return;
   }
 
@@ -3101,24 +3159,31 @@ void do_checklog(struct char_data *ch, char *arg, int cmd) {
     return;
   }
 
-  s = ((file[0] == 'l') && (file[1] == 'o') && (file[2] == 'g')) ? (char *)file + 3 : file;
-  if (!safe_to_be_in_system(string) || !safe_to_be_in_system(s) || !safe_to_be_in_system(GET_NAME(ch))) {
-    send_to_char("Apostrophes, double quote marks, ` <-- thingies, and semicolons are not allowed.\n\r", ch);
+  s = ((file[0] == 'l') && (file[1] == 'o') && (file[2] == 'g'))
+        ? (char*)file + 3
+        : file;
+  if (!safe_to_be_in_system(string) || !safe_to_be_in_system(s) ||
+      !safe_to_be_in_system(GET_NAME(ch))) {
+    send_to_char(
+      "Apostrophes, double quote marks, ` <-- thingies, and semicolons are not "
+      "allowed.\n\r",
+      ch);
     return;
   }
 
-  sprintf(buf, "egrep \"%s\" oldlogs/log%s > %s.checklog", string, s, GET_NAME(ch));
+  sprintf(buf, "egrep \"%s\" oldlogs/log%s > %s.checklog", string, s,
+    GET_NAME(ch));
   system(buf);
 
   sprintf(buf, "%s.checklog", GET_NAME(ch));
   start_page_file(ch->desc, buf, "Your search-string was not found.\n\r");
 }
 
-void do_deathcheck(struct char_data *ch, char *arg, int cmd) {
+void do_deathcheck(struct char_data* ch, char* arg, int cmd) {
   char file[256];
   char player[256];
   char buf[256];
-  char *p;
+  char* p;
 
   if (IS_NPC(ch))
     return;

@@ -39,15 +39,16 @@
 **   DONT TOUCH DEFINES BELOW   */
 
 int scan_file(void);
-int has_mail(char *recipient);
-void store_mail(char *to, char *from, char *message_pointer);
-char *read_delete(char *recipient, char *recipient_formatted);
+int has_mail(char* recipient);
+void store_mail(char* to, char* from, char* message_pointer);
+char* read_delete(char* recipient, char* recipient_formatted);
 
 #define INT_SIZE sizeof(int)
 #define CHAR_SIZE sizeof(char)
 #define LONG_SIZE sizeof(long)
 
-#define HEADER_BLOCK_DATASIZE (BLOCK_SIZE - 1 - ((CHAR_SIZE * (NAME_SIZE + 1) * 2) + (3 * LONG_SIZE)))
+#define HEADER_BLOCK_DATASIZE \
+  (BLOCK_SIZE - 1 - ((CHAR_SIZE * (NAME_SIZE + 1) * 2) + (3 * LONG_SIZE)))
 /* size of the data part of a header block */
 
 #define DATA_BLOCK_DATASIZE (BLOCK_SIZE - LONG_SIZE - 1)
@@ -68,9 +69,9 @@ struct header_block_type_d {
     /* here because we have to be able to    */
     /* differentiate a data block from a     */
     /* header block when booting mail system */
-    char from[NAME_SIZE + 1]; /* who is this letter from?		 */
-    char to[NAME_SIZE + 1]; /* who is this letter to?		 */
-    long mail_time; /* when was the letter mailed?		 */
+    char from[NAME_SIZE + 1];            /* who is this letter from?		 */
+    char to[NAME_SIZE + 1];              /* who is this letter to?		 */
+    long mail_time;                      /* when was the letter mailed?		 */
     char txt[HEADER_BLOCK_DATASIZE + 1]; /* the actual text	*/
 };
 
@@ -85,15 +86,15 @@ typedef struct data_block_type_d data_block_type;
 
 struct position_list_type_d {
     long position;
-    struct position_list_type_d *next;
+    struct position_list_type_d* next;
 };
 
 typedef struct position_list_type_d position_list_type;
 
 struct mail_index_type_d {
-    char recipient[NAME_SIZE + 1]; /* who the mail is for */
-    position_list_type *list_start; /* list of mail positions    */
-    struct mail_index_type_d *next;
+    char recipient[NAME_SIZE + 1];  /* who the mail is for */
+    position_list_type* list_start; /* list of mail positions    */
+    struct mail_index_type_d* next;
 };
 
 typedef struct mail_index_type_d mail_index_type;

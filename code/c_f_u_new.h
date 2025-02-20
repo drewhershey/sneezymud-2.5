@@ -13,7 +13,7 @@ struct char_file_u_new {
     unsigned char class;
     byte level[12];
     time_t birth; /* Time of birth of character     */
-    int played; /* Number of secs played in total */
+    int played;   /* Number of secs played in total */
 
     int race;
     ubyte weight;
@@ -40,7 +40,7 @@ struct char_file_u_new {
     int alignment;
 
     time_t last_logon; /* Time (in secs) of last logon */
-    long act; /* ACT Flags                    */
+    long act;          /* ACT Flags                    */
 
     long affected_by;
 

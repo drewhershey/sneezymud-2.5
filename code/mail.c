@@ -19,31 +19,31 @@
 
 #define MAIL_FILE "mail"
 
-void postmaster_send_mail(struct char_data *ch, int cmd, char *arg);
-void postmaster_check_mail(struct char_data *ch, int cmd, char *arg);
-void postmaster_receive_mail(struct char_data *ch, int cmd, char *arg);
+void postmaster_send_mail(struct char_data* ch, int cmd, char* arg);
+void postmaster_check_mail(struct char_data* ch, int cmd, char* arg);
+void postmaster_receive_mail(struct char_data* ch, int cmd, char* arg);
 
-extern struct index_data *mob_index;
-extern struct obj_data *object_list;
+extern struct index_data* mob_index;
+extern struct obj_data* object_list;
 extern int no_mail;
-int find_name(char *name);
-struct char_data *FindMobInRoomWithFunction(int room, int (*func)());
+int find_name(char* name);
+struct char_data* FindMobInRoomWithFunction(int room, int (*func)());
 
-mail_index_type *mail_index = 0; /* list of recs in the mail file  */
-position_list_type *free_list = 0; /* list of free positions in file */
-long file_end_pos = 0; /* length of file */
+mail_index_type* mail_index = 0;   /* list of recs in the mail file  */
+position_list_type* free_list = 0; /* list of free positions in file */
+long file_end_pos = 0;             /* length of file */
 
 void push_free_list(long pos) {
-  position_list_type *new_pos;
+  position_list_type* new_pos;
 
-  new_pos = (position_list_type *)malloc(sizeof(position_list_type));
+  new_pos = (position_list_type*)malloc(sizeof(position_list_type));
   new_pos->position = pos;
   new_pos->next = free_list;
   free_list = new_pos;
 }
 
 long pop_free_list(void) {
-  position_list_type *old_pos;
+  position_list_type* old_pos;
   long return_value;
 
   if ((old_pos = free_list) != 0) {
@@ -55,22 +55,24 @@ long pop_free_list(void) {
     return file_end_pos;
 }
 
-mail_index_type *find_char_in_index(char *searchee) {
-  mail_index_type *temp_rec;
+mail_index_type* find_char_in_index(char* searchee) {
+  mail_index_type* temp_rec;
 
   if (!*searchee) {
     vlog("Mail system -- non fatal error #1.");
     return 0;
   }
 
-  for (temp_rec = mail_index; (temp_rec && str_cmp(temp_rec->recipient, searchee)); temp_rec = temp_rec->next)
+  for (temp_rec = mail_index;
+       (temp_rec && str_cmp(temp_rec->recipient, searchee));
+       temp_rec = temp_rec->next)
     ;
 
   return temp_rec;
 }
 
-void write_to_file(void *buf, int size, long filepos) {
-  FILE *mail_file;
+void write_to_file(void* buf, int size, long filepos) {
+  FILE* mail_file;
 
   mail_file = fopen(MAIL_FILE, "r+b");
 
@@ -90,8 +92,8 @@ void write_to_file(void *buf, int size, long filepos) {
   return;
 }
 
-void read_from_file(void *buf, int size, long filepos) {
-  FILE *mail_file;
+void read_from_file(void* buf, int size, long filepos) {
+  FILE* mail_file;
 
   mail_file = fopen(MAIL_FILE, "r+b");
 
@@ -107,11 +109,11 @@ void read_from_file(void *buf, int size, long filepos) {
   return;
 }
 
-void index_mail(char *raw_name_to_index, long pos) {
-  mail_index_type *new_index;
-  position_list_type *new_position;
+void index_mail(char* raw_name_to_index, long pos) {
+  mail_index_type* new_index;
+  position_list_type* new_position;
   char name_to_index[100]; /* I'm paranoid.  so sue me. */
-  char *src;
+  char* src;
   int i;
 
   if (!raw_name_to_index || !*raw_name_to_index) {
@@ -128,7 +130,7 @@ void index_mail(char *raw_name_to_index, long pos) {
 
   if (!(new_index = find_char_in_index(name_to_index))) {
     /* name not already in index.. add it */
-    new_index = (mail_index_type *)malloc(sizeof(mail_index_type));
+    new_index = (mail_index_type*)malloc(sizeof(mail_index_type));
     strncpy(new_index->recipient, name_to_index, NAME_SIZE);
     new_index->recipient[strlen(name_to_index)] = '\0';
     new_index->list_start = 0;
@@ -139,7 +141,7 @@ void index_mail(char *raw_name_to_index, long pos) {
   }
 
   /* now, add this position to front of position list */
-  new_position = (position_list_type *)malloc(sizeof(position_list_type));
+  new_position = (position_list_type*)malloc(sizeof(position_list_type));
   new_position->position = pos;
   new_position->next = new_index->list_start;
   new_index->list_start = new_position;
@@ -149,7 +151,7 @@ void index_mail(char *raw_name_to_index, long pos) {
 /* scan_file is called once during boot-up.  It scans through the mail file
    and indexes all entries currently in the mail file. */
 int scan_file(void) {
-  FILE *mail_file;
+  FILE* mail_file;
   header_block_type next_block;
   int total_messages = 0, block_num = 0;
   char buf[100];
@@ -185,7 +187,7 @@ int scan_file(void) {
 
 /* HAS_MAIL */
 /* a simple little function which tells you if the guy has mail or not */
-int has_mail(char *recipient) {
+int has_mail(char* recipient) {
   if (find_char_in_index(recipient))
     return 1;
   return 0;
@@ -196,12 +198,12 @@ int has_mail(char *recipient) {
    who the mail is to (name), who it's from (name), and a pointer to the
    actual message text.			*/
 
-void store_mail(char *to, char *from, char *message_pointer) {
+void store_mail(char* to, char* from, char* message_pointer) {
   header_block_type header;
   data_block_type data;
   long last_address, target_address;
-  char *msg_txt = message_pointer;
-  char *tmp;
+  char* msg_txt = message_pointer;
+  char* tmp;
   int bytes_written = 0;
   int total_length = strlen(message_pointer);
 
@@ -222,10 +224,11 @@ void store_mail(char *to, char *from, char *message_pointer) {
     if (isupper(*tmp))
       *tmp = tolower(*tmp);
   header.mail_time = time(0);
-  header.txt[HEADER_BLOCK_DATASIZE] = header.from[NAME_SIZE] = header.to[NAME_SIZE] = '\0';
+  header.txt[HEADER_BLOCK_DATASIZE] = header.from[NAME_SIZE] =
+    header.to[NAME_SIZE] = '\0';
 
   target_address = pop_free_list(); /* find next free block */
-  index_mail(to, target_address); /* add it to mail index in memory */
+  index_mail(to, target_address);   /* add it to mail index in memory */
   write_to_file(&header, BLOCK_SIZE, target_address);
 
   if (strlen(msg_txt) <= HEADER_BLOCK_DATASIZE)
@@ -288,7 +291,7 @@ void store_mail(char *to, char *from, char *message_pointer) {
 you're retrieving.  It returns to you a char pointer to the message text.
 The mail is then discarded from the file and the mail index. */
 
-char *read_delete(char *recipient, char *recipient_formatted)
+char* read_delete(char* recipient, char* recipient_formatted)
 /* recipient is the name as it appears in the index.
    recipient_formatted is the name as it should appear on the mail
    header (i.e. the text handed to the player) */
@@ -296,7 +299,7 @@ char *read_delete(char *recipient, char *recipient_formatted)
   header_block_type header;
   data_block_type data;
   mail_index_type *mail_pointer, *prev_mail;
-  position_list_type *position_pointer;
+  position_list_type* position_pointer;
   long mail_address, following_block;
   char *message, *tmstr, buf[200];
   size_t string_size;
@@ -325,7 +328,8 @@ char *read_delete(char *recipient, char *recipient_formatted)
       free(mail_pointer);
     } else {
       /* find entry before the one we're going to del */
-      for (prev_mail = mail_index; prev_mail->next != mail_pointer; prev_mail = prev_mail->next)
+      for (prev_mail = mail_index; prev_mail->next != mail_pointer;
+           prev_mail = prev_mail->next)
         ;
       prev_mail->next = mail_pointer->next;
       free(mail_pointer);
@@ -352,17 +356,15 @@ char *read_delete(char *recipient, char *recipient_formatted)
   tmstr = asctime(localtime(&header.mail_time));
   *(tmstr + strlen(tmstr) - 1) = '\0';
 
-  sprintf(
-    buf,
+  sprintf(buf,
     " * * * * SneezyMUD Mail System * * * *\n\r"
     "Date: %s\n\r"
     "  To: %s\n\r"
     "From: %s\n\r\n\r",
-    tmstr, recipient_formatted, header.from
-  );
+    tmstr, recipient_formatted, header.from);
 
   string_size = (CHAR_SIZE * (strlen(buf) + strlen(header.txt) + 1));
-  message = (char *)malloc(string_size);
+  message = (char*)malloc(string_size);
   strcpy(message, buf);
   message[strlen(buf)] = '\0';
   strcat(message, header.txt);
@@ -378,7 +380,7 @@ char *read_delete(char *recipient, char *recipient_formatted)
     read_from_file(&data, BLOCK_SIZE, following_block);
 
     string_size = (CHAR_SIZE * (strlen(message) + strlen(data.txt) + 1));
-    message = (char *)realloc(message, string_size);
+    message = (char*)realloc(message, string_size);
     strcat(message, data.txt);
     message[string_size - 1] = '\0';
     mail_address = following_block;
@@ -396,7 +398,7 @@ char *read_delete(char *recipient, char *recipient_formatted)
 ** routines.  Written by Rasmussen (jelson@server.cs.jhu.edu) **
 **************************************************************/
 
-int postmaster(struct char_data *ch, int cmd, char *arg) {
+int postmaster(struct char_data* ch, int cmd, char* arg) {
   if (!ch->desc)
     return 0; /* so mobs don't get caught here */
 
@@ -419,17 +421,18 @@ int postmaster(struct char_data *ch, int cmd, char *arg) {
   }
 }
 
-int mail_ok(struct char_data *ch) {
+int mail_ok(struct char_data* ch) {
   if (no_mail) {
-    send_to_char("Sorry, the mail system is having technical difficulties.\n\r", ch);
+    send_to_char("Sorry, the mail system is having technical difficulties.\n\r",
+      ch);
     return 0;
   }
 
   return 1;
 }
 
-void postmaster_send_mail(struct char_data *ch, int cmd, char *arg) {
-  struct char_data *mailman;
+void postmaster_send_mail(struct char_data* ch, int cmd, char* arg) {
+  struct char_data* mailman;
   char buf[200], recipient[100], *tmp;
 
   mailman = FindMobInRoomWithFunction(ch->in_room, postmaster);
@@ -438,23 +441,23 @@ void postmaster_send_mail(struct char_data *ch, int cmd, char *arg) {
     return;
 
   if (GetMaxLevel(ch) < MIN_MAIL_LEVEL) {
-    sprintf(buf, "$n tells you, 'Sorry, you have to be level %d to send mail!'", MIN_MAIL_LEVEL);
+    sprintf(buf, "$n tells you, 'Sorry, you have to be level %d to send mail!'",
+      MIN_MAIL_LEVEL);
     act(buf, FALSE, mailman, 0, ch, TO_VICT);
     return;
   }
 
   if (!*arg) { /* you'll get no argument from me! */
-    act("$n tells you, 'You need to specify an addressee!'", FALSE, mailman, 0, ch, TO_VICT);
+    act("$n tells you, 'You need to specify an addressee!'", FALSE, mailman, 0,
+      ch, TO_VICT);
     return;
   }
 
   if (GET_GOLD(ch) < STAMP_PRICE) {
-    sprintf(
-      buf,
+    sprintf(buf,
       "$n tells you, 'A stamp costs %d coins.'\n\r"
       "$n tells you, '...which I see you can't afford.'",
-      STAMP_PRICE
-    );
+      STAMP_PRICE);
     act(buf, FALSE, mailman, 0, ch, TO_VICT);
     return;
   }
@@ -462,7 +465,8 @@ void postmaster_send_mail(struct char_data *ch, int cmd, char *arg) {
   _parse_name(arg, recipient);
 
   if (find_name(recipient) < 0) {
-    act("$n tells you, 'No one by that name is registered here!'", FALSE, mailman, 0, ch, TO_VICT);
+    act("$n tells you, 'No one by that name is registered here!'", FALSE,
+      mailman, 0, ch, TO_VICT);
     return;
   }
 
@@ -471,24 +475,22 @@ void postmaster_send_mail(struct char_data *ch, int cmd, char *arg) {
       *tmp = tolower(*tmp);
 
   act("$n starts to write some mail.", TRUE, ch, 0, 0, TO_ROOM);
-  sprintf(
-    buf,
+  sprintf(buf,
     "$n tells you, 'I'll take %d coins for the stamp.'\n\r"
     "$n tells you, 'Write your message, use @ when done.'",
-    STAMP_PRICE
-  );
+    STAMP_PRICE);
   act(buf, FALSE, mailman, 0, ch, TO_VICT);
   GET_GOLD(ch) -= STAMP_PRICE;
   SET_BIT(ch->specials.act, PLR_MAILING);
 
   strcpy(ch->desc->name, recipient);
-  ch->desc->str = (char **)malloc(sizeof(char *));
+  ch->desc->str = (char**)malloc(sizeof(char*));
   *(ch->desc->str) = 0;
   ch->desc->max_str = MAX_MAIL_SIZE;
 }
 
-void postmaster_check_mail(struct char_data *ch, int cmd, char *arg) {
-  struct char_data *mailman;
+void postmaster_check_mail(struct char_data* ch, int cmd, char* arg) {
+  struct char_data* mailman;
   char buf[200], recipient[100], *tmp;
 
   mailman = FindMobInRoomWithFunction(ch->in_room, postmaster);
@@ -509,10 +511,10 @@ void postmaster_check_mail(struct char_data *ch, int cmd, char *arg) {
   act(buf, FALSE, mailman, 0, ch, TO_VICT);
 }
 
-void postmaster_receive_mail(struct char_data *ch, int cmd, char *arg) {
-  struct char_data *mailman;
+void postmaster_receive_mail(struct char_data* ch, int cmd, char* arg) {
+  struct char_data* mailman;
   char buf[200], recipient[100], *tmp;
-  struct obj_data *tmp_obj;
+  struct obj_data* tmp_obj;
 
   mailman = FindMobInRoomWithFunction(ch->in_room, postmaster);
 
@@ -548,7 +550,8 @@ void postmaster_receive_mail(struct char_data *ch, int cmd, char *arg) {
     tmp_obj->action_description = read_delete(recipient, GET_NAME(ch));
 
     if (!tmp_obj->action_description)
-      tmp_obj->action_description = strdup("Mail system buggy, please report!!  Error #8.\n\r");
+      tmp_obj->action_description =
+        strdup("Mail system buggy, please report!!  Error #8.\n\r");
 
     tmp_obj->next = object_list;
     object_list = tmp_obj;

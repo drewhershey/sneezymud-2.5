@@ -17,39 +17,46 @@
 #include "utils.h"
 
 struct oset_field_data {
-    char *set[4];
-    char *description[4];
+    char* set[4];
+    char* description[4];
 };
 
 struct oset_field_data oset_field[25] = {
   {{"", "", "", ""}, {"", "", "", ""}},
-  {{"duration", "", "", ""}, {"(duration of light.  -1 for permanent)", "", "", ""}},
-  {{"level", "spell1", "spell2", "spell3"}, {"(level of spells)", "(first spell)", "(second)", "(third)"}},
+  {{"duration", "", "", ""},
+    {"(duration of light.  -1 for permanent)", "", "", ""}},
+  {{"level", "spell1", "spell2", "spell3"},
+    {"(level of spells)", "(first spell)", "(second)", "(third)"}},
   {{"level", "max-charges", "charges", "spell"},
-   {"(level of spell)", "(maximum charges)", "(charges left)", "(spell)"}},
+    {"(level of spell)", "(maximum charges)", "(charges left)", "(spell)"}},
   {{"level", "max-charges", "charges", "spell"},
-   {"(level of spell)", "(maximum charges)", "(charges left)", "(spell)"}},
-  {{"damage", "wtype", "", ""}, {"(weapon damage, in the form: XdY)", "(weapon type)", "", ""}},
+    {"(level of spell)", "(maximum charges)", "(charges left)", "(spell)"}},
+  {{"damage", "wtype", "", ""},
+    {"(weapon damage, in the form: XdY)", "(weapon type)", "", ""}},
   {{"", "", "", ""}, {"", "", "", ""}},
   {{"", "", "", ""}, {"", "", "", ""}},
   {{"", "", "", ""}, {"", "", "", ""}},
   {{"points", "", "", ""}, {"(armor points)", "", "", ""}},
-  {{"level", "spell1", "spell2", "spell3"}, {"(level of spells)", "(first spell)", "(second)", "(third)"}},
+  {{"level", "spell1", "spell2", "spell3"},
+    {"(level of spells)", "(first spell)", "(second)", "(third)"}},
   {{"", "", "", ""}, {"", "", "", ""}},
   {{"", "", "", ""}, {"", "", "", ""}},
   {{"", "", "", ""}, {"", "", "", ""}},
   {{"", "", "", ""}, {"", "", "", ""}},
-  {{"capacity", "flags", "key", ""}, {"(container's capacity)", "(container flags)", "(opening key)", ""}},
+  {{"capacity", "flags", "key", ""},
+    {"(container's capacity)", "(container flags)", "(opening key)", ""}},
   {{"", "", "", ""}, {"", "", "", ""}},
-  {{"capacity", "amount", "liquid", "poisoned"}, {"(capacity)", "(amount left)", "(liqid)", "(poisoned?)"}},
+  {{"capacity", "amount", "liquid", "poisoned"},
+    {"(capacity)", "(amount left)", "(liqid)", "(poisoned?)"}},
   {{"", "", "", ""}, {"", "", "", ""}},
-  {{"amount", "poisoned", "", ""}, {"(number of hours restored)", "(poisoned?)", "", ""}},
+  {{"amount", "poisoned", "", ""},
+    {"(number of hours restored)", "(poisoned?)", "", ""}},
   {{"amount", "", "", ""}, {"(amount of money)", "", "", ""}},
   {{"", "", "", ""}, {"", "", "", ""}},
   {{"", "", "", ""}, {"", "", "", ""}},
 };
 
-void set_oedesc(struct char_data *ch, struct obj_data *obj, char *keywds) {
+void set_oedesc(struct char_data* ch, struct obj_data* obj, char* keywds) {
   struct extra_descr_data *tmp, *newdesc;
   char buf[256];
 
@@ -64,7 +71,7 @@ void set_oedesc(struct char_data *ch, struct obj_data *obj, char *keywds) {
   }
 
   CREATE(newdesc, struct extra_descr_data, 1);
-  newdesc->description = (char *)0;
+  newdesc->description = (char*)0;
 
   if (!tmp) {
     newdesc->next = obj->ex_description;
@@ -73,13 +80,13 @@ void set_oedesc(struct char_data *ch, struct obj_data *obj, char *keywds) {
   } else {
     send_to_char("The old description was: \n\r\n\r", ch);
     send_to_char(tmp->description, ch);
-    free((char *)newdesc);
+    free((char*)newdesc);
     newdesc = tmp;
   }
 
   if (newdesc->description) {
-    free((char *)newdesc->description);
-    newdesc->description = (char *)0;
+    free((char*)newdesc->description);
+    newdesc->description = (char*)0;
   }
 
   send_to_char("Enter a new description.  Terminate with a '~'\n\r", ch);
@@ -88,12 +95,13 @@ void set_oedesc(struct char_data *ch, struct obj_data *obj, char *keywds) {
   ch->desc->max_str = 1000;
 }
 
-void set_mtype(struct char_data *ch, struct obj_data *obj, char *arg) {
+void set_mtype(struct char_data* ch, struct obj_data* obj, char* arg) {
   char buf1[256], buf2[256], type[100];
   int i;
 
-  static char *obj_type[] = {"",       "finger", "neck",   "body",  "head",  "legs", "feet", "hands", "arms",
-                             "shield", "about",  "waiste", "wrist", "wield", "hold", "",     "\n"};
+  static char* obj_type[] = {"", "finger", "neck", "body", "head", "legs",
+    "feet", "hands", "arms", "shield", "about", "waiste", "wrist", "wield",
+    "hold", "", "\n"};
 
   if (!*arg) {
     send_to_char("The following types are available:\n\r\n\r", ch);
@@ -145,32 +153,25 @@ void set_mtype(struct char_data *ch, struct obj_data *obj, char *arg) {
   send_to_char("Done.\n\r", ch);
 }
 
-void set_oflags(struct char_data *ch, struct obj_data *obj, char *arg) {
+void set_oflags(struct char_data* ch, struct obj_data* obj, char* arg) {
   char buf1[256], buf2[256], num[100], type[100];
   int i, number;
 
-  static char *obj_type[] = {
-    "ITEM_GLOW            1",
-    "ITEM_HUM             2",
+  static char* obj_type[] = {"ITEM_GLOW            1", "ITEM_HUM             2",
     "ITEM_METAL           4  /* undefined...  */",
     "ITEM_MINERAL         8  /* undefined?    */",
-    "ITEM_ORGANIC        16  /* undefined?    */",
-    "ITEM_INVISIBLE      32",
-    "ITEM_MAGIC          64",
-    "ITEM_NODROP        128",
+    "ITEM_ORGANIC        16  /* undefined?    */", "ITEM_INVISIBLE      32",
+    "ITEM_MAGIC          64", "ITEM_NODROP        128",
     "ITEM_BLESS         256",
     "ITEM_ANTI_GOOD     512 /* not usable by good people    */",
     "ITEM_ANTI_EVIL    1024 /* not usable by evil people    */",
     "ITEM_ANTI_NEUTRAL 2048 /* not usable by neutral people */",
-    "ITEM_ANTI_CLERIC  4096",
-    "ITEM_ANTI_MAGE    8192",
-    "ITEM_ANTI_THIEF   16384",
-    "ITEM_ANTI_FIGHTER 32768",
+    "ITEM_ANTI_CLERIC  4096", "ITEM_ANTI_MAGE    8192",
+    "ITEM_ANTI_THIEF   16384", "ITEM_ANTI_FIGHTER 32768",
     "ITEM_BRITTLE      65536 /* weapons that break after 1 hit */",
     "ITEM_LEVEL10      131072 /*cant be worn by levels < 10 */",
     "ITEM_LEVEL20      262144 /*cant be worn by levels < 20 */",
-    "ITEM_LEVEL30      524288 /*Cant be worn by levels < 30 */",
-    "\n"};
+    "ITEM_LEVEL30      524288 /*Cant be worn by levels < 30 */", "\n"};
 
   if (!*arg) {
     send_to_char("The following types are available:\n\r\n\r", ch);
@@ -180,7 +181,8 @@ void set_oflags(struct char_data *ch, struct obj_data *obj, char *arg) {
     }
     return;
     send_to_char("Add up the numbers of the flags you want.\n\r", ch);
-    send_to_char("For example : an item that is anti_mage and glowing.\n\r", ch);
+    send_to_char("For example : an item that is anti_mage and glowing.\n\r",
+      ch);
     send_to_char("Would be 1+8192 or 8193\n\r", ch);
   }
 
@@ -197,13 +199,14 @@ void set_oflags(struct char_data *ch, struct obj_data *obj, char *arg) {
   send_to_char("Done.\n\r", ch);
 }
 
-void set_otype(struct char_data *ch, struct obj_data *obj, char *arg) {
+void set_otype(struct char_data* ch, struct obj_data* obj, char* arg) {
   char buf1[256], buf2[256];
   int type, i;
 
-  static char *obj_type[] = {"light",    "scroll", "wand", "staff", "weapon", "fireweapon", "missile",   "treasure",
-                             "armor",    "potion", "worn", "other", "trash",  "trap",       "container", "note",
-                             "drinkcon", "key",    "food", "money", "pen",    "boat",       "\n"};
+  static char* obj_type[] = {"light", "scroll", "wand", "staff", "weapon",
+    "fireweapon", "missile", "treasure", "armor", "potion", "worn", "other",
+    "trash", "trap", "container", "note", "drinkcon", "key", "food", "money",
+    "pen", "boat", "\n"};
 
   if (!*arg) {
     send_to_char("The following types are available:\n\r\n\r", ch);
@@ -228,52 +231,17 @@ void set_otype(struct char_data *ch, struct obj_data *obj, char *arg) {
   send_to_char("Done.\n\r", ch);
 }
 
-void set_oaffect(struct char_data *ch, struct obj_data *obj, char *arg, int a) {
+void set_oaffect(struct char_data* ch, struct obj_data* obj, char* arg, int a) {
   char buf1[256], buf2[256];
   int type, mod, i;
 
-  static char *oaffects[] = {
-    "strength",
-    "dexterity",
-    "intelligence",
-    "wisdom",
-    "constitution",
-    "sex",
-    "class",
-    "level",
-    "age",
-    "weight",
-    "height",
-    "mana points",
-    "hit points",
-    "movement_points",
-    "gold",
-    "exp",
-    "ac",
-    "hitroll",
-    "damage",
-    "saving_para",
-    "saving_rod",
-    "saving_petri",
-    "saving_breath",
-    "saving_spell",
-    "save all",
-    "immune",
-    "susceptibility",
-    "resistance",
-    "spell_affects",
-    "weapon_spells",
-    "eat spells",
-    "backstab",
-    "kick",
-    "sneak",
-    "hide",
-    "bash",
-    "pick",
-    "steal",
-    "track",
-    "hitndam",
-    "\n"};
+  static char* oaffects[] = {"strength", "dexterity", "intelligence", "wisdom",
+    "constitution", "sex", "class", "level", "age", "weight", "height",
+    "mana points", "hit points", "movement_points", "gold", "exp", "ac",
+    "hitroll", "damage", "saving_para", "saving_rod", "saving_petri",
+    "saving_breath", "saving_spell", "save all", "immune", "susceptibility",
+    "resistance", "spell_affects", "weapon_spells", "eat spells", "backstab",
+    "kick", "sneak", "hide", "bash", "pick", "steal", "track", "hitndam", "\n"};
 
   if (!*arg) {
     send_to_char("The following affects are available:\n\r\n\r", ch);
@@ -315,36 +283,28 @@ void set_oaffect(struct char_data *ch, struct obj_data *obj, char *arg, int a) {
   send_to_char("Done.\n\r", ch);
 }
 
-void do_oset(struct char_data *ch, char *argument, int cmd) {
+void do_oset(struct char_data* ch, char* argument, int cmd) {
   char arg1[256], arg2[256], arg3[256];
   char buf[256], buf2[256];
   int i, j;
   int val, dice, sides, dir;
   int value, spaces;
-  struct obj_data *obj;
-  struct extra_descr_data *tmpexd;
+  struct obj_data* obj;
+  struct extra_descr_data* tmpexd;
 
-  char *generic_field[] = {"name", "sdesc",  "ldesc", "desc",    "edesc",     "type", "aff1",
-                           "aff2", "weight", "cost",  "storage", "worn_type", "item", "\n"};
+  char* generic_field[] = {"name", "sdesc", "ldesc", "desc", "edesc", "type",
+    "aff1", "aff2", "weight", "cost", "storage", "worn_type", "item", "\n"};
 
-  char *generic_desc[] = {
-    "(\"sword long spiked\")",
-    "(\"a spiked long sword\")",
-    "(\"You see a spiked long sword here.\")",
-    "(object description)",
-    "(object extra description)",
-    "(object type)",
-    "(first affect)",
-    "(second affect)",
-    "(object weight)",
-    "(object cost)",
+  char* generic_desc[] = {"(\"sword long spiked\")",
+    "(\"a spiked long sword\")", "(\"You see a spiked long sword here.\")",
+    "(object description)", "(object extra description)", "(object type)",
+    "(first affect)", "(second affect)", "(object weight)", "(object cost)",
     "(object storage cost)",
     "(where it can be worn(take is included in all of them)",
-    "flags like ANTI_GOOD",
-    "\n"};
+    "flags like ANTI_GOOD", "\n"};
 
-  extern char *drinknames[];
-  extern char *spells[];
+  extern char* drinknames[];
+  extern char* spells[];
 
   argument = one_argument(argument, arg1);
   half_chop(argument, arg2, arg3);
@@ -370,10 +330,8 @@ void do_oset(struct char_data *ch, char *argument, int cmd) {
         sprintf(buf2, "");
         for (j = 0; j < spaces; j++)
           strcat(buf2, " ");
-        sprintf(
-          buf, "%s%s%s\n\r", oset_field[obj->obj_flags.type_flag].set[i], buf2,
-          oset_field[obj->obj_flags.type_flag].description[i]
-        );
+        sprintf(buf, "%s%s%s\n\r", oset_field[obj->obj_flags.type_flag].set[i],
+          buf2, oset_field[obj->obj_flags.type_flag].description[i]);
         send_to_char(buf, ch);
       }
     }
@@ -391,20 +349,20 @@ void do_oset(struct char_data *ch, char *argument, int cmd) {
           break;
 
       if (tmpexd) {
-        free((char *)tmpexd->keyword);
+        free((char*)tmpexd->keyword);
         tmpexd->keyword = strdup(arg3);
       }
-      free((char *)obj->name);
+      free((char*)obj->name);
       obj->name = strdup(arg3);
       send_to_char("Done.\n\r", ch);
       return;
     case 1: /* sdesc */
-      free((char *)obj->short_description);
+      free((char*)obj->short_description);
       obj->short_description = strdup(arg3);
       send_to_char("Done.\n\r", ch);
       return;
     case 2: /* ldesc */
-      free((char *)obj->description);
+      free((char*)obj->description);
       obj->description = strdup(arg3);
       send_to_char("Done.\n\r", ch);
       return;
@@ -457,10 +415,14 @@ void do_oset(struct char_data *ch, char *argument, int cmd) {
   }
 
   for (i = 0; i < 4; i++)
-    if (!strncasecmp(oset_field[obj->obj_flags.type_flag].set[i], arg2, strlen(arg2)))
+    if (!strncasecmp(oset_field[obj->obj_flags.type_flag].set[i], arg2,
+          strlen(arg2)))
       break;
   if (i == 4) {
-    send_to_char("That field is invalid.  Type OSET <object> with no arguments for more info.\n\r", ch);
+    send_to_char(
+      "That field is invalid.  Type OSET <object> with no arguments for more "
+      "info.\n\r",
+      ch);
     return;
   }
 
@@ -470,9 +432,10 @@ void do_oset(struct char_data *ch, char *argument, int cmd) {
         case 0: /* duration */
           if (!*arg3) {
             send_to_char(
-              "ITEM_LIGHT: DURATION\n\r\n\rThe light's duration is the amount of time (in game hours) that the\n\rlight will stay on.  Use a value of -1 for an infinite duration.\n\r",
-              ch
-            );
+              "ITEM_LIGHT: DURATION\n\r\n\rThe light's duration is the amount "
+              "of time (in game hours) that the\n\rlight will stay on.  Use a "
+              "value of -1 for an infinite duration.\n\r",
+              ch);
             return;
           }
           if ((atoi(arg3) > 100000) || (atoi(arg3) < -1)) {
@@ -483,7 +446,10 @@ void do_oset(struct char_data *ch, char *argument, int cmd) {
           send_to_char("Done.\n\r", ch);
           break;
         default:
-          send_to_char("That field is invalid.  Type OSET <object> with no arguments for more info.\n\r", ch);
+          send_to_char(
+            "That field is invalid.  Type OSET <object> with no arguments for "
+            "more info.\n\r",
+            ch);
           break;
       }
       return;
@@ -492,9 +458,10 @@ void do_oset(struct char_data *ch, char *argument, int cmd) {
         case 0: /* level */
           if (!*arg3) {
             send_to_char(
-              "ITEM_SCROLL: LEVEL\n\r\n\rThis value represents the level of the spells contained in the scroll.\n\rIt must be a number between 1 and 20.\n\r",
-              ch
-            );
+              "ITEM_SCROLL: LEVEL\n\r\n\rThis value represents the level of "
+              "the spells contained in the scroll.\n\rIt must be a number "
+              "between 1 and 20.\n\r",
+              ch);
             return;
           }
           if ((atoi(arg3) < 1) || (atoi(arg3) > 20)) {
@@ -509,9 +476,11 @@ void do_oset(struct char_data *ch, char *argument, int cmd) {
         case 3:
           if (!*arg3) {
             send_to_char(
-              "ITEM_SCROLL: SPELL\n\r\n\rThis value determines which spell is performed by reciting the scroll.\n\rYou need not use the spell number, but simply the name:\n\rOSET <scroll> SPELL# FIREBALL\n\r",
-              ch
-            );
+              "ITEM_SCROLL: SPELL\n\r\n\rThis value determines which spell is "
+              "performed by reciting the scroll.\n\rYou need not use the spell "
+              "number, but simply the name:\n\rOSET <scroll> SPELL# "
+              "FIREBALL\n\r",
+              ch);
             return;
           }
           val = (old_search_block(arg3, 0, strlen(arg3), spells, 0));
@@ -524,7 +493,10 @@ void do_oset(struct char_data *ch, char *argument, int cmd) {
           send_to_char("Done.\n\r", ch);
           break;
         default:
-          send_to_char("That field is invalid.  Type OSET <object> with no arguments for more info.\n\r", ch);
+          send_to_char(
+            "That field is invalid.  Type OSET <object> with no arguments for "
+            "more info.\n\r",
+            ch);
           break;
       }
       return;
@@ -533,9 +505,10 @@ void do_oset(struct char_data *ch, char *argument, int cmd) {
         case 0: /* level */
           if (!*arg3) {
             send_to_char(
-              "ITEM_WAND: LEVEL\n\r\n\rThis value represents the level of the spell contained in the wand.\n\rIt must be a number between 1 and 20.\n\r",
-              ch
-            );
+              "ITEM_WAND: LEVEL\n\r\n\rThis value represents the level of the "
+              "spell contained in the wand.\n\rIt must be a number between 1 "
+              "and 20.\n\r",
+              ch);
             return;
           }
           if ((atoi(arg3) < 1) || (atoi(arg3) > 20)) {
@@ -548,9 +521,14 @@ void do_oset(struct char_data *ch, char *argument, int cmd) {
         case 1: /* max-charges */
           if (!*arg3) {
             send_to_char(
-              "ITEM_WAND: MAX-CHARGES\n\r\n\rThe number of \"charges\" that a wand has is the amount of times that it\n\rcan be used.  In the future a \"recharge\" spell will probably be made, which\n\ris probably the reason that a \"max-charges\" value was created in the first\n\rplace.  Just set \"max-charges\" and \"charges\" to the same thing for now,\n\runless you have something weird in mind. ;-)\n\r",
-              ch
-            );
+              "ITEM_WAND: MAX-CHARGES\n\r\n\rThe number of \"charges\" that a "
+              "wand has is the amount of times that it\n\rcan be used.  In the "
+              "future a \"recharge\" spell will probably be made, which\n\ris "
+              "probably the reason that a \"max-charges\" value was created in "
+              "the first\n\rplace.  Just set \"max-charges\" and \"charges\" "
+              "to the same thing for now,\n\runless you have something weird "
+              "in mind. ;-)\n\r",
+              ch);
             return;
           }
           if ((atoi(arg3) < 0) || (atoi(arg3) > 100)) {
@@ -563,9 +541,14 @@ void do_oset(struct char_data *ch, char *argument, int cmd) {
         case 2: /* charges */
           if (!*arg3) {
             send_to_char(
-              "ITEM_WAND: CHARGES\n\r\n\rThe number of \"charges\" that a wand has is the amount of times that it\n\rcan be used.  In the future a \"recharge\" spell will probably be made, which\n\ris probably the reason that a \"max-charges\" value was created in the first\n\rplace.  Just set \"max-charges\" and \"charges\" to the same thing for now,\n\runless you have something weird in mind. ;-)\n\r",
-              ch
-            );
+              "ITEM_WAND: CHARGES\n\r\n\rThe number of \"charges\" that a wand "
+              "has is the amount of times that it\n\rcan be used.  In the "
+              "future a \"recharge\" spell will probably be made, which\n\ris "
+              "probably the reason that a \"max-charges\" value was created in "
+              "the first\n\rplace.  Just set \"max-charges\" and \"charges\" "
+              "to the same thing for now,\n\runless you have something weird "
+              "in mind. ;-)\n\r",
+              ch);
             return;
           }
           if ((atoi(arg3) < 0) || (atoi(arg3) > 100)) {
@@ -578,9 +561,10 @@ void do_oset(struct char_data *ch, char *argument, int cmd) {
         case 3: /* spell */
           if (!*arg3) {
             send_to_char(
-              "ITEM_WAND: SPELL\n\r\n\rThis value determines which spell is performed by using the wand.\n\rYou need not use the spell number, but simply the name:\n\rOSET <wand> SPELL# FIREBALL\n\r",
-              ch
-            );
+              "ITEM_WAND: SPELL\n\r\n\rThis value determines which spell is "
+              "performed by using the wand.\n\rYou need not use the spell "
+              "number, but simply the name:\n\rOSET <wand> SPELL# FIREBALL\n\r",
+              ch);
             return;
           }
           val = (old_search_block(arg3, 0, strlen(arg3), spells, 0));
@@ -593,7 +577,10 @@ void do_oset(struct char_data *ch, char *argument, int cmd) {
           send_to_char("Done.\n\r", ch);
           break;
         default:
-          send_to_char("That field is invalid.  Type OSET <object> with no arguments for more info.\n\r", ch);
+          send_to_char(
+            "That field is invalid.  Type OSET <object> with no arguments for "
+            "more info.\n\r",
+            ch);
           break;
       }
       return;
@@ -602,9 +589,10 @@ void do_oset(struct char_data *ch, char *argument, int cmd) {
         case 0: /* level */
           if (!*arg3) {
             send_to_char(
-              "ITEM_STAFF: LEVEL\n\r\n\rThis value represents the level of the spell contained in the staff.\n\rIt must be a number between 1 and 20.\n\r",
-              ch
-            );
+              "ITEM_STAFF: LEVEL\n\r\n\rThis value represents the level of the "
+              "spell contained in the staff.\n\rIt must be a number between 1 "
+              "and 20.\n\r",
+              ch);
             return;
           }
           if ((atoi(arg3) < 1) || (atoi(arg3) > 20)) {
@@ -617,9 +605,14 @@ void do_oset(struct char_data *ch, char *argument, int cmd) {
         case 1: /* max-charges */
           if (!*arg3) {
             send_to_char(
-              "ITEM_STAFF: MAX-CHARGES\n\r\n\rThe number of \"charges\" that a staff has is the amount of times that it\n\rcan be used.  In the future a \"recharge\" spell will probably be made, which\n\ris probably the reason that a \"max-charges\" value was created in the first\n\rplace.  Just set \"max-charges\" and \"charges\" to the same thing for now,\n\runless you have something weird in mind. ;-)\n\r",
-              ch
-            );
+              "ITEM_STAFF: MAX-CHARGES\n\r\n\rThe number of \"charges\" that a "
+              "staff has is the amount of times that it\n\rcan be used.  In "
+              "the future a \"recharge\" spell will probably be made, "
+              "which\n\ris probably the reason that a \"max-charges\" value "
+              "was created in the first\n\rplace.  Just set \"max-charges\" "
+              "and \"charges\" to the same thing for now,\n\runless you have "
+              "something weird in mind. ;-)\n\r",
+              ch);
             return;
           }
           if ((atoi(arg3) < 0) || (atoi(arg3) > 100)) {
@@ -632,9 +625,14 @@ void do_oset(struct char_data *ch, char *argument, int cmd) {
         case 2: /* charges */
           if (!*arg3) {
             send_to_char(
-              "ITEM_STAFF: CHARGES\n\r\n\rThe number of \"charges\" that a staff has is the amount of times that it\n\rcan be used.  In the future a \"recharge\" spell will probably be made, which\n\ris probably the reason that a \"max-charges\" value was created in the first\n\rplace.  Just set \"max-charges\" and \"charges\" to the same thing for now,\n\runless you have something weird in mind. ;-)\n\r",
-              ch
-            );
+              "ITEM_STAFF: CHARGES\n\r\n\rThe number of \"charges\" that a "
+              "staff has is the amount of times that it\n\rcan be used.  In "
+              "the future a \"recharge\" spell will probably be made, "
+              "which\n\ris probably the reason that a \"max-charges\" value "
+              "was created in the first\n\rplace.  Just set \"max-charges\" "
+              "and \"charges\" to the same thing for now,\n\runless you have "
+              "something weird in mind. ;-)\n\r",
+              ch);
             return;
           }
           if ((atoi(arg3) < 0) || (atoi(arg3) > 100)) {
@@ -647,9 +645,11 @@ void do_oset(struct char_data *ch, char *argument, int cmd) {
         case 3: /* spell */
           if (!*arg3) {
             send_to_char(
-              "ITEM_STAFF: SPELL\n\r\n\rThis value determines which spell is performed by using the staff.\n\rYou need not use the spell number, but simply the name:\n\rOSET <staff> SPELL# FIREBALL\n\r",
-              ch
-            );
+              "ITEM_STAFF: SPELL\n\r\n\rThis value determines which spell is "
+              "performed by using the staff.\n\rYou need not use the spell "
+              "number, but simply the name:\n\rOSET <staff> SPELL# "
+              "FIREBALL\n\r",
+              ch);
             return;
           }
           val = (old_search_block(arg3, 0, strlen(arg3), spells, 0));
@@ -662,7 +662,10 @@ void do_oset(struct char_data *ch, char *argument, int cmd) {
           send_to_char("Done.\n\r", ch);
           break;
         default:
-          send_to_char("That field is invalid.  Type OSET <object> with no arguments for more info.\n\r", ch);
+          send_to_char(
+            "That field is invalid.  Type OSET <object> with no arguments for "
+            "more info.\n\r",
+            ch);
           break;
       }
       return;
@@ -671,9 +674,15 @@ void do_oset(struct char_data *ch, char *argument, int cmd) {
         case 0:
           if (!*arg3) {
             send_to_char(
-              "ITEM_WEAPON: DAMAGE\n\r\n\rWeapon damage *must* be given in the form \"XdY\", where X and Y are the\n\rtwo damage dice.  A die with Y sides is rolled X times, and added up for the\n\rtotal damage.  Other bonuses such as character strength also apply to\n\rdamage.  Damage should range from around 1d4 at a minimum to 5d5 or so as a\n\rmaximum.  If you wish to create a weapon which is an exception to the rules,\n\rtalk to Brutius about it.\n\r",
-              ch
-            );
+              "ITEM_WEAPON: DAMAGE\n\r\n\rWeapon damage *must* be given in the "
+              "form \"XdY\", where X and Y are the\n\rtwo damage dice.  A die "
+              "with Y sides is rolled X times, and added up for the\n\rtotal "
+              "damage.  Other bonuses such as character strength also apply "
+              "to\n\rdamage.  Damage should range from around 1d4 at a minimum "
+              "to 5d5 or so as a\n\rmaximum.  If you wish to create a weapon "
+              "which is an exception to the rules,\n\rtalk to Brutius about "
+              "it.\n\r",
+              ch);
             return;
           }
           sscanf(arg3, "%dd%d", &dice, &sides);
@@ -688,9 +697,12 @@ void do_oset(struct char_data *ch, char *argument, int cmd) {
         case 1: /* wtype */
           if (!*arg3) {
             send_to_char(
-              "ITEM_WEAPON: WTYPE\n\r\n\rThe weapon type determines the attack type used by the weapon.\n\rYou may set it to (p)iercing, (s)lashing, (b)ludgeoning,\n\r(w)hipping, (c)lawwing, bit(i)ng, sti(n)ging\n\rc(r)ushing, c(l)eaving, s(t)abbing, smas(h)ing, s(m)iting",
-              ch
-            );
+              "ITEM_WEAPON: WTYPE\n\r\n\rThe weapon type determines the attack "
+              "type used by the weapon.\n\rYou may set it to (p)iercing, "
+              "(s)lashing, (b)ludgeoning,\n\r(w)hipping, (c)lawwing, bit(i)ng, "
+              "sti(n)ging\n\rc(r)ushing, c(l)eaving, s(t)abbing, smas(h)ing, "
+              "s(m)iting",
+              ch);
             return;
             if ((*arg3 == 'p') || (*arg3 == 'P'))
               obj->obj_flags.value[3] = TYPE_PIERCE;
@@ -722,7 +734,10 @@ void do_oset(struct char_data *ch, char *argument, int cmd) {
             }
             break;
             default:
-              send_to_char("That field is invalid.  Type OSET <object> with no arguments for more info.\n\r", ch);
+              send_to_char(
+                "That field is invalid.  Type OSET <object> with no arguments "
+                "for more info.\n\r",
+                ch);
               break;
           }
           return;
@@ -731,9 +746,16 @@ void do_oset(struct char_data *ch, char *argument, int cmd) {
             case 0: /* points */
               if (!*arg3) {
                 send_to_char(
-                  "ITEM_ARMOR: POINTS\n\r\n\rArmor points are directly proportional to the amount of damage absorbed\n\rby a blow from a weapon on that position.  If the armor points value is\n\rdivisible by ten, the armor will absord points / 10 damage points.  If it is\n\rin between multiples of ten, the amount will be semi-random.  For instance,\n\rsay a helmet of 44 AP is hit for 10 damage.  There will be a 40% chance of\n\rthe armor absorbing 5 damage points, and a 60% chance of it absorbing 4.\n\r",
-                  ch
-                );
+                  "ITEM_ARMOR: POINTS\n\r\n\rArmor points are directly "
+                  "proportional to the amount of damage absorbed\n\rby a blow "
+                  "from a weapon on that position.  If the armor points value "
+                  "is\n\rdivisible by ten, the armor will absord points / 10 "
+                  "damage points.  If it is\n\rin between multiples of ten, "
+                  "the amount will be semi-random.  For instance,\n\rsay a "
+                  "helmet of 44 AP is hit for 10 damage.  There will be a 40% "
+                  "chance of\n\rthe armor absorbing 5 damage points, and a 60% "
+                  "chance of it absorbing 4.\n\r",
+                  ch);
                 return;
               }
               if ((atoi(arg3) < 0) || (atoi(arg3) > 100)) {
@@ -744,7 +766,10 @@ void do_oset(struct char_data *ch, char *argument, int cmd) {
               send_to_char("Done.\n\r", ch);
               break;
             default:
-              send_to_char("That field is invalid.  Type OSET <object> with no arguments for more info.\n\r", ch);
+              send_to_char(
+                "That field is invalid.  Type OSET <object> with no arguments "
+                "for more info.\n\r",
+                ch);
               break;
           }
           return;
@@ -753,9 +778,10 @@ void do_oset(struct char_data *ch, char *argument, int cmd) {
             case 0: /* level */
               if (!*arg3) {
                 send_to_char(
-                  "ITEM_POTION: LEVEL\n\r\n\rThis value represents the level of the spells contained in the potion.\n\rIt must be a number between 1 and 20.\n\r",
-                  ch
-                );
+                  "ITEM_POTION: LEVEL\n\r\n\rThis value represents the level "
+                  "of the spells contained in the potion.\n\rIt must be a "
+                  "number between 1 and 20.\n\r",
+                  ch);
                 return;
               }
               if ((atoi(arg3) < 1) || (atoi(arg3) > 20)) {
@@ -770,9 +796,11 @@ void do_oset(struct char_data *ch, char *argument, int cmd) {
             case 3:
               if (!*arg3) {
                 send_to_char(
-                  "ITEM_POTION: SPELL\n\r\n\rThis value determines which spell is performed by quaffing the potion.\n\rYou need not use the spell number, but simply the name:\n\rOSET <potion> SPELL# FIREBALL\n\r",
-                  ch
-                );
+                  "ITEM_POTION: SPELL\n\r\n\rThis value determines which spell "
+                  "is performed by quaffing the potion.\n\rYou need not use "
+                  "the spell number, but simply the name:\n\rOSET <potion> "
+                  "SPELL# FIREBALL\n\r",
+                  ch);
                 return;
               }
               val = (old_search_block(arg3, 0, strlen(arg3), spells, 0));
@@ -785,7 +813,10 @@ void do_oset(struct char_data *ch, char *argument, int cmd) {
               send_to_char("Done.\n\r", ch);
               break;
             default:
-              send_to_char("That field is invalid.  Type OSET <object> with no arguments for more info.\n\r", ch);
+              send_to_char(
+                "That field is invalid.  Type OSET <object> with no arguments "
+                "for more info.\n\r",
+                ch);
               break;
           }
           return;
@@ -794,9 +825,9 @@ void do_oset(struct char_data *ch, char *argument, int cmd) {
             case 0: /* capacity */
               if (!*arg3) {
                 send_to_char(
-                  "ITEM_CONTAINER: CAPACITY\n\r\n\rThis value determines the maximum weight that the container can hold.\n\r",
-                  ch
-                );
+                  "ITEM_CONTAINER: CAPACITY\n\r\n\rThis value determines the "
+                  "maximum weight that the container can hold.\n\r",
+                  ch);
                 return;
               }
               if ((atoi(arg3) < 0) || (atoi(arg3) > 10000)) {
@@ -809,9 +840,9 @@ void do_oset(struct char_data *ch, char *argument, int cmd) {
             case 1: /* flags */
               if (!*arg3) {
                 send_to_char(
-                  "ITEM_CONTAINER: FLAGS\n\r\n\rYou may set the following flags: (c)losable, (p)ickproof, and (t)rapped.\n\r",
-                  ch
-                );
+                  "ITEM_CONTAINER: FLAGS\n\r\n\rYou may set the following "
+                  "flags: (c)losable, (p)ickproof, and (t)rapped.\n\r",
+                  ch);
                 return;
               }
               switch (*arg3) {
@@ -819,7 +850,8 @@ void do_oset(struct char_data *ch, char *argument, int cmd) {
                 case 'C':
                   if (IS_SET(obj->obj_flags.value[1], CONT_CLOSEABLE)) {
                     REMOVE_BIT(obj->obj_flags.value[1], CONT_CLOSEABLE);
-                    send_to_char("You have removed the 'closable' flag\n\r", ch);
+                    send_to_char("You have removed the 'closable' flag\n\r",
+                      ch);
                   } else {
                     SET_BIT(obj->obj_flags.value[1], CONT_CLOSEABLE);
                     send_to_char("You have set the 'closable' flag\n\r", ch);
@@ -829,7 +861,8 @@ void do_oset(struct char_data *ch, char *argument, int cmd) {
                 case 'P':
                   if (IS_SET(obj->obj_flags.value[1], CONT_PICKPROOF)) {
                     REMOVE_BIT(obj->obj_flags.value[1], CONT_PICKPROOF);
-                    send_to_char("You have removed the 'pickproof' flag\n\r", ch);
+                    send_to_char("You have removed the 'pickproof' flag\n\r",
+                      ch);
                   } else {
                     SET_BIT(obj->obj_flags.value[1], CONT_PICKPROOF);
                     send_to_char("You have set the 'pickproof' flag\n\r", ch);
@@ -840,16 +873,19 @@ void do_oset(struct char_data *ch, char *argument, int cmd) {
             case 2: /* key */
               if (!*arg3) {
                 send_to_char(
-                  "ITEM_CONTAINER: KEY\n\r\n\rThis value is the virtual object number for a key which can open the\n\rcontainer.\n\r",
-                  ch
-                );
+                  "ITEM_CONTAINER: KEY\n\r\n\rThis value is the virtual object "
+                  "number for a key which can open the\n\rcontainer.\n\r",
+                  ch);
                 return;
               }
               obj->obj_flags.value[2] = atoi(arg3);
               send_to_char("Done.\n\r", ch);
               break;
             default:
-              send_to_char("That field is invalid.  Type OSET <object> with no arguments for more info.\n\r", ch);
+              send_to_char(
+                "That field is invalid.  Type OSET <object> with no arguments "
+                "for more info.\n\r",
+                ch);
               break;
           }
         case ITEM_DRINKCON:
@@ -857,9 +893,9 @@ void do_oset(struct char_data *ch, char *argument, int cmd) {
             case 0: /* capacity */
               if (!*arg3) {
                 send_to_char(
-                  "ITEM_DRINKCON: CAPACITY\n\r\n\rThis value represents the amount of liquid that the drink container\n\rcan hold.\n\r",
-                  ch
-                );
+                  "ITEM_DRINKCON: CAPACITY\n\r\n\rThis value represents the "
+                  "amount of liquid that the drink container\n\rcan hold.\n\r",
+                  ch);
                 return;
               }
               if ((atoi(arg3) < 0) || (atoi(arg3) > 10000)) {
@@ -872,8 +908,9 @@ void do_oset(struct char_data *ch, char *argument, int cmd) {
             case 1:
               if (!*arg3) {
                 send_to_char(
-                  "ITEM_DRINKCON: AMOUNT\n\r\n\rThis is the amount of liquid left in the container.\n\r", ch
-                );
+                  "ITEM_DRINKCON: AMOUNT\n\r\n\rThis is the amount of liquid "
+                  "left in the container.\n\r",
+                  ch);
                 return;
               }
               if ((atoi(arg3) < 0) || (atoi(arg3) > 10000)) {
@@ -881,7 +918,10 @@ void do_oset(struct char_data *ch, char *argument, int cmd) {
                 return;
               }
               if (atoi(arg3) > obj->obj_flags.value[0]) {
-                send_to_char("The amount of liquid can't be more than the liquid capacity.\n\r", ch);
+                send_to_char(
+                  "The amount of liquid can't be more than the liquid "
+                  "capacity.\n\r",
+                  ch);
                 return;
               }
               obj->obj_flags.value[1] = atoi(arg3);
@@ -890,16 +930,20 @@ void do_oset(struct char_data *ch, char *argument, int cmd) {
             case 2:
               if (!*arg3) {
                 send_to_char(
-                  "ITEM_DRINKCON: TYPE\n\r\n\rThere are a variety of different drink types you can use.  Read HELP\n\rITEM_DRINKCON for a list of them all.\n\r",
-                  ch
-                );
+                  "ITEM_DRINKCON: TYPE\n\r\n\rThere are a variety of different "
+                  "drink types you can use.  Read HELP\n\rITEM_DRINKCON for a "
+                  "list of them all.\n\r",
+                  ch);
                 return;
               }
               for (i = 0; i < 16; i++)
                 if (!strncasecmp(arg3, drinknames[i], strlen(arg3)))
                   break;
               if (i == 16) {
-                send_to_char("There is no such drink.  See HELP ITEM_DRINKCON for a list.\n\r", ch);
+                send_to_char(
+                  "There is no such drink.  See HELP ITEM_DRINKCON for a "
+                  "list.\n\r",
+                  ch);
                 return;
               }
               obj->obj_flags.value[2] = i;
@@ -908,8 +952,9 @@ void do_oset(struct char_data *ch, char *argument, int cmd) {
             case 3:
               if (!*arg3) {
                 send_to_char(
-                  "ITEM_DRINKCON: POISONED\n\r\n\rSet this value to TRUE if you want the drink to be poisoned.\n\r", ch
-                );
+                  "ITEM_DRINKCON: POISONED\n\r\n\rSet this value to TRUE if "
+                  "you want the drink to be poisoned.\n\r",
+                  ch);
                 return;
               }
               if (!strncasecmp(arg3, "true", strlen(arg3))) {
@@ -919,10 +964,16 @@ void do_oset(struct char_data *ch, char *argument, int cmd) {
                 obj->obj_flags.value[3] = FALSE;
                 send_to_char("Done.\n\r", ch);
               } else
-                send_to_char("The poisoned setting can be set to either TRUE or FALSE.\n\r", ch);
+                send_to_char(
+                  "The poisoned setting can be set to either TRUE or "
+                  "FALSE.\n\r",
+                  ch);
               break;
             default:
-              send_to_char("That field is invalid.  Type OSET <object> with no arguments for more info.\n\r", ch);
+              send_to_char(
+                "That field is invalid.  Type OSET <object> with no arguments "
+                "for more info.\n\r",
+                ch);
               break;
           }
           return;
@@ -931,9 +982,9 @@ void do_oset(struct char_data *ch, char *argument, int cmd) {
             case 0:
               if (!*arg3) {
                 send_to_char(
-                  "ITEM_FOOD: AMOUNT\n\r\n\rThis value represents the number of game hours which the food will fill\n\ryou for.\n\r",
-                  ch
-                );
+                  "ITEM_FOOD: AMOUNT\n\r\n\rThis value represents the number "
+                  "of game hours which the food will fill\n\ryou for.\n\r",
+                  ch);
                 return;
               }
               if ((atoi(arg3) > 24) || (atoi(arg3) < 1)) {
@@ -946,8 +997,9 @@ void do_oset(struct char_data *ch, char *argument, int cmd) {
             case 1:
               if (!*arg3) {
                 send_to_char(
-                  "ITEM_FOOD: POISONED\n\r\n\rSet this value to TRUE if you want the drink to be poisoned.\n\r", ch
-                );
+                  "ITEM_FOOD: POISONED\n\r\n\rSet this value to TRUE if you "
+                  "want the drink to be poisoned.\n\r",
+                  ch);
                 return;
               }
               if (!strncasecmp(arg3, "true", strlen(arg3))) {
@@ -957,10 +1009,16 @@ void do_oset(struct char_data *ch, char *argument, int cmd) {
                 obj->obj_flags.value[3] = FALSE;
                 send_to_char("Done.\n\r", ch);
               } else
-                send_to_char("The poisoned setting can be set to either TRUE or FALSE.\n\r", ch);
+                send_to_char(
+                  "The poisoned setting can be set to either TRUE or "
+                  "FALSE.\n\r",
+                  ch);
               break;
             default:
-              send_to_char("That field is invalid.  Type OSET <object> with no arguments for more info.\n\r", ch);
+              send_to_char(
+                "That field is invalid.  Type OSET <object> with no arguments "
+                "for more info.\n\r",
+                ch);
               break;
           }
           return;
@@ -968,7 +1026,10 @@ void do_oset(struct char_data *ch, char *argument, int cmd) {
           switch (i) {
             case 0:
               if (!*arg3) {
-                send_to_char("ITEM_MONEY: AMOUNT\n\r\n\rThe amount of gold contained in a \"gold object.\"\n\r", ch);
+                send_to_char(
+                  "ITEM_MONEY: AMOUNT\n\r\n\rThe amount of gold contained in a "
+                  "\"gold object.\"\n\r",
+                  ch);
                 return;
               }
               if ((atoi(arg3) < 0) || (atoi(arg3) > 1000000)) {
@@ -979,7 +1040,10 @@ void do_oset(struct char_data *ch, char *argument, int cmd) {
               send_to_char("Done.\n\r", ch);
               break;
             default:
-              send_to_char("That field is invalid.  Type OSET <object> with no arguments for more info.\n\r", ch);
+              send_to_char(
+                "That field is invalid.  Type OSET <object> with no arguments "
+                "for more info.\n\r",
+                ch);
               break;
           }
           return;
