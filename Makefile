@@ -10,7 +10,7 @@ export UBSAN_OPTIONS := print_stacktrace=1:halt_on_error=1:print_summary=1
 
 # Project configuration
 NAME := sneezy
-CC := /usr/bin/gcc
+CC := /usr/bin/clang
 
 # Build options - override with 'make OPTION=value'
 GPROF ?= 0     # Enable gprof profiling
@@ -29,7 +29,7 @@ DEFINES += -DNODUPLICATES
 
 WARNINGS := -Wall -Wextra
 
-# Base flags 
+# Base flags
 CFLAGS := -std=c17 $(WARNINGS) $(DEFINES) # Use C17 standard
 CFLAGS += -O$(OLEVEL) # Optimization level
 CFLAGS += -MMD -MP # Generate dependency files to enable incremental builds
@@ -44,8 +44,8 @@ LDFLAGS += -fsanitize=address,undefined,leak # Link with sanitizers
 
 # Add gprof mapping, if enabled above
 ifeq ($(GPROF),1)
-    CFLAGS += -pg
-    LDFLAGS += -pg
+		CFLAGS += -pg
+		LDFLAGS += -pg
 endif
 
 # Directories
@@ -70,41 +70,41 @@ DEPS := $(OBJS:.o=.d)
 
 # Main build target
 $(NAME): $(OBJS)
-    @echo "Linking $@..."
-    @$(CC) $(OBJS) $(LDFLAGS) -o $@
-    @echo "Build complete: $@"
-    @file $@
-    @echo "Timestamp: $$(date)"
+		@echo "Linking $@..."
+		@$(CC) $(OBJS) $(LDFLAGS) -o $@
+		@echo "Build complete: $@"
+		@file $@
+		@echo "Timestamp: $$(date)"
 
 # Create build directories
 $(OBJDIR):
-    @mkdir -p $@
-    @echo "Created directory: $@"
+		@mkdir -p $@
+		@echo "Created directory: $@"
 
 # Object file compilation
 $(OBJDIR)/%.o: $(SRCDIR)/%.c | $(OBJDIR)
-    @echo "Compiling $<..."
-    $(CC) $(CFLAGS) -c $< -o $@
+		@echo "Compiling $<..."
+		$(CC) $(CFLAGS) -c $< -o $@
 
 # Format source files (requires clang-format)
 format:
-    @echo "Formatting source files..."
-    find $(SRCDIR) -name '*.[ch]' -exec clang-format -i {} +
+		@echo "Formatting source files..."
+		find $(SRCDIR) -name '*.[ch]' -exec clang-format -i {} +
 
 # Clean build output
 clean:
-    @echo "Cleaning build output..."
-    rm -rf $(OBJDIR) $(NAME)
-    @echo "Clean complete"
+		@echo "Cleaning build output..."
+		rm -rf $(OBJDIR) $(NAME)
+		@echo "Clean complete"
 
 # Help target
 help:
-    @echo "Available targets:"
-    @echo "  $(NAME)  - Build the project (default)"   
-    @echo "  clean    - Remove build output"
-    @echo "  format   - Format source files"
-    @echo "  help     - Show this help message"
-    @echo ""
-    @echo "Build options:"    
-    @echo "  make GPROF=0|1         - Toggle gprof profiling [0 | 1] (default: 0)"
-    @echo "  make OLEVEL=0|1|2|3    - Set optimization level [0 | 1 | 2 | 3 | g] (default: 0)"    
+		@echo "Available targets:"
+		@echo "	$(NAME)                  - Build the project (default)"
+		@echo "	clean                   - Remove build output"
+		@echo "	format                  - Format source files"
+		@echo "	help                    - Show this help message"
+		@echo ""
+		@echo "Build options:"
+		@echo "	make GPROF=0|1          - Toggle gprof profiling [0 | 1] (default: 0)"
+		@echo "	make OLEVEL=0|1|2|3|g   - Set optimization level [0 | 1 | 2 | 3 | g] (default: 0)"
