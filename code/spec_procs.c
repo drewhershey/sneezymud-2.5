@@ -4621,7 +4621,7 @@ int magneto(struct char_data* ch, int cmd, char* arg) {
         command_interpreter(ch, buf);
       } else if (neck) {
         do_remove(victim, neck->name, 0);
-        do_drop(victim, finger->name, 0);
+        do_drop(victim, neck->name, 0);
         sprintf(buf, "get all");
         command_interpreter(ch, buf);
         sprintf(buf, "wear all");
