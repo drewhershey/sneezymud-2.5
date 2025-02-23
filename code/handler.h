@@ -6,6 +6,10 @@
 #ifndef HANDLER_H
 #define HANDLER_H
 
+#include "structs.h"
+
+extern struct char_data* combat_list;
+
 /* handling the affected-structures */
 void affect_total(struct char_data* ch);
 void affect_modify(struct char_data* ch, byte loc, long mod, long bitv,
@@ -34,6 +38,7 @@ struct obj_data* get_obj_in_list(char* name, struct obj_data* list);
 struct obj_data* get_obj_in_list_num(int num, struct obj_data* list);
 struct obj_data* get_obj(char* name);
 struct obj_data* get_obj_num(int nr);
+struct obj_data* get_obj_vis_accessible(struct char_data* ch, char* name);
 
 void obj_to_room(struct obj_data* object, int room);
 void obj_from_room(struct obj_data* object);
@@ -76,5 +81,14 @@ int generic_find(char* arg, int bitvector, struct char_data* ch,
 #define FIND_OBJ_ROOM 8
 #define FIND_OBJ_WORLD 16
 #define FIND_OBJ_EQUIP 32
+
+void append_to_string_block(struct string_block* sb, char* str);
+void init_string_block(struct string_block* sb);
+void page_string_block(struct string_block* sb, struct char_data* ch);
+void destroy_string_block(struct string_block* sb);
+int page_file(struct descriptor_data* d, char* input);
+void page_string(struct descriptor_data* d, char* str, int keep_internal);
+int get_number(char** name);
+void update_object(struct obj_data* obj, int use);
 
 #endif

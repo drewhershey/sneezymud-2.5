@@ -4,7 +4,7 @@
  *  Copyright (C) 1990, 1991 - see 'license.doc' for complete information. *
  ************************************************************************* */
 
-#include "limits.h"
+#include "constants.h"
 #include "structs.h"
 #include "trap.h"
 
@@ -515,219 +515,7 @@ const struct QuestItem QuestList[4][IMMORTAL] = {
   },
 };
 
-const char* spell_wear_off_msg[] = {"RESERVED DB.C", "You feel less protected.",
-  "!Teleport!", "You feel less righteous.",
-  "You feel a cloak of blindness disolve.", "!Burning Hands!",
-  "!Call Lightning", "You feel more self-confident.", "!Chill Touch!",
-  "!Clone!", "!Color Spray!", "!Control Weather!", "!Create Food!",
-  "!Create Water!", "!Cure Blind!", "!Cure Critic!", "!Cure Light!",
-  "You feel better.", "You sense the red in your vision disappear.",
-  "The detect invisible wears off.", "The detect magic wears off.",
-  "The detect poison wears off.", "!Dispel Evil!", "!Earthquake!",
-  "!Enchant Weapon!", "!Energy Drain!", "!Fireball!", "!Harm!", "!Heal",
-  "You feel exposed.", "!Lightning Bolt!", "!Locate object!", "!Magic Missile!",
-  "You feel less sick.", "You feel less protected.", "!Remove Curse!",
-  "The white aura around your body fades.", "!Shocking Grasp!",
-  "You feel less tired.", "You don't feel as strong.", "!Summon!",
-  "!Ventriloquate!", "!Word of Recall!", "!Remove Poison!",
-  "You feel less aware of your suroundings.", "", /* NO MESSAGE FOR SNEAK*/
-  "!Hide!", "!Steal!", "!Backstab!", "!Pick Lock!", "!Kick!", "!Bash!",
-  "!Rescue!", "!Identify!",
-  "You feel disoriented as you lose your infravision.", "!cause light!",
-  "!cause crit!", "!flamestrike!", "You feel somewhat stronger now...",
-  "!dispel good!", "!knock!", "!know alignment!", "!animate dead!",
-  "You feel freedom of movement.", "!remove paralysis!", "!fear!",
-  "!acid blast!", "Your shield of force dissapates.",
-  "You feel a tightness at your throat. ",
-  "You feel heavier now, your flying ability is leaving you.",
-  "spell1, please report.", /* 70 */
-  "spell2, please report.", "spell3, please report.",
-  "Your magic shield dissolves.", "spell5, please report.",
-  "spell6, please report.", "spell7, please report.", "spell8, please report.",
-  "spell9, please report.", "spell10, please report.",
-  "spell11, please report.", /* 80  */
-  "The red glow around your body fades", "spell82, please report.",
-  "spell83, please report.", "spell84, please report.",
-  "spell85, please report.", "spell86, please report.",
-  "spell87, please report.", "spell88, please report.",
-  "spell89, please report.", "spell90, please report.", /* 90 */
-  "spell91, please report.", "Your skin returns to normal.",
-  "spell93, please report.", "Your clarity of vision dissapears",
-  "spell95, please report", "The pink glow around your body fades.", /* 96 */
-  "spell 97, please report.", "spell 98 please report.",
-  "spell 99 please report.", "spell 100 please report.",
-  "spell 101 please report.", "spell 102 please report.",
-  "spell 103 please report.",
-  "You feel heavier, your flying spell is leaving you.",
-  "spell 105 please report.", "", "You lose your tracking ability.",
-  "Your tracking ability fades away.", /* 108 */
-  "spell 109 please report.", "spell 110 please report.",
-  "spell 111 please report.", "You can speak again.", "", "", "", "", "", "",
-  "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",
-  "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",
-  "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",
-  "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",
-  "", "", "", "", "", "", "\n"};
-
-const char* spell_wear_off_soon_msg[] = {"", "", "", "", "", "", "",
-  "You are starting to gain back your will", "You feel somewhat stronger",
-  "!Clone!", "!Color Spray!", "!Control Weather!", "!Create Food!",
-  "!Create Water!", "!Cure Blind!", "!Cure Critic!", "!Cure Light!", "", "", "",
-  "", "", "!Dispel Evil!", "!Earthquake!", "!Enchant Weapon!", "!Energy Drain!",
-  "!Fireball!", "!Harm!", "!Heal", "", "!Lightning Bolt!", "!Locate object!",
-  "!Magic Missile!", "", "", "!Remove Curse!",
-  "The white aura around your body flickers slightly.", "!Shocking Grasp!",
-  "You feel more awake.", "You feel a bit weaker", "!Summon!",
-  "!Ventriloquate!", "!Word of Recall!", "!Remove Poison!", "",
-  "", /* NO MESSAGE FOR SNEAK*/
-  "!Hide!", "!Steal!", "!Backstab!", "!Pick Lock!", "!Kick!", "!Bash!",
-  "!Rescue!", "!Identify!", "Your infravision begins to fade", "!cause light!",
-  "!cause crit!", "!flamestrike!", "!dispel good!", "You feel a bit stronger",
-  "!dispel magic!", "!knock!", "!know alignment!", "!animate dead!", "",
-  "!remove paralysis!", "!fear!", "!acid blast!",
-  "Your throat feels tight, your water breathing spell is leaving you ",
-  "You feel heavier now, your flying ability is leaving you.",
-  "spell1, please report.", /* 70 */
-  "spell2, please report.", "spell3, please report.",
-  "Your shield spell starts to flicker", "spell5, please report.",
-  "spell6, please report.", "spell7, please report.", "spell8, please report.",
-  "spell9, please report.", "spell10, please report.",
-  "spell11, please report.", /* 80  */
-  "The red glow around your body flickers", "spell82, please report.",
-  "spell83, please report.", "spell84, please report.",
-  "spell85, please report.", "spell86, please report.",
-  "spell87, please report.", "spell88, please report.",
-  "spell89, please report.", "spell90, please report.", /* 90 */
-  "spell91, please report.", "", "spell93, please report.", "",
-  "spell95, please report", "The pink glow around your body flickers", /* 96 */
-  "spell 97, please report.", "spell 98 please report.",
-  "spell 99 please report.", "spell 100 please report.",
-  "spell 101 please report.", "spell 102 please report.",
-  "spell 103 please report.", "The magical shield around your body flickers",
-  "spell 105 please report.", "The webs seem a bit less strong.", "",
-  "", /* 108 */
-  "spell 109 please report.", "", "spell 111 please report.",
-  "spell 112 please report.", "", "", "", "", "", "", "", "", "", "", "", "",
-  "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",
-  "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",
-  "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",
-  "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",
-  "\n"};
-
-const char* spell_wear_off_room_msg[] = {"RESERVED DB.C",
-  "$n's mystic armor fades slowly away", "!Teleport!", "$n looks less blessed",
-  "$n blinks $s eyes.", "!Burning Hands!", "!Call Lightning",
-  "$n shivers and shakes", "$n seems a bit stronger", "!Clone!",
-  "!Color Spray!", "!Control Weather!", "!Create Food!", "!Create Water!",
-  "!Cure Blind!", "!Cure Critic!", "!Cure Light!", "$n looks better",
-  "$n blinks $s eyes, the reddish hue vanishes",
-  "$n blinks $s eyes, the yellowish hue vanishes",
-  "$n blinks $s eyes, the blueish hue vanishes",
-  "$n blinks $s eyes, the whiteish hue vanishes", "!Dispel Evil!",
-  "!Earthquake!", "!Enchant Weapon!", "!Energy Drain!", "!Fireball!", "!Harm!",
-  "!Heal", "$n slowly fades into existence", "!Lightning Bolt!",
-  "!Locate object!", "!Magic Missile!", "$n looks healthier",
-  "$n seems less holier-than-thou", "!Remove Curse!",
-  "The white aura around $n's body fades.", "!Shocking Grasp!",
-  "$n murmurs and shakes in $s sleep.", "$n looks weaker.", "!Summon!",
-  "!Ventriloquate!", "!Word of Recall!", "!Remove Poison!",
-  "$n stops looking around so much", "", /* NO MESSAGE FOR SNEAK*/
-  "!Hide!", "!Steal!", "!Backstab!", "!Pick Lock!", "!Kick!", "!Bash!",
-  "!Rescue!", "!Identify!",
-  "$n stumbles, and blinks $s eyes, the reddish hue fades", "!cause light!",
-  "!cause crit!", "!flamestrike!", "!dispel magic!", "$n looks stronger!",
-  "!dispel good!", "!knock!", "!know alignment!", "!animate dead!",
-  "$n jerks out of $s paralyzed state", "!remove paralysis!", "!fear!",
-  "!acid blast!", "$n frantically sucks for air.",
-  "The magical forces holding $n aloft vanish",
-  "spell1, please report.", /* 70 */
-  "spell2, please report.", "spell72, please report.",
-  "$n's magic shield fades away happily.", "spell74, please report.",
-  "spell6, please report.", "spell7, please report.", "spell8, please report.",
-  "spell9, please report.", "spell10, please report.",
-  "spell11, please report.", /* 80  */
-  "The red glow around $n's body fades", "spell82, please report.",
-  "spell83, please report.", "spell84, please report.",
-  "spell85, please report.", "spell86, please report.",
-  "spell87, please report.", "spell88, please report.",
-  "spell89, please report.", "spell90, please report.", /* 90 */
-  "spell91, please report.", "$n's skin loses its stoney appearance.",
-  "spell93, please report.",
-  "$n blinks rapidly, as the silvery hue fades from $s eyes",
-  "spell95, please report", "The pink glow around $n's body fades.", /* 96 */
-  "spell 97, please report.", "spell 98 please report.",
-  "spell 99 please report.", "spell 100 please report.",
-  "spell 101 please report.", "spell 102 please report.",
-  "spell 103 please report.",
-  "The magical shield protecting $n fades away sadly.",
-  "spell 105 please report.", "$n seems to be free of the webs that hold $m",
-  "$n looks confused.", "$n looks REALLY confused", /* 108 */
-  "spell 109 please report.", "", "spell 111 please report.",
-  "spell 112 please report.", "", "", "", "", "", "", "", "", "", "", "", "",
-  "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",
-  "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",
-  "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",
-  "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",
-  "\n"};
-
-const char* spell_wear_off_soon_room_msg[] = {"", "", "", "", "", "", "",
-  "$n seems more in control of $mself", "", "!Clone!", "!Color Spray!",
-  "!Control Weather!", "!Create Food!", "!Create Water!", "!Cure Blind!",
-  "!Cure Critic!", "!Cure Light!", "", "", "", "", "", "!Dispel Evil!",
-  "!Earthquake!", "!Enchant Weapon!", "!Energy Drain!", "!Fireball!", "!Harm!",
-  "!Heal", "", "!Lightning Bolt!", "!Locate object!", "!Magic Missile!", "", "",
-  "!Remove Curse!", "The white aura around $n's body flickers slightly.",
-  "!Shocking Grasp!", "$n seems a bit more awake", "$n seems a bit weaker",
-  "!Summon!", "!Ventriloquate!", "!Word of Recall!", "!Remove Poison!", "",
-  "", /* NO MESSAGE FOR SNEAK*/
-  "!Hide!", "!Steal!", "!Backstab!", "!Pick Lock!", "!Kick!", "!Bash!",
-  "!Rescue!", "!Identify!", "", "!cause light!", "!cause crit!",
-  "!flamestrike!", "!dispel good!",
-  "$n's eyes stop looking so red.  Must have used Visine", "!dispel magic!",
-  "!knock!", "!know alignment!", "!animate dead!", "", "!remove paralysis!",
-  "!fear!", "!acid blast!", "$n gasps for air for a moment or two",
-  "The magic force keeping $n aloft flickers slightly, it will vanish soon.",
-  "spell1, please report.", /* 70 */
-  "spell2, please report.", "spell3, please report.",
-  "$n's shield of force flickers slightly", "spell5, please report.",
-  "spell6, please report.", "spell7, please report.", "spell8, please report.",
-  "spell9, please report.", "spell10, please report.",
-  "spell11, please report.", /* 80  */
-  "The red glow around $n's body flickers", "spell82, please report.",
-  "spell83, please report.", "spell84, please report.",
-  "spell85, please report.", "spell86, please report.",
-  "spell87, please report.", "spell88, please report.",
-  "spell89, please report.", "spell90, please report.", /* 90 */
-  "spell91, please report.", "", "spell93, please report.", "",
-  "spell95, please report", "The pink glow around $n's body flickers", /* 96 */
-  "spell 97, please report.", "spell 98 please report.",
-  "spell 99 please report.", "spell 100 please report.",
-  "spell 101 please report.", "spell 102 please report.",
-  "spell 103 please report.", "$n's shield starts to fade away",
-  "spell 105 please report.",
-  "The webs surrounding $n seem to lose their grip a bit.", "", "", /* 108 */
-  "spell 109 please report.", "", "spell 111 please report.",
-  "spell 112 please report.", "", "", "", "", "", "", "", "", "", "", "", "",
-  "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",
-  "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",
-  "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",
-  "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",
-  "\n"};
-
 const int rev_dir[] = {2, 3, 0, 1, 5, 4};
-
-const int TrapDir[] = {TRAP_EFF_NORTH, TRAP_EFF_EAST, TRAP_EFF_SOUTH,
-  TRAP_EFF_WEST, TRAP_EFF_UP, TRAP_EFF_DOWN};
-
-const int corpse_volume[] = {
-  50000, /* 0 */
-  50000, 30000, 40000, 15000, 40000, 75000, 50000, 100000, 2000000,
-  50000,                                                                /* 10 */
-  25000, 2000, 3000, 1000000, 3000, 3000, 250000, 50000, 5000, 5000,    /* 20 */
-  30000, 4000, 25000, 500000, 5000, 40000, 40000, 40000, 40000, 15000,  /* 30 */
-  75000, 50000, 50000, 50000, 50000, 50000, 50000, 50000, 50000, 50000, /* 40 */
-  50000, 50000, 50000, 50000,                                           /* 44 */
-};
 
 const int vol_mult[] = {
   1,                                                          /* 0 */
@@ -744,112 +532,28 @@ const int vol_mult[] = {
   1 /* 165 */
 };
 
-const int movement_loss[] = {
-  1,  /* Inside     */
-  2,  /* City       */
-  2,  /* Field      */
-  3,  /* Forest     */
-  4,  /* Hills      */
-  6,  /* Mountains  */
-  8,  /* Swimming   */
-  10, /* Unswimable */
-  2,  /* Flying     */
-  20  /* Submarine  */
-};
+const char* const exits[] = {"North", "East ", "South", "West ", "Up   ",
+  "Down "};
 
-const char* exits[] = {"North", "East ", "South", "West ", "Up   ", "Down "};
+const char* const dirs[] = {"north", "east", "south", "west", "up", "down",
+  "\n"};
 
-const char* dirs[] = {"north", "east", "south", "west", "up", "down", "\n"};
-
-const char* ItemDamType[] = {"burned", "frozen", "electrified", "crushed",
+const char* const ItemDamType[] = {"burned", "frozen", "electrified", "crushed",
   "corroded"};
 
-const char* weekdays[7] = {"Sunday", "Monday", "Tuesday", "Wednesday",
-  "Thursday", "Friday", "Saturday"};
-
-const char* month_name[17] = {"Month of Winter", /* 0 */
-  "Month of the Winter Wolf", "Month of the Frost Giant",
-  "Month of the Old Forces", "Month of the Grand Struggle",
-  "Month of the Spring", "Month of Nature", "Month of Futility",
-  "Month of the Dragon", "Month of the Sun", "Month of the Heat",
-  "Month of the Battle", "Month of the Dark Shades", "Month of the Shadows",
-  "Month of the Long Shadows", "Month of the Ancient Darkness",
-  "Month of the Great Evil"};
-
-const int sharp[] = {0, 0, 0, 1, /* Slashing */
-  0, 0, 0, 0,                    /* Bludgeon */
-  0, 0, 0, 0};                   /* Pierce   */
-
-const char* where[] = {"<used as light>      ", "<worn on finger>     ",
-  "<worn on finger>     ", "<worn around neck>   ", "<worn around neck>   ",
-  "<worn on body>       ", "<worn on head>       ", "<worn on legs>       ",
-  "<worn on feet>       ", "<worn on hands>      ", "<worn on arms>       ",
-  "<worn as shield>     ", "<worn about body>    ", "<worn about waist>   ",
-  "<worn around wrist>  ", "<worn around wrist>  ", "<wielded>            ",
-  "<held>               ", "<worn as earring>    ", "<worn on face>       ",
-  "<held as radio>      "};
-
-const char* drinks[] = {"water", "beer", "wine", "ale", "dark ale", "whisky",
-  "lemonade", "firebreather", "local speciality", "slime mold juice", "milk",
-  "tea", "coffee", "blood", "salt water", "coca cola", "\n"};
-
-const char* drinknames[] = {"water", "beer", "wine", "ale", "ale", "whisky",
-  "lemonade", "firebreather", "local", "juice", "milk", "tea", "coffee",
-  "blood", "salt", "cola", "\n"};
-
-const int RacialMax[][4] = {
-
-  {(LOW_IMMORTAL - 1), (LOW_IMMORTAL - 1), (LOW_IMMORTAL - 1),
-    (LOW_IMMORTAL - 1)},
-  {(LOW_IMMORTAL - 1), (LOW_IMMORTAL - 1), (LOW_IMMORTAL - 1),
-    (LOW_IMMORTAL - 1)},
-  {(LOW_IMMORTAL - 1), (LOW_IMMORTAL - 1), (LOW_IMMORTAL - 1),
-    (LOW_IMMORTAL - 1)},
-  {(LOW_IMMORTAL - 1), (LOW_IMMORTAL - 1), (LOW_IMMORTAL - 1),
-    (LOW_IMMORTAL - 1)},
-  {(LOW_IMMORTAL - 1), (LOW_IMMORTAL - 1), (LOW_IMMORTAL - 1),
-    (LOW_IMMORTAL - 1)},
-  {(LOW_IMMORTAL - 1), (LOW_IMMORTAL - 1), (LOW_IMMORTAL - 1),
-    (LOW_IMMORTAL - 1)}
-
+const int sharp[] = {
+  0, 0, 0, 1, /* Slashing */
+  0, 0, 0, 0, /* Bludgeon */
+  0, 0, 0, 0, /* Pierce   */
 };
 
-/*  fire cold elec blow acid */
+const char* const drinks[] = {"water", "beer", "wine", "ale", "dark ale",
+  "whisky", "lemonade", "firebreather", "local speciality", "slime mold juice",
+  "milk", "tea", "coffee", "blood", "salt water", "coca cola", "\n"};
 
-int ItemSaveThrows[22][5] = {{15, 2, 10, 10, 10}, {19, 2, 16, 2, 7},
-  {11, 2, 2, 13, 9}, {7, 2, 2, 10, 8}, {6, 2, 2, 7, 13},
-  {10, 10, 10, 10, 10},                                 /* not defined */
-  {10, 10, 10, 10, 10},                                 /* not defined */
-  {6, 2, 2, 7, 13},                                     /* treasure */
-  {6, 2, 2, 7, 13},                                     /* armor */
-  {7, 6, 2, 20, 5},                                     /* potion */
-  {10, 10, 10, 10, 10},                                 /* not defined */
-  {10, 10, 10, 10, 10},                                 /* not defined */
-  {10, 10, 10, 10, 10},                                 /* not defined */
-  {10, 10, 10, 10, 10},                                 /* not defined */
-  {19, 2, 2, 16, 7}, {7, 6, 2, 20, 5},                  /* drinkcon */
-  {6, 2, 2, 7, 13}, {6, 3, 2, 3, 10}, {6, 2, 2, 7, 13}, /* treasure */
-  {11, 2, 2, 13, 9}, {7, 2, 2, 10, 8}};
-
-const int drink_aff[][3] = {{0, 1, 10}, /* Water    */
-  {3, 2, 5},                            /* beer     */
-  {5, 2, 5},                            /* wine     */
-  {2, 2, 5},                            /* ale      */
-  {1, 2, 5},                            /* ale      */
-  {6, 1, 4},                            /* Whiskey  */
-  {0, 1, 8},                            /* lemonade */
-  {10, 0, 0},                           /* firebr   */
-  {3, 3, 3},                            /* local    */
-  {0, 4, -8},                           /* juice    */
-  {0, 3, 6}, {0, 1, 6}, {0, 1, 6}, {0, 2, -1}, {0, 1, -2}, {0, 1, 5},
-  {0, 0, 0}};
-
-const char* color_liquid[] = {"clear", "brown", "clear", "brown", "dark",
-  "golden", "red", "green", "clear", "light green", "white", "brown", "black",
-  "red", "clear", "black", "\n"};
-
-const char* fullness[] = {"less than half ", "about half ", "more than half ",
-  ""};
+const char* const drinknames[] = {"water", "beer", "wine", "ale", "ale",
+  "whisky", "lemonade", "firebreather", "local", "juice", "milk", "tea",
+  "coffee", "blood", "salt", "cola", "\n"};
 
 const struct title_type titles[8][ABS_MAX_LVL] = {
   {
@@ -1111,18 +815,15 @@ const struct title_type titles[8][ABS_MAX_LVL] = {
 
 };
 
-const char* RaceName[] = {"Human", "Human", "Elven", "Dwarven", "Hobbit",
+const char* const RaceName[] = {"Human", "Human", "Elven", "Dwarven", "Hobbit",
   "Gnome", "Ogre", "Mysterion", "Were", "Dragon", "Undead", "Orcan",
   "Insectoid", "Arachnoid", "Dinosaur", "Icthyiod", "Avian", "Giant",
   "Carnivorous", "Parasitic", "Slime", "Demon", "Snake", "Herbivorous", "Tree",
   "Vegan", "Elemental", "Planar", "Devil", "Ghostly", "Goblin", "Troll",
   "Vegan", "Mindflayer", "Primate", "Enfan", "Golem", "Skexie", "uncertain",
-  "unidentifiable", "Patryn",
-  "Labrynthian"
-  "Sartan",
-  "Tytan", "\n"};
+  "unidentifiable", "Patryn", "Labrynthian", "Sartan", "Tytan", "\n"};
 
-const char* material_types[] = {
+const char* const material_types[] = {
   "Undefined",
   "Paper",
   "Cloth",
@@ -1291,120 +992,33 @@ const char* material_types[] = {
   "Titanium",
 };
 
-const char* item_types[] = {"UNDEFINED", "LIGHT", "SCROLL", "WAND", "STAFF",
-  "WEAPON", "FIRE WEAPON", "MISSILE", "TREASURE", "ARMOR", "POTION", "WORN",
-  "OTHER", "TRASH", "TRAP", "CONTAINER", "NOTE", "LIQUID CONTAINER", "KEY",
-  "FOOD", "MONEY", "PEN", "BOAT", "AUDIO", "BOARD", "BOW", "ARROW", "\n"};
+const char* const item_types[] = {"UNDEFINED", "LIGHT", "SCROLL", "WAND",
+  "STAFF", "WEAPON", "FIRE WEAPON", "MISSILE", "TREASURE", "ARMOR", "POTION",
+  "WORN", "OTHER", "TRASH", "TRAP", "CONTAINER", "NOTE", "LIQUID CONTAINER",
+  "KEY", "FOOD", "MONEY", "PEN", "BOAT", "AUDIO", "BOARD", "BOW", "ARROW",
+  "\n"};
 
-const char* wear_bits[] = {"TAKE", "FINGER", "NECK", "BODY", "HEAD", "LEGS",
-  "FEET", "HANDS", "ARMS", "SHIELD", "ABOUT", "WAIST", "WRIST", "WIELD", "HOLD",
-  "THROW", "LIGHT-SOURCE", "EARRING", "FACE-GEAR", "\n"};
-
-const char* extra_bits[] = {"GLOW", "HUM", "LEVEL15", "LEVEL25", "LEVEL35",
-  "INVISIBLE", "MAGIC", "NODROP", "BLESS", "ANTI-GOOD", "ANTI-EVIL",
+const char* const extra_bits[] = {"GLOW", "HUM", "LEVEL15", "LEVEL25",
+  "LEVEL35", "INVISIBLE", "MAGIC", "NODROP", "BLESS", "ANTI-GOOD", "ANTI-EVIL",
   "ANTI-NEUTRAL", "ANTI-CLERIC", "ANTI-MAGE", "ANTI-THIEF", "ANTI-WARRIOR",
   "BRITTLE", "LEVEL10", "LEVEL20", "LEVEL30", "ANTI_ANTI", "ANTI_PALA",
   "ANTI_RANGER", "ANTI_MONK", "LEVEL40", "\n"};
 
-const char* room_bits[] = {"DARK", "DEATH", "NO_MOB", "INDOORS", "PEACEFUL",
-  "NOSTEAL", "NO_SUM", "NO_MAGIC", "TUNNEL", "PRIVATE", "SILENCE", "NO_ORDER",
-  "ANARCHY", "HAVE_TO_WALK", "ARENA", "NO-HEAL", "\n"};
-
-const char* exit_bits[] = {"IS-DOOR", "CLOSED", "LOCKED", "SECRET", "RSLOCKED",
-  "PICKPROOF", "\n"};
-
-const char* sector_types[] = {"Inside", "City", "Field", "Forest", "Hills",
-  "Mountains", "Water Swim", "Water NoSwim", "Air", "Underwater", "\n"};
-
-const char* equipment_types[] = {"Special", "Worn on right finger",
-  "Worn on left finger", "First worn around Neck", "Second worn around Neck",
-  "Worn on body", "Worn on head", "Worn on legs", "Worn on feet",
-  "Worn on hands", "Worn on arms", "Worn as shield", "Worn about body",
-  "Worn around waist", "Worn around right wrist", "Worn around left wrist",
-  "Wielded", "Held", "\n"};
-
-const char* affected_bits[] = {"BLIND", "INVISIBLE", "DETECT-EVIL",
+const char* const affected_bits[] = {"BLIND", "INVISIBLE", "DETECT-EVIL",
   "DETECT-INVISIBLE", "DETECT-MAGIC", "SENSE-LIFE", "HOLD", "SANCTUARY",
   "GROUP", "UNUSED", "CURSE", "FLYING", "POISON", "PROTECT-EVIL", "PARALYSIS",
   "INFRAVISION", "WATER-BREATH", "SLEEP", "DODGE", "SNEAK", "HIDE", "FEAR",
   "CHARM", "FOLLOW", "SAVED_OBJECTS", "TRUE_SIGHT", "BREWING", "FIRESHIELD",
   "SILENT", "", "", "SPY", "\n"};
 
-const char* immunity_names[] = {"FIRE", "COLD", "ELECTRICITY", "ENERGY",
-  "BLUNT", "PIERCE", "SLASH", "ACID", "POISON", "DRAIN", "SLEEP", "CHARM",
-  "HOLD", "NON-MAGIC", "+1", "+2", "+3", "+4", "\n"};
-
-const char* apply_types[] = {"NONE", "STR", "DEX", "INT", "WIS", "CON", "SEX",
-  "CLASS", "LEVEL", "AGE", "CHAR_WEIGHT", "CHAR_HEIGHT", "MANA", "HIT", "MOVE",
-  "GOLD", "EXP", "ARMOR", "HITROLL", "DAMROLL", "SAVING_PARA", "SAVING_ROD",
-  "SAVING_PETRI", "SAVING_BREATH", "SAVING_SPELL", "SAVING_ALL", "RESISTANCE",
-  "SUSCEPTIBILITY", "IMMUNITY", "SPELL AFFECT", "WEAPON SPELL", "EAT SPELL",
-  "BACKSTAB", "KICK", "SNEAK", "HIDE", "BASH", "PICK", "STEAL", "TRACK",
-  "HIT-N-DAM", "DOUBLE_ATTACK", "DEATHSTROKE", "PARRY", "THROW", "GRAPPLE",
-  "\n"};
-
-const char* pc_class_types[] = {"Magic User", "Cleric", "Warrior", "Thief",
-  "Antipaladin", "Paladin", "Monk", "Ranger", "\n"};
-
-const char* npc_class_types[] = {"Normal", "Undead", "\n"};
-
-const char* action_bits[] = {"SPEC", "SENTINEL", "SCAVENGER", "ISNPC",
-  "NICE-THIEF", "AGGRESSIVE", "STAY-ZONE", "WIMPY", "ANNOYING", "HATEFUL",
-  "AFRAID", "IMMORTAL", "HUNTING", "DEADLY", "POLYMORPHED", "META_AGGRESSIVE",
-  "GUARDING", "\n"};
-
-const char* player_bits[] = {"BRIEF", "COMPACT", "WIMPY", "DONTSET", "NOHASSLE",
-  "STEALTH", "HUNTING", "MAILING", "LOGGED", "KILLER", "VT100", "COLOR",
-  "OUTLAW", "ANSI", "NOSHOUT", "BANISHED", "GHOST", "\n"};
-
-const char* attr_player_bits[] = {"Brief", "Compact", "Wimpy", "DONTSET",
-  "No-hassle", "Stealth", "Hunting", "Tell-an-immort-you-saw-this (MAILING)",
-  "", /* note ... no LOGGED */
-  "*Killer*", "VT-100", "Color", "*Outlaw*", "Ansi", "No-shout", "*BANISHED*",
-  "", /* Ghost, theyll never be able to att while a ghost anyway.*/
-  "\n"};
-
-const char* position_types[] = {"Dead", "Mortally wounded", "Incapacitated",
-  "Stunned", "Sleeping", "Resting", "Sitting", "Fighting", "Standing", "\n"};
-
-const char* connected_types[] = {"Playing", "Get name", "Confirm name",
-  "Read Password", "Get new password", "Confirm new password", "Get sex",
-  "Read messages of today", "Read Menu", "Get extra description", "Get class",
-  "\n"};
-
-/* [class], [level] (all) */
-const int thaco[8][ABS_MAX_LVL] = {
-  {100, 20, 20, 20, 19, 19, 19, 18, 18, 18, 17, 17, 17, 16, 16, 16, 15, 15, 15,
-    14, 14, 14, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13,
-    13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 12, 12,
-    12, 12, 12, 12, 11, 11, 11, 11, 11, 11, 11, 11, 11},
-  {100, 20, 20, 20, 18, 18, 18, 16, 16, 16, 14, 14, 14, 12, 12, 12, 10, 10, 10,
-    8, 8, 8, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6,
-    6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6,
-    6},
-  {100, 20, 20, 19, 19, 18, 18, 17, 17, 16, 16, 15, 15, 14, 13, 13, 12, 12, 11,
-    11, 10, 10, 9, 9, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8,
-    8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8,
-    8, 8},
-  {100, 20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1,
-    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-  {100, 20, 20, 19, 19, 18, 18, 18, 17, 17, 17, 16, 16, 16, 15, 15, 14, 14, 13,
-    13, 12, 12, 11, 11, 10, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9,
-    9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 8, 8, 8, 8, 8,
-    8, 8, 8},
-  {100, 20, 20, 19, 19, 18, 18, 17, 16, 15, 14, 13, 13, 12, 12, 12, 12, 11, 11,
-    11, 11, 11, 11, 10, 10, 9, 9, 9, 9, 8, 8, 8, 8, 8, 8, 8, 8, 7, 7, 7, 7, 6,
-    6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 4, 4, 4, 4, 4,
-    4, 4, 4},
-  {100, 20, 20, 20, 19, 19, 19, 18, 18, 18, 18, 17, 17, 17, 16, 16, 16, 15, 15,
-    14, 14, 14, 14, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 12,
-    12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12,
-    12, 12, 12, 12, 11, 11, 11, 11, 11, 11, 11, 10, 10},
-  {100, 20, 20, 19, 19, 19, 18, 18, 17, 17, 16, 16, 15, 15, 15, 15, 14, 14, 14,
-    14, 13, 13, 13, 13, 12, 11, 11, 11, 10, 10, 10, 10, 9, 9, 9, 9, 9, 9, 9, 9,
-    8, 7, 7, 7, 7, 6, 6, 6, 6, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5,
-    5, 5, 5, 5, 5}};
+const char* const apply_types[] = {"NONE", "STR", "DEX", "INT", "WIS", "CON",
+  "SEX", "CLASS", "LEVEL", "AGE", "CHAR_WEIGHT", "CHAR_HEIGHT", "MANA", "HIT",
+  "MOVE", "GOLD", "EXP", "ARMOR", "HITROLL", "DAMROLL", "SAVING_PARA",
+  "SAVING_ROD", "SAVING_PETRI", "SAVING_BREATH", "SAVING_SPELL", "SAVING_ALL",
+  "RESISTANCE", "SUSCEPTIBILITY", "IMMUNITY", "SPELL AFFECT", "WEAPON SPELL",
+  "EAT SPELL", "BACKSTAB", "KICK", "SNEAK", "HIDE", "BASH", "PICK", "STEAL",
+  "TRACK", "HIT-N-DAM", "DOUBLE_ATTACK", "DEATHSTROKE", "PARRY", "THROW",
+  "GRAPPLE", "\n"};
 
 /* [ch] strength apply (all) */
 const struct str_app_type str_app[31] = {
@@ -1444,40 +1058,6 @@ const struct dex_skill_type dex_app_skill[26] = {
   {20, 25, 10, 15, 20, 250000}, {20, 25, 15, 20, 20, 300000},
   {25, 25, 15, 20, 20, 350000}, {25, 30, 15, 25, 25, 400000},
   {25, 30, 15, 25, 25, 1000000} /* 25 */
-};
-
-/* New single class thiefbackstab multiplier (single class only) */
-const byte single_backstab_mult[ABS_MAX_LVL] = {1, /* 0 */
-  2,                                               /* 1 */
-  2, 2, 3, 3,                                      /* 5 */
-  3, 3, 4, 4, 4,                                   /* 10 */
-  4, 4, 5, 5, 5,                                   /* 15 */
-  5, 5, 5, 5, 5,                                   /* 20 */
-  6, 6, 6, 6, 6,                                   /* 25 */
-  6, 7, 7, 7, 7,                                   /* 30 */
-  7, 7, 8, 8, 8,                                   /* 35 */
-  8, 8, 8, 9, 9,                                   /* 40 */
-  9, 9, 9, 9, 10,                                  /* 45 */
-  10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10,
-  10, 10, 10, 10, 10};
-
-/* [level] backstab multiplyer (thieves only) */
-const byte backstab_mult[ABS_MAX_LVL] = {
-  1,                            /* 0 */
-  2,                            /* 1 */
-  2, 2, 2, 3,                   /* 5 */
-  3, 3, 3, 4, 4,                /* 10 */
-  4, 4, 4, 5, 5,                /* 15 */
-  5, 5, 5, 5, 5,                /* 20 */
-  5, 5, 5, 5,                   /* 25 */
-  5, 5, 5, 5, 5,                /* 30 */
-  5, 5, 5, 5, 5,                /* 35 */
-  5, 5, 5, 5, 5,                /* 40 */
-  5, 5, 5, 5, 5,                /* 45 */
-  5, 5, 5, 5, 5,                /* 50? */
-  5, 5, 5, 5, 5, 5, 5, 5, 5, 5, /* 60 */
-  5, 5, 5, 5, 5, 5, 5, 5, 5, 5  /* 70 */
-
 };
 
 /* [dex] apply (all) */
@@ -1523,91 +1103,3 @@ struct wis_app_type wis_app[26] = {
   6, 6,          /* 20 */
   6, 6, 6, 6, 6  /* 25 */
 };
-
-#if 0
-
-const struct QuestItem QuestList[4][ABS_MAX_LVL] = {
-/*   item #,    Where   */
-  {
-    { 0,        ""},
-    { 1,        "in the temple of Midgaard\n\r"},
-    { 1410,     "in the Ivory Tower\n\r"},  /* sack o flour */
-    { 6010      "with the deer, in the forest\n\r"}, /* blackberries */
-    { 3013,     "in the tower with the oil beasts\n\r"},  /* biscuit      */
-    { 20,       "within the power of magic\n\r"}, /* ball o light */
-    { 1414,     "with the elves\n\r"},  /* flour potion ??? */
-    { 3050,     "with the muttering man\n\r"},
-    { 106,      "with a toad, of course\n\r"},
-    { 109,      "in a treehouse\n\r"},  /* a rubber ball */
-/*10*/
-    { 3628,     "in the new city\n\r"},  /* padded leather boots */
-    { 113,      "with a gelfling child\n\r"}, /* a top */
-    { 19204,    "in the castle of Mists\n\r"}, /* moonstone */
-    { 20006,    "in a place with lots of spiders\n\r"},  /* spider-web */
-
-  },  /* mage   */
-
-  {
-    { 0,        ""},
-    { 2,        "in the temple of Midgaard\n\r"},
-    { 1110,     "in the Shire\n\r"},    /* egg */
-    { 3070,     "in the armorer's shop\n\r"},  /* bronze gauntlets */
-    { 3057,     "in many places... Perhaps Moria\n\r"},  /* silver pot ??? */
-    { 6001,     "within the peaceful trees\n\r"}, /* chequered shirt  */
-    { 4052,     "in the deep places where the kobolds live\n\r"},/*mushroom */
-    { 3025,     "in the hands of an unkind man\n\r"},  /* battle axe */
-    { 6106,     "with the wolves and wargs\n\r"},  /* non-pois. toadstool */
-    { 107,      "with a cleric, no doubt.\n\r"},
-    { 110,      "high in the mountains\n\r"},  /* a piece of quartz */
-/*10*/
-    { 3649,     "in the new city\n\r"},
-    { 7206,     "in the lair of the mindflayers\n\r"},
-    { 114,      "on a white fox\n\r"},  /* silver collar */
-    { 19203,    "in the castle of Mists\n\r"}, /* large axe */
-
-  },  /* cleric  */
-
-  {
-    { 0,        ""},
-    { 3,        "in the temple of Midgaard\n\r"},
-    { 41,       "in the grand temple of Odin\n\r"},   /* lock picks */
-    { 3071,     "in the armorer's shop\n\r"},   /* leather gloves  */
-    { 30,       "in all sorts of places.. any scraps will do.\n\r"},
-    { 3907,     "in the shop of the great Brewer\n\r"},  /* beer */
-    { 19202,    "in the castle of Mists\n\r"},  /* glowing gland   */
-    { 4104,     "with the orks and kobolds\n\r"},  /* slime  */
-    { 6006,     "in a fireplace.\n\r"},  /* key */
-    { 111,      "at the headwaters of the Dark River\n\r"},  /* fools gold */
-/*10*/
-    { 3640,     "in the new city\n\r"},  /* hunk o cheese */
-    { 4101,     "in the hands of a warrior\n\r"}, /* swordsman's gloves */
-    { 115,      "in the hands of a speed demon\n\r"}, /* speed pills */
-    { 116,      "in an ancient tollbooth\n\r"}, /* moss */
-
-    { 7190,     "in the possession of a giant rant\n\r"},
-    { 105,      "on a snake with deadly poison\n\r"},  /* snake fangs */
-
-  },  /* thief   */
-
-  {
-    { 0,        ""},
-    { 4,        "in the temple of Midgaard\n\r"},
-    { 42,       "in the grand temple of the wise one-eye\n\r"},
-    { 3013,     "in the Ivory Tower\n\r"},
-    { 6000,     "in the forest, with the foxes and rabbits\n\r"},
-    { 4000,     "on the hand of a stupid orc\n\r"},  /* ring of weakness */
-    { 8121,     "near the river of Brandy\n\r"},  /* velcro bag */
-    { 28009,    "in a place not far from your home\n\r"},  /* quarter staff */
-    { 1109,     "with the tough little people"},    /*
-    { 108,      "floating somewhere on the dark river\n\r"},  /* flotsam */
-    { 112,      "in the castle of Snakes\n\r"}, /*hunk o wool*/
- /*10*/
-    { 3621,     "in the new city\n\r"}, /* splinted shield */
-    { 16024,    "high in the mountains\n\r"},  /* a mandolin */
-    { 7405,     "in a secret room in the sewers\n\r"},
-    { 117,      "on the hide of an angry wilkey\n\r"}, /* patch of fur */
-
-  }   /* warrior */
-
-}
-#endif

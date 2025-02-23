@@ -1,6 +1,8 @@
 #ifndef TRAPS_H
 #define TRAPS_H
 
+#include "structs.h"
+
 #define TRAP_EFFECT_TYPE 0
 #define TRAP_DAM_TYPE 1
 #define TRAP_LEVEL 2
@@ -44,5 +46,6 @@ void TrapDam(struct char_data* v, int damtype, int amnt, struct obj_data* t);
 void TrapTeleport(struct char_data* v);
 void TrapSleep(struct char_data* v);
 void InformMess(struct char_data* v);
+int TriggerTrap(struct char_data* ch, struct obj_data* i);
 
 #endif

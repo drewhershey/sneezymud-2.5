@@ -11,26 +11,8 @@
 */
 
 #include "multiclass.h"
-
-#include <stdio.h>
-#include <string.h>
-
-#include "comm.h"
-#include "handler.h"
-#include "interpreter.h"
-#include "limits.h"
-#include "opinion.h"
-#include "race.h"
-#include "spells.h"
 #include "structs.h"
 #include "utils.h"
-
-/* extern variables */
-
-extern struct room_data* world;
-extern struct descriptor_data* descriptor_list;
-extern struct room_data* world;
-extern struct dex_app_type dex_app[];
 
 int GetClassLevel(struct char_data* ch, int class) {
   if (IS_SET(ch->player.class, class)) {
@@ -67,16 +49,6 @@ int OnlyClass(struct char_data* ch, int class) {
         return (FALSE);
   }
   return (TRUE);
-}
-
-int IsSingleClass(struct char_data* ch) {
-  int i;
-
-  for (i = 1; i <= 8; i *= 2) {
-    if (OnlyClass(ch, i))
-      return (TRUE);
-  }
-  return (FALSE);
 }
 
 int HasClass(struct char_data* ch, int class) {
@@ -201,16 +173,7 @@ int BestMagicClass(struct char_data* ch) {
   return (1);
 }
 
-int GetSecMaxLev(struct char_data* ch) {
-  if (GET_LEVEL(ch, PALADIN_LEVEL_IND) ||
-      (GET_LEVEL(ch, ANTIPALADIN_LEVEL_IND)) ||
-      (GET_LEVEL(ch, RANGER_LEVEL_IND)) || (GET_LEVEL(ch, MONK_LEVEL_IND))) {
-    return;
-  } else
-    return (GetALevel(ch, 2));
-}
-
-int GetALevel(struct char_data* ch, int which) {
+static int GetALevel(struct char_data* ch, int which) {
   byte ind[4], j, k, i;
 
   for (i = MAGE_LEVEL_IND; i <= THIEF_LEVEL_IND; i++) {
@@ -236,8 +199,6 @@ int GetALevel(struct char_data* ch, int which) {
   }
 }
 
-int GetThirdMaxLev(struct char_data* ch) { return (GetALevel(ch, 3)); }
-
 int GetMaxLevel(struct char_data* ch) {
   register int max = 0, i;
 
@@ -253,47 +214,4 @@ int GetTotLevel(struct char_data* ch) {
   return (GET_LEVEL(ch, 0) + GET_LEVEL(ch, 1) + GET_LEVEL(ch, 2) +
           GET_LEVEL(ch, 3) + GET_LEVEL(ch, 4) + GET_LEVEL(ch, 5) +
           GET_LEVEL(ch, 6) + GET_LEVEL(ch, 7));
-}
-
-void StartLevels(struct char_data* ch) {
-  if (IS_SET(ch->player.class, CLASS_MAGIC_USER)) {
-    advance_level(ch, MAGE_LEVEL_IND);
-  }
-  if (IS_SET(ch->player.class, CLASS_CLERIC)) {
-    advance_level(ch, CLERIC_LEVEL_IND);
-  }
-  if (IS_SET(ch->player.class, CLASS_WARRIOR)) {
-    advance_level(ch, WARRIOR_LEVEL_IND);
-  }
-  if (IS_SET(ch->player.class, CLASS_THIEF)) {
-    advance_level(ch, THIEF_LEVEL_IND);
-  }
-  if (IS_SET(ch->player.class, CLASS_ANTIPALADIN)) {
-    advance_level(ch, ANTIPALADIN_LEVEL_IND);
-  }
-  if (IS_SET(ch->player.class, CLASS_RANGER)) {
-    advance_level(ch, RANGER_LEVEL_IND);
-  }
-  if (IS_SET(ch->player.class, CLASS_MONK)) {
-    advance_level(ch, MONK_LEVEL_IND);
-  }
-  if (IS_SET(ch->player.class, CLASS_PALADIN)) {
-    advance_level(ch, PALADIN_LEVEL_IND);
-  }
-}
-
-int BestClass(struct char_data* ch) {
-  int max = 0, class = 0, i;
-
-  for (i = MAGE_LEVEL_IND; i <= RANGER_LEVEL_IND; i++)
-    if (max < GET_LEVEL(ch, i)) {
-      max = GET_LEVEL(ch, i);
-      class = i;
-    }
-
-  if (max == 0) { /* eek */
-    abort();
-  } else {
-    return (class);
-  }
 }

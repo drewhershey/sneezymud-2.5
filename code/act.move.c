@@ -8,47 +8,60 @@
 #include <string.h>
 
 #include "comm.h"
+#include "constants.h"
 #include "db.h"
+#include "games.h"
 #include "handler.h"
 #include "interpreter.h"
+#include "multiclass.h"
 #include "spells.h"
 #include "structs.h"
 #include "trap.h"
 #include "utils.h"
 
-/*   external vars  */
-#if HASH
-extern struct hash_header room_db;
-#else
-extern struct room_data* room_db;
-#endif
-extern struct char_data* character_list;
-extern struct descriptor_data* descriptor_list;
-extern struct index_data* obj_index;
-extern struct room_data* world;
-extern int rev_dir[];
-extern char* dirs[];
-extern int movement_loss[];
+void open_door(struct char_data* ch, int dir) {
+  struct room_direction_data *exitp, *back;
+  struct room_data* rp;
+  char buf[MAX_INPUT_LENGTH];
 
-/* external functs */
+  rp = real_roomp(ch->in_room);
+  if (rp == NULL) {
+    sprintf(buf, "NULL rp in open_door() for %s.", PERS(ch, ch));
+    vlog(buf);
+  }
 
-int special(struct char_data* ch, int cmd, char* arg);
-void death_cry(struct char_data* ch);
-struct obj_data* get_obj_in_list_vis(struct char_data* ch, char* name,
-  struct obj_data* list);
-void zero_rent(struct char_data* ch);
-int check_blackjack(struct char_data* ch);
-int do_blackjack_enter(struct char_data* ch);
-int do_blackjack_exit(struct char_data* ch);
-int check_slots(struct char_data* ch);
-int check_slot_player(struct char_data* ch);
+  exitp = rp->dir_option[dir];
+
+  REMOVE_BIT(exitp->exit_info, EX_CLOSED);
+  if (exitp->keyword) {
+    if (!IS_SET(exitp->exit_info, EX_SECRET)) {
+      sprintf(buf, "$n opens the %s", fname(exitp->keyword));
+      act(buf, FALSE, ch, 0, 0, TO_ROOM);
+    } else {
+      act("$n reveals a hidden passage!", FALSE, ch, 0, 0, TO_ROOM);
+    }
+  } else
+    act("$n opens the door.", FALSE, ch, 0, 0, TO_ROOM);
+
+  /* now for opening the OTHER side of the door! */
+  if (exit_ok(exitp, &rp) && (back = rp->dir_option[rev_dir[dir]]) &&
+      (back->to_room == ch->in_room)) {
+    REMOVE_BIT(back->exit_info, EX_CLOSED);
+    if (back->keyword) {
+      sprintf(buf, "The %s is opened from the other side.\n\r",
+        fname(back->keyword));
+      send_to_room(buf, exitp->to_room);
+    } else
+      send_to_room("The door is opened from the other side.\n\r",
+        exitp->to_room);
+  }
+}
 
 /*
   Some new movement commands for diku-mud.. a bit more object oriented.
-  */
-raw_open_door(struct char_data* ch, int dir)
-/* remove all necessary bits and send messages */
-{
+  remove all necessary bits and send messages
+*/
+void raw_open_door(struct char_data* ch, int dir) {
   struct room_direction_data *exitp, *back;
   struct room_data* rp;
   char buf[MAX_INPUT_LENGTH];
@@ -77,26 +90,7 @@ raw_open_door(struct char_data* ch, int dir)
   }
 }
 
-void raw_unlock_door(struct char_data* ch, struct room_direction_data* exitp,
-  int door) {
-  struct room_data* rp;
-  struct room_direction_data* back;
-  char buf[128];
-
-  REMOVE_BIT(exitp->exit_info, EX_LOCKED);
-  /* now for unlocking the other side, too */
-  rp = real_roomp(exitp->to_room);
-  if (rp && (back = rp->dir_option[rev_dir[door]]) &&
-      back->to_room == ch->in_room) {
-    REMOVE_BIT(back->exit_info, EX_LOCKED);
-  } else {
-    sprintf(buf, "Inconsistent door locks in rooms %d->%d", ch->in_room,
-      exitp->to_room);
-    vlog(buf);
-  }
-}
-
-void NotLegalMove(struct char_data* ch) {
+static void NotLegalMove(struct char_data* ch) {
   send_to_char("Alas, you cannot go that way...\n\r", ch);
 }
 
@@ -144,14 +138,25 @@ int ValidMove(struct char_data* ch, int cmd) {
   }
 }
 
-int RawMove(struct char_data* ch, int dir) {
+static const int movement_loss[] = {
+  1,  /* Inside     */
+  2,  /* City       */
+  2,  /* Field      */
+  3,  /* Forest     */
+  4,  /* Hills      */
+  6,  /* Mountains  */
+  8,  /* Swimming   */
+  10, /* Unswimable */
+  2,  /* Flying     */
+  20  /* Submarine  */
+};
+
+static int RawMove(struct char_data* ch, int dir) {
   int need_movement;
   struct obj_data* obj;
   bool has_boat;
   struct room_data *from_here, *to_here;
   struct char_data* pers;
-
-  int special(struct char_data * ch, int dir, char* arg);
 
   if (special(ch, dir + 1, "")) /* Check for special routines(North is 1)*/
     return (FALSE);
@@ -306,102 +311,7 @@ int RawMove(struct char_data* ch, int dir) {
   return (TRUE);
 }
 
-int MoveOne(struct char_data* ch, int dir) {
-  int was_in;
-
-  was_in = ch->in_room;
-  if (RawMove(ch, dir)) { /* no error */
-    DisplayOneMove(ch, dir, was_in);
-    return TRUE;
-  } else
-    return FALSE;
-}
-
-int MoveGroup(struct char_data* ch, int dir) {
-  struct char_data* heap_ptr[50];
-  int was_in, i, heap_top, heap_tot[50];
-  struct follow_type *k, *next_dude;
-
-  /*
-   *   move the leader. (leader never duplicates)
-   */
-
-  was_in = ch->in_room;
-  if (RawMove(ch, dir)) { /* no error */
-    DisplayOneMove(ch, dir, was_in);
-    if (ch->followers) {
-      heap_top = 0;
-      for (k = ch->followers; k; k = next_dude) {
-        next_dude = k->next;
-        /*
-         *  compose a list of followers, w/heaping
-         */
-        if ((was_in == k->follower->in_room) &&
-            (GET_POS(k->follower) >= POSITION_STANDING)) {
-          act("You follow $N.", FALSE, k->follower, 0, ch, TO_CHAR);
-          if (k->follower->followers) {
-            MoveGroup(k->follower, dir);
-          } else {
-            if (RawMove(k->follower, dir)) {
-              if (!AddToCharHeap(heap_ptr, &heap_top, heap_tot, k->follower)) {
-                DisplayOneMove(k->follower, dir, was_in);
-              }
-            }
-          }
-        }
-      }
-      /*
-       *  now, print out the heaped display message
-       */
-      for (i = 0; i < heap_top; i++) {
-        if (heap_tot[i] > 1) {
-          DisplayGroupMove(heap_ptr[i], dir, was_in, heap_tot[i]);
-        } else {
-          DisplayOneMove(heap_ptr[i], dir, was_in);
-        }
-      }
-    }
-  }
-}
-
-int DisplayOneMove(struct char_data* ch, int dir, int was_in) {
-  DisplayMove(ch, dir, was_in, 1);
-}
-
-int DisplayGroupMove(struct char_data* ch, int dir, int was_in, int total) {
-  DisplayMove(ch, dir, was_in, total);
-}
-
-void do_move(struct char_data* ch, char* argument, int cmd) {
-  cmd -= 1;
-
-  /*
-   ** the move is valid, check for follower/master conflicts.
-   */
-
-  if (ch->attackers > 1) {
-    send_to_char("There's too many people around, no place to flee!\n\r", ch);
-    return;
-  }
-
-  if (!ch->followers && !ch->master) {
-    MoveOne(ch, cmd);
-  } else {
-    if (!ch->followers) {
-      MoveOne(ch, cmd);
-    } else {
-      MoveGroup(ch, cmd);
-    }
-  }
-}
-
-/*
-
-
-  MoveOne and MoveGroup print messages.  Raw move sends success or failure.
-
-  */
-
+// MoveOne and MoveGroup print messages.  Raw move sends success or failure.
 int DisplayMove(struct char_data* ch, int dir, int was_in, int total) {
   struct char_data* tmp_ch;
   char tmp[256];
@@ -457,7 +367,11 @@ int DisplayMove(struct char_data* ch, int dir, int was_in, int total) {
   }
 }
 
-int AddToCharHeap(struct char_data* heap[50], int* top, int total[50],
+static int DisplayOneMove(struct char_data* ch, int dir, int was_in) {
+  DisplayMove(ch, dir, was_in, 1);
+}
+
+static int AddToCharHeap(struct char_data* heap[50], int* top, int total[50],
   struct char_data* k) {
   int found, i;
 
@@ -479,6 +393,92 @@ int AddToCharHeap(struct char_data* heap[50], int* top, int total[50],
       heap[*top] = k;
       total[*top] = 1;
       *top += 1;
+    }
+  }
+}
+
+int MoveOne(struct char_data* ch, int dir) {
+  int was_in;
+
+  was_in = ch->in_room;
+  if (RawMove(ch, dir)) { /* no error */
+    DisplayOneMove(ch, dir, was_in);
+    return TRUE;
+  } else
+    return FALSE;
+}
+
+static int DisplayGroupMove(struct char_data* ch, int dir, int was_in,
+  int total) {
+  DisplayMove(ch, dir, was_in, total);
+}
+
+int MoveGroup(struct char_data* ch, int dir) {
+  struct char_data* heap_ptr[50];
+  int was_in, i, heap_top, heap_tot[50];
+  struct follow_type *k, *next_dude;
+
+  /*
+   *   move the leader. (leader never duplicates)
+   */
+
+  was_in = ch->in_room;
+  if (RawMove(ch, dir)) { /* no error */
+    DisplayOneMove(ch, dir, was_in);
+    if (ch->followers) {
+      heap_top = 0;
+      for (k = ch->followers; k; k = next_dude) {
+        next_dude = k->next;
+        /*
+         *  compose a list of followers, w/heaping
+         */
+        if ((was_in == k->follower->in_room) &&
+            (GET_POS(k->follower) >= POSITION_STANDING)) {
+          act("You follow $N.", FALSE, k->follower, 0, ch, TO_CHAR);
+          if (k->follower->followers) {
+            MoveGroup(k->follower, dir);
+          } else {
+            if (RawMove(k->follower, dir)) {
+              if (!AddToCharHeap(heap_ptr, &heap_top, heap_tot, k->follower)) {
+                DisplayOneMove(k->follower, dir, was_in);
+              }
+            }
+          }
+        }
+      }
+      /*
+       *  now, print out the heaped display message
+       */
+      for (i = 0; i < heap_top; i++) {
+        if (heap_tot[i] > 1) {
+          DisplayGroupMove(heap_ptr[i], dir, was_in, heap_tot[i]);
+        } else {
+          DisplayOneMove(heap_ptr[i], dir, was_in);
+        }
+      }
+    }
+  }
+}
+
+void do_move(struct char_data* ch, char* argument, int cmd) {
+  cmd -= 1;
+
+  /*
+   ** the move is valid, check for follower/master conflicts.
+   */
+
+  if (ch->attackers > 1) {
+    send_to_char("There's too many people around, no place to flee!\n\r", ch);
+    return;
+  }
+
+  if (!ch->followers && !ch->master) {
+    MoveOne(ch, cmd);
+  } else {
+    if (!ch->followers) {
+      MoveOne(ch, cmd);
+    } else {
+      MoveGroup(ch, cmd);
     }
   }
 }
@@ -519,46 +519,6 @@ int find_door(struct char_data* ch, char* type, char* dir) {
     sprintf(buf, "I see no %s here.\n\r", type);
     send_to_char(buf, ch);
     return (-1);
-  }
-}
-
-open_door(struct char_data* ch, int dir)
-/* remove all necessary bits and send messages */
-{
-  struct room_direction_data *exitp, *back;
-  struct room_data* rp;
-  char buf[MAX_INPUT_LENGTH];
-
-  rp = real_roomp(ch->in_room);
-  if (rp == NULL) {
-    sprintf(buf, "NULL rp in open_door() for %s.", PERS(ch, ch));
-    vlog(buf);
-  }
-
-  exitp = rp->dir_option[dir];
-
-  REMOVE_BIT(exitp->exit_info, EX_CLOSED);
-  if (exitp->keyword) {
-    if (!IS_SET(exitp->exit_info, EX_SECRET)) {
-      sprintf(buf, "$n opens the %s", fname(exitp->keyword));
-      act(buf, FALSE, ch, 0, 0, TO_ROOM);
-    } else {
-      act("$n reveals a hidden passage!", FALSE, ch, 0, 0, TO_ROOM);
-    }
-  } else
-    act("$n opens the door.", FALSE, ch, 0, 0, TO_ROOM);
-
-  /* now for opening the OTHER side of the door! */
-  if (exit_ok(exitp, &rp) && (back = rp->dir_option[rev_dir[dir]]) &&
-      (back->to_room == ch->in_room)) {
-    REMOVE_BIT(back->exit_info, EX_CLOSED);
-    if (back->keyword) {
-      sprintf(buf, "The %s is opened from the other side.\n\r",
-        fname(back->keyword));
-      send_to_room(buf, exitp->to_room);
-    } else
-      send_to_room("The door is opened from the other side.\n\r",
-        exitp->to_room);
   }
 }
 
@@ -1154,7 +1114,6 @@ void do_follow(struct char_data* ch, char* argument, int cmd) {
   struct char_data* leader;
 
   void stop_follower(struct char_data * ch);
-  void add_follower(struct char_data * ch, struct char_data * leader);
 
   only_argument(argument, name);
 

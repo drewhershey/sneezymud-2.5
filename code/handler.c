@@ -3,40 +3,27 @@
  *  Usage: Various routines for moving about objects/players               *
  *  Copyright (C) 1990, 1991 - see 'license.doc' for complete information. *
  ************************************************************************* */
-
-#include "handler.h"
+#define _POSIX_C_SOURCE 200809L
+#include <features.h>
 
 #include <assert.h>
 #include <ctype.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
+#include <sys/param.h>
 
 #include "comm.h"
+#include "constants.h"
 #include "db.h"
+#include "handler.h"
 #include "interpreter.h"
+#include "limits.h"
+#include "multiclass.h"
+#include "opinion.h"
 #include "spells.h"
 #include "structs.h"
 #include "utils.h"
-
-#if HASH
-extern struct hash_header room_db;
-#else
-extern struct room_data* room_db;
-#endif
-extern struct obj_data* object_list;
-extern struct char_data* character_list;
-extern struct index_data* mob_index;
-extern struct index_data* obj_index;
-extern struct descriptor_data* descriptor_list;
-extern struct str_app_type str_app[];
-extern int vol_mult[];
-
-/* External procedures */
-
-int str_cmp(char* arg1, char* arg2);
-void free_char(struct char_data* ch);
-void stop_fighting(struct char_data* ch);
-void remove_follower(struct char_data* ch);
 
 char* fname(char* namelist) {
   static char holder[30];
@@ -50,7 +37,7 @@ char* fname(char* namelist) {
   return (holder);
 }
 
-int split_string(char* str, char* sep, char** argv)
+static int split_string(char* str, char* sep, char** argv)
 /* str must be writable */
 {
   char* s;
@@ -688,6 +675,20 @@ int apply_ac(struct char_data* ch, int eq_pos) {
   return 0;
 }
 
+static int GiveMinStrToWield(struct obj_data* obj, struct char_data* ch) {
+  int str = 0;
+
+  GET_STR(ch) = 16; /* nice, semi-reasonable start */
+  /*
+    will have a problem with except. str, that i do not care to solve
+  */
+
+  while (GET_OBJ_WEIGHT(obj) > str_app[STRENGTH_APPLY_INDEX(ch)].wield_w)
+    GET_STR(ch)++;
+
+  return (str);
+}
+
 void equip_char(struct char_data* ch, struct obj_data* obj, int pos) {
   int j;
 
@@ -765,20 +766,6 @@ void equip_char(struct char_data* ch, struct obj_data* obj, int pos) {
   affect_total(ch);
 }
 
-int GiveMinStrToWield(struct obj_data* obj, struct char_data* ch) {
-  int str = 0;
-
-  GET_STR(ch) = 16; /* nice, semi-reasonable start */
-  /*
-    will have a problem with except. str, that i do not care to solve
-  */
-
-  while (GET_OBJ_WEIGHT(obj) > str_app[STRENGTH_APPLY_INDEX(ch)].wield_w)
-    GET_STR(ch)++;
-
-  return (str);
-}
-
 struct obj_data* unequip_char(struct char_data* ch, int pos) {
   int j;
   struct obj_data* obj;
@@ -842,7 +829,7 @@ int get_number(char** name) {
   char* ppos;
   char number[MAX_INPUT_LENGTH] = "";
 
-  if ((ppos = (char*)index(*name, '.')) && ppos[1]) {
+  if ((ppos = (char*)strchr(*name, '.')) && ppos[1]) {
     *ppos++ = '\0';
     strcpy(number, *name);
     strcpy(*name, ppos);
@@ -1142,7 +1129,6 @@ void object_list_new_owner(struct obj_data* list, struct char_data* ch) {
 /* Extract an object from the world */
 void extract_obj(struct obj_data* obj) {
   struct obj_data *temp1, *temp2;
-  extern int obj_count;
 
   if (obj->in_room != NOWHERE)
     obj_from_room(obj);
@@ -1212,34 +1198,12 @@ void update_object(struct obj_data* obj, int use) {
       update_object(obj->next_content, use);
 }
 
-void update_char_objects(struct char_data* ch) {
-  int i;
-
-  if (ch->equipment[WEAR_LIGHT])
-    if (ch->equipment[WEAR_LIGHT]->obj_flags.type_flag == ITEM_LIGHT)
-      if (ch->equipment[WEAR_LIGHT]->obj_flags.value[2] > 0)
-        (ch->equipment[WEAR_LIGHT]->obj_flags.value[2])--;
-
-  for (i = 0; i < MAX_WEAR; i++)
-    if (ch->equipment[i])
-      update_object(ch->equipment[i], 1);
-
-  if (ch->carrying)
-    update_object(ch->carrying, 1);
-}
-
 /* Extract a ch completely from the world, and leave his stuff behind */
 void extract_char(struct char_data* ch) {
   struct obj_data *i, *o;
   struct char_data *k, *next_char;
   struct descriptor_data* t_desc;
   int l, was_in, j;
-
-  extern long mob_count;
-  extern struct char_data* combat_list;
-
-  void do_save(struct char_data * ch, char* argument, int cmd);
-  void do_return(struct char_data * ch, char* argument, int cmd);
 
   void die_follower(struct char_data * ch);
 

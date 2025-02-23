@@ -57,9 +57,13 @@ char* read_delete(char* recipient, char* recipient_formatted);
 /* note that an extra space is allowed in all string fields for the
    terminating null character.  */
 
-#define HEADER_BLOCK -1
-#define LAST_BLOCK -2
-#define DELETED_BLOCK -3
+#define HEADER_BLOCK (-1)
+#define LAST_BLOCK (-2)
+#define DELETED_BLOCK (-3)
+
+// Need to use 1-byte alignment for structs to prevent padding from increasing
+// size past 100 bytes
+#pragma pack(push, 1)
 
 struct header_block_type_d {
     long block_type; /* is this a header block or data block? */
@@ -80,6 +84,14 @@ struct data_block_type_d {
           in mail, otherwise a link to the next */
     char txt[DATA_BLOCK_DATASIZE + 1]; /* the actual text		 */
 };
+
+#pragma pack(pop)
+
+// Have to use macro form of static_assert in headers
+_Static_assert(sizeof(struct header_block_type_d) == 100,
+  "Header block must be exactly 100 bytes");
+_Static_assert(sizeof(struct data_block_type_d) == 100,
+  "Data block must be exactly 100 bytes");
 
 typedef struct header_block_type_d header_block_type;
 typedef struct data_block_type_d data_block_type;

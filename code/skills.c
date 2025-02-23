@@ -3,44 +3,49 @@
 
   Much thanks to Whitegold of  epic Dikumud for the hunt code.
 */
+#include <assert.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/param.h>
 
 #include "comm.h"
+#include "constants.h"
+#include "db.h"
 #include "handler.h"
 #include "hash.h"
+#include "interpreter.h"
+#include "multiclass.h"
 #include "race.h"
 #include "spells.h"
 #include "structs.h"
 #include "trap.h"
 #include "utils.h"
 
-int choose_exit(int in_room, int tgt_room, int dvar);
-struct room_data* real_roomp(int);
-int remove_trap(struct char_data* ch, struct obj_data* trap);
+static int remove_trap(struct char_data* ch, struct obj_data* trap) {
+  int num, charges;
 
-extern const char* dirs[];
-extern struct char_data* character_list;
-extern struct room_data* world;
-extern struct dex_app_type dex_app[];
-
-struct hunting_data {
-    char* name;
-    struct char_data** victim;
-};
-
-/*************************************/
-/* predicates for find_path function */
-
-int is_target_room_p(int room, void* tgt_room);
-
-int named_object_on_ground(int room, void* c_data);
-
-/* predicates for find_path function */
-/*************************************/
-
-/*
-**  Disarm:
-*/
+  if (ITEM_TYPE(trap) != ITEM_TRAP) {
+    send_to_char("I don't think thats a trap\n\r", ch);
+    return FALSE;
+  }
+  if (GET_TRAP_CHARGES(trap) <= 0) {
+    send_to_char("That trap is already disarmmed.\n\r", ch);
+    return FALSE;
+  }
+  num = number(1, 101);
+  if (num < ch->skills[SKILL_REMOVE_TRAP].learned) {
+    send_to_char("Click.\n\r", ch);
+    act("$n disarms $p", FALSE, ch, trap, 0, TO_ROOM);
+    GET_TRAP_CHARGES(trap) = 0;
+    return (TRUE);
+  } else {
+    send_to_char("Click. (whoops)\n\r", ch);
+    act("$n tries to disarm $p", FALSE, ch, trap, 0, TO_ROOM);
+    TriggerTrap(ch, trap);
+    return (TRUE);
+  }
+}
 
 void do_disarm(struct char_data* ch, char* argument, int cmd) {
   char name[30];
@@ -188,7 +193,7 @@ void do_disarm(struct char_data* ch, char* argument, int cmd) {
 **   Track:
 */
 
-int named_mobile_in_room(int room, struct hunting_data* c_data) {
+static int named_mobile_in_room(int room, struct hunting_data* c_data) {
   struct char_data* scan;
 
   for (scan = real_roomp(room)->people; scan; scan = scan->next_in_room)
@@ -201,12 +206,11 @@ int named_mobile_in_room(int room, struct hunting_data* c_data) {
 
 void do_track(struct char_data* ch, char* argument, int cmd) {
   char name[256], buf[256], found = FALSE;
-  int dist, code;
-  struct hunting_data huntd;
-  struct char_data* scan;
-  extern struct char_data* character_list;
+  // int dist, code;
 
-#if NOTRACK
+  struct char_data* scan;
+
+#if defined(NOTRACK) && NOTRACK
   send_to_char("Sorry, tracking is disabled. Try again after reboot.\n\r", ch);
   return;
 #endif
@@ -224,10 +228,11 @@ void do_track(struct char_data* ch, char* argument, int cmd) {
     return;
   }
 
-  if (!ch->skills)
-    dist = 10;
-  else
-    dist = ch->skills[SKILL_HUNT].learned;
+  int dist = 10;
+
+  if (ch->skills) {
+    dist = (unsigned char)(ch->skills[SKILL_HUNT].learned);
+  }
 
   if (IS_SET(ch->player.class, CLASS_THIEF)) {
     dist *= 3;
@@ -235,8 +240,6 @@ void do_track(struct char_data* ch, char* argument, int cmd) {
     dist *= 2;
   } else if (IS_SET(ch->player.class, CLASS_MAGIC_USER)) {
     dist += GET_LEVEL(ch, MAGE_LEVEL_IND);
-  } else {
-    dist = dist;
   }
 
   switch (GET_RACE(ch)) {
@@ -260,35 +263,77 @@ void do_track(struct char_data* ch, char* argument, int cmd) {
     dist = GetMaxLevel(ch) * 100;
   }
 
-  ch->hunt_dist = dist;
-
+  ch->hunt_dist = (short)dist;
   ch->specials.hunting = 0;
-  huntd.name = name;
-  huntd.victim = &ch->specials.hunting;
 
-  if ((GetMaxLevel(ch) < MIN_GLOB_TRACK_LEV) ||
-      (affected_by_spell(ch, SPELL_MINOR_TRACK)) ||
-      (affected_by_spell(ch, SPELL_MAJOR_TRACK))) {
-    code = find_path(ch->in_room, named_mobile_in_room, &huntd, -dist, 1);
-  } else {
-    code = find_path(ch->in_room, named_mobile_in_room, &huntd, -dist, 0);
-  }
+  struct hunting_data huntd = {
+    .name = name,
+    .victim = &ch->specials.hunting,
+  };
+
+  struct find_path_data hunt_mob_data = {
+    .type = FIND_MOB_IN_ROOM,
+    .fn_data.data = &huntd,
+    .fn.mob_in_room_fn = named_mobile_in_room,
+  };
+
+  const int inZone = GetMaxLevel(ch) < MIN_GLOB_TRACK_LEV ||
+                     affected_by_spell(ch, SPELL_MINOR_TRACK) ||
+                     affected_by_spell(ch, SPELL_MAJOR_TRACK);
+
+  const int code = find_path(ch->in_room, &hunt_mob_data, -dist, inZone);
 
   WAIT_STATE(ch, PULSE_VIOLENCE * 1);
 
   if (code == -1) {
     send_to_char("You are unable to find traces of one.\n\r", ch);
     return;
+  }
+
+  if (IS_LIGHT(ch->in_room)) {
+    SET_BIT(ch->specials.act, PLR_HUNTING);
+    sprintf(buf, "You see traces of your quarry to the %s\n\r", dirs[code]);
+    send_to_char(buf, ch);
   } else {
-    if (IS_LIGHT(ch->in_room)) {
-      SET_BIT(ch->specials.act, PLR_HUNTING);
-      sprintf(buf, "You see traces of your quarry to the %s\n\r", dirs[code]);
-      send_to_char(buf, ch);
-    } else {
-      ch->specials.hunting = 0;
-      send_to_char("It's too dark in here to track...\n\r", ch);
-      return;
-    }
+    ch->specials.hunting = 0;
+    send_to_char("It's too dark in here to track...\n\r", ch);
+  }
+}
+
+int choose_exit_in_zone(int in_room, int tgt_room, int depth) {
+  static struct find_path_data fpd = {
+    .type = FIND_TARGET_ROOM,
+    .fn_data.target_room = 0,
+    .fn.is_target_room_fn = is_target_room_p,
+  };
+
+  fpd.fn_data.target_room = tgt_room;
+  return find_path(in_room, &fpd, depth, 1);
+}
+
+int choose_exit_global(int in_room, int tgt_room, int depth) {
+  static struct find_path_data fpd = {
+    .type = FIND_TARGET_ROOM,
+    .fn_data.target_room = 0,
+    .fn.is_target_room_fn = is_target_room_p,
+  };
+
+  fpd.fn_data.target_room = tgt_room;
+  return find_path(in_room, &fpd, depth, 0);
+}
+
+int go_direction(struct char_data* ch, int dir) {
+  if (ch->specials.fighting)
+    return 0;
+
+  if (!IS_SET(EXIT(ch, dir)->exit_info, EX_CLOSED)) {
+    do_move(ch, "", dir + 1);
+    return 0;
+  }
+
+  if (IsHumanoid(ch) && !IS_SET(EXIT(ch, dir)->exit_info, EX_LOCKED)) {
+    open_door(ch, dir);
+    return 0;
   }
 }
 
@@ -369,41 +414,54 @@ int dir_track(struct char_data* ch, struct char_data* vict) {
 #define GO_OK_SMARTER \
   (!IS_SET(IS_DIR->exit_info, EX_LOCKED) && (IS_DIR->to_room != NOWHERE))
 
-static void donothing() { return; }
+static void donothing(void) {}
 
-int find_path(int in_room, int (*predicate)(), void* c_data, int depth,
+static int hash_enter(struct hash_header* ht, int key, void* data) {
+  if (hash_find(ht, key))
+    return 0;
+
+  hash_enter_no_key(ht, key, data);
+  return 1;
+}
+
+static void destroy_hash_table(struct hash_header* ht, void (*gman)()) {
+  int i;
+  struct hash_link *scan, *temp;
+
+  for (i = 0; i < ht->table_size; i++)
+    for (scan = ht->buckets[i]; scan;) {
+      temp = scan->next;
+      (*gman)(scan->data);
+      free(scan);
+      scan = temp;
+    }
+  free(ht->buckets);
+  free(ht->keylist);
+}
+
+int find_path(int in_room, struct find_path_data* data, int depth,
   int in_zone) {
   struct room_q *tmp_q, *q_head, *q_tail;
-#if 1
   struct hash_header x_room;
-/*  static struct hash_header	x_room; */
-#else
-  struct nodes x_room[MAX_ROOMS];
-#endif
-  int i, tmp_room, count = 0, thru_doors;
+  int i, tmp_room, count = 0;
   struct room_data *herep, *therep;
-  struct room_data* startp;
+
   struct room_direction_data* exitp;
 
+  assert(data && data->type == FIND_TARGET_ROOM && data->fn.is_target_room_fn);
+
   /* If start = destination we are done */
-  if ((predicate)(in_room, c_data))
+  if (data->type == FIND_TARGET_ROOM && in_room == data->fn_data.target_room)
     return -1;
 
-#if 0
-   if (top_of_world > MAX_ROOMS) {
-     vlog("TRACK Is disabled, too many rooms.\n\rContact Loki soon.\n\r");
-    return -1;
-   }
-#endif
+  bool thru_doors = FALSE;
 
   if (depth < 0) {
     thru_doors = TRUE;
     depth = -depth;
-  } else {
-    thru_doors = FALSE;
   }
 
-  startp = real_roomp(in_room);
+  struct room_data* startp = real_roomp(in_room);
 
   init_hash_table(&x_room, sizeof(int), 2048);
   hash_enter(&x_room, in_room, (void*)-1);
@@ -418,16 +476,14 @@ int find_path(int in_room, int (*predicate)(), void* c_data, int depth,
     herep = real_roomp(q_head->room_nr);
     /* for each room test all directions */
     if (herep->zone == startp->zone || !in_zone) {
-      /* only look in this zone..
-saves cpu time.  makes world
-safer for players
-*/
+      // only look in this zone.. saves cpu time.  makes world safer for players
       for (i = 0; i <= 5; i++) {
         exitp = herep->dir_option[i];
         if (exit_ok(exitp, &therep) && (thru_doors ? GO_OK_SMARTER : GO_OK)) {
           /* next room */
           tmp_room = herep->dir_option[i]->to_room;
-          if (!((predicate)(tmp_room, c_data))) {
+          if (!((data->fn.is_target_room_fn)(tmp_room,
+                data->fn_data.target_room))) {
             /* shall we add room to queue ? */
             /* count determines total breadth and depth */
             if (!hash_find(&x_room, tmp_room) && (count < depth) &&
@@ -484,28 +540,6 @@ safer for players
     destroy_hash_table(&x_room, donothing);
   }
   return (-1);
-}
-
-int choose_exit_global(int in_room, int tgt_room, int depth) {
-  return find_path(in_room, is_target_room_p, (void*)tgt_room, depth, 0);
-}
-
-int choose_exit_in_zone(int in_room, int tgt_room, int depth) {
-  return find_path(in_room, is_target_room_p, (void*)tgt_room, depth, 1);
-}
-
-int go_direction(struct char_data* ch, int dir)
-
-{
-  if (ch->specials.fighting)
-    return;
-
-  if (!IS_SET(EXIT(ch, dir)->exit_info, EX_CLOSED)) {
-    return do_move(ch, "", dir + 1);
-  } else if (IsHumanoid(ch) && !IS_SET(EXIT(ch, dir)->exit_info, EX_LOCKED)) {
-    open_door(ch, dir);
-    return 0;
-  }
 }
 
 void do_headbutt(struct char_data* ch, char* argument, int cmd) {
@@ -688,6 +722,25 @@ void slam_into_wall(struct char_data* ch, struct room_direction_data* exitp) {
   return;
 }
 
+static void raw_unlock_door(struct char_data* ch,
+  struct room_direction_data* exitp, int door) {
+  struct room_data* rp;
+  struct room_direction_data* back;
+  char buf[128];
+
+  REMOVE_BIT(exitp->exit_info, EX_LOCKED);
+  /* now for unlocking the other side, too */
+  rp = real_roomp(exitp->to_room);
+  if (rp && (back = rp->dir_option[rev_dir[door]]) &&
+      back->to_room == ch->in_room) {
+    REMOVE_BIT(back->exit_info, EX_LOCKED);
+  } else {
+    sprintf(buf, "Inconsistent door locks in rooms %d->%d", ch->in_room,
+      exitp->to_room);
+    vlog(buf);
+  }
+}
+
 /*
   skill to allow fighters to break down doors
 */
@@ -860,31 +913,6 @@ void do_spy(struct char_data* ch, char* arg, int cmd) {
   af.bitvector = AFF_SCRYING;
   affect_to_char(ch, &af);
   return;
-}
-
-int remove_trap(struct char_data* ch, struct obj_data* trap) {
-  int num, charges;
-
-  if (ITEM_TYPE(trap) != ITEM_TRAP) {
-    send_to_char("I don't think thats a trap\n\r", ch);
-    return;
-  }
-  if (GET_TRAP_CHARGES(trap) <= 0) {
-    send_to_char("That trap is already disarmmed.\n\r", ch);
-    return;
-  }
-  num = number(1, 101);
-  if (num < ch->skills[SKILL_REMOVE_TRAP].learned) {
-    send_to_char("Click.\n\r", ch);
-    act("$n disarms $p", FALSE, ch, trap, 0, TO_ROOM);
-    GET_TRAP_CHARGES(trap) = 0;
-    return (TRUE);
-  } else {
-    send_to_char("Click. (whoops)\n\r", ch);
-    act("$n tries to disarm $p", FALSE, ch, trap, 0, TO_ROOM);
-    TriggerTrap(ch, trap);
-    return (TRUE);
-  }
 }
 
 void do_throw(struct char_data* ch, char* arg, int cmd) {

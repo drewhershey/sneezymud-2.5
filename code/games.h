@@ -3,6 +3,8 @@
 #ifndef GAMES_H
 #define GAMES_H
 
+#include "structs.h"
+
 #define BET_OPTIONS \
   "\n\rSyntax :  bet <option> <amount> \n\r\n\r\
 Options :\n\r\n\r\
@@ -126,5 +128,13 @@ Field : Bet on a one roll field bet. Type help field for help on this bet.\n\r"
  # *   * #\n\r\
  # *   * #\n\r\
  #########\n\r\n\r"
+
+int check_slots(struct char_data* ch);
+int check_blackjack(struct char_data* ch);
+void do_bj_bet(struct char_data* ch, char* arg, int cmd);
+void do_bj_hit(struct char_data* ch);
+int do_blackjack_exit(struct char_data* ch);
+int do_blackjack_enter(struct char_data* ch);
+int check_slot_player(struct char_data* ch);
 
 #endif

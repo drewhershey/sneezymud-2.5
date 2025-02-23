@@ -3,35 +3,13 @@
 */
 
 #include <assert.h>
-#include <stdio.h>
+#include <sys/param.h>
 
-#include "comm.h"
 #include "handler.h"
-#include "limits.h"
-#include "spells.h"
 #include "structs.h"
 #include "utils.h"
 
-/* Extern structures */
-extern struct room_data* world;
-extern struct obj_data* object_list;
-extern struct char_data* character_list;
-
-/* Extern procedures */
-
-void damage(struct char_data* ch, struct char_data* victim, int damage,
-  int weapontype);
-bool saves_spell(struct char_data* ch, sh_int spell);
-void weight_change_object(struct obj_data* obj, int weight);
-char* strdup(char* source);
-int dice(int number, int size);
-char in_group(struct char_data* ch1, struct char_data* ch2);
-void set_fighting(struct char_data* ch, struct char_data* vict);
-bool ImpSaveSpell(struct char_data* ch, sh_int save_type, int mod);
-int IsPerson(struct char_data* ch);
-int IsExtraPlanar(struct char_data* ch);
-
-SwitchStuff(struct char_data* giver, struct char_data* taker) {
+void SwitchStuff(struct char_data* giver, struct char_data* taker) {
   struct obj_data *obj, *next;
   float ratio;
   int j;
@@ -93,36 +71,4 @@ SwitchStuff(struct char_data* giver, struct char_data* taker) {
 
   GET_MANA(taker) = GET_MANA(giver);
   GET_ALIGNMENT(taker) = GET_ALIGNMENT(giver);
-}
-
-FailCharm(struct char_data* victim, struct char_data* ch) {
-  if (IS_NPC(victim)) {
-    if (!victim->specials.fighting) {
-      set_fighting(victim, ch);
-    }
-  } else {
-    send_to_char("You feel charmed, but the feeling fades.\n\r", victim);
-  }
-}
-
-FailSleep(struct char_data* victim, struct char_data* ch) {
-  send_to_char("You feel sleepy for a moment,but then you recover\n\r", victim);
-  if (IS_NPC(victim))
-    if ((!victim->specials.fighting) && (GET_POS(victim) > POSITION_SLEEPING))
-      set_fighting(victim, ch);
-}
-
-FailPara(struct char_data* victim, struct char_data* ch) {
-  send_to_char("You feel frozen for a moment,but then you recover\n\r", victim);
-  if (IS_NPC(victim))
-    if (!victim->specials.fighting)
-      set_fighting(victim, ch);
-}
-
-FailCalm(struct char_data* victim, struct char_data* ch) {
-  send_to_char("You feel happy and easygoing, but the effect soon fades.\n\r",
-    victim);
-  if (IS_NPC(victim))
-    if (!victim->specials.fighting)
-      set_fighting(victim, ch);
 }

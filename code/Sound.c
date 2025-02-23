@@ -4,21 +4,11 @@
  */
 
 #include <stdio.h>
-#include <string.h>
 
 #include "comm.h"
 #include "db.h"
-#include "handler.h"
-#include "interpreter.h"
-#include "spells.h"
 #include "structs.h"
-#include "trap.h"
 #include "utils.h"
-
-/* extern variables */
-
-extern struct obj_data* object_list;
-extern struct char_data* character_list;
 
 int RecGetObjRoom(struct obj_data* obj) {
   if (obj->in_room != NOWHERE) {
@@ -59,7 +49,7 @@ void MakeNoise(int room, char* local_snd, char* distant_snd) {
   }
 }
 
-MakeSound(int pulse) {
+void MakeSound(int pulse) {
   int room;
   char buffer[128];
   struct obj_data* obj;

@@ -6,26 +6,12 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <sys/param.h>
 
 #include "comm.h"
 #include "db.h"
-#include "handler.h"
-#include "interpreter.h"
 #include "structs.h"
 #include "utils.h"
-
-/* uses */
-
-extern struct time_info_data time_info;
-extern struct weather_data weather_info;
-
-/*In this part. */
-
-void weather_and_time(int mode);
-void another_hour(int mode);
-void weather_change(void);
-void GetMonth(int month);
-void ChangeWeather(int change);
 
 /* what stage is moon in?  (1 - 32) */
 unsigned char moontype;

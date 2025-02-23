@@ -2,14 +2,18 @@
 **  Generic text heaping code -- all purpose
 */
 #include <stdio.h>
-#define TRUE 1
-#define FALSE 0
+#include <stdlib.h>
+#include <string.h>
+
 #include "comm.h"
 #include "heap.h"
 #include "structs.h"
 
-void SmartStrCpy(char* s1, const char* s2) /* ignore trailing spaces and \n */
-{
+#define TRUE 1
+#define FALSE 0
+
+/* ignore trailing spaces and \n */
+static void SmartStrCpy(char* s1, const char* s2) {
   int i;
 
   i = strlen(s2);
@@ -54,20 +58,6 @@ void StringHeap(char* string, struct StrHeap* Heap) {
   }
 }
 
-struct StrHeap* InitHeap() {
-  struct StrHeap* Heap = 0;
-
-  Heap = (struct StrHeap*)malloc(sizeof(struct StrHeap));
-  Heap->str = 0;
-  /*
-     Heap->str = (struct StrHeapList *)malloc(sizeof(struct StrHeapList));
-     Heap->str[0].string=0;
-     Heap->str[0].total=0;
-  */
-  Heap->uniq = 0;
-  return (Heap);
-}
-
 void DisplayStringHeap(struct StrHeap* Heap, struct char_data* ch, int type,
   int destroy) {
   char buf[256];
@@ -105,22 +95,3 @@ void DisplayStringHeap(struct StrHeap* Heap, struct char_data* ch, int type,
     free(Heap);
   }
 }
-
-#if 0
-main()
-{
-   struct StrHeap *H;
-   int i;
-   char buf[256];
-
-   H = InitHeap();
-
-   for (i=1;i<10;i++) {
-      scanf("%s", buf);
-      StringHeap(buf, H);
-   }   
-
-   DisplayStringHeap(H,0,TRUE);
-
-}
-#endif

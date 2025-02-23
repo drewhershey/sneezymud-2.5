@@ -6,104 +6,23 @@
 
 #include <ctype.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
+#include <strings.h>
+#include <sys/param.h>
 #include <time.h>
 
 #include "comm.h"
+#include "constants.h"
 #include "db.h"
+#include "games.h"
 #include "handler.h"
-#include "hash.h"
 #include "interpreter.h"
-#include "limits.h"
-#include "race.h"
+#include "multiclass.h"
 #include "spells.h"
 #include "structs.h"
 #include "trap.h"
 #include "utils.h"
-
-/* extern variables */
-#if HASH
-extern struct hash_header room_db;
-#else
-extern struct room_data* room_db;
-#endif
-extern struct descriptor_data* descriptor_list;
-extern struct index_data* obj_index;
-extern struct char_data* character_list;
-extern struct obj_data* object_list;
-extern struct room_data* world;
-extern struct str_app_type str_app[];
-extern struct dex_skill_type dex_app_skill[];
-
-extern int top_of_world;
-extern int top_of_zone_table;
-extern int top_of_mobt;
-extern int top_of_objt;
-extern int top_of_p_table;
-
-extern char* dirs[];
-extern char* where[];
-extern char* color_liquid[];
-extern char* fullness[];
-extern const char* RaceName[];
-extern const int RacialMax[][4];
-
-/* extern functions */
-
-struct time_info_data age(struct char_data* ch);
-void page_string(struct descriptor_data* d, char* str, int keep_internal);
-int track(struct char_data* ch, struct char_data* vict);
-int clearpath(int room, int direc);
-
-/* intern functions */
-void read_book(Mob* ch, Obj* o, char* arg);
-char* DescDamage(float dam);
-char* DescMoves(float a);
-char* ac_for_score(int a);
-char* DescRatio(float f); /* theirs / yours */
-char* DescAttacks(float a);
-
-/* Procedures related to 'look' */
-
-void argument_split_2(char* argument, char* first_arg, char* second_arg) {
-  int look_at, found, begin;
-  found = begin = 0;
-
-  /* Find first non blank */
-  for (; *(argument + begin) == ' '; begin++)
-    ;
-
-  /* Find length of first word */
-  for (look_at = 0; *(argument + begin + look_at) > ' '; look_at++)
-
-    /* Make all letters lower case, AND copy them to first_arg */
-    *(first_arg + look_at) = LOWER(*(argument + begin + look_at));
-  *(first_arg + look_at) = '\0';
-  begin += look_at;
-
-  /* Find first non blank */
-  for (; *(argument + begin) == ' '; begin++)
-    ;
-
-  /* Find length of second word */
-  for (look_at = 0; *(argument + begin + look_at) > ' '; look_at++)
-
-    /* Make all letters lower case, AND copy them to second_arg */
-    *(second_arg + look_at) = LOWER(*(argument + begin + look_at));
-  *(second_arg + look_at) = '\0';
-  begin += look_at;
-}
-
-struct obj_data* get_object_in_equip_vis(struct char_data* ch, char* arg,
-  struct obj_data* equipment[], int* j) {
-  for ((*j) = 0; (*j) < MAX_WEAR; (*j)++)
-    if (equipment[(*j)])
-      if (CAN_SEE_OBJ(ch, equipment[(*j)]))
-        if (isname(arg, equipment[(*j)]->name))
-          return (equipment[(*j)]);
-
-  return (0);
-}
 
 char* find_ex_description(char* word, struct extra_descr_data* list) {
   struct extra_descr_data* i;
@@ -235,7 +154,7 @@ void do_who(struct char_data* ch, char* argument, int cmd) {
       send_to_char(buf, ch);
       return;
     } else if (arg[0] == '-') {
-      if (index(arg, '?')) {
+      if (strchr(arg, '?')) {
         if (IS_IMMORTAL(ch)) {
           send_to_char("[-]i=idle l=levels t=title h=hit/mana/move\n\r", ch);
           send_to_char("[-]d=linkdead g=God o=Mort s=stats\n\r", ch);
@@ -259,19 +178,20 @@ void do_who(struct char_data* ch, char* argument, int cmd) {
           if (!person->desc)
             lcount++;
           if (!(!CAN_SEE(ch, person) ||
-                (index(arg, 'g') && !IS_IMMORTAL(person)) ||
-                (index(arg, 'k') && !IS_SET(person->specials.act, PLR_KILLER) &&
+                (strchr(arg, 'g') && !IS_IMMORTAL(person)) ||
+                (strchr(arg, 'k') &&
+                  !IS_SET(person->specials.act, PLR_KILLER) &&
                   !IS_SET(person->specials.act, PLR_OUTLAW)) ||
-                (index(arg, 'o') && IS_IMMORTAL(person)) ||
-                (index(arg, '1') && !HasClass(person, CLASS_MAGIC_USER)) ||
-                (index(arg, '2') && !HasClass(person, CLASS_CLERIC)) ||
-                (index(arg, '3') && !HasClass(person, CLASS_WARRIOR)) ||
-                (index(arg, '4') && !HasClass(person, CLASS_THIEF)) ||
-                (index(arg, '5') && !HasClass(person, CLASS_ANTIPALADIN)) ||
-                (index(arg, '6') && !HasClass(person, CLASS_PALADIN)) ||
-                (!index(arg, 'd') && !person->desc) ||
-                (index(arg, '7') && !HasClass(person, CLASS_MONK)) ||
-                (index(arg, '8') && !HasClass(person, CLASS_RANGER)))) {
+                (strchr(arg, 'o') && IS_IMMORTAL(person)) ||
+                (strchr(arg, '1') && !HasClass(person, CLASS_MAGIC_USER)) ||
+                (strchr(arg, '2') && !HasClass(person, CLASS_CLERIC)) ||
+                (strchr(arg, '3') && !HasClass(person, CLASS_WARRIOR)) ||
+                (strchr(arg, '4') && !HasClass(person, CLASS_THIEF)) ||
+                (strchr(arg, '5') && !HasClass(person, CLASS_ANTIPALADIN)) ||
+                (strchr(arg, '6') && !HasClass(person, CLASS_PALADIN)) ||
+                (!strchr(arg, 'd') && !person->desc) ||
+                (strchr(arg, '7') && !HasClass(person, CLASS_MONK)) ||
+                (strchr(arg, '8') && !HasClass(person, CLASS_RANGER)))) {
             if (!person->desc)
               sprintf(buf, "[%-12s] ", GET_NAME(person));
             else if (IS_NPC(person) &&
@@ -595,25 +515,49 @@ void list_obj_in_heap(struct obj_data* list, struct char_data* ch) {
 }
 
 #if 0
-void list_obj_to_char(struct obj_data *list,struct char_data *ch, int mode, 
+void list_obj_to_char(struct obj_data *list,struct char_data *ch, int mode,
             bool show) {
   char buf[MAX_STRING_LENGTH];
   int Num_In_Bag = 1;
   struct obj_data *i;
   bool found;
-  
+
   found = FALSE;
-  for ( i = list ; i ; i = i->next_content ) { 
+  for ( i = list ; i ; i = i->next_content ) {
     if (CAN_SEE_OBJ(ch,i)) {
       sprintf(buf,"[%2d] ",Num_In_Bag++);
       send_to_char(buf,ch);
       show_obj_to_char(i, ch, mode);
       found = TRUE;
-    }    
-  }  
+    }
+  }
   if ((! found) && (show)) send_to_char("Nothing\n\r", ch);
 }
 #endif
+
+static const char* const where[] = {
+  "<used as light>      ",
+  "<worn on finger>     ",
+  "<worn on finger>     ",
+  "<worn around neck>   ",
+  "<worn around neck>   ",
+  "<worn on body>       ",
+  "<worn on head>       ",
+  "<worn on legs>       ",
+  "<worn on feet>       ",
+  "<worn on hands>      ",
+  "<worn on arms>       ",
+  "<worn as shield>     ",
+  "<worn about body>    ",
+  "<worn about waist>   ",
+  "<worn around wrist>  ",
+  "<worn around wrist>  ",
+  "<wielded>            ",
+  "<held>               ",
+  "<worn as earring>    ",
+  "<worn on face>       ",
+  "<held as radio>      ",
+};
 
 void show_char_to_char(struct char_data* i, struct char_data* ch, int mode) {
   char buffer[MAX_STRING_LENGTH];
@@ -1077,6 +1021,58 @@ void list_char_to_char(struct char_data* list, struct char_data* ch, int mode) {
   }
 }
 
+static const char* const fullness[] = {
+  "less than half ",
+  "about half ",
+  "more than half ",
+  "",
+};
+
+static const char* const color_liquid[] = {
+  "clear",
+  "brown",
+  "clear",
+  "brown",
+  "dark",
+  "golden",
+  "red",
+  "green",
+  "clear",
+  "light green",
+  "white",
+  "brown",
+  "black",
+  "red",
+  "clear",
+  "black",
+  "\n",
+};
+
+static void read_book(Mob* ch, Obj* o, char* arg) {
+  char buf[256];
+  int vnum, section = 0;
+
+  if (!ch || !o || (GET_ITEM_TYPE(o) != ITEM_BOOK) || (o->item_number < 0))
+    return;
+
+  act("With curious eyes, you begin to read $p...", TRUE, ch, o, 0, TO_CHAR);
+  act("$n begins reading $p...", TRUE, ch, o, 0, TO_ROOM);
+
+  vnum = obj_index[o->item_number].virtual;
+  /* in next sscanf, buf eats 'words' like 'sect', 'section', 'chapter'... */
+  sscanf(arg, "%s %d of ", buf, &section);
+  if (section) {
+    sprintf(buf, "books/%d.%d", vnum, section);
+    start_page_file(ch->desc, buf, "...but can't find that section!\n\r");
+  } else {
+    sprintf(buf, "books/%d", vnum);
+    if (!start_page_file(ch->desc, buf, "...oddly its blank!\n\r")) {
+      sprintf(buf, "Object %d has no book file!", vnum);
+      vlog(buf);
+    }
+  }
+}
+
 void do_look(struct char_data* ch, char* argument, int cmd) {
   char buffer[MAX_STRING_LENGTH];
   char arg1[MAX_INPUT_LENGTH];
@@ -1109,10 +1105,10 @@ void do_look(struct char_data* ch, char* argument, int cmd) {
   } else {
     only_argument(argument, arg1);
 
-    if (0 == strn_cmp(arg1, "at", 2) && isspace(arg1[2])) {
+    if (0 == strncasecmp(arg1, "at", 2) && isspace(arg1[2])) {
       only_argument(argument + 3, arg2);
       keyword_no = 7;
-    } else if (0 == strn_cmp(arg1, "in", 2) && isspace(arg1[2])) {
+    } else if (0 == strncasecmp(arg1, "in", 2) && isspace(arg1[2])) {
       only_argument(argument + 3, arg2);
       keyword_no = 6;
     } else {
@@ -1542,7 +1538,6 @@ void do_exits(struct char_data* ch, char* argument, int cmd) {
   int door;
   char buf[256];
   struct room_direction_data* exitdata;
-  extern char* exits[];
 
   *buf = '\0';
 
@@ -1580,7 +1575,6 @@ void do_exits(struct char_data* ch, char* argument, int cmd) {
 void do_score(struct char_data* ch, char* argument, int cmd) {
   struct time_info_data playing_time;
   static char buf[100];
-  extern const struct title_type titles[8][ABS_MAX_LVL];
 
   struct time_info_data real_time_passed(time_t t2, time_t t1);
 
@@ -1686,12 +1680,21 @@ void do_score(struct char_data* ch, char* argument, int cmd) {
   }
 }
 
+static const char* const weekdays[7] = {"Sunday", "Monday", "Tuesday",
+  "Wednesday", "Thursday", "Friday", "Saturday"};
+
+static const char* const month_name[17] = {"Month of Winter", /* 0 */
+  "Month of the Winter Wolf", "Month of the Frost Giant",
+  "Month of the Old Forces", "Month of the Grand Struggle",
+  "Month of the Spring", "Month of Nature", "Month of Futility",
+  "Month of the Dragon", "Month of the Sun", "Month of the Heat",
+  "Month of the Battle", "Month of the Dark Shades", "Month of the Shadows",
+  "Month of the Long Shadows", "Month of the Ancient Darkness",
+  "Month of the Great Evil"};
+
 void do_time(struct char_data* ch, char* argument, int cmd) {
   char buf[100], *suf;
   int weekday, day;
-  extern struct time_info_data time_info;
-  extern const char* weekdays[];
-  extern const char* month_name[];
 
   sprintf(buf, "It is %d o'clock %s, on ",
     ((time_info.hours % 12 == 0) ? 12 : ((time_info.hours) % 12)),
@@ -1730,7 +1733,6 @@ void do_time(struct char_data* ch, char* argument, int cmd) {
 }
 
 void do_weather(struct char_data* ch, char* argument, int cmd) {
-  extern struct weather_data weather_info;
   static char buf[100];
   static char* sky_look[4] = {"cloudless", "cloudy", "rainy",
     "lit by flashes of lightning"};
@@ -1784,13 +1786,9 @@ void do_help(struct char_data* ch, char* argument, int cmd) {
   }
 }
 
-do_wizhelp(struct char_data* ch, char* argument, int cmd) {
+void do_wizhelp(struct char_data* ch, char* argument, int cmd) {
   char buf[MAX_STRING_LENGTH];
   int no, i;
-  extern char* command[]; /* The list of commands (interpreter.c)  */
-  /* First command is command[0]           */
-  extern struct command_info cmd_info[];
-  /* cmd_info[1] ~~ commando[0]            */
 
   if (IS_NPC(ch))
     return;
@@ -2091,13 +2089,50 @@ void do_where(struct char_data* ch, char* argument, int cmd) {
   destroy_string_block(&sb);
 }
 
+static const int RacialMax[][4] = {
+  {
+    (LOW_IMMORTAL - 1),
+    (LOW_IMMORTAL - 1),
+    (LOW_IMMORTAL - 1),
+    (LOW_IMMORTAL - 1),
+  },
+  {
+    (LOW_IMMORTAL - 1),
+    (LOW_IMMORTAL - 1),
+    (LOW_IMMORTAL - 1),
+    (LOW_IMMORTAL - 1),
+  },
+  {
+    (LOW_IMMORTAL - 1),
+    (LOW_IMMORTAL - 1),
+    (LOW_IMMORTAL - 1),
+    (LOW_IMMORTAL - 1),
+  },
+  {
+    (LOW_IMMORTAL - 1),
+    (LOW_IMMORTAL - 1),
+    (LOW_IMMORTAL - 1),
+    (LOW_IMMORTAL - 1),
+  },
+  {
+    (LOW_IMMORTAL - 1),
+    (LOW_IMMORTAL - 1),
+    (LOW_IMMORTAL - 1),
+    (LOW_IMMORTAL - 1),
+  },
+  {
+    (LOW_IMMORTAL - 1),
+    (LOW_IMMORTAL - 1),
+    (LOW_IMMORTAL - 1),
+    (LOW_IMMORTAL - 1),
+  },
+};
+
 void do_levels(struct char_data* ch, char* argument, int cmd) {
   int i, RaceMax, class;
   char buf[MAX_STRING_LENGTH];
   char buf2[MAX_STRING_LENGTH];
   struct string_block sb;
-
-  extern const struct title_type titles[8][ABS_MAX_LVL];
 
   *buf = '\0';
   /*
@@ -2164,6 +2199,60 @@ void do_levels(struct char_data* ch, char* argument, int cmd) {
   }
 
   return;
+}
+
+static const char* DescRatio(float f) {
+  if (f > 1.0f) {
+    return ("More than twice yours");
+  } else if (f > .75f) {
+    return ("More than half again greater than yours");
+  } else if (f > .6f) {
+    return ("At least a third greater than yours");
+  } else if (f > .4f) {
+    return ("About the same as yours");
+  } else if (f > .3f) {
+    return ("A little worse than yours");
+  } else if (f > .1f) {
+    return ("Much worse than yours");
+  } else {
+    return ("Extremely inferior");
+  }
+}
+
+static const char* DescAttacks(float a) {
+  if (a < 1.0f) {
+    return ("Not many");
+  } else if (a < 2.0f) {
+    return ("About average");
+  } else if (a < 3.0f) {
+    return ("A few");
+  } else if (a < 5.0f) {
+    return ("A lot");
+  } else if (a < 9.0f) {
+    return ("Many");
+  } else {
+    return ("A whole bunch");
+  }
+}
+
+static const char* DescDamage(float dam) {
+  if (dam < 1.0f) {
+    return ("Minimal Damage");
+  } else if (dam <= 2.0f) {
+    return ("Slight damage");
+  } else if (dam <= 4.0f) {
+    return ("A bit of damage");
+  } else if (dam <= 10.0f) {
+    return ("A decent amount of damage");
+  } else if (dam <= 15.0f) {
+    return ("A lot of damage");
+  } else if (dam <= 25.0f) {
+    return ("A whole lot of damage");
+  } else if (dam <= 35.0f) {
+    return ("A very large amount");
+  } else {
+    return ("A TON of damage");
+  }
 }
 
 void do_consider(struct char_data* ch, char* argument, int cmd) {
@@ -2339,9 +2428,6 @@ void do_consider(struct char_data* ch, char* argument, int cmd) {
 void do_spells(struct char_data* ch, char* argument, int cmd) {
   int spl, i;
   char buf[16384];
-  extern char* spells[];
-  extern int spell_status[];
-  extern struct spell_info_type spell_info[MAX_SKILLS];
 
   if (IS_NPC(ch)) {
     send_to_char("You ain't nothin' but a hound-dog.\n\r", ch);
@@ -2367,10 +2453,6 @@ void do_world(struct char_data* ch, char* argument, int cmd) {
   static char buf[100];
   long ct, ot;
   char *tmstr, *otmstr;
-  extern long Uptime;
-  extern long room_count;
-  extern long mob_count;
-  extern int obj_count;
 
   ot = Uptime;
   otmstr = asctime(localtime(&ot));
@@ -2383,11 +2465,13 @@ void do_world(struct char_data* ch, char* argument, int cmd) {
   *(tmstr + strlen(tmstr) - 1) = '\0';
   sprintf(buf, "Current time is: %s (CST)\n\r", tmstr);
   send_to_char(buf, ch);
-#if HASH
+
+#if defined(HASH) && HASH
   sprintf(buf, "Total number of rooms in world: %d\n\r", room_db.klistlen);
 #else
   sprintf(buf, "Total number of rooms in world: %d\n\r", room_count);
 #endif
+
   send_to_char(buf, ch);
   sprintf(buf, "Total number of zones in world: %d\n\r\n\r",
     top_of_zone_table + 1);
@@ -2409,11 +2493,16 @@ void do_world(struct char_data* ch, char* argument, int cmd) {
   send_to_char(buf, ch);
 }
 
+static const char* const attr_player_bits[] = {"Brief", "Compact", "Wimpy",
+  "DONTSET", "No-hassle", "Stealth", "Hunting",
+  "Tell-an-immort-you-saw-this (MAILING)", "", /* note ... no LOGGED */
+  "*Killer*", "VT-100", "Color", "*Outlaw*", "Ansi", "No-shout", "*BANISHED*",
+  "", /* Ghost, theyll never be able to att while a ghost anyway.*/
+  "\n"};
+
 void do_attribute(struct char_data* ch, char* argument, int cmd) {
   char buf[MAX_STRING_LENGTH], buf2[MAX_STRING_LENGTH];
-  extern char* attr_player_bits[];
   struct affected_type* aff;
-  extern char* spells[];
 
   sprintf(buf,
     "You are %d years and %d months, %d cms, and you weigh %d lbs.\n\r",
@@ -2638,61 +2727,6 @@ real_roomp(w)->dir_option[3]->to_room != NOWHERE &&
 }
 */
 
-char* DescRatio(float f) /* theirs / yours */
-{
-  if (f > 1.0) {
-    return ("More than twice yours");
-  } else if (f > .75) {
-    return ("More than half again greater than yours");
-  } else if (f > .6) {
-    return ("At least a third greater than yours");
-  } else if (f > .4) {
-    return ("About the same as yours");
-  } else if (f > .3) {
-    return ("A little worse than yours");
-  } else if (f > .1) {
-    return ("Much worse than yours");
-  } else {
-    return ("Extremely inferior");
-  }
-}
-
-char* DescDamage(float dam) {
-  if (dam < 1.0) {
-    return ("Minimal Damage");
-  } else if (dam <= 2.0) {
-    return ("Slight damage");
-  } else if (dam <= 4.0) {
-    return ("A bit of damage");
-  } else if (dam <= 10.0) {
-    return ("A decent amount of damage");
-  } else if (dam <= 15.0) {
-    return ("A lot of damage");
-  } else if (dam <= 25.0) {
-    return ("A whole lot of damage");
-  } else if (dam <= 35.0) {
-    return ("A very large amount");
-  } else {
-    return ("A TON of damage");
-  }
-}
-
-char* DescAttacks(float a) {
-  if (a < 1.0) {
-    return ("Not many");
-  } else if (a < 2.0) {
-    return ("About average");
-  } else if (a < 3.0) {
-    return ("A few");
-  } else if (a < 5.0) {
-    return ("A lot");
-  } else if (a < 9.0) {
-    return ("Many");
-  } else {
-    return ("A whole bunch");
-  }
-}
-
 char* DescMoves(float a) {
   if (a < .1)
     return ("very tired");
@@ -2723,30 +2757,5 @@ char* ac_for_score(int a) {
     return ("armored extremely heavily");
   } else {
     return ("totally armored");
-  }
-}
-
-void read_book(Mob* ch, Obj* o, char* arg) {
-  char buf[256];
-  int vnum, section = 0;
-
-  if (!ch || !o || (GET_ITEM_TYPE(o) != ITEM_BOOK) || (o->item_number < 0))
-    return;
-
-  act("With curious eyes, you begin to read $p...", TRUE, ch, o, 0, TO_CHAR);
-  act("$n begins reading $p...", TRUE, ch, o, 0, TO_ROOM);
-
-  vnum = obj_index[o->item_number].virtual;
-  /* in next sscanf, buf eats 'words' like 'sect', 'section', 'chapter'... */
-  sscanf(arg, "%s %d of ", buf, &section);
-  if (section) {
-    sprintf(buf, "books/%d.%d", vnum, section);
-    start_page_file(ch->desc, buf, "...but can't find that section!\n\r");
-  } else {
-    sprintf(buf, "books/%d", vnum);
-    if (!start_page_file(ch->desc, buf, "...oddly its blank!\n\r")) {
-      sprintf(buf, "Object %d has no book file!", vnum);
-      vlog(buf);
-    }
   }
 }

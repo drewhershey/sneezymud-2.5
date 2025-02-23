@@ -3,36 +3,24 @@
  *  Usage: Procedures controling gain and limit.                           *
  *  Copyright (C) 1990, 1991 - see 'license.doc' for complete information. *
  ************************************************************************* */
-
-#include "limits.h"
+#define _POSIX_C_SOURCE 200809L
+#include <features.h>
 
 #include <assert.h>
 #include <stdio.h>
+#include <string.h>
+#include <sys/param.h>
 
 #include "comm.h"
+#include "constants.h"
+#include "db.h"
+#include "limits.h"
+#include "multiclass.h"
 #include "race.h"
-#include "spells.h"
 #include "structs.h"
 #include "utils.h"
 
-struct room_data* real_roomp(int);
-
-extern struct char_data* character_list;
-extern struct obj_data* object_list;
-extern struct title_type titles[8][ABS_MAX_LVL];
-extern struct room_data* world;
-extern const char* RaceName[];
-extern const int RacialMax[][4];
-
-/* External procedures */
-
-void update_pos(struct char_data* victim);                  /* in fight.c */
-void damage(struct char_data* ch, struct char_data* victim, /*    "       */
-  int damage, int weapontype);
-struct time_info_data age(struct char_data* ch);
-int ClassSpecificStuff(struct char_data* ch);
-
-char* ClassTitles(struct char_data* ch) {
+static char* ClassTitles(struct char_data* ch) {
   int i, count = 0;
   static char buf[256];
 
@@ -56,7 +44,8 @@ char* ClassTitles(struct char_data* ch) {
 /* When age in 45..59 calculate the line between p3 & p4 */
 /* When age in 60..79 calculate the line between p4 & p5 */
 /* When age >= 80 return the value p6 */
-int graf(int age, int p0, int p1, int p2, int p3, int p4, int p5, int p6) {
+static int graf(int age, int p0, int p1, int p2, int p3, int p4, int p5,
+  int p6) {
   if (age < 15)
     return (p0); /* < 15   */
   else if (age <= 29)
@@ -273,9 +262,6 @@ int move_gain(struct char_data* ch)
 void advance_level(struct char_data* ch, int class) {
   int add_hp, i;
 
-  extern struct wis_app_type wis_app[];
-  extern struct con_app_type con_app[];
-
   if (GET_LEVEL(ch, class) > 0 &&
       GET_EXP(ch) < titles[class][GET_LEVEL(ch, class) + 1].exp) {
     /*  they can't advance here */
@@ -366,11 +352,8 @@ void advance_level(struct char_data* ch, int class) {
 ** Damn tricky for multi-class...
 */
 
-void drop_level(struct char_data* ch, int class) {
+static void drop_level(struct char_data* ch, int class) {
   int add_hp, lin_class;
-
-  extern struct wis_app_type wis_app[];
-  extern struct con_app_type con_app[];
 
   if (GetMaxLevel(ch) >= LOW_IMMORTAL)
     return;
@@ -519,34 +502,6 @@ void gain_exp(struct char_data* ch, int gain) {
   }
 }
 
-void gain_exp_regardless(struct char_data* ch, int gain, int class) {
-  int i;
-  bool is_altered = FALSE;
-
-  save_char(ch, AUTO_RENT);
-  if (!IS_NPC(ch)) {
-    if (gain > 0) {
-      GET_EXP(ch) += gain;
-
-      for (i = 0; (i < ABS_MAX_LVL) && (titles[class][i].exp <= GET_EXP(ch));
-           i++) {
-        if (i > GET_LEVEL(ch, class)) {
-          send_to_char("You raise a level\n\r", ch);
-          GET_LEVEL(ch, class) = i;
-          advance_level(ch, class);
-          is_altered = TRUE;
-        }
-      }
-    }
-    if (gain < 0)
-      GET_EXP(ch) += gain;
-    if (GET_EXP(ch) < 0)
-      GET_EXP(ch) = 0;
-  }
-  if (is_altered)
-    set_title(ch);
-}
-
 void gain_condition(struct char_data* ch, int condition, int value) {
   bool intoxicated;
 
@@ -580,72 +535,6 @@ void gain_condition(struct char_data* ch, int condition, int value) {
     default:
       break;
   }
-}
-
-void check_idling(struct char_data* ch) {
-  int save_room;
-  void do_save(struct char_data * ch, char* argument, int cmd);
-
-  if (ch->specials.timer == 10) {
-    if (ch->specials.was_in_room == NOWHERE && ch->in_room != NOWHERE &&
-        ch->in_room != 3) {
-      ch->specials.was_in_room = ch->in_room;
-      if (ch->specials.fighting) {
-        stop_fighting(ch->specials.fighting);
-        stop_fighting(ch);
-      }
-      act("$n disappears into the void.", TRUE, ch, 0, 0, TO_ROOM);
-      send_to_char("You have been idle, and are pulled into a void.\n\r", ch);
-      char_from_room(ch);
-      char_to_room(ch, 0); /* Into room number 0 */
-    }
-  } else if (ch->specials.timer == 60) {
-    struct obj_cost cost;
-    if (ch->in_room != 3) {
-      if (ch->in_room != NOWHERE)
-        char_from_room(ch);
-
-      char_to_room(ch, 3);
-
-      if (ch->desc)
-        close_socket(ch->desc);
-      ch->desc = 0;
-
-      save_obj(ch, &cost, 1);
-      save_room = ch->in_room;
-      extract_char(ch);
-      ch->in_room = save_room;
-      save_char(ch, ch->in_room);
-    }
-  }
-}
-
-int ObjFromCorpse(struct obj_data* c) {
-  struct obj_data *jj, *next_thing;
-
-  for (jj = c->contains; jj; jj = next_thing) {
-    next_thing = jj->next_content; /* Next in inventory */
-    if (jj->in_obj) {
-      obj_from_obj(jj);
-      if (c->in_obj)
-        obj_to_obj(jj, c->in_obj);
-      else if (c->carried_by)
-        obj_to_room(jj, c->carried_by->in_room);
-      else if (c->in_room != NOWHERE)
-        obj_to_room(jj, c->in_room);
-      else
-        assert(FALSE);
-    } else {
-      /*
-      **  hmm..  it isn't in the object it says it is in.
-      **  don't extract it.
-      */
-      c->contains = 0;
-      vlog("Memory lost in ObjFromCorpse.");
-      return (TRUE);
-    }
-  }
-  extract_obj(c);
 }
 
 int ClassSpecificStuff(struct char_data* ch) {

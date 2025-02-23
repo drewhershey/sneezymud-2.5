@@ -6,17 +6,71 @@
 #ifndef COMM_H
 #define COMM_H
 
+#include <sys/time.h>
+
+#include "structs.h"
+
+#if SITELOCK
+extern char hostlist[MAX_BAN_HOSTS][30];
+extern int numberhosts;
+#endif
+
+extern int Shutdown;
+extern int rebootmud;
+extern long Uptime;
+extern int slow_death;
+extern int no_specials;
+extern struct descriptor_data *descriptor_list, *next_to_process;
+extern int tics;
+
 void send_to_all(char* messg);
-void send_to_char(char* messg, struct char_data* ch);
+void send_to_char(const char* messg, struct char_data* ch);
 void send_to_except(char* messg, struct char_data* ch);
 void send_to_room(char* messg, int room);
 void send_to_room_except(char* messg, int room, struct char_data* ch);
 void send_to_room_except_two(char* messg, int room, struct char_data* ch1,
   struct char_data* ch2);
+void send_to_outdoor(char* messg);
 void perform_to_all(char* messg, struct char_data* ch);
 void perform_complex(struct char_data* ch1, struct char_data* ch2,
   struct obj_data* obj1, struct obj_data* obj2, char* mess, byte mess_type,
   bool hide);
+int get_from_q(struct txt_q* queue, char* dest);
+/* write_to_q is in comm.h for the macro */
+int run_the_game(int port);
+int game_loop(int s);
+int init_socket(int port);
+int new_connection(int s);
+int new_descriptor(int s);
+int process_output(struct descriptor_data* t);
+int process_input(struct descriptor_data* t);
+void close_sockets(int s);
+void close_socket(struct descriptor_data* d);
+struct timeval timediff(struct timeval* a, struct timeval* b);
+void flush_queues(struct descriptor_data* d);
+void nonblock(int s);
+void save_all(void);
+struct char_data* make_char(char* name, struct descriptor_data* desc);
+void boot_db(void);
+void zone_update(void);
+void affect_update(int pulse); /* In spell_parser.c */
+void free_char(struct char_data* ch);
+void string_add(struct descriptor_data* d, char* str);
+void perform_violence(int pulse);
+void stop_fighting(struct char_data* ch);
+void show_string(struct descriptor_data* d, char* input);
+void gr(int s);
+void station(void);
+void down_river(int pulse);
+void Teleport(int pulse);
+void MakeSound(int pulse);
+void TeleportPulseStuff(int pulse);
+void RiverPulseStuff(int pulse);
+char* find_ex_description(char* word, struct extra_descr_data* list);
+extern int load(void);
+void coma(int s);
+void check_reboot(void);
+void signal_setup(void);
 
 void act(char* str, int hide_invisible, struct char_data* ch,
   struct obj_data* obj, void* vict_obj, int type);
@@ -27,7 +81,7 @@ void act(char* str, int hide_invisible, struct char_data* ch,
 #define TO_CHAR 3
 
 int write_to_descriptor(int desc, char* txt);
-void write_to_q(char* txt, struct txt_q* queue);
+void write_to_q(const char* txt, struct txt_q* queue);
 #define SEND_TO_Q(messg, desc) write_to_q((messg), &(desc)->output)
 
 #define ANSI_NORMAL "\033[0m"

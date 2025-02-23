@@ -11,15 +11,10 @@
 #include "db.h"
 #include "handler.h"
 #include "interpreter.h"
+#include "multiclass.h"
 #include "spells.h"
 #include "structs.h"
 #include "utils.h"
-
-/* extern variables */
-
-extern struct room_data* world;
-extern struct descriptor_data* descriptor_list;
-extern char *ch_violate_msg1[], *ch_violate_msg2[];
 
 void do_say(struct char_data* ch, char* argument, int cmd) {
   int i;
@@ -52,7 +47,6 @@ void do_say(struct char_data* ch, char* argument, int cmd) {
 void do_shout(struct char_data* ch, char* argument, int cmd) {
   char buf1[MAX_INPUT_LENGTH + 40];
   struct descriptor_data* i;
-  extern int Silence;
 
   if (IS_AFFECTED(ch, AFF_SILENT)) {
     send_to_char("You can't make a sound!\n\r", ch);

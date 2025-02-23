@@ -2,8 +2,8 @@
  ***     written by Rasmussen (jelson@server.cs.jhu.edu)   ***
  ****   compliments of CircleMUD (circle.cs.jhu.edu 4000) ****
  ************************************************************/
-
-#include "mail.h"
+#define _POSIX_C_SOURCE 200809L
+#include <features.h>
 
 #include <assert.h>
 #include <ctype.h>
@@ -14,26 +14,21 @@
 
 #include "comm.h"
 #include "db.h"
+#include "handler.h"
+#include "interpreter.h"
+#include "mail.h"
+#include "multiclass.h"
+#include "spec_procs.h"
 #include "structs.h"
 #include "utils.h"
 
 #define MAIL_FILE "mail"
 
-void postmaster_send_mail(struct char_data* ch, int cmd, char* arg);
-void postmaster_check_mail(struct char_data* ch, int cmd, char* arg);
-void postmaster_receive_mail(struct char_data* ch, int cmd, char* arg);
-
-extern struct index_data* mob_index;
-extern struct obj_data* object_list;
-extern int no_mail;
-int find_name(char* name);
-struct char_data* FindMobInRoomWithFunction(int room, int (*func)());
-
 mail_index_type* mail_index = 0;   /* list of recs in the mail file  */
 position_list_type* free_list = 0; /* list of free positions in file */
 long file_end_pos = 0;             /* length of file */
 
-void push_free_list(long pos) {
+static void push_free_list(long pos) {
   position_list_type* new_pos;
 
   new_pos = (position_list_type*)malloc(sizeof(position_list_type));
@@ -42,7 +37,7 @@ void push_free_list(long pos) {
   free_list = new_pos;
 }
 
-long pop_free_list(void) {
+static long pop_free_list(void) {
   position_list_type* old_pos;
   long return_value;
 
@@ -55,7 +50,7 @@ long pop_free_list(void) {
     return file_end_pos;
 }
 
-mail_index_type* find_char_in_index(char* searchee) {
+static mail_index_type* find_char_in_index(char* searchee) {
   mail_index_type* temp_rec;
 
   if (!*searchee) {
@@ -71,7 +66,7 @@ mail_index_type* find_char_in_index(char* searchee) {
   return temp_rec;
 }
 
-void write_to_file(void* buf, int size, long filepos) {
+static void write_to_file(void* buf, int size, long filepos) {
   FILE* mail_file;
 
   mail_file = fopen(MAIL_FILE, "r+b");
@@ -89,10 +84,9 @@ void write_to_file(void* buf, int size, long filepos) {
   fseek(mail_file, 0L, 2);
   file_end_pos = ftell(mail_file);
   fclose(mail_file);
-  return;
 }
 
-void read_from_file(void* buf, int size, long filepos) {
+static void read_from_file(void* buf, int size, long filepos) {
   FILE* mail_file;
 
   mail_file = fopen(MAIL_FILE, "r+b");
@@ -106,10 +100,9 @@ void read_from_file(void* buf, int size, long filepos) {
   fseek(mail_file, filepos, 0);
   fread(buf, size, 1, mail_file);
   fclose(mail_file);
-  return;
 }
 
-void index_mail(char* raw_name_to_index, long pos) {
+static void index_mail(char* raw_name_to_index, long pos) {
   mail_index_type* new_index;
   position_list_type* new_position;
   char name_to_index[100]; /* I'm paranoid.  so sue me. */
@@ -207,8 +200,8 @@ void store_mail(char* to, char* from, char* message_pointer) {
   int bytes_written = 0;
   int total_length = strlen(message_pointer);
 
-  assert(sizeof(header_block_type) == sizeof(data_block_type));
-  assert(sizeof(header_block_type) == BLOCK_SIZE);
+  static_assert(sizeof(header_block_type) == sizeof(data_block_type), "");
+  static_assert(sizeof(header_block_type) == BLOCK_SIZE, "");
 
   if (!*from || !*to || !*message_pointer) {
     vlog("Mail system -- non-fatal error #5.");
@@ -287,15 +280,16 @@ void store_mail(char* to, char* from, char* message_pointer) {
 } /* store mail */
 
 /* READ_DELETE */
-/* read_delete takes 1 char pointer to the name of the person whose mail
+/*
+read_delete takes 1 char pointer to the name of the person whose mail
 you're retrieving.  It returns to you a char pointer to the message text.
-The mail is then discarded from the file and the mail index. */
+The mail is then discarded from the file and the mail index.
 
-char* read_delete(char* recipient, char* recipient_formatted)
-/* recipient is the name as it appears in the index.
-   recipient_formatted is the name as it should appear on the mail
-   header (i.e. the text handed to the player) */
-{
+recipient is the name as it appears in the index.
+recipient_formatted is the name as it should appear on the mail
+header (i.e. the text handed to the player)
+*/
+char* read_delete(char* recipient, char* recipient_formatted) {
   header_block_type header;
   data_block_type data;
   mail_index_type *mail_pointer, *prev_mail;
@@ -398,40 +392,7 @@ char* read_delete(char* recipient, char* recipient_formatted)
 ** routines.  Written by Rasmussen (jelson@server.cs.jhu.edu) **
 **************************************************************/
 
-int postmaster(struct char_data* ch, int cmd, char* arg) {
-  if (!ch->desc)
-    return 0; /* so mobs don't get caught here */
-
-  switch (cmd) {
-    case 303: /* mail */
-      postmaster_send_mail(ch, cmd, arg);
-      return 1;
-      break;
-    case 304: /* check */
-      postmaster_check_mail(ch, cmd, arg);
-      return 1;
-      break;
-    case 305: /* receive */
-      postmaster_receive_mail(ch, cmd, arg);
-      return 1;
-      break;
-    default:
-      return 0;
-      break;
-  }
-}
-
-int mail_ok(struct char_data* ch) {
-  if (no_mail) {
-    send_to_char("Sorry, the mail system is having technical difficulties.\n\r",
-      ch);
-    return 0;
-  }
-
-  return 1;
-}
-
-void postmaster_send_mail(struct char_data* ch, int cmd, char* arg) {
+static void postmaster_send_mail(struct char_data* ch, int cmd, char* arg) {
   struct char_data* mailman;
   char buf[200], recipient[100], *tmp;
 
@@ -462,7 +423,7 @@ void postmaster_send_mail(struct char_data* ch, int cmd, char* arg) {
     return;
   }
 
-  _parse_name(arg, recipient);
+  parse_name(arg, recipient);
 
   if (find_name(recipient) < 0) {
     act("$n tells you, 'No one by that name is registered here!'", FALSE,
@@ -489,7 +450,7 @@ void postmaster_send_mail(struct char_data* ch, int cmd, char* arg) {
   ch->desc->max_str = MAX_MAIL_SIZE;
 }
 
-void postmaster_check_mail(struct char_data* ch, int cmd, char* arg) {
+static void postmaster_check_mail(struct char_data* ch, int cmd, char* arg) {
   struct char_data* mailman;
   char buf[200], recipient[100], *tmp;
 
@@ -498,7 +459,7 @@ void postmaster_check_mail(struct char_data* ch, int cmd, char* arg) {
   if (!mailman)
     return;
 
-  _parse_name(GET_NAME(ch), recipient);
+  parse_name(GET_NAME(ch), recipient);
 
   for (tmp = recipient; *tmp; tmp++)
     if (isupper(*tmp))
@@ -511,7 +472,7 @@ void postmaster_check_mail(struct char_data* ch, int cmd, char* arg) {
   act(buf, FALSE, mailman, 0, ch, TO_VICT);
 }
 
-void postmaster_receive_mail(struct char_data* ch, int cmd, char* arg) {
+static void postmaster_receive_mail(struct char_data* ch, int cmd, char* arg) {
   struct char_data* mailman;
   char buf[200], recipient[100], *tmp;
   struct obj_data* tmp_obj;
@@ -521,7 +482,7 @@ void postmaster_receive_mail(struct char_data* ch, int cmd, char* arg) {
   if (!mailman)
     return;
 
-  _parse_name(GET_NAME(ch), recipient);
+  parse_name(GET_NAME(ch), recipient);
 
   for (tmp = recipient; *tmp; tmp++)
     if (isupper(*tmp))
@@ -565,4 +526,25 @@ void postmaster_receive_mail(struct char_data* ch, int cmd, char* arg) {
   }
 }
 
-/* The end. */
+int postmaster(struct char_data* ch, int cmd, char* arg) {
+  if (!ch->desc)
+    return 0; /* so mobs don't get caught here */
+
+  switch (cmd) {
+    case 303: /* mail */
+      postmaster_send_mail(ch, cmd, arg);
+      return 1;
+      break;
+    case 304: /* check */
+      postmaster_check_mail(ch, cmd, arg);
+      return 1;
+      break;
+    case 305: /* receive */
+      postmaster_receive_mail(ch, cmd, arg);
+      return 1;
+      break;
+    default:
+      return 0;
+      break;
+  }
+}

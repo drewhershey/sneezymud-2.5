@@ -6,31 +6,18 @@
 
 #include <ctype.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
-#include <time.h>
 
 #include "comm.h"
 #include "db.h"
 #include "handler.h"
-#include "hash.h"
 #include "interpreter.h"
-#include "limits.h"
-#include "race.h"
-#include "spells.h"
+#include "spec_procs.h"
 #include "structs.h"
-#include "trap.h"
 #include "utils.h"
 
-struct char_data* FindMobInRoomWithFunction(int room, int (*func)());
-int craps_table_man(struct char_data* ch, int cmd, char* arg);
-extern struct index_data* obj_index;
-extern struct obj_data* object_list;
-extern struct char_data* character_list;
-
-void spin_slot(struct char_data* ch);
-void roll_dice(struct char_data* ch);
-
-char* ChooseFirstFruit() {
+static char* ChooseFirstFruit(void) {
   int num;
   static char* fruits[8] = {
     "cherry",
@@ -54,7 +41,7 @@ char* ChooseFirstFruit() {
     return (fruits[0]);
 }
 
-char* ChooseSecondFruit() {
+static char* ChooseSecondFruit(void) {
   int num;
   static char* fruits[8] = {
     "cherry",
@@ -77,7 +64,7 @@ char* ChooseSecondFruit() {
     return (fruits[0]);
 }
 
-char* ChooseThirdFruit() {
+static char* ChooseThirdFruit(void) {
   int num;
   static char* fruits[8] = {
     "cherry",
@@ -100,7 +87,7 @@ char* ChooseThirdFruit() {
     return (fruits[0]);
 }
 
-void lose_dice(struct char_data* ch) {
+static void lose_dice(struct char_data* ch) {
   struct obj_data* dice;
   struct char_data* crap_man;
 
@@ -114,7 +101,7 @@ void lose_dice(struct char_data* ch) {
   do_say(crap_man, "Next roller please?", 0);
 }
 
-void get_dice(struct char_data* ch) {
+static void get_dice(struct char_data* ch) {
   struct obj_data* dice;
   struct char_data* crap_man;
   char buf[80];
@@ -140,7 +127,7 @@ void get_dice(struct char_data* ch) {
   }
 }
 
-int check_for_dice_held(struct char_data* ch) {
+static int check_for_dice_held(struct char_data* ch) {
   struct obj_data* dice;
 
   dice = get_obj_in_list_vis(ch, "qwert", ch->equipment[HOLD]);
@@ -151,7 +138,7 @@ int check_for_dice_held(struct char_data* ch) {
     return (FALSE);
 }
 
-int check_for_dice_in_inv(struct char_data* ch) {
+static int check_for_dice_in_inv(struct char_data* ch) {
   struct obj_data* dice;
 
   dice = get_obj_in_list_vis(ch, "qwert", ch->carrying);
@@ -162,7 +149,7 @@ int check_for_dice_in_inv(struct char_data* ch) {
     return (FALSE);
 }
 
-int check_pointroll(struct char_data* ch) {
+static int check_pointroll(struct char_data* ch) {
   struct char_data *tmp_char, *temp;
 
   for (tmp_char = character_list; tmp_char; tmp_char = temp) {
@@ -351,6 +338,485 @@ void do_bet(struct char_data* ch, char* arg, int cmd) {
   }
 }
 
+static void spin_slot(struct char_data* ch) {
+  char buf[255];
+  char* fruit1;
+  char* fruit2;
+  char* fruit3;
+  struct obj_data *coins, *slot;
+  int bits;
+  struct char_data* tmp_char;
+
+  send_to_char("You stick your coins in the machine.\n\r", ch);
+  send_to_char("You pull the arm of the slot machine.\n\r", ch);
+
+  fruit1 = ChooseFirstFruit();
+
+  if (strcmp(fruit1, "Seven")) {
+    if (number(1, 15) == 1) {
+      fruit2 = fruit1;
+      fruit3 = fruit1;
+    } else {
+      fruit2 = ChooseSecondFruit();
+      fruit3 = ChooseThirdFruit();
+    }
+  } else {
+    fruit2 = ChooseSecondFruit();
+    fruit3 = ChooseThirdFruit();
+  }
+
+  sprintf(buf, "%-10s %-10s %-10s", fruit1, fruit2, fruit3);
+  strcat(buf, "\n\r");
+  send_to_char(buf, ch);
+  sprintf(buf, "$n spins a [%-10s %-10s %-10s]", fruit1, fruit2, fruit3);
+  act(buf, FALSE, ch, 0, 0, TO_ROOM);
+
+  bits = generic_find("slot", FIND_OBJ_ROOM, ch, &tmp_char, &slot);
+
+  if (!strcmp(fruit1, "cherry")) {
+    if (strcmp(fruit1, fruit2)) {
+      send_to_char("You win!\n\r", ch);
+      coins = create_money(2 * (ch->bet.slot));
+      if (coins && (bits == FIND_OBJ_ROOM)) {
+        obj_to_obj(coins, slot);
+        ch->bet.slot = 0;
+        return;
+      } else {
+        sprintf(buf, "No slot machine in room %d", ch->in_room);
+        vlog(buf);
+        return;
+      }
+    } else {
+      send_to_char("You win!\n\r", ch);
+      coins = create_money(4 * (ch->bet.slot));
+      if (coins && (bits == FIND_OBJ_ROOM)) {
+        obj_to_obj(coins, slot);
+        ch->bet.slot = 0;
+        return;
+      } else {
+        sprintf(buf, "No slot machine in room %d", ch->in_room);
+        vlog(buf);
+        return;
+      }
+    }
+  } else if (strcmp(fruit1, "Seven") && (fruit1 == fruit2) &&
+             (fruit2 == fruit3)) {
+    send_to_char("You win!\n\r", ch);
+    coins = create_money(9 * (ch->bet.slot));
+    if (coins && (bits == FIND_OBJ_ROOM)) {
+      obj_to_obj(coins, slot);
+      ch->bet.slot = 0;
+      return;
+    } else {
+      sprintf(buf, "No slot machine in room %d", ch->in_room);
+      vlog(buf);
+      return;
+    }
+  } else if (!strcmp(fruit3, "bally") && (fruit2 == fruit1)) {
+    send_to_char("You win!\n\r", ch);
+    coins = create_money(20 * (ch->bet.slot));
+    if (coins && (bits == FIND_OBJ_ROOM)) {
+      obj_to_obj(coins, slot);
+      ch->bet.slot = 0;
+      return;
+    } else {
+      sprintf(buf, "No slot machine in room %d", ch->in_room);
+      vlog(buf);
+      return;
+    }
+  } else {
+    send_to_char("You lose!\n\r", ch);
+    ch->bet.slot = 0;
+    return;
+  }
+}
+
+static int can_bet_craps(struct char_data* ch) {
+  struct char_data* crap_man;
+  char buf[80];
+
+  crap_man = FindMobInRoomWithFunction(ch->in_room, craps_table_man);
+
+  if (!crap_man)
+    return (FALSE);
+
+  if (!crap_man->act_ptr)
+    crap_man->act_ptr = (int*)calloc(1, (sizeof(int)));
+
+  if ((*((int*)crap_man->act_ptr)) == 0)
+    return (TRUE);
+  else
+    return (FALSE);
+}
+
+static void check_craps(struct char_data* ch, int diceroll) {
+  struct char_data *better, *temp;
+  char buf[255];
+
+  if (diceroll != 2)
+    if (diceroll != 3)
+      if (diceroll != 12)
+        return;
+
+  if (ch->point_roll != 0)
+    return;
+
+  for (better = character_list; better; better = temp) {
+    temp = better->next;
+    if (ch->in_room == better->in_room) {
+      if (IS_SET(better->bet_opt.craps_options, COME_OUT)) {
+        send_to_char("Craps....You Lose!\n\r", better);
+        REMOVE_BIT(better->bet_opt.craps_options, COME_OUT);
+        better->bet.come = 0;
+        if (better == ch)
+          lose_dice(ch);
+      }
+      if (IS_SET(better->bet_opt.craps_options, CRAP_OUT)) {
+        send_to_char("Craps....You Win!\n\r", better);
+        REMOVE_BIT(better->bet_opt.craps_options, CRAP_OUT);
+        GET_GOLD(better) += 2 * better->bet.crap;
+        better->bet.crap = 0;
+      }
+    }
+  }
+}
+
+static void check_seven(struct char_data* ch, int diceroll) {
+  struct char_data *better, *temp;
+
+  if (diceroll != 7)
+    return;
+
+  for (better = character_list; better; better = temp) {
+    temp = better->next;
+
+    if (ch->in_room == better->in_room) {
+      if (ch->point_roll == 0) {
+        if (IS_SET(better->bet_opt.craps_options, COME_OUT)) {
+          send_to_char("Seven! You win your come out bet!\n\r", better);
+          GET_GOLD(better) += 2 * better->bet.come;
+          REMOVE_BIT(better->bet_opt.craps_options, COME_OUT);
+          better->bet.come = 0;
+        }
+        if (IS_SET(better->bet_opt.craps_options, CRAP_OUT)) {
+          send_to_char("Seven! You lose your crap out bet!\n\r", better);
+          REMOVE_BIT(better->bet_opt.craps_options, CRAP_OUT);
+          better->bet.crap = 0;
+          if (better == ch)
+            lose_dice(ch);
+        }
+      } else {
+        if (IS_SET(better->bet_opt.craps_options, COME_OUT)) {
+          send_to_char("Seven! You lose your come out bet!\n\r", better);
+          REMOVE_BIT(better->bet_opt.craps_options, COME_OUT);
+          better->bet.come = 0;
+          if (better == ch)
+            lose_dice(ch);
+        }
+        if (IS_SET(better->bet_opt.craps_options, CRAP_OUT)) {
+          send_to_char("Seven! You win your crap out bet!\n\r", better);
+          GET_GOLD(better) += 2 * better->bet.crap;
+          REMOVE_BIT(better->bet_opt.craps_options, CRAP_OUT);
+          better->bet.crap = 0;
+        }
+      }
+    }
+  }
+  ch->point_roll = 0;
+}
+
+void check_eleven(struct char_data* ch, int diceroll) {
+  struct char_data *better, *temp;
+  char buf[255];
+
+  if (diceroll != 11)
+    return;
+
+  if (ch->point_roll != 0)
+    return;
+
+  for (better = character_list; better; better = temp) {
+    temp = better->next;
+    if (ch->in_room == better->in_room) {
+      if (IS_SET(better->bet_opt.craps_options, COME_OUT)) {
+        send_to_char("Seven come ELEVEN! You hit your come out bet!\n\r",
+          better);
+        GET_GOLD(better) += 2 * better->bet.come;
+        REMOVE_BIT(better->bet_opt.craps_options, COME_OUT);
+        better->bet.come = 0;
+      }
+      if (IS_SET(better->bet_opt.craps_options, CRAP_OUT)) {
+        send_to_char(
+          "Seven come ELEVEN! You hit the come out bet. You lose!\n\r", better);
+        REMOVE_BIT(better->bet_opt.craps_options, CRAP_OUT);
+        better->bet.crap = 0;
+        if (better == ch)
+          lose_dice(ch);
+      }
+    }
+  }
+}
+
+static void check_two(struct char_data* better, int diceroll) {
+  char buf[255];
+
+  if (diceroll == 2) {
+    send_to_char("Two hit!. Nice bet!\n\r", better);
+    GET_GOLD(better) += 31 * better->bet.two;
+    REMOVE_BIT(better->bet_opt.one_roll, TWO2);
+    better->bet.two = 0;
+  } else {
+    send_to_char("No two....You lose your two bet!\n\r", better);
+    REMOVE_BIT(better->bet_opt.one_roll, TWO2);
+    better->bet.two = 0;
+  }
+}
+
+static void check_three(struct char_data* better, int diceroll) {
+  char buf[255];
+
+  if (diceroll == 3) {
+    send_to_char("Three hit! Nice bet!\n\r", better);
+    GET_GOLD(better) += 16 * better->bet.three;
+    REMOVE_BIT(better->bet_opt.one_roll, THREE3);
+    better->bet.three = 0;
+  } else {
+    send_to_char("No three....You lose your three bet!\n\r", better);
+    REMOVE_BIT(better->bet_opt.one_roll, THREE3);
+    better->bet.three = 0;
+  }
+}
+
+static void check_oneroll_eleven(struct char_data* better, int diceroll) {
+  char buf[255];
+
+  if (diceroll == 11) {
+    send_to_char("Eleven hit! Nice bet!\n\r", better);
+    GET_GOLD(better) += 16 * better->bet.eleven;
+    REMOVE_BIT(better->bet_opt.one_roll, ELEVEN);
+    better->bet.eleven = 0;
+  } else {
+    send_to_char("No eleven....You lose your eleven bet!\n\r", better);
+    REMOVE_BIT(better->bet_opt.one_roll, ELEVEN);
+    better->bet.eleven = 0;
+  }
+}
+
+static void check_twelve(struct char_data* better, int diceroll) {
+  char buf[255];
+
+  if (diceroll == 12) {
+    send_to_char("Twelve hit! Nice bet!\n\r", better);
+    GET_GOLD(better) += 31 * better->bet.twelve;
+  } else {
+    send_to_char("No twelve....You lose your twelve bet!\n\r", better);
+  }
+  REMOVE_BIT(better->bet_opt.one_roll, TWELVE);
+  better->bet.twelve = 0;
+}
+
+static void check_oneroll_craps(struct char_data* better, int diceroll) {
+  char buf[255];
+
+  if (diceroll == 3) {
+    send_to_char("Three hit! Your bet on craps hit!\n\r", better);
+    REMOVE_BIT(better->bet_opt.one_roll, CRAPS);
+    GET_GOLD(better) += 7 * better->bet.one_craps;
+  } else if (diceroll == 2) {
+    send_to_char("Two hit! Your bet on craps hit!\n\r", better);
+    REMOVE_BIT(better->bet_opt.one_roll, CRAPS);
+    GET_GOLD(better) += 7 * better->bet.one_craps;
+  } else if (diceroll == 12) {
+    send_to_char("Twelve hit. Your bet on craps hit!\n\r", better);
+    REMOVE_BIT(better->bet_opt.one_roll, CRAPS);
+    GET_GOLD(better) += 7 * better->bet.one_craps;
+  } else {
+    send_to_char("No craps....You lose your bet on craps!\n\r", better);
+    REMOVE_BIT(better->bet_opt.one_roll, CRAPS);
+  }
+  better->bet.one_craps = 0;
+}
+
+static void check_oneroll_seven(struct char_data* better, int diceroll) {
+  if (diceroll == 7) {
+    send_to_char("You win your oneroll seven bet!\n\r", better);
+    GET_GOLD(better) += 4 * better->bet.seven;
+  } else {
+    send_to_char("You lose your oneroll seven bet.\n\r", better);
+  }
+  REMOVE_BIT(better->bet_opt.one_roll, SEVEN);
+  better->bet.seven = 0;
+}
+
+static void check_field(struct char_data* better, int diceroll) {
+  struct char_data* crap_man;
+  char buf[100];
+
+  crap_man = FindMobInRoomWithFunction(better->in_room, craps_table_man);
+
+  if ((diceroll >= 5) && (diceroll <= 8)) {
+    if (crap_man) {
+      sprintf(buf, "%s The roll is %d. You lose your bet on the field.",
+        GET_NAME(better), diceroll);
+      do_tell(crap_man, buf, 0);
+    }
+  } else {
+    if (crap_man) {
+      sprintf(buf, "%s The roll is %d. You win your bet on the field!",
+        GET_NAME(better), diceroll);
+      do_tell(crap_man, buf, 0);
+    }
+    if ((diceroll < 12) && (diceroll > 2))
+      GET_GOLD(better) += 2 * better->bet.field_bet;
+    else
+      GET_GOLD(better) += better->bet.field_bet;
+  }
+  better->bet.field_bet = 0;
+  REMOVE_BIT(better->bet_opt.one_roll, FIELD_BET);
+}
+
+static void check_onerolls(struct char_data* ch, int diceroll) {
+  struct char_data *better, *temp;
+
+  for (better = character_list; better; better = temp) {
+    temp = better->next;
+    if (ch->in_room == better->in_room) {
+      if (IS_SET(better->bet_opt.one_roll, TWO2)) {
+        check_two(better, diceroll);
+      }
+      if (IS_SET(better->bet_opt.one_roll, THREE3)) {
+        check_three(better, diceroll);
+      }
+      if (IS_SET(better->bet_opt.one_roll, ELEVEN)) {
+        check_oneroll_eleven(better, diceroll);
+      }
+      if (IS_SET(better->bet_opt.one_roll, TWELVE)) {
+        check_twelve(better, diceroll);
+      }
+      if (IS_SET(better->bet_opt.one_roll, CRAPS)) {
+        check_oneroll_craps(better, diceroll);
+      }
+      if (IS_SET(better->bet_opt.one_roll, SEVEN)) {
+        check_oneroll_seven(better, diceroll);
+      }
+      if (IS_SET(better->bet_opt.one_roll, FIELD_BET)) {
+        check_field(better, diceroll);
+      }
+    }
+  }
+}
+
+static void set_point(struct char_data* ch, int diceroll) {
+  char buf[255];
+
+  if ((diceroll == 2) || (diceroll == 3) || (diceroll == 7) ||
+      (diceroll == 11) || (diceroll == 12))
+    return;
+
+  ch->point_roll = diceroll;
+
+  sprintf(buf, "%d is the point. The point is %d.\n\r", diceroll, diceroll);
+  send_to_room(buf, ch->in_room);
+}
+
+static void WinLoseCraps(struct char_data* ch, int diceroll) {
+  struct char_data *better, *temp;
+  char buf[255];
+
+  for (better = character_list; better; better = temp) {
+    temp = better->next;
+    if ((ch->in_room == better->in_room) && (IS_PC(better))) {
+      if (IS_SET(better->bet_opt.craps_options, COME_OUT)) {
+        sprintf(buf, "The point [%d] was hit. You win!\n\r", diceroll);
+        send_to_char(buf, better);
+        GET_GOLD(better) += 2 * better->bet.come;
+        REMOVE_BIT(better->bet_opt.craps_options, COME_OUT);
+        better->bet.come = 0;
+      }
+      if (IS_SET(better->bet_opt.craps_options, CRAP_OUT)) {
+        sprintf(buf, "The point [%d] was hit. You lose.\n\r", diceroll);
+        send_to_char(buf, better);
+        REMOVE_BIT(better->bet_opt.craps_options, CRAP_OUT);
+        better->bet.crap = 0;
+        if (better == ch)
+          lose_dice(ch);
+      }
+    }
+  }
+  ch->point_roll = 0;
+}
+
+static void roll_dice(struct char_data* ch) {
+  int die_one, die_two, dice_roll;
+  char buf[255];
+  struct char_data *better, *temp, *table_man;
+
+  if (!check_for_dice_held(ch)) {
+    send_to_char("You dont have control of the dice!\n\r", ch);
+    return;
+  }
+
+  table_man = FindMobInRoomWithFunction(ch->in_room, craps_table_man);
+  if (table_man) {
+    if (!can_bet_craps) {
+      sprintf(buf, "%s You can't roll until I say so!", GET_NAME(ch));
+      do_tell(table_man, buf, 0);
+      return;
+    }
+    if (ch->bet.come == 0) {
+      sprintf(buf, "%s Sorry to keep the table, you need to place a come bet.",
+        GET_NAME(ch));
+      do_tell(table_man, buf, 0);
+      return;
+    }
+  }
+
+  die_one = dice(1, 6);
+  die_two = dice(1, 6);
+  dice_roll = (die_one + die_two);
+
+  if (die_one == 1)
+    send_to_room(ONE, ch->in_room);
+  else if (die_one == 2)
+    send_to_room(TWO, ch->in_room);
+  else if (die_one == 3)
+    send_to_room(THREE, ch->in_room);
+  else if (die_one == 4)
+    send_to_room(FOUR, ch->in_room);
+  else if (die_one == 5)
+    send_to_room(FIVE, ch->in_room);
+  else if (die_one == 6)
+    send_to_room(SIX, ch->in_room);
+
+  if (die_two == 1)
+    send_to_room(ONE, ch->in_room);
+  else if (die_two == 2)
+    send_to_room(TWO, ch->in_room);
+  else if (die_two == 3)
+    send_to_room(THREE, ch->in_room);
+  else if (die_two == 4)
+    send_to_room(FOUR, ch->in_room);
+  else if (die_two == 5)
+    send_to_room(FIVE, ch->in_room);
+  else if (die_two == 6)
+    send_to_room(SIX, ch->in_room);
+
+  sprintf(buf, "%s rolled a %d and a %d. Total = %d\n\r", GET_NAME(ch), die_one,
+    die_two, dice_roll);
+  send_to_room(buf, ch->in_room);
+
+  check_craps(ch, dice_roll);
+  check_seven(ch, dice_roll);
+  check_eleven(ch, dice_roll);
+  check_onerolls(ch, dice_roll);
+
+  if (ch->point_roll == 0) {
+    set_point(ch, dice_roll);
+  } else if (ch->point_roll == dice_roll) {
+    WinLoseCraps(ch, dice_roll);
+  }
+}
+
 void do_play(struct char_data* ch, char* arg, int cmd) {
   char bet[255], buf[255], game[255], options[255];
   struct obj_data* slot;
@@ -505,56 +971,6 @@ void clear_bets(struct char_data* ch) {
   ch->bet.one_craps = 0;
 }
 
-int can_bet_craps(struct char_data* ch) {
-  struct char_data* crap_man;
-  char buf[80];
-
-  crap_man = FindMobInRoomWithFunction(ch->in_room, craps_table_man);
-
-  if (!crap_man)
-    return (FALSE);
-
-  if (!crap_man->act_ptr)
-    crap_man->act_ptr = (int*)calloc(1, (sizeof(int)));
-
-  if ((*((int*)crap_man->act_ptr)) == 0)
-    return (TRUE);
-  else
-    return (FALSE);
-}
-
-void check_craps(struct char_data* ch, int diceroll) {
-  struct char_data *better, *temp;
-  char buf[255];
-
-  if (diceroll != 2)
-    if (diceroll != 3)
-      if (diceroll != 12)
-        return;
-
-  if (ch->point_roll != 0)
-    return;
-
-  for (better = character_list; better; better = temp) {
-    temp = better->next;
-    if (ch->in_room == better->in_room) {
-      if (IS_SET(better->bet_opt.craps_options, COME_OUT)) {
-        send_to_char("Craps....You Lose!\n\r", better);
-        REMOVE_BIT(better->bet_opt.craps_options, COME_OUT);
-        better->bet.come = 0;
-        if (better == ch)
-          lose_dice(ch);
-      }
-      if (IS_SET(better->bet_opt.craps_options, CRAP_OUT)) {
-        send_to_char("Craps....You Win!\n\r", better);
-        REMOVE_BIT(better->bet_opt.craps_options, CRAP_OUT);
-        GET_GOLD(better) += 2 * better->bet.crap;
-        better->bet.crap = 0;
-      }
-    }
-  }
-}
-
 int CheckForPoint(struct char_data* ch) {
   struct obj_data* i;
 
@@ -571,106 +987,6 @@ int CheckForPoint(struct char_data* ch) {
       }
     }
   }
-}
-
-void check_seven(struct char_data* ch, int diceroll) {
-  struct char_data *better, *temp;
-
-  if (diceroll != 7)
-    return;
-
-  for (better = character_list; better; better = temp) {
-    temp = better->next;
-
-    if (ch->in_room == better->in_room) {
-      if (ch->point_roll == 0) {
-        if (IS_SET(better->bet_opt.craps_options, COME_OUT)) {
-          send_to_char("Seven! You win your come out bet!\n\r", better);
-          GET_GOLD(better) += 2 * better->bet.come;
-          REMOVE_BIT(better->bet_opt.craps_options, COME_OUT);
-          better->bet.come = 0;
-        }
-        if (IS_SET(better->bet_opt.craps_options, CRAP_OUT)) {
-          send_to_char("Seven! You lose your crap out bet!\n\r", better);
-          REMOVE_BIT(better->bet_opt.craps_options, CRAP_OUT);
-          better->bet.crap = 0;
-          if (better == ch)
-            lose_dice(ch);
-        }
-      } else {
-        if (IS_SET(better->bet_opt.craps_options, COME_OUT)) {
-          send_to_char("Seven! You lose your come out bet!\n\r", better);
-          REMOVE_BIT(better->bet_opt.craps_options, COME_OUT);
-          better->bet.come = 0;
-          if (better == ch)
-            lose_dice(ch);
-        }
-        if (IS_SET(better->bet_opt.craps_options, CRAP_OUT)) {
-          send_to_char("Seven! You win your crap out bet!\n\r", better);
-          GET_GOLD(better) += 2 * better->bet.crap;
-          REMOVE_BIT(better->bet_opt.craps_options, CRAP_OUT);
-          better->bet.crap = 0;
-        }
-      }
-    }
-  }
-  ch->point_roll = 0;
-}
-
-void check_eleven(struct char_data* ch, int diceroll) {
-  struct char_data *better, *temp;
-  char buf[255];
-
-  if (diceroll != 11)
-    return;
-
-  if (ch->point_roll != 0)
-    return;
-
-  for (better = character_list; better; better = temp) {
-    temp = better->next;
-    if (ch->in_room == better->in_room) {
-      if (IS_SET(better->bet_opt.craps_options, COME_OUT)) {
-        send_to_char("Seven come ELEVEN! You hit your come out bet!\n\r",
-          better);
-        GET_GOLD(better) += 2 * better->bet.come;
-        REMOVE_BIT(better->bet_opt.craps_options, COME_OUT);
-        better->bet.come = 0;
-      }
-      if (IS_SET(better->bet_opt.craps_options, CRAP_OUT)) {
-        send_to_char(
-          "Seven come ELEVEN! You hit the come out bet. You lose!\n\r", better);
-        REMOVE_BIT(better->bet_opt.craps_options, CRAP_OUT);
-        better->bet.crap = 0;
-        if (better == ch)
-          lose_dice(ch);
-      }
-    }
-  }
-}
-
-void set_point(struct char_data* ch, int diceroll) {
-  char buf[255];
-
-  if ((diceroll == 2) || (diceroll == 3) || (diceroll == 7) ||
-      (diceroll == 11) || (diceroll == 12))
-    return;
-
-  ch->point_roll = diceroll;
-
-  sprintf(buf, "%d is the point. The point is %d.\n\r", diceroll, diceroll);
-  send_to_room(buf, ch->in_room);
-}
-
-void check_oneroll_seven(struct char_data* better, int diceroll) {
-  if (diceroll == 7) {
-    send_to_char("You win your oneroll seven bet!\n\r", better);
-    GET_GOLD(better) += 4 * better->bet.seven;
-  } else {
-    send_to_char("You lose your oneroll seven bet.\n\r", better);
-  }
-  REMOVE_BIT(better->bet_opt.one_roll, SEVEN);
-  better->bet.seven = 0;
 }
 
 void check_horn(struct char_data* better, int diceroll) {
@@ -690,33 +1006,6 @@ void check_horn(struct char_data* better, int diceroll) {
   better->bet.horn_bet = 0;
 }
 
-void check_field(struct char_data* better, int diceroll) {
-  struct char_data* crap_man;
-  char buf[100];
-
-  crap_man = FindMobInRoomWithFunction(better->in_room, craps_table_man);
-
-  if ((diceroll >= 5) && (diceroll <= 8)) {
-    if (crap_man) {
-      sprintf(buf, "%s The roll is %d. You lose your bet on the field.",
-        GET_NAME(better), diceroll);
-      do_tell(crap_man, buf, 0);
-    }
-  } else {
-    if (crap_man) {
-      sprintf(buf, "%s The roll is %d. You win your bet on the field!",
-        GET_NAME(better), diceroll);
-      do_tell(crap_man, buf, 0);
-    }
-    if ((diceroll < 12) && (diceroll > 2))
-      GET_GOLD(better) += 2 * better->bet.field_bet;
-    else
-      GET_GOLD(better) += better->bet.field_bet;
-  }
-  better->bet.field_bet = 0;
-  REMOVE_BIT(better->bet_opt.one_roll, FIELD_BET);
-}
-
 void check_hard_four(struct char_data* better, int diceroll) {
   struct char_data *tmp_better, *temp;
   char buf[255];
@@ -729,308 +1018,6 @@ void check_hard_eight(struct char_data* better, int diceroll) {}
 void check_hard_ten(struct char_data* better, int diceroll) {}
 
 void check_hardrolls(struct char_data* better, int diceroll) {}
-
-void check_two(struct char_data* better, int diceroll) {
-  char buf[255];
-
-  if (diceroll == 2) {
-    send_to_char("Two hit!. Nice bet!\n\r", better);
-    GET_GOLD(better) += 31 * better->bet.two;
-    REMOVE_BIT(better->bet_opt.one_roll, TWO2);
-    better->bet.two = 0;
-  } else {
-    send_to_char("No two....You lose your two bet!\n\r", better);
-    REMOVE_BIT(better->bet_opt.one_roll, TWO2);
-    better->bet.two = 0;
-  }
-}
-
-void check_three(struct char_data* better, int diceroll) {
-  char buf[255];
-
-  if (diceroll == 3) {
-    send_to_char("Three hit! Nice bet!\n\r", better);
-    GET_GOLD(better) += 16 * better->bet.three;
-    REMOVE_BIT(better->bet_opt.one_roll, THREE3);
-    better->bet.three = 0;
-  } else {
-    send_to_char("No three....You lose your three bet!\n\r", better);
-    REMOVE_BIT(better->bet_opt.one_roll, THREE3);
-    better->bet.three = 0;
-  }
-}
-
-void check_oneroll_eleven(struct char_data* better, int diceroll) {
-  char buf[255];
-
-  if (diceroll == 11) {
-    send_to_char("Eleven hit! Nice bet!\n\r", better);
-    GET_GOLD(better) += 16 * better->bet.eleven;
-    REMOVE_BIT(better->bet_opt.one_roll, ELEVEN);
-    better->bet.eleven = 0;
-  } else {
-    send_to_char("No eleven....You lose your eleven bet!\n\r", better);
-    REMOVE_BIT(better->bet_opt.one_roll, ELEVEN);
-    better->bet.eleven = 0;
-  }
-}
-
-void check_twelve(struct char_data* better, int diceroll) {
-  char buf[255];
-
-  if (diceroll == 12) {
-    send_to_char("Twelve hit! Nice bet!\n\r", better);
-    GET_GOLD(better) += 31 * better->bet.twelve;
-  } else {
-    send_to_char("No twelve....You lose your twelve bet!\n\r", better);
-  }
-  REMOVE_BIT(better->bet_opt.one_roll, TWELVE);
-  better->bet.twelve = 0;
-}
-
-void check_oneroll_craps(struct char_data* better, int diceroll) {
-  char buf[255];
-
-  if (diceroll == 3) {
-    send_to_char("Three hit! Your bet on craps hit!\n\r", better);
-    REMOVE_BIT(better->bet_opt.one_roll, CRAPS);
-    GET_GOLD(better) += 7 * better->bet.one_craps;
-  } else if (diceroll == 2) {
-    send_to_char("Two hit! Your bet on craps hit!\n\r", better);
-    REMOVE_BIT(better->bet_opt.one_roll, CRAPS);
-    GET_GOLD(better) += 7 * better->bet.one_craps;
-  } else if (diceroll == 12) {
-    send_to_char("Twelve hit. Your bet on craps hit!\n\r", better);
-    REMOVE_BIT(better->bet_opt.one_roll, CRAPS);
-    GET_GOLD(better) += 7 * better->bet.one_craps;
-  } else {
-    send_to_char("No craps....You lose your bet on craps!\n\r", better);
-    REMOVE_BIT(better->bet_opt.one_roll, CRAPS);
-  }
-  better->bet.one_craps = 0;
-}
-
-void check_onerolls(struct char_data* ch, int diceroll) {
-  struct char_data *better, *temp;
-
-  for (better = character_list; better; better = temp) {
-    temp = better->next;
-    if (ch->in_room == better->in_room) {
-      if (IS_SET(better->bet_opt.one_roll, TWO2)) {
-        check_two(better, diceroll);
-      }
-      if (IS_SET(better->bet_opt.one_roll, THREE3)) {
-        check_three(better, diceroll);
-      }
-      if (IS_SET(better->bet_opt.one_roll, ELEVEN)) {
-        check_oneroll_eleven(better, diceroll);
-      }
-      if (IS_SET(better->bet_opt.one_roll, TWELVE)) {
-        check_twelve(better, diceroll);
-      }
-      if (IS_SET(better->bet_opt.one_roll, CRAPS)) {
-        check_oneroll_craps(better, diceroll);
-      }
-      if (IS_SET(better->bet_opt.one_roll, SEVEN)) {
-        check_oneroll_seven(better, diceroll);
-      }
-      if (IS_SET(better->bet_opt.one_roll, FIELD_BET)) {
-        check_field(better, diceroll);
-      }
-    }
-  }
-}
-
-void WinLoseCraps(struct char_data* ch, int diceroll) {
-  struct char_data *better, *temp;
-  char buf[255];
-
-  for (better = character_list; better; better = temp) {
-    temp = better->next;
-    if ((ch->in_room == better->in_room) && (IS_PC(better))) {
-      if (IS_SET(better->bet_opt.craps_options, COME_OUT)) {
-        sprintf(buf, "The point [%d] was hit. You win!\n\r", diceroll);
-        send_to_char(buf, better);
-        GET_GOLD(better) += 2 * better->bet.come;
-        REMOVE_BIT(better->bet_opt.craps_options, COME_OUT);
-        better->bet.come = 0;
-      }
-      if (IS_SET(better->bet_opt.craps_options, CRAP_OUT)) {
-        sprintf(buf, "The point [%d] was hit. You lose.\n\r", diceroll);
-        send_to_char(buf, better);
-        REMOVE_BIT(better->bet_opt.craps_options, CRAP_OUT);
-        better->bet.crap = 0;
-        if (better == ch)
-          lose_dice(ch);
-      }
-    }
-  }
-  ch->point_roll = 0;
-}
-
-void roll_dice(struct char_data* ch) {
-  int die_one, die_two, dice_roll;
-  char buf[255];
-  struct char_data *better, *temp, *table_man;
-
-  if (!check_for_dice_held(ch)) {
-    send_to_char("You dont have control of the dice!\n\r", ch);
-    return;
-  }
-
-  table_man = FindMobInRoomWithFunction(ch->in_room, craps_table_man);
-  if (table_man) {
-    if (!can_bet_craps) {
-      sprintf(buf, "%s You can't roll until I say so!", GET_NAME(ch));
-      do_tell(table_man, buf, 0);
-      return;
-    }
-    if (ch->bet.come == 0) {
-      sprintf(buf, "%s Sorry to keep the table, you need to place a come bet.",
-        GET_NAME(ch));
-      do_tell(table_man, buf, 0);
-      return;
-    }
-  }
-
-  die_one = dice(1, 6);
-  die_two = dice(1, 6);
-  dice_roll = (die_one + die_two);
-
-  if (die_one == 1)
-    send_to_room(ONE, ch->in_room);
-  else if (die_one == 2)
-    send_to_room(TWO, ch->in_room);
-  else if (die_one == 3)
-    send_to_room(THREE, ch->in_room);
-  else if (die_one == 4)
-    send_to_room(FOUR, ch->in_room);
-  else if (die_one == 5)
-    send_to_room(FIVE, ch->in_room);
-  else if (die_one == 6)
-    send_to_room(SIX, ch->in_room);
-
-  if (die_two == 1)
-    send_to_room(ONE, ch->in_room);
-  else if (die_two == 2)
-    send_to_room(TWO, ch->in_room);
-  else if (die_two == 3)
-    send_to_room(THREE, ch->in_room);
-  else if (die_two == 4)
-    send_to_room(FOUR, ch->in_room);
-  else if (die_two == 5)
-    send_to_room(FIVE, ch->in_room);
-  else if (die_two == 6)
-    send_to_room(SIX, ch->in_room);
-
-  sprintf(buf, "%s rolled a %d and a %d. Total = %d\n\r", GET_NAME(ch), die_one,
-    die_two, dice_roll);
-  send_to_room(buf, ch->in_room);
-
-  check_craps(ch, dice_roll);
-  check_seven(ch, dice_roll);
-  check_eleven(ch, dice_roll);
-  check_onerolls(ch, dice_roll);
-
-  if (ch->point_roll == 0) {
-    set_point(ch, dice_roll);
-  } else if (ch->point_roll == dice_roll) {
-    WinLoseCraps(ch, dice_roll);
-  }
-}
-
-void spin_slot(struct char_data* ch) {
-  char buf[255];
-  char* fruit1;
-  char* fruit2;
-  char* fruit3;
-  struct obj_data *coins, *slot;
-  int bits;
-  struct char_data* tmp_char;
-
-  send_to_char("You stick your coins in the machine.\n\r", ch);
-  send_to_char("You pull the arm of the slot machine.\n\r", ch);
-
-  fruit1 = ChooseFirstFruit();
-
-  if (strcmp(fruit1, "Seven")) {
-    if (number(1, 15) == 1) {
-      fruit2 = fruit1;
-      fruit3 = fruit1;
-    } else {
-      fruit2 = ChooseSecondFruit();
-      fruit3 = ChooseThirdFruit();
-    }
-  } else {
-    fruit2 = ChooseSecondFruit();
-    fruit3 = ChooseThirdFruit();
-  }
-
-  sprintf(buf, "%-10s %-10s %-10s", fruit1, fruit2, fruit3);
-  strcat(buf, "\n\r");
-  send_to_char(buf, ch);
-  sprintf(buf, "$n spins a [%-10s %-10s %-10s]", fruit1, fruit2, fruit3);
-  act(buf, FALSE, ch, 0, 0, TO_ROOM);
-
-  bits = generic_find("slot", FIND_OBJ_ROOM, ch, &tmp_char, &slot);
-
-  if (!strcmp(fruit1, "cherry")) {
-    if (strcmp(fruit1, fruit2)) {
-      send_to_char("You win!\n\r", ch);
-      coins = create_money(2 * (ch->bet.slot));
-      if (coins && (bits == FIND_OBJ_ROOM)) {
-        obj_to_obj(coins, slot);
-        ch->bet.slot = 0;
-        return;
-      } else {
-        sprintf(buf, "No slot machine in room %d", ch->in_room);
-        vlog(buf);
-        return;
-      }
-    } else {
-      send_to_char("You win!\n\r", ch);
-      coins = create_money(4 * (ch->bet.slot));
-      if (coins && (bits == FIND_OBJ_ROOM)) {
-        obj_to_obj(coins, slot);
-        ch->bet.slot = 0;
-        return;
-      } else {
-        sprintf(buf, "No slot machine in room %d", ch->in_room);
-        vlog(buf);
-        return;
-      }
-    }
-  } else if (strcmp(fruit1, "Seven") && (fruit1 == fruit2) &&
-             (fruit2 == fruit3)) {
-    send_to_char("You win!\n\r", ch);
-    coins = create_money(9 * (ch->bet.slot));
-    if (coins && (bits == FIND_OBJ_ROOM)) {
-      obj_to_obj(coins, slot);
-      ch->bet.slot = 0;
-      return;
-    } else {
-      sprintf(buf, "No slot machine in room %d", ch->in_room);
-      vlog(buf);
-      return;
-    }
-  } else if (!strcmp(fruit3, "bally") && (fruit2 == fruit1)) {
-    send_to_char("You win!\n\r", ch);
-    coins = create_money(20 * (ch->bet.slot));
-    if (coins && (bits == FIND_OBJ_ROOM)) {
-      obj_to_obj(coins, slot);
-      ch->bet.slot = 0;
-      return;
-    } else {
-      sprintf(buf, "No slot machine in room %d", ch->in_room);
-      vlog(buf);
-      return;
-    }
-  } else {
-    send_to_char("You lose!\n\r", ch);
-    ch->bet.slot = 0;
-    return;
-  }
-}
 
 #define DICE 9002
 

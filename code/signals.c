@@ -5,16 +5,32 @@
  ************************************************************************* */
 
 #include <signal.h>
-#include <stdio.h>
+#include <stdlib.h>
 #include <sys/time.h>
 
-#include "structs.h"
+#include "comm.h"
 #include "utils.h"
 
-void checkpointing(int);
-void shutdown_request(int);
-void logsig(int);
-void hupsig(int);
+static void shutdown_request(int tmp) {
+  vlog("Received USR2 - shutdown request");
+  Shutdown = 1;
+}
+
+/* kick out players etc */
+static void hupsig(int tmp) {
+  vlog("Received SIGHUP, SIGINT, or SIGTERM. Shutting down");
+  exit(0); /* something more elegant should perhaps be substituted */
+}
+
+static void logsig(int tmp) { vlog("Signal received. Ignoring."); }
+
+static void checkpointing(int tmp) {
+  if (!tics) {
+    vlog("CHECKPOINT shutdown: tics not updated");
+    abort();
+  } else
+    tics = 0;
+}
 
 void signal_setup(void) {
   struct itimerval itime;
@@ -39,30 +55,3 @@ void signal_setup(void) {
   setitimer(ITIMER_VIRTUAL, &itime, 0);
   signal(SIGVTALRM, checkpointing);
 }
-
-void checkpointing(int tmp) {
-  extern int tics;
-
-  if (!tics) {
-    vlog("CHECKPOINT shutdown: tics not updated");
-    abort();
-  } else
-    tics = 0;
-}
-
-void shutdown_request(int tmp) {
-  extern int Shutdown;
-
-  vlog("Received USR2 - shutdown request");
-  Shutdown = 1;
-}
-
-/* kick out players etc */
-void hupsig(int tmp) {
-  extern int Shutdown;
-
-  vlog("Received SIGHUP, SIGINT, or SIGTERM. Shutting down");
-  exit(0); /* something more elegant should perhaps be substituted */
-}
-
-void logsig(int tmp) { vlog("Signal received. Ignoring."); }

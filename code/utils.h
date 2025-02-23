@@ -6,15 +6,19 @@
 #ifndef UTILS_H
 #define UTILS_H
 
-int CAN_SEE(struct char_data* s, struct char_data* o);
+#include <stdio.h>
+#include <stdlib.h>
 
-#if DEBUG
+#include "limits.h"
+#include "structs.h"
 
+#if defined(DEBUG) && DEBUG
 #define free(obj)                                \
   fprintf(stderr, "freeing %d\n", sizeof(*obj)); \
   free(obj)
-
 #endif
+
+int CAN_SEE(struct char_data* s, struct char_data* o);
 
 #define TRUE 1
 
@@ -26,26 +30,26 @@ int CAN_SEE(struct char_data* s, struct char_data* o);
 
 #define ISNEWL(ch) ((ch) == '\n' || (ch) == '\r')
 
-#define IS_WEAPON(o) (o->obj_flags.type_flag == ITEM_WEAPON)
-
 #define IF_STR(st) ((st) ? (st) : "\0")
 
 #define CAP(st) (*(st) = UPPER(*(st)), st)
 
-#define CREATE(result, type, number)                           \
-  do {                                                         \
-    if (!((result) = (type*)calloc((number), sizeof(type)))) { \
-      perror("malloc failure");                                \
-      abort();                                                 \
-    }                                                          \
+#define CREATE(result, type, number)                  \
+  do {                                                \
+    (result) = (type*)calloc((number), sizeof(type)); \
+    if (!(result)) {                                  \
+      perror("malloc failure");                       \
+      abort();                                        \
+    }                                                 \
   } while (0)
 
-#define RECREATE(result, type, number)                                     \
-  do {                                                                     \
-    if (!((result) = (type*)realloc((result), sizeof(type) * (number)))) { \
-      perror("realloc failure");                                           \
-      abort();                                                             \
-    }                                                                      \
+#define RECREATE(result, type, number)                            \
+  do {                                                            \
+    (result) = (type*)realloc((result), sizeof(type) * (number)); \
+    if (!(result)) {                                              \
+      perror("realloc failure");                                  \
+      abort();                                                    \
+    }                                                             \
   } while (0)
 
 #define IS_SET(flag, bit) ((flag) & (bit))
@@ -87,25 +91,28 @@ int CAN_SEE(struct char_data* s, struct char_data* o);
                                  : titles[(class)][(lev)].title_f) \
       : titles[(class)][(lev)].title_m)
 
-#define GET_REQ(i)                                                         \
-  (i < 2                                                                   \
-      ? "Awful"                                                            \
-      : (i < 4                                                             \
-            ? "Bad"                                                        \
-            : (i < 7 ? "Poor"                                              \
-                     : (i < 10 ? "Average"                                 \
-                               : (i < 14 ? "Fair"                          \
-                                         : (i < 20 ? "Good"                \
-                                                   : (i < 24 ? "Very good" \
-                                                             : "Superb")))))))
+#define GET_REQ(i)                                                        \
+  ((i) < 2                                                                \
+      ? "Awful"                                                           \
+      : ((i) < 4                                                          \
+            ? "Bad"                                                       \
+            : ((i) < 7                                                    \
+                  ? "Poor"                                                \
+                  : ((i) < 10                                             \
+                        ? "Average"                                       \
+                        : ((i) < 14 ? "Fair"                              \
+                                    : ((i) < 20 ? "Good"                  \
+                                                : ((i) < 24 ? "Very good" \
+                                                            : "Superb")))))))
 
-#define GET_WEAPON_DAMAGE(i)                                         \
-  (i < 2 ? "Very low damage"                                         \
-         : (i < 5 ? "Low damage"                                     \
-                  : (i < 10 ? "Moderate damage"                      \
-                            : (i < 15 ? "A good bit of damage"       \
-                                      : (i < 20 ? "Very nice damage" \
-                                                : "Superb Damage")))))
+#define GET_WEAPON_DAMAGE(i)                                              \
+  ((i) < 2                                                                \
+      ? "Very low damage"                                                 \
+      : ((i) < 5 ? "Low damage"                                           \
+                 : ((i) < 10 ? "Moderate damage"                          \
+                             : ((i) < 15 ? "A good bit of damage"         \
+                                         : ((i) < 20 ? "Very nice damage" \
+                                                     : "Superb Damage")))))
 
 #define HSHR(ch) \
   ((ch)->player.sex ? (((ch)->player.sex == 1) ? "his" : "her") : "its")
@@ -116,9 +123,9 @@ int CAN_SEE(struct char_data* s, struct char_data* o);
 #define HMHR(ch) \
   ((ch)->player.sex ? (((ch)->player.sex == 1) ? "him" : "her") : "it")
 
-#define ANA(obj) (index("aeiouyAEIOUY", *(obj)->name) ? "An" : "A")
+#define ANA(obj) (strchr("aeiouyAEIOUY", *(obj)->name) ? "An" : "A")
 
-#define SANA(obj) (index("aeiouyAEIOUY", *(obj)->name) ? "an" : "a")
+#define SANA(obj) (strchr("aeiouyAEIOUY", *(obj)->name) ? "an" : "a")
 
 #define IS_NPC(ch) (IS_SET((ch)->specials.act, ACT_ISNPC))
 
@@ -176,18 +183,22 @@ int CAN_SEE(struct char_data* s, struct char_data* o);
 
 #define GET_HIT(ch) ((ch)->points.hit)
 
-#define GET_MAX_HIT(ch) (hit_limit(ch))
+static inline int GET_MAX_HIT(struct char_data* ch) { return (hit_limit(ch)); }
 
 #define GET_PERC_HIT(ch) \
   (((float)((ch)->points.hit) / ((float)(hit_limit(ch)))) * 100)
 
 #define GET_MOVE(ch) ((ch)->points.move)
 
-#define GET_MAX_MOVE(ch) (move_limit(ch))
+static inline int GET_MAX_MOVE(struct char_data* ch) {
+  return (move_limit(ch));
+}
 
 #define GET_MANA(ch) ((ch)->points.mana)
 
-#define GET_MAX_MANA(ch) (mana_limit(ch))
+static inline int GET_MAX_MANA(struct char_data* ch) {
+  return (mana_limit(ch));
+}
 
 #define GET_GOLD(ch) ((ch)->points.gold)
 
@@ -219,7 +230,7 @@ int CAN_SEE(struct char_data* s, struct char_data* o);
     (((!IS_SET((obj)->obj_flags.extra_flags, ITEM_INVISIBLE) || \
         IS_AFFECTED((sub), AFF_DETECT_INVISIBLE)) &&            \
        !IS_AFFECTED((sub), AFF_BLIND)) &&                       \
-      (IS_LIGHT(sub->in_room))))
+      (IS_LIGHT((sub)->in_room))))
 
 #define GET_ITEM_TYPE(obj) ((obj)->obj_flags.type_flag)
 
@@ -242,10 +253,10 @@ int CAN_SEE(struct char_data* s, struct char_data* o);
 
 #define IS_CARRYING_N(ch) ((ch)->specials.carry_items)
 
-#define CAN_CARRY_OBJ(ch, obj)                                              \
-  (((IS_CARRYING_W(ch) + GET_OBJ_WEIGHT(obj)) <= CAN_CARRY_W(ch)) &&        \
-    ((IS_CARRYING_N(ch) +                                                   \
-       (GET_OBJ_VOLUME(obj) / vol_mult[obj->obj_flags.material_points])) <= \
+#define CAN_CARRY_OBJ(ch, obj)                                                \
+  (((IS_CARRYING_W(ch) + GET_OBJ_WEIGHT(obj)) <= CAN_CARRY_W(ch)) &&          \
+    ((IS_CARRYING_N(ch) +                                                     \
+       (GET_OBJ_VOLUME(obj) / vol_mult[(obj)->obj_flags.material_points])) <= \
       CAN_CARRY_N(ch)))
 
 #define CAN_GET_OBJ(ch, obj)                                   \
@@ -271,13 +282,16 @@ int CAN_SEE(struct char_data* s, struct char_data* o);
 
 #define IS_IMMORTAL(ch) (!IS_NPC(ch) && (GetMaxLevel(ch) >= 52))
 
-#define IS_POLICE(ch)                                                         \
-  ((mob_index[ch->nr].virtual == 3060) ||                                     \
-    (mob_index[ch->nr].virtual == 3069) ||                                    \
-    (mob_index[ch->nr].virtual == 14) || (mob_index[ch->nr].virtual == 15) || \
-    (mob_index[ch->nr].virtual == 16) || (mob_index[ch->nr].virtual == 17) || \
-    (mob_index[ch->nr].virtual == 18) || (mob_index[ch->nr].virtual == 19) || \
-    (mob_index[ch->nr].virtual == 3067))
+#define IS_POLICE(ch)                        \
+  ((mob_index[(ch)->nr].virtual == 3060) ||  \
+    (mob_index[(ch)->nr].virtual == 3069) || \
+    (mob_index[(ch)->nr].virtual == 14) ||   \
+    (mob_index[(ch)->nr].virtual == 15) ||   \
+    (mob_index[(ch)->nr].virtual == 16) ||   \
+    (mob_index[(ch)->nr].virtual == 17) ||   \
+    (mob_index[(ch)->nr].virtual == 18) ||   \
+    (mob_index[(ch)->nr].virtual == 19) ||   \
+    (mob_index[(ch)->nr].virtual == 3067))
 
 #define IS_CORPSE(obj) \
   (GET_ITEM_TYPE((obj)) == ITEM_CONTAINER && isname("corpse", (obj)->name))
@@ -302,7 +316,192 @@ int exit_ok(struct room_direction_data*, struct room_data**);
 
 #define ITEM_TYPE(obj) ((int)(obj)->obj_flags.type_flag)
 
-void vlog(char* str);
+extern unsigned char moontype;
+
+void vlog(const char* str);
 void vlogf(char* errorMsg, ...);
+int number(int from, int to);
+int SkipImmortals(struct char_data* v, int amnt);
+int PreProcDam(struct char_data* ch, int type, int dam);
+int IsUndead(struct char_data* ch);
+void update_pos(struct char_data* victim);
+void die(struct char_data* ch);
+void do_look(struct char_data* ch, char* argument, int cmd);
+void death_cry(struct char_data* ch);
+void zero_rent(struct char_data* ch);
+int apply_soundproof(struct char_data* ch);
+void do_say(struct char_data* ch, char* argument, int cmd);
+int check_soundproof(struct char_data* ch);
+int HasHands(struct char_data* ch);
+void RestoreChar(struct char_data* ch);
+void RemAllAffects(struct char_data* ch);
+void sprintbit(unsigned long vektor, const char* const* names, char* result);
+int CAN_SEE_FOR_WHO(struct char_data* s, struct char_data* o);
+void do_at(struct char_data* ch, char* argument, int cmd);
+int start_page_file(struct descriptor_data* d, const char* fpath,
+  char* errormsg);
+int str_cmp(char* arg1, char* arg2);
+int IsAnimal(struct char_data* ch);
+int IsVeggie(struct char_data* ch);
+int IsHumanoid(struct char_data* ch);
+int IsDiabolic(struct char_data* ch);
+int IsLycanthrope(struct char_data* ch);
+int IsReptile(struct char_data* ch);
+int IsGiantish(struct char_data* ch);
+int IsExtraPlanar(struct char_data* ch);
+int IsPerson(struct char_data* ch);
+int IsOther(struct char_data* ch);
+int GetApprox(int num, int perc);
+int CalcThaco(struct char_data* ch);
+void* Mymalloc(long size);
+int dice(int number, int size);
+int SpaceForSkills(struct char_data* ch);
+void error_log(char* str);
+void slog(char* str);
+void weather_and_time(int mode);
+void another_hour(int mode);
+void weather_change(void);
+void GetMonth(int month);
+void ChangeWeather(int change);
+void night_watchman(void);
+void SwitchStuff(struct char_data* giver, struct char_data* taker);
+int ObjLevelCheck(struct obj_data* obj, struct char_data* ch);
+void hit(struct char_data* ch, struct char_data* victim, int type);
+struct char_data* FindVictim(struct char_data* ch);
+struct char_data* FindMetaVictim(struct char_data* ch);
+struct char_data* FindAnAttacker(struct char_data* ch);
+int SameRace(struct char_data* ch1, struct char_data* ch2);
+char in_group(struct char_data* ch1, struct char_data* ch2);
+int dir_track(struct char_data* ch, struct char_data* vict);
+struct char_data* FindAnyVictim(struct char_data* ch);
+void mobile_activity(struct char_data* ch);
+void MakeNoise(int room, char* local_snd, char* distant_snd);
+void weight_change_object(struct obj_data* obj, int weight);
+int damage(struct char_data* ch, struct char_data* victim, int damage,
+  int weapontype);
+struct time_info_data age(struct char_data* ch);
+void set_fighting(struct char_data* ch, struct char_data* vict);
+int WeaponCheck(struct char_data* ch, struct char_data* v, int type, int dam);
+void add_follower(struct char_data* ch, struct char_data* leader);
+int IsImmune(struct char_data* ch, int bit);
+int WeaponImmune(struct char_data* ch);
+int IsResist(struct char_data* ch, int bit);
+int IsSusc(struct char_data* ch, int bit);
+int go_direction(struct char_data* ch, int dir);
+int choose_exit_in_zone(int in_room, int tgt_room, int depth);
+int check_peaceful(struct char_data* ch, char* msg);
+void raw_open_door(struct char_data* ch, int dir);
+int MobCountInRoom(struct char_data* list);
+int DisplayMove(struct char_data* ch, int dir, int was_in, int total);
+void open_door(struct char_data* ch, int dir);
+bool circle_follow(struct char_data* ch, struct char_data* victim);
+int RecGetObjRoom(struct obj_data* obj);
+int MissileDamage(struct char_data* ch, struct char_data* victim, int dam,
+  int attacktype);
+void stop_follower(struct char_data* ch);
+void do_start(struct char_data* ch);
+int AntiGuildMaster(struct char_data* ch, int cmd, char* arg);
+int getabunch(char* name, char* newname);
+int choose_exit_global(int in_room, int tgt_room, int depth);
+int LearnFromMistake(struct char_data* ch, int sknum, int silent, int max);
+int fighter(struct char_data* ch, int cmd, char* arg);
+int RecCompObjNum(struct obj_data* o, int obj_num);
+int find_door(struct char_data* ch, char* type, char* dir);
+void ThrowChar(struct char_data* ch, struct char_data* v, int dir);
+int SetVictFighting(struct char_data* ch, struct char_data* v);
+int SetCharFighting(struct char_data* ch, struct char_data* v);
+void CallForGuard(struct char_data* ch, struct char_data* vict, int lev,
+  int area);
+void SetHunting(struct char_data* ch, struct char_data* tch);
+void make_corpse(struct char_data* ch);
+int utility_irritable(struct char_data* ch, int cmd, char* arg,
+  mob_proc_t func);
+void mobile_wander(struct char_data* ch);
+int is_target_room_p(int room, int tgt_room);
+void group_gain(struct char_data* ch, struct char_data* victim);
+void change_alignment(struct char_data* ch, struct char_data* victim);
+char getall(char* name, char* newname);
+void Zwrite(FILE* fp, char cmd, int tf, int arg1, int arg2, int arg3,
+  char* desc);
+int ObjVnum(struct obj_data* o);
+char* lower(char* s);
+bool recep_offer(struct char_data* ch, struct char_data* receptionist,
+  struct obj_cost* cost);
+struct char_data* char_holding(struct obj_data* obj);
+int track(struct char_data* ch, struct char_data* vict);
+char* DescMoves(float a);
+char* ac_for_score(int a);
+void name_from_drinkcon(struct obj_data* obj);
+void name_to_drinkcon(struct obj_data* obj, int type);
+void save_obj(struct char_data* ch, struct obj_cost* cost, int delete);
+void obj_to_store(struct obj_data* obj, struct obj_file_u* st,
+  struct char_data* ch, int delete);
+void update_file(struct char_data* ch, struct obj_file_u* st, int save);
+int ValidMove(struct char_data* ch, int cmd);
+void raw_kill(struct char_data* ch);
+void setKillerFlag(Mob* ch, Mob* victim);
+int MoveOne(struct char_data* ch, int dir);
+void root_hit(struct char_data* ch, struct char_data* victim, int type,
+  int (*dam_func)(struct char_data*, struct char_data*, int, int));
+int DamDetailsOk(struct char_data* ch, struct char_data* v, int dam, int type);
+int DamageTrivia(struct char_data* ch, struct char_data* v, int dam, int type);
+int DoDamage(struct char_data* ch, struct char_data* v, int dam, int type);
+int DamageMessages(struct char_data* ch, struct char_data* v, int dam,
+  int attacktype);
+int DamageEpilog(struct char_data* ch, struct char_data* victim);
+int HitOrMiss(struct char_data* ch, struct char_data* victim, int calc_thaco);
+void sprinttype(int type, const char* const* names, char* result);
+
+struct hunting_data {
+    char* name;
+    struct char_data** victim;
+};
+
+typedef int (*mob_in_room_pred_t)(int room, struct hunting_data* data);
+typedef int (*obj_on_ground_pred_t)(int room, char* data);
+typedef int (*is_target_room_pred_t)(int room, int target_room);
+
+enum FindPathType {
+  FIND_MOB_IN_ROOM,
+  FIND_OBJECT_ON_GROUND,
+  FIND_TARGET_ROOM,
+};
+
+union find_path_fn {
+    mob_in_room_pred_t mob_in_room_fn;
+    obj_on_ground_pred_t obj_on_ground_fn;
+    is_target_room_pred_t is_target_room_fn;
+};
+
+union find_path_fn_data {
+    struct hunting_data* data;
+    char* obj_name;
+    int target_room;
+};
+
+struct find_path_data {
+    enum FindPathType type;
+    union find_path_fn fn;
+    union find_path_fn_data fn_data;
+};
+
+int find_path(int in_room, struct find_path_data* data, int depth, int in_zone);
+
+typedef struct {
+    void* ptr;
+    size_t count;
+    size_t size;
+} alloc_result;
+
+static inline alloc_result alloc_or_die(size_t count, size_t size) {
+  void* ptr = calloc(count, size);
+  if (!ptr) {
+    perror("allocation failure");
+    abort();
+  }
+  return (alloc_result){.ptr = ptr, .count = count, .size = size};
+}
+
+#define create(type, count) (type*)alloc_or_die(count, sizeof(type)).ptr
 
 #endif

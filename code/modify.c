@@ -6,6 +6,7 @@
 
 #include <ctype.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <time.h>
 
@@ -13,6 +14,7 @@
 #include "db.h"
 #include "handler.h"
 #include "interpreter.h"
+#include "multiclass.h"
 #include "structs.h"
 #include "utils.h"
 
@@ -22,9 +24,6 @@
 #define TP_OBJ 1
 #define TP_ERROR 2
 
-struct room_data* world; /* dyn alloc'ed array of rooms     */
-
-void show_string(struct descriptor_data* d, char* input);
 void store_mail(char* to, char* from, char* message_pointer);
 
 char* string_fields[] = {"name", "short", "long", "description", "title",
@@ -796,10 +795,6 @@ void night_watchman(void) {
   long tc;
   struct tm* t_info;
 
-  extern int Shutdown;
-
-  void send_to_all(char* messg);
-
   tc = time(0);
   t_info = localtime(&tc);
 
@@ -819,8 +814,6 @@ void check_reboot(void) {
   struct tm* t_info;
   char dummy;
   FILE* boot;
-
-  extern int Shutdown, rebootmud;
 
   tc = time(0);
   t_info = localtime(&tc);
@@ -890,7 +883,6 @@ int load(void) {
   int ld, i, sum;
   static int previous[5];
   static int p_point = -1;
-  extern int slow_death;
 
   if (!(fl = fopen("/tmp/.sysline", "r"))) {
     perror("sysline. (dying)");
@@ -935,33 +927,6 @@ char* nogames(void) {
     return (0);
 }
 
-#ifdef OLD_COMA
-
-void coma(void) {
-  extern struct descriptor_data* descriptor_list;
-  extern int tics;
-
-  void close_socket(struct descriptor_data * d);
-
-  vlog("Entering comatose state");
-
-  while (descriptor_list)
-    close_socket(descriptor_list);
-
-  do {
-    sleep(300);
-    tics = 1;
-    if (workhours()) {
-      vlog("Working hours collision during coma. Exit.");
-      exit(0);
-    }
-  } while (load() >= 6);
-
-  vlog("Leaving coma");
-}
-
-#endif
-
 /* emulate the game regulator */
 void gr(int s) {
   char *txt = 0, buf[1024];
@@ -971,12 +936,6 @@ void gr(int s) {
     "The game will close temporarily 2 minutes from now.\n\r",
     "WARNING: The game will close in 1 minute.\n\r"};
   static int wnr = 0;
-
-  extern int slow_death, Shutdown;
-
-  void send_to_all(char* messg);
-
-  void coma(int s);
 
   if (((ld = load()) >= 6) || (txt = nogames()) || slow_death) {
     if (ld >= 6) {

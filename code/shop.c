@@ -5,26 +5,21 @@
  ************************************************************************* */
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 #include "comm.h"
+#include "constants.h"
 #include "db.h"
 #include "handler.h"
 #include "interpreter.h"
+#include "multiclass.h"
 #include "structs.h"
 #include "utils.h"
 
 #define SHOP_FILE "tinyworld.shp"
 #define MAX_TRADE 5
 #define MAX_PROD 5
-
-extern struct str_app_type str_app[];
-extern struct dex_skill_type dex_app_skill[];
-extern struct index_data* mob_index;
-
-char* fread_string(FILE* fl);
-char getall(char* name, char* newname);
-int getabunch(char* name, char* newname);
 
 struct shop_data {
     int producing[MAX_PROD]; /* Which item to produce (virtual)      */
@@ -47,17 +42,10 @@ struct shop_data {
     int close1, close2;      /* When does the shop close?		*/
 };
 
-#if HASH
-extern struct hash_header room_db;
-#else
-extern struct room_data* room_db;
-#endif
-extern struct time_info_data time_info;
-
 struct shop_data* shop_index;
 int number_of_shops;
 
-int is_ok(struct char_data* keeper, struct char_data* ch, int shop_nr) {
+static int is_ok(struct char_data* keeper, struct char_data* ch, int shop_nr) {
   if (shop_index[shop_nr].open1 > time_info.hours) {
     do_say(keeper, "Come back later!", 17);
     return (FALSE);
@@ -85,7 +73,7 @@ int is_ok(struct char_data* keeper, struct char_data* ch, int shop_nr) {
   };
 }
 
-int trade_with(struct obj_data* item, int shop_nr) {
+static int trade_with(struct obj_data* item, int shop_nr) {
   int counter;
 
   if (item->obj_flags.cost < 1)
@@ -97,7 +85,7 @@ int trade_with(struct obj_data* item, int shop_nr) {
   return (FALSE);
 }
 
-int shop_producing(struct obj_data* item, int shop_nr) {
+static int shop_producing(struct obj_data* item, int shop_nr) {
   int counter;
 
   if (item->item_number < 0)
@@ -109,8 +97,8 @@ int shop_producing(struct obj_data* item, int shop_nr) {
   return (FALSE);
 }
 
-void shopping_buy(char* arg, struct char_data* ch, struct char_data* keeper,
-  int shop_nr) {
+static void shopping_buy(char* arg, struct char_data* ch,
+  struct char_data* keeper, int shop_nr) {
   char argm[100], buf[MAX_STRING_LENGTH], newarg[100];
   int num = 1;
   struct obj_data* temp1;
@@ -214,8 +202,8 @@ void shopping_buy(char* arg, struct char_data* ch, struct char_data* keeper,
   return;
 }
 
-void shopping_sell(char* arg, struct char_data* ch, struct char_data* keeper,
-  int shop_nr) {
+static void shopping_sell(char* arg, struct char_data* ch,
+  struct char_data* keeper, int shop_nr) {
   char argm[100], buf[MAX_STRING_LENGTH];
   int cost;
   struct obj_data* temp1;
@@ -351,7 +339,6 @@ void shopping_list(char* arg, struct char_data* ch, struct char_data* keeper,
   int shop_nr) {
   char buf[MAX_STRING_LENGTH], buf2[100], buf3[100];
   struct obj_data* temp1;
-  extern char* drinks[];
   int found_obj;
 
   if (!(is_ok(keeper, ch, shop_nr)))
@@ -419,7 +406,7 @@ int shop_keeper(struct char_data* ch, int cmd, char* arg) {
   for (temp_char = real_roomp(ch->in_room)->people; (!keeper) && (temp_char);
        temp_char = temp_char->next_in_room)
     if (IS_MOB(temp_char))
-      if (mob_index[temp_char->nr].func == shop_keeper)
+      if (mob_index[temp_char->nr].func.mob_f == shop_keeper)
         keeper = temp_char;
 
   for (shop_nr = 0; shop_index[shop_nr].keeper != keeper->nr; shop_nr++)
@@ -479,7 +466,7 @@ int shop_keeper(struct char_data* ch, int cmd, char* arg) {
   return (FALSE);
 }
 
-void boot_the_shops() {
+void boot_the_shops(void) {
   char* buf;
   int temp;
   int count;
@@ -546,9 +533,9 @@ void boot_the_shops() {
   fclose(shop_f);
 }
 
-void assign_the_shopkeepers() {
+void assign_the_shopkeepers(void) {
   int temp1;
 
   for (temp1 = 0; temp1 < number_of_shops; temp1++)
-    mob_index[shop_index[temp1].keeper].func = shop_keeper;
+    mob_index[shop_index[temp1].keeper].func.mob_f = shop_keeper;
 }

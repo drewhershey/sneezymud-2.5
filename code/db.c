@@ -8,16 +8,23 @@
 
 #include <ctype.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
+#include <sys/param.h>
 #include <time.h>
 
+#include "board.h"
 #include "comm.h"
+#include "constants.h"
 #include "handler.h"
 #include "hash.h"
+#include "interpreter.h"
 #include "limits.h"
 #include "mail.h"
+#include "multiclass.h"
 #include "opinion.h"
 #include "race.h"
+#include "spells.h"
 #include "structs.h"
 #include "utils.h"
 
@@ -27,8 +34,11 @@
  *  declarations of most of the 'global' variables                         *
  ************************************************************************ */
 
+struct reset_q_type reset_q;
+
 int top_of_world = 0; /* ref to the top element of world */
-#if HASH
+
+#if defined(HASH) && HASH
 struct hash_header room_db;
 #else
 struct room_data* room_db[WORLD_SIZE];
@@ -39,8 +49,8 @@ struct char_data* character_list = 0; /* global l-list of chars          */
 
 struct zone_data* zone_table; /* table of reset data             */
 int top_of_zone_table = 0;
-struct message_list fight_messages[MAX_MESSAGES]; /* fighting messages   */
-struct player_index_element* player_table = 0;    /* index to player file   */
+
+struct player_index_element* player_table = 0; /* index to player file   */
 int top_of_p_table = 0; /* ref to top of table             */
 int top_of_p_file = 0;
 long total_bc = 0;
@@ -51,16 +61,14 @@ long total_mbc = 0;
 int no_mail = 0;
 long total_obc = 0;
 
-/*
-**  distributed monster stuff
-*/
+// distributed monster stuff
 int mob_tick_count = 0;
 
-char motd[MAX_STRING_LENGTH]; /* the messages of today           */
+char motd[MAX_STRING_LENGTH];
 char ansi[MAX_STRING_LENGTH];
 
-FILE *mob_f, /* file containing mob prototypes  */
-  *obj_f;    /* obj prototypes                  */
+FILE* mob_f = NULL;  // file containing mob prototypes
+FILE* obj_f = NULL;  // obj prototypes
 
 struct index_data* mob_index; /* index table for mobile file     */
 struct index_data* obj_index; /* index table for object file     */
@@ -71,39 +79,17 @@ int top_of_objt = 0; /* top of object index table       */
 struct time_info_data time_info;  /* the infomation about the time   */
 struct weather_data weather_info; /* the infomation about the weather */
 
-/* local procedures */
-void boot_zones(void);
-void setup_dir(FILE* fl, int room, int dir);
-void allocate_room(int new_top);
-void boot_world(void);
-struct index_data* generate_indices(FILE* fl, int* top);
-void build_player_index(void);
-void char_to_store(struct char_data* ch, struct char_file_u* st);
-void store_to_char(struct char_file_u* st, struct char_data* ch);
-int is_empty(int zone_nr);
-void reset_zone(int zone);
-int file_to_string(char* name, char* buf);
-void renum_zone_table(void);
-void reset_time(void);
-void clear_char(struct char_data* ch);
-struct obj_data* unequip_char_for_save(struct char_data* ch, int pos);
+static void PrintLimitedItems(void) {
+  int i;
+  char buf[200];
 
-/* external refs */
-extern struct descriptor_data* descriptor_list;
-void load_messages(void);
-void weather_and_time(int mode);
-void assign_command_pointers(void);
-void assign_spell_pointers(void);
-void vlog(char* str);
-int dice(int number, int size);
-int number(int from, int to);
-void boot_social_messages(void);
-void boot_pose_messages(void);
-void change_char_file(void); /* In reception.c */
-void update_obj_file(void);
-int DetermineExp(struct char_data* mob, int exp_flags);
-void SetRacialStuff(struct char_data* mob);
-int ClassSpecificStuff(struct char_data* ch);
+  for (i = 0; i <= top_of_objt; i++) {
+    if (obj_index[i].number > 0) {
+      sprintf(buf, "item> %d [%d]", obj_index[i].virtual, obj_index[i].number);
+      vlog(buf);
+    }
+  }
+}
 
 /*************************************************************************
  *  routines for booting the system                                       *
@@ -112,7 +98,6 @@ int ClassSpecificStuff(struct char_data* ch);
 /* body of the booting system */
 void boot_db(void) {
   int i;
-  extern int no_specials;
 
   vlog("Boot db -- BEGIN.");
 
@@ -211,7 +196,6 @@ void boot_db(void) {
 /* reset the time in the game from file */
 void reset_time(void) {
   char buf[80];
-  extern unsigned char moontype;
   long beginning_of_time = 650336715;
 
   struct time_info_data mud_time_passed(time_t t2, time_t t1);
@@ -295,7 +279,6 @@ void reset_time(void) {
 /* update the time file */
 void update_time(void) {
   FILE* f1;
-  extern struct time_info_data time_info;
   long current_time;
 
   return;
@@ -392,7 +375,9 @@ struct index_data* generate_indices(FILE* fl, int* top) {
         sscanf(buf, "#%d", &index[i].virtual);
         index[i].pos = ftell(fl);
         index[i].number = 0;
-        index[i].func = 0;
+        index[i].func.mob_f = NULL;
+        index[i].func.obj_f = NULL;
+        index[i].func.room_f = NULL;
         index[i].name = (index[i].virtual < 99999) ? fread_string(fl) : "omega";
         i++;
       } else {
@@ -428,28 +413,6 @@ void cleanout_room(struct room_data* rp) {
     free(exptr->description);
     free(exptr);
   }
-}
-
-void completely_cleanout_room(struct room_data* rp) {
-  struct char_data* ch;
-  struct obj_data* obj;
-
-  while (rp->people) {
-    ch = rp->people;
-    act(
-      "The hand of god sweeps across the land and you are swept into the Void.",
-      FALSE, NULL, NULL, NULL, TO_VICT);
-    char_from_room(ch);
-    char_to_room(ch, 0); /* send character to the void */
-  }
-
-  while (rp->contents) {
-    obj = rp->contents;
-    obj_from_room(obj);
-    obj_to_room(obj, 0); /* send item to the void */
-  }
-
-  cleanout_room(rp);
 }
 
 void load_one_room(FILE* fl, struct room_data* rp) {
@@ -573,6 +536,11 @@ void load_one_room(FILE* fl, struct room_data* rp) {
   }
 }
 
+/* zero out the world */
+static void init_world() {
+  memset(room_db, 0, sizeof(struct room_data*) * WORLD_SIZE);
+}
+
 /* load the rooms */
 void boot_world(void) {
   FILE* fl;
@@ -580,10 +548,10 @@ void boot_world(void) {
   char buf[50];
   struct room_data* rp;
 
-#if HASH
+#if defined(HASH) && HASH
   init_hash_table(&room_db, sizeof(struct room_data), 2048);
 #else
-  init_world(room_db);
+  init_world();
 #endif
   character_list = 0;
   object_list = 0;
@@ -597,7 +565,7 @@ void boot_world(void) {
   while (1 == fscanf(fl, " #%d\n", &virtual_nr)) {
     allocate_room(virtual_nr);
     rp = real_roomp(virtual_nr);
-    bzero(rp, sizeof(*rp));
+    memset(rp, 0, sizeof(*rp));
     rp->number = virtual_nr;
     load_one_room(fl, rp);
   }
@@ -606,9 +574,11 @@ void boot_world(void) {
 }
 
 void allocate_room(int room_number) {
-  if (room_number > top_of_world)
+  if (room_number > top_of_world) {
     top_of_world = room_number;
-#if HASH
+  }
+
+#if defined(HASH) && HASH
   hash_find_or_create(&room_db, room_number);
 #else
   room_find_or_create(room_db, room_number);
@@ -818,6 +788,44 @@ void boot_zones(void) {
  *  procedures for resetting, both play-time and boot-time	 	 *
  *********************************************************************** */
 
+static void SetRacialStuff(struct char_data* mob) {
+  switch (GET_RACE(mob)) {
+    case RACE_BIRD:
+      SET_BIT(mob->specials.affected_by, AFF_FLYING);
+      break;
+    case RACE_FISH:
+      SET_BIT(mob->specials.affected_by, AFF_WATERBREATH);
+      break;
+    case RACE_DROW:
+    case RACE_DWARF:
+    case RACE_GNOME:
+    case RACE_MFLAYER:
+    case RACE_TROLL:
+    case RACE_ORC:
+    case RACE_GOBLIN:
+    case RACE_HOBBIT:
+      SET_BIT(mob->specials.affected_by, AFF_INFRAVISION);
+      break;
+    case RACE_INSECT:
+    case RACE_ARACHNID:
+      if (IS_PC(mob)) {
+        GET_STR(mob) = 18;
+        GET_ADD(mob) = 100;
+      }
+      break;
+    case RACE_LYCANTH:
+      SET_BIT(mob->M_immune, IMM_NONMAG);
+      break;
+    case RACE_PREDATOR:
+      if (mob->skills)
+        mob->skills[SKILL_HUNT].learned = 100;
+      break;
+
+    default:
+      break;
+  }
+}
+
 /* read a mobile from MOB_FILE */
 struct char_data* read_mobile(int nr, int type) {
   int i;
@@ -825,9 +833,6 @@ struct char_data* read_mobile(int nr, int type) {
   struct char_data* mob;
   char buf[100];
   char letter;
-
-  extern int mob_tick_count;
-  extern long mob_count;
 
   i = nr;
   if (type == VIRTUAL)
@@ -1250,8 +1255,6 @@ struct obj_data* read_object(int nr, int type) {
   char chk[50], buf[100];
   struct extra_descr_data* new_descr;
 
-  extern long total_obc;
-
   i = nr;
   if (type == VIRTUAL) {
     nr = real_object(nr);
@@ -1383,7 +1386,6 @@ struct obj_data* read_object(int nr, int type) {
 void zone_update(void) {
   int i;
   struct reset_q_element *update_u, *temp, *tmp2;
-  extern struct reset_q_type reset_q;
 
   /* enqueue zones */
 
@@ -1917,7 +1919,7 @@ char* fread_string(FILE* fl) {
   register char* point;
   int flag;
 
-  bzero(buf, sizeof(buf));
+  memset(buf, 0, sizeof(buf));
 
   do {
     if (!fgets(tmp, MAX_STRING_LENGTH, fl)) {
@@ -2074,7 +2076,6 @@ void ClearDeadBit(struct char_data* ch) {
 void reset_char(struct char_data* ch) {
   char buf[100], recipient[100], *tmp;
   struct affected_type* af;
-  extern struct dex_app_type dex_app[];
 
   int i, j;
 
@@ -2192,7 +2193,7 @@ void reset_char(struct char_data* ch) {
 
   ClassSpecificStuff(ch);
 
-  _parse_name(GET_NAME(ch), recipient);
+  parse_name(GET_NAME(ch), recipient);
 
   for (tmp = recipient; *tmp; tmp++)
     if (isupper(*tmp))
@@ -2415,7 +2416,7 @@ struct room_data* real_roomp(int virtual) {
 #if HASH
   return hash_find(&room_db, virtual);
 #else
-  return ((virtual<WORLD_SIZE&& virtual> - 1) ? room_db[virtual] : 0);
+  return (virtual<WORLD_SIZE&& virtual> - 1) ? room_db[virtual] : 0;
 #endif
 }
 #endif

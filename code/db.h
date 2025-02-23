@@ -6,6 +6,11 @@
 #ifndef DB_H
 #define DB_H
 
+#include "hash.h"
+#include "structs.h"
+
+#include <stdio.h>
+
 /* data files used by the game system */
 
 #define DFLT_DIR "lib" /* default data directory     */
@@ -45,6 +50,7 @@ void save_char(struct char_data* ch, sh_int load_room);
 int create_entry(char* name);
 void zone_update(void);
 void init_char(struct char_data* ch);
+int load_char(char* name, struct char_file_u* char_element);
 void clear_char(struct char_data* ch);
 void clear_object(struct obj_data* obj);
 void reset_char(struct char_data* ch);
@@ -53,6 +59,28 @@ struct room_data* real_roomp(int virtual);
 char* fread_string(FILE* fl);
 int real_object(int virtual);
 int real_mobile(int virtual);
+void boot_zones(void);
+void setup_dir(FILE* fl, int room, int dir);
+void allocate_room(int room_number);
+void boot_world(void);
+struct index_data* generate_indices(FILE* fl, int* top);
+void build_player_index(void);
+void char_to_store(struct char_data* ch, struct char_file_u* st);
+void store_to_char(struct char_file_u* st, struct char_data* ch);
+int is_empty(int zone_nr);
+void reset_zone(int zone);
+int file_to_string(char* name, char* buf);
+void renum_zone_table(void);
+void reset_time(void);
+struct obj_data* unequip_char_for_save(struct char_data* ch, int pos);
+void load_messages(void);
+void assign_command_pointers(void);
+void assign_spell_pointers(void);
+void boot_social_messages(void);
+void boot_pose_messages(void);
+void change_char_file(void); /* In reception.c */
+void update_obj_file(void);
+int DetermineExp(struct char_data* mob, int exp_flags);
 
 #define REAL 0
 #define VIRTUAL 1
@@ -100,10 +128,10 @@ struct zone_data {
 
 /* element in monster and object index-tables   */
 struct index_data {
-    int virtual;   /* virtual number of this mob/obj           */
-    long pos;      /* file position of this field              */
-    int number;    /* number of existing units of this mob/obj	*/
-    int (*func)(); /* special procedure for this mob/obj       */
+    int virtual; /* virtual number of this mob/obj           */
+    long pos;    /* file position of this field              */
+    int number;  /* number of existing units of this mob/obj	*/
+    ProcFn func; /* special procedure for this mob/obj       */
     char* name;
 };
 
@@ -117,7 +145,9 @@ struct reset_q_element {
 struct reset_q_type {
     struct reset_q_element* head;
     struct reset_q_element* tail;
-} reset_q;
+};
+
+extern struct reset_q_type reset_q;
 
 struct player_index_element {
     char* name;
@@ -128,5 +158,45 @@ struct help_index_element {
     char* keyword;
     long pos;
 };
+
+extern struct message_list fight_messages[MAX_MESSAGES];
+
+extern struct index_data* mob_index;
+extern struct index_data* obj_index;
+extern struct player_index_element* player_table;
+extern struct obj_data* object_list;
+extern struct char_data* character_list;
+extern struct time_info_data time_info;
+extern struct weather_data weather_info;
+
+#if defined(HASH) && HASH
+extern struct hash_header room_db;
+#else
+extern struct room_data* room_db[WORLD_SIZE];
+#endif
+
+extern int top_of_world;
+extern int top_of_mobt;
+extern int top_of_objt;
+extern int top_of_p_table;
+extern int top_of_zone_table;
+extern long room_count;
+extern long mob_count;
+extern int obj_count;
+extern int no_mail;
+
+extern char motd[MAX_STRING_LENGTH];
+extern char ansi[MAX_STRING_LENGTH];
+extern struct zone_data* zone_table;
+
+void cleanout_room(struct room_data* rp);
+void load_one_room(FILE* fl, struct room_data* rp);
+void update_time(void);
+void free_obj(struct obj_data* obj);
+extern void assign_mobiles(void);
+extern void assign_objects(void);
+extern void assign_rooms(void);
+extern void boot_the_shops(void);
+extern void assign_the_shopkeepers(void);
 
 #endif

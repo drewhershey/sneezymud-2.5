@@ -3,39 +3,26 @@
  *  Usage : Other commands.                                                *
  *  Copyright (C) 1990, 1991 - see 'license.doc' for complete information. *
  ************************************************************************* */
+#define _POSIX_C_SOURCE 200809L
 
 #include <ctype.h>
+#include <features.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
+#include <sys/param.h>
+#include <unistd.h>
 
 #include "comm.h"
+#include "constants.h"
 #include "db.h"
 #include "handler.h"
 #include "interpreter.h"
-#include "limits.h"
+#include "multiclass.h"
+#include "spec_procs.h"
 #include "spells.h"
 #include "structs.h"
 #include "utils.h"
-
-/* extern variables */
-
-extern struct str_app_type str_app[];
-extern struct descriptor_data* descriptor_list;
-extern struct dex_skill_type dex_app_skill[];
-extern struct spell_info_type spell_info[];
-extern struct char_data* character_list;
-extern struct index_data* obj_index;
-extern struct time_info_data time_info;
-
-/* extern procedures */
-
-void hit(struct char_data* ch, struct char_data* victim, int type);
-void do_save(struct char_data* ch, char* argument, int cmd);
-void do_shout(struct char_data* ch, char* argument, int cmd);
-char* how_good(int percent);
-char* DescMoves(float a);
-void zero_rent(struct char_data* ch);
-void do_terminal(struct char_data* ch, char* argument, int cmd);
 
 void do_gain(struct char_data* ch, char* argument, int cmd) {}
 
@@ -148,9 +135,6 @@ void do_junk(struct char_data* ch, char* argument, int cmd) {
 void do_command(struct char_data* ch, char* arg, int cmd) {
   char buf[16384];
   int no, i;
-
-  extern char* command[];
-  extern struct command_info cmd_info[];
 
   if (IS_NPC(ch))
     return;
@@ -293,8 +277,6 @@ void do_title(struct char_data* ch, char* argument, int cmd) {
 void do_pray(struct char_data* ch, char* argument, int cmd) {}
 
 void do_quit(struct char_data* ch, char* argument, int cmd) {
-  void die(struct char_data * ch);
-
   if (IS_NPC(ch) || !ch->desc || IS_AFFECTED(ch, AFF_CHARM))
     return;
 
@@ -316,6 +298,66 @@ void do_quit(struct char_data* ch, char* argument, int cmd) {
   act("$n has left the game.", TRUE, ch, 0, 0, TO_ROOM);
   zero_rent(ch);
   extract_char(ch); /* Char is saved in extract char */
+}
+
+struct blk_save {
+    char* poofin;
+    char* poofout;
+};
+
+static void blk_save(struct char_data* ch) {
+  FILE* fl;
+  struct blk_save* blk;
+  char buf[MAX_STRING_LENGTH];
+  char buf2[MAX_STRING_LENGTH];
+
+  if (IS_NPC(ch))
+    return;
+
+  if (IS_SET(ch->poof.pmask, BIT_POOF_IN) &&
+      (IS_SET(ch->poof.pmask, BIT_POOF_OUT))) {
+    sprintf(buf, "%s%s.blk", path[0], GET_NAME(ch));
+    unlink(buf);
+    if (!(fl = fopen(buf, "wa+"))) {
+      vlog("Couldn't write wizard file.");
+      return;
+    }
+    sprintf(buf, "%s\n", ch->poof.poofin);
+    fputs(buf, fl);
+    sprintf(buf, "%s\n", ch->poof.poofout);
+    fputs(buf, fl);
+    fclose(fl);
+  }
+}
+
+/* write the vital data of a player to the player file */
+static void save_obj_for_save(struct char_data* ch, struct obj_cost* cost,
+  int delete) {
+  static struct obj_file_u st;
+  FILE* fl;
+  int pos, i, j;
+  bool found = FALSE;
+
+  st.number = 0;
+  st.gold_left = GET_GOLD(ch);
+  st.total_cost = cost->total_cost;
+  st.last_update = time(0);
+  st.minimum_stay = 0; /* XXX where does this belong? */
+
+  for (i = 0; i < MAX_WEAR; i++)
+    if (ch->equipment[i]) {
+      if (delete) {
+        obj_to_store(unequip_char(ch, i), &st, ch, delete);
+      } else {
+        obj_to_store(ch->equipment[i], &st, ch, delete);
+      }
+    }
+
+  obj_to_store(ch->carrying, &st, ch, delete);
+  if (delete)
+    ch->carrying = 0;
+
+  update_file(ch, &st, 0);
 }
 
 void do_save(struct char_data* ch, char* argument, int cmd) {
@@ -704,9 +746,6 @@ void do_steal(struct char_data* ch, char* argument, int cmd) {
 void do_practice(struct char_data* ch, char* arg, int cmd) {
   char buf[MAX_STRING_LENGTH * 2], buffer[MAX_STRING_LENGTH * 2];
   int i;
-
-  extern char* spells[];
-  extern struct spell_info_type spell_info[MAX_SPL_LIST];
 
   buffer[0] = '\0';
 
@@ -1606,7 +1645,7 @@ void do_use(struct char_data* ch, char* argument, int cmd) {
   }
 }
 
-do_plr_noshout(struct char_data* ch, char* argument, int cmd) {
+void do_plr_noshout(struct char_data* ch, char* argument, int cmd) {
   char buf[128];
 
   if (IS_NPC(ch))
@@ -1627,7 +1666,7 @@ do_plr_noshout(struct char_data* ch, char* argument, int cmd) {
   }
 }
 
-do_teams(struct char_data* ch, char* argument, int cmd) {
+void do_teams(struct char_data* ch, char* argument, int cmd) {
   char buf[255];
   struct descriptor_data* d;
   int count;

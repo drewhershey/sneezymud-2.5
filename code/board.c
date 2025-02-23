@@ -1,51 +1,23 @@
 #include <ctype.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <time.h>
 
+#include "board.h"
 #include "comm.h"
 #include "db.h"
+#include "handler.h"
+#include "interpreter.h"
+#include "multiclass.h"
+#include "spec_procs.h"
 #include "structs.h"
 #include "utils.h"
-
-#define MAX_MSGS 50             /* Max number of messages.          */
-#define MAX_MESSAGE_LENGTH 2048 /* that should be enough            */
-
-struct Board {
-    char* msgs[MAX_MSGS];
-    char* head[MAX_MSGS];
-    int msg_num;
-    char filename[40];
-    FILE* file; /* file that is opened */
-    int Rnum;   /* Real # of object that this board hooks to */
-    struct Board* next;
-};
 
 struct char_data* board_kludge_char;
 struct Board* board_list;
 
-extern struct obj_data* object_list;
-extern struct index_data* obj_index;
-
-int board_show_board(struct char_data* ch, char* arg, struct Board* b);
-void board_fix_long_desc(struct Board* b);
-int board_display_msg(struct char_data* ch, char* arg, struct Board* b);
-void error_log(char* str);
-void board_reset_board(struct Board* b);
-void board_load_board(struct Board* b);
-void board_save_board(struct Board* b);
-int board_remove_msg(struct char_data* ch, char* arg, struct Board* b);
-void board_write_msg(struct char_data* ch, char* arg, struct Board* b);
-int board(struct char_data* ch, int cmd, char* arg, Obj* me);
-struct Board* FindBoardInRoom(int room);
-void OpenBoardFile(struct Board* b);
-void InitABoard(struct obj_data* obj);
-void InitBoards();
-
-void InitBoards() {
-  struct obj_data* obj;
-  extern struct Board* board_list;
-
+void InitBoards(void) {
   /*
    **  this is called at the very beginning, like shopkeepers
    */
@@ -53,7 +25,6 @@ void InitBoards() {
 }
 
 void InitABoard(struct obj_data* obj) {
-  extern struct Board* board_list;
   struct Board* new, *tmp;
   int i;
 
@@ -114,13 +85,12 @@ void OpenBoardFile(struct Board* b) {
 struct Board* FindBoardInRoom(int room) {
   struct obj_data* o;
   struct Board* nb;
-  extern struct Board* board_list;
 
   if (!real_roomp(room))
     return (NULL);
 
   for (o = real_roomp(room)->contents; o; o = o->next_content) {
-    if (obj_index[o->item_number].func == board) {
+    if (obj_index[o->item_number].func.obj_f == board) {
       for (nb = board_list; nb; nb = nb->next) {
         if (nb->Rnum == o->item_number)
           return (nb);
@@ -238,7 +208,7 @@ int board_remove_msg(struct char_data* ch, char* arg, struct Board* b) {
     send_to_char("Due to misuse of the REMOVE command, only 51st level\n\r",
       ch);
     send_to_char("and above can remove messages.\n\r", ch);
-    return;
+    return 1;
   }
 
   ind = msg;

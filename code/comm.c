@@ -7,27 +7,35 @@
  *  Using *any* part of DikuMud without having read license.doc is         *
  *  violating our copyright.                                               *
  ************************************************************************* */
-
-#include "comm.h"
+#define _POSIX_C_SOURCE 200809L
+#define _GNU_SOURCE
 
 #include <ctype.h>
 #include <errno.h>
 #include <fcntl.h>
+#include <features.h>
 #include <netdb.h>
 #include <netinet/in.h>
 #include <signal.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
+#include <strings.h>
 #include <sys/resource.h>
+#include <sys/select.h>
 #include <sys/socket.h>
 #include <sys/time.h>
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <time.h>
+#include <unistd.h>
 
+#include "comm.h"
 #include "db.h"
 #include "handler.h"
 #include "interpreter.h"
+#include "limits.h"
+#include "multiclass.h"
 #include "structs.h"
 #include "utils.h"
 
@@ -39,24 +47,6 @@
 
 #define STATE(d) ((d)->connected)
 
-extern int errno; /* Why isn't this done in errno.h on alfa??? */
-
-/* externs */
-
-/* extern struct char_data *character_list; */
-#if HASH
-extern struct hash_header room_db; /* In db.c */
-#else
-extern struct room_data* room_db; /* In db.c */
-#endif
-
-extern int top_of_world;                /* In db.c */
-extern struct time_info_data time_info; /* In db.c */
-extern char help[];
-extern struct char_data* character_list;
-
-/* local globals */
-
 struct descriptor_data *descriptor_list, *next_to_process;
 
 int lawful = 0;      /* work like the game regulator */
@@ -64,7 +54,7 @@ int slow_death = 0;  /* Shut her down, Martha, she's sucking mud */
 int Shutdown = 0;    /* clean shutdown */
 int rebootmud = 0;   /* reboot the game after a shutdown */
 int no_specials = 0; /* Suppress ass. of special routines */
-long Uptime;         /* time that the game has been up */
+long Uptime = 0;     /* time that the game has been up */
 
 #if SITELOCK
 char hostlist[MAX_BAN_HOSTS][30]; /* list of sites to ban           */
@@ -74,57 +64,14 @@ int numberhosts;
 int maxdesc, avail_descs;
 int tics = 0; /* for extern checkpointing */
 
-int get_from_q(struct txt_q* queue, char* dest);
-/* write_to_q is in comm.h for the macro */
-int run_the_game(int port);
-int game_loop(int s);
-int init_socket(int port);
-int new_connection(int s);
-int new_descriptor(int s);
-int process_output(struct descriptor_data* t);
-int process_input(struct descriptor_data* t);
-void close_sockets(int s);
-void close_socket(struct descriptor_data* d);
-struct timeval timediff(struct timeval* a, struct timeval* b);
-void flush_queues(struct descriptor_data* d);
-void nonblock(int s);
-void parse_name(struct descriptor_data* desc, char* arg);
-void save_all();
-
-/* extern fcnts */
-
-struct char_data* make_char(char* name, struct descriptor_data* desc);
-void boot_db(void);
-void zone_update(void);
-void affect_update(int pulse); /* In spell_parser.c */
-void free_char(struct char_data* ch);
-void vlog(char* str);
-void check_mobile_activity(int pulse);
-void string_add(struct descriptor_data* d, char* str);
-void perform_violence(int pulse);
-void stop_fighting(struct char_data* ch);
-void show_string(struct descriptor_data* d, char* input);
-void gr(int s);
-void station(void);
-void down_river(int pulse);
-void Teleport(int pulse);
-void MakeSound();
-void TeleportPulseStuff(int pulse);
-void RiverPulseStuff(int pulse);
-
-void check_reboot(void);
-
 /* *********************************************************************
  *                     main game loop and related stuff                 *
  ********************************************************************* */
-
-int __main() { return (1); }
 
 int main(int argc, char** argv) {
   int port, a, pos = 1;
   char buf[512], *dir;
 
-  extern int WizLock;
   struct rlimit rl;
   int res;
 
@@ -135,7 +82,7 @@ int main(int argc, char** argv) {
   **  # of files = 128, so #of players approx = 110
   */
 
-#if DEBUG
+#if defined(DEBUG) && DEBUG
   malloc_debug(0);
 #endif
 
@@ -167,7 +114,7 @@ int main(int argc, char** argv) {
     pos++;
   }
 
-  if (pos < argc)
+  if (pos < argc) {
     if (!isdigit(*argv[pos])) {
       fprintf(stderr, "Usage: %s [-l] [-s] [-d pathname] [ port # ]\n",
         argv[0]);
@@ -176,6 +123,7 @@ int main(int argc, char** argv) {
       printf("Illegal port #\n");
       exit(0);
     }
+  }
 
   Uptime = time(0);
 
@@ -190,7 +138,14 @@ int main(int argc, char** argv) {
   sprintf(buf, "Using %s as data directory.", dir);
   vlog(buf);
 
-  srandom(time(0));
+  struct timespec ts;
+  if (timespec_get(&ts, TIME_UTC) == 0) {
+    perror("timespec_get failed, couldn't seed random number generator");
+    exit(0);
+  } else {
+    srand((unsigned int)(ts.tv_nsec ^ ts.tv_sec));
+  }
+
   WizLock = FALSE;
 
 #if SITELOCK
@@ -214,11 +169,6 @@ int main(int argc, char** argv) {
 int run_the_game(int port) {
   int s;
   PROFILE(extern etext();)
-
-  void signal_setup(void);
-  int load(void);
-  void coma(int s);
-
   PROFILE(monstartup((int)2, etext);)
 
   descriptor_list = NULL;
@@ -262,7 +212,7 @@ int game_loop(int s) {
   char buf[80], tempbuf[80], buf2[80];
   char hitscolor[10], manacolor[10], movescolor[10];
   struct descriptor_data *point, *next_point;
-  int i, pulse = 0, mask, prompt_per;
+  int i, pulse = 0, prompt_per;
   int current_hit, current_mana, current_moves;
   int missing_hit, missing_mana, missing_moves;
   struct room_data* rm;
@@ -278,9 +228,17 @@ int game_loop(int s) {
   /* !! Change if more needed !! */
   avail_descs = 250; /* urk a damn constant */
 
-  mask = sigmask(SIGUSR1) | sigmask(SIGUSR2) | sigmask(SIGINT) |
-         sigmask(SIGPIPE) | sigmask(SIGALRM) | sigmask(SIGTERM) |
-         sigmask(SIGURG) | sigmask(SIGXCPU) | sigmask(SIGHUP);
+  sigset_t mask;
+  sigemptyset(&mask);
+  sigaddset(&mask, SIGUSR1);
+  sigaddset(&mask, SIGUSR2);
+  sigaddset(&mask, SIGINT);
+  sigaddset(&mask, SIGPIPE);
+  sigaddset(&mask, SIGALRM);
+  sigaddset(&mask, SIGTERM);
+  sigaddset(&mask, SIGURG);
+  sigaddset(&mask, SIGXCPU);
+  sigaddset(&mask, SIGHUP);
 
   /* Main loop */
   while (!Shutdown) {
@@ -306,7 +264,10 @@ int game_loop(int s) {
       last_time.tv_sec++;
     }
 
-    sigsetmask(mask);
+    if (sigprocmask(SIG_SETMASK, &mask, NULL) < 0) {
+      perror("sigprocmask");
+      return (-1);
+    }
 
     if (select(maxdesc + 1, &input_set, &output_set, &exc_set, &null_time) <
         0) {
@@ -316,10 +277,14 @@ int game_loop(int s) {
 
     if (select(0, (fd_set*)0, (fd_set*)0, (fd_set*)0, &timeout) < 0) {
       perror("Select sleep");
-      /*exit(1);*/
     }
 
-    sigsetmask(0);
+    sigset_t empty_mask;
+    sigemptyset(&empty_mask);
+    if (sigprocmask(SIG_SETMASK, &empty_mask, NULL) < 0) {
+      perror("sigprocmask");
+      return (-1);
+    }
 
     /* Respond to whatever might be happening */
 
@@ -690,7 +655,7 @@ int get_from_q(struct txt_q* queue, char* dest) {
   return (1);
 }
 
-void write_to_q(char* txt, struct txt_q* queue) {
+void write_to_q(const char* txt, struct txt_q* queue) {
   struct txt_block* new;
 
   if (!queue) {
@@ -752,7 +717,7 @@ int init_socket(int port) {
   struct hostent* hp;
   struct linger ld;
 
-  bzero(&sa, sizeof(struct sockaddr_in));
+  memset(&sa, 0, sizeof(struct sockaddr_in));
   gethostname(hostname, MAX_HOSTNAME);
   hp = gethostbyname(hostname);
   if (hp == NULL) {
@@ -1171,7 +1136,7 @@ void close_socket(struct descriptor_data* d) {
 }
 
 void nonblock(int s) {
-  if (fcntl(s, F_SETFL, FNDELAY) == -1) {
+  if (fcntl(s, F_SETFL, O_NONBLOCK) == -1) {
     perror("Noblock");
     exit(1);
   }
@@ -1186,6 +1151,28 @@ Please try again later.\n\r\n\
 \n\r\
     the DikuMUD system operators\n\r\n\r"
 
+#ifdef OLD_COMA
+
+void coma(int s) {
+  vlog("Entering comatose state");
+
+  while (descriptor_list)
+    close_socket(descriptor_list);
+
+  do {
+    sleep(300);
+    tics = 1;
+    if (workhours()) {
+      vlog("Working hours collision during coma. Exit.");
+      exit(0);
+    }
+  } while (load() >= 6);
+
+  vlog("Leaving coma");
+}
+
+#else
+
 /* sleep while the load is too high */
 void coma(int s) {
   fd_set input_set;
@@ -1197,14 +1184,23 @@ void coma(int s) {
 
   vlog("Entering comatose state.");
 
-  sigsetmask(sigmask(SIGUSR1) | sigmask(SIGUSR2) | sigmask(SIGINT) |
-             sigmask(SIGPIPE) | sigmask(SIGALRM) | sigmask(SIGTERM) |
-             sigmask(SIGURG) | sigmask(SIGXCPU) | sigmask(SIGHUP));
+  sigset_t mask;
+  sigemptyset(&mask);
+  sigaddset(&mask, SIGUSR1);
+  sigaddset(&mask, SIGUSR2);
+  sigaddset(&mask, SIGINT);
+  sigaddset(&mask, SIGPIPE);
+  sigaddset(&mask, SIGALRM);
+  sigaddset(&mask, SIGTERM);
+  sigaddset(&mask, SIGURG);
+  sigaddset(&mask, SIGXCPU);
+  sigaddset(&mask, SIGHUP);
 
   while (descriptor_list)
     close_socket(descriptor_list);
 
   FD_ZERO(&input_set);
+
   do {
     FD_SET(s, &input_set);
     if (select(64, &input_set, 0, 0, &timeout) < 0) {
@@ -1214,7 +1210,12 @@ void coma(int s) {
     if (FD_ISSET(s, &input_set)) {
       if (load() < 6) {
         vlog("Leaving coma with visitor.");
-        sigsetmask(0);
+
+        sigset_t empty_mask;
+        sigemptyset(&empty_mask);
+        if (sigprocmask(SIG_SETMASK, &empty_mask, NULL) < 0) {
+          perror("sigprocmask");
+        }
         return;
       }
       if ((conn = new_connection(s)) >= 0) {
@@ -1232,14 +1233,20 @@ void coma(int s) {
   } while (load() >= 6);
 
   vlog("Leaving coma.");
-  sigsetmask(0);
+  sigset_t empty_mask;
+  sigemptyset(&empty_mask);
+  if (sigprocmask(SIG_SETMASK, &empty_mask, NULL) < 0) {
+    perror("sigprocmask");
+  }
 }
+
+#endif
 
 /* ****************************************************************
  *  Public routines for system-to-player-communication   *
  **************************************************************** */
 
-void send_to_char(char* messg, struct char_data* ch) {
+void send_to_char(const char* messg, struct char_data* ch) {
   if (ch)
     if (ch->desc && messg) {
       write_to_q(messg, &ch->desc->output);

@@ -8,6 +8,10 @@
 #ifndef C_F_U_NEW_H
 #define C_F_U_NEW_H
 
+#include <time.h>
+
+#include "structs.h"
+
 struct char_file_u_new {
     byte sex;
     unsigned char class;

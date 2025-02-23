@@ -5,33 +5,21 @@
  ************************************************************************* */
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 #include "comm.h"
+#include "constants.h"
 #include "db.h"
 #include "handler.h"
 #include "interpreter.h"
-#include "spells.h"
+#include "multiclass.h"
 #include "structs.h"
 #include "trap.h"
 #include "utils.h"
 
-/* extern variables */
-
-extern struct str_app_type str_app[];
-extern struct dex_skill_type dex_app_skill[];
-extern struct descriptor_data* descriptor_list;
-extern int vol_mult[];
-
-/* extern functions */
-
-struct obj_data* create_money(int amount);
-struct room_data* world;
-char getall(char* name, char* newname);
-int getabunch(char* name, char* newname);
-
 /* procedures related to get */
-void get(struct char_data* ch, struct obj_data* obj_object,
+static void get(struct char_data* ch, struct obj_data* obj_object,
   struct obj_data* sub_object) {
   char buffer[256];
 
@@ -72,6 +60,23 @@ void get(struct char_data* ch, struct obj_data* obj_object,
   }
 }
 
+static int CheckForInsideTrap(struct char_data* ch, struct obj_data* i) {
+  struct obj_data* t;
+
+  for (t = i->contains; t; t = t->next_content) {
+    if ((ITEM_TYPE(t) == ITEM_TRAP) &&
+        (IS_SET(GET_TRAP_EFF(t), TRAP_EFF_OBJECT)) &&
+        (GET_TRAP_CHARGES(t) > 0)) {
+      return (TriggerTrap(ch, t));
+    }
+  }
+  return (FALSE);
+}
+
+/**
+  TODO: This should return a value indicating success/failure to allow further
+  actions to predicate on successfully getting something
+ */
 void do_get(struct char_data* ch, char* argument, int cmd) {
   char arg1[MAX_STRING_LENGTH];
   char arg2[MAX_STRING_LENGTH];

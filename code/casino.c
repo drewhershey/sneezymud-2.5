@@ -6,9 +6,14 @@ J. Hendrickson
 
 ******************************************************************/
 
+#include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
-#include "spells.h"
+#include "comm.h"
+#include "db.h"
+#include "games.h"
+#include "interpreter.h"
 #include "structs.h"
 #include "utils.h"
 
@@ -77,7 +82,6 @@ void bj_shuffle(int inx, struct char_data* ch) {
 
 int do_blackjack_enter(struct char_data* ch) {
   int l1, l2, inx;
-  extern struct time_info_data time_info;
 
   for (l1 = 0, inx = -1; l1 < MAX_BLACKJACK; l1++) {
     if (!strcmp(ch->player.name, bj_data[l1].name)) {
@@ -102,6 +106,16 @@ int do_blackjack_enter(struct char_data* ch) {
   return 1;
 }
 
+static int bj_index(struct char_data* ch) {
+  int l1, inx;
+
+  for (l1 = 0, inx = -1; inx < 0 && l1 < MAX_BLACKJACK; l1++) {
+    if (!strcmp(ch->player.name, bj_data[l1].name))
+      inx = l1;
+  }
+  return inx;
+}
+
 int do_blackjack_exit(struct char_data* ch) {
   char log_msg[80];
   int inx;
@@ -117,6 +131,17 @@ int do_blackjack_exit(struct char_data* ch) {
   bj_data[inx].inuse = 0;
 
   send_to_char("You leave the blackjack table.\n\r", ch);
+}
+
+static int add_suit(char* cat_msg, int card) {
+  if (card & HEARTS)
+    strcat(cat_msg, " of Hearts");
+  if (card & DIAMONDS)
+    strcat(cat_msg, " of Diamonds");
+  if (card & CLUBS)
+    strcat(cat_msg, " of Clubs");
+  if (card & SPADES)
+    strcat(cat_msg, " of Spades");
 }
 
 void do_bj_bet(struct char_data* ch, char* arg, int cmd) {
@@ -204,6 +229,46 @@ void do_bj_bet(struct char_data* ch, char* arg, int cmd) {
   } else {
     send_to_char("So you think you are in a casino?\n\r", ch);
   }
+}
+
+static int best_bj_dealer(int inx) {
+  int l1, l2, l3;
+  char log_msg[256];
+
+  for (l1 = 0, l2 = 0, l3 = 0; l1 < bj_data[inx].nd; l1++) {
+    if ((bj_data[inx].dealer[l1] & 0x0f) > 10) {
+      l2 += 10;
+    } else {
+      l2 += (bj_data[inx].dealer[l1] & 0x0f);
+    }
+    if ((bj_data[inx].dealer[l1] & 0x0f) == 1)
+      l3++;
+  }
+  for (l1 = 0; l1 < l3; l1++)
+    if ((21 - l2) > 10)
+      l2 += 10;
+
+  return l2;
+}
+
+static int best_bj_score(int inx) {
+  int l1, l2, l3;
+  char log_msg[256];
+
+  for (l1 = 0, l2 = 0, l3 = 0; l1 < bj_data[inx].np; l1++) {
+    if ((bj_data[inx].hand[l1] & 0x0f) > 10) {
+      l2 += 10;
+    } else {
+      l2 += (bj_data[inx].hand[l1] & 0x0f);
+    }
+    if ((bj_data[inx].hand[l1] & 0x0f) == 1)
+      l3++;
+  }
+  for (l1 = 0; l1 < l3; l1++)
+    if ((21 - l2) > 10)
+      l2 += 10;
+
+  return l2;
 }
 
 void do_stay(struct char_data* ch, char* arg, int cmd) {
@@ -314,7 +379,21 @@ void do_peek(struct char_data* ch, char* arg, int cmd) {
   }
 }
 
-void do_bj_hit(struct char_data* ch, char* arg, int cmd) {
+static int min_bj_score(int inx) {
+  int l1, l2;
+  char log_msg[256];
+
+  for (l1 = 0, l2 = 0; l1 < bj_data[inx].np; l1++)
+    if ((bj_data[inx].hand[l1] & 0x0f) > 10) {
+      l2 += 10;
+    } else {
+      l2 += bj_data[inx].hand[l1] & 0x0f;
+    }
+
+  return l2;
+}
+
+void do_bj_hit(struct char_data* ch) {
   int inx;
   char log_msg[2048];
 
@@ -342,79 +421,4 @@ void do_bj_hit(struct char_data* ch, char* arg, int cmd) {
     send_to_char("You have busted!\n\r", ch);
     bj_data[inx].bet = 0;
   }
-}
-
-int bj_index(struct char_data* ch) {
-  int l1, inx;
-
-  for (l1 = 0, inx = -1; inx < 0 && l1 < MAX_BLACKJACK; l1++) {
-    if (!strcmp(ch->player.name, bj_data[l1].name))
-      inx = l1;
-  }
-  return inx;
-}
-
-int add_suit(char* cat_msg, int card) {
-  if (card & HEARTS)
-    strcat(cat_msg, " of Hearts");
-  if (card & DIAMONDS)
-    strcat(cat_msg, " of Diamonds");
-  if (card & CLUBS)
-    strcat(cat_msg, " of Clubs");
-  if (card & SPADES)
-    strcat(cat_msg, " of Spades");
-}
-
-int min_bj_score(int inx) {
-  int l1, l2;
-  char log_msg[256];
-
-  for (l1 = 0, l2 = 0; l1 < bj_data[inx].np; l1++)
-    if ((bj_data[inx].hand[l1] & 0x0f) > 10) {
-      l2 += 10;
-    } else {
-      l2 += bj_data[inx].hand[l1] & 0x0f;
-    }
-
-  return l2;
-}
-
-int best_bj_dealer(int inx) {
-  int l1, l2, l3;
-  char log_msg[256];
-
-  for (l1 = 0, l2 = 0, l3 = 0; l1 < bj_data[inx].nd; l1++) {
-    if ((bj_data[inx].dealer[l1] & 0x0f) > 10) {
-      l2 += 10;
-    } else {
-      l2 += (bj_data[inx].dealer[l1] & 0x0f);
-    }
-    if ((bj_data[inx].dealer[l1] & 0x0f) == 1)
-      l3++;
-  }
-  for (l1 = 0; l1 < l3; l1++)
-    if ((21 - l2) > 10)
-      l2 += 10;
-
-  return l2;
-}
-
-int best_bj_score(int inx) {
-  int l1, l2, l3;
-  char log_msg[256];
-
-  for (l1 = 0, l2 = 0, l3 = 0; l1 < bj_data[inx].np; l1++) {
-    if ((bj_data[inx].hand[l1] & 0x0f) > 10) {
-      l2 += 10;
-    } else {
-      l2 += (bj_data[inx].hand[l1] & 0x0f);
-    }
-    if ((bj_data[inx].hand[l1] & 0x0f) == 1)
-      l3++;
-  }
-  for (l1 = 0; l1 < l3; l1++)
-    if ((21 - l2) > 10)
-      l2 += 10;
-
-  return l2;
 }

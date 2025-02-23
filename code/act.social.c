@@ -3,28 +3,17 @@
  *  Usage : Social commands.                                               *
  *  Copyright (C) 1990, 1991 - see 'license.doc' for complete information. *
  ************************************************************************* */
-
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 #include "comm.h"
 #include "db.h"
 #include "handler.h"
 #include "interpreter.h"
-#include "spells.h"
+#include "multiclass.h"
 #include "structs.h"
 #include "utils.h"
-
-/* extern variables */
-
-extern struct descriptor_data* descriptor_list;
-
-/* extern functions */
-
-void parse_string(char* input, char* output, struct char_data* ch1,
-  struct char_data* ch2, struct char_data* to);
-int action(int cmd);
-char* fread_action(FILE* fl);
 
 struct social_messg {
     int act_nr;
@@ -56,7 +45,7 @@ struct pose_type {
 
 static int list_top = -1;
 
-char* fread_action(FILE* fl) {
+static char* fread_action(FILE* fl) {
   char buf[MAX_STRING_LENGTH], *rslt;
 
   for (;;) {
@@ -129,7 +118,7 @@ void boot_social_messages(void) {
   fclose(fl);
 }
 
-int find_action(int cmd) {
+static int find_action(int cmd) {
   int bot, top, mid;
 
   bot = 0;
@@ -214,7 +203,7 @@ void do_insult(struct char_data* ch, char* argument, int cmd) {
         sprintf(buf, "You insult %s.\n\r", GET_NAME(victim));
         send_to_char(buf, ch);
 
-        switch (random() % 3) {
+        switch (rand() % 3) {
           case 0: {
             if (GET_SEX(ch) == SEX_MALE) {
               if (GET_SEX(victim) == SEX_MALE)
@@ -275,7 +264,7 @@ void boot_pose_messages(void) {
   fclose(fl);
 }
 
-do_pose(struct char_data* ch, char* argument, int cmd) {
+void do_pose(struct char_data* ch, char* argument, int cmd) {
   byte to_pose;
   byte counter;
 

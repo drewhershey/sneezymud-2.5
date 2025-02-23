@@ -4,23 +4,15 @@
 
 #include "opinion.h"
 
-#include <ctype.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
-#include <time.h>
 
+#include "comm.h"
 #include "db.h"
-#include "race.h"
-#include "spells.h"
+#include "multiclass.h"
 #include "structs.h"
 #include "utils.h"
-
-/*
-  external stuff
-*/
-
-extern struct index_data* mob_index;
-extern struct room_data* world;
 
 int FreeHates(struct char_data* ch) {
   struct char_list *k, *n;
@@ -156,13 +148,6 @@ int AddHatred(struct char_data* ch, int parm_type, int parm) {
     if (!IS_PC(ch))
       SET_BIT(ch->specials.act, ACT_HATEFUL);
   }
-}
-
-int RemHatred(struct char_data* ch, unsigned short bitv) {
-  REMOVE_BIT(ch->hatefield, bitv);
-  if (!ch->hatefield)
-    if (!IS_PC(ch))
-      REMOVE_BIT(ch->specials.act, ACT_HATEFUL);
 }
 
 int Hates(struct char_data* ch, struct char_data* v) {
@@ -467,28 +452,5 @@ void ZeroFeared(struct char_data* ch, struct char_data* v) {
         }
       }
     }
-  }
-}
-
-/*
-  these two are to make the monsters completely forget about them.
-*/
-void DeleteHatreds(struct char_data* ch) {
-  struct char_data* i;
-  extern struct char_data* character_list;
-
-  for (i = character_list; i; i = i->next) {
-    if (Hates(i, ch))
-      RemHated(i, ch);
-  }
-}
-
-void DeleteFears(struct char_data* ch) {
-  struct char_data* i;
-  extern struct char_data* character_list;
-
-  for (i = character_list; i; i = i->next) {
-    if (Fears(i, ch))
-      RemFeared(i, ch);
   }
 }

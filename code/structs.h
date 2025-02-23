@@ -6,7 +6,9 @@
 #ifndef STRUCTS_H
 #define STRUCTS_H
 
+#include <sys/time.h>
 #include <sys/types.h>
+#include <time.h>
 
 typedef signed char sbyte;
 typedef unsigned char ubyte;
@@ -26,15 +28,6 @@ typedef signed char byte;
 
 #define BIT_POOF_IN 1
 #define BIT_POOF_OUT 2
-
-/*
-  Quest stuff
-*/
-
-struct QuestItem {
-    int item;
-    char* where;
-};
 
 /*
   tailoring stuff
@@ -378,7 +371,7 @@ struct extra_descr_data {
 };
 
 #define MAX_OBJ_AFFECT 5 /* Used in OBJ_FILE_ELEM *DO*NOT*CHANGE* */
-#define OBJ_NOTIMER -7000000
+#define OBJ_NOTIMER (-7000000)
 
 struct obj_flag_data {
     int value[4];     /* Values of the item (see list)    */
@@ -434,8 +427,8 @@ struct obj_data {
 
 /* The following defs are for room_data  */
 
-#define NOWHERE -1   /* nil reference for room-database      */
-#define AUTO_RENT -2 /* other special room, for auto-renting */
+#define NOWHERE (-1)   /* nil reference for room-database      */
+#define AUTO_RENT (-2) /* other special room, for auto-renting */
 
 /* Bitvector For 'room_flags' */
 
@@ -495,6 +488,8 @@ struct room_direction_data {
     int to_room;               /* Where direction leeds (NOWHERE) */
 };
 
+typedef int (*room_proc_t)(struct char_data*, int, char*);
+
 /* ========================= Structure for room ========================== */
 struct room_data {
     sh_int number;   /* Rooms number                       */
@@ -514,13 +509,15 @@ struct room_data {
     char* description; /* Shown when entered                 */
     struct extra_descr_data* ex_description;   /* for examine/look       */
     struct room_direction_data* dir_option[6]; /* Directions           */
-    long room_flags; /* DEATH,DARK ... etc                 */
-    byte light;      /* Number of lightsources in room     */
-    int (*funct)();  /* special procedure                  */
+    long room_flags;   /* DEATH,DARK ... etc                 */
+    byte light;        /* Number of lightsources in room     */
+    room_proc_t funct; /* special procedure                  */
 
     struct obj_data* contents; /* List of items in room              */
     struct char_data* people;  /* List of NPC / PC in room           */
 };
+
+extern struct room_data* world;
 
 /* ======================================================================== */
 
@@ -839,6 +836,49 @@ struct follow_type {
     struct follow_type* next;
 };
 
+enum mob_act_type {
+  MOB_ACT_LATTIMORE,
+  MOB_ACT_RINGWRAITH,
+  MOB_ACT_GUARDIAN,
+  MOB_ACT_BOUNTYHUNTER,
+};
+
+struct mob_act_ringwraith {
+    int ringnumber;
+    int chances;
+};
+
+struct mob_act_lattimore {
+    short pointer;
+    char** names;
+    int* status;
+    short index;
+    short c;
+};
+
+struct mob_act_guardian {
+    char** names;
+    short num_names;
+};
+
+struct mob_act_bountyhunter {
+    char hunted_item[80];
+    char hunted_victim[80];
+    int num_chances;
+    int level_command;
+    int num_retrieved;
+};
+
+struct mob_act_data {
+    enum mob_act_type type;
+    union {
+        struct mob_act_lattimore lattimore;
+        struct mob_act_ringwraith ringwraith;
+        struct mob_act_guardian guardian;
+        struct mob_act_bountyhunter bountyhunter;
+    } data;
+};
+
 /* ================== Structure for player/non-player ===================== */
 struct char_data {
     sh_int nr;   /* monster nr (pos in file)    */
@@ -869,7 +909,7 @@ struct char_data {
     sh_int persist;
     int old_room;
 
-    void* act_ptr; /* numeric argument for the mobile actions */
+    struct mob_act_data* act_ptr; /* data for mobile actions */
 
     struct char_player_data player;        /* Normal data                 */
     struct char_ability_data abilities;    /* Abilities                   */
@@ -898,6 +938,15 @@ struct char_data {
     struct char_bet_data bet_opt;
     struct char_poofin_data poof;
 };
+
+typedef int (*mob_proc_t)(struct char_data*, int, char*);
+typedef int (*obj_proc_t)(struct char_data*, int, char*, struct obj_data*);
+
+typedef union {
+    mob_proc_t mob_f;
+    obj_proc_t obj_f;
+    room_proc_t room_f;
+} ProcFn;
 
 /* ======================================================================== */
 
@@ -1182,7 +1231,8 @@ struct con_app_type {
 
 /************************************************************/
 
-typedef void (*funcp)();
+typedef void (*funcp)(byte, struct char_data*, char*, int, struct char_data*,
+  struct obj_data*);
 
 struct breather {
     int vnum;
@@ -1195,6 +1245,6 @@ typedef struct obj_data Obj;
 typedef struct room_data Room;
 typedef struct descriptor_data Descriptor;
 
-#define OBJECT_HITTING -1
+#define OBJECT_HITTING (-1)
 
 #endif

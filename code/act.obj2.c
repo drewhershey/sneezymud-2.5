@@ -3,33 +3,26 @@
  *  Usage : Commands mainly using objects.                                 *
  *  Copyright (C) 1990, 1991 - see 'license.doc' for complete information. *
  ************************************************************************* */
+#define _POSIX_C_SOURCE 200809L
 
 #include <assert.h>
 #include <ctype.h>
+#include <features.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
+#include <sys/param.h>
 
 #include "comm.h"
+#include "constants.h"
 #include "db.h"
 #include "handler.h"
 #include "interpreter.h"
+#include "limits.h"
+#include "multiclass.h"
 #include "spells.h"
 #include "structs.h"
 #include "utils.h"
-
-/* extern variables */
-
-extern struct str_app_type str_app[];
-extern struct dex_skill_type dex_app_skill[];
-extern struct descriptor_data* descriptor_list;
-extern char* drinks[];
-extern int drink_aff[][3];
-extern struct spell_info_type spell_info[];
-
-/* extern functions */
-
-struct obj_data* get_object_in_equip_vis(struct char_data* ch, char* arg,
-  struct obj_data** equipment, int* j);
 
 void weight_change_object(struct obj_data* obj, int weight) {
   struct obj_data* tmp_obj;
@@ -70,13 +63,32 @@ void name_from_drinkcon(struct obj_data* obj) {
 
 void name_to_drinkcon(struct obj_data* obj, int type) {
   char* new_name;
-  extern char* drinknames[];
 
   CREATE(new_name, char, strlen(obj->name) + strlen(drinknames[type]) + 2);
   sprintf(new_name, "%s %s", drinknames[type], obj->name);
   free(obj->name);
   obj->name = new_name;
 }
+
+static const int drink_aff[][3] = {
+  {0, 1, 10}, /* Water    */
+  {3, 2, 5},  /* beer     */
+  {5, 2, 5},  /* wine     */
+  {2, 2, 5},  /* ale      */
+  {1, 2, 5},  /* ale      */
+  {6, 1, 4},  /* Whiskey  */
+  {0, 1, 8},  /* lemonade */
+  {10, 0, 0}, /* firebr   */
+  {3, 3, 3},  /* local    */
+  {0, 4, -8}, /* juice    */
+  {0, 3, 6},
+  {0, 1, 6},
+  {0, 1, 6},
+  {0, 2, -1},
+  {0, 1, -2},
+  {0, 1, 5},
+  {0, 0, 0},
+};
 
 void do_drink(struct char_data* ch, char* argument, int cmd) {
   char buf[255];
@@ -482,7 +494,8 @@ void do_taste(struct char_data* ch, char* argument, int cmd) {
 
 /* functions related to wear */
 
-perform_wear(struct char_data* ch, struct obj_data* obj_object, int keyword) {
+static void perform_wear(struct char_data* ch, struct obj_data* obj_object,
+  int keyword) {
   switch (keyword) {
     case 0:
       act("$n lights $p and holds it.", FALSE, ch, obj_object, 0, TO_ROOM);
@@ -538,6 +551,8 @@ perform_wear(struct char_data* ch, struct obj_data* obj_object, int keyword) {
     case 17:
       act("$n holds the $p.", TRUE, ch, obj_object, 0, TO_ROOM);
       break;
+    default:
+      break;
   }
 }
 
@@ -565,6 +580,37 @@ int IsRestricted(int Mask, int Class) {
     return (TRUE);
 
   return (FALSE);
+}
+
+static int GetItemClassRestrictions(struct obj_data* obj) {
+  int total = 0;
+
+  if (IS_SET(obj->obj_flags.extra_flags, ITEM_ANTI_MAGE)) {
+    total += CLASS_MAGIC_USER;
+  }
+  if (IS_SET(obj->obj_flags.extra_flags, ITEM_ANTI_THIEF)) {
+    total += CLASS_THIEF;
+  }
+  if (IS_SET(obj->obj_flags.extra_flags, ITEM_ANTI_FIGHTER)) {
+    total += CLASS_WARRIOR;
+  }
+  if (IS_SET(obj->obj_flags.extra_flags, ITEM_ANTI_CLERIC)) {
+    total += CLASS_CLERIC;
+  }
+  if (IS_SET(obj->obj_flags.extra_flags, ITEM_ANTI_ANTI)) {
+    total += CLASS_ANTIPALADIN;
+  }
+  if (IS_SET(obj->obj_flags.extra_flags, ITEM_ANTI_MONK)) {
+    total += CLASS_MONK;
+  }
+  if (IS_SET(obj->obj_flags.extra_flags, ITEM_ANTI_PALA)) {
+    total += CLASS_PALADIN;
+  }
+  if (IS_SET(obj->obj_flags.extra_flags, ITEM_ANTI_RANGER)) {
+    total += CLASS_RANGER;
+  }
+
+  return (total);
 }
 
 void wear(struct char_data* ch, struct obj_data* obj_object, int keyword) {
@@ -1060,6 +1106,17 @@ void do_grab(struct char_data* ch, char* argument, int cmd) {
   } else {
     send_to_char("Hold what?\n\r", ch);
   }
+}
+
+static struct obj_data* get_object_in_equip_vis(struct char_data* ch, char* arg,
+  struct obj_data* equipment[], int* j) {
+  for ((*j) = 0; (*j) < MAX_WEAR; (*j)++)
+    if (equipment[(*j)])
+      if (CAN_SEE_OBJ(ch, equipment[(*j)]))
+        if (isname(arg, equipment[(*j)]->name))
+          return (equipment[(*j)]);
+
+  return (0);
 }
 
 void do_remove(struct char_data* ch, char* argument, int cmd) {

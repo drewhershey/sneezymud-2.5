@@ -3,18 +3,18 @@
 
 #include <assert.h>
 #include <stdio.h>
+#include <string.h>
+#include <sys/param.h>
 
 #include "comm.h"
+#include "constants.h"
 #include "db.h"
 #include "handler.h"
-#include "limits.h"
-#include "race.h"
+#include "interpreter.h"
+#include "multiclass.h"
 #include "spells.h"
 #include "structs.h"
 #include "utils.h"
-
-extern struct index_data* obj_index;
-extern struct dex_app_type dex_app[];
 
 /* These are some new skills for the new classes and for thiefs and warriors */
 
@@ -170,7 +170,6 @@ void do_search(struct char_data* ch, char* arg, int cmd) {
   char buf[256];
   struct room_data* rp;
   struct room_direction_data* fdd;
-  extern char* exits[];
   *buf = '\0';
 
   if (!HasClass(ch, CLASS_THIEF)) {

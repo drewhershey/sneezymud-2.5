@@ -6,27 +6,21 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <sys/param.h>
 
 #include "comm.h"
+#include "constants.h"
 #include "db.h"
+#include "games.h"
 #include "handler.h"
 #include "interpreter.h"
 #include "limits.h"
 #include "multiclass.h"
 #include "opinion.h"
-#include "race.h"
+#include "spec_procs.h"
 #include "spells.h"
 #include "structs.h"
 #include "utils.h"
-
-/* extern variables */
-
-extern struct descriptor_data* descriptor_list;
-extern struct dex_app_type dex_app[];
-
-void raw_kill(struct char_data* ch);
-int check_peaceful(struct char_data* ch, char* msg);
-int check_no_order(struct char_data* ch, char* msg);
 
 void do_hit(struct char_data* ch, char* argument, int cmd) {
   char arg[80];
@@ -218,6 +212,17 @@ void do_backstab(struct char_data* ch, char* argument, int cmd) {
   WAIT_STATE(ch, 2 * PULSE_VIOLENCE);
 }
 
+static int check_no_order(struct char_data* ch, char* msg) {
+  struct room_data* rp;
+
+  rp = real_roomp(ch->in_room);
+  if (rp && rp->room_flags & NO_ORDER) {
+    send_to_char(msg, ch);
+    return 1;
+  }
+  return 0;
+}
+
 void do_order(struct char_data* ch, char* argument, int cmd) {
   char name[100], message[256];
   char buf[256];
@@ -338,7 +343,7 @@ void do_flee(struct char_data* ch, char* argument, int cmd) {
       if (CAN_GO(ch, attempt) &&
           !IS_SET(real_roomp(EXIT(ch, attempt)->to_room)->room_flags, DEATH)) {
         act("$n panics, and attempts to flee.", TRUE, ch, 0, 0, TO_ROOM);
-        if ((die = MoveOne(ch, attempt, FALSE)) == 1) {
+        if ((die = MoveOne(ch, attempt)) == 1) {
           /* The escape has succeded */
           send_to_char("You flee head over heels.\n\r", ch);
           return;
@@ -380,7 +385,7 @@ void do_flee(struct char_data* ch, char* argument, int cmd) {
         }
       }
 
-      if ((die = MoveOne(ch, attempt, FALSE)) == 1) {
+      if ((die = MoveOne(ch, attempt)) == 1) {
         if (GetMaxLevel(ch) > 3) {
           if (panic || !HasClass(ch, CLASS_WARRIOR)) {
             loose = 2 * GetMaxLevel(ch);
@@ -713,15 +718,7 @@ void do_wimpy(struct char_data* ch, char* arg, int cmd) {
   send_to_char(buff, ch);
 }
 
-extern struct breather breath_monsters[];
-extern struct index_data* mob_index;
-void cast_geyser();
-void cast_fire_breath();
-void cast_frost_breath();
-void cast_acid_breath();
-void cast_gas_breath();
-void cast_lightning_breath();
-funcp bweapons[] = {cast_geyser, cast_fire_breath, cast_gas_breath,
+const funcp bweapons[] = {cast_geyser, cast_fire_breath, cast_gas_breath,
   cast_frost_breath, cast_acid_breath, cast_lightning_breath};
 
 void do_breath(struct char_data* ch, char* argument, int cmd) {
@@ -786,6 +783,61 @@ void do_breath(struct char_data* ch, char* argument, int cmd) {
   WAIT_STATE(ch, PULSE_VIOLENCE * 2);
 }
 
+static int BowMissileDamage(struct char_data* ch, struct char_data* victim,
+  int olddam, int attacktype) {
+  int dam;
+  struct obj_data* bow;
+
+  if (!DamDetailsOk(ch, victim, dam, attacktype))
+    return (FALSE);
+
+  bow = ch->equipment[HOLD];
+  dam = GET_DAMROLL(ch);
+  dam += dice(bow->obj_flags.value[1], bow->obj_flags.value[2]);
+
+  dam = MAX(0, dam);
+
+  dam = SkipImmortals(victim, dam);
+
+  SetVictFighting(ch, victim);
+
+  dam = DamageTrivia(ch, victim, dam, attacktype);
+
+  if (DoDamage(ch, victim, dam, attacktype))
+    return (TRUE);
+
+  DamageMessages(ch, victim, dam, SPEC_BOW);
+
+  if (DamageEpilog(ch, victim))
+    return (TRUE);
+
+  return (FALSE);
+}
+
+static void BowHit(struct char_data* ch, struct char_data* victim, int type) {
+  root_hit(ch, victim, type, BowMissileDamage);
+}
+
+static void fire(struct char_data* ch, struct char_data* victim) {
+  struct obj_data* bow;
+  int tohit = 0, todam = 0;
+
+  bow = ch->equipment[HOLD];
+
+  if (!bow || bow->obj_flags.type_flag != ITEM_BOW) {
+    send_to_char("You must be holding a bow to fire one!\n\r", ch);
+    return;
+  } else {
+    if (bow->obj_flags.value[3] >= 1) {
+      bow->obj_flags.value[3]--;
+      BowHit(ch, victim, SPEC_BOW);
+    } else {
+      send_to_char(
+        "Your bow has no arrow. It twangs as you try to shoot it!\n\r", ch);
+    }
+  }
+}
+
 void do_fire(struct char_data* ch, char* argument, int cmd) {
   char arg[80];
   struct char_data* victim;
@@ -815,6 +867,83 @@ void do_fire(struct char_data* ch, char* argument, int cmd) {
     }
   } else {
     send_to_char("Fire at who?\n\r", ch);
+  }
+}
+
+int GunMissileDamage(struct char_data* ch, struct char_data* victim, int olddam,
+  int attacktype) {
+  int dam;
+  struct obj_data* gun;
+
+  if (!DamDetailsOk(ch, victim, dam, attacktype))
+    return (FALSE);
+
+  gun = ch->equipment[HOLD];
+  dam = GET_DAMROLL(ch);
+  if (gun->obj_flags.value[2] > 0) {
+    dam += dice(gun->obj_flags.value[1], gun->obj_flags.value[2]);
+  } else {
+    act("$p jams and refuses to fire.", TRUE, ch, gun, 0, TO_CHAR);
+    act("$p jams on $n", TRUE, ch, gun, 0, TO_ROOM);
+    return (FALSE);
+  }
+
+  if (GET_POS(victim) < POSITION_FIGHTING)
+    dam *= 1 + (POSITION_FIGHTING - GET_POS(victim)) / 3;
+
+  dam = MAX(0, dam);
+
+  dam = SkipImmortals(victim, dam);
+
+  SetVictFighting(ch, victim);
+  /*
+     if (!SetCharFighting(ch, victim)) return(FALSE);
+  */
+
+  dam = DamageTrivia(ch, victim, dam, attacktype);
+
+  if (DoDamage(ch, victim, dam, attacktype))
+    return (TRUE);
+
+  DamageMessages(ch, victim, dam, SPEC_SHOOT);
+
+  if (DamageEpilog(ch, victim))
+    return (TRUE);
+
+  return (FALSE); /* not dead */
+}
+
+static void MissileHit(struct char_data* ch, struct char_data* victim,
+  int type) {
+  root_hit(ch, victim, type, GunMissileDamage);
+}
+
+static void shoot(struct char_data* ch, struct char_data* victim) {
+  struct obj_data* gun;
+  int tohit = 0, todam = 0;
+
+  gun = ch->equipment[HOLD];
+
+  if (!gun || gun->obj_flags.type_flag != ITEM_FIREWEAPON) {
+    send_to_char("You need to be holding a gun.\n\r", ch);
+    return;
+  } else {
+    /*
+    **  for guns:  value[0] = arror type
+    **             value[1] = rolls
+    **             value[2] = dice max
+    **             value[3] = current shots
+    **
+    **   fire the weapon.
+    */
+    if (gun->obj_flags.value[3] >= 1) {
+      gun->obj_flags.value[3]--;
+      MissileHit(ch, victim, SPEC_SHOOT);
+    } else {
+      send_to_char("Click!  It seems to be empty.\n\r", ch);
+      act("Click!  $n tries to fire an empty weapon.", FALSE, ch, 0, 0,
+        TO_ROOM);
+    }
   }
 }
 

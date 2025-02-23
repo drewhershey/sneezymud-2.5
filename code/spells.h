@@ -6,6 +6,8 @@
 #ifndef SPELLS_H
 #define SPELLS_H
 
+#include "structs.h"
+
 #define MAX_BUF_LENGTH 240
 
 #define TYPE_UNDEFINED -1
@@ -270,6 +272,9 @@ struct spell_info_type {
     sh_int targets;        /* See below for use with TAR_XXX  */
 };
 
+extern struct spell_info_type spell_info[MAX_SPL_LIST];
+extern const char* const spells[];
+
 /* Possible Targets:
 
    bit 0 : IGNORE TARGET
@@ -293,18 +298,275 @@ struct spell_info_type {
 
 /* Attacktypes with grammar */
 
-struct attack_hit_type {
-    char* singular;
-    char* plural;
-};
-
 #define TASK_TRIVIAL 0
 #define TASK_EASY 1
 #define TASK_NORMAL 2
 #define TASK_DIFFICULT 3
 #define TASK_DANGEROUS 4
-#define CRITICAL_FAILURE -1
+#define CRITICAL_FAILURE (-1)
 #define CRITICAL_SUCCESS 1
 #define NORMAL_RESULT 0
+
+extern const byte saving_throws[8][5][ABS_MAX_LVL];
+extern const funcp bweapons[];
+
+bool saves_spell(struct char_data* ch, sh_int save_type);
+int can_do_verbal(struct char_data* ch);
+
+// Spell behavior fns
+void spell_dispel_magic(byte level, struct char_data* ch,
+  struct char_data* victim, struct obj_data* obj);
+void spell_animate_dead(byte level, struct char_data* ch,
+  struct char_data* victim, struct obj_data* corpse);
+
+// Cast handlers
+void cast_teleport(byte level, struct char_data* ch, char* arg, int type,
+  struct char_data* tar_ch, struct obj_data* tar_obj);
+void spell_teleport(byte level, struct char_data* ch, struct char_data* victim,
+  struct obj_data* obj);
+void cast_fear(byte level, struct char_data* ch, char* arg, int type,
+  struct char_data* tar_ch, struct obj_data* tar_obj);
+void spell_astral_walk(byte level, struct char_data* ch,
+  struct char_data* victim, struct obj_data* obj);
+void spell_summon(byte level, struct char_data* ch, struct char_data* victim,
+  struct obj_data* obj);
+void cast_cure_blind(byte level, struct char_data* ch, char* arg, int type,
+  struct char_data* tar_ch, struct obj_data* tar_obj);
+void cast_dispel_magic(byte level, struct char_data* ch, char* arg, int type,
+  struct char_data* tar_ch, struct obj_data* tar_obj);
+void cast_astral_walk(byte level, struct char_data* ch, char* arg, int type,
+  struct char_data* tar_ch, struct obj_data* tar_obj);
+void cast_web(byte level, struct char_data* ch, char* arg, int type,
+  struct char_data* tar_ch, struct obj_data* tar_obj);
+void cast_armor(byte level, struct char_data* ch, char* arg, int type,
+  struct char_data* tar_ch, struct obj_data* tar_obj);
+void cast_charm_monster(byte level, struct char_data* ch, char* arg, int type,
+  struct char_data* tar_ch, struct obj_data* tar_obj);
+void cast_mon_sum1(byte level, struct char_data* ch, char* arg, int type,
+  struct char_data* tar_ch, struct obj_data* tar_obj);
+void cast_mon_sum2(byte level, struct char_data* ch, char* arg, int type,
+  struct char_data* tar_ch, struct obj_data* tar_obj);
+void cast_mon_sum3(byte level, struct char_data* ch, char* arg, int type,
+  struct char_data* tar_ch, struct obj_data* tar_obj);
+void cast_mon_sum4(byte level, struct char_data* ch, char* arg, int type,
+  struct char_data* tar_ch, struct obj_data* tar_obj);
+void cast_mon_sum5(byte level, struct char_data* ch, char* arg, int type,
+  struct char_data* tar_ch, struct obj_data* tar_obj);
+void cast_mon_sum6(byte level, struct char_data* ch, char* arg, int type,
+  struct char_data* tar_ch, struct obj_data* tar_obj);
+void cast_mon_sum7(byte level, struct char_data* ch, char* arg, int type,
+  struct char_data* tar_ch, struct obj_data* tar_obj);
+void cast_farlook(byte level, struct char_data* ch, char* arg, int type,
+  struct char_data* tar_ch, struct obj_data* tar_obj);
+void cast_shocking_grasp(byte level, struct char_data* ch, char* arg, int type,
+  struct char_data* victim, struct obj_data* tar_obj);
+void cast_acid_blast(byte level, struct char_data* ch, char* arg, int type,
+  struct char_data* victim, struct obj_data* tar_obj);
+void cast_lightning_bolt(byte level, struct char_data* ch, char* arg, int type,
+  struct char_data* victim, struct obj_data* tar_obj);
+void cast_ice_storm(byte level, struct char_data* ch, char* arg, int type,
+  struct char_data* victim, struct obj_data* tar_obj);
+void cast_vampiric_touch(byte level, struct char_data* ch, char* arg, int type,
+  struct char_data* victim, struct obj_data* tar_obj);
+void cast_call_lightning(byte level, struct char_data* ch, char* arg, int type,
+  struct char_data* victim, struct obj_data* tar_obj);
+void cast_cone_of_cold(byte level, struct char_data* ch, char* arg, int type,
+  struct char_data* victim, struct obj_data* tar_obj);
+void cast_disintegrate(byte level, struct char_data* ch, char* arg, int type,
+  struct char_data* victim, struct obj_data* tar_obj);
+void cast_create_golem(byte level, struct char_data* ch, char* arg, int type,
+  struct char_data* victim, struct obj_data* tar_obj);
+void cast_cause_light(byte level, struct char_data* ch, char* arg, int type,
+  struct char_data* victim, struct obj_data* tar_obj);
+void cast_cause_critic(byte level, struct char_data* ch, char* arg, int type,
+  struct char_data* victim, struct obj_data* tar_obj);
+void cast_flamestrike(byte level, struct char_data* ch, char* arg, int type,
+  struct char_data* victim, struct obj_data* tar_obj);
+void cast_harm(byte level, struct char_data* ch, char* arg, int type,
+  struct char_data* victim, struct obj_data* tar_obj);
+void cast_animate_dead(byte level, struct char_data* ch, char* arg, int type,
+  struct char_data* tar_ch, struct obj_data* tar_obj);
+void cast_conjure_elemental(byte level, struct char_data* ch, char* arg,
+  int type, struct char_data* tar_ch, struct obj_data* tar_obj);
+void cast_bless(byte level, struct char_data* ch, char* arg, int si,
+  struct char_data* tar_ch, struct obj_data* tar_obj);
+void cast_blindness(byte level, struct char_data* ch, char* arg, int si,
+  struct char_data* tar_ch, struct obj_data* tar_obj);
+void cast_burning_hands(byte level, struct char_data* ch, char* arg, int si,
+  struct char_data* tar_ch, struct obj_data* tar_obj);
+void cast_charm_person(byte level, struct char_data* ch, char* arg, int si,
+  struct char_data* tar_ch, struct obj_data* tar_obj);
+void cast_cacaodemon(byte level, struct char_data* ch, char* arg, int si,
+  struct char_data* tar_ch, struct obj_data* tar_obj);
+void cast_chill_touch(byte level, struct char_data* ch, char* arg, int si,
+  struct char_data* tar_ch, struct obj_data* tar_obj);
+void cast_clone(byte level, struct char_data* ch, char* arg, int si,
+  struct char_data* tar_ch, struct obj_data* tar_obj);
+void cast_colour_spray(byte level, struct char_data* ch, char* arg, int si,
+  struct char_data* tar_ch, struct obj_data* tar_obj);
+void cast_control_weather(byte level, struct char_data* ch, char* arg, int si,
+  struct char_data* tar_ch, struct obj_data* tar_obj);
+void cast_create_food(byte level, struct char_data* ch, char* arg, int si,
+  struct char_data* tar_ch, struct obj_data* tar_obj);
+void cast_create_water(byte level, struct char_data* ch, char* arg, int si,
+  struct char_data* tar_ch, struct obj_data* tar_obj);
+void cast_cure_critic(byte level, struct char_data* ch, char* arg, int si,
+  struct char_data* tar_ch, struct obj_data* tar_obj);
+void cast_cure_light(byte level, struct char_data* ch, char* arg, int si,
+  struct char_data* tar_ch, struct obj_data* tar_obj);
+void cast_curse(byte level, struct char_data* ch, char* arg, int si,
+  struct char_data* tar_ch, struct obj_data* tar_obj);
+void cast_cont_light(byte level, struct char_data* ch, char* arg, int si,
+  struct char_data* tar_ch, struct obj_data* tar_obj);
+void cast_calm(byte level, struct char_data* ch, char* arg, int si,
+  struct char_data* tar_ch, struct obj_data* tar_obj);
+void cast_detect_evil(byte level, struct char_data* ch, char* arg, int si,
+  struct char_data* tar_ch, struct obj_data* tar_obj);
+void cast_detect_invisibility(byte level, struct char_data* ch, char* arg,
+  int si, struct char_data* tar_ch, struct obj_data* tar_obj);
+void cast_detect_magic(byte level, struct char_data* ch, char* arg, int si,
+  struct char_data* tar_ch, struct obj_data* tar_obj);
+void cast_detect_poison(byte level, struct char_data* ch, char* arg, int si,
+  struct char_data* tar_ch, struct obj_data* tar_obj);
+void cast_dispel_evil(byte level, struct char_data* ch, char* arg, int si,
+  struct char_data* tar_ch, struct obj_data* tar_obj);
+void cast_dispel_good(byte level, struct char_data* ch, char* arg, int si,
+  struct char_data* tar_ch, struct obj_data* tar_obj);
+void cast_earthquake(byte level, struct char_data* ch, char* arg, int si,
+  struct char_data* tar_ch, struct obj_data* tar_obj);
+void cast_enchant_weapon(byte level, struct char_data* ch, char* arg, int si,
+  struct char_data* tar_ch, struct obj_data* tar_obj);
+void cast_energy_drain(byte level, struct char_data* ch, char* arg, int si,
+  struct char_data* tar_ch, struct obj_data* tar_obj);
+void cast_fireball(byte level, struct char_data* ch, char* arg, int si,
+  struct char_data* tar_ch, struct obj_data* tar_obj);
+void cast_flying(byte level, struct char_data* ch, char* arg, int si,
+  struct char_data* tar_ch, struct obj_data* tar_obj);
+void cast_heal(byte level, struct char_data* ch, char* arg, int si,
+  struct char_data* tar_ch, struct obj_data* tar_obj);
+void cast_full_heal(byte level, struct char_data* ch, char* arg, int si,
+  struct char_data* tar_ch, struct obj_data* tar_obj);
+void cast_infravision(byte level, struct char_data* ch, char* arg, int type,
+  struct char_data* tar_ch, struct obj_data* tar_obj);
+void cast_invisibility(byte level, struct char_data* ch, char* arg, int si,
+  struct char_data* tar_ch, struct obj_data* tar_obj);
+void cast_knock(byte level, struct char_data* ch, char* arg, int type,
+  struct char_data* tar_ch, struct obj_data* tar_obj);
+void cast_know_alignment(byte level, struct char_data* ch, char* arg, int type,
+  struct char_data* tar_ch, struct obj_data* tar_obj);
+void cast_true_seeing(byte level, struct char_data* ch, char* arg, int type,
+  struct char_data* tar_ch, struct obj_data* tar_obj);
+void cast_minor_creation(byte level, struct char_data* ch, char* arg, int type,
+  struct char_data* tar_ch, struct obj_data* tar_obj);
+void cast_faerie_fire(byte level, struct char_data* ch, char* arg, int type,
+  struct char_data* tar_ch, struct obj_data* tar_obj);
+void cast_faerie_fog(byte level, struct char_data* ch, char* arg, int type,
+  struct char_data* tar_ch, struct obj_data* tar_obj);
+void cast_heroes_feast(byte level, struct char_data* ch, char* arg, int type,
+  struct char_data* tar_ch, struct obj_data* tar_obj);
+void cast_fly_group(byte level, struct char_data* ch, char* arg, int type,
+  struct char_data* tar_ch, struct obj_data* tar_obj);
+void cast_minor_track(byte level, struct char_data* ch, char* arg, int type,
+  struct char_data* tar_ch, struct obj_data* tar_obj);
+void cast_major_track(byte level, struct char_data* ch, char* arg, int type,
+  struct char_data* tar_ch, struct obj_data* tar_obj);
+void cast_mana(byte level, struct char_data* ch, char* arg, int type,
+  struct char_data* tar_ch, struct obj_data* tar_obj);
+void cast_light(byte level, struct char_data* ch, char* arg, int si,
+  struct char_data* tar_ch, struct obj_data* tar_obj);
+void cast_locate_object(byte level, struct char_data* ch, char* arg, int si,
+  struct char_data* tar_ch, struct obj_data* tar_obj);
+void cast_magic_missile(byte level, struct char_data* ch, char* arg, int si,
+  struct char_data* tar_ch, struct obj_data* tar_obj);
+void cast_vitalize_mana(byte level, struct char_data* ch, char* arg, int si,
+  struct char_data* tar_ch, struct obj_data* tar_obj);
+void cast_meteor_swarm(byte level, struct char_data* ch, char* arg, int si,
+  struct char_data* tar_ch, struct obj_data* tar_obj);
+void cast_poly_self(byte level, struct char_data* ch, char* arg, int si,
+  struct char_data* tar_ch, struct obj_data* tar_obj);
+void cast_poison(byte level, struct char_data* ch, char* arg, int si,
+  struct char_data* tar_ch, struct obj_data* tar_obj);
+void cast_protection_from_evil(byte level, struct char_data* ch, char* arg,
+  int si, struct char_data* tar_ch, struct obj_data* tar_obj);
+void cast_remove_curse(byte level, struct char_data* ch, char* arg, int si,
+  struct char_data* tar_ch, struct obj_data* tar_obj);
+void cast_sanctuary(byte level, struct char_data* ch, char* arg, int si,
+  struct char_data* tar_ch, struct obj_data* tar_obj);
+void cast_sleep(byte level, struct char_data* ch, char* arg, int si,
+  struct char_data* tar_ch, struct obj_data* tar_obj);
+void cast_strength(byte level, struct char_data* ch, char* arg, int si,
+  struct char_data* tar_ch, struct obj_data* tar_obj);
+void cast_stone_skin(byte level, struct char_data* ch, char* arg, int si,
+  struct char_data* tar_ch, struct obj_data* tar_obj);
+void cast_summon(byte level, struct char_data* ch, char* arg, int si,
+  struct char_data* tar_ch, struct obj_data* tar_obj);
+void cast_ventriloquate(byte level, struct char_data* ch, char* arg, int si,
+  struct char_data* tar_ch, struct obj_data* tar_obj);
+void cast_word_of_recall(byte level, struct char_data* ch, char* arg, int si,
+  struct char_data* tar_ch, struct obj_data* tar_obj);
+void cast_water_breath(byte level, struct char_data* ch, char* arg, int si,
+  struct char_data* tar_ch, struct obj_data* tar_obj);
+void cast_remove_poison(byte level, struct char_data* ch, char* arg, int si,
+  struct char_data* tar_ch, struct obj_data* tar_obj);
+void cast_remove_paralysis(byte level, struct char_data* ch, char* arg, int si,
+  struct char_data* tar_ch, struct obj_data* tar_obj);
+void cast_weakness(byte level, struct char_data* ch, char* arg, int type,
+  struct char_data* tar_ch, struct obj_data* tar_obj);
+void cast_sense_life(byte level, struct char_data* ch, char* arg, int si,
+  struct char_data* tar_ch, struct obj_data* tar_obj);
+void cast_identify(byte level, struct char_data* ch, char* arg, int si,
+  struct char_data* tar_ch, struct obj_data* tar_obj);
+void cast_paralyze(byte level, struct char_data* ch, char* arg, int si,
+  struct char_data* tar_ch, struct obj_data* tar_obj);
+void cast_dragon_breath(byte level, struct char_data* ch, char* arg, int si,
+  struct char_data* tar_ch, struct obj_data* potion);
+void cast_fireshield(byte level, struct char_data* ch, char* arg, int si,
+  struct char_data* tar_ch, struct obj_data* tar_obj);
+void cast_cure_serious(byte level, struct char_data* ch, char* arg, int si,
+  struct char_data* tar_ch, struct obj_data* tar_obj);
+void cast_cause_serious(byte level, struct char_data* ch, char* arg, int si,
+  struct char_data* tar_ch, struct obj_data* tar_obj);
+void cast_refresh(byte level, struct char_data* ch, char* arg, int si,
+  struct char_data* tar_ch, struct obj_data* tar_obj);
+void cast_second_wind(byte level, struct char_data* ch, char* arg, int si,
+  struct char_data* tar_ch, struct obj_data* tar_obj);
+void cast_shield(byte level, struct char_data* ch, char* arg, int si,
+  struct char_data* tar_ch, struct obj_data* tar_obj);
+void cast_turn(byte level, struct char_data* ch, char* arg, int si,
+  struct char_data* tar_ch, struct obj_data* tar_obj);
+void cast_well_of_knowledge(byte level, struct char_data* ch, char* arg, int si,
+  struct char_data* tar_ch, struct obj_data* tar_obj);
+void cast_succor(byte level, struct char_data* ch, char* arg, int si,
+  struct char_data* tar_ch, struct obj_data* tar_obj);
+void cast_resurrection(byte level, struct char_data* ch, char* arg, int si,
+  struct char_data* tar_ch, struct obj_data* tar_obj);
+void cast_portal(byte level, struct char_data* ch, char* arg, int si,
+  struct char_data* tar_ch, struct obj_data* tar_obj);
+void cast_dispel_invisible(byte level, struct char_data* ch, char* arg, int si,
+  struct char_data* tar_ch, struct obj_data* tar_obj);
+void cast_silence(byte level, struct char_data* ch, char* arg, int si,
+  struct char_data* tar_ch, struct obj_data* tar_obj);
+void cast_heal_spray(byte level, struct char_data* ch, char* arg, int si,
+  struct char_data* tar_ch, struct obj_data* tar_obj);
+void cast_life_leech(byte level, struct char_data* ch, char* arg, int si,
+  struct char_data* tar_ch, struct obj_data* tar_obj);
+void cast_synostodweomer(byte level, struct char_data* ch, char* arg, int si,
+  struct char_data* tar_ch, struct obj_data* tar_obj);
+void cast_control_undead(byte level, struct char_data* ch, char* arg, int si,
+  struct char_data* tar_ch, struct obj_data* tar_obj);
+void cast_geyser(byte level, struct char_data* ch, char* arg, int type,
+  struct char_data* victim, struct obj_data* tar_obj);
+void cast_green_slime(byte level, struct char_data* ch, char* arg, int type,
+  struct char_data* victim, struct obj_data* tar_obj);
+void cast_frost_breath(byte level, struct char_data* ch, char* arg, int type,
+  struct char_data* tar_ch, struct obj_data* tar_obj);
+void cast_acid_breath(byte level, struct char_data* ch, char* arg, int type,
+  struct char_data* tar_ch, struct obj_data* tar_obj);
+void cast_gas_breath(byte level, struct char_data* ch, char* arg, int type,
+  struct char_data* tar_ch, struct obj_data* tar_obj);
+void cast_lightning_breath(byte level, struct char_data* ch, char* arg,
+  int type, struct char_data* tar_ch, struct obj_data* tar_obj);
+void cast_fire_breath(byte level, struct char_data* ch, char* arg, int type,
+  struct char_data* tar_ch, struct obj_data* tar_obj);
 
 #endif

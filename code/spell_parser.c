@@ -6,17 +6,20 @@
 
 #include <assert.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/param.h>
 
 #include "comm.h"
 #include "db.h"
 #include "handler.h"
 #include "interpreter.h"
+#include "limits.h"
+#include "multiclass.h"
+#include "opinion.h"
 #include "spells.h"
 #include "structs.h"
 #include "utils.h"
-
-#define MANA_MU 1
-#define MANA_CL 1
 
 #define SPELLO(nr, beat, pos, mlev, clev, mana, alev, plev, rlev, tar, func) \
   {                                                                          \
@@ -38,339 +41,53 @@
     100 /                          \
       MAX(2, (2 + GET_LEVEL(ch, BestMagicClass(ch)) - SPELL_LEVEL(ch, sn))))
 
-/* Global data */
-extern struct index_data* obj_index;
-extern struct room_data* world;
-extern struct char_data* character_list;
-extern char* spell_wear_off_msg[];
-extern struct obj_data* object_list;
-extern char* spell_wear_off_soon_msg[];
-extern char* spell_wear_off_room_msg[];
-extern char* spell_wear_off_soon_room_msg[];
-
-/* Inter procedures. */
-
-void SpellWearOffSoon(int s, struct char_data* ch);
-void check_drowning(struct char_data* ch);
-void check_decharm(struct char_data* ch);
-void SpellWearOff(int s, struct char_data* ch);
-
-/* Extern procedures */
-
-char* strdup(char* str);
-
-/* Extern procedures */
-void cast_animate_dead(byte level, struct char_data* ch, char* arg, int type,
-  struct char_data* tar_ch, struct obj_data* tar_obj);
-void cast_conjure_elemental(byte level, struct char_data* ch, char* arg,
-  int type, struct char_data* tar_ch, struct obj_data* tar_obj);
-void cast_acid_blast(byte level, struct char_data* ch, char* arg, int type,
-  struct char_data* tar_ch, struct obj_data* tar_obj);
-void cast_armor(byte level, struct char_data* ch, char* arg, int si,
-  struct char_data* tar_ch, struct obj_data* tar_obj);
-void cast_teleport(byte level, struct char_data* ch, char* arg, int si,
-  struct char_data* tar_ch, struct obj_data* tar_obj);
-void cast_bless(byte level, struct char_data* ch, char* arg, int si,
-  struct char_data* tar_ch, struct obj_data* tar_obj);
-void cast_blindness(byte level, struct char_data* ch, char* arg, int si,
-  struct char_data* tar_ch, struct obj_data* tar_obj);
-void cast_burning_hands(byte level, struct char_data* ch, char* arg, int si,
-  struct char_data* tar_ch, struct obj_data* tar_obj);
-void cast_call_lightning(byte level, struct char_data* ch, char* arg, int si,
-  struct char_data* tar_ch, struct obj_data* tar_obj);
-void cast_charm_person(byte level, struct char_data* ch, char* arg, int si,
-  struct char_data* tar_ch, struct obj_data* tar_obj);
-void cast_charm_monster(byte level, struct char_data* ch, char* arg, int si,
-  struct char_data* tar_ch, struct obj_data* tar_obj);
-void cast_cacaodemon(byte level, struct char_data* ch, char* arg, int si,
-  struct char_data* tar_ch, struct obj_data* tar_obj);
-
-void cast_chill_touch(byte level, struct char_data* ch, char* arg, int si,
-  struct char_data* tar_ch, struct obj_data* tar_obj);
-void cast_shocking_grasp(byte level, struct char_data* ch, char* arg, int si,
-  struct char_data* tar_ch, struct obj_data* tar_obj);
-void cast_clone(byte level, struct char_data* ch, char* arg, int si,
-  struct char_data* tar_ch, struct obj_data* tar_obj);
-void cast_colour_spray(byte level, struct char_data* ch, char* arg, int si,
-  struct char_data* tar_ch, struct obj_data* tar_obj);
-void cast_control_weather(byte level, struct char_data* ch, char* arg, int si,
-  struct char_data* tar_ch, struct obj_data* tar_obj);
-void cast_create_food(byte level, struct char_data* ch, char* arg, int si,
-  struct char_data* tar_ch, struct obj_data* tar_obj);
-void cast_create_water(byte level, struct char_data* ch, char* arg, int si,
-  struct char_data* tar_ch, struct obj_data* tar_obj);
-void cast_cure_blind(byte level, struct char_data* ch, char* arg, int si,
-  struct char_data* tar_ch, struct obj_data* tar_obj);
-void cast_cure_critic(byte level, struct char_data* ch, char* arg, int si,
-  struct char_data* tar_ch, struct obj_data* tar_obj);
-void cast_cause_critic(byte level, struct char_data* ch, char* arg, int si,
-  struct char_data* tar_ch, struct obj_data* tar_obj);
-void cast_cure_light(byte level, struct char_data* ch, char* arg, int si,
-  struct char_data* tar_ch, struct obj_data* tar_obj);
-void cast_cause_light(byte level, struct char_data* ch, char* arg, int si,
-  struct char_data* tar_ch, struct obj_data* tar_obj);
-void cast_curse(byte level, struct char_data* ch, char* arg, int si,
-  struct char_data* tar_ch, struct obj_data* tar_obj);
-void cast_cont_light(byte level, struct char_data* ch, char* arg, int si,
-  struct char_data* tar_ch, struct obj_data* tar_obj);
-void cast_calm(byte level, struct char_data* ch, char* arg, int si,
-  struct char_data* tar_ch, struct obj_data* tar_obj);
-void cast_detect_evil(byte level, struct char_data* ch, char* arg, int si,
-  struct char_data* tar_ch, struct obj_data* tar_obj);
-void cast_detect_invisibility(byte level, struct char_data* ch, char* arg,
-  int si, struct char_data* tar_ch, struct obj_data* tar_obj);
-void cast_detect_magic(byte level, struct char_data* ch, char* arg, int si,
-  struct char_data* tar_ch, struct obj_data* tar_obj);
-void cast_detect_poison(byte level, struct char_data* ch, char* arg, int si,
-  struct char_data* tar_ch, struct obj_data* tar_obj);
-void cast_dispel_evil(byte level, struct char_data* ch, char* arg, int si,
-  struct char_data* tar_ch, struct obj_data* tar_obj);
-void cast_dispel_good(byte level, struct char_data* ch, char* arg, int si,
-  struct char_data* tar_ch, struct obj_data* tar_obj);
-void cast_dispel_magic(byte level, struct char_data* ch, char* arg, int type,
-  struct char_data* tar_ch, struct obj_data* tar_obj);
-void cast_earthquake(byte level, struct char_data* ch, char* arg, int si,
-  struct char_data* tar_ch, struct obj_data* tar_obj);
-void cast_enchant_weapon(byte level, struct char_data* ch, char* arg, int si,
-  struct char_data* tar_ch, struct obj_data* tar_obj);
-void cast_energy_drain(byte level, struct char_data* ch, char* arg, int si,
-  struct char_data* tar_ch, struct obj_data* tar_obj);
-void cast_fear(byte level, struct char_data* ch, char* arg, int type,
-  struct char_data* tar_ch, struct obj_data* tar_obj);
-void cast_fireball(byte level, struct char_data* ch, char* arg, int si,
-  struct char_data* tar_ch, struct obj_data* tar_obj);
-void cast_flamestrike(byte level, struct char_data* ch, char* arg, int si,
-  struct char_data* tar_ch, struct obj_data* tar_obj);
-void cast_flying(byte level, struct char_data* ch, char* arg, int si,
-  struct char_data* tar_ch, struct obj_data* tar_obj);
-void cast_flying(byte level, struct char_data* ch, char* arg, int si,
-  struct char_data* tar_ch, struct obj_data* tar_obj);
-
-void cast_harm(byte level, struct char_data* ch, char* arg, int si,
-  struct char_data* tar_ch, struct obj_data* tar_obj);
-void cast_heal(byte level, struct char_data* ch, char* arg, int si,
-  struct char_data* tar_ch, struct obj_data* tar_obj);
-void cast_full_heal(byte level, struct char_data* ch, char* arg, int si,
-  struct char_data* tar_ch, struct obj_data* tar_obj);
-
-void cast_infravision(byte level, struct char_data* ch, char* arg, int type,
-  struct char_data* tar_ch, struct obj_data* tar_obj);
-void cast_invisibility(byte level, struct char_data* ch, char* arg, int si,
-  struct char_data* tar_ch, struct obj_data* tar_obj);
-void cast_cone_of_cold(byte level, struct char_data* ch, char* arg, int type,
-  struct char_data* tar_ch, struct obj_data* tar_obj);
-void cast_ice_storm(byte level, struct char_data* ch, char* arg, int type,
-  struct char_data* tar_ch, struct obj_data* tar_obj);
-void cast_knock(byte level, struct char_data* ch, char* arg, int type,
-  struct char_data* tar_ch, struct obj_data* tar_obj);
-void cast_know_alignment(byte level, struct char_data* ch, char* arg, int type,
-  struct char_data* tar_ch, struct obj_data* tar_obj);
-void cast_true_seeing(byte level, struct char_data* ch, char* arg, int type,
-  struct char_data* tar_ch, struct obj_data* tar_obj);
-void cast_minor_creation(byte level, struct char_data* ch, char* arg, int type,
-  struct char_data* tar_ch, struct obj_data* tar_obj);
-void cast_faerie_fire(byte level, struct char_data* ch, char* arg, int type,
-  struct char_data* tar_ch, struct obj_data* tar_obj);
-void cast_faerie_fog(byte level, struct char_data* ch, char* arg, int type,
-  struct char_data* tar_ch, struct obj_data* tar_obj);
-void cast_heroes_feast(byte level, struct char_data* ch, char* arg, int type,
-  struct char_data* tar_ch, struct obj_data* tar_obj);
-void cast_fly_group(byte level, struct char_data* ch, char* arg, int type,
-  struct char_data* tar_ch, struct obj_data* tar_obj);
-void cast_web(byte level, struct char_data* ch, char* arg, int type,
-  struct char_data* tar_ch, struct obj_data* tar_obj);
-void cast_minor_track(byte level, struct char_data* ch, char* arg, int type,
-  struct char_data* tar_ch, struct obj_data* tar_obj);
-void cast_major_track(byte level, struct char_data* ch, char* arg, int type,
-  struct char_data* tar_ch, struct obj_data* tar_obj);
-void cast_mana(byte level, struct char_data* ch, char* arg, int type,
-  struct char_data* tar_ch, struct obj_data* tar_obj);
-
-void cast_lightning_bolt(byte level, struct char_data* ch, char* arg, int si,
-  struct char_data* tar_ch, struct obj_data* tar_obj);
-void cast_light(byte level, struct char_data* ch, char* arg, int si,
-  struct char_data* tar_ch, struct obj_data* tar_obj);
-void cast_locate_object(byte level, struct char_data* ch, char* arg, int si,
-  struct char_data* tar_ch, struct obj_data* tar_obj);
-void cast_magic_missile(byte level, struct char_data* ch, char* arg, int si,
-  struct char_data* tar_ch, struct obj_data* tar_obj);
-void cast_vitalize_mana(byte level, struct char_data* ch, char* arg, int si,
-  struct char_data* tar_ch, struct obj_data* tar_obj);
-
-void cast_mon_sum1(byte level, struct char_data* ch, char* arg, int si,
-  struct char_data* tar_ch, struct obj_data* tar_obj);
-void cast_mon_sum2(byte level, struct char_data* ch, char* arg, int si,
-  struct char_data* tar_ch, struct obj_data* tar_obj);
-void cast_mon_sum3(byte level, struct char_data* ch, char* arg, int si,
-  struct char_data* tar_ch, struct obj_data* tar_obj);
-void cast_mon_sum4(byte level, struct char_data* ch, char* arg, int si,
-  struct char_data* tar_ch, struct obj_data* tar_obj);
-void cast_mon_sum5(byte level, struct char_data* ch, char* arg, int si,
-  struct char_data* tar_ch, struct obj_data* tar_obj);
-void cast_mon_sum6(byte level, struct char_data* ch, char* arg, int si,
-  struct char_data* tar_ch, struct obj_data* tar_obj);
-void cast_mon_sum7(byte level, struct char_data* ch, char* arg, int si,
-  struct char_data* tar_ch, struct obj_data* tar_obj);
-
-void cast_meteor_swarm(byte level, struct char_data* ch, char* arg, int si,
-  struct char_data* tar_ch, struct obj_data* tar_obj);
-
-void cast_disintegrate(byte level, struct char_data* ch, char* arg, int si,
-  struct char_data* tar_ch, struct obj_data* tar_obj);
-
-void cast_poly_self(byte level, struct char_data* ch, char* arg, int si,
-  struct char_data* tar_ch, struct obj_data* tar_obj);
-
-void cast_poison(byte level, struct char_data* ch, char* arg, int si,
-  struct char_data* tar_ch, struct obj_data* tar_obj);
-
-void cast_protection_from_evil(byte level, struct char_data* ch, char* arg,
-  int si, struct char_data* tar_ch, struct obj_data* tar_obj);
-void cast_remove_curse(byte level, struct char_data* ch, char* arg, int si,
-  struct char_data* tar_ch, struct obj_data* tar_obj);
-void cast_sanctuary(byte level, struct char_data* ch, char* arg, int si,
-  struct char_data* tar_ch, struct obj_data* tar_obj);
-void cast_sleep(byte level, struct char_data* ch, char* arg, int si,
-  struct char_data* tar_ch, struct obj_data* tar_obj);
-void cast_strength(byte level, struct char_data* ch, char* arg, int si,
-  struct char_data* tar_ch, struct obj_data* tar_obj);
-void cast_stone_skin(byte level, struct char_data* ch, char* arg, int si,
-  struct char_data* tar_ch, struct obj_data* tar_obj);
-void cast_summon(byte level, struct char_data* ch, char* arg, int si,
-  struct char_data* tar_ch, struct obj_data* tar_obj);
-void cast_ventriloquate(byte level, struct char_data* ch, char* arg, int si,
-  struct char_data* tar_ch, struct obj_data* tar_obj);
-void cast_word_of_recall(byte level, struct char_data* ch, char* arg, int si,
-  struct char_data* tar_ch, struct obj_data* tar_obj);
-
-void cast_water_breath(byte level, struct char_data* ch, char* arg, int si,
-  struct char_data* tar_ch, struct obj_data* tar_obj);
-
-void cast_remove_poison(byte level, struct char_data* ch, char* arg, int si,
-  struct char_data* tar_ch, struct obj_data* tar_obj);
-void cast_remove_paralysis(byte level, struct char_data* ch, char* arg, int si,
-  struct char_data* tar_ch, struct obj_data* tar_obj);
-void cast_weakness(byte level, struct char_data* ch, char* arg, int type,
-  struct char_data* tar_ch, struct obj_data* tar_obj);
-void cast_sense_life(byte level, struct char_data* ch, char* arg, int si,
-  struct char_data* tar_ch, struct obj_data* tar_obj);
-void cast_identify(byte level, struct char_data* ch, char* arg, int si,
-  struct char_data* tar_ch, struct obj_data* tar_obj);
-void cast_paralyze(byte level, struct char_data* ch, char* arg, int si,
-  struct char_data* tar_ch, struct obj_data* tar_obj);
-
-void cast_dragon_breath(byte level, struct char_data* ch, char* arg, int si,
-  struct char_data* tar_ch, struct obj_data* potion);
-void cast_fireshield(byte level, struct char_data* ch, char* arg, int si,
-  struct char_data* tar_ch, struct obj_data* tar_obj);
-void cast_cure_serious(byte level, struct char_data* ch, char* arg, int si,
-  struct char_data* tar_ch, struct obj_data* tar_obj);
-void cast_cause_serious(byte level, struct char_data* ch, char* arg, int si,
-  struct char_data* tar_ch, struct obj_data* tar_obj);
-void cast_refresh(byte level, struct char_data* ch, char* arg, int si,
-  struct char_data* tar_ch, struct obj_data* tar_obj);
-void cast_second_wind(byte level, struct char_data* ch, char* arg, int si,
-  struct char_data* tar_ch, struct obj_data* tar_obj);
-void cast_shield(byte level, struct char_data* ch, char* arg, int si,
-  struct char_data* tar_ch, struct obj_data* tar_obj);
-
-void cast_turn(byte level, struct char_data* ch, char* arg, int si,
-  struct char_data* tar_ch, struct obj_data* tar_obj);
-void cast_well_of_knowledge(byte level, struct char_data* ch, char* arg, int si,
-  struct char_data* tar_ch, struct obj_data* tar_obj);
-void cast_succor(byte level, struct char_data* ch, char* arg, int si,
-  struct char_data* tar_ch, struct obj_data* tar_obj);
-void cast_astral_walk(byte level, struct char_data* ch, char* arg, int si,
-  struct char_data* tar_ch, struct obj_data* tar_obj);
-void cast_resurrection(byte level, struct char_data* ch, char* arg, int si,
-  struct char_data* tar_ch, struct obj_data* tar_obj);
-void cast_portal(byte level, struct char_data* ch, char* arg, int si,
-  struct char_data* tar_ch, struct obj_data* tar_obj);
-void cast_farlook(byte level, struct char_data* ch, char* arg, int si,
-  struct char_data* tar_ch, struct obj_data* tar_obj);
-void cast_dispel_invisible(byte level, struct char_data* ch, char* arg, int si,
-  struct char_data* tar_ch, struct obj_data* tar_obj);
-void cast_silence(byte level, struct char_data* ch, char* arg, int si,
-  struct char_data* tar_ch, struct obj_data* tar_obj);
-void cast_heal_spray(byte level, struct char_data* ch, char* arg, int si,
-  struct char_data* tar_ch, struct obj_data* tar_obj);
-void cast_vampiric_touch(byte level, struct char_data* ch, char* arg, int si,
-  struct char_data* tar_ch, struct obj_data* tar_obj);
-void cast_life_leech(byte level, struct char_data* ch, char* arg, int si,
-  struct char_data* tar_ch, struct obj_data* tar_obj);
-void cast_synostodweomer(byte level, struct char_data* ch, char* arg, int si,
-  struct char_data* tar_ch, struct obj_data* tar_obj);
-void cast_control_undead(byte level, struct char_data* ch, char* arg, int si,
-  struct char_data* tar_ch, struct obj_data* tar_obj);
-void cast_create_golem(byte level, struct char_data* ch, char* arg, int si,
-  struct char_data* tar_ch, struct obj_data* tar_obj);
 struct spell_info_type spell_info[MAX_SPL_LIST];
 
-char* spells[] = {"armor", /* 1 */
-  "teleport", "bless", "blindness", "burning hands", "call lightning",
-  "charm person", "chill touch", "clone", "colour spray",
-  "control weather", /* 11 */
-  "create food", "create water", "cure blind", "cure critic", "cure light",
-  "curse", "detect evil", "detect invisibility", "detect magic",
-  "detect poison", /* 21 */
-  "dispel evil", "earthquake", "enchant weapon", "energy drain", "fireball",
-  "harm", "heal", "invisibility", "lightning bolt", "locate object", /* 31 */
-  "magic missile", "poison", "protection from evil", "remove curse",
-  "sanctuary", "shocking grasp", "sleep", "strength", "summon",
-  "ventriloquate",                                 /* 41 */
-  "word of recall", "remove poison", "sense life", /* 44 */
-
-  /* RESERVED SKILLS */
-  "Sneak",                                           /* 45 */
-  "Hide", "Steal", "Backstab", "Pick Locks", "Kick", /* 50 */
-  "Bash", "Rescue",
-  /* NON-CASTABLE SPELLS (Scrolls/potions/wands/staffs) */
-
-  "identify", /* 53 */
-  "infravision", "cause light", "cause critical", "flamestrike", "dispel good",
-  "weakness", "dispel magic", "knock", "know alignment", "animate dead",
-  "paralyze", "remove paralysis", "fear", "acid blast", /* 67 */
-  "water breath", "fly", "cone of cold",                /* 70 */
-  "meteor swarm", "ice storm", "shield", "monsum one", "monsum two",
-  "monsum three", "monsum four", "monsum five", "monsum six",
-  "monsum seven", /* 80 */
-  "fireshield", "charm monster", "cure serious", "cause serious", "refresh",
-  "second wind", "turn", "succor", "create light", "continual light", /* 90 */
-  "calm", "stone skin", "conjure elemental", "true sight", "minor creation",
-  "faerie fire", "faerie fog", "cacaodemon", "polymorph self", "mana", /* 100 */
-  "astral walk", "resurrection", "heroes feast",                       /* 103 */
-  "group fly", "breath", "web", "minor track", "major track", "full heal",
-  "vitalize mana", /* 110 */
-  "portal", "silence", "Special", "heal spray", "vampiric touch",
-  "synostodweomer", "life leech", "control undead", "well of knowledge",
-  "farlook", /* 120 */
+const char* const spells[] = {"armor", "teleport", "bless", "blindness",
+  "burning hands", "call lightning", "charm person", "chill touch", "clone",
+  "colour spray", "control weather", "create food", "create water",
+  "cure blind", "cure critic", "cure light", "curse", "detect evil",
+  "detect invisibility", "detect magic", "detect poison", "dispel evil",
+  "earthquake", "enchant weapon", "energy drain", "fireball", "harm", "heal",
+  "invisibility", "lightning bolt", "locate object", "magic missile", "poison",
+  "protection from evil", "remove curse", "sanctuary", "shocking grasp",
+  "sleep", "strength", "summon", "ventriloquate", "word of recall",
+  "remove poison", "sense life", "Sneak", "Hide", "Steal", "Backstab",
+  "Pick Locks", "Kick", "Bash", "Rescue", "identify", "infravision",
+  "cause light", "cause critical", "flamestrike", "dispel good", "weakness",
+  "dispel magic", "knock", "know alignment", "animate dead", "paralyze",
+  "remove paralysis", "fear", "acid blast", "water breath", "fly",
+  "cone of cold", "meteor swarm", "ice storm", "shield", "monsum one",
+  "monsum two", "monsum three", "monsum four", "monsum five", "monsum six",
+  "monsum seven", "fireshield", "charm monster", "cure serious",
+  "cause serious", "refresh", "second wind", "turn", "succor", "create light",
+  "continual light", "calm", "stone skin", "conjure elemental", "true sight",
+  "minor creation", "faerie fire", "faerie fog", "cacaodemon", "polymorph self",
+  "mana", "astral walk", "resurrection", "heroes feast", "group fly", "breath",
+  "web", "minor track", "major track", "full heal", "vitalize mana", "portal",
+  "silence", "Special", "heal spray", "vampiric touch", "synostodweomer",
+  "life leech", "control undead", "well of knowledge", "farlook",
   "dispel invisible", "Special", "protect from good", "disintegrate",
-  "create golem", "****", "****", "****", "****", "****", /* 130 */
+  "create golem", "****", "****", "****", "****", "****", "****", "****",
   "****", "****", "****", "****", "****", "****", "****", "****", "****",
-  "****", /* 140 */
   "****", "****", "****", "****", "****", "****", "****", "****", "****",
-  "****", /* 150 */
   "****", "****", "****", "****", "****", "****", "****", "****", "****",
-  "Sign", /* 160 */
-  "Swim", "Con Undead", "Con Vegetable", "Con Demon", "Con Animal",
-  "Con Reptile", "Con People", "Con Giant", "Con Other",
-  "Switch Opponent", /* 170 */
+  "Sign", "Swim", "Con Undead", "Con Vegetable", "Con Demon", "Con Animal",
+  "Con Reptile", "Con People", "Con Giant", "Con Other", "Switch Opponent",
   "Feign Death", "First Aid", "Dodge", "Quivering Palm", "Spring Leap",
-  "Lay Hands", "Remove Traps", "Find Traps", "Retreat", "Track", /* 180 */
-  "", "Set Traps", "Disarm", "Read Magic", "", "Grapple", "Headbutt",
-  "Subterfuge", "Throw", "Brew", /* 190 */
-  "Scribe", "Double Attack", "Deathstroke", "Bodyslam", "****", "****",
-  "SKILL_SPY", "****", "****", "", /* 200 */
-  "fire breath", "gas breath", "frost breath", "acid breath",
-  "lightning breath", "****", "****", "****", "****", "****", /* 210 */
-  "****", "SKILL_HUNT",                                       /*  (180) */
-  "\n"};
+  "Lay Hands", "Remove Traps", "Find Traps", "Retreat", "Track", "",
+  "Set Traps", "Disarm", "Read Magic", "", "Grapple", "Headbutt", "Subterfuge",
+  "Throw", "Brew", "Scribe", "Double Attack", "Deathstroke", "Bodyslam", "****",
+  "****", "SKILL_SPY", "****", "****", "", "fire breath", "gas breath",
+  "frost breath", "acid breath", "lightning breath", "****", "****", "****",
+  "****", "****", "****", "SKILL_HUNT", "\n"};
 
 const byte saving_throws[8][5][ABS_MAX_LVL] = {
-  {{16, 14, 14, 14, 14, 14, 13, 13, 13, 13, 13, 11, 11, 11, 11, 11, 10, 10, 10,
-     10, 10, 8, 6, 4, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
-     2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-     0, 0},
+  {
+    {16, 14, 14, 14, 14, 14, 13, 13, 13, 13, 13, 11, 11, 11, 11, 11, 10, 10, 10,
+      10, 10, 8, 6, 4, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
+      2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0},
     {13, 11, 11, 11, 11, 11, 9, 9, 9, 9, 9, 7, 7, 7, 7, 7, 5, 5, 5, 5, 5, 3, 2,
       1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
       1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
@@ -383,10 +100,12 @@ const byte saving_throws[8][5][ABS_MAX_LVL] = {
       0},
     {14, 12, 12, 12, 12, 12, 10, 10, 10, 10, 10, 8, 8, 8, 8, 8, 6, 6, 6, 6, 6,
       4, 3, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
-      2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}},
-  {{11, 10, 10, 10, 9, 9, 9, 7, 7, 7, 6, 6, 6, 5, 5, 5, 4, 4, 4, 2, 2, 2, 2, 1,
-     1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-     1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+      2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+  },
+  {
+    {11, 10, 10, 10, 9, 9, 9, 7, 7, 7, 6, 6, 6, 5, 5, 5, 4, 4, 4, 2, 2, 2, 2, 1,
+      1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+      1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
     {16, 14, 14, 14, 13, 13, 13, 11, 11, 11, 10, 10, 10, 9, 9, 9, 8, 8, 8, 6, 6,
       5, 4, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
       3, 3, 3, 3, 3, 3, 3, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
@@ -400,10 +119,13 @@ const byte saving_throws[8][5][ABS_MAX_LVL] = {
     {17, 15, 15, 15, 14, 14, 14, 12, 12, 12, 11, 11, 11, 10, 10, 10, 9, 9, 9, 7,
       7, 6, 5, 4, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
       3, 3, 3, 3, 3, 3, 3, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-      0}},
-  {{15, 13, 13, 13, 13, 12, 12, 12, 12, 11, 11, 11, 11, 10, 10, 10, 10, 9, 9, 9,
-     9, 8, 7, 6, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5,
-     5, 5, 5, 5, 5, 5, 5, 5, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+      0},
+  },
+  {
+    {15, 13, 13, 13, 13, 12, 12, 12, 12, 11, 11, 11, 11, 10, 10, 10, 10, 9, 9,
+      9, 9, 8, 7, 6, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5,
+      5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0},
     {16, 14, 14, 14, 14, 12, 12, 12, 12, 10, 10, 10, 10, 8, 8, 8, 8, 6, 6, 6, 6,
       4, 3, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
       2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
@@ -416,10 +138,12 @@ const byte saving_throws[8][5][ABS_MAX_LVL] = {
       0, 0},
     {17, 15, 15, 15, 15, 13, 13, 13, 13, 11, 11, 11, 11, 9, 9, 9, 9, 7, 7, 7, 7,
       5, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-      1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}},
-  {{16, 14, 14, 13, 13, 11, 11, 10, 10, 8, 8, 7, 7, 5, 5, 4, 4, 3, 3, 3, 3, 2,
-     2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-     1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+      1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+  },
+  {
+    {16, 14, 14, 13, 13, 11, 11, 10, 10, 8, 8, 7, 7, 5, 5, 4, 4, 3, 3, 3, 3, 2,
+      2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+      1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
     {18, 16, 16, 15, 15, 13, 13, 12, 12, 10, 10, 9, 9, 7, 7, 6, 6, 5, 5, 5, 5,
       4, 3, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
       2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
@@ -431,10 +155,12 @@ const byte saving_throws[8][5][ABS_MAX_LVL] = {
       1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
     {19, 17, 17, 16, 16, 14, 14, 13, 13, 11, 11, 10, 10, 8, 8, 7, 7, 6, 6, 6, 6,
       4, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-      1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}},
-  {{16, 14, 14, 13, 13, 11, 11, 10, 10, 8, 8, 7, 7, 5, 5, 4, 4, 3, 3, 3, 3, 2,
-     2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-     1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+      1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+  },
+  {
+    {16, 14, 14, 13, 13, 11, 11, 10, 10, 8, 8, 7, 7, 5, 5, 4, 4, 3, 3, 3, 3, 2,
+      2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+      1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
     {18, 16, 16, 15, 15, 13, 13, 12, 12, 10, 10, 9, 9, 7, 7, 6, 6, 5, 5, 5, 5,
       4, 3, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
       2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
@@ -446,10 +172,12 @@ const byte saving_throws[8][5][ABS_MAX_LVL] = {
       1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
     {19, 17, 17, 16, 16, 14, 14, 13, 13, 11, 11, 10, 10, 8, 8, 7, 7, 6, 6, 6, 6,
       4, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-      1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}},
-  {{16, 14, 14, 13, 13, 11, 11, 10, 10, 8, 8, 7, 7, 5, 5, 4, 4, 3, 3, 3, 3, 2,
-     2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-     1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+      1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+  },
+  {
+    {16, 14, 14, 13, 13, 11, 11, 10, 10, 8, 8, 7, 7, 5, 5, 4, 4, 3, 3, 3, 3, 2,
+      2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+      1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
     {18, 16, 16, 15, 15, 13, 13, 12, 12, 10, 10, 9, 9, 7, 7, 6, 6, 5, 5, 5, 5,
       4, 3, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
       2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
@@ -461,10 +189,12 @@ const byte saving_throws[8][5][ABS_MAX_LVL] = {
       1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
     {19, 17, 17, 16, 16, 14, 14, 13, 13, 11, 11, 10, 10, 8, 8, 7, 7, 6, 6, 6, 6,
       4, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-      1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}},
-  {{16, 14, 14, 13, 13, 11, 11, 10, 10, 8, 8, 7, 7, 5, 5, 4, 4, 3, 3, 3, 3, 2,
-     2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-     1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+      1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+  },
+  {
+    {16, 14, 14, 13, 13, 11, 11, 10, 10, 8, 8, 7, 7, 5, 5, 4, 4, 3, 3, 3, 3, 2,
+      2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+      1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
     {18, 16, 16, 15, 15, 13, 13, 12, 12, 10, 10, 9, 9, 7, 7, 6, 6, 5, 5, 5, 5,
       4, 3, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
       2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
@@ -476,10 +206,12 @@ const byte saving_throws[8][5][ABS_MAX_LVL] = {
       1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
     {19, 17, 17, 16, 16, 14, 14, 13, 13, 11, 11, 10, 10, 8, 8, 7, 7, 6, 6, 6, 6,
       4, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-      1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}},
-  {{16, 14, 14, 13, 13, 11, 11, 10, 10, 8, 8, 7, 7, 5, 5, 4, 4, 3, 3, 3, 3, 2,
-     2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-     1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+      1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+  },
+  {
+    {16, 14, 14, 13, 13, 11, 11, 10, 10, 8, 8, 7, 7, 5, 5, 4, 4, 3, 3, 3, 3, 2,
+      2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+      1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
     {18, 16, 16, 15, 15, 13, 13, 12, 12, 10, 10, 9, 9, 7, 7, 6, 6, 5, 5, 5, 5,
       4, 3, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
       2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
@@ -491,20 +223,378 @@ const byte saving_throws[8][5][ABS_MAX_LVL] = {
       1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
     {19, 17, 17, 16, 16, 14, 14, 13, 13, 11, 11, 10, 10, 8, 8, 7, 7, 6, 6, 6, 6,
       4, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-      1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}}};
+      1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+  },
+};
 
-int SPELL_LEVEL(struct char_data* ch, int sn) {
-  if (HasClass(ch, CLASS_ANTIPALADIN)) {
-    return (spell_info[sn].min_level_anti);
-  } else if (HasClass(ch, CLASS_PALADIN)) {
-    return (spell_info[sn].min_level_pal);
-  } else if ((HasClass(ch, CLASS_MAGIC_USER)) && (HasClass(ch, CLASS_CLERIC))) {
-    return (
-      MIN(spell_info[sn].min_level_magic, spell_info[sn].min_level_cleric));
-  } else if (HasClass(ch, CLASS_MAGIC_USER)) {
-    return (spell_info[sn].min_level_magic);
-  } else {
-    return (spell_info[sn].min_level_cleric);
+static int ObjFromCorpse(struct obj_data* c) {
+  struct obj_data *jj, *next_thing;
+
+  for (jj = c->contains; jj; jj = next_thing) {
+    next_thing = jj->next_content; /* Next in inventory */
+    if (jj->in_obj) {
+      obj_from_obj(jj);
+      if (c->in_obj)
+        obj_to_obj(jj, c->in_obj);
+      else if (c->carried_by)
+        obj_to_room(jj, c->carried_by->in_room);
+      else if (c->in_room != NOWHERE)
+        obj_to_room(jj, c->in_room);
+      else
+        assert(FALSE);
+    } else {
+      /*
+      **  hmm..  it isn't in the object it says it is in.
+      **  don't extract it.
+      */
+      c->contains = 0;
+      vlog("Memory lost in ObjFromCorpse.");
+      return (TRUE);
+    }
+  }
+  extract_obj(c);
+}
+
+static int IsSingleClass(struct char_data* ch) {
+  int i;
+
+  for (i = 1; i <= 8; i *= 2) {
+    if (OnlyClass(ch, i))
+      return (TRUE);
+  }
+  return (FALSE);
+}
+
+static void update_char_objects(struct char_data* ch) {
+  int i;
+
+  if (ch->equipment[WEAR_LIGHT])
+    if (ch->equipment[WEAR_LIGHT]->obj_flags.type_flag == ITEM_LIGHT)
+      if (ch->equipment[WEAR_LIGHT]->obj_flags.value[2] > 0)
+        (ch->equipment[WEAR_LIGHT]->obj_flags.value[2])--;
+
+  for (i = 0; i < MAX_WEAR; i++)
+    if (ch->equipment[i])
+      update_object(ch->equipment[i], 1);
+
+  if (ch->carrying)
+    update_object(ch->carrying, 1);
+}
+
+static void check_idling(struct char_data* ch) {
+  int save_room;
+
+  if (ch->specials.timer == 10) {
+    if (ch->specials.was_in_room == NOWHERE && ch->in_room != NOWHERE &&
+        ch->in_room != 3) {
+      ch->specials.was_in_room = ch->in_room;
+      if (ch->specials.fighting) {
+        stop_fighting(ch->specials.fighting);
+        stop_fighting(ch);
+      }
+      act("$n disappears into the void.", TRUE, ch, 0, 0, TO_ROOM);
+      send_to_char("You have been idle, and are pulled into a void.\n\r", ch);
+      char_from_room(ch);
+      char_to_room(ch, 0); /* Into room number 0 */
+    }
+  } else if (ch->specials.timer == 60) {
+    struct obj_cost cost;
+    if (ch->in_room != 3) {
+      if (ch->in_room != NOWHERE)
+        char_from_room(ch);
+
+      char_to_room(ch, 3);
+
+      if (ch->desc)
+        close_socket(ch->desc);
+      ch->desc = 0;
+
+      save_obj(ch, &cost, 1);
+      save_room = ch->in_room;
+      extract_char(ch);
+      ch->in_room = save_room;
+      save_char(ch, ch->in_room);
+    }
+  }
+}
+
+static const char* const spell_wear_off_soon_msg[] = {"", "", "", "", "", "",
+  "", "You are starting to gain back your will", "You feel somewhat stronger",
+  "!Clone!", "!Color Spray!", "!Control Weather!", "!Create Food!",
+  "!Create Water!", "!Cure Blind!", "!Cure Critic!", "!Cure Light!", "", "", "",
+  "", "", "!Dispel Evil!", "!Earthquake!", "!Enchant Weapon!", "!Energy Drain!",
+  "!Fireball!", "!Harm!", "!Heal", "", "!Lightning Bolt!", "!Locate object!",
+  "!Magic Missile!", "", "", "!Remove Curse!",
+  "The white aura around your body flickers slightly.", "!Shocking Grasp!",
+  "You feel more awake.", "You feel a bit weaker", "!Summon!",
+  "!Ventriloquate!", "!Word of Recall!", "!Remove Poison!", "",
+  "", /* NO MESSAGE FOR SNEAK*/
+  "!Hide!", "!Steal!", "!Backstab!", "!Pick Lock!", "!Kick!", "!Bash!",
+  "!Rescue!", "!Identify!", "Your infravision begins to fade", "!cause light!",
+  "!cause crit!", "!flamestrike!", "!dispel good!", "You feel a bit stronger",
+  "!dispel magic!", "!knock!", "!know alignment!", "!animate dead!", "",
+  "!remove paralysis!", "!fear!", "!acid blast!",
+  "Your throat feels tight, your water breathing spell is leaving you ",
+  "You feel heavier now, your flying ability is leaving you.",
+  "spell1, please report.", /* 70 */
+  "spell2, please report.", "spell3, please report.",
+  "Your shield spell starts to flicker", "spell5, please report.",
+  "spell6, please report.", "spell7, please report.", "spell8, please report.",
+  "spell9, please report.", "spell10, please report.",
+  "spell11, please report.", /* 80  */
+  "The red glow around your body flickers", "spell82, please report.",
+  "spell83, please report.", "spell84, please report.",
+  "spell85, please report.", "spell86, please report.",
+  "spell87, please report.", "spell88, please report.",
+  "spell89, please report.", "spell90, please report.", /* 90 */
+  "spell91, please report.", "", "spell93, please report.", "",
+  "spell95, please report", "The pink glow around your body flickers", /* 96 */
+  "spell 97, please report.", "spell 98 please report.",
+  "spell 99 please report.", "spell 100 please report.",
+  "spell 101 please report.", "spell 102 please report.",
+  "spell 103 please report.", "The magical shield around your body flickers",
+  "spell 105 please report.", "The webs seem a bit less strong.", "",
+  "", /* 108 */
+  "spell 109 please report.", "", "spell 111 please report.",
+  "spell 112 please report.", "", "", "", "", "", "", "", "", "", "", "", "",
+  "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",
+  "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",
+  "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",
+  "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",
+  "\n"};
+
+static const char* const spell_wear_off_soon_room_msg[] = {"", "", "", "", "",
+  "", "", "$n seems more in control of $mself", "", "!Clone!", "!Color Spray!",
+  "!Control Weather!", "!Create Food!", "!Create Water!", "!Cure Blind!",
+  "!Cure Critic!", "!Cure Light!", "", "", "", "", "", "!Dispel Evil!",
+  "!Earthquake!", "!Enchant Weapon!", "!Energy Drain!", "!Fireball!", "!Harm!",
+  "!Heal", "", "!Lightning Bolt!", "!Locate object!", "!Magic Missile!", "", "",
+  "!Remove Curse!", "The white aura around $n's body flickers slightly.",
+  "!Shocking Grasp!", "$n seems a bit more awake", "$n seems a bit weaker",
+  "!Summon!", "!Ventriloquate!", "!Word of Recall!", "!Remove Poison!", "",
+  "", /* NO MESSAGE FOR SNEAK*/
+  "!Hide!", "!Steal!", "!Backstab!", "!Pick Lock!", "!Kick!", "!Bash!",
+  "!Rescue!", "!Identify!", "", "!cause light!", "!cause crit!",
+  "!flamestrike!", "!dispel good!",
+  "$n's eyes stop looking so red.  Must have used Visine", "!dispel magic!",
+  "!knock!", "!know alignment!", "!animate dead!", "", "!remove paralysis!",
+  "!fear!", "!acid blast!", "$n gasps for air for a moment or two",
+  "The magic force keeping $n aloft flickers slightly, it will vanish soon.",
+  "spell1, please report.", /* 70 */
+  "spell2, please report.", "spell3, please report.",
+  "$n's shield of force flickers slightly", "spell5, please report.",
+  "spell6, please report.", "spell7, please report.", "spell8, please report.",
+  "spell9, please report.", "spell10, please report.",
+  "spell11, please report.", /* 80  */
+  "The red glow around $n's body flickers", "spell82, please report.",
+  "spell83, please report.", "spell84, please report.",
+  "spell85, please report.", "spell86, please report.",
+  "spell87, please report.", "spell88, please report.",
+  "spell89, please report.", "spell90, please report.", /* 90 */
+  "spell91, please report.", "", "spell93, please report.", "",
+  "spell95, please report", "The pink glow around $n's body flickers", /* 96 */
+  "spell 97, please report.", "spell 98 please report.",
+  "spell 99 please report.", "spell 100 please report.",
+  "spell 101 please report.", "spell 102 please report.",
+  "spell 103 please report.", "$n's shield starts to fade away",
+  "spell 105 please report.",
+  "The webs surrounding $n seem to lose their grip a bit.", "", "", /* 108 */
+  "spell 109 please report.", "", "spell 111 please report.",
+  "spell 112 please report.", "", "", "", "", "", "", "", "", "", "", "", "",
+  "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",
+  "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",
+  "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",
+  "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",
+  "\n"};
+
+void SpellWearOffSoon(int s, struct char_data* ch) {
+  if (s > MAX_SKILLS + 10)
+    return;
+
+  if (spell_wear_off_soon_msg[s] && *spell_wear_off_soon_msg[s]) {
+    send_to_char(spell_wear_off_soon_msg[s], ch);
+    send_to_char("\n\r", ch);
+  }
+
+  if (spell_wear_off_soon_room_msg[s] && *spell_wear_off_soon_room_msg[s]) {
+    act(spell_wear_off_soon_room_msg[s], FALSE, ch, 0, 0, TO_ROOM);
+  }
+}
+
+static const char* const spell_wear_off_msg[] = {"RESERVED DB.C",
+  "You feel less protected.", "!Teleport!", "You feel less righteous.",
+  "You feel a cloak of blindness disolve.", "!Burning Hands!",
+  "!Call Lightning", "You feel more self-confident.", "!Chill Touch!",
+  "!Clone!", "!Color Spray!", "!Control Weather!", "!Create Food!",
+  "!Create Water!", "!Cure Blind!", "!Cure Critic!", "!Cure Light!",
+  "You feel better.", "You sense the red in your vision disappear.",
+  "The detect invisible wears off.", "The detect magic wears off.",
+  "The detect poison wears off.", "!Dispel Evil!", "!Earthquake!",
+  "!Enchant Weapon!", "!Energy Drain!", "!Fireball!", "!Harm!", "!Heal",
+  "You feel exposed.", "!Lightning Bolt!", "!Locate object!", "!Magic Missile!",
+  "You feel less sick.", "You feel less protected.", "!Remove Curse!",
+  "The white aura around your body fades.", "!Shocking Grasp!",
+  "You feel less tired.", "You don't feel as strong.", "!Summon!",
+  "!Ventriloquate!", "!Word of Recall!", "!Remove Poison!",
+  "You feel less aware of your suroundings.", "", /* NO MESSAGE FOR SNEAK*/
+  "!Hide!", "!Steal!", "!Backstab!", "!Pick Lock!", "!Kick!", "!Bash!",
+  "!Rescue!", "!Identify!",
+  "You feel disoriented as you lose your infravision.", "!cause light!",
+  "!cause crit!", "!flamestrike!", "You feel somewhat stronger now...",
+  "!dispel good!", "!knock!", "!know alignment!", "!animate dead!",
+  "You feel freedom of movement.", "!remove paralysis!", "!fear!",
+  "!acid blast!", "Your shield of force dissapates.",
+  "You feel a tightness at your throat. ",
+  "You feel heavier now, your flying ability is leaving you.",
+  "spell1, please report.", /* 70 */
+  "spell2, please report.", "spell3, please report.",
+  "Your magic shield dissolves.", "spell5, please report.",
+  "spell6, please report.", "spell7, please report.", "spell8, please report.",
+  "spell9, please report.", "spell10, please report.",
+  "spell11, please report.", /* 80  */
+  "The red glow around your body fades", "spell82, please report.",
+  "spell83, please report.", "spell84, please report.",
+  "spell85, please report.", "spell86, please report.",
+  "spell87, please report.", "spell88, please report.",
+  "spell89, please report.", "spell90, please report.", /* 90 */
+  "spell91, please report.", "Your skin returns to normal.",
+  "spell93, please report.", "Your clarity of vision dissapears",
+  "spell95, please report", "The pink glow around your body fades.", /* 96 */
+  "spell 97, please report.", "spell 98 please report.",
+  "spell 99 please report.", "spell 100 please report.",
+  "spell 101 please report.", "spell 102 please report.",
+  "spell 103 please report.",
+  "You feel heavier, your flying spell is leaving you.",
+  "spell 105 please report.", "", "You lose your tracking ability.",
+  "Your tracking ability fades away.", /* 108 */
+  "spell 109 please report.", "spell 110 please report.",
+  "spell 111 please report.", "You can speak again.", "", "", "", "", "", "",
+  "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",
+  "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",
+  "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",
+  "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",
+  "", "", "", "", "", "", "\n"};
+
+static const char* const spell_wear_off_room_msg[] = {"RESERVED DB.C",
+  "$n's mystic armor fades slowly away", "!Teleport!", "$n looks less blessed",
+  "$n blinks $s eyes.", "!Burning Hands!", "!Call Lightning",
+  "$n shivers and shakes", "$n seems a bit stronger", "!Clone!",
+  "!Color Spray!", "!Control Weather!", "!Create Food!", "!Create Water!",
+  "!Cure Blind!", "!Cure Critic!", "!Cure Light!", "$n looks better",
+  "$n blinks $s eyes, the reddish hue vanishes",
+  "$n blinks $s eyes, the yellowish hue vanishes",
+  "$n blinks $s eyes, the blueish hue vanishes",
+  "$n blinks $s eyes, the whiteish hue vanishes", "!Dispel Evil!",
+  "!Earthquake!", "!Enchant Weapon!", "!Energy Drain!", "!Fireball!", "!Harm!",
+  "!Heal", "$n slowly fades into existence", "!Lightning Bolt!",
+  "!Locate object!", "!Magic Missile!", "$n looks healthier",
+  "$n seems less holier-than-thou", "!Remove Curse!",
+  "The white aura around $n's body fades.", "!Shocking Grasp!",
+  "$n murmurs and shakes in $s sleep.", "$n looks weaker.", "!Summon!",
+  "!Ventriloquate!", "!Word of Recall!", "!Remove Poison!",
+  "$n stops looking around so much", "", /* NO MESSAGE FOR SNEAK*/
+  "!Hide!", "!Steal!", "!Backstab!", "!Pick Lock!", "!Kick!", "!Bash!",
+  "!Rescue!", "!Identify!",
+  "$n stumbles, and blinks $s eyes, the reddish hue fades", "!cause light!",
+  "!cause crit!", "!flamestrike!", "!dispel magic!", "$n looks stronger!",
+  "!dispel good!", "!knock!", "!know alignment!", "!animate dead!",
+  "$n jerks out of $s paralyzed state", "!remove paralysis!", "!fear!",
+  "!acid blast!", "$n frantically sucks for air.",
+  "The magical forces holding $n aloft vanish",
+  "spell1, please report.", /* 70 */
+  "spell2, please report.", "spell72, please report.",
+  "$n's magic shield fades away happily.", "spell74, please report.",
+  "spell6, please report.", "spell7, please report.", "spell8, please report.",
+  "spell9, please report.", "spell10, please report.",
+  "spell11, please report.", /* 80  */
+  "The red glow around $n's body fades", "spell82, please report.",
+  "spell83, please report.", "spell84, please report.",
+  "spell85, please report.", "spell86, please report.",
+  "spell87, please report.", "spell88, please report.",
+  "spell89, please report.", "spell90, please report.", /* 90 */
+  "spell91, please report.", "$n's skin loses its stoney appearance.",
+  "spell93, please report.",
+  "$n blinks rapidly, as the silvery hue fades from $s eyes",
+  "spell95, please report", "The pink glow around $n's body fades.", /* 96 */
+  "spell 97, please report.", "spell 98 please report.",
+  "spell 99 please report.", "spell 100 please report.",
+  "spell 101 please report.", "spell 102 please report.",
+  "spell 103 please report.",
+  "The magical shield protecting $n fades away sadly.",
+  "spell 105 please report.", "$n seems to be free of the webs that hold $m",
+  "$n looks confused.", "$n looks REALLY confused", /* 108 */
+  "spell 109 please report.", "", "spell 111 please report.",
+  "spell 112 please report.", "", "", "", "", "", "", "", "", "", "", "", "",
+  "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",
+  "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",
+  "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",
+  "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",
+  "\n"};
+
+static void check_decharm(struct char_data* ch) {
+  struct char_data* m;
+
+  if (!ch->master)
+    return;
+
+  m = ch->master;
+  stop_follower(ch); /* stop following the master */
+  REMOVE_BIT(ch->specials.act, ACT_SENTINEL);
+  AddFeared(ch, m);
+  do_flee(ch, "", 0);
+}
+
+static void check_drowning(struct char_data* ch) {
+  struct room_data* rp;
+  char buf[256];
+
+  if (IS_AFFECTED(ch, AFF_WATERBREATH))
+    return;
+
+  rp = real_roomp(ch->in_room);
+
+  if (!rp)
+    return;
+
+  if (rp->sector_type == SECT_UNDERWATER) {
+    send_to_char("PANIC!  You're drowning!!!!!!\n\r", ch);
+    act(
+      "$n flails $s hands and turns a deeper shade of blue as $e is drowning.",
+      FALSE, ch, 0, 0, TO_ROOM);
+    if (!IS_IMMORTAL(ch)) {
+      GET_HIT(ch) -= number(1, 300);
+      GET_MOVE(ch) -= number(10, 200);
+    }
+    update_pos(ch);
+    if (GET_HIT(ch) < -10) {
+      sprintf(buf, "%s killed by drowning", GET_NAME(ch));
+      vlog(buf);
+      if (!ch->desc)
+        GET_GOLD(ch) = 0;
+      die(ch);
+    }
+  }
+}
+
+static void SpellWearOff(int s, struct char_data* ch) {
+  if (s > MAX_SKILLS + 10)
+    return;
+
+  if (spell_wear_off_msg[s] && *spell_wear_off_msg[s]) {
+    send_to_char(spell_wear_off_msg[s], ch);
+    send_to_char("\n\r", ch);
+  }
+
+  if (spell_wear_off_room_msg[s] && *spell_wear_off_room_msg[s]) {
+    act(spell_wear_off_room_msg[s], FALSE, ch, 0, 0, TO_ROOM);
+  }
+
+  if (s == SPELL_CHARM_PERSON || s == SPELL_CHARM_MONSTER) {
+    check_decharm(ch);
+  }
+
+  if (s == SPELL_WATER_BREATH) {
+    check_drowning(ch);
   }
 }
 
@@ -517,11 +607,6 @@ void affect_update(int pulse) {
   struct room_data* rp;
   int dead = FALSE, room, cost, k;
   char buf[200];
-
-  extern struct time_info_data time_info;
-
-  void update_char_objects(struct char_data * ch);         /* handler.c */
-  void do_save(struct char_data * ch, char* arg, int cmd); /* act.other.c */
 
   for (i = character_list; i; i = next_char) {
     next_char = i->next;
@@ -549,7 +634,6 @@ void affect_update(int pulse) {
           }
         } else if (af->type >= FIRST_BREATH_WEAPON &&
                    af->type <= LAST_BREATH_WEAPON) {
-          extern funcp bweapons[];
           bweapons[af->type - FIRST_BREATH_WEAPON](-af->modifier / 2, i, "",
             SPELL_TYPE_SPELL, i, 0);
           if (!i->affected) {
@@ -658,8 +742,8 @@ void affect_update(int pulse) {
   for (j = object_list; j; j = next_thing) {
     next_thing = j->next; /* Next in object list */
 
-    if (obj_index[j->item_number].func)
-      (*obj_index[j->item_number].func)(NULL, 0, NULL, j);
+    if (obj_index[j->item_number].func.obj_f)
+      (*obj_index[j->item_number].func.obj_f)(NULL, 0, NULL, j);
 
     if (j->obj_flags.decay_time > -1) {
       /* update_char_objects takes care of worn, carried */
@@ -838,7 +922,7 @@ void add_follower(struct char_data* ch, struct char_data* leader) {
   }
 }
 
-say_spell(struct char_data* ch, int si) {
+static void say_spell(struct char_data* ch, int si) {
   char buf[MAX_STRING_LENGTH], splwd[MAX_BUF_LENGTH];
   char buf2[MAX_STRING_LENGTH];
 
@@ -914,37 +998,37 @@ bool saves_spell(struct char_data* ch, sh_int save_type) {
   return (MAX(1, save) < number(1, 20));
 }
 
-bool ImpSaveSpell(struct char_data* ch, sh_int save_type, int mod) {
-  int save;
-
-  /* Positive mod is better for save */
-
-  /* Negative apply_saving_throw makes saving throw better! */
-
-  save = ch->specials.apply_saving_throw[save_type] - mod;
-
-  if (!IS_NPC(ch)) {
-    /*
-    **  Remove-For-Multi-Class
-    */
-    save += saving_throws[BestMagicClass(ch)][save_type]
-                         [GET_LEVEL(ch, BestMagicClass(ch))];
-    if (GetMaxLevel(ch) >= LOW_IMMORTAL)
-      return (TRUE);
-  }
-
-  return (MAX(1, save) < number(1, 20));
-}
-
-char* skip_spaces(char* string) {
+static char* skip_spaces(char* string) {
   for (; *string && (*string) == ' '; string++)
     ;
 
   return (string);
 }
 
-/* Assumes that *argument does start with first letter of chopped string */
+int can_do_verbal(struct char_data* ch) {
+  struct room_data* rp;
 
+  return (ch && !IS_AFFECTED(ch, AFF_SILENT) &&
+          (rp = (real_roomp(ch->in_room))) &&
+          (!IS_SET(rp->room_flags, SILENCE)));
+}
+
+static int SPELL_LEVEL(struct char_data* ch, int sn) {
+  if (HasClass(ch, CLASS_ANTIPALADIN)) {
+    return (spell_info[sn].min_level_anti);
+  } else if (HasClass(ch, CLASS_PALADIN)) {
+    return (spell_info[sn].min_level_pal);
+  } else if ((HasClass(ch, CLASS_MAGIC_USER)) && (HasClass(ch, CLASS_CLERIC))) {
+    return (
+      MIN(spell_info[sn].min_level_magic, spell_info[sn].min_level_cleric));
+  } else if (HasClass(ch, CLASS_MAGIC_USER)) {
+    return (spell_info[sn].min_level_magic);
+  } else {
+    return (spell_info[sn].min_level_cleric);
+  }
+}
+
+/* Assumes that *argument does start with first letter of chopped string */
 void do_cast(struct char_data* ch, char* argument, int cmd) {
   struct obj_data* tar_obj;
   struct char_data* tar_char;
@@ -1673,210 +1757,4 @@ void assign_spell_pointers(void) {
   SPELLO(180, 0, POSITION_STANDING, IMPLEMENTOR + 1, IMPLEMENTOR + 1, 200,
     LOW_IMMORTAL, LOW_IMMORTAL, LOW_IMMORTAL,
     TAR_SELF_NONO | TAR_VIOLENT | TAR_IGNORE, 0);
-}
-
-void SpellWearOffSoon(int s, struct char_data* ch) {
-  if (s > MAX_SKILLS + 10)
-    return;
-
-  if (spell_wear_off_soon_msg[s] && *spell_wear_off_soon_msg[s]) {
-    send_to_char(spell_wear_off_soon_msg[s], ch);
-    send_to_char("\n\r", ch);
-  }
-
-  if (spell_wear_off_soon_room_msg[s] && *spell_wear_off_soon_room_msg[s]) {
-    act(spell_wear_off_soon_room_msg[s], FALSE, ch, 0, 0, TO_ROOM);
-  }
-}
-
-void SpellWearOff(int s, struct char_data* ch) {
-  if (s > MAX_SKILLS + 10)
-    return;
-
-  if (spell_wear_off_msg[s] && *spell_wear_off_msg[s]) {
-    send_to_char(spell_wear_off_msg[s], ch);
-    send_to_char("\n\r", ch);
-  }
-
-  if (spell_wear_off_room_msg[s] && *spell_wear_off_room_msg[s]) {
-    act(spell_wear_off_room_msg[s], FALSE, ch, 0, 0, TO_ROOM);
-  }
-
-  if (s == SPELL_CHARM_PERSON || s == SPELL_CHARM_MONSTER) {
-    check_decharm(ch);
-  }
-
-  if (s == SPELL_WATER_BREATH) {
-    check_drowning(ch);
-  }
-}
-
-void check_decharm(struct char_data* ch) {
-  struct char_data* m;
-
-  if (!ch->master)
-    return;
-
-  m = ch->master;
-  stop_follower(ch); /* stop following the master */
-  REMOVE_BIT(ch->specials.act, ACT_SENTINEL);
-  AddFeared(ch, m);
-  do_flee(ch, "", 0);
-}
-
-void check_drowning(struct char_data* ch) {
-  struct room_data* rp;
-  char buf[256];
-
-  if (IS_AFFECTED(ch, AFF_WATERBREATH))
-    return;
-
-  rp = real_roomp(ch->in_room);
-
-  if (!rp)
-    return;
-
-  if (rp->sector_type == SECT_UNDERWATER) {
-    send_to_char("PANIC!  You're drowning!!!!!!\n\r", ch);
-    act(
-      "$n flails $s hands and turns a deeper shade of blue as $e is drowning.",
-      FALSE, ch, 0, 0, TO_ROOM);
-    if (!IS_IMMORTAL(ch)) {
-      GET_HIT(ch) -= number(1, 300);
-      GET_MOVE(ch) -= number(10, 200);
-    }
-    update_pos(ch);
-    if (GET_HIT(ch) < -10) {
-      sprintf(buf, "%s killed by drowning", GET_NAME(ch));
-      vlog(buf);
-      if (!ch->desc)
-        GET_GOLD(ch) = 0;
-      die(ch);
-    }
-  }
-}
-
-int perform_gestural(struct char_data* ch) {
-  if (!ch)
-    return FALSE;
-
-  if (ch->equipment[WIELD]) {
-    send_to_char(
-      "You cannot perform the required gestures while wielding something!\n\r",
-      ch);
-    return FALSE;
-  }
-  if (ch->equipment[WEAR_SHIELD]) {
-    send_to_char(
-      "You cannot perform the required gestures while using an item as a "
-      "shield!\n\r",
-      ch);
-    return FALSE;
-  }
-
-  act("$n traces a magical rune in the air with his hands.", TRUE, ch, 0, NULL,
-    TO_ROOM);
-  send_to_char("You trace a rune in the air with your hands.\n\r", ch);
-  return TRUE;
-}
-
-struct obj_data* find_component(struct char_data* ch, int vnum) {
-  struct obj_data* item;
-
-  if ((!ch) || !(item = ch->equipment[HOLD]))
-    return NULL;
-
-  if (((item->item_number >= 0) ? obj_index[item->item_number].virtual : 0) ==
-      vnum)
-    return item;
-
-  if (ITEM_TYPE(item) == ITEM_SPELLBAG)
-    for (item = item->contains; item; item = item->next_content)
-      if (((item->item_number >= 0) ? obj_index[item->item_number].virtual
-                                    : 0) == vnum)
-        return item;
-
-  return NULL;
-}
-
-int use_component(struct char_data* ch, struct obj_data* o) {
-  int strength;
-
-  if (!o)
-    return 0;
-
-  strength = (ITEM_TYPE(o) == ITEM_COMPONENT) ? o->obj_flags.value[0] : 1;
-  act("$n throws $p into the air... it explodes in a blast of light!", TRUE, ch,
-    o, NULL, TO_ROOM);
-  act("You throw $p into the air... it explodes in a blast of light!", TRUE, ch,
-    o, NULL, TO_CHAR);
-  extract_obj(o);
-
-  return strength;
-}
-
-#define BASE_CF 10
-#define BASE_CS 10
-
-int task_check(struct char_data* ch, int difficulty, int modifier) {
-  int cf, cs, check;
-
-  if ((ch) && (IS_IMMORTAL(ch)))
-    return CRITICAL_SUCCESS;
-
-  modifier = MIN(modifier, 7);
-  modifier = MAX(modifier, -7);
-
-  switch (difficulty) {
-    case TASK_TRIVIAL:
-      cf = (BASE_CF / 3) - (modifier / 3);
-      cs = (BASE_CS * 3) + (modifier * 3);
-      break;
-    case TASK_EASY:
-      cf = (BASE_CF / 2) - (modifier / 2);
-      cs = (BASE_CS * 2) + (modifier * 2);
-      break;
-    case TASK_DIFFICULT:
-      cf = (BASE_CF * 2) - (modifier * 2);
-      cs = (BASE_CS / 2) + (modifier / 2);
-      break;
-    case TASK_DANGEROUS:
-      cf = (BASE_CF * 3) - (modifier * 3);
-      cs = (BASE_CS / 3) + (modifier / 3);
-      break;
-    case TASK_NORMAL:
-    default:
-      cf = BASE_CF - modifier;
-      cs = BASE_CS + modifier;
-      break;
-  }
-  cs = cf + cs;
-  check = dice(1, 100);
-  if (cf >= check)
-    return CRITICAL_FAILURE;
-  if (cs >= check)
-    return CRITICAL_SUCCESS;
-  return NORMAL_RESULT;
-}
-
-int can_do_verbal(struct char_data* ch) {
-  struct room_data* rp;
-
-  return (ch && !IS_AFFECTED(ch, AFF_SILENT) &&
-          (rp = (real_roomp(ch->in_room))) &&
-          (!IS_SET(rp->room_flags, SILENCE)));
-}
-
-int enforce_verbal(struct char_data* ch) {
-  if (!ch)
-    return FALSE;
-
-  if (!can_do_verbal(ch)) {
-    act("$n opens his mouth as if to say something.", TRUE, ch, 0, NULL,
-      TO_ROOM);
-    send_to_char("You are unable to chant the mantra!\n\r", ch);
-    return FALSE;
-  }
-
-  return TRUE;
 }

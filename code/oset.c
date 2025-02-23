@@ -1,24 +1,26 @@
 /* Oset.c is Copyright (C) 1992 by Dan Brumleve.  Ignorance or removal  *
  * of this frienndly reminder is punishable by death by slooow torture  */
 
+#define _POSIX_C_SOURCE 200809L
+#include <features.h>
+
 #include <ctype.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
-#include <time.h>
+#include <strings.h>
 
+#include "constants.h"
 #include "comm.h"
-#include "db.h"
 #include "handler.h"
 #include "interpreter.h"
-#include "limits.h"
-#include "opinion.h"
 #include "spells.h"
 #include "structs.h"
 #include "utils.h"
 
 struct oset_field_data {
-    char* set[4];
-    char* description[4];
+    const char* const set[4];
+    const char* const description[4];
 };
 
 struct oset_field_data oset_field[25] = {
@@ -56,7 +58,8 @@ struct oset_field_data oset_field[25] = {
   {{"", "", "", ""}, {"", "", "", ""}},
 };
 
-void set_oedesc(struct char_data* ch, struct obj_data* obj, char* keywds) {
+static void set_oedesc(struct char_data* ch, struct obj_data* obj,
+  char* keywds) {
   struct extra_descr_data *tmp, *newdesc;
   char buf[256];
 
@@ -95,13 +98,13 @@ void set_oedesc(struct char_data* ch, struct obj_data* obj, char* keywds) {
   ch->desc->max_str = 1000;
 }
 
-void set_mtype(struct char_data* ch, struct obj_data* obj, char* arg) {
+static void set_mtype(struct char_data* ch, struct obj_data* obj, char* arg) {
   char buf1[256], buf2[256], type[100];
   int i;
 
-  static char* obj_type[] = {"", "finger", "neck", "body", "head", "legs",
-    "feet", "hands", "arms", "shield", "about", "waiste", "wrist", "wield",
-    "hold", "", "\n"};
+  static const char* const obj_type[] = {"", "finger", "neck", "body", "head",
+    "legs", "feet", "hands", "arms", "shield", "about", "waiste", "wrist",
+    "wield", "hold", "", "\n"};
 
   if (!*arg) {
     send_to_char("The following types are available:\n\r\n\r", ch);
@@ -153,12 +156,12 @@ void set_mtype(struct char_data* ch, struct obj_data* obj, char* arg) {
   send_to_char("Done.\n\r", ch);
 }
 
-void set_oflags(struct char_data* ch, struct obj_data* obj, char* arg) {
+static void set_oflags(struct char_data* ch, struct obj_data* obj, char* arg) {
   char buf1[256], buf2[256], num[100], type[100];
   int i, number;
 
-  static char* obj_type[] = {"ITEM_GLOW            1", "ITEM_HUM             2",
-    "ITEM_METAL           4  /* undefined...  */",
+  static const char* const obj_type[] = {"ITEM_GLOW            1",
+    "ITEM_HUM             2", "ITEM_METAL           4  /* undefined...  */",
     "ITEM_MINERAL         8  /* undefined?    */",
     "ITEM_ORGANIC        16  /* undefined?    */", "ITEM_INVISIBLE      32",
     "ITEM_MAGIC          64", "ITEM_NODROP        128",
@@ -199,14 +202,14 @@ void set_oflags(struct char_data* ch, struct obj_data* obj, char* arg) {
   send_to_char("Done.\n\r", ch);
 }
 
-void set_otype(struct char_data* ch, struct obj_data* obj, char* arg) {
+static void set_otype(struct char_data* ch, struct obj_data* obj, char* arg) {
   char buf1[256], buf2[256];
   int type, i;
 
-  static char* obj_type[] = {"light", "scroll", "wand", "staff", "weapon",
-    "fireweapon", "missile", "treasure", "armor", "potion", "worn", "other",
-    "trash", "trap", "container", "note", "drinkcon", "key", "food", "money",
-    "pen", "boat", "\n"};
+  static const char* const obj_type[] = {"light", "scroll", "wand", "staff",
+    "weapon", "fireweapon", "missile", "treasure", "armor", "potion", "worn",
+    "other", "trash", "trap", "container", "note", "drinkcon", "key", "food",
+    "money", "pen", "boat", "\n"};
 
   if (!*arg) {
     send_to_char("The following types are available:\n\r\n\r", ch);
@@ -231,17 +234,19 @@ void set_otype(struct char_data* ch, struct obj_data* obj, char* arg) {
   send_to_char("Done.\n\r", ch);
 }
 
-void set_oaffect(struct char_data* ch, struct obj_data* obj, char* arg, int a) {
+static void set_oaffect(struct char_data* ch, struct obj_data* obj, char* arg,
+  int a) {
   char buf1[256], buf2[256];
   int type, mod, i;
 
-  static char* oaffects[] = {"strength", "dexterity", "intelligence", "wisdom",
-    "constitution", "sex", "class", "level", "age", "weight", "height",
-    "mana points", "hit points", "movement_points", "gold", "exp", "ac",
-    "hitroll", "damage", "saving_para", "saving_rod", "saving_petri",
-    "saving_breath", "saving_spell", "save all", "immune", "susceptibility",
-    "resistance", "spell_affects", "weapon_spells", "eat spells", "backstab",
-    "kick", "sneak", "hide", "bash", "pick", "steal", "track", "hitndam", "\n"};
+  static const char* const oaffects[] = {"strength", "dexterity",
+    "intelligence", "wisdom", "constitution", "sex", "class", "level", "age",
+    "weight", "height", "mana points", "hit points", "movement_points", "gold",
+    "exp", "ac", "hitroll", "damage", "saving_para", "saving_rod",
+    "saving_petri", "saving_breath", "saving_spell", "save all", "immune",
+    "susceptibility", "resistance", "spell_affects", "weapon_spells",
+    "eat spells", "backstab", "kick", "sneak", "hide", "bash", "pick", "steal",
+    "track", "hitndam", "\n"};
 
   if (!*arg) {
     send_to_char("The following affects are available:\n\r\n\r", ch);
@@ -292,19 +297,17 @@ void do_oset(struct char_data* ch, char* argument, int cmd) {
   struct obj_data* obj;
   struct extra_descr_data* tmpexd;
 
-  char* generic_field[] = {"name", "sdesc", "ldesc", "desc", "edesc", "type",
-    "aff1", "aff2", "weight", "cost", "storage", "worn_type", "item", "\n"};
+  const char* const generic_field[] = {"name", "sdesc", "ldesc", "desc",
+    "edesc", "type", "aff1", "aff2", "weight", "cost", "storage", "worn_type",
+    "item", "\n"};
 
-  char* generic_desc[] = {"(\"sword long spiked\")",
+  const char* const generic_desc[] = {"(\"sword long spiked\")",
     "(\"a spiked long sword\")", "(\"You see a spiked long sword here.\")",
     "(object description)", "(object extra description)", "(object type)",
     "(first affect)", "(second affect)", "(object weight)", "(object cost)",
     "(object storage cost)",
     "(where it can be worn(take is included in all of them)",
     "flags like ANTI_GOOD", "\n"};
-
-  extern char* drinknames[];
-  extern char* spells[];
 
   argument = one_argument(argument, arg1);
   half_chop(argument, arg2, arg3);

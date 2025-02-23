@@ -5,72 +5,23 @@
  ************************************************************************* */
 
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include <sys/time.h>
+#include <time.h>
 
 #include "comm.h"
 #include "db.h"
 #include "handler.h"
-#include "interpreter.h"
-#include "spells.h"
 #include "structs.h"
 #include "utils.h"
 
-#define OBJ_SAVE_FILE "pcobjs.obj"
-#define OBJ_FILE_FREE "\0\0\0"
-
-extern struct room_data* world;
-extern struct index_data* mob_index;
-extern struct index_data* obj_index;
-extern int top_of_objt;
-extern struct player_index_element* player_table;
-extern int top_of_p_table;
-
-/* Extern functions */
-
-void store_to_char(struct char_file_u* st, struct char_data* ch);
-void do_tell(struct char_data* ch, char* argument, int cmd);
-int str_cmp(char* arg1, char* arg2);
-void clear_char(struct char_data* ch);
-void zero_rent(struct char_data* ch);
-void PrintLimitedItems(void);
-void CountLimitedItems(struct obj_file_u* st);
-char* lower(char* s);
-void ZeroRent(char* n);
+const char* const OBJ_SAVE_FILE = "pcobjs.obj";
+const char* const OBJ_FILE_FREE = "\0\0\0";
 
 /* ************************************************************************
  * Routines used for the "Offer"                                           *
  ************************************************************************* */
-
-void add_obj_cost(struct char_data* ch, struct char_data* re,
-  struct obj_data* obj, struct obj_cost* cost) {
-  char buf[MAX_INPUT_LENGTH];
-  int temp;
-
-  /* Add cost for an item and it's contents, and next->contents */
-
-  if (obj) {
-    if ((obj->item_number > -1) && (cost->ok)) {
-      cost->no_carried++;
-      if ((IS_OBJ_STAT(obj, ITEM_LEVEL10) && GetMaxLevel(ch) < 10) ||
-          (IS_OBJ_STAT(obj, ITEM_LEVEL20) && GetMaxLevel(ch) < 20) ||
-          (IS_OBJ_STAT(obj, ITEM_LEVEL30) && GetMaxLevel(ch) < 30)) {
-        if (re) {
-          act("$n tells you 'You are too lowly to rent with $p'", FALSE, re,
-            obj, ch, TO_VICT);
-        }
-      }
-    } else if (cost->ok) {
-      if (re) {
-        act("$n tells you 'I refuse storing $p'", FALSE, re, obj, ch, TO_VICT);
-      } else {
-#if NODUPLICATES
-#else
-        act("Sorry, but $p don't keep in storage.", FALSE, ch, obj, 0, TO_CHAR);
-#endif
-      }
-    }
-  }
-}
 
 bool recep_offer(struct char_data* ch, struct char_data* receptionist,
   struct obj_cost* cost) {
@@ -103,6 +54,25 @@ bool recep_offer(struct char_data* ch, struct char_data* receptionist,
 /* ************************************************************************
  * General save/load routines                                              *
  ************************************************************************* */
+static void WriteObjs(FILE* fl, struct obj_file_u* st, int save) {
+  int i;
+  char buf[80];
+
+  fwrite(&st->owner, sizeof(st->owner), 1, fl);
+  fwrite(&st->gold_left, sizeof(st->gold_left), 1, fl);
+  fwrite(&st->total_cost, sizeof(st->total_cost), 1, fl);
+  fwrite(&st->last_update, sizeof(st->last_update), 1, fl);
+  fwrite(&st->minimum_stay, sizeof(st->minimum_stay), 1, fl);
+  fwrite(&st->number, sizeof(st->number), 1, fl);
+
+  for (i = 0; i < st->number; i++) {
+    fwrite(&st->objects[i], sizeof(struct obj_file_elem), 1, fl);
+  }
+  if (save == 1) {
+    sprintf(buf, "%s rented out with [%d] items.", st->owner, st->number);
+    vlog(buf);
+  }
+}
 
 void update_file(struct char_data* ch, struct obj_file_u* st, int save) {
   FILE* fl;
@@ -130,121 +100,83 @@ void update_file(struct char_data* ch, struct obj_file_u* st, int save) {
  * Routines used to load a characters equipment from disk                  *
  ************************************************************************* */
 
-void obj_store_to_char(struct char_data* ch, struct obj_file_u* st) {
-  struct obj_data* obj;
-  char buf[256];
-  int i, j;
+int ReadObjs(FILE* fl, struct obj_file_u* st) {
+  int i;
 
-  void obj_to_char(struct obj_data * object, struct char_data * ch);
+  if (feof(fl)) {
+    puts("Ending at 1.");
+    fclose(fl);
+    return (FALSE);
+  }
+  fread(&st->owner, sizeof(st->owner), 1, fl);
+  if (feof(fl)) {
+    puts("Ending at 2.");
+    fclose(fl);
+    return (FALSE);
+  }
+  fread(&st->gold_left, sizeof(st->gold_left), 1, fl);
+  if (feof(fl)) {
+    puts("Ending at 3.");
+    fclose(fl);
+    return (FALSE);
+  }
+  fread(&st->total_cost, sizeof(st->total_cost), 1, fl);
+  if (feof(fl)) {
+    puts("Ending at 4.");
+    fclose(fl);
+    return (FALSE);
+  }
+  fread(&st->last_update, sizeof(st->last_update), 1, fl);
+  if (feof(fl)) {
+    puts("Ending at 5.");
+    fclose(fl);
+    return (FALSE);
+  }
+  fread(&st->minimum_stay, sizeof(st->minimum_stay), 1, fl);
+  if (feof(fl)) {
+    puts("Ending at 6.");
+    fclose(fl);
+    return (FALSE);
+  }
+  fread(&st->number, sizeof(st->number), 1, fl);
+  if (feof(fl)) {
+    puts("Ending at 7.");
+    fclose(fl);
+    return (FALSE);
+  }
 
   for (i = 0; i < st->number; i++) {
-    if (st->objects[i].item_number > -1 &&
-        real_object(st->objects[i].item_number) > -1) {
-      obj = read_object(st->objects[i].item_number, VIRTUAL);
-      obj->obj_flags.value[0] = st->objects[i].value[0];
-      obj->obj_flags.value[1] = st->objects[i].value[1];
-      obj->obj_flags.value[2] = st->objects[i].value[2];
-      obj->obj_flags.value[3] = st->objects[i].value[3];
-      obj->obj_flags.extra_flags = st->objects[i].extra_flags;
-      obj->obj_flags.weight = st->objects[i].weight;
-      obj->obj_flags.timer = st->objects[i].timer;
-      obj->obj_flags.bitvector = st->objects[i].bitvector;
-      obj->obj_flags.struct_points = st->objects[i].struct_points;
-      obj->obj_flags.max_struct_points = st->objects[i].max_struct_points;
-      obj->obj_flags.material_points = st->objects[i].material_points;
-      obj->obj_flags.decay_time = st->objects[i].decay_time;
+    fread(&st->objects[i], sizeof(struct obj_file_elem), 1, fl);
+    /*
+       printf("%d [%d %d %d %d] %d %d %d %d\r\n",
+        st->objects[i].item_number,
+        st->objects[i].value[0],
+        st->objects[i].value[1],
+        st->objects[i].value[2],
+        st->objects[i].value[3],
+        st->objects[i].extra_flags,
+        st->objects[i].weight,
+        st->objects[i].timer,
+        st->objects[i].bitvector);
+       printf("%s %s
+       %s.\r\n",st->objects[i].name,st->objects[i].sd,st->objects[i].desc);
 
-      /*  new, saving names and descrips stuff */
-      if (obj->name)
-        free(obj->name);
-      if (obj->short_description)
-        free(obj->short_description);
-      if (obj->description)
-        free(obj->description);
-
-      obj->name = (char*)malloc(strlen(st->objects[i].name) + 1);
-      obj->short_description = (char*)malloc(strlen(st->objects[i].sd) + 1);
-      obj->description = (char*)malloc(strlen(st->objects[i].desc) + 1);
-
-      strcpy(obj->name, st->objects[i].name);
-      strcpy(obj->short_description, st->objects[i].sd);
-      strcpy(obj->description, st->objects[i].desc);
-      /* end of new, possibly buggy stuff */
-
-      for (j = 0; j < MAX_OBJ_AFFECT; j++)
-        obj->affected[j] = st->objects[i].affected[j];
-
-      obj_to_char(obj, ch);
-    }
+    */
   }
-  sprintf(buf, "%s has [%d] items.", st->owner, st->number);
-  vlog(buf);
 }
 
-void load_char_objs(struct char_data* ch) {
+void ZeroRent(char* n) {
   FILE* fl;
-  int i, j, loc;
-  bool found = FALSE;
-  float timegold;
-  struct obj_file_u st;
   char buf[200];
 
-  sprintf(buf, "rent/%s", lower(ch->player.name));
+  sprintf(buf, "rent/%s", lower(n));
 
-  /* r+b is for Binary Reading/Writing */
-  if (!(fl = fopen(buf, "r+b"))) {
-    vlog("Char has no equipment");
-    // fclose(fl);
-    return;
-  }
-
-  rewind(fl);
-
-  if (!ReadObjs(fl, &st)) {
-    vlog("No objects found");
-    // fclose(fl);
-    return;
-  }
-
-  if (str_cmp(st.owner, GET_NAME(ch)) != 0) {
-    vlog("Hmm.. bad item-file write. someone is losing thier objects");
-    fclose(fl);
-    return;
-  }
-
-  /*
-    if the character has been out for 12 real hours, they are fully healed
-    upon re-entry.  if they stay out for 24 full hours, all affects are
-    removed, including bad ones.
-  */
-
-  if (st.last_update + 12 * SECS_PER_REAL_HOUR < time(0))
-    RestoreChar(ch);
-
-  if (st.last_update + 24 * SECS_PER_REAL_HOUR < time(0))
-    RemAllAffects(ch);
-
-  if (ch->in_room == NOWHERE &&
-      st.last_update + 6 * SECS_PER_REAL_HOUR > time(0)) {
-    found = TRUE;
-  } else {
-    char buf[MAX_STRING_LENGTH];
-    if (ch->in_room == NOWHERE)
-      vlog("Char reconnecting after autorent");
-    timegold = 0;
-    found = TRUE;
+  if (!(fl = fopen(buf, "w"))) {
+    perror("saving PC's objects");
+    exit(1);
   }
 
   fclose(fl);
-
-  if (found)
-    obj_store_to_char(ch, &st);
-  else {
-    ZeroRent(GET_NAME(ch));
-  }
-
-  /* Save char, to avoid strange data if crashing */
-  save_char(ch, AUTO_RENT);
 }
 
 /* ************************************************************************
@@ -395,39 +327,36 @@ void save_obj(struct char_data* ch, struct obj_cost* cost, int delete) {
   update_file(ch, &st, 1);
 }
 
-/* write the vital data of a player to the player file */
-void save_obj_for_save(struct char_data* ch, struct obj_cost* cost,
-  int delete) {
-  static struct obj_file_u st;
-  FILE* fl;
-  int pos, i, j;
-  bool found = FALSE;
-
-  st.number = 0;
-  st.gold_left = GET_GOLD(ch);
-  st.total_cost = cost->total_cost;
-  st.last_update = time(0);
-  st.minimum_stay = 0; /* XXX where does this belong? */
-
-  for (i = 0; i < MAX_WEAR; i++)
-    if (ch->equipment[i]) {
-      if (delete) {
-        obj_to_store(unequip_char(ch, i), &st, ch, delete);
-      } else {
-        obj_to_store(ch->equipment[i], &st, ch, delete);
-      }
-    }
-
-  obj_to_store(ch->carrying, &st, ch, delete);
-  if (delete)
-    ch->carrying = 0;
-
-  update_file(ch, &st, 0);
-}
-
 /* ************************************************************************
  * Routines used to update object file, upon boot time                     *
  ************************************************************************* */
+
+static void CountLimitedItems(struct obj_file_u* st) {
+  int i, cost_per_day;
+  struct obj_data* obj;
+
+  if (!st->owner[0])
+    return; /* don't count empty rent units */
+
+  for (i = 0; i < st->number; i++) {
+    if (st->objects[i].item_number > -1 &&
+        real_object(st->objects[i].item_number) > -1) {
+      /*
+       ** eek.. read in the object, and then extract it.
+       ** (all this just to find rent cost.)  *sigh*
+       */
+      obj = read_object(st->objects[i].item_number, VIRTUAL);
+      cost_per_day = obj->obj_flags.cost_per_day;
+      /*
+       **  if the cost is > LIM_ITEM_COST_MIN, then mark before extractin
+       */
+      if (cost_per_day > LIM_ITEM_COST_MIN) {
+        obj_index[obj->item_number].number++;
+      }
+      extract_obj(obj);
+    }
+  }
+}
 
 void update_obj_file(void) {
   FILE *fl, *char_file;
@@ -439,9 +368,6 @@ void update_obj_file(void) {
   char buf[MAX_INPUT_LENGTH];
   struct obj_file_u* lim;
   struct obj_data* obj;
-
-  int find_name(char* name);
-  extern int errno;
 
   if (!(char_file = fopen(PLAYER_FILE, "r+"))) {
     perror("Opening player file for reading. (reception.c, update_obj_file)");
@@ -520,45 +446,6 @@ void update_obj_file(void) {
   fclose(char_file);
 }
 
-void CountLimitedItems(struct obj_file_u* st) {
-  int i, cost_per_day;
-  struct obj_data* obj;
-
-  if (!st->owner[0])
-    return; /* don't count empty rent units */
-
-  for (i = 0; i < st->number; i++) {
-    if (st->objects[i].item_number > -1 &&
-        real_object(st->objects[i].item_number) > -1) {
-      /*
-       ** eek.. read in the object, and then extract it.
-       ** (all this just to find rent cost.)  *sigh*
-       */
-      obj = read_object(st->objects[i].item_number, VIRTUAL);
-      cost_per_day = obj->obj_flags.cost_per_day;
-      /*
-       **  if the cost is > LIM_ITEM_COST_MIN, then mark before extractin
-       */
-      if (cost_per_day > LIM_ITEM_COST_MIN) {
-        obj_index[obj->item_number].number++;
-      }
-      extract_obj(obj);
-    }
-  }
-}
-
-void PrintLimitedItems(void) {
-  int i;
-  char buf[200];
-
-  for (i = 0; i <= top_of_objt; i++) {
-    if (obj_index[i].number > 0) {
-      sprintf(buf, "item> %d [%d]", obj_index[i].virtual, obj_index[i].number);
-      vlog(buf);
-    }
-  }
-}
-
 /* ************************************************************************
  * Routine Receptionist                                                    *
  ************************************************************************* */
@@ -581,7 +468,7 @@ int receptionist(struct char_data* ch, int cmd, char* arg) {
   for (temp_char = real_roomp(ch->in_room)->people; (temp_char) && (!recep);
        temp_char = temp_char->next_in_room)
     if (IS_MOB(temp_char))
-      if (mob_index[temp_char->nr].func == receptionist)
+      if (mob_index[temp_char->nr].func.mob_f == receptionist)
         recep = temp_char;
 
   if (!recep) {
@@ -661,7 +548,7 @@ int receptionist_for_outlaws(struct char_data* ch, int cmd, char* arg) {
   for (temp_char = real_roomp(ch->in_room)->people; (temp_char) && (!recep);
        temp_char = temp_char->next_in_room)
     if (IS_MOB(temp_char))
-      if (mob_index[temp_char->nr].func == receptionist_for_outlaws)
+      if (mob_index[temp_char->nr].func.mob_f == receptionist_for_outlaws)
         recep = temp_char;
 
   if (!recep) {
@@ -732,104 +619,4 @@ void zero_rent(struct char_data* ch) {
     return;
 
   ZeroRent(GET_NAME(ch));
-}
-
-void ZeroRent(char* n) {
-  FILE* fl;
-  char buf[200];
-
-  sprintf(buf, "rent/%s", lower(n));
-
-  if (!(fl = fopen(buf, "w"))) {
-    perror("saving PC's objects");
-    exit(1);
-  }
-
-  fclose(fl);
-  return;
-}
-
-int ReadObjs(FILE* fl, struct obj_file_u* st) {
-  int i;
-
-  if (feof(fl)) {
-    puts("Ending at 1.");
-    fclose(fl);
-    return (FALSE);
-  }
-  fread(&st->owner, sizeof(st->owner), 1, fl);
-  if (feof(fl)) {
-    puts("Ending at 2.");
-    fclose(fl);
-    return (FALSE);
-  }
-  fread(&st->gold_left, sizeof(st->gold_left), 1, fl);
-  if (feof(fl)) {
-    puts("Ending at 3.");
-    fclose(fl);
-    return (FALSE);
-  }
-  fread(&st->total_cost, sizeof(st->total_cost), 1, fl);
-  if (feof(fl)) {
-    puts("Ending at 4.");
-    fclose(fl);
-    return (FALSE);
-  }
-  fread(&st->last_update, sizeof(st->last_update), 1, fl);
-  if (feof(fl)) {
-    puts("Ending at 5.");
-    fclose(fl);
-    return (FALSE);
-  }
-  fread(&st->minimum_stay, sizeof(st->minimum_stay), 1, fl);
-  if (feof(fl)) {
-    puts("Ending at 6.");
-    fclose(fl);
-    return (FALSE);
-  }
-  fread(&st->number, sizeof(st->number), 1, fl);
-  if (feof(fl)) {
-    puts("Ending at 7.");
-    fclose(fl);
-    return (FALSE);
-  }
-
-  for (i = 0; i < st->number; i++) {
-    fread(&st->objects[i], sizeof(struct obj_file_elem), 1, fl);
-    /*
-       printf("%d [%d %d %d %d] %d %d %d %d\r\n",
-        st->objects[i].item_number,
-        st->objects[i].value[0],
-        st->objects[i].value[1],
-        st->objects[i].value[2],
-        st->objects[i].value[3],
-        st->objects[i].extra_flags,
-        st->objects[i].weight,
-        st->objects[i].timer,
-        st->objects[i].bitvector);
-       printf("%s %s
-       %s.\r\n",st->objects[i].name,st->objects[i].sd,st->objects[i].desc);
-
-    */
-  }
-}
-
-int WriteObjs(FILE* fl, struct obj_file_u* st, int save) {
-  int i;
-  char buf[80];
-
-  fwrite(&st->owner, sizeof(st->owner), 1, fl);
-  fwrite(&st->gold_left, sizeof(st->gold_left), 1, fl);
-  fwrite(&st->total_cost, sizeof(st->total_cost), 1, fl);
-  fwrite(&st->last_update, sizeof(st->last_update), 1, fl);
-  fwrite(&st->minimum_stay, sizeof(st->minimum_stay), 1, fl);
-  fwrite(&st->number, sizeof(st->number), 1, fl);
-
-  for (i = 0; i < st->number; i++) {
-    fwrite(&st->objects[i], sizeof(struct obj_file_elem), 1, fl);
-  }
-  if (save == 1) {
-    sprintf(buf, "%s rented out with [%d] items.", st->owner, st->number);
-    vlog(buf);
-  }
 }

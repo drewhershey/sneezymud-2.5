@@ -3,72 +3,40 @@
  *  Usage : Wizard Commands.                                               *
  *  Copyright (C) 1990, 1991 - see 'license.doc' for complete information. *
  ************************************************************************* */
+#define _POSIX_C_SOURCE 200809L
 
 #include <ctype.h>
+#include <features.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
+#include <strings.h>
+#include <sys/param.h>
 #include <unistd.h>
 
+#include "board.h"
 #include "comm.h"
+#include "constants.h"
 #include "db.h"
 #include "handler.h"
 #include "hash.h"
 #include "heap.h"
 #include "interpreter.h"
 #include "limits.h"
+#include "multiclass.h"
 #include "race.h"
 #include "spells.h"
 #include "structs.h"
 #include "utils.h"
 
-/*   external vars  */
-
-extern char* crypt(const char*, const char*);
-extern struct zone_data* zone_table;
-extern int top_of_zone_table;
-#if HASH
-extern struct hash_header room_db;
-#else
-extern struct room_data* room_db[];
-#endif
-extern struct char_data* character_list;
-extern struct descriptor_data* descriptor_list;
-extern struct title_type titles[8][ABS_MAX_LVL];
-extern struct index_data* mob_index;
-extern struct index_data* obj_index;
-extern int top_of_mobt;
-extern int top_of_objt;
-extern struct int_app_type int_app[26];
-extern struct wis_app_type wis_app[26];
-extern struct player_index_element* player_table;
-extern struct obj_data* object_list;
-extern char* material_types[];
-/* external functs */
-
-void set_title(struct char_data* ch);
-int str_cmp(char* arg1, char* arg2);
-struct time_info_data age(struct char_data* ch);
-void sprinttype(int type, char* names[], char* result);
-void sprintbit(unsigned long, char*[], char*);
-int mana_limit(struct char_data* ch);
-int hit_limit(struct char_data* ch);
-int move_limit(struct char_data* ch);
-int mana_gain(struct char_data* ch);
-int hit_gain(struct char_data* ch);
-int move_gain(struct char_data* ch);
-void RoomSave(struct char_data* ch, int start, int end);
-void RoomLoad(struct char_data* ch, int start, int end);
-struct StrHeap* InitHeap();
-
-void CreateOneRoom(int loc_nr) {
+static void CreateOneRoom(int loc_nr) {
   struct room_data* rp;
-  extern int top_of_zone_table;
 
   char buf[256];
 
   allocate_room(loc_nr);
   rp = real_roomp(loc_nr);
-  bzero(rp, sizeof(*rp));
+  memset(rp, 0, sizeof(*rp));
 
   rp->number = loc_nr;
   if (top_of_zone_table >= 0) {
@@ -165,6 +133,20 @@ void do_demote(struct char_data* ch, char* argument, int cmd) {
   }
 
   ch->player.time.birth -= SECS_PER_MUD_YEAR;
+}
+
+static struct StrHeap* InitHeap() {
+  struct StrHeap* Heap = 0;
+
+  Heap = (struct StrHeap*)malloc(sizeof(struct StrHeap));
+  Heap->str = 0;
+  /*
+     Heap->str = (struct StrHeapList *)malloc(sizeof(struct StrHeapList));
+     Heap->str[0].string=0;
+     Heap->str[0].total=0;
+  */
+  Heap->uniq = 0;
+  return (Heap);
 }
 
 void do_imptest(struct char_data* ch, char* arg, int cmd) {
@@ -385,6 +367,40 @@ void do_bamfout(struct char_data* ch, char* arg, int cmd) {
   return;
 }
 
+static FILE* MakeZoneFile(struct char_data* c) {
+  char buf[256];
+  FILE* fp;
+
+  sprintf(buf, "zone/%s.zon", GET_NAME(c));
+
+  if ((fp = fopen(buf, "w")) != NULL)
+    return (fp);
+  else
+    return (0);
+}
+
+static int MobVnum(struct char_data* c) {
+  if (IS_NPC(c)) {
+    return (mob_index[c->nr].virtual);
+  } else {
+    return (0);
+  }
+}
+
+static void RecZwriteObj(FILE* fp, struct obj_data* o) {
+  struct obj_data* t;
+
+  if (ITEM_TYPE(o) == ITEM_CONTAINER) {
+    for (t = o->contains; t; t = t->next_content) {
+      Zwrite(fp, 'P', 1, ObjVnum(t), obj_index[t->item_number].number,
+        ObjVnum(o), t->short_description);
+      RecZwriteObj(fp, t);
+    }
+  } else {
+    return;
+  }
+}
+
 void do_instazone(struct char_data* ch, char* argument, int cmdnum) {
   char cmd, c, buf[80];
   int i, start_room, end_room, j, arg1, arg2, arg3;
@@ -497,7 +513,7 @@ void do_instazone(struct char_data* ch, char* argument, int cmdnum) {
   fclose(fp);
 }
 
-do_highfive(struct char_data* ch, char* argument, int cmd) {
+void do_highfive(struct char_data* ch, char* argument, int cmd) {
   char buf[80];
   char mess[120];
   struct char_data* tch;
@@ -522,35 +538,11 @@ do_highfive(struct char_data* ch, char* argument, int cmd) {
   }
 }
 
-do_addhost(struct char_data* ch, char* argument, int command) {
-  int a, length;
-  char* test;
+void do_silence(struct char_data* ch, char* argument, int cmd) {
   char buf[255];
-}
-
-do_removehost(struct char_data* ch, char* argument, int command) {
-  int a, length, b;
-  char* test;
-  char buf[255];
-
-  if IS_NPC (ch)
-    return (FALSE);
-}
-
-do_listhosts(struct char_data* ch, char* argument, int command) {
-  int a;
-  char buf[255];
-
-  if IS_NPC (ch)
-    return (FALSE);
-}
-
-do_silence(struct char_data* ch, char* argument, int cmd) {
-  char buf[255];
-  extern int Silence;
   if ((GetMaxLevel(ch) < DEMIGOD) || (IS_NPC(ch))) {
     send_to_char("You cannot Silence.\n\r", ch);
-    return (FALSE);
+    return;
   }
 
   if (Silence == 0) {
@@ -566,21 +558,16 @@ do_silence(struct char_data* ch, char* argument, int cmd) {
   }
 }
 
-do_wizlock(struct char_data* ch, char* argument, int cmd) {
+void do_wizlock(struct char_data* ch, char* argument, int cmd) {
 #if SITELOCK
   char* test;
   int a, length, b;
   char buf[255];
-
-  extern int numberhosts;
-  extern char hostlist[MAX_BAN_HOSTS][30];
-
 #endif
-  extern int WizLock;
 
   if ((GetMaxLevel(ch) < DEMIGOD) || (IS_NPC(ch))) {
     send_to_char("You cannot WizLock.\n\r", ch);
-    return (FALSE);
+    return;
   }
 
 #if SITELOCK
@@ -590,7 +577,7 @@ do_wizlock(struct char_data* ch, char* argument, int cmd) {
   for (test = argument; *test && isspace(*test); test++)
     ;
   if (!*test)
-    return (FALSE);
+    return;
   argument = test;
 
   /*
@@ -720,7 +707,74 @@ do_wizlock(struct char_data* ch, char* argument, int cmd) {
   return;
 }
 
-do_rload(struct char_data* ch, char* argument, int cmd) {
+static int room_enter(struct room_data* rb[], int key, struct room_data* rm) {
+  struct room_data* temp = room_find(rb, key);
+
+  if (temp)
+    return (0);
+
+  rb[key] = rm;
+  return (1);
+}
+
+static void RoomLoad(struct char_data* ch, int start, int end) {
+  FILE* fp;
+  int vnum, found = FALSE, x;
+  char chk[50], buf[80];
+  struct room_data *rp, dummy;
+
+  sprintf(buf, "areas/%s", ch->player.name);
+
+  if ((fp = fopen(buf, "r")) == NULL) {
+    send_to_char("You don't appear to have an area...\n\r", ch);
+    return;
+  }
+
+  send_to_char("Searching and loading rooms\n\r", ch);
+
+  while ((!found) && ((x = feof(fp)) != TRUE)) {
+    fscanf(fp, "#%d\n", &vnum);
+    if ((vnum >= start) && (vnum <= end)) {
+      if (vnum == end)
+        found = TRUE;
+
+      if ((rp = real_roomp(vnum)) == 0) { /* empty room */
+        rp = (void*)malloc(sizeof(struct room_data));
+        memset(rp, 0, sizeof(struct room_data));
+        room_enter(room_db, vnum, rp);
+        send_to_char("+", ch);
+      } else {
+        if (rp->people) {
+          act("$n reaches down and scrambles reality.", FALSE, ch, NULL,
+            rp->people, TO_ROOM);
+        }
+        cleanout_room(rp);
+        send_to_char("-", ch);
+      }
+
+      rp->number = vnum;
+      load_one_room(fp, rp);
+
+    } else {
+      send_to_char(".", ch);
+      /*  read w/out loading */
+      dummy.number = vnum;
+      load_one_room(fp, &dummy);
+      cleanout_room(&dummy);
+    }
+  }
+  fclose(fp);
+
+  if (!found) {
+    send_to_char(
+      "\n\rThe room number(s) that you specified could not all be found.\n\r",
+      ch);
+  } else {
+    send_to_char("\n\rDone.\n\r", ch);
+  }
+}
+
+void do_rload(struct char_data* ch, char* argument, int cmd) {
   char i;
   int start = -1, end = -2;
 
@@ -742,7 +796,150 @@ do_rload(struct char_data* ch, char* argument, int cmd) {
   }
 }
 
-do_rsave(struct char_data* ch, char* argument, int cmd) {
+static void RoomSave(struct char_data* ch, int start, int end) {
+  char fn[80], temp[2048], dots[500];
+  char buf[255];
+  int rstart, rend, i, j, k, x;
+  struct extra_descr_data* exptr;
+  FILE* fp;
+  struct room_data* rp;
+  struct room_direction_data* rdd;
+
+  sprintf(buf, "areas/%s", ch->player.name);
+
+  if ((fp = fopen(buf, "w")) == NULL) {
+    send_to_char("Can't write to disk now..try later \n\r", ch);
+    return;
+  }
+
+  rstart = start;
+  rend = end;
+
+  if (((rstart <= -1) || (rend <= -1)) ||
+      ((rstart > 40000) || (rend > 40000))) {
+    send_to_char("I don't know those room #s.  make sure they are all\n\r", ch);
+    send_to_char("contiguous.\n\r", ch);
+    fclose(fp);
+    return;
+  }
+
+  send_to_char("Saving\n", ch);
+  strcpy(dots, "\0");
+
+  for (i = rstart; i <= rend; i++) {
+    rp = real_roomp(i);
+    if (rp == NULL)
+      continue;
+
+    strcat(dots, ".");
+
+    /*
+       strip ^Ms from description
+    */
+    x = 0;
+
+    if (!rp->description) {
+      CREATE(rp->description, char, 128);
+      strcpy(rp->description, "Empty");
+    }
+
+    for (k = 0; k <= strlen(rp->description); k++) {
+      if (rp->description[k] != 13)
+        temp[x++] = rp->description[k];
+    }
+    temp[x] = '\0';
+
+    fprintf(fp, "#%d\n%s~\n%s~\n", rp->number, rp->name, temp);
+    if (!rp->tele_targ) {
+      fprintf(fp, "%d %d %d", rp->zone, rp->room_flags, rp->sector_type);
+    } else {
+      fprintf(fp, "%d %d -1 %d %d %d %d", rp->zone, rp->room_flags,
+        rp->tele_time, rp->tele_targ, rp->tele_look, rp->sector_type);
+    }
+    if (rp->sector_type == SECT_WATER_NOSWIM) {
+      fprintf(fp, " %d %d", rp->river_speed, rp->river_dir);
+    }
+
+    if (rp->room_flags & TUNNEL) {
+      fprintf(fp, " %d ", (int)rp->moblim);
+    }
+
+    fprintf(fp, "\n");
+
+    for (j = 0; j < 6; j++) {
+      rdd = rp->dir_option[j];
+      if (rdd) {
+        fprintf(fp, "D%d\n", j);
+
+        if (rdd->general_description) {
+          if (strlen(rdd->general_description) > 0)
+            x = 0;
+
+          for (k = 0; k <= strlen(rdd->general_description); k++) {
+            if (rdd->general_description[k] != 13)
+              temp[x++] = rdd->general_description[k];
+          }
+          temp[x] = '\0';
+
+          fprintf(fp, "%s~\n", temp);
+        } else {
+          fprintf(fp, "~\n");
+        }
+
+        if (rdd->keyword) {
+          if (strlen(rdd->keyword) > 0)
+            fprintf(fp, "%s~\n", rdd->keyword);
+        } else {
+          fprintf(fp, "~\n");
+        }
+
+        if (IS_SET(rdd->exit_info, EX_PICKPROOF)) {
+          if (IS_SET(rdd->exit_info, EX_SECRET))
+            fprintf(fp, "4");
+          else
+            fprintf(fp, "2");
+        } else if (IS_SET(rdd->exit_info, EX_ISDOOR)) {
+          if (IS_SET(rdd->exit_info, EX_SECRET))
+            fprintf(fp, "3");
+          else
+            fprintf(fp, "1");
+        } else {
+          fprintf(fp, "0");
+        }
+
+        fprintf(fp, " %d ", rdd->key);
+
+        fprintf(fp, "%d\n", rdd->to_room);
+      }
+    }
+
+    /*
+      extra descriptions..
+    */
+
+    for (exptr = rp->ex_description; exptr; exptr = exptr->next) {
+      x = 0;
+
+      if (exptr->description) {
+        for (k = 0; k <= strlen(exptr->description); k++) {
+          if (exptr->description[k] != 13)
+            temp[x++] = exptr->description[k];
+        }
+        temp[x] = '\0';
+
+        fprintf(fp, "E\n%s~\n%s~\n", exptr->keyword, temp);
+      }
+    }
+
+    fprintf(fp, "S\n");
+  }
+
+  fclose(fp);
+  send_to_char(dots, ch);
+  send_to_char("\n\rDone\n\r", ch);
+}
+
+void do_rsave(struct char_data* ch, char* argument, int cmd) {
   char i, buf[256];
   int start = -1, end = -2;
 
@@ -764,7 +961,7 @@ do_rsave(struct char_data* ch, char* argument, int cmd) {
   }
 }
 
-do_emote(struct char_data* ch, char* argument, int cmd) {
+void do_emote(struct char_data* ch, char* argument, int cmd) {
   int i;
   char buf[MAX_INPUT_LENGTH];
 
@@ -772,7 +969,7 @@ do_emote(struct char_data* ch, char* argument, int cmd) {
     return;
 
   if (check_soundproof(ch)) {
-    return (FALSE);
+    return;
   }
 
   for (i = 0; *(argument + i) == ' '; i++)
@@ -973,7 +1170,6 @@ void do_goto(struct char_data* ch, char* argument, int cmd) {
   int loc_nr, location, i;
   struct char_data *target_mob, *pers, *v;
   struct obj_data* target_obj;
-  extern int top_of_world;
 
   if (IS_NPC(ch))
     return;
@@ -984,7 +1180,7 @@ void do_goto(struct char_data* ch, char* argument, int cmd) {
     return;
   }
 
-  if (isdigit(*buf) && NULL == index(buf, '.')) {
+  if (isdigit(*buf) && NULL == strchr(buf, '.')) {
     loc_nr = atoi(buf);
     if (NULL == real_roomp(loc_nr)) {
       if (GetMaxLevel(ch) < 51 || loc_nr < 0) {
@@ -1088,8 +1284,15 @@ void do_goto(struct char_data* ch, char* argument, int cmd) {
   do_look(ch, "", 15);
 }
 
+static const char* const sector_types[] = {"Inside", "City", "Field", "Forest",
+  "Hills", "Mountains", "Water Swim", "Water NoSwim", "Air", "Underwater",
+  "\n"};
+
+static const char* const room_bits[] = {"DARK", "DEATH", "NO_MOB", "INDOORS",
+  "PEACEFUL", "NOSTEAL", "NO_SUM", "NO_MAGIC", "TUNNEL", "PRIVATE", "SILENCE",
+  "NO_ORDER", "ANARCHY", "HAVE_TO_WALK", "ARENA", "NO-HEAL", "\n"};
+
 void do_stat(struct char_data* ch, char* argument, int cmd) {
-  extern char* spells[];
   struct affected_type* aff;
   char arg1[MAX_STRING_LENGTH];
   char buf[MAX_STRING_LENGTH];
@@ -1103,31 +1306,6 @@ void do_stat(struct char_data* ch, char* argument, int cmd) {
   int i, virtual;
   int i2, count;
   bool found;
-
-  /* for objects */
-  extern char* item_types[];
-  extern char* wear_bits[];
-  extern char* extra_bits[];
-  extern char* drinks[];
-
-  /* for rooms */
-  extern char* dirs[];
-  extern char* room_bits[];
-  extern char* exit_bits[];
-  extern char* sector_types[];
-
-  /* for chars */
-  extern char* equipment_types[];
-  extern char* affected_bits[];
-  extern char* immunity_names[];
-  extern char* apply_types[];
-  extern char* pc_class_types[];
-  extern char* npc_class_types[];
-  extern char* action_bits[];
-  extern char* player_bits[];
-  extern char* position_types[];
-  extern char* connected_types[];
-  extern char* RaceName[];
 
   if (IS_NPC(ch))
     return;
@@ -1193,6 +1371,9 @@ void do_stat(struct char_data* ch, char* argument, int cmd) {
       }
       strcat(buf, "\n\r");
       send_to_char(buf, ch);
+
+      static const char* const exit_bits[] = {"IS-DOOR", "CLOSED", "LOCKED",
+        "SECRET", "RSLOCKED", "PICKPROOF", "\n"};
 
       send_to_char("------- Exits defined -------\n\r", ch);
       for (i = 0; i <= 5; i++) {
@@ -1263,9 +1444,14 @@ void do_stat(struct char_data* ch, char* argument, int cmd) {
       send_to_char("\n\r", ch);
 
       if (IS_NPC(k)) {
+        static const char* const npc_class_types[] = {"Normal", "Undead", "\n"};
+
         strcpy(buf, "Monster Class: ");
         sprinttype(k->player.class, npc_class_types, buf2);
       } else {
+        static const char* const pc_class_types[] = {"Magic User", "Cleric",
+          "Warrior", "Thief", "Antipaladin", "Paladin", "Monk", "Ranger", "\n"};
+
         strcpy(buf, "Class: ");
         sprintbit(k->player.class, pc_class_types, buf2);
       }
@@ -1325,10 +1511,20 @@ void do_stat(struct char_data* ch, char* argument, int cmd) {
         k->points.damroll);
       send_to_char(buf, ch);
 
+      static const char* const position_types[] = {"Dead", "Mortally wounded",
+        "Incapacitated", "Stunned", "Sleeping", "Resting", "Sitting",
+        "Fighting", "Standing", "\n"};
+
       sprinttype(GET_POS(k), position_types, buf2);
       sprintf(buf, "Position: %s, Fighting: %s", buf2,
         ((k->specials.fighting) ? GET_NAME(k->specials.fighting) : "Nobody"));
+
       if (k->desc) {
+        static const char* const connected_types[] = {"Playing", "Get name",
+          "Confirm name", "Read Password", "Get new password",
+          "Confirm new password", "Get sex", "Read messages of today",
+          "Read Menu", "Get extra description", "Get class", "\n"};
+
         sprinttype(k->desc->connected, connected_types, buf2);
         strcat(buf, ", Connected: ");
         strcat(buf, buf2);
@@ -1340,9 +1536,19 @@ void do_stat(struct char_data* ch, char* argument, int cmd) {
       sprinttype((k->specials.default_pos), position_types, buf2);
       strcat(buf, buf2);
       if (IS_NPC(k)) {
+        static const char* const action_bits[] = {"SPEC", "SENTINEL",
+          "SCAVENGER", "ISNPC", "NICE-THIEF", "AGGRESSIVE", "STAY-ZONE",
+          "WIMPY", "ANNOYING", "HATEFUL", "AFRAID", "IMMORTAL", "HUNTING",
+          "DEADLY", "POLYMORPHED", "META_AGGRESSIVE", "GUARDING", "\n"};
+
         strcat(buf, ",NPC flags: ");
         sprintbit(k->specials.act, action_bits, buf2);
       } else {
+        static const char* const player_bits[] = {"BRIEF", "COMPACT", "WIMPY",
+          "DONTSET", "NOHASSLE", "STEALTH", "HUNTING", "MAILING", "LOGGED",
+          "KILLER", "VT100", "COLOR", "OUTLAW", "ANSI", "NOSHOUT", "BANISHED",
+          "GHOST", "\n"};
+
         strcat(buf, "\n\rFlags (Specials Act): ");
         sprintbit(k->specials.act, player_bits, buf2);
       }
@@ -1355,7 +1561,7 @@ void do_stat(struct char_data* ch, char* argument, int cmd) {
 
       if (IS_MOB(k)) {
         strcpy(buf, "\n\rMobile Special procedure : ");
-        strcat(buf, (mob_index[k->nr].func ? "Exists\n\r" : "None\n\r"));
+        strcat(buf, (mob_index[k->nr].func.mob_f ? "Exists\n\r" : "None\n\r"));
         send_to_char(buf, ch);
       }
 
@@ -1397,6 +1603,11 @@ void do_stat(struct char_data* ch, char* argument, int cmd) {
       send_to_char("Followers are:\n\r", ch);
       for (fol = k->followers; fol; fol = fol->next)
         act("    $N", FALSE, ch, 0, fol->follower, TO_CHAR);
+
+      static const char* const immunity_names[] = {"FIRE", "COLD",
+        "ELECTRICITY", "ENERGY", "BLUNT", "PIERCE", "SLASH", "ACID", "POISON",
+        "DRAIN", "SLEEP", "CHARM", "HOLD", "NON-MAGIC", "+1", "+2", "+3", "+4",
+        "\n"};
 
       /* immunities */
       send_to_char("Immune to:", ch);
@@ -1485,6 +1696,11 @@ void do_stat(struct char_data* ch, char* argument, int cmd) {
         strcpy(buf, "Extra description keyword(s): None\n\r");
         send_to_char(buf, ch);
       }
+
+      static const char* const wear_bits[] = {"TAKE", "FINGER", "NECK", "BODY",
+        "HEAD", "LEGS", "FEET", "HANDS", "ARMS", "SHIELD", "ABOUT", "WAIST",
+        "WRIST", "WIELD", "HOLD", "THROW", "LIGHT-SOURCE", "EARRING",
+        "FACE-GEAR", "\n"};
 
       send_to_char("Can be worn on :", ch);
       sprintbit(j->obj_flags.wear_flags, wear_bits, buf);
@@ -1634,6 +1850,14 @@ void do_stat(struct char_data* ch, char* argument, int cmd) {
         found = FALSE;
         for (i = 0; i < MAX_WEAR; i++) {
           if (j->carried_by->equipment[i] == j) {
+            static const char* const equipment_types[] = {"Special",
+              "Worn on right finger", "Worn on left finger",
+              "First worn around Neck", "Second worn around Neck",
+              "Worn on body", "Worn on head", "Worn on legs", "Worn on feet",
+              "Worn on hands", "Worn on arms", "Worn as shield",
+              "Worn about body", "Worn around waist", "Worn around right wrist",
+              "Worn around left wrist", "Wielded", "Held", "\n"};
+
             sprinttype(i, equipment_types, buf2);
             strcat(buf, buf2);
             found = TRUE;
@@ -1646,7 +1870,8 @@ void do_stat(struct char_data* ch, char* argument, int cmd) {
 
       strcpy(buf, "\n\rSpecial procedure : ");
       if (j->item_number >= 0)
-        strcat(buf, (obj_index[j->item_number].func ? "exists\n\r" : "No\n\r"));
+        strcat(buf,
+          (obj_index[j->item_number].func.obj_f ? "exists\n\r" : "No\n\r"));
       else
         strcat(buf, "No\n\r");
       send_to_char(buf, ch);
@@ -1681,8 +1906,6 @@ void do_set(struct char_data* ch, char* argument, int cmd) {
   struct char_data* mob;
   int parm, parm2;
   char buf[256];
-
-  extern struct char_data* board_kludge_char;
 
   if ((GetMaxLevel(ch) < SILLYLORD) || (IS_NPC(ch)))
     return;
@@ -1858,7 +2081,6 @@ void do_shutdow(struct char_data* ch, char* argument, int cmd) {
 }
 
 void do_shutdown(struct char_data* ch, char* argument, int cmd) {
-  extern int Shutdown, rebootmud;
   char buf[100], arg[MAX_INPUT_LENGTH];
 
   if (IS_NPC(ch))
@@ -2022,7 +2244,6 @@ void do_return(struct char_data* ch, char* argument, int cmd) {
 void do_force(struct char_data* ch, char* argument, int cmd) {
   struct descriptor_data* i;
   struct char_data* vict;
-  extern struct char_data* board_kludge_char;
   char name[100], to_force[100], buf[100];
 
   if (IS_NPC(ch) && (cmd != 0))
@@ -2067,9 +2288,6 @@ void do_load(struct char_data* ch, char* argument, int cmd) {
   struct obj_data* obj;
   char type[100], num[100];
   int number;
-
-  extern int top_of_mobt;
-  extern int top_of_objt;
 
   if (IS_NPC(ch))
     return;
@@ -2198,10 +2416,31 @@ void do_load(struct char_data* ch, char* argument, int cmd) {
   }
 }
 
+static void completely_cleanout_room(struct room_data* rp) {
+  struct char_data* ch;
+  struct obj_data* obj;
+
+  while (rp->people) {
+    ch = rp->people;
+    act(
+      "The hand of god sweeps across the land and you are swept into the Void.",
+      FALSE, NULL, NULL, NULL, TO_VICT);
+    char_from_room(ch);
+    char_to_room(ch, 0); /* send character to the void */
+  }
+
+  while (rp->contents) {
+    obj = rp->contents;
+    obj_from_room(obj);
+    obj_to_room(obj, 0); /* send item to the void */
+  }
+
+  cleanout_room(rp);
+}
+
 static void purge_one_room(int rnum, struct room_data* rp, int* range) {
   struct char_data* ch;
   struct obj_data* obj;
-  extern long room_count;
 
   if (rnum == 0 || /* purge the void?  I think not */
       rnum < range[0] || rnum > range[1])
@@ -2265,6 +2504,20 @@ void do_link(struct char_data* ch, char* argument, int cmd) {
 
     if (d)
       close_socket(d);
+  }
+}
+
+static void hash_iterate(struct hash_header* ht, void (*func)(), void* cdata) {
+  int i;
+  for (i = 0; i < ht->klistlen; i++) {
+    void* temp;
+    register int key;
+
+    key = ht->keylist[i];
+    temp = hash_find(ht, key);
+    (*func)(key, temp, cdata);
+    if (ht->keylist[i] != key) /* They must have deleted this room */
+      i--;                     /* Hit this slot again. */
   }
 }
 
@@ -2498,13 +2751,37 @@ void do_reroll(struct char_data* ch, char* argument, int cmd) {
     return;
 }
 
+static void StartLevels(struct char_data* ch) {
+  if (IS_SET(ch->player.class, CLASS_MAGIC_USER)) {
+    advance_level(ch, MAGE_LEVEL_IND);
+  }
+  if (IS_SET(ch->player.class, CLASS_CLERIC)) {
+    advance_level(ch, CLERIC_LEVEL_IND);
+  }
+  if (IS_SET(ch->player.class, CLASS_WARRIOR)) {
+    advance_level(ch, WARRIOR_LEVEL_IND);
+  }
+  if (IS_SET(ch->player.class, CLASS_THIEF)) {
+    advance_level(ch, THIEF_LEVEL_IND);
+  }
+  if (IS_SET(ch->player.class, CLASS_ANTIPALADIN)) {
+    advance_level(ch, ANTIPALADIN_LEVEL_IND);
+  }
+  if (IS_SET(ch->player.class, CLASS_RANGER)) {
+    advance_level(ch, RANGER_LEVEL_IND);
+  }
+  if (IS_SET(ch->player.class, CLASS_MONK)) {
+    advance_level(ch, MONK_LEVEL_IND);
+  }
+  if (IS_SET(ch->player.class, CLASS_PALADIN)) {
+    advance_level(ch, PALADIN_LEVEL_IND);
+  }
+}
+
 void do_start(struct char_data* ch) {
   int i, r_num;
   struct obj_data* obj;
   struct affected_type af;
-
-  extern struct dex_skill_type dex_app_skill[];
-  void advance_level(struct char_data * ch, int i);
 
   send_to_char("Welcome to SneezyMUD.  Enjoy the game...\n\r", ch);
   *(ch->player.title) = '0';
@@ -2568,6 +2845,34 @@ void do_start(struct char_data* ch) {
 
   ch->player.time.played = 0;
   ch->player.time.logon = time(0);
+}
+
+static void gain_exp_regardless(struct char_data* ch, int gain, int class) {
+  int i;
+  bool is_altered = FALSE;
+
+  save_char(ch, AUTO_RENT);
+  if (!IS_NPC(ch)) {
+    if (gain > 0) {
+      GET_EXP(ch) += gain;
+
+      for (i = 0; (i < ABS_MAX_LVL) && (titles[class][i].exp <= GET_EXP(ch));
+           i++) {
+        if (i > GET_LEVEL(ch, class)) {
+          send_to_char("You raise a level\n\r", ch);
+          GET_LEVEL(ch, class) = i;
+          advance_level(ch, class);
+          is_altered = TRUE;
+        }
+      }
+    }
+    if (gain < 0)
+      GET_EXP(ch) += gain;
+    if (GET_EXP(ch) < 0)
+      GET_EXP(ch) = 0;
+  }
+  if (is_altered)
+    set_title(ch);
 }
 
 void do_advance(struct char_data* ch, char* argument, int cmd) {
@@ -2757,7 +3062,7 @@ void do_restore(struct char_data* ch, char* argument, int cmd) {
   }
 }
 
-do_noshout(struct char_data* ch, char* argument, int cmd) {
+void do_noshout(struct char_data* ch, char* argument, int cmd) {
   struct char_data* vict;
   struct obj_data* dummy;
   char buf[MAX_INPUT_LENGTH];
@@ -2853,11 +3158,10 @@ void do_stealth(struct char_data* ch, char* argument, int cmd) {
       ch);
 }
 
-static print_room(int rnum, struct room_data* rp, struct string_block* sb) {
+static void print_room(int rnum, struct room_data* rp,
+  struct string_block* sb) {
   char buf[MAX_STRING_LENGTH];
   int dink, bits, scan;
-  extern char* room_bits[];
-  extern char* sector_types[];
 
   if ((rp->sector_type < 0) || (rp->sector_type > 9)) { /* non-optimal */
     rp->sector_type = 0;
@@ -2931,6 +3235,18 @@ static void show_room_zone(int rnum, struct room_data* rp,
   }
 
   print_room(rnum, rp, srzs->sb);
+}
+
+static void room_iterate(struct room_data* rb[], void (*func)(), void* cdata) {
+  register int i;
+  for (i = 0; i < WORLD_SIZE; i++) {
+    struct room_data* temp;
+
+    temp = room_find(rb, i);
+    if (temp) {
+      (*func)(i, temp, cdata);
+    }
+  }
 }
 
 void do_show(struct char_data* ch, char* argument, int cmd) {
@@ -3083,6 +3399,13 @@ void do_debug(struct char_data* ch, char* argument, int cmd) {
   }
 }
 
+static int scan_number(char* text, int* rval) {
+  if (1 != sscanf(text, " %i ", rval))
+    return 0;
+
+  return 1;
+}
+
 void do_invis(struct char_data* ch, char* argument, int cmd) {
   char buf[MAX_INPUT_LENGTH];
   int level;
@@ -3107,6 +3430,12 @@ void do_invis(struct char_data* ch, char* argument, int cmd) {
       send_to_char("You are now invisible to all but gods.\n\r", ch);
     }
   }
+}
+
+/* disallow any bogus characters in automated system requests.
+   this is intented to prevent 'hacking' */
+static int safe_to_be_in_system(char* cp) {
+  return (strpbrk(cp, "\"';`") == NULL);
 }
 
 void do_loglist(struct char_data* ch, char* arg, int cmd) {

@@ -3,24 +3,22 @@
 */
 
 #include "trap.h"
+#include <stdio.h>
+#include <string.h>
+#include <sys/param.h>
 
 #include "comm.h"
+#include "constants.h"
+#include "db.h"
+#include "handler.h"
+#include "multiclass.h"
+#include "opinion.h"
 #include "spells.h"
 #include "structs.h"
 #include "utils.h"
 
-extern struct char_data* character_list;
-struct room_data* real_roomp(int);
-extern int TrapDir[];
-
-void do_settrap(struct char_data* ch, char* arg, int cmd) {
-  /* parse for directions */
-
-  /* trap that affects all directions is an AE trap */
-
-  /* parse for type       */
-  /* parse for level      */
-}
+static const int TrapDir[] = {TRAP_EFF_NORTH, TRAP_EFF_EAST, TRAP_EFF_SOUTH,
+  TRAP_EFF_WEST, TRAP_EFF_UP, TRAP_EFF_DOWN};
 
 int CheckForMoveTrap(struct char_data* ch, int dir) {
   struct obj_data* i;
@@ -30,19 +28,6 @@ int CheckForMoveTrap(struct char_data* ch, int dir) {
         (IS_SET(GET_TRAP_EFF(i), TRAP_EFF_MOVE)) && (GET_TRAP_CHARGES(i) > 0))
       if (IS_SET(GET_TRAP_EFF(i), TrapDir[dir]))
         return (TriggerTrap(ch, i));
-  }
-  return (FALSE);
-}
-
-int CheckForInsideTrap(struct char_data* ch, struct obj_data* i) {
-  struct obj_data* t;
-
-  for (t = i->contains; t; t = t->next_content) {
-    if ((ITEM_TYPE(t) == ITEM_TRAP) &&
-        (IS_SET(GET_TRAP_EFF(t), TRAP_EFF_OBJECT)) &&
-        (GET_TRAP_CHARGES(t) > 0)) {
-      return (TriggerTrap(ch, t));
-    }
   }
   return (FALSE);
 }
@@ -65,8 +50,6 @@ int CheckForGetTrap(struct char_data* ch, struct obj_data* i) {
 int TriggerTrap(struct char_data* ch, struct obj_data* i) {
   int adj, fireperc, roll;
   struct char_data* v;
-
-  extern struct dex_app_type dex_app[];
 
   if (ITEM_TYPE(i) == ITEM_TRAP) {
     if (i->obj_flags.value[TRAP_CHARGES]) {
@@ -214,7 +197,6 @@ void TrapDam(struct char_data* v, int damtype, int amnt, struct obj_data* t) {
 
 void TrapTeleport(struct char_data* v) {
   int to_room;
-  extern int top_of_world; /* ref to the top element of world */
 
   if (saves_spell(v, SAVING_SPELL)) {
     send_to_char("You feel strange, but the effect fades.\n\r", v);

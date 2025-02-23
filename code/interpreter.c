@@ -4,25 +4,26 @@
  *  Copyright (C) 1990, 1991 - see 'license.doc' for complete information. *
  ************************************************************************* */
 
-#include "interpreter.h"
-
 #include <arpa/telnet.h>
 #include <ctype.h>
 #include <dirent.h>
 #include <netdb.h>
 #include <netinet/in.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <sys/param.h>
 #include <sys/syscall.h>
+#include <time.h>
 #include <unistd.h>
 
+#include "interpreter.h"
+#include "board.h"
 #include "comm.h"
 #include "db.h"
-#include "limits.h"
-#include "mail.h"
+#include "handler.h"
+#include "multiclass.h"
 #include "race.h"
-#include "spells.h"
 #include "structs.h"
 #include "utils.h"
 
@@ -38,23 +39,7 @@
 #define OR ||
 
 #define STATE(d) ((d)->connected)
-#define MAX_CMD_LIST 400
 
-extern char* crypt(const char*, const char*);
-extern const struct title_type titles[8][ABS_MAX_LVL];
-extern char motd[MAX_STRING_LENGTH];
-extern struct char_data* character_list;
-extern struct player_index_element* player_table;
-extern int top_of_p_table;
-extern char ansi[MAX_STRING_LENGTH];
-extern struct index_data* mob_index;
-extern struct index_data* obj_index;
-#if HASH
-extern struct hash_header room_db;
-#else
-extern struct room_data* room_db;
-#endif
-extern struct char_data* board_kludge_char;
 struct command_info cmd_info[MAX_CMD_LIST];
 
 char echo_on[] = {IAC, WONT, TELOPT_ECHO, '\r', '\n', '\0'};
@@ -63,222 +48,9 @@ int WizLock;
 int Silence = 0;
 int plr_tick_count = 0;
 
-/* external fcntls */
+const char* const path[] = {"wizards/", "\n"};
 
-void set_title(struct char_data* ch);
-void init_char(struct char_data* ch);
-void store_to_char(struct char_file_u* st, struct char_data* ch);
-int create_entry(char* name);
-/* int special(struct char_data *ch, int cmd, char *arg);
- */
-void vlog(char* str);
-
-void do_move(struct char_data* ch, char* argument, int cmd);
-void do_look(struct char_data* ch, char* argument, int cmd);
-void do_read(struct char_data* ch, char* argument, int cmd);
-void do_say(struct char_data* ch, char* argument, int cmd);
-void do_exit(struct char_data* ch, char* argument, int cmd);
-void do_snoop(struct char_data* ch, char* argument, int cmd);
-void do_insult(struct char_data* ch, char* argument, int cmd);
-void do_quit(struct char_data* ch, char* argument, int cmd);
-void do_qui(struct char_data* ch, char* argument, int cmd);
-void do_help(struct char_data* ch, char* argument, int cmd);
-void do_who(struct char_data* ch, char* argument, int cmd);
-void do_whozone(struct char_data* ch, char* argument, int cmd);
-void do_emote(struct char_data* ch, char* argument, int cmd);
-void do_echo(struct char_data* ch, char* argument, int cmd);
-void do_trans(struct char_data* ch, char* argument, int cmd);
-void do_kill(struct char_data* ch, char* argument, int cmd);
-void do_stand(struct char_data* ch, char* argument, int cmd);
-void do_sit(struct char_data* ch, char* argument, int cmd);
-void do_rest(struct char_data* ch, char* argument, int cmd);
-void do_sleep(struct char_data* ch, char* argument, int cmd);
-void do_wake(struct char_data* ch, char* argument, int cmd);
-void do_force(struct char_data* ch, char* argument, int cmd);
-void do_get(struct char_data* ch, char* argument, int cmd);
-void do_drop(struct char_data* ch, char* argument, int cmd);
-void do_news(struct char_data* ch, char* argument, int cmd);
-void do_wiznews(struct char_data* ch, char* argument, int cmd); /* SG */
-void do_atlas(struct char_data* ch, char* argument, int cmd);
-void do_monitor(struct char_data* ch, char* argument, int cmd);
-void do_score(struct char_data* ch, char* argument, int cmd);
-void do_loglist(struct char_data* ch, char* argument, int cmd);
-void do_checklog(struct char_data* ch, char* argument, int cmd);
-void do_deathcheck(struct char_data* ch, char* argument, int cmd);
-void do_inventory(struct char_data* ch, char* argument, int cmd);
-void do_equipment(struct char_data* ch, char* argument, int cmd);
-void do_shout(struct char_data* ch, char* argument, int cmd);
-void do_not_here(struct char_data* ch, char* argument, int cmd);
-void do_tell(struct char_data* ch, char* argument, int cmd);
-void do_wear(struct char_data* ch, char* argument, int cmd);
-void do_wield(struct char_data* ch, char* argument, int cmd);
-void do_grab(struct char_data* ch, char* argument, int cmd);
-void do_remove(struct char_data* ch, char* argument, int cmd);
-void do_put(struct char_data* ch, char* argument, int cmd);
-void do_shutdown(struct char_data* ch, char* argument, int cmd);
-void do_save(struct char_data* ch, char* argument, int cmd);
-void do_hit(struct char_data* ch, char* argument, int cmd);
-void do_string(struct char_data* ch, char* arg, int cmd);
-void do_give(struct char_data* ch, char* arg, int cmd);
-void do_stat(struct char_data* ch, char* arg, int cmd);
-void do_guard(struct char_data* ch, char* arg, int cmd);
-void do_time(struct char_data* ch, char* arg, int cmd);
-void do_weather(struct char_data* ch, char* arg, int cmd);
-void do_load(struct char_data* ch, char* arg, int cmd);
-void do_purge(struct char_data* ch, char* arg, int cmd);
-void do_shutdow(struct char_data* ch, char* arg, int cmd);
-void do_idea(struct char_data* ch, char* arg, int cmd);
-void do_typo(struct char_data* ch, char* arg, int cmd);
-void do_bug(struct char_data* ch, char* arg, int cmd);
-void do_whisper(struct char_data* ch, char* arg, int cmd);
-void do_cast(struct char_data* ch, char* arg, int cmd);
-void do_at(struct char_data* ch, char* arg, int cmd);
-void do_goto(struct char_data* ch, char* arg, int cmd);
-void do_ask(struct char_data* ch, char* arg, int cmd);
-void do_drink(struct char_data* ch, char* arg, int cmd);
-void do_eat(struct char_data* ch, char* arg, int cmd);
-void do_pour(struct char_data* ch, char* arg, int cmd);
-void do_sip(struct char_data* ch, char* arg, int cmd);
-void do_taste(struct char_data* ch, char* arg, int cmd);
-void do_order(struct char_data* ch, char* arg, int cmd);
-void do_follow(struct char_data* ch, char* arg, int cmd);
-void do_rent(struct char_data* ch, char* arg, int cmd);
-void do_bload(struct char_data* ch, char* arg, int cmd);
-void do_advance(struct char_data* ch, char* arg, int cmd);
-void do_close(struct char_data* ch, char* arg, int cmd);
-void do_open(struct char_data* ch, char* arg, int cmd);
-void do_lock(struct char_data* ch, char* arg, int cmd);
-void do_unlock(struct char_data* ch, char* arg, int cmd);
-void do_exits(struct char_data* ch, char* arg, int cmd);
-void do_enter(struct char_data* ch, char* arg, int cmd);
-void do_leave(struct char_data* ch, char* arg, int cmd);
-void do_write(struct char_data* ch, char* arg, int cmd);
-void do_flee(struct char_data* ch, char* arg, int cmd);
-void do_sneak(struct char_data* ch, char* arg, int cmd);
-void do_hide(struct char_data* ch, char* arg, int cmd);
-void do_backstab(struct char_data* ch, char* arg, int cmd);
-void do_pick(struct char_data* ch, char* arg, int cmd);
-void do_steal(struct char_data* ch, char* arg, int cmd);
-void do_bash(struct char_data* ch, char* arg, int cmd);
-void do_rescue(struct char_data* ch, char* arg, int cmd);
-void do_kick(struct char_data* ch, char* arg, int cmd);
-void do_examine(struct char_data* ch, char* arg, int cmd);
-void do_info(struct char_data* ch, char* arg, int cmd);
-void do_users(struct char_data* ch, char* arg, int cmd);
-void do_where(struct char_data* ch, char* arg, int cmd);
-void do_levels(struct char_data* ch, char* arg, int cmd);
-void do_reroll(struct char_data* ch, char* arg, int cmd);
-void do_pray(struct char_data* ch, char* arg, int cmd);
-void do_brief(struct char_data* ch, char* arg, int cmd);
-void do_cls(struct char_data* ch, char* arg, int cmd);
-void do_bamfin(struct char_data* ch, char* arg, int cmd);
-void do_bamfout(struct char_data* ch, char* arg, int cmd);
-void do_terminal(struct char_data* ch, char* arg, int cmd);
-void do_prompt(struct char_data* ch, char* arg, int cmd);
-void do_glance(struct char_data* ch, char* arg, int cmd);
-void do_wizlist(struct char_data* ch, char* arg, int cmd);
-void do_consider(struct char_data* ch, char* arg, int cmd);
-void do_group(struct char_data* ch, char* arg, int cmd);
-void do_restore(struct char_data* ch, char* arg, int cmd);
-void do_return(struct char_data* ch, char* argument, int cmd);
-void do_switch(struct char_data* ch, char* argument, int cmd);
-void do_quaff(struct char_data* ch, char* argument, int cmd);
-void do_recite(struct char_data* ch, char* argument, int cmd);
-void do_use(struct char_data* ch, char* argument, int cmd);
-void do_pose(struct char_data* ch, char* argument, int cmd);
-void do_noshout(struct char_data* ch, char* argument, int cmd);
-void do_plr_noshout(struct char_data* ch, char* argument, int cmd);
-void do_wizhelp(struct char_data* ch, char* argument, int cmd);
-void do_credits(struct char_data* ch, char* argument, int cmd);
-void do_compact(struct char_data* ch, char* argument, int cmd);
-void do_wimpy(struct char_data* ch, char* argument, int cmd);    /* jdb -8-16 */
-void do_commune(struct char_data* ch, char* argument, int cmd);  /* jdb - 9-1 */
-void do_nohassle(struct char_data* ch, char* argument, int cmd); /* jdb 9-6 */
-void do_system(struct char_data* ch, char* argument, int cmd);   /* jdb 9-16 */
-void do_pull(struct char_data* ch, char* argument, int cmd);     /* jdb 9-16 */
-void do_stealth(struct char_data* ch, char* argument, int cmd);  /* jdb 9-17 */
-void do_edit(struct char_data* ch, char* arg, int cmd);          /* jdb 9-29 */
-void do_set(struct char_data* ch, char* arg, int cmd);           /* jdb 9-29 */
-void do_rsave(struct char_data* ch, char* arg, int cmd);         /* jdb 10-5 */
-void do_rload(struct char_data* ch, char* arg, int cmd);         /* jdb 10-5 */
-void do_wizlock(struct char_data* ch, char* arg, int cmd);       /* jdb 10-15 */
-void do_highfive(struct char_data* ch, char* arg, int cmd);      /* jdb 10-30 */
-void do_title(struct char_data* ch, char* arg, int cmd);         /* jdb 11-3 */
-void do_uptime(struct char_data* ch, char* arg, int cmd);        /* jdb 12-3 */
-void do_instazone(struct char_data* ch, char* arg, int cmd);     /* jdb 12-3 */
-void do_disarm(struct char_data* ch, char* arg, int cmd);        /* jdb 12-3 */
-void do_junk(struct char_data* ch, char* arg, int cmd);          /* jdb 12-17 */
-void do_gain(struct char_data* ch, char* arg, int cmd);          /* jdb 1-19 */
-void do_passwd(struct char_data* ch, char* arg, int cmd);        /* jdb 2-6 */
-void do_fill(struct char_data* ch, char* arg, int cmd);          /* jdb 2-9 */
-void do_imptest(struct char_data* ch, char* arg, int cmd);       /* jdb 2-13 */
-void do_silence(struct char_data* ch, char* arg, int cmd);       /* smg 4-26 */
-void do_teams(struct char_data* ch, char* arg, int cmd);         /* smg 5-26 */
-void do_auth(struct char_data* ch, char* arg, int cmd);          /* jdb 3-1 */
-void do_shoot(struct char_data* ch, char* arg, int cmd);         /* jdb 3-8 */
-void do_swim(struct char_data* ch, char* arg, int cmd);          /* jdb 8-4 */
-void do_reload(struct char_data* ch, char* arg, int cmd);        /* jhh 7-24 */
-void do_oset(struct char_data* ch, char* arg, int cmd);          /* jfr2 10-15*/
-void do_bet(struct char_data* ch, char* arg, int cmd);           /* jhh 8-22 */
-void do_stay(struct char_data* ch, char* arg, int cmd);          /* jhh 8-22 */
-void do_peek(struct char_data* ch, char* arg, int cmd);          /* jhh 8-22 */
-void do_color(struct char_data* ch, char* arg, int cmd);         /*jfr 8-28 */
-void do_search(struct char_data* ch, char* arg, int cmd); /* jfr2 1-16-93*/
-void do_send(struct char_data* ch, char* arg, int cmd);   /* jfr2 12-30 */
-void do_spy(struct char_data* ch, char* arg, int cmd);    /*jfr2 1-23-93*/
-void do_sign(struct char_data* ch, char* arg, int cmd);
-void do_play(struct char_data* ch, char* arg, int cmd); /*jfr2 2-11-93 */
-void do_flag(struct char_data* ch, char* arg, int cmd); /*jfr2 1-30-93 */
-void do_link(struct char_data* ch, char* arg, int cmd); /* jfr2 1-24-93 */
-void do_doorbash(struct char_data* ch, char* arg, int cmd);
-void do_springleap(struct char_data* ch, char* arg, int cmd);
-void do_lay_hands(struct char_data* ch, char* arg, int cmd);
-void do_quivering_palm(struct char_data* ch, char* arg, int cmd);
-void do_feign_death(struct char_data* ch, char* arg, int cmd);
-void do_first_aid(struct char_data* ch, char* arg, int cmd);
-void do_channel(struct char_data* ch, char* arg, int cmd);    /*jfr2 12-30 */
-void do_headbutt(struct char_data* ch, char* arg, int cmd);   /*jfr2 9-21 */
-void do_log(struct char_data* ch, char* arg, int cmd);        /*jfr2 12/29/92 */
-void do_subterfuge(struct char_data* ch, char* arg, int cmd); /* jfr2 10-3 */
-void do_throw(struct char_data* ch, char* arg, int cmd);      /* jfr2 10-4 */
-void do_scribe(struct char_data* ch, char* arg, int cmd);     /* jfr2 10-4 */
-void do_brew(struct char_data* ch, char* arg, int cmd);       /* jfr2 10-15*/
-void do_grapple(struct char_data* ch, char* arg, int cmd);    /*jfr2 10-16*/
-
-/*
-  depth first seach procedure donated by WhiteGold
-  */
-
-void do_track(struct char_data* ch, char* arg, int cmd); /* jdb 10-9 */
-
-/*
-  These 3 were donated by sequent
-  */
-
-void do_attribute(struct char_data* ch, char* arg, int cmd); /* jdb 11-6 */
-void do_world(struct char_data* ch, char* arg, int cmd);     /* jdb 11-6 */
-void do_spells(struct char_data* ch, char* arg, int cmd);    /* jdb 11-6 */
-
-void do_action(struct char_data* ch, char* arg, int cmd);
-void do_practice(struct char_data* ch, char* arg, int cmd);
-
-/* Hammor commands */
-void do_assist(struct char_data* ch, char* arg, int cmd);
-void do_fire(struct char_data* ch, char* arg, int cmd);
-void do_show(struct char_data* ch, char* arg, int cmd);
-void do_bodyslam(struct char_data* ch, char* arg, int cmd);
-void do_invis(struct char_data* ch, char* arg, int cmd);
-void do_grouptell(struct char_data* ch, char* arg, int cmd);
-
-/* Brutius commands */
-
-void do_report(struct char_data* ch, char* arg, int cmd);
-void do_demote(struct char_data* ch, char* arg, int cmd);
-void do_split(struct char_data* ch, char* arg, int cmd);
-void do_command(struct char_data* ch, char* arg, int cmd);
-void do_deathstroke(struct char_data* ch, char* arg, int cmd);
-
-char* command[] = {"north", /* 1 */
+const char* const command[] = {"north", /* 1 */
   "east", "south", "west", "up", "down", "enter", "exits", "kiss", "get",
   "drink", /* 11 */
   "eat", "wear", "wield", "look", "score", "say", "shout", "tell", "inventory",
@@ -423,9 +195,7 @@ char* command[] = {"north", /* 1 */
 #endif
   "\n"};
 
-char* fill[] = {"in", "from", "with", "the", "on", "at", "to", "\n"};
-
-int search_block(char* arg, char** list, bool exact) {
+int search_block(char* arg, const char* const* list, bool exact) {
   register int i, l;
 
   /* Make into lower case, and get length of string */
@@ -447,8 +217,8 @@ int search_block(char* arg, char** list, bool exact) {
   return (-1);
 }
 
-int old_search_block(char* argument, int begin, int length, char** list,
-  int mode) {
+int old_search_block(char* argument, int begin, int length,
+  const char* const* list, int mode) {
   int guess, found, search;
 
   /* If the word contain 0 letters, then a match is already found */
@@ -480,8 +250,6 @@ int old_search_block(char* argument, int begin, int length, char** list,
 void command_interpreter(struct char_data* ch, char* argument) {
   int look_at, cmd, begin;
   char buf[200];
-  extern int no_specials;
-  extern struct char_data* board_kludge_char;
 
   REMOVE_BIT(ch->specials.affected_by, AFF_HIDE);
 
@@ -715,11 +483,14 @@ void only_argument(char* argument, char* dest) {
 }
 
 int fill_word(char* argument) {
+  static const char* const fill[] = {"in", "from", "with", "the", "on", "at",
+    "to", "\n"};
+
   return (search_block(argument, fill, TRUE) >= 0);
 }
 
 /* determine if a given string is an abbreviation of another */
-int is_abbrev(char* arg1, char* arg2) {
+int is_abbrev(const char* arg1, const char* arg2) {
   if (!*arg1)
     return (0);
 
@@ -754,7 +525,7 @@ int special(struct char_data* ch, int cmd, char* arg) {
 
   if (ch->in_room == NOWHERE) {
     char_to_room(ch, 2999);
-    return;
+    return 0;
   }
 
   /* special in room? */
@@ -765,30 +536,30 @@ int special(struct char_data* ch, int cmd, char* arg) {
   /* special in equipment list? */
   for (j = 0; j <= (MAX_WEAR - 1); j++)
     if (ch->equipment[j] && ch->equipment[j]->item_number >= 0)
-      if (obj_index[ch->equipment[j]->item_number].func)
-        if ((*obj_index[ch->equipment[j]->item_number].func)(ch, cmd, arg,
+      if (obj_index[ch->equipment[j]->item_number].func.obj_f)
+        if ((*obj_index[ch->equipment[j]->item_number].func.obj_f)(ch, cmd, arg,
               ch->equipment[j]))
           return (1);
 
   /* special in inventory? */
   for (i = ch->carrying; i; i = i->next_content)
     if (i->item_number >= 0)
-      if (obj_index[i->item_number].func)
-        if ((*obj_index[i->item_number].func)(ch, cmd, arg, i))
+      if (obj_index[i->item_number].func.obj_f)
+        if ((*obj_index[i->item_number].func.obj_f)(ch, cmd, arg, i))
           return (1);
 
   /* special in mobile present? */
   for (k = real_roomp(ch->in_room)->people; k; k = k->next_in_room)
     if (IS_MOB(k))
-      if (mob_index[k->nr].func)
-        if ((*mob_index[k->nr].func)(ch, cmd, arg))
+      if (mob_index[k->nr].func.mob_f)
+        if ((*mob_index[k->nr].func.mob_f)(ch, cmd, arg))
           return (1);
 
   /* special in object present? */
   for (i = real_roomp(ch->in_room)->contents; i; i = i->next_content)
     if (i->item_number >= 0)
-      if (obj_index[i->item_number].func)
-        if ((*obj_index[i->item_number].func)(ch, cmd, arg, i))
+      if (obj_index[i->item_number].func.obj_f)
+        if ((*obj_index[i->item_number].func.obj_f)(ch, cmd, arg, i))
           return (1);
 
   return (0);
@@ -1136,7 +907,7 @@ int find_name(char* name) {
   return (-1);
 }
 
-int _parse_name(char* arg, char* name) {
+int parse_name(char* arg, char* name) {
   int i;
 
   /* skip whitespaces */
@@ -1153,6 +924,174 @@ int _parse_name(char* arg, char* name) {
   return (0);
 }
 
+static void blk_read(struct char_data* ch) {
+  FILE* fl;
+  char buf[MAX_STRING_LENGTH];
+  char buf2[MAX_STRING_LENGTH];
+  int len, i;
+
+  if (IS_NPC(ch))
+    return;
+
+  sprintf(buf, "%s%s.blk", path[0], GET_NAME(ch));
+  if (!(fl = fopen(buf, "r"))) {
+    vlog("Has no wizard file.");
+    return;
+  }
+
+  fgets(buf, 255, fl);
+  fgets(buf2, 255, fl);
+  fclose(fl);
+
+  for (i = 0; i < strlen(buf); i++)
+    if (buf[i] == '\n')
+      buf[i] = '\0';
+  for (i = 0; i < strlen(buf2); i++)
+    if (buf2[i] == '\n')
+      buf2[i] = '\0';
+
+  SET_BIT(ch->poof.pmask, BIT_POOF_OUT);
+  SET_BIT(ch->poof.pmask, BIT_POOF_IN);
+  len = strlen(buf);
+  if (ch->poof.poofin && len >= strlen(ch->poof.poofin)) {
+    free(ch->poof.poofin);
+    ch->poof.poofin = (char*)malloc(len + 1);
+  } else {
+    if (!ch->poof.poofin)
+      ch->poof.poofin = (char*)malloc(len + 1);
+  }
+  strcpy(ch->poof.poofin, buf);
+  len = strlen(buf2);
+  if (ch->poof.poofout && len >= strlen(ch->poof.poofout)) {
+    free(ch->poof.poofout);
+    ch->poof.poofout = (char*)malloc(len + 1);
+  } else {
+    if (!ch->poof.poofout)
+      ch->poof.poofout = (char*)malloc(len + 1);
+  }
+  strcpy(ch->poof.poofout, buf2);
+  vlog("Restoring wizard file.");
+
+  return;
+}
+
+static void obj_store_to_char(struct char_data* ch, struct obj_file_u* st) {
+  struct obj_data* obj;
+  char buf[256];
+  int i, j;
+
+  void obj_to_char(struct obj_data * object, struct char_data * ch);
+
+  for (i = 0; i < st->number; i++) {
+    if (st->objects[i].item_number > -1 &&
+        real_object(st->objects[i].item_number) > -1) {
+      obj = read_object(st->objects[i].item_number, VIRTUAL);
+      obj->obj_flags.value[0] = st->objects[i].value[0];
+      obj->obj_flags.value[1] = st->objects[i].value[1];
+      obj->obj_flags.value[2] = st->objects[i].value[2];
+      obj->obj_flags.value[3] = st->objects[i].value[3];
+      obj->obj_flags.extra_flags = st->objects[i].extra_flags;
+      obj->obj_flags.weight = st->objects[i].weight;
+      obj->obj_flags.timer = st->objects[i].timer;
+      obj->obj_flags.bitvector = st->objects[i].bitvector;
+      obj->obj_flags.struct_points = st->objects[i].struct_points;
+      obj->obj_flags.max_struct_points = st->objects[i].max_struct_points;
+      obj->obj_flags.material_points = st->objects[i].material_points;
+      obj->obj_flags.decay_time = st->objects[i].decay_time;
+
+      /*  new, saving names and descrips stuff */
+      if (obj->name)
+        free(obj->name);
+      if (obj->short_description)
+        free(obj->short_description);
+      if (obj->description)
+        free(obj->description);
+
+      obj->name = (char*)malloc(strlen(st->objects[i].name) + 1);
+      obj->short_description = (char*)malloc(strlen(st->objects[i].sd) + 1);
+      obj->description = (char*)malloc(strlen(st->objects[i].desc) + 1);
+
+      strcpy(obj->name, st->objects[i].name);
+      strcpy(obj->short_description, st->objects[i].sd);
+      strcpy(obj->description, st->objects[i].desc);
+      /* end of new, possibly buggy stuff */
+
+      for (j = 0; j < MAX_OBJ_AFFECT; j++)
+        obj->affected[j] = st->objects[i].affected[j];
+
+      obj_to_char(obj, ch);
+    }
+  }
+  sprintf(buf, "%s has [%d] items.", st->owner, st->number);
+  vlog(buf);
+}
+
+static void load_char_objs(struct char_data* ch) {
+  FILE* fl;
+  int i, j, loc;
+  bool found = FALSE;
+  float timegold;
+  struct obj_file_u st;
+  char buf[200];
+
+  sprintf(buf, "rent/%s", lower(ch->player.name));
+
+  /* r+b is for Binary Reading/Writing */
+  if (!(fl = fopen(buf, "r+b"))) {
+    vlog("Char has no equipment");
+    // fclose(fl);
+    return;
+  }
+
+  rewind(fl);
+
+  if (!ReadObjs(fl, &st)) {
+    vlog("No objects found");
+    // fclose(fl);
+    return;
+  }
+
+  if (str_cmp(st.owner, GET_NAME(ch)) != 0) {
+    vlog("Hmm.. bad item-file write. someone is losing thier objects");
+    fclose(fl);
+    return;
+  }
+
+  /*
+    if the character has been out for 12 real hours, they are fully healed
+    upon re-entry.  if they stay out for 24 full hours, all affects are
+    removed, including bad ones.
+  */
+
+  if (st.last_update + 12 * SECS_PER_REAL_HOUR < time(0))
+    RestoreChar(ch);
+
+  if (st.last_update + 24 * SECS_PER_REAL_HOUR < time(0))
+    RemAllAffects(ch);
+
+  if (ch->in_room == NOWHERE &&
+      st.last_update + 6 * SECS_PER_REAL_HOUR > time(0)) {
+    found = TRUE;
+  } else {
+    char buf[MAX_STRING_LENGTH];
+    if (ch->in_room == NOWHERE)
+      vlog("Char reconnecting after autorent");
+    timegold = 0;
+    found = TRUE;
+  }
+
+  fclose(fl);
+
+  if (found)
+    obj_store_to_char(ch, &st);
+  else {
+    ZeroRent(GET_NAME(ch));
+  }
+
+  /* Save char, to avoid strange data if crashing */
+  save_char(ch, AUTO_RENT);
+}
+
 /* deal with newcomers and other non-playing sockets */
 void nanny(struct descriptor_data* d, char* arg) {
   char buf[100], buf2[100], recipient[100], *tmp;
@@ -1161,13 +1100,6 @@ void nanny(struct descriptor_data* d, char* arg) {
   struct char_file_u tmp_store;
   struct char_data* tmp_ch;
   struct descriptor_data* k;
-  extern struct descriptor_data* descriptor_list;
-  extern int WizLock;
-  extern int plr_tick_count;
-
-  void do_look(struct char_data * ch, char* argument, int cmd);
-  void load_char_objs(struct char_data * ch);
-  int load_char(char* name, struct char_file_u* char_element);
 
   write(d->descriptor, echo_on, 6);
 
@@ -1259,7 +1191,7 @@ void nanny(struct descriptor_data* d, char* arg) {
       if (!*arg)
         close_socket(d);
       else {
-        if (_parse_name(arg, tmp_name)) {
+        if (parse_name(arg, tmp_name)) {
           SEND_TO_Q("Illegal name, please try another.", d);
           SEND_TO_Q("Name: ", d);
           return;
