@@ -150,8 +150,8 @@ int main(int argc, char** argv) {
 
 #if SITELOCK
   vlog("Blanking denied hosts.");
-  for (a = 0; a <= MAX_BAN_HOSTS; a++)
-    strcpy(hostlist[a], " \0\0\0\0");
+  for (a = 0; a < MAX_BAN_HOSTS; a++)
+    hostlist[a][0] = '\0';
   numberhosts = 0;
   strcpy(hostlist[0], "cerdm2.difi.unipi.it");
   numberhosts = 1;
