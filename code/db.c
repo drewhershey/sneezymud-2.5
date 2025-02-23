@@ -2383,43 +2383,13 @@ void init_char(struct char_data* ch) {
     GET_COND(ch, i) = (GetMaxLevel(ch) > GOD ? -1 : 24);
 }
 
-#if 0
-/* returns the real number of the room with given virtual number */
-int real_room(int virtual)
-{
-	int bot, top, mid;
-
-	bot = 0;
-	top = top_of_world;
-
-	/* perform binary search on world-table */
-	for (;;)  {
-		mid = (bot + top) / 2;
-
-		if ((world + mid)->number == virtual)
-			return(mid);
-		if (bot >= top)		{
-			fprintf(stderr, "Room %d does not exist in database\n", virtual);
-			return(-1);
-		}
-		if ((world + mid)->number > virtual)
-			top = mid - 1;
-		else
-			bot = mid + 1;
-	}
-}
-#else
-/*
-**  this duplicates the code in room_find, because it is much quicker this way.
-*/
 struct room_data* real_roomp(int virtual) {
-#if HASH
+#if defined(HASH) && HASH
   return hash_find(&room_db, virtual);
 #else
-  return (virtual<WORLD_SIZE&& virtual> - 1) ? room_db[virtual] : 0;
+  return (virtual < WORLD_SIZE) && (virtual > -1) ? room_db[virtual] : NULL;
 #endif
 }
-#endif
 
 /* returns the real number of the monster with given virtual number */
 int real_mobile(int virtual) {

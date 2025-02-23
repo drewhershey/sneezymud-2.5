@@ -28,9 +28,14 @@ void open_door(struct char_data* ch, int dir) {
   if (rp == NULL) {
     sprintf(buf, "NULL rp in open_door() for %s.", PERS(ch, ch));
     vlog(buf);
+    return;
   }
 
   exitp = rp->dir_option[dir];
+  if (exitp == NULL) {
+    vlog("NULL exit in open_door()");
+    return;
+  }
 
   REMOVE_BIT(exitp->exit_info, EX_CLOSED);
   if (exitp->keyword) {
@@ -68,11 +73,16 @@ void raw_open_door(struct char_data* ch, int dir) {
 
   rp = real_roomp(ch->in_room);
   if (rp == NULL) {
-    sprintf(buf, "NULL rp in open_door() for %s.", PERS(ch, ch));
+    sprintf(buf, "NULL rp in raw_open_door() for %s.", PERS(ch, ch));
     vlog(buf);
+    return;
   }
 
   exitp = rp->dir_option[dir];
+  if (exitp == NULL) {
+    vlog("NULL exit in raw_open_door()");
+    return;
+  }
 
   REMOVE_BIT(exitp->exit_info, EX_CLOSED);
   /* now for opening the OTHER side of the door! */
