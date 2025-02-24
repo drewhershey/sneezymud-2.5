@@ -436,20 +436,6 @@ int is_number(char* str) {
   return (1);
 }
 
-/*  Quinn substituted a new one-arg for the old one.. I thought returning a
-    char pointer would be neat, and avoiding the func-calls would save a
-    little time... If anyone feels pissed, I'm sorry.. Anyhow, the code is
-    snatched from the old one, so it outta work..
-
-    void one_argument(char *argument,char *first_arg )
-    {
-    static char dummy[MAX_STRING_LENGTH];
-
-    argument_interpreter(argument,first_arg,dummy);
-    }
-
-    */
-
 /* find the first sub-argument of a string, return pointer to first char in
    primary argument, following the sub-arg			            */
 char* one_argument(char* argument, char* first_arg) {
@@ -971,16 +957,12 @@ static void blk_read(struct char_data* ch) {
   }
   strcpy(ch->poof.poofout, buf2);
   vlog("Restoring wizard file.");
-
-  return;
 }
 
 static void obj_store_to_char(struct char_data* ch, struct obj_file_u* st) {
   struct obj_data* obj;
   char buf[256];
   int i, j;
-
-  void obj_to_char(struct obj_data * object, struct char_data * ch);
 
   for (i = 0; i < st->number; i++) {
     if (st->objects[i].item_number > -1 &&

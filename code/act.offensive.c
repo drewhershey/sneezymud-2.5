@@ -293,9 +293,6 @@ void do_flee(struct char_data* ch, char* argument, int cmd) {
   struct obj_data* weapon;
   int i, lev_check, attempt, loose, die, percent, losedie;
 
-  void gain_exp(struct char_data * ch, int gain);
-  int special(struct char_data * ch, int cmd, char* arg);
-
   if (IS_AFFECTED(ch, AFF_PARALYSIS))
     return;
 

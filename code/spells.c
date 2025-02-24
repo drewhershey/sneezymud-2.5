@@ -4974,10 +4974,6 @@ static void spell_charm_person(byte level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
   struct affected_type af;
 
-  void add_follower(struct char_data * ch, struct char_data * leader);
-  bool circle_follow(struct char_data * ch, struct char_data * victim);
-  void stop_follower(struct char_data * ch);
-
   assert(ch && victim);
 
   if (victim == ch) {
@@ -5072,10 +5068,6 @@ static void spell_charm_monster(byte level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
   struct affected_type af;
 
-  void add_follower(struct char_data * ch, struct char_data * leader);
-  bool circle_follow(struct char_data * ch, struct char_data * victim);
-  void stop_follower(struct char_data * ch);
-
   assert(ch && victim);
 
   if (victim == ch) {
@@ -5163,10 +5155,6 @@ void cast_charm_monster(byte level, struct char_data* ch, char* arg, int type,
 static void spell_control_undead(byte level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
   struct affected_type af;
-
-  void add_follower(struct char_data * ch, struct char_data * leader);
-  bool circle_follow(struct char_data * ch, struct char_data * victim);
-  void stop_follower(struct char_data * ch);
 
   assert(ch && victim);
 
@@ -5632,8 +5620,6 @@ static void spell_acid_breath(byte level, struct char_data* ch,
   int dam;
   int hpch;
   int damaged;
-
-  int apply_ac(struct char_data * ch, int eq_pos);
 
   assert(victim && ch);
   assert((level >= 1) && (level <= ABS_MAX_LVL));
@@ -6542,8 +6528,6 @@ void cast_faerie_fog(byte level, struct char_data* ch, char* arg, int type,
 static void spell_poly_self(byte level, struct char_data* ch,
   struct char_data* mob, struct obj_data* obj) {
   char* buf;
-
-  void do_snoop(struct char_data * ch, char* argument, int cmd);
 
   /*
    *  Check to make sure that there is no snooping going on.

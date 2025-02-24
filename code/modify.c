@@ -14,6 +14,7 @@
 #include "db.h"
 #include "handler.h"
 #include "interpreter.h"
+#include "mail.h"
 #include "multiclass.h"
 #include "structs.h"
 #include "utils.h"
@@ -24,18 +25,11 @@
 #define TP_OBJ 1
 #define TP_ERROR 2
 
-void store_mail(char* to, char* from, char* message_pointer);
+const char* const string_fields[] = {"name", "short", "long", "description",
+  "title", "delete-description", "\n"};
 
-char* string_fields[] = {"name", "short", "long", "description", "title",
-  "delete-description", "\n"};
-
-char* room_fields[] = {"name",   /* 1 */
-  "desc", "fs", "exit", "exdsc", /* 5 */
-  "extra",                       /* 6 */
-  "riv",                         /* 7 */
-  "tele",                        /* 8 */
-  "tunn",                        /* 9 */
-  "\n"};
+const char* const room_fields[] = {"name", "desc", "fs", "exit", "exdsc",
+  "extra", "riv", "tele", "tunn", "\n"};
 
 /* maximum length for text field x+1 */
 int length[] = {15, 60, 256, 240, 60};
@@ -852,7 +846,7 @@ void check_reboot(void) {
 #define NEW
 #ifdef GR
 
-int workhours() {
+int workhours(void) {
   long tc;
   struct tm* t_info;
 

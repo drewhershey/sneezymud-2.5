@@ -330,7 +330,6 @@ void do_look(struct char_data* ch, char* argument, int cmd);
 void death_cry(struct char_data* ch);
 void zero_rent(struct char_data* ch);
 int apply_soundproof(struct char_data* ch);
-void do_say(struct char_data* ch, char* argument, int cmd);
 int check_soundproof(struct char_data* ch);
 int HasHands(struct char_data* ch);
 void RestoreChar(struct char_data* ch);

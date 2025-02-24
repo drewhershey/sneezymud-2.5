@@ -854,8 +854,6 @@ void do_enter(struct char_data* ch, char* argument, int cmd) {
   struct obj_data* obj_object;
   struct obj_data* next_obj;
 
-  void do_move(struct char_data * ch, char* argument, int cmd);
-
   one_argument(argument, buf);
 
   if (*buf && str_cmp(buf, "portal")) {
@@ -1122,8 +1120,6 @@ void do_wake(struct char_data* ch, char* argument, int cmd) {
 void do_follow(struct char_data* ch, char* argument, int cmd) {
   char name[160];
   struct char_data* leader;
-
-  void stop_follower(struct char_data * ch);
 
   only_argument(argument, name);
 

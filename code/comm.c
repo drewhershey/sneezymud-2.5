@@ -767,25 +767,11 @@ int new_connection(int s) {
   }
   nonblock(t);
 
-  /*
-
-  i = sizeof(peer);
-  if (!getpeername(t, &peer, &i))
-  {
-     *(peer.sa_data + 49) = '\0';
-     sprintf(buf, "New connection from addr %s.\n", peer.sa_data);
-     vlog(buf);
-  }
-
-  */
-
   return (t);
 }
 
 /* print an internet host address prettily */
-static void printhost(addr, buf) struct in_addr* addr;
-char* buf;
-{
+static void printhost(struct in_addr* addr, char* buf) {
   struct hostent* h;
   char* s;
   int n1, n2, n3, n4;
@@ -806,9 +792,7 @@ char* buf;
 }
 
 /* print an internet host address prettily */
-static void printhostaddr(addr, buf) struct in_addr* addr;
-char* buf;
-{
+static void printhostaddr(struct in_addr* addr, char* buf) {
   struct hostent* h;
   char* s;
   int n1, n2, n3, n4;
@@ -1075,8 +1059,6 @@ void close_socket(struct descriptor_data* d) {
   struct descriptor_data* tmp;
   char buf[100];
 
-  void do_save(struct char_data * ch, char* argument, int cmd);
-
   if (!d)
     return;
 
@@ -1178,9 +1160,6 @@ void coma(int s) {
   fd_set input_set;
   static struct timeval timeout = {60, 0};
   int conn;
-
-  int workhours(void);
-  int load(void);
 
   vlog("Entering comatose state.");
 

@@ -887,19 +887,6 @@ void stop_follower(struct char_data* ch) {
   REMOVE_BIT(ch->specials.affected_by, AFF_CHARM | AFF_GROUP);
 }
 
-/* Called when a character that follows/is followed dies */
-void die_follower(struct char_data* ch) {
-  struct follow_type *j, *k;
-
-  if (ch->master)
-    stop_follower(ch);
-
-  for (k = ch->followers; k; k = j) {
-    j = k->next;
-    stop_follower(k->follower);
-  }
-}
-
 /* Do NOT call this before having checked if a circle of followers */
 /* will arise. CH will follow leader                               */
 void add_follower(struct char_data* ch, struct char_data* leader) {

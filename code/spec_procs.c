@@ -87,60 +87,6 @@ static void make_head(struct char_data* ch) {
   obj_to_room(corpse, ch->in_room);
 }
 
-#if 0
-int MakeQuest(struct char_data *ch, struct char_data *gm, int Class)
-{
-   struct obj_data *qt, *tmp, *item=0;
-   int i;
-
-   if ((qt=read_object(QuestList[Class][GET_LEVEL(ch, Class)].item, VIRTUAL))
-       ==NULL) {
-     return(TRUE); /* no item for this level, or item not in db */
-   }
-
-   /*
-     check eq
-   */
-   for (i=0;i<MAX_WEAR;i++) {
-     if (ch->equipment[i]->item_number == qt->item_number)
-       item = ch->equipment[i];
-       break;
-   }
-
-   /*
-     check carrying
-   */
-   if (!item)
-   for (tmp = ch->carrying; tmp; tmp = tmp->next_content)
-     if (tmp->item_number == qt->item_number) {
-       item = tmp;
-       break;
-     }
-
-   if (!item) {
-     act("$N says 'First, you must bring me $o'.",
-	 FALSE, ch, qt, gm, TO_ROOM);
-     send_to_char("It can be found ", ch);
-     send_to_char(QuestList[Class][GET_LEVEL(ch, Class)].where, ch);
-     extract_obj(qt);
-     return(FALSE);
-   } else {
-     extract_obj(qt);
-     act("$N graciously takes your gift of $o.",
-	 FALSE, ch, tmp, gm, TO_CHAR);
-     if (tmp->carried_by) {
-       obj_from_char(tmp);
-     } else if (tmp->equipped_by) {
-       unequip_char(ch, tmp->eq_pos);
-     }
-     extract_obj(tmp);
-     return(TRUE);
-   }
-
-}
-
-#endif
-
 /* ********************************************************************
  *  Special procedures for rooms                                       *
  ******************************************************************** */
@@ -1715,9 +1661,6 @@ int dump(struct char_data* ch, int cmd, char* arg) {
   struct char_data* tmp_char;
   int value = 0;
 
-  void do_drop(struct char_data * ch, char* argument, int cmd);
-  char* fname(char* namelist);
-
   for (k = real_roomp(ch->in_room)->contents; k;
        k = real_roomp(ch->in_room)->contents) {
     sprintf(buf, "The %s vanish in a puff of smoke.\n\r", fname(k->name));
@@ -1772,12 +1715,6 @@ int mayor(struct char_data* ch, int cmd, char* arg) {
   static char* path;
   static int index;
   static bool move = FALSE;
-
-  void do_move(struct char_data * ch, char* argument, int cmd);
-  void do_open(struct char_data * ch, char* argument, int cmd);
-  void do_lock(struct char_data * ch, char* argument, int cmd);
-  void do_unlock(struct char_data * ch, char* argument, int cmd);
-  void do_close(struct char_data * ch, char* argument, int cmd);
 
   if (!move) {
     if (time_info.hours == 6) {
@@ -2602,7 +2539,6 @@ static void npc_steal(struct char_data* ch, struct char_data* victim) {
 }
 
 int sheriff(struct char_data* ch, int cmd, char* arg) {
-  void do_shoot(struct char_data * ch, char* arg, int cmd);
   struct obj_data* gun;
   char buf[MAX_STRING_LENGTH];
   char buf2[MAX_STRING_LENGTH];
@@ -2638,7 +2574,6 @@ int sheriff(struct char_data* ch, int cmd, char* arg) {
 }
 
 int bow_shooter(struct char_data* ch, int cmd, char* arg) {
-  void do_fire(struct char_data * ch, char* arg, int cmd);
   struct obj_data* bow;
   char buf[MAX_STRING_LENGTH];
   char buff[MAX_STRING_LENGTH];
@@ -4066,9 +4001,6 @@ int puff(struct char_data* ch, int cmd, char* arg) {
   struct char_data *i, *tmp, *tmp_ch;
   char buf[80];
 
-  void do_emote(struct char_data * ch, char* argument, int cmd);
-  void do_shout(struct char_data * ch, char* argument, int cmd);
-
   if (cmd)
     return (0);
 
@@ -5336,10 +5268,10 @@ static const struct find_path_data find_corpse_on_ground = {
   .fn.obj_on_ground_fn = named_object_on_ground,
 };
 
-int zombie_master(struct char_data* ch, int cmd, char* arg)
 #define ZM_MANA 10
 #define ZM_NEMESIS 3060
-{
+
+int zombie_master(struct char_data* ch, int cmd, char* arg) {
   struct obj_data* temp1;
   struct char_data* zmaster;
   char buf[240];
@@ -5743,97 +5675,84 @@ int vorpal(Mob* victim, int cmd, char* arg, Obj* me) {
   return FALSE;
 }
 
-#if 0
-
-int chalice(struct char_data *ch, int cmd, char *arg)
-{
-
-
-  struct obj_data *chalice;
+int chalice(struct char_data* ch, int cmd, char* arg) {
+  struct obj_data* chalice;
   char buf1[MAX_INPUT_LENGTH], buf2[MAX_INPUT_LENGTH];
   static int chl = -1, achl = -1;
 
-  if (chl < 1)
-    {
-      chl = real_object(222);
-      achl = real_object(223);
-    }
+  if (chl < 1) {
+    chl = real_object(222);
+    achl = real_object(223);
+  }
 
-  switch(cmd)
-    {
-    case 10:    /* get */
-      if (!(chalice = get_obj_in_list_num(chl,
-					  real_roomp(ch->in_room)->contents))
-	  && CAN_SEE_OBJ(ch, chalice))
-	if (!(chalice = get_obj_in_list_num(achl,
-					    real_roomp(ch->in_room)->contents)) && CAN_SEE_OBJ(ch, chalice))
-	  return(0);
+  switch (cmd) {
+    case 10: /* get */
+      if (!(chalice =
+              get_obj_in_list_num(chl, real_roomp(ch->in_room)->contents)) &&
+          CAN_SEE_OBJ(ch, chalice))
+        if (!(chalice =
+                get_obj_in_list_num(achl, real_roomp(ch->in_room)->contents)) &&
+            CAN_SEE_OBJ(ch, chalice))
+          return (0);
 
       /* we found a chalice.. now try to get us */
       do_get(ch, arg, cmd);
       /* if got the altar one, switch her */
-      if (chalice == get_obj_in_list_num(achl, ch->carrying))
-	{
-	  extract_obj(chalice);
-	  chalice = read_object(chl, VIRTUAL);
-	  obj_to_char(chalice, ch);
-	}
-      return(1);
+      if (chalice == get_obj_in_list_num(achl, ch->carrying)) {
+        extract_obj(chalice);
+        chalice = read_object(chl, VIRTUAL);
+        obj_to_char(chalice, ch);
+      }
+      return (1);
       break;
     case 67: /* put */
       if (!(chalice = get_obj_in_list_num(chl, ch->carrying)))
-	return(0);
+        return (0);
 
       argument_interpreter(arg, buf1, buf2);
-      if (!str_cmp(buf1, "chalice") && !str_cmp(buf2, "altar"))
-	{
-	  extract_obj(chalice);
-	  chalice = read_object(achl, VIRTUAL);
-	  obj_to_room(chalice, ch->in_room);
-	  send_to_char("Ok.\n\r", ch);
-	}
-      return(1);
+      if (!str_cmp(buf1, "chalice") && !str_cmp(buf2, "altar")) {
+        extract_obj(chalice);
+        chalice = read_object(achl, VIRTUAL);
+        obj_to_room(chalice, ch->in_room);
+        send_to_char("Ok.\n\r", ch);
+      }
+      return (1);
       break;
     case 176: /* pray */
-      if (!(chalice = get_obj_in_list_num(achl,
-					  real_roomp(ch->in_room)->contents)))
-	return(0);
+      if (!(chalice =
+              get_obj_in_list_num(achl, real_roomp(ch->in_room)->contents)))
+        return (0);
 
-      do_action(ch, arg, cmd);  /* pray */
+      do_action(ch, arg, cmd); /* pray */
       send_to_char(CHAL_ACT, ch);
       extract_obj(chalice);
       act("$n is torn out of existence!", TRUE, ch, 0, 0, TO_ROOM);
       char_from_room(ch);
-      char_to_room(ch, 2500);   /* before the fiery gates */
+      char_to_room(ch, 2500); /* before the fiery gates */
       do_look(ch, "", 15);
-      return(1);
+      return (1);
       break;
     default:
-      return(0);
+      return (0);
       break;
-    }
+  }
 }
 
-
-
-int kings_hall(struct char_data *ch, int cmd, char *arg)
-{
+int kings_hall(struct char_data* ch, int cmd, char* arg) {
   if (cmd != 176)
-    return(0);
+    return (0);
 
   do_action(ch, arg, 176);
 
   send_to_char("You feel as if some mighty force has been offended.\n\r", ch);
   send_to_char(CHAL_ACT, ch);
-  act("$n is struck by an intense beam of light and vanishes.",
-      TRUE, ch, 0, 0, TO_ROOM);
+  act("$n is struck by an intense beam of light and vanishes.", TRUE, ch, 0, 0,
+    TO_ROOM);
   char_from_room(ch);
-  char_to_room(ch, 1420);  /* behind the altar */
+  char_to_room(ch, 1420); /* behind the altar */
   do_look(ch, "", 15);
-  return(1);
+  return (1);
 }
-
-#endif
 
 /*
 **  donation room
@@ -10091,47 +10010,6 @@ int Magic_Fountain(struct char_data* ch, int cmd, char* arg) {
   return (FALSE);
 }
 
-typedef struct T1000_data {
-    int state;
-    struct char_data* vict;
-} T1000_data;
-
-#if 0
-#define T1000_SEARCHING 0
-#define T1000_HUNTING 1
-
-int T1000( struct char_data *ch, char *line, int cmd)
-{
-   int count;
-   struct descriptor_data *i;
-
-   if (!ch->act_ptr)
-      ch->act_ptr = (int *) calloc(1, sizeof(int));
-   if (ch->specials.hunting == 0)
-     (*((int *) ch->act_ptr)) = T1000_SEARCHING;
-
-    switch(*((int *) ch->act_ptr)) {
-       case T1000_SEARCHING: {
-     count = number(0,200);
-     for (i = descriptor_list; count>0; i= i->next) {
-        if (!i) {
-          i = descriptor_list;
-        }
-     }
-     if (i) {
-        ch->specials.hunting = i->character;
-        (*((int *) ch->act_ptr)) = T1000_HUNTING;
-     }
-       }
-       case T1000_HUNTING: {
-     if (ch->in_room == ch->specials.hunting->in_room) {
-     } else {
-     }
-       }
-    }
-}
-#endif
-
 void invert(char* arg1, char* arg2) {
   register int i = 0;
   register int len = strlen(arg1) - 1;
@@ -11043,58 +10921,6 @@ int creeping_death(struct char_data* ch, int cmd, char* arg) {
     }
   }
 }
-
-#if 0
-/*
-   shanty town kids
-*/
-int shanty_town_kids( struct char_data *ch, int cmd, char *arg)
-{
-
-  if (!AWAKE(ch)) return(FALSE);
-
-
-  /*
-    harrass low levellers.
-  */
-  if (cmd >= 1 && cmd <= 6) {
-    if (GetMaxLevel(ch) <= 5 && number(0,2)==0) {
-      act("A street kid sticks out a foot and trips you as you try to leave",
-     FALSE, ch, 0, 0, TO_CHAR);
-      act("A street kid sticks out a foot and trips $n",
-     FALSE, ch, 0, 0, TO_ROOM);
-      GET_POS(ch) = POSITION_SITTING;
-      act("The street kid laughs at you", FALSE,ch, 0, 0, TO_CHAR);
-      act("The street kid laughs at $n", FALSE,ch, 0, 0, TO_ROOM);
-    }
-  }
-
-  /*
-    steal from mid-levellers
-  */
-
-
-  /*
-    backstab high levellers
-    */
-
-
-  if (cmd) {
-
-
-  }
-
-  if (ch->specials.fighting) {
-    act("$N runs between $n's legs", FALSE, ch->specials.fighting, 0, ch, TO_ROOM);
-    act("$N runs between your legs", FALSE, ch->specials.fighting, 0, ch, TO_CHAR);
-    vict = ch->specials.fighting;
-    stop_fighting(ch);
-    stop_fighting(vict);
-  }
-
-}
-
-#endif
 
 int GenericCityguardHateUndead(struct char_data* ch, int cmd, char* arg,
   int type) {

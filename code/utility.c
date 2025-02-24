@@ -634,12 +634,6 @@ int DetermineExp(struct char_data* mob, int exp_flags) {
   return (base + (phit * (GET_HIT(mob) / 2)) + ((sab * exp_flags) / 2));
 }
 
-/*
-int  DetermineExp( struct char_data *mob, int exp_flags);
-char getall(char *name, char *newname);
-int getabunch(char *name, char  *newname);
-*/
-
 void down_river(int pulse) {
   struct char_data *ch, *tmp;
   struct obj_data *obj_object, *next_obj;
@@ -898,20 +892,11 @@ int IsExtraPlanar(struct char_data* ch) {
   }
 }
 
-/*
-int IsUndead( struct char_data *ch)
-int IsUndead( struct char_data *ch)
-int IsUndead( struct char_data *ch)
-int IsUndead( struct char_data *ch)
-int IsUndead( struct char_data *ch)
-
-*/
-
 void SetHunting(struct char_data* ch, struct char_data* tch) {
   int persist, dist;
   char buf[256];
 
-#if NOTRACK
+#if defined(NOTRACK) && NOTRACK
   return;
 #endif
 

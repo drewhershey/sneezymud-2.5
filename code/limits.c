@@ -169,9 +169,7 @@ int mana_gain(struct char_data* ch) {
   return (gain);
 }
 
-int hit_gain(struct char_data* ch)
-/* Hitpoint gain pr. game hour */
-{
+int hit_gain(struct char_data* ch) {
   int gain;
 
   if (IS_NPC(ch)) {
@@ -216,9 +214,7 @@ int hit_gain(struct char_data* ch)
   return (gain);
 }
 
-int move_gain(struct char_data* ch)
-/* move gain pr. game hour */
-{
+int move_gain(struct char_data* ch) {
   int gain;
 
   if (IS_NPC(ch)) {

@@ -71,6 +71,7 @@ extern int load(void);
 void coma(int s);
 void check_reboot(void);
 void signal_setup(void);
+extern int workhours(void);
 
 void act(char* str, int hide_invisible, struct char_data* ch,
   struct obj_data* obj, void* vict_obj, int type);

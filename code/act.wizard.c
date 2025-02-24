@@ -2880,8 +2880,6 @@ void do_advance(struct char_data* ch, char* argument, int cmd) {
   char name[100], level[100], class[100];
   int adv, newlevel, lin_class;
 
-  void gain_exp(struct char_data * ch, int gain);
-
   if (IS_NPC(ch))
     return;
 
@@ -3015,8 +3013,6 @@ void do_restore(struct char_data* ch, char* argument, int cmd) {
   struct char_data* victim;
   char buf[100];
   int i;
-
-  void update_pos(struct char_data * victim);
 
   if (cmd == 0)
     return;

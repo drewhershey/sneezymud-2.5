@@ -1198,14 +1198,25 @@ void update_object(struct obj_data* obj, int use) {
       update_object(obj->next_content, use);
 }
 
+/* Called when a character that follows/is followed dies */
+static void die_follower(struct char_data* ch) {
+  struct follow_type *j, *k;
+
+  if (ch->master)
+    stop_follower(ch);
+
+  for (k = ch->followers; k; k = j) {
+    j = k->next;
+    stop_follower(k->follower);
+  }
+}
+
 /* Extract a ch completely from the world, and leave his stuff behind */
 void extract_char(struct char_data* ch) {
   struct obj_data *i, *o;
   struct char_data *k, *next_char;
   struct descriptor_data* t_desc;
   int l, was_in, j;
-
-  void die_follower(struct char_data * ch);
 
   if (!IS_NPC(ch) && !ch->desc) {
     for (t_desc = descriptor_list; t_desc; t_desc = t_desc->next)
