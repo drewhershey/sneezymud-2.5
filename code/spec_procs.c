@@ -1878,30 +1878,50 @@ int andy_wilcox(struct char_data* ch, int cmd, char* arg) {
 #define THE_PUB 3940
 #define ACT_OVER_21 1
 #define ACT_SNICKER 2
+
+  struct pub_beers {
+      int container, contains, quant, actflag;
+  };
+
   static int open = 1; /* 0 closed;  1 open;  2 last call */
   char argm[100], newarg[100], buf[MAX_STRING_LENGTH];
   struct obj_data *temp1, *temp2;
-  struct char_data* temp_char;
-  struct char_data* andy;
+
   int num, i, cost;
 
-  static struct pub_beers {
-      int container, contains, quant, actflag;
-  } sold_here[] = {{3903, 3902, 6, 1}, {3905, 3904, 6, 1}, {3907, 3906, 6, 1},
-    {3909, 3908, 6, 3}, {3911, 3910, 6, 3}, {3913, 3912, 6, 3}, {3914, 0, 0, 1},
-    {3930, 0, 0, 0}, {3931, 0, 0, 0}, {3932, 0, 0, 0}, {3102, 0, 0, 0}, {-1}},
-    *scan;
+  static const struct pub_beers sold_here[] = {
+    {3903, 3902, 6, 1},
+    {3905, 3904, 6, 1},
+    {3907, 3906, 6, 1},
+    {3909, 3908, 6, 3},
+    {3911, 3910, 6, 3},
+    {3913, 3912, 6, 3},
+    {3914, 0, 0, 1},
+    {3930, 0, 0, 0},
+    {3931, 0, 0, 0},
+    {3932, 0, 0, 0},
+    {3102, 0, 0, 0},
+    {-1, 0, 0, 0},
+  };
+  const struct pub_beers* scan;
 
-  andy = 0;
+  if (!ch || check_soundproof(ch))
+    return FALSE;
 
-  if (check_soundproof(ch))
-    return (FALSE);
+  Room* room = real_roomp(ch->in_room);
 
-  for (temp_char = real_roomp(ch->in_room)->people; (!andy) && (temp_char);
-       temp_char = temp_char->next_in_room)
-    if (IS_MOB(temp_char))
-      if (mob_index[temp_char->nr].func.mob_f == andy_wilcox)
-        andy = temp_char;
+  if (!room) {
+    return FALSE;
+  }
+
+  Mob* andy = NULL;
+  for (Mob* m = room->people; !andy && m; m = m->next_in_room)
+    if (IS_MOB(m) && mob_index[m->nr].func.mob_f == andy_wilcox)
+      andy = m;
+
+  if (!andy) {
+    return FALSE;
+  }
 
   if (open == 0 && time_info.hours == 11) {
     open = 1;
@@ -1999,14 +2019,12 @@ int andy_wilcox(struct char_data* ch, int cmd, char* arg) {
         return TRUE;
       }
 
-#if 1
       /* multiple buy code */
       if ((num = getabunch(argm, newarg)) != NULL) {
         strcpy(argm, newarg);
       }
       if (num == 0)
         num = 1;
-#endif
 
       if (!(temp1 = get_obj_in_list_vis(ch, argm, andy->carrying))) {
         act("$n tells you 'Sorry, but I don't sell that.'", FALSE, andy, 0, ch,
