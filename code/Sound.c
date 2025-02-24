@@ -32,11 +32,14 @@ void MakeNoise(int room, char* local_snd, char* distant_snd) {
 
   rp = real_roomp(room);
 
-  if (rp) {
-    for (ch = rp->people; ch; ch = ch->next_in_room) {
-      send_to_char(local_snd, ch);
-    }
+  if (!rp) {
+    return;
   }
+
+  for (ch = rp->people; ch; ch = ch->next_in_room) {
+    send_to_char(local_snd, ch);
+  }
+
   for (door = 0; door <= 5; door++) {
     if (rp->dir_option[door] &&
         (orp = real_roomp(rp->dir_option[door]->to_room))) {
