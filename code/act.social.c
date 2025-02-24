@@ -86,10 +86,9 @@ void boot_social_messages(void) {
     if (!soc_mess_list) {
       CREATE(soc_mess_list, struct social_messg, 1);
       list_top = 0;
-    } else if (!(soc_mess_list = (struct social_messg*)realloc(soc_mess_list,
-                   sizeof(struct social_messg) * (++list_top + 1)))) {
-      perror("boot_social_messages. realloc");
-      exit(1);
+    } else {
+      RECREATE(soc_mess_list, struct social_messg,
+        (unsigned long)(++list_top + 1));
     }
 
     /* read the stuff */
