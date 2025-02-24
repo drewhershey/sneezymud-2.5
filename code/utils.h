@@ -402,7 +402,7 @@ int MissileDamage(struct char_data* ch, struct char_data* victim, int dam,
 void stop_follower(struct char_data* ch);
 void do_start(struct char_data* ch);
 int AntiGuildMaster(struct char_data* ch, int cmd, char* arg);
-int getabunch(char* name, char* newname);
+int getabunch(const char* name, char* newname);
 int choose_exit_global(int in_room, int tgt_room, int depth);
 int LearnFromMistake(struct char_data* ch, int sknum, int silent, int max);
 int fighter(struct char_data* ch, int cmd, char* arg);

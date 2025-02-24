@@ -11,6 +11,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <strings.h>
+#include <sys/param.h>
 #include <time.h>
 
 #include "area.h"
@@ -396,27 +397,20 @@ char getall(char* name, char* newname) {
   return (TRUE);
 }
 
-int getabunch(char* name, char* newname) {
-  int num = 0;
-  char tmpname[80] = "\0";
+int getabunch(const char* name, char* newname) {
+  if (name == NULL || newname == NULL) {
+    return 0;
+  }
 
-  sscanf(name, "%d*%s", &num, tmpname);
-  if (tmpname[0] == '\0')
-    return (FALSE);
-  if (num < 1)
-    return (FALSE);
-  if (num > 9)
-    num = 9;
+  char* endptr;
+  size_t num = strtoul(name, &endptr, 10);
 
-  while (*name != '*')
-    name++;
+  if (endptr == name || *endptr != '*' || *(endptr + 1) == '\0' ||
+      strcpy(newname, endptr + 1) == NULL) {
+    return 0;
+  }
 
-  name++;
-
-  for (; *newname = *name; name++, newname++)
-    ;
-
-  return (num);
+  return MIN((int)num, 9);
 }
 
 int DetermineExp(struct char_data* mob, int exp_flags) {
