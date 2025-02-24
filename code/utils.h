@@ -43,13 +43,15 @@ int CAN_SEE(struct char_data* s, struct char_data* o);
     }                                                 \
   } while (0)
 
-#define RECREATE(result, type, number)                            \
-  do {                                                            \
-    (result) = (type*)realloc((result), sizeof(type) * (number)); \
-    if (!(result)) {                                              \
-      perror("realloc failure");                                  \
-      abort();                                                    \
-    }                                                             \
+#define RECREATE(result, type, number)                         \
+  do {                                                         \
+    void* _temp;                                               \
+    _temp = realloc((void*)(result), sizeof(type) * (number)); \
+    if (!(_temp)) {                                            \
+      perror("realloc failure");                               \
+      abort();                                                 \
+    }                                                          \
+    (result) = (type*)_temp;                                   \
   } while (0)
 
 #define IS_SET(flag, bit) ((flag) & (bit))
