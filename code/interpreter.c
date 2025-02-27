@@ -50,109 +50,260 @@ int plr_tick_count = 0;
 
 const char* const path[] = {"wizards/", "\n"};
 
-const char* const command[] = {"north", /* 1 */
-  "east", "south", "west", "up", "down", "enter", "exits", "kiss", "get",
+const char* const command[] = {
+  "north", /* 1 */
+  "east",
+  "south",
+  "west",
+  "up",
+  "down",
+  "enter",
+  "exits",
+  "kiss",
+  "get",
   "drink", /* 11 */
-  "eat", "wear", "wield", "look", "score", "say", "shout", "tell", "inventory",
+  "eat",
+  "wear",
+  "wield",
+  "look",
+  "score",
+  "say",
+  "shout",
+  "tell",
+  "inventory",
   "qui", /* 21 */
-  "bounce", "smile", "dance", "kill", "cackle", "laugh", "giggle", "shake",
-  "puke", "growl", /* 31 */
-  "scream", "insult", "comfort", "nod", "sigh", "sulk", "help", "who", "emote",
+  "bounce",
+  "smile",
+  "dance",
+  "kill",
+  "cackle",
+  "laugh",
+  "giggle",
+  "shake",
+  "puke",
+  "growl", /* 31 */
+  "scream",
+  "insult",
+  "comfort",
+  "nod",
+  "sigh",
+  "sulk",
+  "help",
+  "who",
+  "emote",
   "echo", /* 41 */
-  "stand", "sit", "rest", "sleep", "wake", "force", "transfer", "hug",
-  "snuggle", "cuddle", /* 51 */
-  "nuzzle", "cry", "news", "equipment", "buy", "sell", "value", "list", "drop",
+  "stand",
+  "sit",
+  "rest",
+  "sleep",
+  "wake",
+  "force",
+  "transfer",
+  "hug",
+  "snuggle",
+  "cuddle", /* 51 */
+  "nuzzle",
+  "cry",
+  "news",
+  "equipment",
+  "buy",
+  "sell",
+  "value",
+  "list",
+  "drop",
   "goto", /* 61 */
-  "weather", "read", "pour", "grab", "remove", "put", "shutdow", "save", "hit",
+  "weather",
+  "read",
+  "pour",
+  "grab",
+  "remove",
+  "put",
+  "shutdow",
+  "save",
+  "hit",
   "string", /* 71 */
-  "give", "quit", "stat", "guard", "time", "load", "purge", "shutdown", "idea",
+  "give",
+  "quit",
+  "stat",
+  "guard",
+  "time",
+  "load",
+  "purge",
+  "shutdown",
+  "idea",
   "typo", /* 81 */
-  "bug", "whisper", "cast", "at", "ask", "order", "sip", "taste", "snoop",
+  "bug",
+  "whisper",
+  "cast",
+  "at",
+  "ask",
+  "order",
+  "sip",
+  "taste",
+  "snoop",
   "follow", /* 91 */
-  "rent", "bload", "poke", "advance", "accuse", "grin", "bow", "open", "close",
+  "rent",
+  "bload",
+  "poke",
+  "advance",
+  "accuse",
+  "grin",
+  "bow",
+  "open",
+  "close",
   "lock", /* 101 */
-  "unlock", "leave", "applaud", "blush", "burp", "chuckle", "clap", "cough",
-  "curtsey", "fart", /* 111 */
-  "flip", "fondle", "frown", "gasp", "glare", "groan", "grope", "hiccup",
-  "lick", "love", /* 121 */
-  "moan", "nibble", "pout", "purr", "ruffle", "shiver", "shrug", "sing", "slap",
+  "unlock",
+  "leave",
+  "applaud",
+  "blush",
+  "burp",
+  "chuckle",
+  "clap",
+  "cough",
+  "curtsey",
+  "fart", /* 111 */
+  "flip",
+  "fondle",
+  "frown",
+  "gasp",
+  "glare",
+  "groan",
+  "grope",
+  "hiccup",
+  "lick",
+  "love", /* 121 */
+  "moan",
+  "nibble",
+  "pout",
+  "purr",
+  "ruffle",
+  "shiver",
+  "shrug",
+  "sing",
+  "slap",
   "smirk", /* 131 */
-  "snap", "sneeze", "snicker", "sniff", "snore", "spit", "squeeze", "stare",
-  "strut", "thank", /* 141 */
-  "twiddle", "wave", "whistle", "wiggle", "wink", "yawn", "snowball", "write",
-  "hold", "flee", /* 151 */
-  "sneak", "hide", "backstab", "pick", "steal", "bash", "rescue", "kick",
-  "french", "comb", /* 161 */
-  "massage", "tickle", "practice", "pat", "examine", "take", "info", "'",
-  "practise", "curse", /* 171 */
-  "use", "where", "levels", "reroll", "pray", ",", "beg", "bleed", "cringe",
+  "snap",
+  "sneeze",
+  "snicker",
+  "sniff",
+  "snore",
+  "spit",
+  "squeeze",
+  "stare",
+  "strut",
+  "thank", /* 141 */
+  "twiddle",
+  "wave",
+  "whistle",
+  "wiggle",
+  "wink",
+  "yawn",
+  "snowball",
+  "write",
+  "hold",
+  "flee", /* 151 */
+  "sneak",
+  "hide",
+  "backstab",
+  "pick",
+  "steal",
+  "bash",
+  "rescue",
+  "kick",
+  "french",
+  "comb", /* 161 */
+  "massage",
+  "tickle",
+  "practice",
+  "pat",
+  "examine",
+  "take",
+  "info",
+  "'",
+  "practise",
+  "curse", /* 171 */
+  "use",
+  "where",
+  "levels",
+  "reroll",
+  "pray",
+  ",",
+  "beg",
+  "bleed",
+  "cringe",
   "daydream", /* 181 */
-  "fume", "grovel", "hop", "nudge", "peer", "point", "ponder", "punch", "snarl",
+  "fume",
+  "grovel",
+  "hop",
+  "nudge",
+  "peer",
+  "point",
+  "ponder",
+  "punch",
+  "snarl",
   "spank", /* 191 */
-  "steam", "tackle", "taunt", "wiznet", "whine", "worship", "yodel", "brief",
-  "wizlist", "consider",                                    /* 201 */
-  "group", "restore", "return", "switch",                   /* 205 */
-  "quaff", "recite", "users", "pose", "noshout", "wizhelp", /* 211 */
-  "credits",                                                /* 212 */
-  "compact",                                                /* 213 */
-  ":", /* emote   (jdb - 7/31/91)     */
-  "deafen",
-  /* plr_noshout  (jdb - 7/31)   */ /*215*/
-  "slay",
-  /* instead of "kill" for immorts (8/16) */ /*216*/
-  "wimpy",                                   /* 217 */
-  "junk",                                    /* 218 */
-  "deposit",
-  /* 219 */              /* 9 - 4ish */
-  "withdraw",            /* 220 */
-  "balance", "nohassle", /* 9 - 6 */
-  "system",              /* 9 - 16 */
-  "pull", "stealth",     /* 225 */
-  "edit",                /* 226 */
-  "@set",                /* 227 */
-  "rsave",               /* 228 */
-  "rload",               /* 229 */
-  "track",               /* 230 */
-  "wizlock",             /* 231 */
-  "highfive",            /* 232 */
-  "title",               /* 233 */
-  "whozone",             /* 234 */
-  "assist",              /* 235 */
-  "attribute",           /* 236 */
-  "world",               /* 237 */
-  "allspells",           /* 238 */
-  "fire",                /* 239 */
-  "show",                /* 240 */
-  "bodyslam",            /* 241 */
-  "invisible",           /* 242 */
-  "gain",                /* 243 */
-  "instazone",           /* 244 */
-  "disarm",              /* 245 */
-  "think",               /* 246 */
-  "chpwd",
-  /* 247 */ /* 2-6-92 jdb */
-  "fill",
-  /* 248 */ /* 2-9-92 jdb */
-  "imptest",
-/* 249 */ /* 2-13-92 jdb */
-#if PLAYER_AUTH
-  "auth",
-  /* 250 */ /* 3-1-92 jdb */
-  "shoot",
-  /* 251 */ /* 3-8-92 jdb */
-  "silence",
-  /* 252 */ /* 4-26-92 smg */
-  "teams",
-/* 253 */ /* 5-26-92 smg */
-#else
-  "shoot",
-  /* 250 */ /* 3-8-92 jdb */
-  "silence",
-  /* 251 */ /* 4-26-92 smg */
-  "teams",
-  /* 252 */ /* 5-26-92 smg */
-  "gt",
-  /*253*/        /*jfr2 6/25/92*/
+  "steam",
+  "tackle",
+  "taunt",
+  "wiznet",
+  "whine",
+  "worship",
+  "yodel",
+  "brief",
+  "wizlist",
+  "consider", /* 201 */
+  "group",
+  "restore",
+  "return",
+  "switch", /* 205 */
+  "quaff",
+  "recite",
+  "users",
+  "pose",
+  "noshout",
+  "wizhelp",  /* 211 */
+  "credits",  /* 212 */
+  "compact",  /* 213 */
+  ":",        /* 214 emote   (jdb - 7/31/91)     */
+  "deafen",   /* 215 plr_noshout  (jdb - 7/31) */
+  "slay",     /* 216 instead of "kill" for immorts (8/16) */
+  "wimpy",    /* 217 */
+  "junk",     /* 218 */
+  "deposit",  /* 219  9 - 4ish */
+  "withdraw", /* 220 */
+  "balance",
+  "nohassle", /* 9 - 6 */
+  "system",   /* 9 - 16 */
+  "pull",
+  "stealth",     /* 225 */
+  "edit",        /* 226 */
+  "@set",        /* 227 */
+  "rsave",       /* 228 */
+  "rload",       /* 229 */
+  "track",       /* 230 */
+  "wizlock",     /* 231 */
+  "highfive",    /* 232 */
+  "title",       /* 233 */
+  "whozone",     /* 234 */
+  "assist",      /* 235 */
+  "attribute",   /* 236 */
+  "world",       /* 237 */
+  "allspells",   /* 238 */
+  "fire",        /* 239 */
+  "show",        /* 240 */
+  "bodyslam",    /* 241 */
+  "invisible",   /* 242 */
+  "gain",        /* 243 */
+  "instazone",   /* 244 */
+  "disarm",      /* 245 */
+  "think",       /* 246 */
+  "chpwd",       /* 247  2-6-92 jdb */
+  "fill",        /* 248  2-9-92 jdb */
+  "imptest",     /* 249  2-13-92 jdb */
+  "shoot",       /* 250  3-8-92 jdb */
+  "silence",     /* 251  4-26-92 smg */
+  "teams",       /* 252  5-26-92 smg */
+  "gt",          /*253 jfr2 6/25/92 */
   "send",        /*254*/
   "log",         /*255*/
   "monitor",     /*256*/
@@ -177,23 +328,49 @@ const char* const command[] = {"north", /* 1 */
   "stay",        /*275*/
   "peek",        /*276*/
   "color",       /*277*/
-  "headbutt", "subterfuge", "throw", "oset", "scribe", "brew",
-  "grapple",                                    /*284*/
-  "flipoff", "moon", "pinch", "bite", "search", /*289*/
-  "spy", "doorbash", "play", "flag", "quivering palm", "feign death",
-  "springleap", "first aid", "swim", "sign", "cutlink", "lay hands",
-  "wiznews",                         /* 302 - SG */
-  "mail", "check", "receive", "cls", /* 306 - jfr2 */
-  "glance",                          /* 307 - jfr2 */
-  "terminal", "prompt", "bamfin", "bamfout", "board", "checklog", /* 313 - SG */
-  "loglist",                                                      /* 314 - SG */
-  "deathcheck",                                                   /* SG */
-  "whap",    /* 316 Batopr */
-  "beam",    /* 317 Bat */
-  "chortle", /* 318 Bat */
-
-#endif
-  "\n"};
+  "headbutt",
+  "subterfuge",
+  "throw",
+  "oset",
+  "scribe",
+  "brew",
+  "grapple", /*284*/
+  "flipoff",
+  "moon",
+  "pinch",
+  "bite",
+  "search", /*289*/
+  "spy",
+  "doorbash",
+  "play",
+  "flag",
+  "quivering palm",
+  "feign death",
+  "springleap",
+  "first aid",
+  "swim",
+  "sign",
+  "cutlink",
+  "lay hands",
+  "wiznews", /* 302 - SG */
+  "mail",
+  "check",
+  "receive",
+  "cls",    /* 306 - jfr2 */
+  "glance", /* 307 - jfr2 */
+  "terminal",
+  "prompt",
+  "bamfin",
+  "bamfout",
+  "board",
+  "checklog",   /* 313 - SG */
+  "loglist",    /* 314 - SG */
+  "deathcheck", /* SG */
+  "whap",       /* 316 Batopr */
+  "beam",       /* 317 Bat */
+  "chortle",    /* 318 Bat */
+  "\n",
+};
 
 int search_block(char* arg, const char* const* list, bool exact) {
   register int i, l;

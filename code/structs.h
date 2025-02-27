@@ -33,8 +33,7 @@ typedef signed char byte;
   tailoring stuff
 */
 #define LIMITED_ITEMS 1
-#define PLAYER_AUTH 0
-#define SITELOCK 1
+#define SITELOCK 0
 
 /*
  efficiency stuff
@@ -1127,9 +1126,7 @@ struct txt_q {
 #define CON_WIZLOCK 14
 #define CON_QRACE 15
 #define CON_RACPAR 16
-#if PLAYER_AUTH
-#define CON_AUTH 17
-#endif
+#define CON_UNUSED 17
 #define CON_CITY_CHOICE 18
 #define CON_STAT_LIST 19
 #define CON_VT_ANSI 20

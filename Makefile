@@ -27,7 +27,6 @@ OLEVEL ?=0
 # -DHASH          : Use hash tables for rooms (More CPU, less storage)
 # -DNOTRACK       : Disable tracking feature (lower CPU usage)
 # -DLIMITED_ITEMS : Limit items above specific rent cost
-# -DPLAYER_AUTH   : Force new players to be authorized
 # -DDEBUG         : Enable debugging features
 # -DSITELOCK      : Enable host lockout commands
 # -DNODUPLICATES  : Prevent item duplication exploits

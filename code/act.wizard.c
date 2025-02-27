@@ -56,62 +56,6 @@ static void CreateOneRoom(int loc_nr) {
   rp->description = (char*)strdup("Empty\n");
 }
 
-#if PLAYER_AUTH
-void do_auth(struct char_data* ch, char* argument, int cmd) {
-  char name[50], word[20];
-  char* code;
-  char buf[256];
-  int done = FALSE;
-  struct descriptor_data* d;
-
-  if (IS_NPC(ch))
-    return;
-
-  /* parse the argument */
-  /* get char name */
-  argument = one_argument(argument, name);
-  /*
-    search through descriptor list for player name
-  */
-  for (d = descriptor_list; d && !done; d = d->next) {
-    if (d->character)
-      if (GET_NAME(d->character) &&
-          (str_cmp(GET_NAME(d->character), name) == 0)) {
-        done = TRUE;
-        break;
-      }
-  }
-
-  /*
-    if not found, return error
-  */
-  if (!d) {
-    send_to_char("That player was not found.\n\r", ch);
-    return;
-  }
-
-  if (*argument) {
-    /* get response (rest of argument) */
-    code = one_argument(argument, word);
-    if (str_cmp(word, "yes") == 0) {
-      SEND_TO_Q("You have been accepted.  Press enter\n\r", d);
-    } else if (str_cmp(word, "no") == 0) {
-      SEND_TO_Q("You have been denied.  Press enter\n\r", d);
-    } else {
-      SEND_TO_Q(argument, d);
-      SEND_TO_Q("\n\r", d);
-      sprintf(buf, "You send '%s'\n\r", argument);
-      send_to_char(buf, ch);
-      return;
-    }
-  } else {
-    send_to_char("Auth[orize] {Yes | No | Message} \n\r", ch);
-    return;
-  }
-  return;
-}
-#endif
-
 void do_demote(struct char_data* ch, char* argument, int cmd) {
   char person[MAX_STRING_LENGTH];
   char buf[MAX_STRING_LENGTH];
@@ -1933,7 +1877,7 @@ void do_set(struct char_data* ch, char* argument, int cmd) {
     GET_EXP(mob) = parm;
   } else if (!strcmp(field, "lev")) {
     parm2 = 0; /* mage */
-    sscanf(parmstr, "%d %d", &parm);
+    sscanf(parmstr, "%d", &parm);
     argument = one_argument(argument, parmstr);
     sscanf(parmstr, "%d", &parm2);
     if (!IS_NPC(mob)) {
