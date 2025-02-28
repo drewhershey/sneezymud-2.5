@@ -829,18 +829,40 @@ void assign_mobiles(void) {
   assign_the_shopkeepers();
 }
 
+struct obj_proc_entry {
+    int vnum;
+    int (*proc)(struct char_data*, int, char*, struct obj_data*);
+};
+
+static const struct obj_proc_entry obj_specials[] = {
+  {3095, board},
+  {3097, board},
+  {3098, board},
+  {3099, board},
+  {25102, board},
+  {29992, jive_box},
+  {21122, nodrop},
+  {21130, soap},
+  {7215, warMaker},
+  {16754, orbOfDestruction},
+};
+
+static const size_t num_obj_specials =
+  sizeof(obj_specials) / sizeof(obj_specials[0]);
+
 /* assign special procedures to objects */
 void assign_objects(void) {
-  obj_index[real_object(3095)].func.obj_f = board;
-  obj_index[real_object(3097)].func.obj_f = board;
-  obj_index[real_object(3098)].func.obj_f = board;
-  obj_index[real_object(3099)].func.obj_f = board;
-  obj_index[real_object(25102)].func.obj_f = board;
-  obj_index[real_object(29992)].func.obj_f = jive_box;
-  obj_index[real_object(21122)].func.obj_f = nodrop;
-  obj_index[real_object(21130)].func.obj_f = soap;
-  obj_index[real_object(7215)].func.obj_f = warMaker;
-  obj_index[real_object(16754)].func.obj_f = orbOfDestruction;
+  for (size_t i = 0; i < num_obj_specials; ++i) {
+    int rnum = real_object(obj_specials[i].vnum);
+
+    if (rnum < 0) {
+      vlogf("object_assign: Object %d not found in database.",
+        obj_specials[i].vnum);
+    } else {
+      obj_index[rnum].func.obj_f = obj_specials[i].proc;
+    }
+  }
+
   InitBoards();
 }
 
