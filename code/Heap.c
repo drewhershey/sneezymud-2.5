@@ -8,6 +8,7 @@
 #include "comm.h"
 #include "heap.h"
 #include "structs.h"
+#include "utils.h"
 
 #define TRUE 1
 #define FALSE 0
@@ -46,10 +47,9 @@ void StringHeap(char* string, struct StrHeap* Heap) {
   if (!found) {
     if (Heap->str) {
       /* increase size by 1 */
-      Heap->str = (struct StrHeapList*)realloc(Heap->str,
-        sizeof(struct StrHeapList) * Heap->uniq + 1);
+      RECREATE(Heap->str, struct StrHeapList, (size_t)(Heap->uniq + 1));
     } else {
-      Heap->str = (struct StrHeapList*)malloc(sizeof(struct StrHeapList));
+      CREATE(Heap->str, struct StrHeapList, 1);
     }
     Heap->str[Heap->uniq].string = (char*)malloc(strlen(string) + 1);
     SmartStrCpy(Heap->str[Heap->uniq].string, string);
