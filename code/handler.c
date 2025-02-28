@@ -60,8 +60,12 @@ static int split_string(char* str, char* sep, char** argv)
 int isname(const char* str, const char* namelist) {
   char *argv[100], *xargv[100];
   int argc, xargc, i, j;
-  int exact;
+  int exact = FALSE;
   char buf[MAX_INPUT_LENGTH], names[MAX_INPUT_LENGTH], *s;
+
+  if (!str || !namelist) {
+    return FALSE;
+  }
 
   strcpy(buf, str);
   argc = split_string(buf, "- \t\n\r,", argv);
@@ -69,13 +73,16 @@ int isname(const char* str, const char* namelist) {
   strcpy(names, namelist);
   xargc = split_string(names, "- \t\n\r,", xargv);
 
-  s = argv[argc - 1];
-  s += strlen(s);
-  if (*(--s) == '.') {
-    exact = TRUE;
-    *s = 0;
-  } else
-    exact = FALSE;
+  if (argc > 0) {
+    s = argv[argc - 1];
+    size_t len = strlen(s);
+    if (len > 0) {
+      if (s[len - 1] == '.') {
+        exact = TRUE;
+        s[len - 1] = '\0';
+      }
+    }
+  }
 
   if (exact && argc != xargc)
     return FALSE;
