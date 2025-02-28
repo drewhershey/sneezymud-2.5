@@ -1929,31 +1929,55 @@ char* fread_string(FILE* fl) {
     if (strlen(tmp) + strlen(buf) + 1 > MAX_STRING_LENGTH) {
       vlog("fread_string: string too large (db.c)");
       exit(0);
-    } else
+    } else {
       strcat(buf, tmp);
+    }
 
-    for (point = buf + strlen(buf) - 2; point >= buf && isspace(*point);
-         point--)
-      ;
-    if (flag = (*point == '~'))
-      if (*(buf + strlen(buf) - 3) == '\n') {
+    // Check if buf is empty before attempting to access characters
+    if (strlen(buf) < 2) {
+      continue;
+    }
+
+    // Move point to second-to-last char, checking bounds
+    point = buf + strlen(buf) - 2;
+    if (point < buf) {
+      point = buf;
+    }
+
+    // Skip whitespace, ensuring we don't go before start of buffer
+    while (point >= buf && isspace(*point)) {
+      point--;
+    }
+
+    flag = (point >= buf && *point == '~');
+    if (flag) {
+      if (strlen(buf) >= 3 && *(buf + strlen(buf) - 3) == '\n') {
         *(buf + strlen(buf) - 2) = '\r';
         *(buf + strlen(buf) - 1) = '\0';
-      } else
-        *(buf + strlen(buf) - 2) = '\0';
-    else {
-      *(buf + strlen(buf) + 1) = '\0';
-      *(buf + strlen(buf)) = '\r';
+      } else {
+        // Ensure we don't write before buffer start
+        if (strlen(buf) >= 2) {
+          *(buf + strlen(buf) - 2) = '\0';
+        } else {
+          *buf = '\0';
+        }
+      }
+    } else {
+      // Ensure we have room for \r\0
+      if (strlen(buf) + 2 <= MAX_STRING_LENGTH) {
+        *(buf + strlen(buf) + 1) = '\0';
+        *(buf + strlen(buf)) = '\r';
+      }
     }
   } while (!flag);
 
   /* do the allocate boogie  */
-
   if (strlen(buf) > 0) {
     CREATE(rslt, char, strlen(buf) + 1);
     strcpy(rslt, buf);
-  } else
+  } else {
     rslt = 0;
+  }
   return (rslt);
 }
 
