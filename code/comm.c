@@ -1269,12 +1269,15 @@ void send_to_except(char* messg, struct char_data* ch) {
 }
 
 void send_to_room(char* messg, int room) {
-  struct char_data* i;
+  if (!messg || !real_roomp(room)) {
+    return;
+  }
 
-  if (messg)
-    for (i = real_roomp(room)->people; i; i = i->next_in_room)
-      if (i->desc)
-        write_to_q(messg, &i->desc->output);
+  for (Mob* i = real_roomp(room)->people; i; i = i->next_in_room) {
+    if (i->desc) {
+      write_to_q(messg, &i->desc->output);
+    }
+  }
 }
 
 void send_to_room_except(char* messg, int room, struct char_data* ch) {
