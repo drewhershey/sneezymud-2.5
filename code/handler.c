@@ -969,8 +969,16 @@ struct char_data* get_char_num(int nr) {
 
 /* put an object in a room */
 void obj_to_room(struct obj_data* object, int room) {
-  if (room == -1)
+  if (room == -1) {
     room = 4;
+  }
+
+  Room* rp = real_roomp(room);
+  assert(rp);
+  if (!rp) {
+    vlog("obj_to_room: bad room");
+    return;
+  }
 
   assert(!(object->equipped_by) && (object->eq_pos == -1));
 
@@ -978,8 +986,8 @@ void obj_to_room(struct obj_data* object, int room) {
     obj_from_room(object);
   }
 
-  object->next_content = real_roomp(room)->contents;
-  real_roomp(room)->contents = object;
+  object->next_content = rp->contents;
+  rp->contents = object;
   object->in_room = room;
   object->carried_by = 0;
   object->equipped_by = 0; /* should be unnecessary */
