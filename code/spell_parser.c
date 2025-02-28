@@ -742,8 +742,10 @@ void affect_update(int pulse) {
   for (j = object_list; j; j = next_thing) {
     next_thing = j->next; /* Next in object list */
 
-    if (obj_index[j->item_number].func.obj_f)
+    if (j->item_number >= 0 && j->item_number < top_of_objt &&
+        obj_index[j->item_number].func.obj_f) {
       (*obj_index[j->item_number].func.obj_f)(NULL, 0, NULL, j);
+    }
 
     if (j->obj_flags.decay_time > -1) {
       /* update_char_objects takes care of worn, carried */
