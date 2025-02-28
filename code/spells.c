@@ -992,7 +992,9 @@ static void spell_geyser(byte level, struct char_data* ch,
     temp = tmpv->next_in_room;
     if ((ch != tmpv) && (ch->in_room == tmpv->in_room)) {
       if ((GetMaxLevel(tmpv) < LOW_IMMORTAL) || (IS_NPC(tmpv))) {
-        MissileDamage(ch, tmpv, dam, SPELL_GEYSER);
+        if (MissileDamage(ch, tmpv, dam, SPELL_GEYSER)) {
+          return;
+        }
         act("You are seared by the boiling water!!\n\r", FALSE, ch, 0, tmpv,
           TO_VICT);
       } else {
@@ -4112,8 +4114,7 @@ void cast_locate_object(byte level, struct char_data* ch, char* arg, int type,
   }
 }
 
-static bool ImpSaveSpell(struct char_data* ch, sh_int save_type,
-  int mod) {
+static bool ImpSaveSpell(struct char_data* ch, sh_int save_type, int mod) {
   int save;
 
   /* Positive mod is better for save */
