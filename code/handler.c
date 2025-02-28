@@ -1360,6 +1360,7 @@ void extract_char(struct char_data* ch) {
     // FreeFears(ch);
     mob_count--;
     free_char(ch);
+    return;
   }
 
   if (ch->desc) {
