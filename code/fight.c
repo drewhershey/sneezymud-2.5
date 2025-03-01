@@ -223,59 +223,88 @@ int check_peaceful(struct char_data* ch, char* msg) {
 
 /* start one char fighting another (yes, it is horrible, I know... )  */
 void set_fighting(struct char_data* ch, struct char_data* vict) {
+  assert(ch && vict);
+  assert(ch && vict && ch->in_room == vict->in_room &&
+         "set_fighting: not in same room");
+  assert(ch && !ch->specials.fighting && "set_fighting: already fighting");
+
+  if (!ch || !vict) {
+    vlog("Null character passed to set_fighting");
+    return;
+  }
+
+  if (ch->in_room != vict->in_room) {
+    vlog("Characters not in same room at invocation of set_fighting");
+    return;
+  }
+
   if (ch->specials.fighting) {
     vlog("Fighting character set to fighting another.");
     return;
   }
 
-  if (vict->attackers <= 5) {
-    vict->attackers += 1;
-  } else {
-    vlog("more than 6 people attacking one target");
-  }
-  ch->next_fighting = combat_list;
-  combat_list = ch;
-
-  if (IS_AFFECTED(ch, AFF_SLEEP))
+  if (IS_AFFECTED(ch, AFF_SLEEP)) {
     affect_from_char(ch, SPELL_SLEEP);
+  }
 
   ch->specials.fighting = vict;
+  ++vict->attackers;
+  ch->next_fighting = combat_list;
+  combat_list = ch;
   GET_POS(ch) = POSITION_FIGHTING;
 }
 
 /* remove a char from the list of fighting chars */
 void stop_fighting(struct char_data* ch) {
-  struct char_data* tmp;
+  assert(ch && "stop_fighting: null character");
+  assert(
+    ch && ch->specials.fighting && "stop_fighting: character not in combat");
+  assert(ch && ch->specials.fighting && ch->specials.fighting->attackers > 0 &&
+         "stop_fighting: invalid attacker count");
+
+  if (!ch) {
+    vlog("Null character passed to stop_fighting");
+    return;
+  }
 
   if (!ch->specials.fighting) {
     vlog("Character not fighting at invocation of stop_fighting");
     return;
   }
 
-  ch->specials.fighting->attackers -= 1;
-  if (ch->specials.fighting->attackers < 0) {
-    vlog("too few people attacking");
-    ch->specials.fighting->attackers = 0;
+  if (ch->specials.fighting->attackers <= 0) {
+    vlog("Character has no attackers at invocation of stop_fighting");
+    return;
   }
 
-  if (ch == combat_next_dude)
-    combat_next_dude = ch->next_fighting;
+  ch->specials.fighting->attackers =
+    MAX(ch->specials.fighting->attackers - 1, 0);
 
-  if (combat_list == ch)
+  if (ch == combat_next_dude) {
+    combat_next_dude = ch->next_fighting;
+  }
+
+  if (combat_list == ch) {
     combat_list = ch->next_fighting;
-  else {
-    for (tmp = combat_list; tmp && (tmp->next_fighting != ch);
-         tmp = tmp->next_fighting)
-      ;
-    if (!tmp) {
+  } else {
+    Mob* fighter = combat_list;
+
+    for (; fighter; fighter = fighter->next_fighting) {
+      if (fighter->next_fighting == ch) {
+        break;
+      }
+    }
+
+    if (!fighter) {
       vlog("Char fighting not found Error (fight.c, stop_fighting)");
       abort();
     }
-    tmp->next_fighting = ch->next_fighting;
+
+    fighter->next_fighting = ch->next_fighting;
   }
 
-  ch->next_fighting = 0;
-  ch->specials.fighting = 0;
+  ch->next_fighting = NULL;
+  ch->specials.fighting = NULL;
   GET_POS(ch) = POSITION_STANDING;
   update_pos(ch);
 }
@@ -722,7 +751,12 @@ int DamCheckDeny(struct char_data* ch, struct char_data* victim, int type) {
   char buf[MAX_INPUT_LENGTH];
 
   rp = real_roomp(ch->in_room);
-  if (rp && (rp->room_flags & PEACEFUL) && type != SPELL_POISON) {
+
+  assert(rp);
+
+  if (rp && IS_SET(rp->room_flags, PEACEFUL) && type != SPELL_POISON &&
+      type != TYPE_SUFFERING) {
+    assert(type == SPELL_POISON || type == TYPE_SUFFERING);
     sprintf(buf, "damage(,,,%d) called in PEACEFUL room", type);
     vlog(buf);
     return (TRUE); /* true, they are denied from fighting */
@@ -1141,6 +1175,7 @@ static int HitCheckDeny(struct char_data* ch, struct char_data* victim,
     return (TRUE);
   }
 
+  assert(ch->in_room == victim->in_room && "HitCheckDeny: not in same room");
   if (ch->in_room != victim->in_room) {
     sprintf(buf, "NOT in same room when fighting : %s, %s", ch->player.name,
       victim->player.name);
