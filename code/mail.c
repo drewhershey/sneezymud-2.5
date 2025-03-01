@@ -74,6 +74,7 @@ static void write_to_file(void* buf, int size, long filepos) {
   if (filepos % BLOCK_SIZE) {
     vlog("Mail system -- fatal error #2!!!");
     no_mail = 1;
+    fclose(mail_file);
     return;
   }
 
@@ -94,6 +95,7 @@ static void read_from_file(void* buf, int size, long filepos) {
   if (filepos % BLOCK_SIZE) {
     vlog("Mail system -- fatal error #3!!!");
     no_mail = 1;
+    fclose(mail_file);
     return;
   }
 
@@ -374,7 +376,7 @@ char* read_delete(char* recipient, char* recipient_formatted) {
     read_from_file(&data, BLOCK_SIZE, following_block);
 
     string_size = (CHAR_SIZE * (strlen(message) + strlen(data.txt) + 1));
-    message = (char*)realloc(message, string_size);
+    RECREATE(message, char, string_size);
     strcat(message, data.txt);
     message[string_size - 1] = '\0';
     mail_address = following_block;
