@@ -6,6 +6,9 @@
 #ifndef UTILS_H
 #define UTILS_H
 
+#define _GNU_SOURCE
+#include <features.h>
+
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -321,8 +324,20 @@ int exit_ok(struct room_direction_data*, struct room_data**);
 extern unsigned char moontype;
 
 void vlog(const char* str);
-void vlogf(char* errorMsg, ...);
+void vlogf(const char* errorMsg, ...);
+
 int number(int from, int to);
+
+#define NUMBER(from, to)                                   \
+  ({                                                       \
+    __typeof__(from) _result;                              \
+    if ((to) - (from) + 1)                                 \
+      _result = ((rand() % ((to) - (from) + 1)) + (from)); \
+    else                                                   \
+      _result = (from);                                    \
+    _result;                                               \
+  })
+
 int SkipImmortals(struct char_data* v, int amnt);
 int PreProcDam(struct char_data* ch, int type, int dam);
 int IsUndead(struct char_data* ch);
@@ -356,6 +371,20 @@ int GetApprox(int num, int perc);
 int CalcThaco(struct char_data* ch);
 void* Mymalloc(long size);
 int dice(int number, int size);
+
+#define DICE(number, size)               \
+  ({                                     \
+    __typeof__(number) _sum = 0;         \
+    __typeof__(number) _r;               \
+    assert((size) >= 0);                 \
+    if ((size) == 0)                     \
+      _sum;                              \
+    else                                 \
+      for (_r = 1; _r <= (number); _r++) \
+        _sum += ((rand() % (size)) + 1); \
+    _sum;                                \
+  })
+
 int SpaceForSkills(struct char_data* ch);
 void error_log(char* str);
 void slog(char* str);

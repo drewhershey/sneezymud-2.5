@@ -30,27 +30,26 @@
 #include "utils.h"
 
 static void CreateOneRoom(int loc_nr) {
-  struct room_data* rp;
+  Room* rp = allocate_room(loc_nr);
 
-  char buf[256];
-
-  allocate_room(loc_nr);
-  rp = real_roomp(loc_nr);
-  memset(rp, 0, sizeof(*rp));
-
-  rp->number = loc_nr;
   if (top_of_zone_table >= 0) {
-    int zone;
+    int zone = 0;
 
-    for (zone = 0;
-         rp->number > zone_table[zone].top && zone <= top_of_zone_table; zone++)
-      ;
+    for (; zone >= 0 && zone <= top_of_zone_table; zone++) {
+      if (rp->number <= zone_table[zone].top) {
+        break;
+      }
+    }
+
     if (zone > top_of_zone_table) {
       fprintf(stderr, "Room %d is outside of any zone.\n", rp->number);
-      zone--;
+      --zone;
     }
-    rp->zone = zone;
+
+    rp->zone = (short)zone;
   }
+
+  char buf[10];
   sprintf(buf, "%d", loc_nr);
   rp->name = (char*)strdup(buf);
   rp->description = (char*)strdup("Empty\n");

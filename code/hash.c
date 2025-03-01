@@ -66,22 +66,6 @@ void* hash_find(struct hash_header* ht, int key) {
   return scan ? scan->data : NULL;
 }
 
-struct room_data* room_find_or_create(struct room_data* rb[], int key) {
-  struct room_data* rv;
-  int tmp;
-
-  rv = room_find(rb, key);
-  if (rv)
-    return rv;
-
-  tmp = sizeof(struct room_data);
-  rv = (struct room_data*)malloc(sizeof(struct room_data));
-
-  rb[key] = rv;
-
-  return rv;
-}
-
 void* hash_find_or_create(struct hash_header* ht, int key) {
   void* rval = hash_find(ht, key);
 

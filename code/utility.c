@@ -419,10 +419,6 @@ int DetermineExp(struct char_data* mob, int exp_flags) {
   int sab;
   char buf[200];
 
-  if (exp_flags > 10) {
-    sprintf(buf, "Exp flags on %s are > 10 (%d)", GET_NAME(mob), exp_flags);
-    vlog(buf);
-  }
   /*
   reads in the monster, and adds the flags together
   for simplicity, 1 exceptional ability is 2 special abilities
@@ -688,20 +684,6 @@ void down_river(int pulse) {
       }
     }
   }
-}
-
-void fake_setup_dir(FILE* fl, int room, int dir) {
-  int tmp;
-  char buf[256], *temp;
-
-  temp = (char*)buf;
-
-  temp = fread_string(fl); /* descr */
-  temp = fread_string(fl); /* key */
-
-  fscanf(fl, " %d ", &tmp);
-  fscanf(fl, " %d ", &tmp);
-  fscanf(fl, " %d ", &tmp);
 }
 
 int IsHumanoid(struct char_data* ch) {
@@ -1484,7 +1466,7 @@ int GetApprox(int num, int perc) {
   return (num);
 }
 
-void vlogf(char* errorMsg, ...) {
+void vlogf(const char* errorMsg, ...) {
   char messageBuffer[256];
   va_list ap;
 

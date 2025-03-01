@@ -6,6 +6,7 @@
 
 #include "db.h"
 
+#include <assert.h>
 #include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -44,8 +45,8 @@ struct hash_header room_db;
 struct room_data* room_db[WORLD_SIZE];
 #endif
 
-struct obj_data* object_list = 0;     /* the global linked list of obj's */
-struct char_data* character_list = 0; /* global l-list of chars          */
+struct obj_data* object_list = NULL;     /* the global linked list of obj's */
+struct char_data* character_list = NULL; /* global l-list of chars          */
 
 struct zone_data* zone_table; /* table of reset data             */
 int top_of_zone_table = 0;
@@ -415,210 +416,200 @@ void cleanout_room(struct room_data* rp) {
   }
 }
 
-void load_one_room(FILE* fl, struct room_data* rp) {
-  char chk[50];
-  int bc = 0;
-  int tmp;
+// Allocates space for a single direction data entry for a room, then reads in
+// the data from the .wld file
+static void setup_dir(FILE* fl, Room* rp, int dir) {
+  assert(rp);
 
-  struct extra_descr_data* new_descr;
+  CREATE(rp->dir_option[dir], struct room_direction_data, 1);
+  struct room_direction_data* dd = rp->dir_option[dir];
 
-  bc = sizeof(struct room_data);
+  dd->general_description = fread_string(fl);
+  dd->keyword = fread_string(fl);
+
+  fscanf(fl, " %hd ", &dd->exit_info);
+  switch (dd->exit_info) {
+    case 4:
+      dd->exit_info = EX_ISDOOR | EX_SECRET | EX_PICKPROOF;
+      break;
+    case 3:
+      dd->exit_info = EX_ISDOOR | EX_SECRET;
+      break;
+    case 2:
+      dd->exit_info = EX_ISDOOR | EX_PICKPROOF;
+      break;
+    case 1:
+      dd->exit_info = EX_ISDOOR;
+      break;
+    case 0:
+      break;
+    default:
+      dd->exit_info = 0;
+      break;
+  }
+
+  fscanf(fl, " %d ", &dd->key);
+  fscanf(fl, " %d ", &dd->to_room);
+}
+
+// Reads in the data for a single, already-allocated room from the .wld file.
+// Expects the file to already be positioned at the start of the room data,
+// right after the room number.
+void load_one_room(FILE* fl, Room* rp) {
+  assert(rp && rp->number >= 0 &&
+         "Room must already be allocated before calling load_one_room");
 
   rp->name = fread_string(fl);
-  if (rp->name && *rp->name)
-    bc += strlen(rp->name);
   rp->description = fread_string(fl);
-  if (rp->description && *rp->description)
-    bc += strlen(rp->description);
 
   if (top_of_zone_table >= 0) {
-    int zone;
     fscanf(fl, " %*d ");
 
     /* OBS: Assumes ordering of input rooms */
 
-    for (zone = 0;
-         rp->number > zone_table[zone].top && zone <= top_of_zone_table; zone++)
-      ;
+    int zone = 0;
+
+    for (; zone >= 0 && zone <= top_of_zone_table; ++zone) {
+      if (rp->number <= zone_table[zone].top) {
+        break;
+      }
+    }
+
     if (zone > top_of_zone_table) {
       fprintf(stderr, "Room %d is outside of any zone.\n", rp->number);
       exit(0);
     }
-    rp->zone = zone;
-  }
-  fscanf(fl, " %d ", &tmp);
-  rp->room_flags = tmp;
-  fscanf(fl, " %d ", &tmp);
-  rp->sector_type = tmp;
-
-  if (tmp == -1) {
-    fscanf(fl, " %d", &tmp);
-    rp->tele_time = tmp;
-    fscanf(fl, " %d", &tmp);
-    rp->tele_targ = tmp;
-    fscanf(fl, " %d", &tmp);
-    rp->tele_look = tmp;
-    fscanf(fl, " %d", &tmp);
-    rp->sector_type = tmp;
-  } else {
-    rp->tele_time = 0;
-    rp->tele_targ = 0;
-    rp->tele_look = 0;
+    rp->zone = (short)zone;
   }
 
-  if (tmp == 7) { /* river */
+  fscanf(fl, " %ld ", &rp->room_flags);
+  fscanf(fl, " %d ", &rp->sector_type);
+
+  if (rp->sector_type == -1) {
+    fscanf(fl, " %d ", &rp->tele_time);
+    fscanf(fl, " %d ", &rp->tele_targ);
+    fscanf(fl, " %hhd ", &rp->tele_look);
+    fscanf(fl, " %d ", &rp->sector_type);
+  }
+
+  /* river */
+  if (rp->sector_type == 7) {
     /* read direction and rate of flow */
-    fscanf(fl, " %d ", &tmp);
-    rp->river_speed = tmp;
-    fscanf(fl, " %d ", &tmp);
-    rp->river_dir = tmp;
+    fscanf(fl, " %d ", &rp->river_speed);
+    fscanf(fl, " %d ", &rp->river_dir);
   }
 
-  if (rp->room_flags & TUNNEL) { /* read in mobile limit on tunnel */
-    fscanf(fl, " %d ", &tmp);
-    rp->moblim = tmp;
+  /* read in mobile limit on tunnel */
+  if (IS_SET(rp->room_flags, TUNNEL)) {
+    fscanf(fl, " %hhu ", &rp->moblim);
   }
 
-  rp->funct = 0;
-  rp->light = 0; /* Zero light sources */
+  char chk[MAX_STRING_LENGTH];
+  int result;
+  while ((result = fscanf(fl, " %4095s \n", &chk[0])) != EOF) {
+    if (result != 1) {
+      vlogf("Error reading room line at file position %ld", ftell(fl));
+      fclose(fl);
+      exit(0);
+    }
 
-  for (tmp = 0; tmp <= 5; tmp++)
-    rp->dir_option[tmp] = 0;
-
-  rp->ex_description = 0;
-
-  while (1 == fscanf(fl, " %s \n", chk)) {
-    static char buf[MAX_INPUT_LENGTH];
     switch (*chk) {
       case 'D':
-        setup_dir(fl, rp->number, atoi(chk + 1));
-        bc += sizeof(struct room_direction_data);
-        /*      bc += strlen(rp->dir_option[atoi(chk +
-           1)]->general_description); bc += strlen(rp->dir_option[atoi(chk +
-           1)]->keyword);
-        */
-        break;
-      case 'E': /* extra description field */
+        setup_dir(fl, rp, atoi(chk + 1));
+        continue;
 
+      // extra description field
+      case 'E': {
+        struct extra_descr_data* new_descr;
         CREATE(new_descr, struct extra_descr_data, 1);
-        bc += sizeof(struct extra_descr_data);
 
         new_descr->keyword = fread_string(fl);
-        if (new_descr->keyword && *new_descr->keyword)
-          bc += strlen(new_descr->keyword);
-        else
+
+        if (!new_descr->keyword || !*new_descr->keyword) {
           fprintf(stderr, "No keyword in room %d\n", rp->number);
+        }
 
         new_descr->description = fread_string(fl);
-        if (new_descr->description && *new_descr->description)
-          bc += strlen(new_descr->description);
-        else
+
+        if (!new_descr->description || !*new_descr->description) {
           fprintf(stderr, "No desc in room %d\n", rp->number);
+        }
 
         new_descr->next = rp->ex_description;
         rp->ex_description = new_descr;
-        break;
-      case 'S': /* end of current room */
+        continue;
+      }
 
-#if BYTE_COUNT
-        if (bc >= 1000)
-          fprintf(stderr, "Byte count for this room[%d]: %d\n", rp->number, bc);
-#endif
-        total_bc += bc;
-        room_count++;
+      case 'S':
+        /* end of current room */
+        ++room_count;
         return;
-      default:
-        sprintf(buf, "unknown auxiliary code `%s' in room load of #%d", chk,
+
+      default: {
+        vlogf("Found unknown secondary command '%s' in room load of #%d", chk,
           rp->number);
-        vlog(buf);
         break;
+      }
     }
   }
 }
 
-/* zero out the world */
-static void init_world() {
-  memset(room_db, 0, sizeof(struct room_data*) * WORLD_SIZE);
-}
-
 /* load the rooms */
 void boot_world(void) {
-  FILE* fl;
-  int virtual_nr, j;
-  char buf[50];
-  struct room_data* rp;
-
 #if defined(HASH) && HASH
   init_hash_table(&room_db, sizeof(struct room_data), 2048);
 #else
-  init_world();
+  memset(room_db, 0, sizeof(struct room_data*) * WORLD_SIZE);
 #endif
-  character_list = 0;
-  object_list = 0;
 
-  if (!(fl = fopen(WORLD_FILE, "r"))) {
+  assert(!character_list && !object_list);
+
+  FILE* fl = fopen(WORLD_FILE, "r");
+  if (!fl) {
     perror("fopen");
     vlog("World file not found");
     exit(0);
   }
 
-  while (1 == fscanf(fl, " #%d\n", &virtual_nr)) {
-    allocate_room(virtual_nr);
-    rp = real_roomp(virtual_nr);
-    memset(rp, 0, sizeof(*rp));
-    rp->number = virtual_nr;
-    load_one_room(fl, rp);
+  int virtual_nr = -1;
+  int result;
+  while ((result = fscanf(fl, " #%d\n", &virtual_nr)) != EOF) {
+    if (result != 1) {
+      vlogf("Error reading room number at file position %ld", ftell(fl));
+      fclose(fl);
+      exit(0);
+    }
+
+    load_one_room(fl, allocate_room(virtual_nr));
   }
 
   fclose(fl);
 }
 
-void allocate_room(int room_number) {
+// Find an already-existing room from the in-memory database with the given
+// room_number and return a pointer. If one doesn't exist, allocate a new room
+// and add it to the database, then return a pointer.
+Room* allocate_room(int room_number) {
   if (room_number > top_of_world) {
     top_of_world = room_number;
   }
 
 #if defined(HASH) && HASH
-  hash_find_or_create(&room_db, room_number);
+  return hash_find_or_create(&room_db, room_number);
 #else
-  room_find_or_create(room_db, room_number);
-#endif
-}
+  Room* room = room_find(room_db, room_number);
 
-/* read direction data */
-void setup_dir(FILE* fl, int room, int dir) {
-  int tmp;
-  struct room_data *rp, dummy;
-
-  rp = real_roomp(room);
-
-  if (!rp) {
-    rp = &dummy;         /* this is a quick fix to make the game */
-    dummy.number = room; /* stop crashing   */
+  if (room) {
+    return room;
   }
 
-  CREATE(rp->dir_option[dir], struct room_direction_data, 1);
+  room = NULL;
+  CREATE(room, struct room_data, 1);
+  room->number = (short)room_number;
+  room_db[room_number] = room;
 
-  rp->dir_option[dir]->general_description = fread_string(fl);
-  rp->dir_option[dir]->keyword = fread_string(fl);
-
-  fscanf(fl, " %d ", &tmp);
-  if (tmp == 1)
-    rp->dir_option[dir]->exit_info = EX_ISDOOR;
-  else if (tmp == 2)
-    rp->dir_option[dir]->exit_info = EX_ISDOOR | EX_PICKPROOF;
-  else if (tmp == 3)
-    rp->dir_option[dir]->exit_info = EX_ISDOOR | EX_SECRET;
-  else if (tmp == 4)
-    rp->dir_option[dir]->exit_info = EX_ISDOOR | EX_SECRET | EX_PICKPROOF;
-  else
-    rp->dir_option[dir]->exit_info = 0;
-
-  fscanf(fl, " %d ", &tmp);
-  rp->dir_option[dir]->key = tmp;
-
-  fscanf(fl, " %d ", &tmp);
-  rp->dir_option[dir]->to_room = tmp;
+  return room;
+#endif
 }
 
 #define LOG_ZONE_ERROR(ch, type, zone, cmd)                          \
@@ -826,66 +817,57 @@ static void SetRacialStuff(struct char_data* mob) {
   }
 }
 
+static bool is_valid_position(byte pos) {
+  return pos >= POSITION_DEAD && pos <= POSITION_STANDING;
+}
+
 /* read a mobile from MOB_FILE */
 struct char_data* read_mobile(int nr, int type) {
-  int i;
-  long tmp, tmp2, tmp3, bc = 0;
-  struct char_data* mob;
-  char buf[100];
-  char letter;
+  int original_nr = nr;
 
-  i = nr;
-  if (type == VIRTUAL)
-    if ((nr = real_mobile(nr)) < 0) {
-      sprintf(buf, "Mobile (V) %d does not exist in database.", i);
-      return (0);
+  if (type == VIRTUAL) {
+    nr = real_mobile(nr);
+
+    if (nr < 0) {
+      char buf[MAX_STRING_LENGTH];
+      sprintf(buf, "Mobile (V) %d does not exist in database.", original_nr);
+      return NULL;
     }
+  }
 
   fseek(mob_f, mob_index[nr].pos, 0);
 
+  Mob* mob = NULL;
   CREATE(mob, struct char_data, 1);
-  bc = sizeof(struct char_data);
   clear_char(mob);
 
   /***** String data *** */
 
   mob->player.name = fread_string(mob_f);
-  if (*mob->player.name)
-    bc += strlen(mob->player.name);
   mob->player.short_descr = fread_string(mob_f);
-  if (*mob->player.short_descr)
-    bc += strlen(mob->player.short_descr);
   mob->player.long_descr = fread_string(mob_f);
-  if (*mob->player.long_descr)
-    bc += strlen(mob->player.long_descr);
   mob->player.description = fread_string(mob_f);
-  if (mob->player.description && *mob->player.description)
-    bc += strlen(mob->player.description);
-  mob->player.title = 0;
+  mob->player.title = NULL;
 
   /* *** Numeric data *** */
 
-  mob->mult_att = 1.0;
+  mob->mult_att = 1.0F;
 
-  fscanf(mob_f, "%d ", &tmp);
-  mob->specials.act = tmp;
+  fscanf(mob_f, "%lu ", &mob->specials.act);
   SET_BIT(mob->specials.act, ACT_ISNPC);
 
-  fscanf(mob_f, " %d ", &tmp);
-  mob->specials.affected_by = tmp;
-
-  fscanf(mob_f, " %d ", &tmp);
-  mob->specials.alignment = tmp;
+  fscanf(mob_f, " %ld ", &mob->specials.affected_by);
+  fscanf(mob_f, " %d ", &mob->specials.alignment);
 
   mob->player.class = CLASS_WARRIOR;
 
+  char letter = '\0';
   fscanf(mob_f, " %c ", &letter);
 
   if (letter == 'S') {
     fscanf(mob_f, "\n");
 
-    fscanf(mob_f, " %d ", &tmp);
-    GET_LEVEL(mob, WARRIOR_LEVEL_IND) = tmp;
+    fscanf(mob_f, " %hhd ", &mob->player.level[2]);
 
     if (GET_LEVEL(mob, WARRIOR_LEVEL_IND) < 50) {
       mob->abilities.str = 15;
@@ -902,20 +884,27 @@ struct char_data* read_mobile(int nr, int type) {
       mob->abilities.intel = 18;
     }
 
-    fscanf(mob_f, " %d ", &tmp);
-    mob->points.hitroll = 20 - tmp;
+    fscanf(mob_f, " %hhd ", &mob->points.hitroll);
 
-    fscanf(mob_f, " %d ", &tmp);
-    mob->points.armor = 10 * tmp;
+    fscanf(mob_f, " %hd ", &mob->points.armor);
+    mob->points.armor *= 10;
 
-    fscanf(mob_f, " %dd%d+%d ", &tmp, &tmp2, &tmp3);
-    mob->points.max_hit = dice(tmp, tmp2) + tmp3;
+    short hd_num = 0;
+    short hd_type = 0;
+    short hd_bonus = 0;
+
+    fscanf(mob_f, " %hdd%hd+%hd ", &hd_num, &hd_type, &hd_bonus);
+    mob->points.max_hit = DICE(hd_num, hd_type) + hd_bonus;
     mob->points.hit = mob->points.max_hit;
 
-    fscanf(mob_f, " %dd%d+%d \n", &tmp, &tmp2, &tmp3);
-    mob->points.damroll = tmp3;
-    mob->specials.damnodice = tmp;
-    mob->specials.damsizedice = tmp2;
+    sbyte d_num = 0;
+    sbyte d_type = 0;
+    sbyte bonus = 0;
+
+    fscanf(mob_f, " %hhdd%hhd+%hhd \n", &d_num, &d_type, &bonus);
+    mob->points.damroll = bonus;
+    mob->specials.damnodice = d_num;
+    mob->specials.damsizedice = d_type;
 
     mob->points.mana = 10;
     mob->points.max_mana = 10;
@@ -923,39 +912,52 @@ struct char_data* read_mobile(int nr, int type) {
     mob->points.move = 50;
     mob->points.max_move = 50;
 
-    fscanf(mob_f, " %d ", &tmp);
-    if (tmp == -1) {
-      fscanf(mob_f, " %d ", &tmp);
-      mob->points.gold = tmp;
-      fscanf(mob_f, " %d ", &tmp);
-      GET_EXP(mob) = tmp;
-      fscanf(mob_f, " %d \n", &tmp);
-      GET_RACE(mob) = tmp;
+    int chk = 0;
+    fscanf(mob_f, " %d ", &chk);
+
+    if (chk == -1) {
+      fscanf(mob_f, " %d ", &mob->points.gold);
+      fscanf(mob_f, " %d ", &mob->points.exp);
+      fscanf(mob_f, " %hd \n", &mob->race);
     } else {
-      mob->points.gold = tmp;
-      fscanf(mob_f, " %d \n", &tmp);
-      GET_EXP(mob) = tmp;
+      mob->points.gold = chk;
+      fscanf(mob_f, " %d \n", &mob->points.exp);
     }
-    fscanf(mob_f, " %d ", &tmp);
-    mob->specials.position = tmp;
 
-    fscanf(mob_f, " %d ", &tmp);
-    mob->specials.default_pos = tmp;
+    byte position = 0;
+    byte default_pos = 0;
 
-    fscanf(mob_f, " %d ", &tmp);
-    if (tmp < 3) {
-      mob->player.sex = tmp;
+    if (fscanf(mob_f, " %hhd ", &position) != 1 ||
+        fscanf(mob_f, " %hhd ", &default_pos) != 1) {
+      vlogf("Error reading positions for mob %d", mob_index[nr].virtual);
+      // Set safe defaults
+      position = POSITION_STANDING;
+      default_pos = POSITION_STANDING;
+    }
+
+    if (!is_valid_position(position) || !is_valid_position(default_pos)) {
+      vlogf("Invalid positions %d/%d for mob %d - correcting to STANDING",
+        position, default_pos, mob_index[nr].virtual);
+      position = POSITION_STANDING;
+      default_pos = POSITION_STANDING;
+    }
+
+    mob->specials.position = position;
+    mob->specials.default_pos = default_pos;
+
+    byte sex = 0;
+    fscanf(mob_f, " %hhd ", &sex);
+
+    if (sex < 3) {
+      mob->player.sex = sex;
       mob->immune = 0;
       mob->M_immune = 0;
       mob->susc = 0;
-    } else if (tmp < 6) {
-      mob->player.sex = (tmp - 3);
-      fscanf(mob_f, " %d ", &tmp);
-      mob->immune = tmp;
-      fscanf(mob_f, " %d ", &tmp);
-      mob->M_immune = tmp;
-      fscanf(mob_f, " %d ", &tmp);
-      mob->susc = tmp;
+    } else if (sex < 6) {
+      mob->player.sex = (byte)(sex - 3);
+      fscanf(mob_f, " %u ", &mob->immune);
+      fscanf(mob_f, " %u ", &mob->M_immune);
+      fscanf(mob_f, " %u ", &mob->susc);
     } else {
       mob->player.sex = 0;
       mob->immune = 0;
@@ -973,33 +975,22 @@ struct char_data* read_mobile(int nr, int type) {
     mob->player.weight = 200;
     mob->player.height = 198;
 
-    for (i = 0; i < 3; i++)
+    for (int i = 0; i < 3; i++) {
       GET_COND(mob, i) = -1;
+    }
 
-    for (i = 0; i < 5; i++)
+    for (int i = 0; i < 5; i++) {
       mob->specials.apply_saving_throw[i] =
-        20 - (GET_LEVEL(mob, WARRIOR_LEVEL_IND) / 2);
-
-  } else if ((letter == 'A') || (letter == 'N') || (letter == 'B') ||
-             (letter == 'L')) {
-    if ((letter == 'A') || (letter == 'B') || (letter == 'L')) {
-      fscanf(mob_f, " %d ", &tmp);
-      mob->mult_att = (float)tmp;
-      /*
-      **  read in types:
-      */
-      /*
-  for (i=0;i<mob->mult_att && i < 10; i++) {
-     fscanf(mob_f, " %d ", &tmp);
-     mob->att_type[i] = tmp;
-  }
-      */
+        (short)(20 - (GET_LEVEL(mob, WARRIOR_LEVEL_IND) / 2));
+    }
+  } else if (letter == 'A' || letter == 'N' || letter == 'B' || letter == 'L') {
+    if (letter == 'A' || letter == 'B' || letter == 'L') {
+      fscanf(mob_f, " %f ", &mob->mult_att);
     }
 
     fscanf(mob_f, "\n");
 
-    fscanf(mob_f, " %d ", &tmp);
-    GET_LEVEL(mob, WARRIOR_LEVEL_IND) = tmp;
+    fscanf(mob_f, " %hhd ", &mob->player.level[2]);
 
     if (GET_LEVEL(mob, WARRIOR_LEVEL_IND) < 50) {
       mob->abilities.con = 15;
@@ -1016,19 +1007,25 @@ struct char_data* read_mobile(int nr, int type) {
       mob->abilities.wis = 18;
     }
 
-    fscanf(mob_f, " %d ", &tmp);
-    mob->points.hitroll = 20 - tmp;
+    fscanf(mob_f, " %hhd ", &mob->points.hitroll);
+    mob->points.hitroll = (sbyte)(20 - mob->points.hitroll);
 
-    fscanf(mob_f, " %d ", &tmp);
-    mob->points.armor = 10 * tmp;
-    fscanf(mob_f, " %d ", &tmp);
-    mob->points.max_hit = dice(GET_LEVEL(mob, WARRIOR_LEVEL_IND), 8) + tmp;
+    fscanf(mob_f, " %hd ", &mob->points.armor);
+    mob->points.armor *= 10;
+
+    short hp_bonus = 0;
+    fscanf(mob_f, " %hd ", &hp_bonus);
+    mob->points.max_hit = DICE(GET_LEVEL(mob, WARRIOR_LEVEL_IND), 8) + hp_bonus;
     mob->points.hit = mob->points.max_hit;
 
-    fscanf(mob_f, " %dd%d+%d \n", &tmp, &tmp2, &tmp3);
-    mob->points.damroll = tmp3;
-    mob->specials.damnodice = tmp;
-    mob->specials.damsizedice = tmp2;
+    sbyte d_num = 0;
+    sbyte d_type = 0;
+    sbyte bonus = 0;
+
+    fscanf(mob_f, " %hhdd%hhd+%hhd \n", &d_num, &d_type, &bonus);
+    mob->points.damroll = bonus;
+    mob->specials.damnodice = d_num;
+    mob->specials.damsizedice = d_type;
 
     mob->points.mana = 10;
     mob->points.max_mana = 10;
@@ -1036,160 +1033,151 @@ struct char_data* read_mobile(int nr, int type) {
     mob->points.move = 50;
     mob->points.max_move = 50;
 
-    fscanf(mob_f, " %d ", &tmp);
+    int chk = 0;
+    fscanf(mob_f, " %d ", &chk);
 
-    if (tmp == -1) {
-      fscanf(mob_f, " %d ", &tmp);
-      mob->points.gold = tmp;
-      fscanf(mob_f, " %d ", &tmp);
-      GET_EXP(mob) = (DetermineExp(mob, tmp) + mob->points.gold);
-      fscanf(mob_f, " %d ", &tmp);
-      GET_RACE(mob) = tmp;
+    if (chk == -1) {
+      fscanf(mob_f, " %d ", &mob->points.gold);
 
+      int exp = 0;
+      fscanf(mob_f, " %d ", &exp);
+      GET_EXP(mob) = DetermineExp(mob, exp) + mob->points.gold;
+
+      fscanf(mob_f, " %hd ", &GET_RACE(mob));
     } else {
-      mob->points.gold = tmp;
+      mob->points.gold = chk;
 
-      /*
-  this is where the new exp will come into play
-  */
-      fscanf(mob_f, " %d \n", &tmp);
-      GET_EXP(mob) = (DetermineExp(mob, tmp) + mob->points.gold);
+      // this is where the new exp will come into play
+      int exp = 0;
+      fscanf(mob_f, " %d \n", &exp);
+      GET_EXP(mob) = DetermineExp(mob, exp) + mob->points.gold;
     }
-    fscanf(mob_f, " %d ", &tmp);
-    mob->specials.position = tmp;
 
-    fscanf(mob_f, " %d ", &tmp);
-    mob->specials.default_pos = tmp;
+    byte position = 0;
+    byte default_pos = 0;
 
-    fscanf(mob_f, " %d \n", &tmp);
-    if (tmp < 3) {
-      mob->player.sex = tmp;
-      mob->immune = 0;
-      mob->M_immune = 0;
-      mob->susc = 0;
-    } else if (tmp < 6) {
-      mob->player.sex = (tmp - 3);
-      fscanf(mob_f, " %d ", &tmp);
-      mob->immune = tmp;
-      fscanf(mob_f, " %d ", &tmp);
-      mob->M_immune = tmp;
-      fscanf(mob_f, " %d ", &tmp);
-      mob->susc = tmp;
-    } else {
+    if (fscanf(mob_f, " %hhd ", &position) != 1 ||
+        fscanf(mob_f, " %hhd ", &default_pos) != 1) {
+      vlogf("Error reading positions for mob %d", mob_index[nr].virtual);
+      // Set safe defaults
+      position = POSITION_STANDING;
+      default_pos = POSITION_STANDING;
+    }
+
+    if (!is_valid_position(position) || !is_valid_position(default_pos)) {
+      vlogf("Invalid positions %d/%d for mob %d - correcting to STANDING",
+        position, default_pos, mob_index[nr].virtual);
+      position = POSITION_STANDING;
+      default_pos = POSITION_STANDING;
+    }
+
+    mob->specials.position = position;
+    mob->specials.default_pos = default_pos;
+
+    fscanf(mob_f, " %hhd \n", &mob->player.sex);
+    if (mob->player.sex >= 3 && mob->player.sex < 6) {
+      mob->player.sex -= 3;
+      fscanf(mob_f, " %u ", &mob->immune);
+      fscanf(mob_f, " %u ", &mob->M_immune);
+      fscanf(mob_f, " %u ", &mob->susc);
+    } else if (mob->player.sex < 0 || mob->player.sex > 2) {
       mob->player.sex = 0;
-      mob->immune = 0;
-      mob->M_immune = 0;
-      mob->susc = 0;
     }
 
-    /*
-     *   read in the sound string for a mobile
-     */
+    // read in the sound string for a mobile
     if (letter == 'L') {
       mob->player.sounds = fread_string(mob_f);
-      if (mob->player.sounds && *mob->player.sounds)
-        bc += strlen(mob->player.sounds);
-
       mob->player.distant_snds = fread_string(mob_f);
-      if (mob->player.distant_snds && *mob->player.distant_snds)
-        bc += strlen(mob->player.distant_snds);
     } else {
-      mob->player.sounds = 0;
-      mob->player.distant_snds = 0;
+      mob->player.sounds = NULL;
+      mob->player.distant_snds = NULL;
     }
 
     mob->player.class = 0;
-
     mob->player.time.birth = time(0);
     mob->player.time.played = 0;
     mob->player.time.logon = time(0);
     mob->player.weight = 200;
     mob->player.height = 198;
 
-    for (i = 0; i < 3; i++)
+    for (int i = 0; i < 3; ++i) {
       GET_COND(mob, i) = -1;
+    }
 
-    for (i = 0; i < 5; i++)
+    for (int i = 0; i < 5; ++i) {
       mob->specials.apply_saving_throw[i] =
-        20 - (GET_LEVEL(mob, WARRIOR_LEVEL_IND) / 2);
-
+        (short)(20 - (GET_LEVEL(mob, WARRIOR_LEVEL_IND) / 2));
+    }
   } else { /* The old monsters are down below here */
 
     fscanf(mob_f, "\n");
 
-    fscanf(mob_f, " %d ", &tmp);
-    mob->abilities.str = tmp;
+    fscanf(mob_f, " %hhd ", &mob->abilities.str);
+    fscanf(mob_f, " %hhd ", &mob->abilities.intel);
+    fscanf(mob_f, " %hhd ", &mob->abilities.wis);
+    fscanf(mob_f, " %hhd ", &mob->abilities.dex);
+    fscanf(mob_f, " %hhd \n", &mob->abilities.con);
 
-    fscanf(mob_f, " %d ", &tmp);
-    mob->abilities.intel = tmp;
+    short min_hp = 0;
+    short max_hp = 0;
+    fscanf(mob_f, " %hd ", &min_hp);
+    fscanf(mob_f, " %hd ", &max_hp);
 
-    fscanf(mob_f, " %d ", &tmp);
-    mob->abilities.wis = tmp;
-
-    fscanf(mob_f, " %d ", &tmp);
-    mob->abilities.dex = tmp;
-
-    fscanf(mob_f, " %d \n", &tmp);
-    mob->abilities.con = tmp;
-
-    fscanf(mob_f, " %d ", &tmp);
-    fscanf(mob_f, " %d ", &tmp2);
-
-    mob->points.max_hit = number(tmp, tmp2);
+    mob->points.max_hit = NUMBER(min_hp, max_hp);
     mob->points.hit = mob->points.max_hit;
 
-    fscanf(mob_f, " %d ", &tmp);
-    mob->points.armor = 10 * tmp;
+    fscanf(mob_f, " %hd ", &mob->points.armor);
+    mob->points.armor *= 10;
 
-    fscanf(mob_f, " %d ", &tmp);
-    mob->points.mana = tmp;
-    mob->points.max_mana = tmp;
+    fscanf(mob_f, " %hd ", &mob->points.max_mana);
+    mob->points.mana = mob->points.max_mana;
 
-    fscanf(mob_f, " %d ", &tmp);
-    mob->points.move = tmp;
-    mob->points.max_move = tmp;
+    fscanf(mob_f, " %hd ", &mob->points.max_move);
+    mob->points.move = mob->points.max_move;
 
-    fscanf(mob_f, " %d ", &tmp);
-    mob->points.gold = tmp;
+    fscanf(mob_f, " %d ", &mob->points.gold);
+    fscanf(mob_f, " %d \n", &GET_EXP(mob));
 
-    fscanf(mob_f, " %d \n", &tmp);
-    GET_EXP(mob) = tmp;
+    byte position = 0;
+    byte default_pos = 0;
 
-    fscanf(mob_f, " %d ", &tmp);
-    mob->specials.position = tmp;
+    if (fscanf(mob_f, " %hhd ", &position) != 1 ||
+        fscanf(mob_f, " %hhd ", &default_pos) != 1) {
+      vlogf("Error reading positions for mob %d", mob_index[nr].virtual);
+      position = POSITION_STANDING;
+      default_pos = POSITION_STANDING;
+    }
 
-    fscanf(mob_f, " %d ", &tmp);
-    mob->specials.default_pos = tmp;
+    if (!is_valid_position(position) || !is_valid_position(default_pos)) {
+      vlogf("Invalid positions %d/%d for mob %d - correcting to STANDING",
+        position, default_pos, mob_index[nr].virtual);
+      position = POSITION_STANDING;
+      default_pos = POSITION_STANDING;
+    }
 
-    fscanf(mob_f, " %d ", &tmp);
-    mob->player.sex = tmp;
+    mob->specials.position = position;
+    mob->specials.default_pos = default_pos;
 
-    fscanf(mob_f, " %d ", &tmp);
-    mob->player.class = tmp;
+    fscanf(mob_f, " %hhd ", &mob->player.sex);
+    fscanf(mob_f, " %hhu ", &mob->player.class);
+    fscanf(mob_f, " %hhd ", &GET_LEVEL(mob, WARRIOR_LEVEL_IND));
 
-    fscanf(mob_f, " %d ", &tmp);
-    GET_LEVEL(mob, WARRIOR_LEVEL_IND) = tmp;
-
-    fscanf(mob_f, " %d ", &tmp);
+    int unk_1 = 0;
+    fscanf(mob_f, " %d ", &unk_1);
     mob->player.time.birth = time(0);
     mob->player.time.played = 0;
     mob->player.time.logon = time(0);
 
-    fscanf(mob_f, " %d ", &tmp);
-    mob->player.weight = tmp;
+    fscanf(mob_f, " %hhu ", &mob->player.weight);
+    fscanf(mob_f, " %hhu \n", &mob->player.height);
 
-    fscanf(mob_f, " %d \n", &tmp);
-    mob->player.height = tmp;
-
-    for (i = 0; i < 3; i++) {
-      fscanf(mob_f, " %d ", &tmp);
-      GET_COND(mob, i) = tmp;
+    for (int i = 0; i < 3; i++) {
+      fscanf(mob_f, " %hhd ", &GET_COND(mob, i));
     }
     fscanf(mob_f, " \n ");
 
-    for (i = 0; i < 5; i++) {
-      fscanf(mob_f, " %d ", &tmp);
-      mob->specials.apply_saving_throw[i] = tmp;
+    for (int i = 0; i < 5; i++) {
+      fscanf(mob_f, " %hd ", &mob->specials.apply_saving_throw[i]);
     }
 
     fscanf(mob_f, " \n ");
@@ -1205,18 +1193,19 @@ struct char_data* read_mobile(int nr, int type) {
 
   mob->tmpabilities = mob->abilities;
 
-  for (i = 0; i < MAX_WEAR; i++) /* Initialisering Ok */
+  /* Initialisering Ok */
+  for (int i = 0; i < MAX_WEAR; ++i) {
     mob->equipment[i] = 0;
+  }
 
-  mob->nr = nr;
+  mob->nr = (short)nr;
+  mob->desc = NULL;
 
-  mob->desc = 0;
-
-  if (!IS_SET(mob->specials.act, ACT_ISNPC))
+  if (!IS_SET(mob->specials.act, ACT_ISNPC)) {
     SET_BIT(mob->specials.act, ACT_ISNPC);
+  }
 
   /* insert in list */
-
   mob->next = character_list;
   character_list = mob;
 
@@ -1231,20 +1220,15 @@ struct char_data* read_mobile(int nr, int type) {
 
   /* set up distributed movement system */
 
-  mob->specials.tick = mob_tick_count++;
+  mob->specials.tick = (byte)mob_tick_count++;
 
-  if (mob_tick_count == TICK_WRAP_COUNT)
+  if (mob_tick_count == TICK_WRAP_COUNT) {
     mob_tick_count = 0;
+  }
 
-  mob_index[nr].number++;
-
-#if BYTE_COUNT
-  fprintf(stderr, "Mobile [%d]: byte count: %d\n", mob_index[nr].virtual, bc);
-#endif
-
-  total_mbc += bc;
-  mob_count++;
-  return (mob);
+  ++mob_index[nr].number;
+  ++mob_count;
+  return mob;
 }
 
 /* read an object from OBJ_FILE */
@@ -1912,12 +1896,11 @@ int compare(struct player_index_element* arg1,
 
 /* read and allocate space for a '~'-terminated string from a given file */
 char* fread_string(FILE* fl) {
-  char buf[MAX_STRING_LENGTH], tmp[MAX_STRING_LENGTH];
-  char* rslt;
-  register char* point;
-  int flag;
-
+  char buf[MAX_STRING_LENGTH];
+  char tmp[MAX_STRING_LENGTH];
   memset(buf, 0, sizeof(buf));
+
+  int flag = 0;
 
   do {
     if (!fgets(tmp, MAX_STRING_LENGTH, fl)) {
@@ -1939,7 +1922,8 @@ char* fread_string(FILE* fl) {
     }
 
     // Move point to second-to-last char, checking bounds
-    point = buf + strlen(buf) - 2;
+    char* point = buf + strlen(buf) - 2;
+
     if (point < buf) {
       point = buf;
     }
@@ -1949,7 +1933,8 @@ char* fread_string(FILE* fl) {
       point--;
     }
 
-    flag = (point >= buf && *point == '~');
+    flag = point >= buf && *point == '~';
+
     if (flag) {
       if (strlen(buf) >= 3 && *(buf + strlen(buf) - 3) == '\n') {
         *(buf + strlen(buf) - 2) = '\r';
@@ -1972,13 +1957,12 @@ char* fread_string(FILE* fl) {
   } while (!flag);
 
   /* do the allocate boogie  */
+  char* rslt = NULL;
   if (strlen(buf) > 0) {
     CREATE(rslt, char, strlen(buf) + 1);
     strcpy(rslt, buf);
-  } else {
-    rslt = 0;
   }
-  return (rslt);
+  return rslt;
 }
 
 /* release memory allocated for a char struct */

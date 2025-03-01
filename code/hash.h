@@ -21,7 +21,6 @@ void* hash_remove(struct hash_header* ht, int key);
 void init_hash_table(struct hash_header* ht, int rec_size, int table_size);
 
 struct room_data* room_find(struct room_data* room_db[], int key);
-struct room_data* room_find_or_create(struct room_data* rb[], int key);
 int room_remove(struct room_data* rb[], int key);
 
 void hash_enter_no_key(struct hash_header* ht, int key, void* data);
