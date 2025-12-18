@@ -7652,7 +7652,7 @@ int soap(Mob* ch, int cmd, char* arg, Obj* me) {
   struct char_data* t;
   struct obj_data* obj;
   char dummy[80], name[80];
-  int (*wash)();
+  int (*wash)(Mob*, int, char*, Obj*);
 
   wash = soap;
 
@@ -7697,7 +7697,7 @@ int nodrop(Mob* ch, int cmd, char* arg, Obj* me) {
   char buf[80], obj_name[80], vict_name[80], *name;
   bool do_all;
   int j, num;
-  int (*knowdrop)();
+  int (*knowdrop)(Mob*, int, char*, Obj*);
 
   switch (cmd) {
     case 10:  /* Get */
@@ -8595,7 +8595,7 @@ int keystone(struct char_data* ch, int cmd, char* arg) {
 int ghostsoldier(struct char_data* ch, int cmd, char* arg) {
   struct char_data *tch, *good, *master;
   int max_good;
-  int (*gs)(), (*gc)();
+  int (*gs)(struct char_data*, int, char*), (*gc)(struct char_data*, int, char*);
 
   gs = ghostsoldier;
   gc = keystone;
@@ -8724,7 +8724,7 @@ int Valik(struct char_data* ch, int cmd, char* arg) {
   int i;
   struct char_data *vict, *tch, *master;
   struct obj_data* obj;
-  int (*valik)();
+  int (*valik)(struct char_data*, int, char*);
   bool gave_this_click = FALSE;
   short quest_lines[4] = {6, 7, 5, 7};
   short valik_dests[9] = {104, 1638, 7902, 13551, 16764, 17330, 19244, 21325,
@@ -10253,7 +10253,7 @@ int RepairGuy(struct char_data* ch, int cmd, char* arg) {
   int cost, ave;
   struct char_data* vict;
   struct obj_data* obj;
-  int (*rep_guy)(); /* special procedure for this mob/obj       */
+  int (*rep_guy)(struct char_data*, int, char*); /* special procedure for this mob/obj       */
 
   if (!AWAKE(ch))
     return (FALSE);
@@ -11273,7 +11273,7 @@ int loremaster(struct char_data* ch, int cmd, char* arg) {
   }
 }
 
-void station() {
+void station(void) {
   int t;
   int i;
   struct obj_data* obj;
@@ -12269,7 +12269,7 @@ int potentially_annoying(int cmd) {
 
 /* DO NOT use the following as a stand-alone spec_proc... it is meant to be  */
 /* called by other spec_procs.  Use the more general i_am_irritable instead  */
-int utility_irritable(struct char_data* ch, int cmd, char* arg, int (*func)()) {
+int utility_irritable(struct char_data* ch, int cmd, char* arg, int (*func)(struct char_data*, int, char*)) {
   struct char_data* me;
   struct char_data* targ;
 
@@ -12314,7 +12314,7 @@ void PoliceHunt(struct char_data* ch, struct char_data* tch) {
 /* like utility_irritable, this function is to be called by OTHER spec_procs.
    If you want a mob to JUST be a police person, call the i_am_police function
    below.  - SG */
-int utilityPolice(struct char_data* ch, int cmd, char* arg, int (*func)()) {
+int utilityPolice(struct char_data* ch, int cmd, char* arg, int (*func)(struct char_data*, int, char*)) {
   struct char_data *targ, *me;
 
   if (cmd) { /* "ch" is not me.  It is a player. */

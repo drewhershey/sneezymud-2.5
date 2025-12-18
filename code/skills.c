@@ -415,7 +415,9 @@ int dir_track(struct char_data* ch, struct char_data* vict) {
 #define GO_OK_SMARTER \
   (!IS_SET(IS_DIR->exit_info, EX_LOCKED) && (IS_DIR->to_room != NOWHERE))
 
-static void donothing(void) {}
+static void donothing(void* data) {
+  (void)data; /* Unused */
+}
 
 static int hash_enter(struct hash_header* ht, int key, void* data) {
   if (hash_find(ht, key))
@@ -425,7 +427,7 @@ static int hash_enter(struct hash_header* ht, int key, void* data) {
   return 1;
 }
 
-static void destroy_hash_table(struct hash_header* ht, void (*gman)()) {
+static void destroy_hash_table(struct hash_header* ht, void (*gman)(void*)) {
   int i;
   struct hash_link *scan, *temp;
 

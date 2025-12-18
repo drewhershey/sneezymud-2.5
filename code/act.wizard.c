@@ -78,7 +78,7 @@ void do_demote(struct char_data* ch, char* argument, int cmd) {
   ch->player.time.birth -= SECS_PER_MUD_YEAR;
 }
 
-static struct StrHeap* InitHeap() {
+static struct StrHeap* InitHeap(void) {
   struct StrHeap* Heap = 0;
 
   Heap = (struct StrHeap*)malloc(sizeof(struct StrHeap));
@@ -2450,7 +2450,7 @@ void do_link(struct char_data* ch, char* argument, int cmd) {
   }
 }
 
-static void hash_iterate(struct hash_header* ht, void (*func)(), void* cdata) {
+static void hash_iterate(struct hash_header* ht, void (*func)(int, void*, void*), void* cdata) {
   int i;
   for (i = 0; i < ht->klistlen; i++) {
     void* temp;
@@ -3176,7 +3176,7 @@ static void show_room_zone(int rnum, struct room_data* rp,
   print_room(rnum, rp, srzs->sb);
 }
 
-static void room_iterate(struct room_data* rb[], void (*func)(), void* cdata) {
+static void room_iterate(struct room_data* rb[], void (*func)(void), void* cdata) {
   register int i;
   for (i = 0; i < WORLD_SIZE; i++) {
     struct room_data* temp;

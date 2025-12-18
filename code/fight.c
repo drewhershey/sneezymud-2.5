@@ -1305,7 +1305,7 @@ int HitOrMiss(struct char_data* ch, struct char_data* victim, int calc_thaco) {
 }
 
 int MissVictim(struct char_data* ch, struct char_data* v, int type, int w_type,
-  int (*dam_func)()) {
+  int (*dam_func)(struct char_data*, struct char_data*, int, int)) {
   if (type <= 0)
     type = w_type;
   return (*dam_func)(ch, v, 0, w_type);
@@ -1418,7 +1418,7 @@ static const byte backstab_mult[ABS_MAX_LVL] = {
 };
 
 int HitVictim(struct char_data* ch, struct char_data* v, int dam, int type,
-  int w_type, int (*dam_func)()) {
+  int w_type, int (*dam_func)(struct char_data*, struct char_data*, int, int)) {
   int dead;
 
   if (type == SKILL_BACKSTAB) {

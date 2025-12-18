@@ -1234,7 +1234,7 @@ void send_to_char(const char* messg, struct char_data* ch) {
     }
 }
 
-void save_all() {
+void save_all(void) {
   struct descriptor_data* i;
 
   for (i = descriptor_list; i; i = i->next)
