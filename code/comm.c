@@ -929,7 +929,7 @@ int process_output(struct descriptor_data* t) {
   return 1;
 }
 
-int write_to_descriptor(int desc, char* txt) {
+int write_to_descriptor(int desc, const char* txt) {
   int sofar, thisround, total;
 
   total = strlen(txt);
@@ -1242,7 +1242,7 @@ void save_all() {
       save_char(i->character, AUTO_RENT);
 }
 
-void send_to_all(char* messg) {
+void send_to_all(const char* messg) {
   struct descriptor_data* i;
 
   if (messg)
@@ -1251,7 +1251,7 @@ void send_to_all(char* messg) {
         write_to_q(messg, &i->output);
 }
 
-void send_to_outdoor(char* messg) {
+void send_to_outdoor(const char* messg) {
   struct descriptor_data* i;
 
   if (messg)
@@ -1261,7 +1261,7 @@ void send_to_outdoor(char* messg) {
           write_to_q(messg, &i->output);
 }
 
-void send_to_except(char* messg, struct char_data* ch) {
+void send_to_except(const char* messg, struct char_data* ch) {
   struct descriptor_data* i;
 
   if (messg)
@@ -1270,7 +1270,7 @@ void send_to_except(char* messg, struct char_data* ch) {
         write_to_q(messg, &i->output);
 }
 
-void send_to_room(char* messg, int room) {
+void send_to_room(const char* messg, int room) {
   if (!messg || !real_roomp(room)) {
     return;
   }
@@ -1282,7 +1282,7 @@ void send_to_room(char* messg, int room) {
   }
 }
 
-void send_to_room_except(char* messg, int room, struct char_data* ch) {
+void send_to_room_except(const char* messg, int room, struct char_data* ch) {
   struct char_data* i;
 
   if (messg)
@@ -1291,7 +1291,7 @@ void send_to_room_except(char* messg, int room, struct char_data* ch) {
         write_to_q(messg, &i->desc->output);
 }
 
-void send_to_room_except_two(char* messg, int room, struct char_data* ch1,
+void send_to_room_except_two(const char* messg, int room, struct char_data* ch1,
   struct char_data* ch2) {
   struct char_data* i;
 
@@ -1303,9 +1303,10 @@ void send_to_room_except_two(char* messg, int room, struct char_data* ch1,
 
 /* higher-level communication */
 
-void act(char* str, int hide_invisible, struct char_data* ch,
+void act(const char* str, int hide_invisible, struct char_data* ch,
   struct obj_data* obj, void* vict_obj, int type) {
-  register char *strp, *point, *i;
+  register const char *strp, *i;
+  register char *point;
   struct char_data *to, *tmp_victim, *temp;
   char buf[MAX_STRING_LENGTH];
 

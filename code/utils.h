@@ -386,8 +386,8 @@ int dice(int number, int size);
   })
 
 void SpaceForSkills(struct char_data* ch);
-void error_log(char* str);
-void slog(char* str);
+void error_log(const char* str);
+void slog(const char* str);
 void weather_and_time(int mode);
 void another_hour(int mode);
 void weather_change(void);

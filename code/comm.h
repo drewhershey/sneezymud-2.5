@@ -23,17 +23,17 @@ extern int no_specials;
 extern struct descriptor_data *descriptor_list, *next_to_process;
 extern int tics;
 
-void send_to_all(char* messg);
+void send_to_all(const char* messg);
 void send_to_char(const char* messg, struct char_data* ch);
-void send_to_except(char* messg, struct char_data* ch);
-void send_to_room(char* messg, int room);
-void send_to_room_except(char* messg, int room, struct char_data* ch);
-void send_to_room_except_two(char* messg, int room, struct char_data* ch1,
+void send_to_except(const char* messg, struct char_data* ch);
+void send_to_room(const char* messg, int room);
+void send_to_room_except(const char* messg, int room, struct char_data* ch);
+void send_to_room_except_two(const char* messg, int room, struct char_data* ch1,
   struct char_data* ch2);
-void send_to_outdoor(char* messg);
-void perform_to_all(char* messg, struct char_data* ch);
+void send_to_outdoor(const char* messg);
+void perform_to_all(const char* messg, struct char_data* ch);
 void perform_complex(struct char_data* ch1, struct char_data* ch2,
-  struct obj_data* obj1, struct obj_data* obj2, char* mess, byte mess_type,
+  struct obj_data* obj1, struct obj_data* obj2, const char* mess, byte mess_type,
   bool hide);
 int get_from_q(struct txt_q* queue, char* dest);
 /* write_to_q is in comm.h for the macro */
@@ -73,7 +73,7 @@ void check_reboot(void);
 void signal_setup(void);
 extern int workhours(void);
 
-void act(char* str, int hide_invisible, struct char_data* ch,
+void act(const char* str, int hide_invisible, struct char_data* ch,
   struct obj_data* obj, void* vict_obj, int type);
 
 #define TO_ROOM 0
@@ -81,7 +81,7 @@ void act(char* str, int hide_invisible, struct char_data* ch,
 #define TO_NOTVICT 2
 #define TO_CHAR 3
 
-int write_to_descriptor(int desc, char* txt);
+int write_to_descriptor(int desc, const char* txt);
 void write_to_q(const char* txt, struct txt_q* queue);
 #define SEND_TO_Q(messg, desc) write_to_q((messg), &(desc)->output)
 

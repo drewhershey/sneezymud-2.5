@@ -232,7 +232,7 @@ void vlog(const char* str) {
       write_to_q(buf, &i->output);
 }
 
-void slog(char* str) {
+void slog(const char* str) {
   long ct;
   char* tmstr;
 
