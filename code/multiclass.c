@@ -38,6 +38,7 @@ int CountBits(int class) {
     return (7);
   if (class == 128)
     return (8);
+  return 0;
 }
 
 int OnlyClass(struct char_data* ch, int class) {
@@ -99,6 +100,7 @@ int HowManyClasses(struct char_data* ch) {
     if (IS_SET(ch->player.class, CLASS_MONK))
       tot++;
   }
+  return tot;
 }
 
 int BestFightingClass(struct char_data* ch) {
@@ -197,6 +199,7 @@ static int GetALevel(struct char_data* ch, int which) {
   if (which > -1 && which < 4) {
     return (ind[which]);
   }
+  return 0;
 }
 
 int GetMaxLevel(struct char_data* ch) {

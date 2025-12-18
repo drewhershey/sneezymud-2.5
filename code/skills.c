@@ -335,6 +335,7 @@ int go_direction(struct char_data* ch, int dir) {
     open_door(ch, dir);
     return 0;
   }
+  return 0;
 }
 
 int track(struct char_data* ch, struct char_data* vict) {

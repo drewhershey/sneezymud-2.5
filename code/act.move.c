@@ -375,10 +375,11 @@ int DisplayMove(struct char_data* ch, int dir, int was_in, int total) {
       }
     }
   }
+  return TRUE;
 }
 
 static int DisplayOneMove(struct char_data* ch, int dir, int was_in) {
-  DisplayMove(ch, dir, was_in, 1);
+  return DisplayMove(ch, dir, was_in, 1);
 }
 
 static int AddToCharHeap(struct char_data* heap[50], int* top, int total[50],
@@ -405,6 +406,7 @@ static int AddToCharHeap(struct char_data* heap[50], int* top, int total[50],
       *top += 1;
     }
   }
+  return TRUE;
 }
 
 int MoveOne(struct char_data* ch, int dir) {
@@ -420,10 +422,10 @@ int MoveOne(struct char_data* ch, int dir) {
 
 static int DisplayGroupMove(struct char_data* ch, int dir, int was_in,
   int total) {
-  DisplayMove(ch, dir, was_in, total);
+  return DisplayMove(ch, dir, was_in, total);
 }
 
-int MoveGroup(struct char_data* ch, int dir) {
+void MoveGroup(struct char_data* ch, int dir) {
   struct char_data* heap_ptr[50];
   int was_in, i, heap_top, heap_tot[50];
   struct follow_type *k, *next_dude;

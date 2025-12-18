@@ -106,9 +106,9 @@ int CAN_SEE(struct char_data* s, struct char_data* o) {
   return (TRUE);
 }
 
-int LearnFromMistake(struct char_data* ch, int sknum, int silent, int max) {
+void LearnFromMistake(struct char_data* ch, int sknum, int silent, int max) {
   if (!ch || !ch->skills)
-    return FALSE;
+    return;
 
   if ((ch->skills[sknum].learned < max) && (ch->skills[sknum].learned > 0)) {
     if (number(1, 101) > (ch->skills[sknum].learned / 2)) {
@@ -836,6 +836,7 @@ int HasHands(struct char_data* ch) {
     return (TRUE);
   if (GET_RACE(ch) == RACE_SPECIAL)
     return (TRUE);
+  return FALSE;
 }
 
 int IsPerson(struct char_data* ch) {
@@ -1380,7 +1381,7 @@ int MobCountInRoom(struct char_data* list) {
 
 void* Mymalloc(long size) { return (malloc(size)); }
 
-int SpaceForSkills(struct char_data* ch) {
+void SpaceForSkills(struct char_data* ch) {
   /*
     create space for the skills for some mobile or character.
   */

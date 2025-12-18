@@ -987,6 +987,7 @@ int CheckForPoint(struct char_data* ch) {
       }
     }
   }
+  return FALSE;
 }
 
 void check_horn(struct char_data* better, int diceroll) {
@@ -1111,4 +1112,5 @@ int craps_table_man(struct char_data* ch, int cmd, char* arg) {
         break;
     }
   }
+  return FALSE;
 }

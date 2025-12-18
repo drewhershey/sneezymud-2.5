@@ -360,6 +360,7 @@ int AntiGuildMaster(struct char_data* ch, int cmd, char* arg) {
     send_to_char("Oh...i bet you think you're an anti-paladin?\n\r", ch);
     return (FALSE);
   }
+  return FALSE;
 }
 
 int MageGuildMaster(struct char_data* ch, int cmd, char* arg) {
@@ -496,6 +497,7 @@ int MageGuildMaster(struct char_data* ch, int cmd, char* arg) {
     send_to_char("Oh.. i bet you think you're a magic user?\n\r", ch);
     return (FALSE);
   }
+  return FALSE;
 }
 
 int PaladinGuildMaster(struct char_data* ch, int cmd, char* arg) {
@@ -704,6 +706,7 @@ int PaladinGuildMaster(struct char_data* ch, int cmd, char* arg) {
     send_to_char("Oh...i bet you think you're an paladin?\n\r", ch);
     return (FALSE);
   }
+  return FALSE;
 }
 
 int RangerGuildMaster(struct char_data* ch, int cmd, char* arg) {
@@ -946,6 +949,7 @@ int RangerGuildMaster(struct char_data* ch, int cmd, char* arg) {
     send_to_char("Oh...i bet you think you're an ranger?\n\r", ch);
     return (FALSE);
   }
+  return FALSE;
 }
 
 int ClericGuildMaster(struct char_data* ch, int cmd, char* arg) {
@@ -1075,6 +1079,7 @@ int ClericGuildMaster(struct char_data* ch, int cmd, char* arg) {
     send_to_char("What do you think you are, a cleric??\n\r", ch);
     return (FALSE);
   }
+  return FALSE;
 }
 
 int ThiefGuildMaster(struct char_data* ch, int cmd, char* arg) {
@@ -1230,6 +1235,7 @@ int ThiefGuildMaster(struct char_data* ch, int cmd, char* arg) {
     send_to_char("What do you think you are, a thief??\n\r", ch);
     return (FALSE);
   }
+  return FALSE;
 }
 
 int WarriorGuildMaster(struct char_data* ch, int cmd, char* arg) {
@@ -1430,6 +1436,7 @@ int WarriorGuildMaster(struct char_data* ch, int cmd, char* arg) {
     send_to_char("Oh.. i bet you think you're a fighter??\n\r", ch);
     return (FALSE);
   }
+  return FALSE;
 }
 
 int no_order(struct char_data* ch, int cmd, char* arg) {
@@ -1703,6 +1710,7 @@ value += MAX(1, MIN(50, k->obj_flags.cost/10));
     else
       GET_GOLD(ch) += value;
   }
+  return FALSE;
 }
 
 int mayor(struct char_data* ch, int cmd, char* arg) {
@@ -2723,6 +2731,7 @@ int ninja_master(struct char_data* ch, int cmd, char* arg) {
   } else {
     return (FALSE);
   }
+  return FALSE;
 }
 
 static int HasObject(struct char_data* ch, int ob_num) {
@@ -2996,6 +3005,7 @@ int geyser(struct char_data* ch, int cmd, char* arg) {
     cast_geyser(GetMaxLevel(ch), ch, "", SPELL_TYPE_SPELL, 0, 0);
     return (TRUE);
   }
+  return FALSE;
 }
 
 int green_slime(struct char_data* ch, int cmd, char* arg) {
@@ -3007,6 +3017,7 @@ int green_slime(struct char_data* ch, int cmd, char* arg) {
   for (cons = real_roomp(ch->in_room)->people; cons; cons = cons->next_in_room)
     if ((!IS_NPC(cons)) && (GetMaxLevel(cons) < LOW_IMMORTAL))
       cast_green_slime(GetMaxLevel(ch), ch, "", SPELL_TYPE_SPELL, cons, 0);
+  return FALSE;
 }
 
 struct breath_victim {
@@ -3090,6 +3101,7 @@ int breath_weapon(struct char_data* ch, struct char_data* target, int mana_cost,
   }
 
   free_victims(hitlist);
+  return FALSE;
 }
 
 int use_breath_weapon(struct char_data* ch, struct char_data* target, int cost,
@@ -3101,6 +3113,7 @@ int use_breath_weapon(struct char_data* ch, struct char_data* target, int cost,
   } else if (GET_HIT(ch) < GET_MAX_HIT(ch) / 4) {
     breath_weapon(ch, target, cost, func);
   }
+  return FALSE;
 }
 
 static funcp breaths[] = {cast_acid_breath, 0, cast_frost_breath, 0,
@@ -3176,11 +3189,11 @@ int BreathWeapon(struct char_data* ch, int cmd, char* arg) {
   return TRUE;
 }
 
-int DracoLich(struct char_data* ch, int cmd, char* arg) {}
+int DracoLich(struct char_data* ch, int cmd, char* arg) { return FALSE; }
 
-int Drow(struct char_data* ch, int cmd, char* arg) {}
+int Drow(struct char_data* ch, int cmd, char* arg) { return FALSE; }
 
-int Leader(struct char_data* ch, int cmd, char* arg) {}
+int Leader(struct char_data* ch, int cmd, char* arg) { return FALSE; }
 
 int thief(struct char_data* ch, int cmd, char* arg) {
   struct char_data* cons;
@@ -3320,6 +3333,7 @@ int nightcrawler(struct char_data* ch, int cmd, char* arg) {
     cast_teleport(GetMaxLevel(ch), ch, "", SPELL_TYPE_SPELL, ch, 0);
     return (FALSE);
   }
+  return FALSE;
 }
 
 static void StandUp(struct char_data* ch) {
@@ -3995,6 +4009,7 @@ int Inquisitor(struct char_data* ch, int cmd, char* arg) {
   if (ch->specials.fighting) {
     return (fighter(ch, cmd, arg));
   }
+  return FALSE;
 }
 
 int puff(struct char_data* ch, int cmd, char* arg) {
@@ -4285,6 +4300,7 @@ int puff(struct char_data* ch, int cmd, char* arg) {
     default:
       return (0);
   }
+  return FALSE; /* unreachable, but silences warning */
 }
 
 int regenerator(struct char_data* ch, int cmd, char* arg) {
@@ -4298,6 +4314,7 @@ int regenerator(struct char_data* ch, int cmd, char* arg) {
     act("$n regenerates.", TRUE, ch, 0, 0, TO_ROOM);
     return (TRUE);
   }
+  return FALSE;
 }
 
 int mega_regenerator(struct char_data* ch, int cmd, char* arg) {
@@ -4311,6 +4328,7 @@ int mega_regenerator(struct char_data* ch, int cmd, char* arg) {
     act("$n licks his wounds and regenerates!", TRUE, ch, 0, 0, TO_ROOM);
     return (TRUE);
   }
+  return FALSE;
 }
 
 int replicant(struct char_data* ch, int cmd, char* arg) {
@@ -4409,6 +4427,7 @@ int Tytan(struct char_data* ch, int cmd, char* arg) {
         (*((int*)ch->act_ptr)) = TYT_NONE;
     }
   }
+  return FALSE;
 }
 
 int AbbarachDragon(struct char_data* ch, int cmd, char* arg) {
@@ -4427,6 +4446,7 @@ int AbbarachDragon(struct char_data* ch, int cmd, char* arg) {
   } else {
     return (BreathWeapon(ch, cmd, arg));
   }
+  return FALSE;
 }
 
 int fido(struct char_data* ch, int cmd, char* arg) {
@@ -4580,6 +4600,7 @@ int magneto(struct char_data* ch, int cmd, char* arg) {
       break;
     }
   }
+  return FALSE;
 }
 
 int RustMonster(struct char_data* ch, int cmd, char* arg) {
@@ -4749,6 +4770,7 @@ int Whirlwind(struct char_data* ch, int cmd, char* arg) {
       extract_char(ch);
     }
   }
+  return FALSE;
 }
 
 #define NN_LOOSE 0
@@ -4863,6 +4885,7 @@ int NudgeNudge(struct char_data* ch, int cmd, char* arg) {
       (*((int*)ch->act_ptr)) = NN_LOOSE;
       break;
   }
+  return FALSE;
 }
 
 int AGGRESSIVE(struct char_data* ch, int cmd, char* arg) {
@@ -4881,6 +4904,7 @@ int AGGRESSIVE(struct char_data* ch, int cmd, char* arg) {
       }
     }
   }
+  return FALSE;
 }
 
 int citizen(struct char_data* ch, int cmd, char* arg) {
@@ -4918,6 +4942,7 @@ int aunt_bee(struct char_data* ch, int cmd, char* arg) {
 
     return (TRUE);
   }
+  return FALSE;
 }
 
 int cityguard(struct char_data* ch, int cmd, char* arg) {
@@ -6006,6 +6031,7 @@ int jabberwocky(struct char_data* ch, int cmd, char* arg) {
     }
     return (FALSE);
   }
+  return FALSE;
 }
 
 int flame(struct char_data* ch, int cmd, char* arg) {
@@ -6019,6 +6045,7 @@ int flame(struct char_data* ch, int cmd, char* arg) {
     }
     return (FALSE);
   }
+  return FALSE;
 }
 
 int banana(struct char_data* ch, int cmd, char* arg) {
@@ -6257,6 +6284,7 @@ int delivery_beast(struct char_data* ch, int cmd, char* arg) {
       do_sleep(ch, "", 0);
     }
   }
+  return FALSE;
 }
 
 int Keftab(struct char_data* ch, int cmd, char* arg) {
@@ -6303,6 +6331,7 @@ int Keftab(struct char_data* ch, int cmd, char* arg) {
       return (FALSE);
     }
   }
+  return FALSE;
 }
 
 int StormGiant(struct char_data* ch, int cmd, char* arg) {
@@ -6330,11 +6359,12 @@ int StormGiant(struct char_data* ch, int cmd, char* arg) {
     }
     return (FALSE);
   }
+  return FALSE;
 }
 
-int Manticore(struct char_data* ch, int cmd, char* arg) {}
+int Manticore(struct char_data* ch, int cmd, char* arg) { return FALSE; }
 
-int Kraken(struct char_data* ch, int cmd, char* arg) {}
+int Kraken(struct char_data* ch, int cmd, char* arg) { return FALSE; }
 
 static int GetDamBonus(struct obj_data* w) {
   int j, tot = 0;
@@ -6481,6 +6511,7 @@ out with the old, in with the new
       do_remove(mob, mob->equipment[WIELD]->name, 0);
     }
   }
+  return FALSE;
 }
 
 int fighter(struct char_data* ch, int cmd, char* arg) {
@@ -6495,6 +6526,7 @@ int fighter(struct char_data* ch, int cmd, char* arg) {
     }
     FindABetterWeapon(ch);
   }
+  return FALSE;
 }
 
 int web_slinger(struct char_data* ch, int cmd, char* arg) {
@@ -6509,6 +6541,7 @@ int web_slinger(struct char_data* ch, int cmd, char* arg) {
     act("$n throws webs on $N!", FALSE, ch, 0, victim, TO_NOTVICT);
     SET_BIT(victim->specials.affected_by, AFF_GRAPPLE);
   }
+  return FALSE;
 }
 
 int juggernaut(struct char_data* ch, int cmd, char* arg) {
@@ -6526,6 +6559,7 @@ int juggernaut(struct char_data* ch, int cmd, char* arg) {
 
     damage(ch, victim, dice(2, 250), TYPE_HIT);
   }
+  return FALSE;
 }
 
 void BlowChar(struct char_data* ch) {
@@ -6673,6 +6707,7 @@ int prof_x(struct char_data* ch, int cmd, char* arg) {
       return (FALSE);
     }
   }
+  return FALSE;
 }
 
 int elektro(struct char_data* ch, int cmd, char* arg) {
@@ -6694,6 +6729,7 @@ int elektro(struct char_data* ch, int cmd, char* arg) {
       MissileDamage(ch, tmp_victim, dam, SPELL_LIGHTNING_BOLT);
     }
   }
+  return FALSE;
 }
 
 int iceman(struct char_data* ch, int cmd, char* arg) {
@@ -6718,12 +6754,24 @@ int iceman(struct char_data* ch, int cmd, char* arg) {
     ANSI_NORMAL);
   send_to_room(buf, ch->in_room);
   MissileDamage(ch, victim, dam, SPELL_CONE_OF_COLD);
+  return FALSE;
 }
 
 int cyclops(struct char_data* ch, int cmd, char* arg) {
   struct char_data *victim, *tmp_victim, *temp;
   int dam;
   char buf[200];
+
+  /* Stub function - not yet implemented */
+  (void)ch;
+  (void)cmd;
+  (void)arg;
+  (void)victim;
+  (void)tmp_victim;
+  (void)temp;
+  (void)dam;
+  (void)buf;
+  return FALSE;
 }
 
 int storm(struct char_data* ch, int cmd, char* arg) {
@@ -6782,6 +6830,7 @@ int storm(struct char_data* ch, int cmd, char* arg) {
     default:
       return (FALSE);
   }
+  return FALSE;
 }
 
 /*
@@ -7039,6 +7088,7 @@ int NewThalosMayor(struct char_data* ch, int cmd, char* arg) {
       }
     }
   }
+  return FALSE;
 }
 
 int SultanGuard(struct char_data* ch, int cmd, char* arg) {
@@ -7116,6 +7166,7 @@ int NewThalosCitizen(struct char_data* ch, int cmd, char* arg) {
   } else {
     return (FALSE);
   }
+  return FALSE;
 }
 
 int NewThalosGuildGuard(struct char_data* ch, int cmd, char* arg) {
@@ -7325,6 +7376,7 @@ int MordCitizen(struct char_data* ch, int cmd, char* arg) {
   } else {
     return (FALSE);
   }
+  return FALSE;
 }
 
 int MordGuildGuard(struct char_data* ch, int cmd, char* arg) {
@@ -7636,6 +7688,7 @@ int soap(Mob* ch, int cmd, char* arg, Obj* me) {
     act("That used up $p.", FALSE, ch, obj, t, TO_CHAR);
     extract_obj(obj);
   }
+  return FALSE;
 }
 
 int nodrop(Mob* ch, int cmd, char* arg, Obj* me) {
@@ -8367,6 +8420,7 @@ int trogcook(struct char_data* ch, int cmd, char* arg) {
     command_interpreter(ch, buf);
     return (TRUE);
   }
+  return FALSE;
 }
 
 int shaman(struct char_data* ch, int cmd, char* arg) {
@@ -8396,6 +8450,7 @@ int shaman(struct char_data* ch, int cmd, char* arg) {
     } else
       return (cleric(ch, cmd, arg));
   }
+  return FALSE;
 }
 
 int golgar(struct char_data* ch, int cmd, char* arg) {
@@ -8434,6 +8489,7 @@ int golgar(struct char_data* ch, int cmd, char* arg) {
     }
   } else
     return (magic_user(ch, cmd, arg));
+  return FALSE;
 }
 
 int troguard(struct char_data* ch, int cmd, char* arg) {
@@ -8531,6 +8587,7 @@ int keystone(struct char_data* ch, int cmd, char* arg) {
       StandUp(ch);
     }
     CallForGuard(ch, ch->specials.fighting, 3, OUTPOST);
+    return FALSE;
   } else
     return (FALSE);
 }
@@ -9165,6 +9222,7 @@ int bouncer(struct char_data* ch, int cmd, char* arg) {
       }
     }
   }
+  return FALSE;
 }
 
 int gilbert(struct char_data* ch, int cmd, char* arg) {
@@ -9211,6 +9269,7 @@ int gilbert(struct char_data* ch, int cmd, char* arg) {
     obj_from_char(o);
     obj_to_room(o, ch->in_room);
   }
+  return FALSE;
 }
 
 int toilet_thing(struct char_data* ch, int cmd, char* arg) {
@@ -9242,6 +9301,7 @@ int toilet_thing(struct char_data* ch, int cmd, char* arg) {
         MissileDamage(ch, tmp_victim, dam, 300);
     }
   }
+  return FALSE;
 }
 
 int zombie_hater(struct char_data* ch, int cmd, char* arg) {
@@ -9260,6 +9320,7 @@ int zombie_hater(struct char_data* ch, int cmd, char* arg) {
       extract_char(vict);
     }
   }
+  return FALSE;
 }
 
 int dishboy(struct char_data* ch, int cmd, char* arg) {
@@ -9283,6 +9344,7 @@ int dishboy(struct char_data* ch, int cmd, char* arg) {
         MissileDamage(ch, tmp_victim, dam, 301);
     }
   }
+  return FALSE;
 }
 
 int game_wizard(struct char_data* ch, int cmd, char* arg) {
@@ -9310,6 +9372,7 @@ int game_wizard(struct char_data* ch, int cmd, char* arg) {
         MissileDamage(ch, tmp_victim, dam, 302);
     }
   }
+  return FALSE;
 }
 
 /* monks */
@@ -9589,7 +9652,7 @@ int monk_master(struct char_data* ch, int cmd, char* arg) {
       GainLevel(ch, MONK_LEVEL_IND);
       return (TRUE);
     }
-
+    return FALSE;
   } else {
     return (FALSE);
   }
@@ -10179,6 +10242,7 @@ int new_ninja_master(struct char_data* ch, int cmd, char* arg) {
       send_to_char("'You are now a master of this art.'\n\r", ch);
       return (TRUE);
     }
+    return FALSE;
   } else {
     return (FALSE);
   }
@@ -10786,7 +10850,7 @@ int MakeQuest(struct char_data* ch, struct char_data* gm, int Class, char* arg,
     } else {
       return (FALSE);
     }
-
+    return FALSE;
   } else if (cmd == GAIN) {
     if (GET_EXP(ch) < titles[Class][GET_LEVEL(ch, Class) + 1].exp) {
       send_to_char("You are not yet ready to gain\n\r", ch);
@@ -10920,6 +10984,7 @@ int creeping_death(struct char_data* ch, int cmd, char* arg) {
       }
     }
   }
+  return FALSE;
 }
 
 int GenericCityguardHateUndead(struct char_data* ch, int cmd, char* arg,
@@ -11202,6 +11267,7 @@ int loremaster(struct char_data* ch, int cmd, char* arg) {
       send_to_char("'You are now a master of this art.'\n\r", ch);
       return (TRUE);
     }
+    return FALSE;
   } else {
     return (FALSE);
   }
@@ -11341,6 +11407,7 @@ int dragon(struct char_data* ch, int cmd, char* arg) {
         GET_HIT(t2) -= damage;
     }
   }
+  return FALSE;
 }
 
 int hunter(struct char_data* ch, int cmd, char* arg) {
@@ -11445,6 +11512,7 @@ int hunter(struct char_data* ch, int cmd, char* arg) {
       send_to_char("'You are now a master of this art.'\n\r", ch);
       return (TRUE);
     }
+    return FALSE;
   } else {
     return (FALSE);
   }

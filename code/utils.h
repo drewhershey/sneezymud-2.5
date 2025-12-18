@@ -385,7 +385,7 @@ int dice(int number, int size);
     _sum;                                \
   })
 
-int SpaceForSkills(struct char_data* ch);
+void SpaceForSkills(struct char_data* ch);
 void error_log(char* str);
 void slog(char* str);
 void weather_and_time(int mode);
@@ -433,7 +433,7 @@ void do_start(struct char_data* ch);
 int AntiGuildMaster(struct char_data* ch, int cmd, char* arg);
 int getabunch(const char* name, char* newname);
 int choose_exit_global(int in_room, int tgt_room, int depth);
-int LearnFromMistake(struct char_data* ch, int sknum, int silent, int max);
+void LearnFromMistake(struct char_data* ch, int sknum, int silent, int max);
 int fighter(struct char_data* ch, int cmd, char* arg);
 int RecCompObjNum(struct obj_data* o, int obj_num);
 int find_door(struct char_data* ch, char* type, char* dir);

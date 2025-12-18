@@ -533,7 +533,7 @@ void gain_condition(struct char_data* ch, int condition, int value) {
   }
 }
 
-int ClassSpecificStuff(struct char_data* ch) {
+void ClassSpecificStuff(struct char_data* ch) {
   if (HasClass(ch, CLASS_WARRIOR) || HasClass(ch, CLASS_MONK)) {
     ch->mult_att = 1.0;
     if (HasClass(ch, CLASS_MONK)) {

@@ -171,6 +171,7 @@ static int MobFriend(struct char_data* ch, struct char_data* f) {
   } else {
     return (FALSE);
   }
+  return FALSE;
 }
 
 static int AssistFriend(struct char_data* ch) {
@@ -224,6 +225,7 @@ static int AssistFriend(struct char_data* ch) {
       }
     }
   }
+  return 0;
 }
 
 void mobile_activity(struct char_data* ch) {

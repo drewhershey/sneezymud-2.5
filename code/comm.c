@@ -200,6 +200,7 @@ int run_the_game(int port) {
   }
 
   vlog("Normal termination of game.");
+  return 0;
 }
 
 /* Accept new connects, relay commands, and call 'heartbeat-functs' */
@@ -632,6 +633,7 @@ int game_loop(int s) {
 
     tics++; /* tics since last checkpoint signal */
   }
+  return 0;
 }
 
 /* ******************************************************************

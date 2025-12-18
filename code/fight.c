@@ -856,7 +856,8 @@ static int BrittleCheck(struct char_data* ch, int dam) {
       }
     }
   }
-};
+  return FALSE;
+}
 
 int DamageMessages(struct char_data* ch, struct char_data* v, int dam,
   int attacktype) {
@@ -974,6 +975,7 @@ int DamageMessages(struct char_data* ch, struct char_data* v, int dam,
         break;
       }
   }
+  return 0;
 }
 
 int DamageEpilog(struct char_data* ch, struct char_data* victim) {
@@ -1305,7 +1307,7 @@ int MissVictim(struct char_data* ch, struct char_data* v, int type, int w_type,
   int (*dam_func)()) {
   if (type <= 0)
     type = w_type;
-  (*dam_func)(ch, v, 0, w_type);
+  return (*dam_func)(ch, v, 0, w_type);
 }
 
 int GetWeaponDam(struct char_data* ch, struct char_data* v,
@@ -1378,6 +1380,7 @@ static int WeaponSpell(struct char_data* c, struct char_data* v, int type) {
       }
     }
   }
+  return 0;
 }
 
 /* New single class thiefbackstab multiplier (single class only) */
@@ -1449,6 +1452,7 @@ int HitVictim(struct char_data* ch, struct char_data* v, int dam, int type,
   if (!dead) {
     WeaponSpell(ch, v, w_type);
   }
+  return dead;
 }
 
 int GetFormType(struct char_data* ch) {
@@ -2070,6 +2074,7 @@ int BreakLifeSaverObj(struct char_data* ch) {
     send_to_char(buf, ch);
     if ((o = unequip_char(ch, found)) != NULL) {}
   }
+  return found;
 }
 
 int PreProcDam(struct char_data* ch, int type, int dam) {

@@ -133,7 +133,7 @@ int check_slots(struct char_data* ch);
 int check_blackjack(struct char_data* ch);
 void do_bj_bet(struct char_data* ch, char* arg, int cmd);
 void do_bj_hit(struct char_data* ch);
-int do_blackjack_exit(struct char_data* ch);
+void do_blackjack_exit(struct char_data* ch);
 int do_blackjack_enter(struct char_data* ch);
 int check_slot_player(struct char_data* ch);
 

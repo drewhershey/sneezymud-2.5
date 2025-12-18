@@ -163,6 +163,7 @@ int ReadObjs(FILE* fl, struct obj_file_u* st) {
 
     */
   }
+  return TRUE;
 }
 
 void ZeroRent(char* n) {

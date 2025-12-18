@@ -116,7 +116,7 @@ static int bj_index(struct char_data* ch) {
   return inx;
 }
 
-int do_blackjack_exit(struct char_data* ch) {
+void do_blackjack_exit(struct char_data* ch) {
   char log_msg[80];
   int inx;
 
@@ -124,7 +124,7 @@ int do_blackjack_exit(struct char_data* ch) {
   if (inx < 0) {
     sprintf(log_msg, "%s left a table he was not at!", ch->player.name);
     vlog(log_msg);
-    return 0;
+    return;
   }
 
   bj_data[inx].name[0] = 0;
@@ -133,7 +133,7 @@ int do_blackjack_exit(struct char_data* ch) {
   send_to_char("You leave the blackjack table.\n\r", ch);
 }
 
-static int add_suit(char* cat_msg, int card) {
+static void add_suit(char* cat_msg, int card) {
   if (card & HEARTS)
     strcat(cat_msg, " of Hearts");
   if (card & DIAMONDS)

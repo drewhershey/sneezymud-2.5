@@ -3,8 +3,8 @@
 
 #include "structs.h"
 
-int FreeFears(struct char_data* ch);
-int FreeHates(struct char_data* ch);
+void FreeFears(struct char_data* ch);
+void FreeHates(struct char_data* ch);
 
 int RemHated(struct char_data* ch, struct char_data* pud);
 int AddHated(struct char_data* ch, struct char_data* pud);

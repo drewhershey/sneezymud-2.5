@@ -227,7 +227,7 @@ const byte saving_throws[8][5][ABS_MAX_LVL] = {
   },
 };
 
-static int ObjFromCorpse(struct obj_data* c) {
+static void ObjFromCorpse(struct obj_data* c) {
   struct obj_data *jj, *next_thing;
 
   for (jj = c->contains; jj; jj = next_thing) {
@@ -249,7 +249,7 @@ static int ObjFromCorpse(struct obj_data* c) {
       */
       c->contains = 0;
       vlog("Memory lost in ObjFromCorpse.");
-      return (TRUE);
+      return;
     }
   }
   extract_obj(c);
