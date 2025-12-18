@@ -10,7 +10,6 @@
 #define HASH_KEY(ht, key) ((((unsigned int)(key)) * 17) % (ht)->table_size)
 
 void init_hash_table(struct hash_header* ht, int rec_size, int table_size) {
-  int size;
   ht->rec_size = rec_size;
   ht->table_size = table_size;
   ht->buckets = (void*)calloc(sizeof(struct hash_link**), table_size);

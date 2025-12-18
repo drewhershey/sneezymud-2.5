@@ -19,7 +19,6 @@
 void do_say(struct char_data* ch, char* argument, int cmd) {
   int i;
   char buf[MAX_INPUT_LENGTH + 40] = "\0\0\0\0";
-  struct affected_type* af;
 
   if (apply_soundproof(ch))
     return;
@@ -97,7 +96,6 @@ void do_grouptell(struct char_data* ch, char* argument, int cmd) {
   static char buf1[MAX_INPUT_LENGTH];
   struct follow_type* f;
   struct char_data* k;
-  bool found;
 
   if (IS_AFFECTED(ch, AFF_SILENT)) {
     send_to_char("You can't make a sound!\n\r", ch);

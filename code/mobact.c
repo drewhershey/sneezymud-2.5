@@ -230,10 +230,7 @@ static int AssistFriend(struct char_data* ch) {
 
 void mobile_activity(struct char_data* ch) {
   struct char_data* tmp_ch;
-  struct char_data *damsel, *targ;
-  struct obj_data *obj, *best_obj, *worst_obj;
-  int door, found, max, min, t, res, k;
-  char buf[80];
+  int k;
 
   /* Examine call for special procedure */
 
