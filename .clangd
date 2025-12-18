@@ -1,0 +1,21 @@
+Diagnostics:
+  ClangTidy:
+    FastCheckFilter: None
+  UnusedIncludes: Strict
+  MissingIncludes: Strict
+Hover:
+  ShowAKA: Yes
+InlayHints:
+  Enabled: Yes
+  ParameterNames: Yes
+  DeducedTypes: Yes
+---
+If:
+  PathMatch: .*\.h
+CompileFlags:
+  Add: [-xc-header]
+---
+If:
+  PathMatch: .*\.c
+CompileFlags:
+  Add: [-xc]

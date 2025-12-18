@@ -1,0 +1,90 @@
+# Clang-Tidy configuration for SneezeMUD 2.5
+# Enable all checks, then selectively disable inappropriate ones
+
+Checks: >
+  *,
+  -altera-*,
+  -android-*,
+  -boost-*,
+  -bugprone-easily-swappable-parameters,
+  -cert-msc30-c,
+  -cert-msc32-c,
+  -concurrency-*,
+  -cppcoreguidelines-*,
+  -fuchsia-*,
+  -google-*,
+  -hicpp-*,
+  -llvm-header-guard,
+  -llvmlibc-*,
+  -misc-no-recursion,
+  -modernize-*,
+  -mpi-*,
+  -objc-*,
+  -openmp-*,
+  -readability-function-cognitive-complexity,
+  -readability-identifier-length,
+  -readability-magic-numbers,
+  misc-include-cleaner,
+
+# Disabled checks explained:
+#
+# PLATFORM-SPECIFIC (not relevant):
+#   altera-*           - FPGA/Altera specific
+#   android-*          - Android platform specific
+#   boost-*            - Boost library specific
+#   fuchsia-*          - Fuchsia OS specific
+#   llvmlibc-*         - LLVM libc implementation specific
+#   mpi-*              - MPI parallel computing specific
+#   objc-*             - Objective-C specific
+#   openmp-*           - OpenMP specific
+#
+# C++ SPECIFIC (not relevant for C code):
+#   cppcoreguidelines-* - C++ Core Guidelines
+#   hicpp-*             - High Integrity C++ guidelines
+#   modernize-*         - C++ modernization (auto, nullptr, etc.)
+#
+# STYLE GUIDE SPECIFIC:
+#   google-*           - Google C++ style guide (conflicts with project style)
+#   llvm-header-guard  - LLVM header guard style (project uses different style)
+#
+# TOO NOISY FOR LEGACY CODE:
+#   bugprone-easily-swappable-parameters - Many false positives in C APIs
+#   readability-function-cognitive-complexity - Legacy code has complex functions
+#   readability-identifier-length - Short names like 'i', 'ch' are idiomatic in C
+#   readability-magic-numbers - Would flag nearly every number literal
+#   misc-no-recursion - Recursion is used intentionally in some places
+#
+# SECURITY/RANDOMNESS (intentionally relaxed for game):
+#   cert-msc30-c - Warns about rand() - acceptable for non-crypto game RNG
+#   cert-msc32-c - Warns about rand() seeding - acceptable for game
+#   concurrency-* - No threading in this codebase
+#
+# POTENTIALLY USEFUL (consider enabling incrementally):
+#   cert-err33-c - Check return values (currently causes many warnings)
+#   cert-err34-c - Check atoi/scanf returns (currently causes many warnings)
+#   readability-suspicious-call-argument - Can catch real bugs but has false positives
+
+WarningsAsErrors: ''
+
+HeaderFilterRegex: '.*'
+
+CheckOptions:
+  # Allow short names for loop variables and common idioms
+  - key: readability-identifier-naming.VariableCase
+    value: lower_case
+  - key: readability-identifier-naming.FunctionCase
+    value: lower_case
+  - key: readability-identifier-naming.MacroDefinitionCase
+    value: UPPER_CASE
+
+  # Reasonable thresholds for complexity checks (if re-enabled)
+  - key: readability-function-cognitive-complexity.Threshold
+    value: 100
+  - key: readability-function-size.LineThreshold
+    value: 500
+
+  # Allow common short names
+  - key: readability-identifier-length.MinimumVariableNameLength
+    value: 1
+  - key: readability-identifier-length.MinimumParameterNameLength
+    value: 1
