@@ -1101,7 +1101,7 @@ void do_at(struct char_data* ch, char* argument, int cmd) {
 
   /* check if the guy's still there */
   for (target_mob = real_roomp(location)->people; target_mob;
-       target_mob = target_mob->next_in_room)
+    target_mob = target_mob->next_in_room)
     if (ch == target_mob) {
       char_from_room(ch);
       char_to_room(ch, original_loc);
@@ -1171,7 +1171,7 @@ void do_goto(struct char_data* ch, char* argument, int cmd) {
 
   if (IS_SET(real_roomp(location)->room_flags, PRIVATE)) {
     for (i = 0, pers = real_roomp(location)->people; pers;
-         pers = pers->next_in_room, i++)
+      pers = pers->next_in_room, i++)
       ;
     if (i > 1) {
       send_to_char("There's a private conversation going on in that room.\n\r",
@@ -2450,7 +2450,8 @@ void do_link(struct char_data* ch, char* argument, int cmd) {
   }
 }
 
-static void hash_iterate(struct hash_header* ht, void (*func)(int, void*, void*), void* cdata) {
+static void hash_iterate(struct hash_header* ht,
+  void (*func)(int, void*, void*), void* cdata) {
   int i;
   for (i = 0; i < ht->klistlen; i++) {
     void* temp;
@@ -2800,7 +2801,7 @@ static void gain_exp_regardless(struct char_data* ch, int gain, int class) {
       GET_EXP(ch) += gain;
 
       for (i = 0; (i < ABS_MAX_LVL) && (titles[class][i].exp <= GET_EXP(ch));
-           i++) {
+        i++) {
         if (i > GET_LEVEL(ch, class)) {
           send_to_char("You raise a level\n\r", ch);
           GET_LEVEL(ch, class) = i;
@@ -3176,7 +3177,8 @@ static void show_room_zone(int rnum, struct room_data* rp,
   print_room(rnum, rp, srzs->sb);
 }
 
-static void room_iterate(struct room_data* rb[], void (*func)(void), void* cdata) {
+static void room_iterate(struct room_data* rb[], void (*func)(void),
+  void* cdata) {
   register int i;
   for (i = 0; i < WORLD_SIZE; i++) {
     struct room_data* temp;
@@ -3234,9 +3236,9 @@ void do_show(struct char_data* ch, char* argument, int cmd) {
     }
 
   } else if ((is_abbrev(buf, "objects") &&
-                (which_i = obj_index, topi = top_of_objt)) ||
+               (which_i = obj_index, topi = top_of_objt)) ||
              (is_abbrev(buf, "mobiles") &&
-                (which_i = mob_index, topi = top_of_mobt))) {
+               (which_i = mob_index, topi = top_of_mobt))) {
     int objn;
     struct index_data* oi;
 

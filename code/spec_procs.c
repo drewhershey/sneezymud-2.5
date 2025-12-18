@@ -1669,10 +1669,10 @@ int dump(struct char_data* ch, int cmd, char* arg) {
   int value = 0;
 
   for (k = real_roomp(ch->in_room)->contents; k;
-       k = real_roomp(ch->in_room)->contents) {
+    k = real_roomp(ch->in_room)->contents) {
     sprintf(buf, "The %s vanish in a puff of smoke.\n\r", fname(k->name));
     for (tmp_char = real_roomp(ch->in_room)->people; tmp_char;
-         tmp_char = tmp_char->next_in_room)
+      tmp_char = tmp_char->next_in_room)
       if (CAN_SEE_OBJ(tmp_char, k))
         send_to_char(buf, tmp_char);
     extract_obj(k);
@@ -1686,10 +1686,10 @@ int dump(struct char_data* ch, int cmd, char* arg) {
   value = 0;
 
   for (k = real_roomp(ch->in_room)->contents; k;
-       k = real_roomp(ch->in_room)->contents) {
+    k = real_roomp(ch->in_room)->contents) {
     sprintf(buf, "The %s vanish in a puff of smoke.\n\r", fname(k->name));
     for (tmp_char = real_roomp(ch->in_room)->people; tmp_char;
-         tmp_char = tmp_char->next_in_room)
+      tmp_char = tmp_char->next_in_room)
       if (CAN_SEE_OBJ(tmp_char, k))
         send_to_char(buf, tmp_char);
     value += (MIN(1000, MAX(k->obj_flags.cost / 4, 1)));
@@ -2084,7 +2084,7 @@ int eric_johnson(struct char_data* ch, int cmd, char* arg) {
 
   eric = FindMobInRoomWithFunction(ch->in_room, eric_johnson);
   for (temp_char = real_roomp(ch->in_room)->people; (!eric) && (temp_char);
-       temp_char = temp_char->next_in_room)
+    temp_char = temp_char->next_in_room)
     if (IS_MOB(temp_char))
       if (mob_index[temp_char->nr].func.mob_f == eric_johnson)
         eric = temp_char;
@@ -3033,7 +3033,7 @@ struct breath_victim* choose_victims(struct char_data* ch,
   struct breath_victim *head = NULL, *temp = NULL;
 
   for (cons = real_roomp(ch->in_room)->people; cons;
-       cons = cons->next_in_room) {
+    cons = cons->next_in_room) {
     temp = (void*)malloc(sizeof(*temp));
     temp->ch = cons;
     temp->next = head;
@@ -3163,7 +3163,7 @@ int BreathWeapon(struct char_data* ch, int cmd, char* arg) {
   if (ch->specials.fighting &&
       (ch->specials.fighting->in_room == ch->in_room)) {
     for (scan = breath_monsters;
-         scan->vnum >= 0 && scan->vnum != mob_index[ch->nr].virtual; scan++)
+      scan->vnum >= 0 && scan->vnum != mob_index[ch->nr].virtual; scan++)
       ;
 
     if (scan->vnum < 0) {
@@ -5614,7 +5614,7 @@ int pray_for_items(struct char_data* ch, int cmd, char* arg) {
   found = FALSE;
 
   for (tmp_obj = real_roomp(key_room)->contents; tmp_obj;
-       tmp_obj = tmp_obj->next_content)
+    tmp_obj = tmp_obj->next_content)
     for (ext = tmp_obj->ex_description; ext; ext = ext->next)
       if (str_cmp(buf, ext->keyword) == 0) {
         if (gold == 0) {
@@ -6079,7 +6079,7 @@ int paramedics(struct char_data* ch, int cmd, char* arg) {
 
         most_hurt = real_roomp(ch->in_room)->people;
         for (vict = real_roomp(ch->in_room)->people; vict;
-             vict = vict->next_in_room) {
+          vict = vict->next_in_room) {
           if (((float)GET_HIT(vict) / (float)hit_limit(vict) <
                 (float)GET_HIT(most_hurt) / (float)hit_limit(most_hurt)) &&
               (CAN_SEE(ch, vict)))
@@ -6564,7 +6564,7 @@ int juggernaut(struct char_data* ch, int cmd, char* arg) {
 
 void BlowChar(struct char_data* ch) {
   struct room_data* rp;
-  int or ;
+  int or;
   int num;
 
   num = number(1, 20);
@@ -6577,7 +6577,7 @@ void BlowChar(struct char_data* ch) {
 
 void BouncerThrow(struct char_data* ch) {
   struct room_data *rp, *rp2;
-  int or ;
+  int or;
 
   rp = real_roomp(ch->in_room);
   rp2 = real_roomp((ch->in_room) - 1);
@@ -6590,7 +6590,7 @@ void BouncerThrow(struct char_data* ch) {
       0, TO_ROOM);
     or = ch->in_room;
     char_from_room(ch);
-    char_to_room(ch, (or -1));
+    char_to_room(ch, (or - 1));
     do_look(ch, "\0", 15);
   }
 }
@@ -6820,7 +6820,7 @@ int storm(struct char_data* ch, int cmd, char* arg) {
       act("$n waves her arms.", 1, ch, 0, 0, TO_ROOM);
       act("$n has summoned a great hurricane!", 1, ch, 0, 0, TO_ROOM);
       for (tmp_victim = real_roomp(ch->in_room)->people; tmp_victim;
-           tmp_victim = tmp_victim->next_in_room) {
+        tmp_victim = tmp_victim->next_in_room) {
         if ((ch != tmp_victim) && IS_PC(tmp_victim)) {
           BlowChar(tmp_victim);
         }
@@ -7731,7 +7731,7 @@ int nodrop(Mob* ch, int cmd, char* arg, Obj* me) {
   /* Look in the room first, in get case */
   if (cmd == 10)
     for (i = real_roomp(ch->in_room)->contents, j = 1; i && (j <= num);
-         i = i->next_content)
+      i = i->next_content)
       if (i->item_number >= 0)
         if (do_all || isname(name, i->name))
           if (do_all || j == num) {
@@ -8161,7 +8161,7 @@ int lattimore(struct char_data* ch, int cmd, char* arg) {
             go_direction(ch, dir);
         } else {
           for (struct char_data* t = real_roomp(ch->in_room)->people; t;
-               t = t->next_in_room) {
+            t = t->next_in_room) {
             if (!IS_NPC(t) && CAN_SEE(ch, t)) {
               if (!(strcmp(mem->names[mem->index], GET_NAME(t)))) {
                 act("$n crawls under the large table.", FALSE, ch, 0, 0,
@@ -8595,7 +8595,8 @@ int keystone(struct char_data* ch, int cmd, char* arg) {
 int ghostsoldier(struct char_data* ch, int cmd, char* arg) {
   struct char_data *tch, *good, *master;
   int max_good;
-  int (*gs)(struct char_data*, int, char*), (*gc)(struct char_data*, int, char*);
+  int (*gs)(struct char_data*, int, char*),
+    (*gc)(struct char_data*, int, char*);
 
   gs = ghostsoldier;
   gc = keystone;
@@ -8798,7 +8799,7 @@ int Valik(struct char_data* ch, int cmd, char* arg) {
         return (FALSE);
       } else {
         for (vict = real_roomp(ch->in_room)->people; vict;
-             vict = vict->next_in_room)
+          vict = vict->next_in_room)
           if (!IS_NPC(vict) && (GetMaxLevel(vict) < LOW_IMMORTAL) &&
               (number(0, 3) == 0)) {
             act("$n snaps out of his meditation.", FALSE, ch, 0, 0, TO_ROOM);
@@ -10253,7 +10254,8 @@ int RepairGuy(struct char_data* ch, int cmd, char* arg) {
   int cost, ave;
   struct char_data* vict;
   struct obj_data* obj;
-  int (*rep_guy)(struct char_data*, int, char*); /* special procedure for this mob/obj       */
+  int (*rep_guy)(struct char_data*, int,
+    char*); /* special procedure for this mob/obj       */
 
   if (!AWAKE(ch))
     return (FALSE);
@@ -10605,7 +10607,7 @@ int BitterBlade(struct char_data* ch, int cmd, char* arg, struct obj_data* tobj,
     if (obj_index[obj->item_number].func == BitterBlade) {
       /* I am on the floor */
       for (joe = real_roomp(ch->in_room)->people; joe;
-           joe = joe->next_in_room) {
+        joe = joe->next_in_room) {
         if ((GET_ALIGNMENT(joe) <= -400) && (!IS_IMMORTAL(joe))) {
           if (lowjoe) {
             if (GET_ALIGNMENT(joe) < GET_ALIGNMENT(lowjoe)) {
@@ -10639,7 +10641,7 @@ int BitterBlade(struct char_data* ch, int cmd, char* arg, struct obj_data* tobj,
     }
   }
   for (holder = real_roomp(ch->in_room)->people; holder;
-       holder = holder->next_in_room) {
+    holder = holder->next_in_room) {
     for (obj = holder->carrying; obj; obj = obj->next_content) {
       if ((obj_index[obj->item_number].func) &&
           (obj_index[obj->item_number].func != board)) {
@@ -10763,7 +10765,7 @@ int BitterBlade(struct char_data* ch, int cmd, char* arg, struct obj_data* tobj,
           }
         }
         for (joe = real_roomp(holder->in_room)->people; joe;
-             joe = joe->next_in_room) {
+          joe = joe->next_in_room) {
           if ((GET_ALIGNMENT(joe) >= 500) && (IS_MOB(joe)) &&
               (CAN_SEE(holder, joe)) && (holder != joe)) {
             if (lowjoe) {
@@ -12269,7 +12271,8 @@ int potentially_annoying(int cmd) {
 
 /* DO NOT use the following as a stand-alone spec_proc... it is meant to be  */
 /* called by other spec_procs.  Use the more general i_am_irritable instead  */
-int utility_irritable(struct char_data* ch, int cmd, char* arg, int (*func)(struct char_data*, int, char*)) {
+int utility_irritable(struct char_data* ch, int cmd, char* arg,
+  int (*func)(struct char_data*, int, char*)) {
   struct char_data* me;
   struct char_data* targ;
 
@@ -12314,7 +12317,8 @@ void PoliceHunt(struct char_data* ch, struct char_data* tch) {
 /* like utility_irritable, this function is to be called by OTHER spec_procs.
    If you want a mob to JUST be a police person, call the i_am_police function
    below.  - SG */
-int utilityPolice(struct char_data* ch, int cmd, char* arg, int (*func)(struct char_data*, int, char*)) {
+int utilityPolice(struct char_data* ch, int cmd, char* arg,
+  int (*func)(struct char_data*, int, char*)) {
   struct char_data *targ, *me;
 
   if (cmd) { /* "ch" is not me.  It is a player. */
@@ -12337,7 +12341,7 @@ int utilityPolice(struct char_data* ch, int cmd, char* arg, int (*func)(struct c
   } else { /* "ch" is me, the policeman */
     if (AWAKE(ch) && !(ch->specials.fighting) && (ch->in_room != NOWHERE))
       for (targ = real_roomp(ch->in_room)->people; targ;
-           targ = targ->next_in_room)
+        targ = targ->next_in_room)
         if (IS_PC(ch) && (ch->specials.hunting != targ) &&
             (IS_OUTLAW(targ) || IS_KILLER(targ)) && (CAN_SEE(ch, targ))) {
           PoliceHunt(ch, targ);

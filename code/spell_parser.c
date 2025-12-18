@@ -875,7 +875,7 @@ void stop_follower(struct char_data* ch) {
   } else { /* locate follower who is not head of list */
 
     for (k = ch->master->followers; k->next && k->next->follower != ch;
-         k = k->next)
+      k = k->next)
       ;
 
     if (k->next) {
@@ -955,7 +955,7 @@ static void say_spell(struct char_data* ch, int si) {
   sprintf(buf, "$n utters the words, '%s'", spells[si - 1]);
 
   for (temp_char = real_roomp(ch->in_room)->people; temp_char;
-       temp_char = temp_char->next_in_room)
+    temp_char = temp_char->next_in_room)
     if (temp_char != ch) {
       /*
       **  Remove-For-Multi-Class

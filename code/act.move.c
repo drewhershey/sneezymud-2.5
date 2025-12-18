@@ -327,7 +327,7 @@ int DisplayMove(struct char_data* ch, int dir, int was_in, int total) {
   char tmp[256];
 
   for (tmp_ch = real_roomp(was_in)->people; tmp_ch;
-       tmp_ch = tmp_ch->next_in_room) {
+    tmp_ch = tmp_ch->next_in_room) {
     if ((!IS_AFFECTED(ch, AFF_SNEAK)) || (IS_IMMORTAL(tmp_ch))) {
       if ((ch != tmp_ch) && (AWAKE(tmp_ch)) && (CAN_SEE(tmp_ch, ch))) {
         if (total > 1) {
@@ -352,7 +352,7 @@ int DisplayMove(struct char_data* ch, int dir, int was_in, int total) {
   }
 
   for (tmp_ch = real_roomp(ch->in_room)->people; tmp_ch;
-       tmp_ch = tmp_ch->next_in_room) {
+    tmp_ch = tmp_ch->next_in_room) {
     if (((!IS_AFFECTED(ch, AFF_SNEAK)) || (IS_IMMORTAL(tmp_ch))) &&
         (CAN_SEE(tmp_ch, ch)) && (AWAKE(tmp_ch))) {
       if (tmp_ch != ch) {
@@ -498,7 +498,8 @@ void do_move(struct char_data* ch, char* argument, int cmd) {
 int find_door(struct char_data* ch, char* type, char* dir) {
   char buf[MAX_STRING_LENGTH];
   int door;
-  const char* const dirs[] = {"north", "east", "south", "west", "up", "down", "\n"};
+  const char* const dirs[] = {"north", "east", "south", "west", "up", "down",
+    "\n"};
   struct room_direction_data* exitp;
 
   if (*dir) { /* a direction was specified */

@@ -48,7 +48,7 @@ int RemHated(struct char_data* ch, struct char_data* pud) {
             break;
           } else {
             for (oldpud = ch->hates.clist; oldpud->next != t;
-                 oldpud = oldpud->next)
+              oldpud = oldpud->next)
               ;
             oldpud->next = oldpud->next->next;
             free(t);
@@ -64,7 +64,7 @@ int RemHated(struct char_data* ch, struct char_data* pud) {
             break;
           } else {
             for (oldpud = ch->hates.clist; oldpud->next != t;
-                 oldpud = oldpud->next)
+              oldpud = oldpud->next)
               ;
             oldpud->next = oldpud->next->next;
             free(t);
@@ -289,7 +289,7 @@ int RemFeared(struct char_data* ch, struct char_data* pud) {
             break;
           } else {
             for (oldpud = ch->fears.clist; oldpud->next != t;
-                 oldpud = oldpud->next)
+              oldpud = oldpud->next)
               ;
             oldpud->next = oldpud->next->next;
             free(t);
@@ -305,7 +305,7 @@ int RemFeared(struct char_data* ch, struct char_data* pud) {
             break;
           } else {
             for (oldpud = ch->fears.clist; oldpud->next != t;
-                 oldpud = oldpud->next)
+              oldpud = oldpud->next)
               ;
             oldpud->next = oldpud->next->next;
             free(t);
@@ -391,7 +391,7 @@ struct char_data* FindAHatee(struct char_data* ch) {
     return (0);
 
   for (tmp_ch = real_roomp(ch->in_room)->people; tmp_ch;
-       tmp_ch = tmp_ch->next_in_room) {
+    tmp_ch = tmp_ch->next_in_room) {
     if (Hates(ch, tmp_ch) && (CAN_SEE(ch, tmp_ch))) {
       if (ch->in_room == tmp_ch->in_room) {
         if (ch != tmp_ch) {
@@ -413,7 +413,7 @@ struct char_data* FindAFearee(struct char_data* ch) {
     return (0);
 
   for (tmp_ch = real_roomp(ch->in_room)->people; tmp_ch;
-       tmp_ch = tmp_ch->next_in_room) {
+    tmp_ch = tmp_ch->next_in_room) {
     if (Fears(ch, tmp_ch) && (CAN_SEE(ch, tmp_ch))) {
       if ((ch->in_room == tmp_ch->in_room) && (ch != tmp_ch)) {
         return (tmp_ch);

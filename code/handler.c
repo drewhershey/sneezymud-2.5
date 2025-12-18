@@ -640,7 +640,7 @@ void obj_from_char(struct obj_data* object) {
 
   else {
     for (tmp = object->carried_by->carrying;
-         tmp && (tmp->next_content != object); tmp = tmp->next_content)
+      tmp && (tmp->next_content != object); tmp = tmp->next_content)
       ; /* locate previous */
 
     if (!tmp) {
@@ -934,7 +934,7 @@ struct char_data* get_char_room(char* name, int room) {
     return (0);
 
   for (i = real_roomp(room)->people, j = 1; i && (j <= number);
-       i = i->next_in_room)
+    i = i->next_in_room)
     if (isname(tmp, GET_NAME(i))) {
       if (j == number)
         return (i);
@@ -1023,7 +1023,7 @@ void obj_from_room(struct obj_data* object) {
   else /* locate previous element in list */
   {
     for (i = real_roomp(object->in_room)->contents;
-         i && (i->next_content != object); i = i->next_content)
+      i && (i->next_content != object); i = i->next_content)
       ;
 
     if (i) {
@@ -1052,20 +1052,19 @@ void obj_to_obj(struct obj_data* obj, struct obj_data* obj_to) {
   obj->equipped_by = 0;
 
   for (tmp_obj = obj->in_obj; tmp_obj;
-       GET_OBJ_WEIGHT(tmp_obj) += GET_OBJ_WEIGHT(obj),
-      tmp_obj = tmp_obj->in_obj)
+    GET_OBJ_WEIGHT(tmp_obj) += GET_OBJ_WEIGHT(obj), tmp_obj = tmp_obj->in_obj)
     ;
 
   if (!IS_OBJ_STAT(obj_to, ITEM_HOLDING)) {
     if (GET_ITEM_TYPE(obj) != ITEM_CONTAINER)
       for (tmp_obj = obj->in_obj; tmp_obj;
-           GET_OBJ_VOLUME(tmp_obj) +=
-           (GET_OBJ_VOLUME(obj) / vol_mult[obj->obj_flags.material_points]),
+        GET_OBJ_VOLUME(tmp_obj) +=
+        (GET_OBJ_VOLUME(obj) / vol_mult[obj->obj_flags.material_points]),
           tmp_obj = tmp_obj->in_obj)
         ;
     else
       for (tmp_obj = obj->in_obj; tmp_obj;
-           GET_OBJ_VOLUME(tmp_obj) += GET_OBJ_VOLUME(obj),
+        GET_OBJ_VOLUME(tmp_obj) += GET_OBJ_VOLUME(obj),
           tmp_obj = tmp_obj->in_obj)
         ;
   }
@@ -1083,7 +1082,7 @@ void obj_from_obj(struct obj_data* obj) {
       obj_from->contains = obj->next_content;
     else {
       for (tmp = obj_from->contains; tmp && (tmp->next_content != obj);
-           tmp = tmp->next_content)
+        tmp = tmp->next_content)
         ; /* locate previous */
 
       if (!tmp) {
@@ -1171,7 +1170,7 @@ void extract_obj(struct obj_data* obj) {
       temp1->contains = obj->next_content;
     else {
       for (temp2 = temp1->contains; temp2 && (temp2->next_content != obj);
-           temp2 = temp2->next_content)
+        temp2 = temp2->next_content)
         ;
 
       if (temp2) {
@@ -1188,7 +1187,7 @@ void extract_obj(struct obj_data* obj) {
     object_list = obj->next;
   else {
     for (temp1 = object_list; temp1 && (temp1->next != obj);
-         temp1 = temp1->next)
+      temp1 = temp1->next)
       ;
 
     if (temp1) {
@@ -1404,7 +1403,7 @@ struct char_data* get_char_room_vis(struct char_data* ch, char* name) {
     return (0);
 
   for (i = real_roomp(ch->in_room)->people, j = 1; i && (j <= number);
-       i = i->next_in_room)
+    i = i->next_in_room)
     if (isname(tmp, GET_NAME(i)))
       if (CAN_SEE(ch, i)) {
         if (j == number)
@@ -1537,7 +1536,7 @@ struct obj_data* get_obj_vis_accessible(struct char_data* ch, char* name) {
       else
         j++;
   for (i = real_roomp(ch->in_room)->contents; i && j <= number;
-       i = i->next_content)
+    i = i->next_content)
     if (isname(tmp, i->name) && CAN_SEE_OBJ(ch, i))
       if (j == number)
         return (i);

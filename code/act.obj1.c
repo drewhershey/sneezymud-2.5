@@ -130,7 +130,7 @@ void do_get(struct char_data* ch, char* argument, int cmd) {
       found = FALSE;
       fail = FALSE;
       for (obj_object = real_roomp(ch->in_room)->contents; obj_object;
-           obj_object = next_obj) {
+        obj_object = next_obj) {
         next_obj = obj_object->next_content;
         /*
     check for a trap (traps fire often)
@@ -252,7 +252,7 @@ void do_get(struct char_data* ch, char* argument, int cmd) {
       if (sub_object) {
         if (GET_ITEM_TYPE(sub_object) == ITEM_CONTAINER) {
           for (obj_object = sub_object->contains; obj_object;
-               obj_object = next_obj) {
+            obj_object = next_obj) {
             /* check for trap (jdb - 11/9) */
             if (CheckForGetTrap(ch, obj_object))
               return;

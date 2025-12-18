@@ -877,7 +877,7 @@ int DamageMessages(struct char_data* ch, struct char_data* v, int dam,
         nr = dice(1, fight_messages[i].number_of_attacks);
 
         for (j = 1, messages = fight_messages[i].msg; (j < nr) && (messages);
-             j++)
+          j++)
           messages = messages->next;
 
         if (!IS_NPC(v) && (GetMaxLevel(v) > MAX_MORT)) {
@@ -1740,7 +1740,7 @@ struct char_data* FindVictim(struct char_data* ch) {
     return (0);
 
   for (tmp_ch = (real_roomp(ch->in_room))->people; tmp_ch;
-       tmp_ch = tmp_ch->next_in_room) {
+    tmp_ch = tmp_ch->next_in_room) {
     if ((CAN_SEE(ch, tmp_ch)) &&
         (!IS_SET(tmp_ch->specials.act, PLR_NOHASSLE)) &&
         (!IS_AFFECTED(tmp_ch, AFF_SNEAK) ||
@@ -1851,7 +1851,7 @@ struct char_data* FindVictim(struct char_data* ch) {
   total = number(1, total);
 
   for (tmp_ch = (real_roomp(ch->in_room))->people; tmp_ch;
-       tmp_ch = tmp_ch->next_in_room) {
+    tmp_ch = tmp_ch->next_in_room) {
     if ((CAN_SEE(ch, tmp_ch)) &&
         (!IS_SET(tmp_ch->specials.act, PLR_NOHASSLE)) &&
         (!IS_AFFECTED(tmp_ch, AFF_SNEAK) ||
@@ -1905,7 +1905,7 @@ struct char_data* FindAnyVictim(struct char_data* ch) {
     return (0);
 
   for (tmp_ch = (real_roomp(ch->in_room))->people; tmp_ch;
-       tmp_ch = tmp_ch->next_in_room) {
+    tmp_ch = tmp_ch->next_in_room) {
     if ((CAN_SEE(ch, tmp_ch)) &&
         (!IS_SET(tmp_ch->specials.act, PLR_NOHASSLE))) {
       if (!(IS_AFFECTED(ch, AFF_CHARM)) || (ch->master != tmp_ch)) {
@@ -2010,7 +2010,7 @@ struct char_data* FindAnyVictim(struct char_data* ch) {
   total = number(1, total);
 
   for (tmp_ch = (real_roomp(ch->in_room))->people; tmp_ch;
-       tmp_ch = tmp_ch->next_in_room) {
+    tmp_ch = tmp_ch->next_in_room) {
     if ((CAN_SEE(ch, tmp_ch)) &&
         (!IS_SET(tmp_ch->specials.act, PLR_NOHASSLE))) {
       if (!SameRace(tmp_ch, ch) || (!IS_NPC(tmp_ch))) {
@@ -2272,7 +2272,7 @@ struct char_data* FindAnAttacker(struct char_data* ch) {
     return (0);
 
   for (tmp_ch = (real_roomp(ch->in_room))->people; tmp_ch;
-       tmp_ch = tmp_ch->next_in_room) {
+    tmp_ch = tmp_ch->next_in_room) {
     if (ch != tmp_ch) {
       if (tmp_ch->specials.fighting == ch) {
         found = TRUE; /* a potential victim has been found */
@@ -2346,7 +2346,7 @@ struct char_data* FindAnAttacker(struct char_data* ch) {
   total = number(1, total);
 
   for (tmp_ch = (real_roomp(ch->in_room))->people; tmp_ch;
-       tmp_ch = tmp_ch->next_in_room) {
+    tmp_ch = tmp_ch->next_in_room) {
     if (tmp_ch->specials.fighting == ch) {
       if (IS_NPC(tmp_ch)) {
         total -= njump;
@@ -2379,7 +2379,7 @@ struct char_data* FindMetaVictim(struct char_data* ch) {
     return (0);
 
   for (tmp_ch = (real_roomp(ch->in_room))->people; tmp_ch;
-       tmp_ch = tmp_ch->next_in_room) {
+    tmp_ch = tmp_ch->next_in_room) {
     if ((CAN_SEE(ch, tmp_ch)) &&
         (!IS_SET(tmp_ch->specials.act, PLR_NOHASSLE))) {
       if (!(IS_AFFECTED(ch, AFF_CHARM)) || (ch->master != tmp_ch)) {
@@ -2400,7 +2400,7 @@ struct char_data* FindMetaVictim(struct char_data* ch) {
   total = number(1, total);
 
   for (tmp_ch = (real_roomp(ch->in_room))->people; tmp_ch;
-       tmp_ch = tmp_ch->next_in_room) {
+    tmp_ch = tmp_ch->next_in_room) {
     if ((CAN_SEE(ch, tmp_ch)) &&
         (!IS_SET(tmp_ch->specials.act, PLR_NOHASSLE))) {
       if (!SameRace(tmp_ch, ch)) {

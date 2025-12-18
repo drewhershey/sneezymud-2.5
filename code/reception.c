@@ -467,7 +467,7 @@ int receptionist(struct char_data* ch, int cmd, char* arg) {
     return (FALSE); /* You've forgot FALSE - NPC couldn't leave */
 
   for (temp_char = real_roomp(ch->in_room)->people; (temp_char) && (!recep);
-       temp_char = temp_char->next_in_room)
+    temp_char = temp_char->next_in_room)
     if (IS_MOB(temp_char))
       if (mob_index[temp_char->nr].func.mob_f == receptionist)
         recep = temp_char;
@@ -547,7 +547,7 @@ int receptionist_for_outlaws(struct char_data* ch, int cmd, char* arg) {
     return (FALSE); /* You've forgot FALSE - NPC couldn't leave */
 
   for (temp_char = real_roomp(ch->in_room)->people; (temp_char) && (!recep);
-       temp_char = temp_char->next_in_room)
+    temp_char = temp_char->next_in_room)
     if (IS_MOB(temp_char))
       if (mob_index[temp_char->nr].func.mob_f == receptionist_for_outlaws)
         recep = temp_char;

@@ -59,8 +59,8 @@ static mail_index_type* find_char_in_index(char* searchee) {
   }
 
   for (temp_rec = mail_index;
-       (temp_rec && str_cmp(temp_rec->recipient, searchee));
-       temp_rec = temp_rec->next)
+    (temp_rec && str_cmp(temp_rec->recipient, searchee));
+    temp_rec = temp_rec->next)
     ;
 
   return temp_rec;
@@ -325,7 +325,7 @@ char* read_delete(char* recipient, char* recipient_formatted) {
     } else {
       /* find entry before the one we're going to del */
       for (prev_mail = mail_index; prev_mail->next != mail_pointer;
-           prev_mail = prev_mail->next)
+        prev_mail = prev_mail->next)
         ;
       prev_mail->next = mail_pointer->next;
       free(mail_pointer);

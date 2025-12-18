@@ -415,9 +415,7 @@ int dir_track(struct char_data* ch, struct char_data* vict) {
 #define GO_OK_SMARTER \
   (!IS_SET(IS_DIR->exit_info, EX_LOCKED) && (IS_DIR->to_room != NOWHERE))
 
-static void donothing(void* data) {
-  (void)data; /* Unused */
-}
+static void donothing(void* data) { (void)data; /* Unused */ }
 
 static int hash_enter(struct hash_header* ht, int key, void* data) {
   if (hash_find(ht, key))
@@ -923,7 +921,8 @@ void do_throw(struct char_data* ch, char* arg, int cmd) {
   char name[256], obje[100], buf[256];
   byte percent;
   int dr;
-  const char* const keyword[] = {"north", "east", "south", "west", "up", "down", "\n"};
+  const char* const keyword[] = {"north", "east", "south", "west", "up", "down",
+    "\n"};
 
   if (!ch->skills)
     return;

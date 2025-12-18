@@ -1286,7 +1286,7 @@ void do_look(struct char_data* ch, char* argument, int cmd) {
           /* In inventory */
           if (!found) {
             for (tmp_object = ch->carrying; tmp_object && !found;
-                 tmp_object = tmp_object->next_content) {
+              tmp_object = tmp_object->next_content) {
               if CAN_SEE_OBJ (ch, tmp_object) {
                 tmp_desc =
                   find_ex_description(arg2, tmp_object->ex_description);
@@ -1301,7 +1301,7 @@ void do_look(struct char_data* ch, char* argument, int cmd) {
 
           if (!found) {
             for (tmp_object = real_roomp(ch->in_room)->contents;
-                 tmp_object && !found; tmp_object = tmp_object->next_content) {
+              tmp_object && !found; tmp_object = tmp_object->next_content) {
               if CAN_SEE_OBJ (ch, tmp_object) {
                 tmp_desc =
                   find_ex_description(arg2, tmp_object->ex_description);
@@ -1761,7 +1761,7 @@ void do_help(struct char_data* ch, char* argument, int cmd) {
   else {
     for (cp = topic; (isalnum(*argument) || (*argument == '@') ||
                       (*argument == ' ') || (*argument == '-'));
-         cp++, argument++)
+      cp++, argument++)
       if (isupper(*argument))
         *cp = tolower(*argument);
       else

@@ -277,7 +277,7 @@ void do_pose(struct char_data* ch, char* argument, int cmd) {
 
   for (counter = 0; (pose_messages[counter].level < GetMaxLevel(ch)) &&
                     (pose_messages[counter].level > 0);
-       counter++)
+    counter++)
     ;
   counter--;
 

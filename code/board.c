@@ -317,9 +317,9 @@ void board_reset_board(struct Board* b) {
   return;
 }
 
-void error_log(const char* str) {  /* The original error-handling was MUCH */
+void error_log(const char* str) { /* The original error-handling was MUCH */
   fputs("Board : ", stderr);      /* more competent than the current but  */
-  fputs(str, stderr);              /* I got the advice to cut it out..;)   */
+  fputs(str, stderr);             /* I got the advice to cut it out..;)   */
   return;
 }
 

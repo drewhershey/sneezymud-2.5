@@ -1306,7 +1306,7 @@ void send_to_room_except_two(const char* messg, int room, struct char_data* ch1,
 void act(const char* str, int hide_invisible, struct char_data* ch,
   struct obj_data* obj, void* vict_obj, int type) {
   register const char *strp, *i;
-  register char *point;
+  register char* point;
   struct char_data *to, *tmp_victim, *temp;
   char buf[MAX_STRING_LENGTH];
 

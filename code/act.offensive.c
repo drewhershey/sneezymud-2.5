@@ -547,8 +547,8 @@ void do_rescue(struct char_data* ch, char* argument, int cmd) {
   }
 
   for (tmp_ch = real_roomp(ch->in_room)->people;
-       tmp_ch && (tmp_ch->specials.fighting != victim);
-       tmp_ch = tmp_ch->next_in_room)
+    tmp_ch && (tmp_ch->specials.fighting != victim);
+    tmp_ch = tmp_ch->next_in_room)
     ;
 
   if (!tmp_ch) {
@@ -730,14 +730,14 @@ void do_breath(struct char_data* ch, char* argument, int cmd) {
   only_argument(argument, name);
 
   for (count = FIRST_BREATH_WEAPON;
-       count <= LAST_BREATH_WEAPON && !affected_by_spell(ch, count); count++)
+    count <= LAST_BREATH_WEAPON && !affected_by_spell(ch, count); count++)
     ;
 
   if (count > LAST_BREATH_WEAPON) {
     struct breather* scan;
 
     for (scan = breath_monsters;
-         scan->vnum >= 0 && scan->vnum != mob_index[ch->nr].virtual; scan++)
+      scan->vnum >= 0 && scan->vnum != mob_index[ch->nr].virtual; scan++)
       ;
 
     if (scan->vnum < 0) {

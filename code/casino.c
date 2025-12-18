@@ -177,7 +177,7 @@ void do_bj_bet(struct char_data* ch, char* arg, int cmd) {
     bj_data[inx].nd = 0;
     bj_data[inx].np = 0;
     for (l1 = 0; l1 < 12;
-         bj_data[inx].hand[l1] = 0, bj_data[inx].dealer[l1] = 0, l1++)
+      bj_data[inx].hand[l1] = 0, bj_data[inx].dealer[l1] = 0, l1++)
       ;
 
     if (bj_data[inx].deck_inx > 30)

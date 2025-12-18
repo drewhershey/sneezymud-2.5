@@ -135,7 +135,7 @@ void MobScavenge(struct char_data* ch) {
 
   if ((real_roomp(ch->in_room))->contents && !number(0, 5)) {
     for (max = 1, best_obj = 0, obj = (real_roomp(ch->in_room))->contents; obj;
-         obj = obj->next_content) {
+      obj = obj->next_content) {
       if (CAN_GET_OBJ(ch, obj)) {
         if (obj->obj_flags.cost > max) {
           best_obj = obj;

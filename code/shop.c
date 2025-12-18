@@ -404,7 +404,7 @@ int shop_keeper(struct char_data* ch, int cmd, char* arg) {
   keeper = 0;
 
   for (temp_char = real_roomp(ch->in_room)->people; (!keeper) && (temp_char);
-       temp_char = temp_char->next_in_room)
+    temp_char = temp_char->next_in_room)
     if (IS_MOB(temp_char))
       if (mob_index[temp_char->nr].func.mob_f == shop_keeper)
         keeper = temp_char;

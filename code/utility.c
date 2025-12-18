@@ -627,7 +627,7 @@ int DetermineExp(struct char_data* mob, int exp_flags) {
 void down_river(int pulse) {
   struct char_data *ch, *tmp;
   struct obj_data *obj_object, *next_obj;
-  int rd, or ;
+  int rd, or;
   char buf[80];
   struct room_data* rp;
 
@@ -645,7 +645,7 @@ void down_river(int pulse) {
                   ((real_roomp(ch->in_room))->river_dir >= 0)) {
                 rd = (real_roomp(ch->in_room))->river_dir;
                 for (obj_object = (real_roomp(ch->in_room))->contents;
-                     obj_object; obj_object = next_obj) {
+                  obj_object; obj_object = next_obj) {
                   next_obj = obj_object->next_content;
                   if ((real_roomp(ch->in_room))->dir_option[rd]) {
                     obj_from_room(obj_object);
@@ -966,7 +966,7 @@ void Teleport(int pulse) {
   struct char_data *ch, *tmp, *pers;
   struct obj_data *obj_object, *temp_obj;
   char buf[20], *tmp_desc = NULL;
-  int or ;
+  int or;
   struct room_data *rp, *dest;
 
   if (pulse < 0)
@@ -1133,7 +1133,7 @@ void TeleportPulseStuff(int pulse) {
 
   register struct char_data* ch;
   struct char_data *next, *tmp, *pers;
-  int tick, tm, or ;
+  int tick, tm, or;
   struct room_data *rp, *dest;
   struct obj_data *obj_object, *temp_obj;
   char* tmp_desc;
@@ -1248,7 +1248,7 @@ void RiverPulseStuff(int pulse) {
   struct char_data* tmp;
   register struct obj_data* obj_object;
   struct obj_data* next_obj;
-  int rd, or ;
+  int rd, or;
   char buf[80], buffer[100];
   struct room_data* rp;
 
@@ -1267,7 +1267,7 @@ void RiverPulseStuff(int pulse) {
                   ((real_roomp(ch->in_room))->river_dir >= 0)) {
                 rd = (real_roomp(ch->in_room))->river_dir;
                 for (obj_object = (real_roomp(ch->in_room))->contents;
-                     obj_object; obj_object = next_obj) {
+                  obj_object; obj_object = next_obj) {
                   next_obj = obj_object->next_content;
                   if ((real_roomp(ch->in_room))->dir_option[rd]) {
                     obj_from_room(obj_object);

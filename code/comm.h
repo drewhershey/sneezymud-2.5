@@ -33,8 +33,8 @@ void send_to_room_except_two(const char* messg, int room, struct char_data* ch1,
 void send_to_outdoor(const char* messg);
 void perform_to_all(const char* messg, struct char_data* ch);
 void perform_complex(struct char_data* ch1, struct char_data* ch2,
-  struct obj_data* obj1, struct obj_data* obj2, const char* mess, byte mess_type,
-  bool hide);
+  struct obj_data* obj1, struct obj_data* obj2, const char* mess,
+  byte mess_type, bool hide);
 int get_from_q(struct txt_q* queue, char* dest);
 /* write_to_q is in comm.h for the macro */
 int run_the_game(int port);
