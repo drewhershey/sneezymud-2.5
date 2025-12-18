@@ -355,7 +355,7 @@ void sprintbit(unsigned long vektor, const char* const* names, char* result);
 int CAN_SEE_FOR_WHO(struct char_data* s, struct char_data* o);
 void do_at(struct char_data* ch, char* argument, int cmd);
 int start_page_file(struct descriptor_data* d, const char* fpath,
-  char* errormsg);
+  const char* errormsg);
 int str_cmp(const char* arg1, const char* arg2);
 int IsAnimal(struct char_data* ch);
 int IsVeggie(struct char_data* ch);

@@ -1130,14 +1130,14 @@ void do_goto(struct char_data* ch, char* argument, int cmd) {
         send_to_char("No room exists with that number.\n\r", ch);
         return;
       } else {
-#if HASH
+#ifdef HASH
 #else
         if (loc_nr < WORLD_SIZE) {
 #endif
         send_to_char("You form order out of chaos.\n\r", ch);
         CreateOneRoom(loc_nr);
 
-#if HASH
+#ifdef HASH
 #else
         } else {
           send_to_char("Sorry, that room # is too large.\n\r", ch);
@@ -2410,7 +2410,7 @@ static void purge_one_room(int rnum, struct room_data* rp, int* range) {
   }
 
   completely_cleanout_room(rp); /* clear out the pointers */
-#if HASH
+#ifdef HASH
   hash_remove(&room_db, rnum); /* remove it from the database */
 #else
   room_remove(room_db, rnum);
@@ -2537,7 +2537,7 @@ void do_purge(struct char_data* ch, char* argument, int cmd) {
           send_to_char("usage: purge room start [end]\n\r", ch);
           return;
         }
-#if HASH
+#ifdef HASH
         hash_iterate(&room_db, purge_one_room, range);
 #else
         if (range[0] >= WORLD_SIZE || range[1] >= WORLD_SIZE) {
@@ -3210,7 +3210,7 @@ void do_show(struct char_data* ch, char* argument, int cmd) {
       "reset\n\r");
 
     for (zone = 0; zone <= top_of_zone_table; zone++) {
-      char* mode;
+      const char* mode;
 
       zd = zone_table + zone;
       switch (zd->reset_mode) {
@@ -3233,10 +3233,10 @@ void do_show(struct char_data* ch, char* argument, int cmd) {
       bottom = zd->top + 1;
     }
 
-  } else if (is_abbrev(buf, "objects") &&
-               (which_i = obj_index, topi = top_of_objt) ||
-             is_abbrev(buf, "mobiles") &&
-               (which_i = mob_index, topi = top_of_mobt)) {
+  } else if ((is_abbrev(buf, "objects") &&
+                (which_i = obj_index, topi = top_of_objt)) ||
+             (is_abbrev(buf, "mobiles") &&
+                (which_i = mob_index, topi = top_of_mobt))) {
     int objn;
     struct index_data* oi;
 
@@ -3256,8 +3256,8 @@ void do_show(struct char_data* ch, char* argument, int cmd) {
     for (objn = 0; objn <= topi; objn++) {
       oi = which_i + objn;
 
-      if (zone >= 0 && (oi->virtual < bottom || oi->virtual > top) ||
-          zone < 0 && !isname(zonenum, oi->name))
+      if ((zone >= 0 && (oi->virtual < bottom || oi->virtual > top)) ||
+          (zone < 0 && !isname(zonenum, oi->name)))
         continue; /* optimize later*/
 
       sprintf(buf, "%5d %4d %3d  %s\n\r", oi->virtual, objn, oi->number,
@@ -3270,14 +3270,14 @@ void do_show(struct char_data* ch, char* argument, int cmd) {
 
     append_to_string_block(&sb, "VNUM  rnum type         name [BITS]\n\r");
     if (is_abbrev(zonenum, "death")) {
-#if HASH
+#ifdef HASH
       hash_iterate(&room_db, print_death_room, &sb);
 #else
       room_iterate(room_db, print_death_room, &sb);
 #endif
 
     } else if (is_abbrev(zonenum, "private")) {
-#if HASH
+#ifdef HASH
       hash_iterate(&room_db, print_private_room, &sb);
 #else
       room_iterate(room_db, print_private_room, &sb);
@@ -3295,7 +3295,7 @@ void do_show(struct char_data* ch, char* argument, int cmd) {
 
       srzs.blank = 0;
       srzs.sb = &sb;
-#if HASH
+#ifdef HASH
       hash_iterate(&room_db, show_room_zone, &srzs);
 #else
       room_iterate(room_db, show_room_zone, &srzs);

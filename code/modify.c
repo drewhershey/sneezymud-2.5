@@ -672,7 +672,7 @@ char* one_word(char* argument, char* first_arg) {
 }
 
 int start_page_file(struct descriptor_data* d, const char* fpath,
-  char* errormsg) {
+  const char* errormsg) {
   if (!d || !(d->character))
     return FALSE;
 
