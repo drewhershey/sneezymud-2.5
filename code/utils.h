@@ -459,8 +459,8 @@ bool recep_offer(struct char_data* ch, struct char_data* receptionist,
   struct obj_cost* cost);
 struct char_data* char_holding(struct obj_data* obj);
 int track(struct char_data* ch, struct char_data* vict);
-char* DescMoves(float a);
-char* ac_for_score(int a);
+const char* DescMoves(float a);
+const char* ac_for_score(int a);
 void name_from_drinkcon(struct obj_data* obj);
 void name_to_drinkcon(struct obj_data* obj, int type);
 void save_obj(struct char_data* ch, struct obj_cost* cost, int delete);

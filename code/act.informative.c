@@ -2727,7 +2727,7 @@ real_roomp(w)->dir_option[3]->to_room != NOWHERE &&
 }
 */
 
-char* DescMoves(float a) {
+const char* DescMoves(float a) {
   if (a < .1)
     return ("very tired");
   else if (a < .3)
@@ -2740,7 +2740,7 @@ char* DescMoves(float a) {
     return ("totally rested");
 }
 
-char* ac_for_score(int a) {
+const char* ac_for_score(int a) {
   if (a > 75) {
     return ("scantily clothed");
   } else if (a > 50) {
