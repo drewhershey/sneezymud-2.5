@@ -156,8 +156,8 @@ void do_commune(struct char_data* ch, char* argument, int cmd) {
   }
 }
 
-char* RandomWord() {
-  static char* string[50] = {
+const char* RandomWord(void) {
+  static const char* string[50] = {
     "argle", "bargle", "glop", "glyph", "hussamah",                    /* 5 */
     "rodina", "mustafah", "angina", "the", "fribble",                  /* 10 */
     "fnort", "frobozz", "zarp", "ripple", "yrk",                       /* 15 */

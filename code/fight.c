@@ -210,7 +210,7 @@ void update_pos(struct char_data* victim) {
   }
 }
 
-int check_peaceful(struct char_data* ch, char* msg) {
+int check_peaceful(struct char_data* ch, const char* msg) {
   struct room_data* rp;
 
   rp = real_roomp(ch->in_room);

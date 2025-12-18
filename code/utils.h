@@ -356,7 +356,7 @@ int CAN_SEE_FOR_WHO(struct char_data* s, struct char_data* o);
 void do_at(struct char_data* ch, char* argument, int cmd);
 int start_page_file(struct descriptor_data* d, const char* fpath,
   char* errormsg);
-int str_cmp(char* arg1, char* arg2);
+int str_cmp(const char* arg1, const char* arg2);
 int IsAnimal(struct char_data* ch);
 int IsVeggie(struct char_data* ch);
 int IsHumanoid(struct char_data* ch);
@@ -405,7 +405,7 @@ char in_group(struct char_data* ch1, struct char_data* ch2);
 int dir_track(struct char_data* ch, struct char_data* vict);
 struct char_data* FindAnyVictim(struct char_data* ch);
 void mobile_activity(struct char_data* ch);
-void MakeNoise(int room, char* local_snd, char* distant_snd);
+void MakeNoise(int room, const char* local_snd, const char* distant_snd);
 void weight_change_object(struct obj_data* obj, int weight);
 int damage(struct char_data* ch, struct char_data* victim, int damage,
   int weapontype);
@@ -419,7 +419,7 @@ int IsResist(struct char_data* ch, int bit);
 int IsSusc(struct char_data* ch, int bit);
 int go_direction(struct char_data* ch, int dir);
 int choose_exit_in_zone(int in_room, int tgt_room, int depth);
-int check_peaceful(struct char_data* ch, char* msg);
+int check_peaceful(struct char_data* ch, const char* msg);
 void raw_open_door(struct char_data* ch, int dir);
 int MobCountInRoom(struct char_data* list);
 int DisplayMove(struct char_data* ch, int dir, int was_in, int total);

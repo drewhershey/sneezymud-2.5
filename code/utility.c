@@ -197,7 +197,7 @@ int dice(int number, int size) {
 
 /* returns: 0 if equal, 1 if arg1 > arg2, -1 if arg1 < arg2  */
 /* scan 'till found different or end of both                 */
-int str_cmp(char* arg1, char* arg2) {
+int str_cmp(const char* arg1, const char* arg2) {
   int chk, i;
 
   if ((!arg2) || (!arg1))
