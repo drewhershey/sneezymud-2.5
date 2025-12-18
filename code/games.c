@@ -17,9 +17,9 @@
 #include "structs.h"
 #include "utils.h"
 
-static char* ChooseFirstFruit(void) {
+static const char* ChooseFirstFruit(void) {
   int num;
-  static char* fruits[8] = {
+  static const char* fruits[8] = {
     "cherry",
     "lime",
     "orange",
@@ -41,9 +41,9 @@ static char* ChooseFirstFruit(void) {
     return (fruits[0]);
 }
 
-static char* ChooseSecondFruit(void) {
+static const char* ChooseSecondFruit(void) {
   int num;
-  static char* fruits[8] = {
+  static const char* fruits[8] = {
     "cherry",
     "lime",
     "orange",
@@ -64,9 +64,9 @@ static char* ChooseSecondFruit(void) {
     return (fruits[0]);
 }
 
-static char* ChooseThirdFruit(void) {
+static const char* ChooseThirdFruit(void) {
   int num;
-  static char* fruits[8] = {
+  static const char* fruits[8] = {
     "cherry",
     "lime",
     "orange",
@@ -340,9 +340,9 @@ void do_bet(struct char_data* ch, char* arg, int cmd) {
 
 static void spin_slot(struct char_data* ch) {
   char buf[255];
-  char* fruit1;
-  char* fruit2;
-  char* fruit3;
+  const char* fruit1;
+  const char* fruit2;
+  const char* fruit3;
   struct obj_data *coins, *slot;
   int bits;
   struct char_data* tmp_char;

@@ -34,8 +34,8 @@ struct bj_players {
 
 static struct bj_players bj_data[MAX_BLACKJACK];
 
-char* card_names[14] = {"Nothing", "Ace", "Two", "Three", "Four", "Five", "Six",
-  "Seven", "Eight", "Nine", "Ten", "Jack", "Queen", "King"};
+const char* card_names[14] = {"Nothing", "Ace", "Two", "Three", "Four", "Five",
+  "Six", "Seven", "Eight", "Nine", "Ten", "Jack", "Queen", "King"};
 
 int check_blackjack(struct char_data* ch) {
   if (ch->in_room == BLACKJACK)

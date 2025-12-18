@@ -36,7 +36,8 @@ int length[] = {15, 60, 256, 240, 60};
 
 int room_length[] = {80, 1024, 50, 50, 512, 512, 50, 100, 50};
 
-char* skill_fields[] = {"learned", "affected", "duration", "recognize", "\n"};
+const char* skill_fields[] = {"learned", "affected", "duration", "recognize",
+  "\n"};
 
 int max_value[] = {255, 255, 10000, 1};
 
@@ -925,7 +926,7 @@ char* nogames(void) {
 void gr(int s) {
   char *txt = 0, buf[1024];
   int ld = 0;
-  static char* warnings[3] = {
+  static const char* warnings[3] = {
     "If things don't look better within 3 minutes, the game will pause.\n\r",
     "The game will close temporarily 2 minutes from now.\n\r",
     "WARNING: The game will close in 1 minute.\n\r"};
