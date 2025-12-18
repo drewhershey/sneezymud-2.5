@@ -1083,8 +1083,8 @@ void do_look(struct char_data* ch, char* argument, int cmd) {
   struct obj_data *tmp_object, *found_object;
   struct char_data* tmp_char;
   char* tmp_desc;
-  static char* keywords[] = {"north", "east", "south", "west", "up", "down",
-    "in", "at", "", /* Look at '' case */
+  static const char* const keywords[] = {"north", "east", "south", "west", "up",
+    "down", "in", "at", "", /* Look at '' case */
     "room", "test", "\n"};
 
   if (!ch->desc)

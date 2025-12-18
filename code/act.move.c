@@ -496,7 +496,7 @@ void do_move(struct char_data* ch, char* argument, int cmd) {
 int find_door(struct char_data* ch, char* type, char* dir) {
   char buf[MAX_STRING_LENGTH];
   int door;
-  char* dirs[] = {"north", "east", "south", "west", "up", "down", "\n"};
+  const char* const dirs[] = {"north", "east", "south", "west", "up", "down", "\n"};
   struct room_direction_data* exitp;
 
   if (*dir) { /* a direction was specified */

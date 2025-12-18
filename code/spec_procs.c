@@ -1083,8 +1083,8 @@ int ThiefGuildMaster(struct char_data* ch, int cmd, char* arg) {
   struct char_data* guildmaster;
   char type[100];
 
-  static char* t_skills[] = {"sneak", "hide", "steal", "backstab", "pick",
-    "\n"};
+  static const char* const t_skills[] = {"sneak", "hide", "steal", "backstab",
+    "pick", "\n"};
 
   if ((cmd != 164) && (cmd != 170) && (cmd != 243))
     return (FALSE);
@@ -1237,7 +1237,7 @@ int WarriorGuildMaster(struct char_data* ch, int cmd, char* arg) {
   char buf[MAX_INPUT_LENGTH];
   struct char_data* guildmaster;
   char type[100];
-  static char* w_skills[] = {"kick", /* No. 50 */
+  static const char* const w_skills[] = {"kick", /* No. 50 */
     "bash", "rescue", "\n"};
 
   if ((cmd != 164) && (cmd != 170) && (cmd != 243))
@@ -2628,7 +2628,7 @@ int snake(struct char_data* ch, int cmd, char* arg) {
 
 int ninja_master(struct char_data* ch, int cmd, char* arg) {
   char buf[256];
-  static char* n_skills[] = {
+  static const char* const n_skills[] = {
     "track",  /* No. 180 */
     "disarm", /* No. 245 */
     "\n",
@@ -4347,7 +4347,7 @@ int Tytan(struct char_data* ch, int cmd, char* arg) {
     return (magic_user(ch, cmd, arg));
   } else {
     if (!ch->act_ptr) /* no state info */
-      ch->act_ptr = (int*)calloc(1, (sizeof(int)));
+      ch->act_ptr = (struct mob_act_data*)calloc(1, (sizeof(int)));
     switch ((*((int*)ch->act_ptr))) {
       case TYT_NONE:
         if (vict = FindVictim(ch)) {
@@ -4726,7 +4726,7 @@ int Whirlwind(struct char_data* ch, int cmd, char* arg) {
   if (ch->in_room == -1)
     return (FALSE);
   if (!ch->act_ptr)
-    ch->act_ptr = (int*)calloc(1, sizeof(int));
+    ch->act_ptr = (struct mob_act_data*)calloc(1, sizeof(int));
   if (cmd == 0 && (*((int*)ch->act_ptr)) == WW_LOOSE) {
     for (tmp = real_roomp(ch->in_room)->people; tmp; tmp = tmp->next_in_room) {
       while (names[i]) {
@@ -4766,7 +4766,7 @@ int NudgeNudge(struct char_data* ch, int cmd, char* arg) {
   }
 
   if (!ch->act_ptr)
-    ch->act_ptr = (int*)calloc(1, sizeof(int));
+    ch->act_ptr = (struct mob_act_data*)calloc(1, sizeof(int));
   switch ((*((int*)ch->act_ptr))) {
     case NN_LOOSE:
       /*
@@ -6119,7 +6119,7 @@ int delivery_elf(struct char_data* ch, int cmd, char* arg) {
     return FALSE;
 
   if (!ch->act_ptr)
-    ch->act_ptr = (int*)calloc(1, sizeof(int));
+    ch->act_ptr = (struct mob_act_data*)calloc(1, sizeof(int));
   switch ((*((int*)ch->act_ptr))) {
     case ELF_INIT:
       if (ch->in_room == 0) {
@@ -6815,7 +6815,7 @@ int NewThalosMayor(struct char_data* ch, int cmd, char* arg) {
   if (cmd || !AWAKE(ch))
     return (FALSE);
   if (!ch->act_ptr)
-    ch->act_ptr = (int*)calloc(1, sizeof(int));
+    ch->act_ptr = (struct mob_act_data*)calloc(1, sizeof(int));
   if (ch->specials.fighting) {
     return (FALSE);
   } else {
@@ -8691,7 +8691,7 @@ int Valik(struct char_data* ch, int cmd, char* arg) {
 
   valik = Valik;
   if (!vict->act_ptr)
-    vict->act_ptr = (int*)calloc(1, sizeof(int));
+    vict->act_ptr = (struct mob_act_data*)calloc(1, sizeof(int));
   switch ((*((int*)vict->act_ptr))) {
     case Valik_Wandering:
     case Valik_Qone:
@@ -9367,7 +9367,7 @@ int monk(struct char_data* ch, int cmd, char* arg) {
 
 int monk_master(struct char_data* ch, int cmd, char* arg) {
   char buf[256];
-  static char* n_skills[] = {
+  static const char* const n_skills[] = {
     "quivering palm", /* No. 245 */
     "feign death",    /* No. 259 */
     "retreat",
@@ -10050,7 +10050,7 @@ int jive_box(Mob* ch, int cmd, char* arg, Obj* me) {
 
 int new_ninja_master(struct char_data* ch, int cmd, char* arg) {
   char buf[256];
-  static char* n_skills[] = {
+  static const char* const n_skills[] = {
     "disarm",   /* No. 245 */
     "doorbash", /* No. 259 */
     "spy",
@@ -10818,7 +10818,7 @@ int creeping_death(struct char_data* ch, int cmd, char* arg) {
   if (cmd)
     return (FALSE);
   if (!ch->act_ptr)
-    ch->act_ptr = (int*)calloc(1, sizeof(int));
+    ch->act_ptr = (struct mob_act_data*)calloc(1, sizeof(int));
   if (ch->specials.fighting) { /* kill */
 
     t = ch->specials.fighting;
@@ -11054,7 +11054,7 @@ int GenericCityguard(struct char_data* ch, int cmd, char* arg, int type) {
 
 int loremaster(struct char_data* ch, int cmd, char* arg) {
   char buf[256];
-  static char* n_skills[] = {
+  static const char* const n_skills[] = {
     "necromancy",
     "vegetable lore",
     "animal lore",
@@ -11345,7 +11345,7 @@ int dragon(struct char_data* ch, int cmd, char* arg) {
 
 int hunter(struct char_data* ch, int cmd, char* arg) {
   char buf[256];
-  static char* n_skills[] = {
+  static const char* const n_skills[] = {
     "track",
     "find traps",
     "disarm traps",

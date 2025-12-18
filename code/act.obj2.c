@@ -952,8 +952,8 @@ void do_wear(struct char_data* ch, char* argument, int cmd) {
   char buffer[MAX_INPUT_LENGTH];
   struct obj_data *obj_object, *next_obj;
   int keyword;
-  static char* keywords[] = {"finger", "neck", "body", "head", "legs", "feet",
-    "hands", "arms", "about", "waist", "wrist", "shield", "\n"};
+  static const char* const keywords[] = {"finger", "neck", "body", "head",
+    "legs", "feet", "hands", "arms", "about", "waist", "wrist", "shield", "\n"};
 
   argument_interpreter(argument, arg1, arg2);
   if (*arg1) {

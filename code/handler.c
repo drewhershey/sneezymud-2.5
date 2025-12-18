@@ -1623,7 +1623,7 @@ struct obj_data* create_money(int amount) {
 
 int generic_find(char* arg, int bitvector, struct char_data* ch,
   struct char_data** tar_ch, struct obj_data** tar_obj) {
-  static char* ignore[] = {"the", "in", "on", "at", "\n"};
+  static const char* const ignore[] = {"the", "in", "on", "at", "\n"};
 
   int i;
   char name[256];

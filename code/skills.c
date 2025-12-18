@@ -920,7 +920,7 @@ void do_throw(struct char_data* ch, char* arg, int cmd) {
   char name[256], obje[100], buf[256];
   byte percent;
   int dr;
-  char* keyword[] = {"north", "east", "south", "west", "up", "down", "\n"};
+  const char* const keyword[] = {"north", "east", "south", "west", "up", "down", "\n"};
 
   if (!ch->skills)
     return;

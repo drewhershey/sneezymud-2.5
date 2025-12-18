@@ -121,7 +121,7 @@ static void get_dice(struct char_data* ch) {
     obj_to_char(dice, ch);
 
     if (!crap_man->act_ptr)
-      crap_man->act_ptr = (int*)calloc(1, (sizeof(int)));
+      crap_man->act_ptr = (struct mob_act_data*)calloc(1, (sizeof(int)));
 
     (*((int*)crap_man->act_ptr)) = START_BETS;
   }
@@ -441,7 +441,7 @@ static int can_bet_craps(struct char_data* ch) {
     return (FALSE);
 
   if (!crap_man->act_ptr)
-    crap_man->act_ptr = (int*)calloc(1, (sizeof(int)));
+    crap_man->act_ptr = (struct mob_act_data*)calloc(1, (sizeof(int)));
 
   if ((*((int*)crap_man->act_ptr)) == 0)
     return (TRUE);
@@ -1078,7 +1078,7 @@ int craps_table_man(struct char_data* ch, int cmd, char* arg) {
     }
   } else {
     if (!ch->act_ptr)
-      ch->act_ptr = (int*)calloc(1, sizeof(int));
+      ch->act_ptr = (struct mob_act_data*)calloc(1, sizeof(int));
 
     switch ((*((int*)ch->act_ptr))) {
       case START_BETS:

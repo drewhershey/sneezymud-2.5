@@ -4106,7 +4106,7 @@ void cast_locate_object(byte level, struct char_data* ch, char* arg, int type,
   struct char_data* tar_ch, struct obj_data* tar_obj) {
   switch (type) {
     case SPELL_TYPE_SPELL:
-      spell_locate_object(level, ch, 0, tar_obj);
+      spell_locate_object(level, ch, 0, arg);
       break;
     default:
       vlog("Serious screw-up in locate object!");
