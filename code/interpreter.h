@@ -30,7 +30,6 @@ struct command_info {
 extern struct command_info cmd_info[MAX_CMD_LIST];
 
 int ReadObjs(FILE* fl, struct obj_file_u* st);
-void ZeroRent(char* n);
 void command_interpreter(struct char_data* ch, char* argument);
 int search_block(char* arg, const char* const* list, char exact);
 int old_search_block(char* argument, int begin, int length,

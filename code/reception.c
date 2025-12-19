@@ -167,7 +167,7 @@ int ReadObjs(FILE* fl, struct obj_file_u* st) {
   return TRUE;
 }
 
-void ZeroRent(char* n) {
+void zero_rent_by_name(char* n) {
   FILE* fl;
   char buf[200];
 
@@ -439,7 +439,7 @@ void update_obj_file(void) {
                 fwrite(&ch_st, sizeof(struct char_file_u), 1, char_file);
 
                 fclose(fl);
-                ZeroRent(ch_st.name);
+                zero_rent_by_name(ch_st.name);
 
               } else {
                 sprintf(buf, "   Updating %s", st.owner);
@@ -653,5 +653,5 @@ void zero_rent(struct char_data* ch) {
     return;
   }
 
-  ZeroRent(GET_NAME(ch));
+  zero_rent_by_name(GET_NAME(ch));
 }

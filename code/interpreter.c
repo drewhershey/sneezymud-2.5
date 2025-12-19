@@ -1316,7 +1316,7 @@ static void load_char_objs(struct char_data* ch) {
   if (found) {
     obj_store_to_char(ch, &st);
   } else {
-    ZeroRent(GET_NAME(ch));
+    zero_rent(ch);
   }
 
   /* Save char, to avoid strange data if crashing */
