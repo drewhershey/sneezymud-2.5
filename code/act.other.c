@@ -769,7 +769,7 @@ void do_steal(struct char_data* ch, char* argument, int cmd) {
       act("$n tries to steal gold from $N.", TRUE, ch, 0, victim, TO_NOTVICT);
     } else {
       /* Steal some gold coins */
-      gold = (int)((GET_GOLD(victim) * number(1, 10)) / 100);
+      gold = ((GET_GOLD(victim) * number(1, 10)) / 100);
       gold = MIN(4000, gold);
       if (gold > 0) {
         GET_GOLD(ch) += gold;

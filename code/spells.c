@@ -1099,7 +1099,7 @@ static void spell_green_slime(signed char level, struct char_data* ch,
     hpch = 10;
   }
 
-  dam = (int)(hpch / 10);
+  dam = (hpch / 10);
 
   if (saves_spell(victim, SAVING_BREATH)) {
     dam >>= 1;
@@ -6241,7 +6241,7 @@ static void spell_weakness(signed char level, struct char_data* ch,
 
       af.type = SPELL_WEAKNESS;
       af.duration = (int)level / 2;
-      af.modifier = (int)0 - (victim->abilities.str * modifier);
+      af.modifier = 0 - (victim->abilities.str * modifier);
       if (victim->abilities.str_add) {
         af.modifier -= 2;
       }

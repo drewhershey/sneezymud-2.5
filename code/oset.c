@@ -89,7 +89,7 @@ static void set_oedesc(struct char_data* ch, struct obj_data* obj,
   }
 
   if (newdesc->description) {
-    free((char*)newdesc->description);
+    free(newdesc->description);
     newdesc->description = (char*)0;
   }
 
@@ -380,20 +380,20 @@ void do_oset(struct char_data* ch, char* argument, int cmd) {
       }
 
       if (tmpexd) {
-        free((char*)tmpexd->keyword);
+        free(tmpexd->keyword);
         tmpexd->keyword = strdup(arg3);
       }
-      free((char*)obj->name);
+      free(obj->name);
       obj->name = strdup(arg3);
       send_to_char("Done.\n\r", ch);
       return;
     case 1: /* sdesc */
-      free((char*)obj->short_description);
+      free(obj->short_description);
       obj->short_description = strdup(arg3);
       send_to_char("Done.\n\r", ch);
       return;
     case 2: /* ldesc */
-      free((char*)obj->description);
+      free(obj->description);
       obj->description = strdup(arg3);
       send_to_char("Done.\n\r", ch);
       return;

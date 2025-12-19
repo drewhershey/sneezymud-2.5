@@ -51,16 +51,16 @@ static int graf(int age, int p0, int p1, int p2, int p3, int p4, int p5,
     return (p0); /* < 15   */
   }
   if (age <= 29) {
-    return (int)(p1 + (((age - 15) * (p2 - p1)) / 15)); /* 15..29 */
+    return (p1 + (((age - 15) * (p2 - p1)) / 15)); /* 15..29 */
   }
   if (age <= 44) {
-    return (int)(p2 + (((age - 30) * (p3 - p2)) / 15)); /* 30..44 */
+    return (p2 + (((age - 30) * (p3 - p2)) / 15)); /* 30..44 */
   }
   if (age <= 59) {
-    return (int)(p3 + (((age - 45) * (p4 - p3)) / 15)); /* 45..59 */
+    return (p3 + (((age - 45) * (p4 - p3)) / 15)); /* 45..59 */
   }
   if (age <= 79) {
-    return (int)(p4 + (((age - 60) * (p5 - p4)) / 20)); /* 60..79 */
+    return (p4 + (((age - 60) * (p5 - p4)) / 20)); /* 60..79 */
   }
   return (p6); /* >= 80 */
 }
@@ -476,7 +476,7 @@ void set_title(struct char_data* ch) {
 
   sprintf(buf, "the %s %s", RaceName[ch->race], ClassTitles(ch));
 
-  ch->player.title = (char*)strdup(buf);
+  ch->player.title = strdup(buf);
 }
 
 void gain_exp(struct char_data* ch, int gain) {

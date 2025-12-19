@@ -978,7 +978,7 @@ int load(void) {
   for (i = 0, sum = 0; i < 5; i++) {
     sum += previous[i];
   }
-  return ((int)sum / 5);
+  return (sum / 5);
 }
 
 char* nogames(void) {

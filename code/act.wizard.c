@@ -51,8 +51,8 @@ static void CreateOneRoom(int loc_nr) {
 
   char buf[10];
   sprintf(buf, "%d", loc_nr);
-  rp->name = (char*)strdup(buf);
-  rp->description = (char*)strdup("Empty\n");
+  rp->name = strdup(buf);
+  rp->description = strdup("Empty\n");
 }
 
 void do_demote(struct char_data* ch, char* argument, int cmd) {
@@ -384,7 +384,7 @@ void do_instazone(struct char_data* ch, char* argument, int cmdnum) {
     return;
   }
 
-  fp = (FILE*)MakeZoneFile(ch);
+  fp = MakeZoneFile(ch);
 
   if (!fp) {
     send_to_char("Couldn't make file.. try again later\n\r", ch);
@@ -705,7 +705,7 @@ static void RoomLoad(struct char_data* ch, int start, int end) {
       }
 
       if ((rp = real_roomp(vnum)) == 0) { /* empty room */
-        rp = (void*)malloc(sizeof(struct room_data));
+        rp = malloc(sizeof(struct room_data));
         memset(rp, 0, sizeof(struct room_data));
         room_enter(room_db, vnum, rp);
         send_to_char("+", ch);
@@ -1349,7 +1349,7 @@ void do_stat(struct char_data* ch, char* argument, int cmd) {
     send_to_char(buf, ch);
 
     send_to_char("Room flags: ", ch);
-    sprintbit((long)rm->room_flags, room_bits, buf);
+    sprintbit(rm->room_flags, room_bits, buf);
     strcat(buf, "\n\r");
     send_to_char(buf, ch);
 
@@ -1690,7 +1690,7 @@ void do_stat(struct char_data* ch, char* argument, int cmd) {
     return;
   }
   /* stat on object */
-  if (j = (struct obj_data*)get_obj_vis_world(ch, arg1, &count)) {
+  if (j = get_obj_vis_world(ch, arg1, &count)) {
     virtual = (j->item_number >= 0) ? obj_index[j->item_number].virtual : 0;
     sprintf(buf,
       "Object name: [%s], R-number: [%d], V-number: [%d] Item type: ", j->name,

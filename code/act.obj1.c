@@ -252,7 +252,7 @@ void do_get(struct char_data* ch, char* argument, int cmd) {
     case 4: {
       found = FALSE;
       fail = FALSE;
-      sub_object = (struct obj_data*)get_obj_vis_accessible(ch, arg2);
+      sub_object = get_obj_vis_accessible(ch, arg2);
       if (sub_object) {
         if (GET_ITEM_TYPE(sub_object) == ITEM_CONTAINER) {
           for (obj_object = sub_object->contains; obj_object;
@@ -323,7 +323,7 @@ void do_get(struct char_data* ch, char* argument, int cmd) {
     case 6: {
       found = FALSE;
       fail = FALSE;
-      sub_object = (struct obj_data*)get_obj_vis_accessible(ch, arg2);
+      sub_object = get_obj_vis_accessible(ch, arg2);
       if (sub_object) {
         if (GET_ITEM_TYPE(sub_object) == ITEM_CONTAINER) {
           if (getall(arg1, newarg)) {

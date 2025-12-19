@@ -12,8 +12,8 @@
 void init_hash_table(struct hash_header* ht, int rec_size, int table_size) {
   ht->rec_size = rec_size;
   ht->table_size = table_size;
-  ht->buckets = (void*)calloc(sizeof(struct hash_link**), table_size);
-  ht->keylist = (void*)malloc(sizeof(*ht->keylist) * (ht->klistsize = 128));
+  ht->buckets = calloc(sizeof(struct hash_link**), table_size);
+  ht->keylist = malloc(sizeof(*ht->keylist) * (ht->klistsize = 128));
   ht->klistlen = 0;
 }
 
@@ -73,7 +73,7 @@ void* hash_find_or_create(struct hash_header* ht, int key) {
     return rval;
   }
 
-  rval = (void*)malloc((size_t)ht->rec_size);
+  rval = malloc((size_t)ht->rec_size);
 
   hash_enter_no_key(ht, key, rval);
   return rval;

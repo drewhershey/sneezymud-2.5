@@ -146,16 +146,16 @@ void do_drink(struct char_data* ch, char* argument, int cmd) {
       }
 
       gain_condition(ch, DRUNK,
-        (int)((int)drink_aff[temp->obj_flags.value[2]][DRUNK] * amount) / 4);
+        ((int)drink_aff[temp->obj_flags.value[2]][DRUNK] * amount) / 4);
 
       if (GET_COND(ch, FULL) >= 0) {
         gain_condition(ch, FULL,
-          (int)((int)drink_aff[temp->obj_flags.value[2]][FULL] * amount) / 4);
+          ((int)drink_aff[temp->obj_flags.value[2]][FULL] * amount) / 4);
       }
 
       if (GET_COND(ch, THIRST) >= 0) {
         gain_condition(ch, THIRST,
-          (int)((int)drink_aff[temp->obj_flags.value[2]][THIRST] * amount) / 4);
+          ((int)drink_aff[temp->obj_flags.value[2]][THIRST] * amount) / 4);
       }
 
       if (GET_COND(ch, DRUNK) > 10) {

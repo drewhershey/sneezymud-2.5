@@ -420,7 +420,7 @@ void do_flee(struct char_data* ch, char* argument, int cmd) {
               !(IS_SET(ch->specials.act, ACT_AGGRESSIVE)))) {
           AddFeared(ch, ch->specials.fighting);
         } else {
-          percent = (int)100 * (float)GET_HIT(ch->specials.fighting) /
+          percent = 100 * (float)GET_HIT(ch->specials.fighting) /
                     (float)GET_MAX_HIT(ch->specials.fighting);
           if (number(1, 101) < percent) {
             if ((Hates(ch->specials.fighting, ch)) ||

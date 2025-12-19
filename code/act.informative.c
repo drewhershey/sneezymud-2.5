@@ -296,12 +296,12 @@ void do_who(struct char_data* ch, char* argument, int cmd) {
   if (IS_IMMORTAL(ch)) {
     if (!listed) {
       sprintf(buf, "\n\rTotal players / Link dead [%d/%d] (%2.0f%%)\n\r", count,
-        lcount, ((float)lcount / (int)count) * 100);
+        lcount, ((float)lcount / count) * 100);
     } else {
       sprintf(buf,
         "\n\rTotal players / Link dead [%d/%d] (%2.0f%%) Number Listed: "
         "%d\n\r",
-        count, lcount, ((float)lcount / (int)count) * 100, listed);
+        count, lcount, ((float)lcount / count) * 100, listed);
     }
   } else {
     sprintf(buf, "\n\rTotal players [%d]\n\r", count);

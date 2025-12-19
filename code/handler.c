@@ -902,7 +902,7 @@ int get_number(char** name) {
   char* ppos;
   char number[MAX_INPUT_LENGTH] = "";
 
-  if ((ppos = (char*)strchr(*name, '.')) && ppos[1]) {
+  if ((ppos = strchr(*name, '.')) && ppos[1]) {
     *ppos++ = '\0';
     strcpy(number, *name);
     strcpy(*name, ppos);

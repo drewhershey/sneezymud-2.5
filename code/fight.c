@@ -1678,7 +1678,7 @@ static void DevelopHatred(struct char_data* ch, struct char_data* v) {
   diff /= 20;
 
   if (GET_MAX_HIT(ch)) {
-    patience = (int)100 * (float)(GET_HIT(ch) / GET_MAX_HIT(ch));
+    patience = 100 * (float)(GET_HIT(ch) / GET_MAX_HIT(ch));
   } else {
     patience = 10;
   }

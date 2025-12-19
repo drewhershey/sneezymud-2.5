@@ -2692,7 +2692,7 @@ static void npc_steal(struct char_data* ch, struct char_data* victim) {
     act("$n tries to steal gold from $N.", TRUE, ch, 0, victim, TO_NOTVICT);
   } else {
     /* Steal some gold coins */
-    gold = (int)((GET_GOLD(victim) * number(1, 10)) / 100);
+    gold = ((GET_GOLD(victim) * number(1, 10)) / 100);
     if (gold > 0) {
       GET_GOLD(ch) += gold;
       GET_GOLD(victim) -= gold;
@@ -2989,7 +2989,7 @@ int blink(struct char_data* ch, int cmd, char* arg) {
     return (FALSE);
   }
 
-  if (GET_HIT(ch) < (int)GET_MAX_HIT(ch) / 3) {
+  if (GET_HIT(ch) < GET_MAX_HIT(ch) / 3) {
     act("$n blinks.", TRUE, ch, 0, 0, TO_ROOM);
     cast_teleport(12, ch, "", SPELL_TYPE_SPELL, ch, 0);
     return (TRUE);
@@ -3231,7 +3231,7 @@ struct breath_victim* choose_victims(struct char_data* ch,
 
   for (cons = real_roomp(ch->in_room)->people; cons;
     cons = cons->next_in_room) {
-    temp = (void*)malloc(sizeof(*temp));
+    temp = malloc(sizeof(*temp));
     temp->ch = cons;
     temp->next = head;
     head = temp;
@@ -4314,7 +4314,7 @@ int puff(struct char_data* ch, int cmd, char* arg) {
       do_say(ch, "So, wanna neck?", 0);
       return (1);
     case 10: {
-      tmp_ch = (struct char_data*)FindAnyVictim(ch);
+      tmp_ch = FindAnyVictim(ch);
       if (!IS_NPC(ch)) {
         sprintf(buf, "Party on, %s", GET_NAME(tmp_ch));
         do_say(ch, buf, 0);
@@ -4679,7 +4679,7 @@ int AbbarachDragon(struct char_data* ch, int cmd, char* arg) {
   }
 
   if (!ch->specials.fighting) {
-    targ = (struct char_data*)FindAnyVictim(ch);
+    targ = FindAnyVictim(ch);
     if (targ && !check_peaceful(ch, "")) {
       hit(ch, targ, TYPE_UNDEFINED);
       act("You have now payed the price of crossing.", TRUE, ch, 0, 0, TO_ROOM);
@@ -5386,7 +5386,7 @@ int Ringwraith(struct char_data* ch, int cmd, char* arg) {
     wh->ringnumber = number(1, quantrings++);
   }
 
-  sprintf(buf, "%d.one ring.", (int)wh->ringnumber); /* where is this ring? */
+  sprintf(buf, "%d.one ring.", wh->ringnumber); /* where is this ring? */
   if (NULL == (ring = get_obj_vis_world(ch, buf, NULL))) {
     /* there aren't as many one rings in the game as we thought */
     quantrings = 1;
@@ -11062,7 +11062,7 @@ int Samah(struct char_data* ch, int cmd, char* arg) {
       return (FALSE);
     }
 
-    Sammy = (struct char_data*)FindMobInRoomWithFunction(ch->in_room, Samah);
+    Sammy = FindMobInRoomWithFunction(ch->in_room, Samah);
 
     for (; *arg == ' '; arg++) {
       ; /* skip whitespace */
@@ -11072,7 +11072,7 @@ int Samah(struct char_data* ch, int cmd, char* arg) {
     if (cmd == 207) { /* recite */
       act("$n glares at you", FALSE, Sammy, 0, ch, TO_VICT);
       act("$n glares at $N", FALSE, Sammy, 0, ch, TO_NOTVICT);
-      p = (char*)strtok(buf, " ");
+      p = strtok(buf, " ");
       if (strncmp("recall", p, strlen(p)) == 0) {
         act("$n says 'And just where do you think you're going, Mensch?", FALSE,
           Sammy, 0, 0, TO_ROOM);
@@ -11084,7 +11084,7 @@ int Samah(struct char_data* ch, int cmd, char* arg) {
       /* we use strlen(p)-1 because if we use the full length, there is
     the obligatory ' at the end.  We must ignore this ', and get
     on with our lives */
-      p = (char*)strtok(buf, " ");
+      p = strtok(buf, " ");
       if (strncmp("'word of recall'", p, strlen(p) - 1) == 0) {
         act("$n says 'And just where do you think you're going, Mensch?", FALSE,
           Sammy, 0, 0, TO_ROOM);
