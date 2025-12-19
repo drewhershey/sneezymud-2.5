@@ -9,6 +9,11 @@
 
 #include "structs.h"
 
+struct char_data;
+struct char_file_u;
+struct descriptor_data;
+struct obj_file_u;
+
 #define MAX_CMD_LIST 400
 
 extern const char* const path[];

@@ -5,8 +5,8 @@
  ************************************************************************* */
 
 #include "constants.h"
+
 #include "structs.h"
-#include "trap.h"
 
 const struct QuestItem QuestList[4][IMMORTAL] = {
   {/* magic user */

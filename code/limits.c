@@ -5,8 +5,6 @@
  ************************************************************************* */
 #define _POSIX_C_SOURCE 200809L
 #include <features.h>
-
-#include <assert.h>
 #include <stdio.h>
 #include <string.h>
 #include <sys/param.h>

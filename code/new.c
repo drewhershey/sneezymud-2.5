@@ -1,7 +1,6 @@
 /* These are new functions added by Russ Russell, after the code was stolen.
 ** These are mainly skills and spells for the new classes.                 */
 
-#include <assert.h>
 #include <stdio.h>
 #include <string.h>
 #include <sys/param.h>

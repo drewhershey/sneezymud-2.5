@@ -4,7 +4,6 @@
 #include <stdlib.h>
 #include <strings.h>
 
-#include "structs.h"
 #include "utils.h"
 
 #define HASH_KEY(ht, key) ((((unsigned int)(key)) * 17) % (ht)->table_size)

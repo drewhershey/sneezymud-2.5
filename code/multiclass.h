@@ -2,6 +2,8 @@
 
 #include "structs.h"
 
+struct char_data;
+
 int GetClassLevel(struct char_data* ch, int class);
 int CountBits(int class);
 int OnlyClass(struct char_data* ch, int class);

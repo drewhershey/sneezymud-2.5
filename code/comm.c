@@ -10,6 +10,7 @@
 #define _POSIX_C_SOURCE 200809L
 #define _GNU_SOURCE
 
+#include <arpa/inet.h>
 #include <ctype.h>
 #include <errno.h>
 #include <fcntl.h>
@@ -20,13 +21,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <strings.h>
 #include <sys/resource.h>
 #include <sys/select.h>
 #include <sys/socket.h>
 #include <sys/time.h>
-#include <sys/types.h>
-#include <sys/wait.h>
 #include <time.h>
 #include <unistd.h>
 
@@ -38,6 +36,8 @@
 #include "multiclass.h"
 #include "structs.h"
 #include "utils.h"
+
+struct timeval;
 
 #define DFLT_PORT 4000 /* default port */
 #define PACKET_BUFFER_SIZE 40960

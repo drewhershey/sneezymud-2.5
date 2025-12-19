@@ -90,3 +90,79 @@ target_compile_options(compiler_options INTERFACE
 target_link_options(compiler_options INTERFACE
     $<$<CONFIG:Release>:-flto=auto>
 )
+
+# Include-What-You-Use (IWYU) - optional analysis tool for header cleanup
+# Usage: cmake --preset dev -DENABLE_IWYU=ON
+option(ENABLE_IWYU "Run include-what-you-use during build (for header analysis)" OFF)
+if(ENABLE_IWYU)
+    find_program(IWYU_PROGRAM include-what-you-use)
+    if(IWYU_PROGRAM)
+        set(CMAKE_C_INCLUDE_WHAT_YOU_USE "${IWYU_PROGRAM}")
+        message(STATUS "IWYU enabled: ${IWYU_PROGRAM}")
+    else()
+        message(WARNING "IWYU requested but include-what-you-use not found")
+    endif()
+endif()
+
+# IWYU fix target - runs IWYU analysis and automatically applies fixes
+# Usage: cmake --build build --target iwyu-fix
+find_program(IWYU_TOOL iwyu_tool.py)
+find_program(FIX_INCLUDES fix_includes.py)
+if(IWYU_TOOL AND FIX_INCLUDES)
+    # Find IWYU's mapping files directory (prefer source repo, fall back to installed)
+    set(IWYU_MAPPING_DIRS
+        "$ENV{HOME}/source/repos/include-what-you-use"
+        "/usr/local/share/include-what-you-use"
+        "/usr/share/include-what-you-use"
+    )
+    set(IWYU_DIR "")
+    foreach(dir ${IWYU_MAPPING_DIRS})
+        if(EXISTS "${dir}/iwyu.gcc.imp")
+            set(IWYU_DIR "${dir}")
+            break()
+        endif()
+    endforeach()
+
+    # IWYU options for C code:
+    # Note: --no_comments removes line numbers needed by fix_includes.py, so only use for check
+
+    # Project-specific mappings (if present) - loaded first for overrides
+    if(EXISTS "${CMAKE_SOURCE_DIR}/iwyu.imp")
+        list(APPEND IWYU_ARGS_BASE "-Xiwyu;--mapping_file=${CMAKE_SOURCE_DIR}/iwyu.imp")
+    endif()
+
+    if(IWYU_DIR)
+        # GCC/glibc mappings for C standard library
+        # Note: For C projects, we use gcc.libc.imp and stl.c.headers.imp
+        if(EXISTS "${IWYU_DIR}/gcc.libc.imp")
+            list(APPEND IWYU_ARGS_BASE "-Xiwyu;--mapping_file=${IWYU_DIR}/gcc.libc.imp")
+        endif()
+        if(EXISTS "${IWYU_DIR}/stl.c.headers.imp")
+            list(APPEND IWYU_ARGS_BASE "-Xiwyu;--mapping_file=${IWYU_DIR}/stl.c.headers.imp")
+        endif()
+    endif()
+
+    # Fix target needs line numbers in output (no --no_comments)
+    string(REPLACE ";" " " IWYU_ARGS_FIX "${IWYU_ARGS_BASE}")
+
+    # Check target can use cleaner output without line number comments
+    set(IWYU_ARGS_CHECK "${IWYU_ARGS_BASE};-Xiwyu;--no_comments")
+    string(REPLACE ";" " " IWYU_ARGS_CHECK "${IWYU_ARGS_CHECK}")
+
+    add_custom_target(iwyu-fix
+        COMMAND ${CMAKE_COMMAND} -E echo "Running IWYU analysis and applying fixes..."
+        COMMAND sh -c "${IWYU_TOOL} -j 0 -p ${CMAKE_BINARY_DIR} -- ${IWYU_ARGS_FIX} 2>&1 | ${FIX_INCLUDES}"
+        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+        COMMENT "Running include-what-you-use and applying fixes"
+        VERBATIM
+    )
+
+    add_custom_target(iwyu-check
+        COMMAND ${CMAKE_COMMAND} -E echo "Running IWYU analysis (dry run)..."
+        COMMAND sh -c "${IWYU_TOOL} -j 0 -p ${CMAKE_BINARY_DIR} -- ${IWYU_ARGS_CHECK}"
+        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+        COMMENT "Running include-what-you-use (analysis only, no fixes applied)"
+        VERBATIM
+    )
+    message(STATUS "IWYU targets available: iwyu-fix, iwyu-check")
+endif()

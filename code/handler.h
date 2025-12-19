@@ -7,6 +7,12 @@
 
 #include "structs.h"
 
+struct affected_type;
+struct char_data;
+struct descriptor_data;
+struct obj_data;
+struct string_block;
+
 extern struct char_data* combat_list;
 
 /* handling the affected-structures */

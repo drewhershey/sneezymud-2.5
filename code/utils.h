@@ -11,7 +11,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "constants.h"  // IWYU pragma: keep (used by CAN_CARRY_W macro)
 #include "limits.h"
+#include "multiclass.h"  // IWYU pragma: keep (used by CAN_SEE_OBJ macro)
 #include "structs.h"
 
 #if defined(DEBUG) && DEBUG

@@ -19,7 +19,6 @@
 #include "constants.h"
 #include "db.h"
 #include "handler.h"
-#include "interpreter.h"
 #include "multiclass.h"
 #include "opinion.h"
 #include "race.h"

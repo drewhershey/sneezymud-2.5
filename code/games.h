@@ -4,6 +4,8 @@
 
 #include "structs.h"
 
+struct char_data;
+
 #define BET_OPTIONS \
   "\n\rSyntax :  bet <option> <amount> \n\r\n\r\
 Options :\n\r\n\r\

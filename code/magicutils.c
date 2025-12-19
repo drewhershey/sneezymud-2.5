@@ -2,7 +2,6 @@
 **  magicutils -- stuff that makes the magic files easier to read.
 */
 
-#include <assert.h>
 #include <sys/param.h>
 
 #include "handler.h"

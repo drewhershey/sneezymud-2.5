@@ -4,15 +4,13 @@
  *  copyright (c) 1990, 1991 - see 'license.doc' for complete information. *
  ************************************************************************* */
 
-#include <stdio.h>
+#include <stddef.h>
 
 #include "comm.h"
-#include "constants.h"
 #include "db.h"
 #include "handler.h"
 #include "hash.h"
 #include "interpreter.h"
-#include "multiclass.h"
 #include "opinion.h"
 #include "structs.h"
 #include "trap.h"

@@ -6,20 +6,19 @@
 #define _POSIX_C_SOURCE 200809L
 #define _GNU_SOURCE
 #include <features.h>
-
 #include <assert.h>
 #include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/param.h>
+#include <strings.h>
 
 #include "area.h"
 #include "comm.h"
 #include "constants.h"
 #include "db.h"
 #include "handler.h"
-#include "hash.h"
 #include "interpreter.h"
 #include "limits.h"
 #include "multiclass.h"

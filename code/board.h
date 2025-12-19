@@ -2,6 +2,9 @@
 
 #include "structs.h"
 
+struct char_data;
+struct obj_data;
+
 #define MAX_MSGS 50             /* Max number of messages.          */
 #define MAX_MESSAGE_LENGTH 2048 /* that should be enough            */
 

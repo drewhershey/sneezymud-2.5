@@ -1,7 +1,7 @@
 # Makefile wrapper for common SneezyMUD build tasks
 # This is a convenience wrapper around CMake commands
 
-.PHONY: help build release clean format run test reconfigure report all
+.PHONY: help build release clean format run test reconfigure report all iwyu-check iwyu-fix
 
 # Default target
 all: build
@@ -16,6 +16,8 @@ help:
 	@echo "  make run        - Build and run the server on port 4000"
 	@echo "  make report     - Clean build with error/warning report"
 	@echo "  make reconfigure - Reconfigure CMake (dev preset)"
+	@echo "  make iwyu-check - Run include-what-you-use analysis (dry run)"
+	@echo "  make iwyu-fix   - Run include-what-you-use and apply fixes"
 	@echo ""
 	@echo "Build options:"
 	@echo "  PORT=<number>   - Run server on custom port (use with 'make run')"
@@ -72,3 +74,13 @@ run: build
 # Clean build with error/warning report
 report:
 	@./scripts/build-report.sh
+
+# Run IWYU analysis (dry run, no changes)
+iwyu-check: build
+	@echo "Running include-what-you-use analysis..."
+	@cmake --build build --target iwyu-check
+
+# Run IWYU analysis and apply fixes
+iwyu-fix: build
+	@echo "Running include-what-you-use and applying fixes..."
+	@cmake --build build --target iwyu-fix

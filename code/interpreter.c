@@ -6,14 +6,9 @@
 
 #include <arpa/telnet.h>
 #include <ctype.h>
-#include <dirent.h>
-#include <netdb.h>
-#include <netinet/in.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/param.h>
-#include <sys/syscall.h>
 #include <time.h>
 #include <unistd.h>
 
@@ -22,6 +17,7 @@
 #include "comm.h"
 #include "db.h"
 #include "handler.h"
+#include "limits.h"
 #include "multiclass.h"
 #include "race.h"
 #include "structs.h"
