@@ -362,7 +362,7 @@ void affect_total(struct char_data* ch) {
     if (ch->equipment[i])
       for (j = 0; j < MAX_OBJ_AFFECT; j++)
         affect_modify(ch, ch->equipment[i]->affected[j].location,
-          ch->equipment[i]->affected[j].modifier,
+          (long)ch->equipment[i]->affected[j].modifier,
           ch->equipment[i]->obj_flags.bitvector, FALSE);
   }
 
@@ -375,7 +375,7 @@ void affect_total(struct char_data* ch) {
     if (ch->equipment[i])
       for (j = 0; j < MAX_OBJ_AFFECT; j++)
         affect_modify(ch, ch->equipment[i]->affected[j].location,
-          ch->equipment[i]->affected[j].modifier,
+          (long)ch->equipment[i]->affected[j].modifier,
           ch->equipment[i]->obj_flags.bitvector, TRUE);
   }
 
@@ -764,7 +764,7 @@ void equip_char(struct char_data* ch, struct obj_data* obj, int pos) {
     GET_AC(ch) -= apply_ac(ch, pos);
 
   for (j = 0; j < MAX_OBJ_AFFECT; j++)
-    affect_modify(ch, obj->affected[j].location, obj->affected[j].modifier,
+    affect_modify(ch, obj->affected[j].location, (long)obj->affected[j].modifier,
       obj->obj_flags.bitvector, TRUE);
 
   if (GET_ITEM_TYPE(obj) == ITEM_WEAPON) {

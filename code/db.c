@@ -1023,7 +1023,7 @@ struct char_data* read_mobile(int nr, int type) {
 
     short hp_bonus = 0;
     fscanf(mob_f, " %hd ", &hp_bonus);
-    mob->points.max_hit = DICE(GET_LEVEL(mob, WARRIOR_LEVEL_IND), 8) + hp_bonus;
+    mob->points.max_hit = (short)(DICE((int)GET_LEVEL(mob, WARRIOR_LEVEL_IND), 8) + hp_bonus);
     mob->points.hit = mob->points.max_hit;
 
     signed char d_num = 0;
@@ -1285,7 +1285,7 @@ struct obj_data* read_object(int nr, int type) {
   /* *** numeric data *** */
 
   fscanf(obj_f, " %d ", &tmp);
-  obj->obj_flags.type_flag = tmp;
+  obj->obj_flags.type_flag = (signed char)tmp;
   fscanf(obj_f, " %d ", &tmp);
   obj->obj_flags.extra_flags = tmp;
   fscanf(obj_f, " %d ", &tmp);
@@ -1335,9 +1335,9 @@ struct obj_data* read_object(int nr, int type) {
 
   for (i = 0; (i < MAX_OBJ_AFFECT) && (*chk == 'A'); i++) {
     fscanf(obj_f, " %d ", &tmp);
-    obj->affected[i].location = tmp;
+    obj->affected[i].location = (short)tmp;
     fscanf(obj_f, " %d \n", &tmp);
-    obj->affected[i].modifier = tmp;
+    obj->affected[i].modifier = (unsigned long)tmp;
     fscanf(obj_f, " %s \n", chk);
   }
 
