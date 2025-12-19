@@ -481,8 +481,10 @@ void boot_the_shops(void) {
 
   for (;;) {
     buf = fread_string(shop_f);
-    if (*buf == '#') /* a new shop */
+    if (buf && *buf == '#') /* a new shop */
     {
+      free(buf); /* Free the marker string */
+
       if (!number_of_shops) /* first shop */
         CREATE(shop_index, struct shop_data, 1);
       else if (!(shop_index = (struct shop_data*)realloc(shop_index,
@@ -526,8 +528,16 @@ void boot_the_shops(void) {
       fscanf(shop_f, "%d \n", &shop_index[number_of_shops].close2);
 
       number_of_shops++;
-    } else if (*buf == '$') /* EOF */
+    } else if (buf && *buf == '$') /* EOF */ {
+      free(buf); /* Free the EOF marker string */
       break;
+    } else {
+      /* Unexpected format - free buf if allocated and break */
+      if (buf) {
+        free(buf);
+      }
+      break;
+    }
   }
 
   fclose(shop_f);
