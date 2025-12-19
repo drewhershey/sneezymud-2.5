@@ -83,7 +83,7 @@ int CAN_SEE(struct char_data* s, struct char_data* o);
 
 #define SET_BIT(var, bit) ((var) = (var) | (bit))
 
-#define REMOVE_BIT(var, bit) ((var) = (var) & ~(bit))
+#define REMOVE_BIT(var, bit) ((var) &= ~(typeof(var))(bit))
 
 #define RM_FLAGS(i) ((real_roomp(i)) ? real_roomp(i)->room_flags : 0)
 

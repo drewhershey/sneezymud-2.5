@@ -2083,6 +2083,9 @@ void free_char(struct char_data* ch) {
     free(ch->skills);
   }
 
+  FreeHates(ch);
+  FreeFears(ch);
+
   free(ch);
 }
 

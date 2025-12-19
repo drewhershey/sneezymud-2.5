@@ -20,8 +20,9 @@ void FreeHates(struct char_data* ch) {
 
   for (k = ch->hates.clist; k; k = n) {
     n = k->next;
-    free(n);
+    free(k);
   }
+  ch->hates.clist = NULL;
 }
 
 void FreeFears(struct char_data* ch) {
@@ -30,8 +31,9 @@ void FreeFears(struct char_data* ch) {
 
   for (k = ch->fears.clist; k; k = n) {
     n = k->next;
-    free(n);
+    free(k);
   }
+  ch->fears.clist = NULL;
 }
 
 int RemHated(struct char_data* ch, struct char_data* pud) {

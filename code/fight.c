@@ -1838,7 +1838,7 @@ struct char_data* FindVictim(struct char_data* ch) {
   unsigned short ptot = 0;
   unsigned short ktot = 0;
   unsigned short rtot = 0;
-  unsigned short total;
+  int total;
   unsigned short fjump = 0;
   unsigned short njump = 0;
   unsigned short cjump = 0;
@@ -2022,7 +2022,7 @@ struct char_data* FindAnyVictim(struct char_data* ch) {
   unsigned short ptot = 0;
   unsigned short ktot = 0;
   unsigned short rtot = 0;
-  unsigned short total;
+  int total;
   unsigned short fjump = 0;
   unsigned short njump = 0;
   unsigned short cjump = 0;
@@ -2411,7 +2411,7 @@ struct char_data* FindAnAttacker(struct char_data* ch) {
   unsigned short ctot = 0;
   unsigned short ntot = 0;
   unsigned short mtot = 0;
-  unsigned short total;
+  int total;
   unsigned short fjump = 0;
   unsigned short njump = 0;
   unsigned short cjump = 0;
