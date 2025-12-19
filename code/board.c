@@ -54,6 +54,7 @@ void InitABoard(struct obj_data* obj) {
   for (i = 0; i < MAX_MSGS; ++i)
     new->msgs[i] = NULL;
 
+  new->msg_num = 0;
   new->Rnum = obj->item_number;
 
   sprintf(new->filename, "%d.messages", obj_index[obj->item_number].virtual);
