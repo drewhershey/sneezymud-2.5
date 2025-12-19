@@ -287,11 +287,11 @@ void do_track(struct char_data* ch, char* argument, int cmd) {
     .fn.mob_in_room_fn = named_mobile_in_room,
   };
 
-  const int inZone = GetMaxLevel(ch) < MIN_GLOB_TRACK_LEV ||
-                     affected_by_spell(ch, SPELL_MINOR_TRACK) ||
-                     affected_by_spell(ch, SPELL_MAJOR_TRACK);
+  const int in_zone = GetMaxLevel(ch) < MIN_GLOB_TRACK_LEV ||
+                      affected_by_spell(ch, SPELL_MINOR_TRACK) ||
+                      affected_by_spell(ch, SPELL_MAJOR_TRACK);
 
-  const int code = find_path(ch->in_room, &hunt_mob_data, -dist, inZone);
+  const int code = find_path(ch->in_room, &hunt_mob_data, -dist, in_zone);
 
   WAIT_STATE(ch, PULSE_VIOLENCE * 1);
 
@@ -714,7 +714,7 @@ void do_swim(struct char_data* ch, char* arg, int cmd) {
   affect_to_char(ch, &af);
 }
 
-int SpyCheck(struct char_data* ch) {
+int spy_check(struct char_data* ch) {
   if (!ch->skills) {
     return (FALSE);
   }

@@ -538,8 +538,8 @@ const char* const exits[] = {"North", "East ", "South", "West ", "Up   ",
 const char* const dirs[] = {"north", "east", "south", "west", "up", "down",
   "\n"};
 
-const char* const ItemDamType[] = {"burned", "frozen", "electrified", "crushed",
-  "corroded"};
+const char* const item_dam_type[] = {"burned", "frozen", "electrified",
+  "crushed", "corroded"};
 
 const int sharp[] = {
   0, 0, 0, 1, /* Slashing */

@@ -17,7 +17,7 @@
 #include "structs.h"
 #include "utils.h"
 
-static const int TrapDir[] = {TRAP_EFF_NORTH, TRAP_EFF_EAST, TRAP_EFF_SOUTH,
+static const int trap_dir[] = {TRAP_EFF_NORTH, TRAP_EFF_EAST, TRAP_EFF_SOUTH,
   TRAP_EFF_WEST, TRAP_EFF_UP, TRAP_EFF_DOWN};
 
 int CheckForMoveTrap(struct char_data* ch, int dir) {
@@ -26,7 +26,7 @@ int CheckForMoveTrap(struct char_data* ch, int dir) {
   for (i = real_roomp(ch->in_room)->contents; i; i = i->next_content) {
     if ((ITEM_TYPE(i) == ITEM_TRAP) &&
         (IS_SET(GET_TRAP_EFF(i), TRAP_EFF_MOVE)) && (GET_TRAP_CHARGES(i) > 0)) {
-      if (IS_SET(GET_TRAP_EFF(i), TrapDir[dir])) {
+      if (IS_SET(GET_TRAP_EFF(i), trap_dir[dir])) {
         return (TriggerTrap(ch, i));
       }
     }

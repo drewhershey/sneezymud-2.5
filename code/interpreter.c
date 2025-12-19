@@ -1273,7 +1273,7 @@ static void load_char_objs(struct char_data* ch) {
 
   rewind(fl);
 
-  if (!ReadObjs(fl, &st)) {
+  if (!read_objs(fl, &st)) {
     vlog("No objects found");
     // fclose(fl);
     return;

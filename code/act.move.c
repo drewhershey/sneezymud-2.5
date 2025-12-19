@@ -104,7 +104,7 @@ void raw_open_door(struct char_data* ch, int dir) {
   }
 }
 
-static void NotLegalMove(struct char_data* ch) {
+static void not_legal_move(struct char_data* ch) {
   send_to_char("Alas, you cannot go that way...\n\r", ch);
 }
 
@@ -115,7 +115,7 @@ int ValidMove(struct char_data* ch, int cmd) {
   exitp = EXIT(ch, cmd);
 
   if (!exit_ok(exitp, NULL)) {
-    NotLegalMove(ch);
+    not_legal_move(ch);
     return (FALSE);
   }
   if (IS_SET(exitp->exit_info, EX_CLOSED)) {
@@ -134,10 +134,10 @@ int ValidMove(struct char_data* ch, int cmd) {
         send_to_char(tmp, ch);
         return (FALSE);
       }
-      NotLegalMove(ch);
+      not_legal_move(ch);
       return (FALSE);
     }
-    NotLegalMove(ch);
+    not_legal_move(ch);
     return (FALSE);
   }
   struct room_data* rp;
@@ -165,7 +165,7 @@ static const int movement_loss[] = {
   4   /* Desert     */
 };
 
-static int RawMove(struct char_data* ch, int dir) {
+static int raw_move(struct char_data* ch, int dir) {
   int need_movement;
   struct obj_data* obj;
   char has_boat;
@@ -390,11 +390,11 @@ int DisplayMove(struct char_data* ch, int dir, int was_in, int total) {
   return TRUE;
 }
 
-static int DisplayOneMove(struct char_data* ch, int dir, int was_in) {
+static int display_one_move(struct char_data* ch, int dir, int was_in) {
   return DisplayMove(ch, dir, was_in, 1);
 }
 
-static int AddToCharHeap(struct char_data* heap[50], int* top, int total[50],
+static int add_to_char_heap(struct char_data* heap[50], int* top, int total[50],
   struct char_data* k) {
   int found;
   int i;
@@ -426,19 +426,19 @@ int MoveOne(struct char_data* ch, int dir) {
   int was_in;
 
   was_in = ch->in_room;
-  if (RawMove(ch, dir)) { /* no error */
-    DisplayOneMove(ch, dir, was_in);
+  if (raw_move(ch, dir)) { /* no error */
+    display_one_move(ch, dir, was_in);
     return TRUE;
   }
   return FALSE;
 }
 
-static int DisplayGroupMove(struct char_data* ch, int dir, int was_in,
+static int display_group_move(struct char_data* ch, int dir, int was_in,
   int total) {
   return DisplayMove(ch, dir, was_in, total);
 }
 
-void MoveGroup(struct char_data* ch, int dir) {
+void move_group(struct char_data* ch, int dir) {
   struct char_data* heap_ptr[50];
   int was_in;
   int i;
@@ -452,8 +452,8 @@ void MoveGroup(struct char_data* ch, int dir) {
    */
 
   was_in = ch->in_room;
-  if (RawMove(ch, dir)) { /* no error */
-    DisplayOneMove(ch, dir, was_in);
+  if (raw_move(ch, dir)) { /* no error */
+    display_one_move(ch, dir, was_in);
     if (ch->followers) {
       heap_top = 0;
       for (k = ch->followers; k; k = next_dude) {
@@ -465,11 +465,12 @@ void MoveGroup(struct char_data* ch, int dir) {
             (GET_POS(k->follower) >= POSITION_STANDING)) {
           act("You follow $N.", FALSE, k->follower, 0, ch, TO_CHAR);
           if (k->follower->followers) {
-            MoveGroup(k->follower, dir);
+            move_group(k->follower, dir);
           } else {
-            if (RawMove(k->follower, dir)) {
-              if (!AddToCharHeap(heap_ptr, &heap_top, heap_tot, k->follower)) {
-                DisplayOneMove(k->follower, dir, was_in);
+            if (raw_move(k->follower, dir)) {
+              if (!add_to_char_heap(heap_ptr, &heap_top, heap_tot,
+                    k->follower)) {
+                display_one_move(k->follower, dir, was_in);
               }
             }
           }
@@ -480,9 +481,9 @@ void MoveGroup(struct char_data* ch, int dir) {
        */
       for (i = 0; i < heap_top; i++) {
         if (heap_tot[i] > 1) {
-          DisplayGroupMove(heap_ptr[i], dir, was_in, heap_tot[i]);
+          display_group_move(heap_ptr[i], dir, was_in, heap_tot[i]);
         } else {
-          DisplayOneMove(heap_ptr[i], dir, was_in);
+          display_one_move(heap_ptr[i], dir, was_in);
         }
       }
     }
@@ -507,7 +508,7 @@ void do_move(struct char_data* ch, char* argument, int cmd) {
     if (!ch->followers) {
       MoveOne(ch, cmd);
     } else {
-      MoveGroup(ch, cmd);
+      move_group(ch, cmd);
     }
   }
 }

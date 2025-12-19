@@ -1,7 +1,7 @@
 /* Oset.c is Copyright (C) 1992 by Dan Brumleve.  Ignorance or removal  *
  * of this frienndly reminder is punishable by death by slooow torture  */
 
-#define _POSIX_C_SOURCE 200809L
+#define POSIX_C_SOURCE 200809L
 #include <features.h>
 
 #include <ctype.h>

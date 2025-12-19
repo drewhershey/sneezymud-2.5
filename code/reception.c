@@ -15,8 +15,8 @@
 #include "structs.h"
 #include "utils.h"
 
-const char* const OBJ_SAVE_FILE = "pcobjs.obj";
-const char* const OBJ_FILE_FREE = "\0\0\0";
+const char* const obj_save_file = "pcobjs.obj";
+const char* const obj_file_free = "\0\0\0";
 
 /* ************************************************************************
  * Routines used for the "Offer"                                           *
@@ -54,7 +54,7 @@ char recep_offer(struct char_data* ch, struct char_data* receptionist,
 /* ************************************************************************
  * General save/load routines                                              *
  ************************************************************************* */
-static void WriteObjs(FILE* fl, struct obj_file_u* st, int save) {
+static void write_objs(FILE* fl, struct obj_file_u* st, int save) {
   int i;
   char buf[80];
 
@@ -92,7 +92,7 @@ void update_file(struct char_data* ch, struct obj_file_u* st, int save) {
 
   strcpy(st->owner, GET_NAME(ch));
 
-  WriteObjs(fl, st, save);
+  write_objs(fl, st, save);
 
   fclose(fl);
 }
@@ -101,7 +101,7 @@ void update_file(struct char_data* ch, struct obj_file_u* st, int save) {
  * Routines used to load a characters equipment from disk                  *
  ************************************************************************* */
 
-int ReadObjs(FILE* fl, struct obj_file_u* st) {
+int read_objs(FILE* fl, struct obj_file_u* st) {
   int i;
 
   if (feof(fl)) {
@@ -346,7 +346,7 @@ void save_obj(struct char_data* ch, struct obj_cost* cost, int delete) {
  * Routines used to update object file, upon boot time                     *
  ************************************************************************* */
 
-static void CountLimitedItems(struct obj_file_u* st) {
+static void count_limited_items(struct obj_file_u* st) {
   int i;
   int cost_per_day;
   struct obj_data* obj;
@@ -400,7 +400,7 @@ void update_obj_file(void) {
     sprintf(buf, "rent/%s", player_table[i].name);
     /* r+b is for Binary Reading/Writing */
     if ((fl = fopen(buf, "r+b")) != NULL) {
-      if (ReadObjs(fl, &st)) {
+      if (read_objs(fl, &st)) {
         if (str_cmp(st.owner, player_table[i].name) != 0) {
           vlog("Ack!  wrong person written into object file!");
           abort();
@@ -419,7 +419,7 @@ void update_obj_file(void) {
             st.last_update = time(0);
 
 #if LIMITED_ITEMS
-            CountLimitedItems(&st);
+            count_limited_items(&st);
 #endif
             fseek(char_file,
               (long)(player_table[i].nr * sizeof(struct char_file_u)), 0);
@@ -447,15 +447,15 @@ void update_obj_file(void) {
                 st.gold_left -= (st.total_cost * days_passed);
                 st.last_update = time(0) - secs_lost;
                 rewind(fl);
-                WriteObjs(fl, &st, 0);
+                write_objs(fl, &st, 0);
                 fclose(fl);
 #if LIMITED_ITEMS
-                CountLimitedItems(&st);
+                count_limited_items(&st);
 #endif
               }
             } else {
 #if LIMITED_ITEMS
-              CountLimitedItems(&st);
+              count_limited_items(&st);
 #endif
               fclose(fl);
             }

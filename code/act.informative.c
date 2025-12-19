@@ -430,7 +430,7 @@ void show_mult_obj_to_char(struct obj_data* object, struct char_data* ch,
 void list_obj_in_room(struct obj_data* list, struct char_data* ch) {
   struct obj_data* i;
   struct obj_data* cond_ptr[50];
-  int Inventory_Num = 1;
+  int inventory_num = 1;
   int num;
   int k;
   int cond_top;
@@ -479,7 +479,7 @@ void list_obj_in_room(struct obj_data* list, struct char_data* ch) {
         num = number(1, 100);
         if (ch->skills && num < ch->skills[SKILL_FIND_TRAP].learned / 10) {
           if (cond_tot[k] > 1) {
-            sprintf(buf, "[%2d] ", Inventory_Num++);
+            sprintf(buf, "[%2d] ", inventory_num++);
             send_to_char(buf, ch);
             show_mult_obj_to_char(cond_ptr[k], ch, 0, cond_tot[k]);
           } else {
@@ -488,7 +488,7 @@ void list_obj_in_room(struct obj_data* list, struct char_data* ch) {
         }
       } else {
         if (cond_tot[k] > 1) {
-          sprintf(buf, "[%2d] ", Inventory_Num++);
+          sprintf(buf, "[%2d] ", inventory_num++);
           send_to_char(buf, ch);
           show_mult_obj_to_char(cond_ptr[k], ch, 0, cond_tot[k]);
         } else {
@@ -508,7 +508,7 @@ void list_obj_in_heap(struct obj_data* list, struct char_data* ch) {
   int found = FALSE;
   char buf[MAX_STRING_LENGTH];
 
-  int Num_Inventory = 1;
+  int num_inventory = 1;
   cond_top = 0;
 
   for (i = list; i; i = i->next_content) {
@@ -539,10 +539,10 @@ void list_obj_in_heap(struct obj_data* list, struct char_data* ch) {
 
   if (cond_top) {
     for (k = 0; k < cond_top; k++) {
-      sprintf(buf, "[%2d] ", Num_Inventory++);
+      sprintf(buf, "[%2d] ", num_inventory++);
       send_to_char(buf, ch);
       if (cond_tot[k] > 1) {
-        Num_Inventory += cond_tot[k] - 1;
+        num_inventory += cond_tot[k] - 1;
         show_mult_obj_to_char(cond_ptr[k], ch, 2, cond_tot[k]);
       } else {
         show_obj_to_char(cond_ptr[k], ch, 2);
@@ -1955,17 +1955,17 @@ void do_inventory(struct char_data* ch, char* argument, int cmd) {
 
 void do_equipment(struct char_data* ch, char* argument, int cmd) {
   int j;
-  int Worn_Index;
+  int worn_index;
   char found;
-  char String[256];
+  char string[256];
 
   send_to_char("You are using:\n\r", ch);
   found = FALSE;
-  for (Worn_Index = j = 0; j < MAX_WEAR; j++) {
+  for (worn_index = j = 0; j < MAX_WEAR; j++) {
     if (ch->equipment[j]) {
-      Worn_Index++;
-      sprintf(String, "[%d] %s", Worn_Index, where[j]);
-      send_to_char(String, ch);
+      worn_index++;
+      sprintf(string, "[%d] %s", worn_index, where[j]);
+      send_to_char(string, ch);
       if (CAN_SEE_OBJ(ch, ch->equipment[j])) {
         show_obj_to_char(ch->equipment[j], ch, 1);
         found = TRUE;
@@ -2230,7 +2230,7 @@ void do_where(struct char_data* ch, char* argument, int cmd) {
   destroy_string_block(&sb);
 }
 
-static const int RacialMax[][4] = {
+static const int racial_max[][4] = {
   {
     (LOW_IMMORTAL - 1),
     (LOW_IMMORTAL - 1),
@@ -2271,7 +2271,7 @@ static const int RacialMax[][4] = {
 
 void do_levels(struct char_data* ch, char* argument, int cmd) {
   int i;
-  int RaceMax;
+  int race_max;
   int class;
   char buf[MAX_STRING_LENGTH];
   char buf2[MAX_STRING_LENGTH];
@@ -2333,7 +2333,7 @@ void do_levels(struct char_data* ch, char* argument, int cmd) {
       break;
   }
 
-  RaceMax = RacialMax[GET_RACE(ch)][class];
+  race_max = racial_max[GET_RACE(ch)][class];
 
   for (i = 1; i <= 50; i++) {
     sprintf(buf, "[%2d] %9d : %s\n\r", i, titles[class][i].exp,
@@ -2345,7 +2345,7 @@ void do_levels(struct char_data* ch, char* argument, int cmd) {
   return;
 }
 
-static const char* DescRatio(float f) {
+static const char* desc_ratio(float f) {
   if (f > 1.0f) {
     return ("More than twice yours");
   }
@@ -2367,7 +2367,7 @@ static const char* DescRatio(float f) {
   return ("Extremely inferior");
 }
 
-static const char* DescAttacks(float a) {
+static const char* desc_attacks(float a) {
   if (a < 1.0f) {
     return ("Not many");
   }
@@ -2386,7 +2386,7 @@ static const char* DescAttacks(float a) {
   return ("A whole bunch");
 }
 
-static const char* DescDamage(float dam) {
+static const char* desc_damage(float dam) {
   if (dam < 1.0f) {
     return ("Minimal Damage");
   }
@@ -2546,18 +2546,18 @@ void do_consider(struct char_data* ch, char* argument, int cmd) {
     num = GetApprox(GET_MAX_HIT(victim), learn);
     fnum = ((float)num / (float)GET_MAX_HIT(ch));
 
-    sprintf(buf, "Est Max hits are: %s\n\r", DescRatio(fnum));
+    sprintf(buf, "Est Max hits are: %s\n\r", desc_ratio(fnum));
     send_to_char(buf, ch);
 
     num = GetApprox(GET_AC(victim), learn);
     fnum = ((float)num / (float)GET_AC(ch));
 
-    sprintf(buf, "Est. armor class is : %s\n\r", DescRatio(fnum));
+    sprintf(buf, "Est. armor class is : %s\n\r", desc_ratio(fnum));
     send_to_char(buf, ch);
 
     if (learn > 60) {
       sprintf(buf, "Est. # of attacks: %s\n\r",
-        DescAttacks(GetApprox((int)victim->mult_att, learn)));
+        desc_attacks(GetApprox((int)victim->mult_att, learn)));
       send_to_char(buf, ch);
     }
     if (learn > 70) {
@@ -2565,7 +2565,7 @@ void do_consider(struct char_data* ch, char* argument, int cmd) {
       num2 = GetApprox((int)victim->specials.damsizedice, learn);
 
       fnum = (float)num * (num2 / 2.0);
-      sprintf(buf, "Est. damage of attacks is %s\n\r", DescDamage(fnum));
+      sprintf(buf, "Est. damage of attacks is %s\n\r", desc_damage(fnum));
 
       send_to_char(buf, ch);
     }
@@ -2579,7 +2579,7 @@ void do_consider(struct char_data* ch, char* argument, int cmd) {
         fnum = 2.0;
       }
 
-      sprintf(buf, "Est. Thaco: %s\n\r", DescRatio(fnum));
+      sprintf(buf, "Est. Thaco: %s\n\r", desc_ratio(fnum));
 
       send_to_char(buf, ch);
 
@@ -2587,7 +2587,7 @@ void do_consider(struct char_data* ch, char* argument, int cmd) {
       num2 = GET_DAMROLL(ch);
       fnum = (num / (float)num2);
 
-      sprintf(buf, "Est. Dam bonus is: %s\n\r", DescRatio(fnum));
+      sprintf(buf, "Est. Dam bonus is: %s\n\r", desc_ratio(fnum));
 
       send_to_char(buf, ch);
     }

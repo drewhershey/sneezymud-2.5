@@ -3,7 +3,7 @@
  *  Usage: Combat system and messages.                                     *
  *  Copyright (C) 1990, 1991 - see 'license.doc' for complete information. *
  ************************************************************************* */
-#define _POSIX_C_SOURCE 200809L
+#define POSIX_C_SOURCE 200809L
 
 #include <assert.h>
 #include <features.h>
@@ -340,7 +340,7 @@ void make_corpse(struct char_data* ch) {
   struct obj_data* money;
   char buf[MAX_INPUT_LENGTH];
   int i;
-  int ADeadBody = FALSE;
+  int a_dead_body = FALSE;
 
   struct obj_data* create_money(int amount);
 
@@ -372,7 +372,7 @@ void make_corpse(struct char_data* ch) {
       (IS_NPC(ch) ? ch->player.short_descr : GET_NAME(ch)));
     corpse->short_description = strdup(buf);
 
-    ADeadBody = TRUE;
+    a_dead_body = TRUE;
 
   } else if (IsUndead(ch)) {
     corpse->name = strdup("dust pile");
@@ -391,7 +391,7 @@ void make_corpse(struct char_data* ch) {
   corpse->obj_flags.wear_flags = ITEM_TAKE;
   corpse->obj_flags.value[0] = 0; /* You can't store stuff in a corpse */
   corpse->obj_flags.volume = corpse_volume[GET_RACE(ch)];
-  if (ADeadBody) {
+  if (a_dead_body) {
     corpse->obj_flags.weight = GET_WEIGHT(ch) + IS_CARRYING_W(ch);
   } else {
     corpse->obj_flags.weight = 1 + IS_CARRYING_W(ch);
@@ -516,7 +516,7 @@ void raw_kill(struct char_data* ch) {
   extract_char(ch);
 }
 
-static void DeleteHatreds(struct char_data* ch) {
+static void delete_hatreds(struct char_data* ch) {
   struct char_data* i;
 
   for (i = character_list; i; i = i->next) {
@@ -526,7 +526,7 @@ static void DeleteHatreds(struct char_data* ch) {
   }
 }
 
-static void DeleteFears(struct char_data* ch) {
+static void delete_fears(struct char_data* ch) {
   struct char_data* i;
 
   for (i = character_list; i; i = i->next) {
@@ -572,8 +572,8 @@ void die(struct char_data* ch) {
    */
   ch->player.talks[2] = FALSE; /* char is dead */
 
-  DeleteHatreds(ch);
-  DeleteFears(ch);
+  delete_hatreds(ch);
+  delete_fears(ch);
   raw_kill(ch);
 }
 
@@ -784,7 +784,7 @@ void dam_message(int dam, struct char_data* ch, struct char_data* victim,
   act(buf, FALSE, ch, wield, victim, TO_VICT);
 }
 
-int DamCheckDeny(struct char_data* ch, struct char_data* victim, int type) {
+int dam_check_deny(struct char_data* ch, struct char_data* victim, int type) {
   struct room_data* rp;
   char buf[MAX_INPUT_LENGTH];
 
@@ -886,7 +886,7 @@ int DoDamage(struct char_data* ch, struct char_data* v, int dam, int type) {
   return (FALSE);
 }
 
-static int BrittleCheck(struct char_data* ch, int dam) {
+static int brittle_check(struct char_data* ch, int dam) {
   char buf[200];
   struct obj_data* obj;
 
@@ -919,7 +919,7 @@ int DamageMessages(struct char_data* ch, struct char_data* v, int dam,
   if ((attacktype >= TYPE_HIT) && (attacktype <= TYPE_SMITE)) {
     dam_message(dam, ch, v, attacktype);
     if (ch->equipment[WIELD]) {
-      BrittleCheck(ch, dam);
+      brittle_check(ch, dam);
     }
   } else {
     for (i = 0; i < MAX_MESSAGES; i++) {
@@ -1108,7 +1108,7 @@ int DamageEpilog(struct char_data* ch, struct char_data* victim) {
 
 int MissileDamage(struct char_data* ch, struct char_data* victim, int dam,
   int attacktype) {
-  if (DamCheckDeny(ch, victim, attacktype)) {
+  if (dam_check_deny(ch, victim, attacktype)) {
     return (FALSE);
   }
 
@@ -1137,7 +1137,7 @@ int MissileDamage(struct char_data* ch, struct char_data* victim, int dam,
 
 int damage(struct char_data* ch, struct char_data* victim, int damage,
   int weaponType) {
-  if (DamCheckDeny(ch, victim, weaponType)) {
+  if (dam_check_deny(ch, victim, weaponType)) {
     return (FALSE);
   }
 
@@ -1165,7 +1165,7 @@ int damage(struct char_data* ch, struct char_data* victim, int damage,
   return (FALSE); /* not dead */
 }
 
-static int Getw_type(struct obj_data* wielded) {
+static int getw_type(struct obj_data* wielded) {
   int w_type;
 
   switch (wielded->obj_flags.value[3]) {
@@ -1213,13 +1213,13 @@ static int Getw_type(struct obj_data* wielded) {
   return (w_type);
 }
 
-static int GetWeaponType(struct char_data* ch, struct obj_data** wielded) {
+static int get_weapon_type(struct char_data* ch, struct obj_data** wielded) {
   int w_type;
 
   if (ch->equipment[WIELD] &&
       (ch->equipment[WIELD]->obj_flags.type_flag == ITEM_WEAPON)) {
     *wielded = ch->equipment[WIELD];
-    w_type = Getw_type(*wielded);
+    w_type = getw_type(*wielded);
 
   } else {
     if (IS_NPC(ch) && (ch->specials.attack_type >= TYPE_HIT)) {
@@ -1233,7 +1233,7 @@ static int GetWeaponType(struct char_data* ch, struct obj_data** wielded) {
   return (w_type);
 }
 
-static int HitCheckDeny(struct char_data* ch, struct char_data* victim,
+static int hit_check_deny(struct char_data* ch, struct char_data* victim,
   int type) {
   struct room_data* rp;
   char buf[256];
@@ -1375,7 +1375,7 @@ int HitOrMiss(struct char_data* ch, struct char_data* victim, int calc_thaco) {
   return (TRUE);
 }
 
-int MissVictim(struct char_data* ch, struct char_data* v, int type, int w_type,
+int miss_victim(struct char_data* ch, struct char_data* v, int type, int w_type,
   int (*dam_func)(struct char_data*, struct char_data*, int, int)) {
   if (type <= 0) {
     type = w_type;
@@ -1383,7 +1383,7 @@ int MissVictim(struct char_data* ch, struct char_data* v, int type, int w_type,
   return (*dam_func)(ch, v, 0, w_type);
 }
 
-int GetWeaponDam(struct char_data* ch, struct char_data* v,
+int get_weapon_dam(struct char_data* ch, struct char_data* v,
   struct obj_data* wielded) {
   int dam;
   struct obj_data* obj;
@@ -1428,7 +1428,7 @@ int GetWeaponDam(struct char_data* ch, struct char_data* v,
   return (dam);
 }
 
-static int MonkDodge(struct char_data* ch, struct char_data* v, int* dam) {
+static int monk_dodge(struct char_data* ch, struct char_data* v, int* dam) {
   if (number(1, 20000) <
       v->skills[SKILL_DODGE].learned * GET_LEVEL(ch, MONK_LEVEL_IND)) {
     *dam = 0;
@@ -1442,7 +1442,7 @@ static int MonkDodge(struct char_data* ch, struct char_data* v, int* dam) {
   return (0);
 }
 
-static int WeaponSpell(struct char_data* c, struct char_data* v, int type) {
+static int weapon_spell(struct char_data* c, struct char_data* v, int type) {
   int j;
   int num;
 
@@ -1493,7 +1493,7 @@ static const signed char backstab_mult[ABS_MAX_LVL] = {
   5, 5, 5, 5, 5, 5, 5, 5, 5, 5  /* 70 */
 };
 
-int HitVictim(struct char_data* ch, struct char_data* v, int dam, int type,
+int hit_victim(struct char_data* ch, struct char_data* v, int dam, int type,
   int w_type, int (*dam_func)(struct char_data*, struct char_data*, int, int)) {
   int dead;
 
@@ -1515,7 +1515,7 @@ int HitVictim(struct char_data* ch, struct char_data* v, int dam, int type,
       if (number(1, 101) <= v->skills[SKILL_DODGE].learned) {
         dam -= number(1, 3);
         if (HasClass(v, CLASS_MONK)) {
-          MonkDodge(ch, v, &dam);
+          monk_dodge(ch, v, &dam);
         }
       }
     }
@@ -1528,12 +1528,12 @@ int HitVictim(struct char_data* ch, struct char_data* v, int dam, int type,
    */
 
   if (!dead) {
-    WeaponSpell(ch, v, w_type);
+    weapon_spell(ch, v, w_type);
   }
   return dead;
 }
 
-int GetFormType(struct char_data* ch) {
+int get_form_type(struct char_data* ch) {
   int num;
 
   num = number(1, 100);
@@ -1627,7 +1627,7 @@ void root_hit(struct char_data* ch, struct char_data* victim, int type,
     }
   }
 
-  if (HitCheckDeny(ch, victim, type)) {
+  if (hit_check_deny(ch, victim, type)) {
     return;
   }
 
@@ -1637,21 +1637,21 @@ void root_hit(struct char_data* ch, struct char_data* victim, int type,
 
   setKillerFlag(ch, victim);
 
-  w_type = GetWeaponType(ch, &wielded);
+  w_type = get_weapon_type(ch, &wielded);
   if (w_type == TYPE_HIT) {
-    w_type = GetFormType(ch); /* races have different types of attack */
+    w_type = get_form_type(ch); /* races have different types of attack */
   }
 
   thaco = CalcThaco(ch);
 
   if (HitOrMiss(ch, victim, thaco)) {
-    if ((dam = GetWeaponDam(ch, victim, wielded)) > 0) {
-      HitVictim(ch, victim, dam, type, w_type, dam_func);
+    if ((dam = get_weapon_dam(ch, victim, wielded)) > 0) {
+      hit_victim(ch, victim, dam, type, w_type, dam_func);
     } else {
-      MissVictim(ch, victim, type, w_type, dam_func);
+      miss_victim(ch, victim, type, w_type, dam_func);
     }
   } else {
-    MissVictim(ch, victim, type, w_type, dam_func);
+    miss_victim(ch, victim, type, w_type, dam_func);
   }
 }
 
@@ -1659,7 +1659,7 @@ void hit(struct char_data* ch, struct char_data* victim, int type) {
   root_hit(ch, victim, type, damage);
 }
 
-static void DevelopHatred(struct char_data* ch, struct char_data* v) {
+static void develop_hatred(struct char_data* ch, struct char_data* v) {
   int diff;
   int patience;
   int var;
@@ -1712,7 +1712,7 @@ void perform_violence(int pulse) {
     } else {
       if (IS_NPC(ch)) {
         struct char_data* rec;
-        DevelopHatred(ch, ch->specials.fighting);
+        develop_hatred(ch, ch->specials.fighting);
         rec = ch->specials.fighting;
         while (rec->master) {
           AddHated(ch, rec->master);
@@ -2180,7 +2180,7 @@ struct char_data* FindAnyVictim(struct char_data* ch) {
   return (0);
 }
 
-int BreakLifeSaverObj(struct char_data* ch) {
+int break_life_saver_obj(struct char_data* ch) {
   int found = FALSE;
   int i;
   int j;
@@ -2216,7 +2216,7 @@ int BreakLifeSaverObj(struct char_data* ch) {
 }
 
 int PreProcDam(struct char_data* ch, int type, int dam) {
-  unsigned Our_Bit;
+  unsigned our_bit;
 
   /*
     long, intricate list, with the various bits and the various spells and
@@ -2228,48 +2228,48 @@ int PreProcDam(struct char_data* ch, int type, int dam) {
     case SPELL_BURNING_HANDS:
     case SPELL_FLAMESTRIKE:
     case SPELL_FIRE_BREATH:
-      Our_Bit = IMM_FIRE;
+      our_bit = IMM_FIRE;
       break;
 
     case SPELL_SHOCKING_GRASP:
     case SPELL_LIGHTNING_BOLT:
     case SPELL_CALL_LIGHTNING:
     case SPELL_LIGHTNING_BREATH:
-      Our_Bit = IMM_ELEC;
+      our_bit = IMM_ELEC;
       break;
     case SPELL_CHILL_TOUCH:
     case SPELL_CONE_OF_COLD:
     case SPELL_ICE_STORM:
     case SPELL_FROST_BREATH:
-      Our_Bit = IMM_COLD;
+      our_bit = IMM_COLD;
       break;
 
     case SPELL_MAGIC_MISSILE:
     case SPELL_COLOUR_SPRAY:
     case SPELL_GAS_BREATH:
     case SPELL_METEOR_SWARM:
-      Our_Bit = IMM_ENERGY;
+      our_bit = IMM_ENERGY;
       break;
 
     case SPELL_ENERGY_DRAIN:
-      Our_Bit = IMM_DRAIN;
+      our_bit = IMM_DRAIN;
       break;
 
     case SPELL_ACID_BREATH:
     case SPELL_ACID_BLAST:
-      Our_Bit = IMM_ACID;
+      our_bit = IMM_ACID;
       break;
     case SKILL_BACKSTAB:
     case TYPE_PIERCE:
     case TYPE_STING:
     case TYPE_STAB:
-      Our_Bit = IMM_PIERCE;
+      our_bit = IMM_PIERCE;
       break;
     case TYPE_SLASH:
     case TYPE_WHIP:
     case TYPE_CLEAVE:
     case TYPE_CLAW:
-      Our_Bit = IMM_SLASH;
+      our_bit = IMM_SLASH;
       break;
     case TYPE_BLUDGEON:
     case TYPE_HIT:
@@ -2278,25 +2278,25 @@ int PreProcDam(struct char_data* ch, int type, int dam) {
     case TYPE_BITE:
     case TYPE_SMASH:
     case TYPE_SMITE:
-      Our_Bit = IMM_BLUNT;
+      our_bit = IMM_BLUNT;
       break;
     case SPELL_POISON:
-      Our_Bit = IMM_POISON;
+      our_bit = IMM_POISON;
       break;
     default:
       return (dam);
       break;
   }
 
-  if (IS_SET(ch->susc, Our_Bit)) {
+  if (IS_SET(ch->susc, our_bit)) {
     dam <<= 1;
   }
 
-  if (IS_SET(ch->immune, Our_Bit)) {
+  if (IS_SET(ch->immune, our_bit)) {
     dam >>= 1;
   }
 
-  if (IS_SET(ch->M_immune, Our_Bit)) {
+  if (IS_SET(ch->M_immune, our_bit)) {
     dam = 0;
   }
 
@@ -2304,28 +2304,28 @@ int PreProcDam(struct char_data* ch, int type, int dam) {
 }
 
 int WeaponCheck(struct char_data* ch, struct char_data* v, int type, int dam) {
-  int Immunity;
+  int immunity;
   int total;
   int j;
 
-  Immunity = -1;
+  immunity = -1;
   if (IS_SET(v->M_immune, IMM_NONMAG)) {
-    Immunity = 0;
+    immunity = 0;
   }
   if (IS_SET(v->M_immune, IMM_PLUS1)) {
-    Immunity = 1;
+    immunity = 1;
   }
   if (IS_SET(v->M_immune, IMM_PLUS2)) {
-    Immunity = 2;
+    immunity = 2;
   }
   if (IS_SET(v->M_immune, IMM_PLUS3)) {
-    Immunity = 3;
+    immunity = 3;
   }
   if (IS_SET(v->M_immune, IMM_PLUS4)) {
-    Immunity = 4;
+    immunity = 4;
   }
 
-  if (Immunity < 0) {
+  if (immunity < 0) {
     return (dam);
   }
 
@@ -2333,7 +2333,7 @@ int WeaponCheck(struct char_data* ch, struct char_data* v, int type, int dam) {
     return (dam);
   }
   if (type == TYPE_HIT || IS_NPC(ch)) {
-    if (IS_NPC(ch) && (GetMaxLevel(ch) > (3 * Immunity) + 1)) {
+    if (IS_NPC(ch) && (GetMaxLevel(ch) > (3 * immunity) + 1)) {
       return (dam);
     }
     return (0);
@@ -2348,13 +2348,13 @@ int WeaponCheck(struct char_data* ch, struct char_data* v, int type, int dam) {
       total += ch->equipment[WIELD]->affected[j].modifier;
     }
   }
-  if (total > Immunity) {
+  if (total > immunity) {
     return (dam);
   }
   return (0);
 }
 
-int GetItemDamageType(int type) {
+int get_item_damage_type(int type) {
   switch (type) {
     case SPELL_FIREBALL:
     case SPELL_FLAMESTRIKE:

@@ -7,8 +7,8 @@
  *  Using *any* part of DikuMud without having read license.doc is         *
  *  violating our copyright.                                               *
  ************************************************************************* */
-#define _POSIX_C_SOURCE 200809L
-#define _GNU_SOURCE
+#define POSIX_C_SOURCE 200809L
+#define GNU_SOURCE
 
 #include <arpa/inet.h>
 #include <ctype.h>

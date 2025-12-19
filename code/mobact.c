@@ -77,7 +77,7 @@ void mobile_wander(struct char_data* ch) {
   }
 }
 
-void MobHunt(struct char_data* ch) {
+void mob_hunt(struct char_data* ch) {
   int res, k;
 
 #if NOTRACK
@@ -134,7 +134,7 @@ void MobHunt(struct char_data* ch) {
   }
 }
 
-void MobScavenge(struct char_data* ch) {
+void mob_scavenge(struct char_data* ch) {
   struct obj_data* best_obj = 0;
   struct obj_data* obj = 0;
   int max;
@@ -163,7 +163,7 @@ void MobScavenge(struct char_data* ch) {
 }
 
 /* check to see if a mob is a friend */
-static int MobFriend(struct char_data* ch, struct char_data* f) {
+static int mob_friend(struct char_data* ch, struct char_data* f) {
   if (SameRace(ch, f)) {
     if (IS_GOOD(ch)) {
       if (IS_GOOD(f)) {
@@ -181,7 +181,7 @@ static int MobFriend(struct char_data* ch, struct char_data* f) {
   return FALSE;
 }
 
-static int AssistFriend(struct char_data* ch) {
+static int assist_friend(struct char_data* ch) {
   struct char_data* damsel;
   struct char_data* targ;
   struct char_data* tmp_ch;
@@ -209,7 +209,7 @@ static int AssistFriend(struct char_data* ch) {
     next = tmp_ch->next_in_room;
     if (CAN_SEE(ch, tmp_ch)) {
       if (!IS_SET(ch->specials.act, ACT_WIMPY)) {
-        if (MobFriend(ch, tmp_ch)) {
+        if (mob_friend(ch, tmp_ch)) {
           if (tmp_ch->specials.fighting) {
             damsel = tmp_ch;
           }
@@ -275,14 +275,14 @@ void mobile_activity(struct char_data* ch) {
 
   if (AWAKE(ch) && (!ch->specials.fighting) && (!ch->desc) &&
       (!IS_SET(ch->specials.act, ACT_POLYSELF))) {
-    AssistFriend(ch);
+    assist_friend(ch);
 
     if (IS_SET(ch->specials.act, ACT_SCAVENGER)) {
-      MobScavenge(ch);
+      mob_scavenge(ch);
     } /* Scavenger */
 
     if (IS_SET(ch->specials.act, ACT_HUNTING)) {
-      MobHunt(ch);
+      mob_hunt(ch);
     } else if ((!IS_SET(ch->specials.act, ACT_SENTINEL))) {
       mobile_wander(ch);
     }

@@ -3,7 +3,7 @@
  *  Usage : Other commands.                                                *
  *  Copyright (C) 1990, 1991 - see 'license.doc' for complete information. *
  ************************************************************************* */
-#define _POSIX_C_SOURCE 200809L
+#define POSIX_C_SOURCE 200809L
 
 #include <ctype.h>
 #include <features.h>

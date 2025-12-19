@@ -39,7 +39,7 @@
 #define USE_MANA(ch, sn)           \
   MAX(spell_info[sn].min_usesmana, \
     100 /                          \
-      MAX(2, (2 + GET_LEVEL(ch, BestMagicClass(ch)) - SPELL_LEVEL(ch, sn))))
+      MAX(2, (2 + GET_LEVEL(ch, BestMagicClass(ch)) - spell_level(ch, sn))))
 
 struct spell_info_type spell_info[MAX_SPL_LIST];
 
@@ -227,7 +227,7 @@ const signed char saving_throws[8][5][ABS_MAX_LVL] = {
   },
 };
 
-static void ObjFromCorpse(struct obj_data* c) {
+static void obj_from_corpse(struct obj_data* c) {
   struct obj_data* jj;
   struct obj_data* next_thing;
 
@@ -257,7 +257,7 @@ static void ObjFromCorpse(struct obj_data* c) {
   extract_obj(c);
 }
 
-static int IsSingleClass(struct char_data* ch) {
+static int is_single_class(struct char_data* ch) {
   int i;
 
   for (i = 1; i <= 8; i *= 2) {
@@ -418,7 +418,7 @@ static const char* const spell_wear_off_soon_room_msg[] = {"", "", "", "", "",
   "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",
   "\n"};
 
-void SpellWearOffSoon(int s, struct char_data* ch) {
+void spell_wear_off_soon(int s, struct char_data* ch) {
   if (s > MAX_SKILLS + 10) {
     return;
   }
@@ -592,7 +592,7 @@ static void check_drowning(struct char_data* ch) {
   }
 }
 
-static void SpellWearOff(int s, struct char_data* ch) {
+static void spell_wear_off(int s, struct char_data* ch) {
   if (s > MAX_SKILLS + 10) {
     return;
   }
@@ -641,7 +641,7 @@ void affect_update(int pulse) {
         af->duration--;
 
         if (af->duration == 1) {
-          SpellWearOffSoon(af->type, i);
+          spell_wear_off_soon(af->type, i);
         }
       } else {
         /* It must be a spell */
@@ -650,7 +650,7 @@ void affect_update(int pulse) {
           if (!af->next || (af->next->type != af->type) ||
               (af->next->duration > 0)) {
             k = af->type;
-            SpellWearOff(k, i);
+            spell_wear_off(k, i);
             affect_remove(i, af);
           }
         } else if (af->type >= FIRST_BREATH_WEAPON &&
@@ -668,7 +668,7 @@ void affect_update(int pulse) {
     }
     if (!dead) {
       if (real_roomp(i->in_room) == real_roomp(3198)) {
-        if (IsSingleClass(i)) {
+        if (is_single_class(i)) {
           cost = 25 * GetMaxLevel(i);
         } else {
           cost = 50 * GetMaxLevel(i);
@@ -797,7 +797,7 @@ void affect_update(int pulse) {
             act("$p dissolves into a fertile soil.", TRUE,
               real_roomp(j->in_room)->people, j, 0, TO_CHAR);
           }
-          ObjFromCorpse(j);
+          obj_from_corpse(j);
         }
         /* FOOD */
         else if (GET_ITEM_TYPE(j) == ITEM_FOOD) {
@@ -1044,7 +1044,7 @@ int can_do_verbal(struct char_data* ch) {
           (!IS_SET(rp->room_flags, SILENCE)));
 }
 
-static int SPELL_LEVEL(struct char_data* ch, int sn) {
+static int spell_level(struct char_data* ch, int sn) {
   if (HasClass(ch, CLASS_ANTIPALADIN)) {
     return (spell_info[sn].min_level_anti);
   }
@@ -1201,7 +1201,7 @@ void do_cast(struct char_data* ch, char* argument, int cmd) {
       }
 
       if (IS_SET(spell_info[spl].targets, TAR_SINGLE)) {
-        if ((!IsSingleClass(ch)) || (IS_IMMORTAL(ch))) {
+        if ((!is_single_class(ch)) || (IS_IMMORTAL(ch))) {
           send_to_char("This spell is for single classes only.\n\r", ch);
           return;
         }

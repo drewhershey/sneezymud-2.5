@@ -2,7 +2,7 @@
  ***     written by Rasmussen (jelson@server.cs.jhu.edu)   ***
  ****   compliments of CircleMUD (circle.cs.jhu.edu 4000) ****
  ************************************************************/
-#define _POSIX_C_SOURCE 200809L
+#define POSIX_C_SOURCE 200809L
 #include <features.h>
 
 #include <assert.h>

@@ -824,7 +824,7 @@ void do_breath(struct char_data* ch, char* argument, int cmd) {
   WAIT_STATE(ch, PULSE_VIOLENCE * 2);
 }
 
-static int BowMissileDamage(struct char_data* ch, struct char_data* victim,
+static int bow_missile_damage(struct char_data* ch, struct char_data* victim,
   int olddam, int attacktype) {
   int dam;
   struct obj_data* bow;
@@ -858,8 +858,8 @@ static int BowMissileDamage(struct char_data* ch, struct char_data* victim,
   return (FALSE);
 }
 
-static void BowHit(struct char_data* ch, struct char_data* victim, int type) {
-  root_hit(ch, victim, type, BowMissileDamage);
+static void bow_hit(struct char_data* ch, struct char_data* victim, int type) {
+  root_hit(ch, victim, type, bow_missile_damage);
 }
 
 static void fire(struct char_data* ch, struct char_data* victim) {
@@ -875,7 +875,7 @@ static void fire(struct char_data* ch, struct char_data* victim) {
   }
   if (bow->obj_flags.value[3] >= 1) {
     bow->obj_flags.value[3]--;
-    BowHit(ch, victim, SPEC_BOW);
+    bow_hit(ch, victim, SPEC_BOW);
   } else {
     send_to_char("Your bow has no arrow. It twangs as you try to shoot it!\n\r",
       ch);
@@ -916,8 +916,8 @@ void do_fire(struct char_data* ch, char* argument, int cmd) {
   }
 }
 
-int GunMissileDamage(struct char_data* ch, struct char_data* victim, int olddam,
-  int attacktype) {
+int gun_missile_damage(struct char_data* ch, struct char_data* victim,
+  int olddam, int attacktype) {
   int dam;
   struct obj_data* gun;
 
@@ -963,9 +963,9 @@ int GunMissileDamage(struct char_data* ch, struct char_data* victim, int olddam,
   return (FALSE); /* not dead */
 }
 
-static void MissileHit(struct char_data* ch, struct char_data* victim,
+static void missile_hit(struct char_data* ch, struct char_data* victim,
   int type) {
-  root_hit(ch, victim, type, GunMissileDamage);
+  root_hit(ch, victim, type, gun_missile_damage);
 }
 
 static void shoot(struct char_data* ch, struct char_data* victim) {
@@ -988,7 +988,7 @@ static void shoot(struct char_data* ch, struct char_data* victim) {
      */
   if (gun->obj_flags.value[3] >= 1) {
     gun->obj_flags.value[3]--;
-    MissileHit(ch, victim, SPEC_SHOOT);
+    missile_hit(ch, victim, SPEC_SHOOT);
   } else {
     send_to_char("Click!  It seems to be empty.\n\r", ch);
     act("Click!  $n tries to fire an empty weapon.", FALSE, ch, 0, 0, TO_ROOM);

@@ -80,7 +80,7 @@ int top_of_objt = 0; /* top of object index table       */
 struct time_info_data time_info;  /* the infomation about the time   */
 struct weather_data weather_info; /* the infomation about the weather */
 
-static void PrintLimitedItems(void) {
+static void print_limited_items(void) {
   int i;
   char buf[200];
 
@@ -170,7 +170,7 @@ void boot_db(void) {
   }
 
 #if LIMITED_ITEMS
-  PrintLimitedItems();
+  print_limited_items();
 #endif
 
   for (i = 0; i <= top_of_zone_table; i++) {
@@ -808,7 +808,7 @@ void boot_zones(void) {
  *  procedures for resetting, both play-time and boot-time	 	 *
  *********************************************************************** */
 
-static void SetRacialStuff(struct char_data* mob) {
+static void set_racial_stuff(struct char_data* mob) {
   switch (GET_RACE(mob)) {
     case RACE_BIRD:
       SET_BIT(mob->specials.affected_by, AFF_FLYING);
@@ -1247,7 +1247,7 @@ struct char_data* read_mobile(int nr, int type) {
     vlog(buf);
   }
 
-  SetRacialStuff(mob);
+  set_racial_stuff(mob);
 
   /* set up distributed movement system */
 
@@ -2151,7 +2151,7 @@ int file_to_string(char* name, char* buf) {
   return (0);
 }
 
-void ClearDeadBit(struct char_data* ch) {
+void clear_dead_bit(struct char_data* ch) {
   FILE* fl;
   struct char_file_u st;
 
@@ -2332,7 +2332,7 @@ void reset_char(struct char_data* ch) {
   /*
     racial stuff
     */
-  SetRacialStuff(ch);
+  set_racial_stuff(ch);
 
   /*
     update the affects on the character.
@@ -2358,7 +2358,7 @@ void reset_char(struct char_data* ch) {
     clear out the 'dead' bit on characters
   */
   if (ch->desc) {
-    ClearDeadBit(ch);
+    clear_dead_bit(ch);
   }
 }
 

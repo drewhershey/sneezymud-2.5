@@ -3,7 +3,7 @@
  *  Usage : Commands mainly using objects.                                 *
  *  Copyright (C) 1990, 1991 - see 'license.doc' for complete information. *
  ************************************************************************* */
-#define _POSIX_C_SOURCE 200809L
+#define POSIX_C_SOURCE 200809L
 
 #include <ctype.h>
 #include <features.h>
@@ -577,7 +577,7 @@ static void perform_wear(struct char_data* ch, struct obj_data* obj_object,
   }
 }
 
-int IsRestricted(int Mask, int Class) {
+int is_restricted(int Mask, int Class) {
   int i;
 
   if (IS_SET(Class, CLASS_MONK)) {
@@ -608,7 +608,7 @@ int IsRestricted(int Mask, int Class) {
   return (FALSE);
 }
 
-static int GetItemClassRestrictions(struct obj_data* obj) {
+static int get_item_class_restrictions(struct obj_data* obj) {
   int total = 0;
 
   if (IS_SET(obj->obj_flags.extra_flags, ITEM_ANTI_MAGE)) {
@@ -641,11 +641,11 @@ static int GetItemClassRestrictions(struct obj_data* obj) {
 
 void wear(struct char_data* ch, struct obj_data* obj_object, int keyword) {
   char buffer[MAX_STRING_LENGTH];
-  int BitMask;
+  int bit_mask;
 
   if (!IS_IMMORTAL(ch)) {
-    BitMask = GetItemClassRestrictions(obj_object);
-    if (IsRestricted(BitMask, ch->player.class) &&
+    bit_mask = get_item_class_restrictions(obj_object);
+    if (is_restricted(bit_mask, ch->player.class) &&
         (!IS_NPC(ch) || IS_SET(ch->specials.act, ACT_POLYSELF))) {
       send_to_char("You are forbidden to do that.\n\r", ch);
       return;
@@ -1186,11 +1186,11 @@ static struct obj_data* get_object_in_equip_vis(struct char_data* ch, char* arg,
 
 void do_remove(struct char_data* ch, char* argument, int cmd) {
   char arg1[128];
-  char* T;
-  char* P;
+  char* t;
+  char* p;
   char buffer[256];
-  int Rem_List[20];
-  int Num_Equip;
+  int rem_list[20];
+  int num_equip;
   struct obj_data* obj_object;
   int j;
 
@@ -1226,25 +1226,25 @@ void do_remove(struct char_data* ch, char* argument, int cmd) {
 
       /* Make a list of item numbers for stuff to remove */
 
-      for (Num_Equip = j = 0; j < MAX_WEAR; j++) {
+      for (num_equip = j = 0; j < MAX_WEAR; j++) {
         if (CAN_CARRY_N(ch) > IS_CARRYING_N(ch)) {
           if (ch->equipment[j]) {
-            Rem_List[Num_Equip++] = j;
+            rem_list[num_equip++] = j;
           }
         }
       }
 
-      T = arg1;
+      t = arg1;
 
-      while (isdigit(*T) && (*T != '\0')) {
-        P = T;
-        if (strchr(T, ',')) {
-          P = strchr(T, ',');
-          *P = '\0';
+      while (isdigit(*t) && (*t != '\0')) {
+        p = t;
+        if (strchr(t, ',')) {
+          p = strchr(t, ',');
+          *p = '\0';
         }
-        if (atoi(T) > 0 && atoi(T) <= Num_Equip) {
+        if (atoi(t) > 0 && atoi(t) <= num_equip) {
           if (CAN_CARRY_N(ch) > IS_CARRYING_N(ch)) {
-            j = Rem_List[atoi(T) - 1];
+            j = rem_list[atoi(t) - 1];
             if (ch->equipment[j]) {
               if ((obj_object = unequip_char(ch, j)) != NULL) {
                 obj_to_char(obj_object, ch);
@@ -1264,13 +1264,13 @@ void do_remove(struct char_data* ch, char* argument, int cmd) {
             j = MAX_WEAR;
           }
         } else {
-          sprintf(buffer, "You dont seem to have the %s\n\r", T);
+          sprintf(buffer, "You dont seem to have the %s\n\r", t);
           send_to_char(buffer, ch);
         }
-        if (T != P) {
-          T = P + 1;
+        if (t != p) {
+          t = p + 1;
         } else {
-          *T = '\0';
+          *t = '\0';
         }
       }
     } else {

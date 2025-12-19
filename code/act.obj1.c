@@ -60,7 +60,7 @@ static void get(struct char_data* ch, struct obj_data* obj_object,
   }
 }
 
-static int CheckForInsideTrap(struct char_data* ch, struct obj_data* i) {
+static int check_for_inside_trap(struct char_data* ch, struct obj_data* i) {
   struct obj_data* t;
 
   for (t = i->contains; t; t = t->next_content) {
@@ -340,7 +340,7 @@ void do_get(struct char_data* ch, char* argument, int cmd) {
             obj_object = get_obj_in_list_vis(ch, arg1, sub_object->contains);
             if (obj_object) {
               /* check for trap (jdb - 11/9) */
-              if (CheckForInsideTrap(ch, sub_object)) {
+              if (check_for_inside_trap(ch, sub_object)) {
                 return;
               }
               if ((IS_CARRYING_N(ch) + obj_object->obj_flags.volume) <

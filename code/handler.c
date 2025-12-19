@@ -3,7 +3,7 @@
  *  Usage: Various routines for moving about objects/players               *
  *  Copyright (C) 1990, 1991 - see 'license.doc' for complete information. *
  ************************************************************************* */
-#define _POSIX_C_SOURCE 200809L
+#define POSIX_C_SOURCE 200809L
 #include <features.h>
 
 #include <assert.h>
@@ -739,7 +739,7 @@ int apply_ac(struct char_data* ch, int eq_pos) {
   return 0;
 }
 
-static int GiveMinStrToWield(struct obj_data* obj, struct char_data* ch) {
+static int give_min_str_to_wield(struct obj_data* obj, struct char_data* ch) {
   int str = 0;
 
   GET_STR(ch) = 16; /* nice, semi-reasonable start */
@@ -826,7 +826,7 @@ void equip_char(struct char_data* ch, struct obj_data* obj, int pos) {
   if (GET_ITEM_TYPE(obj) == ITEM_WEAPON) {
     /* some nifty manuevering for strength */
     if (IS_NPC(ch) && !IS_SET(ch->specials.act, ACT_POLYSELF)) {
-      GiveMinStrToWield(obj, ch);
+      give_min_str_to_wield(obj, ch);
     }
   }
 

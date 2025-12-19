@@ -219,7 +219,7 @@ int BestMagicClass(struct char_data* ch) {
   return (1);
 }
 
-static int GetALevel(struct char_data* ch, int which) {
+static int get_a_level(struct char_data* ch, int which) {
   signed char ind[4];
   signed char j;
   signed char k;

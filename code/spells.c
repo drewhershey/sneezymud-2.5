@@ -3,7 +3,7 @@
  *  Usage : Procedures handling all offensive magic.                       *
  *  Copyright (C) 1990, 1991 - see 'license.doc' for complete information. *
  ************************************************************************* */
-#define _POSIX_C_SOURCE 200809L
+#define POSIX_C_SOURCE 200809L
 #include <features.h>
 
 #include <assert.h>
@@ -1392,7 +1392,7 @@ void cast_create_golem(signed char level, struct char_data* ch, char* arg,
   }
 }
 
-const struct PolyType PolyList[40] = {{"goblin", 4, 201}, {"parrot", 4, 9001},
+const struct PolyType poly_list[40] = {{"goblin", 4, 201}, {"parrot", 4, 9001},
   {"frog", 4, 215}, {"gnoll", 6, 211}, {"parrot", 6, 9010}, {"lizard", 6, 224},
   {"ogre", 8, 4113}, {"parrot", 8, 9011}, {"wolf", 8, 3094}, {"spider", 9, 227},
   {"beast", 9, 242}, {"minotaur", 9, 247}, {"snake", 10, 249},
@@ -2564,10 +2564,10 @@ static void spell_calm(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
   assert(ch && victim);
 
-  const char isAggressive = IS_SET(victim->specials.act, ACT_AGGRESSIVE);
+  const char is_aggressive = IS_SET(victim->specials.act, ACT_AGGRESSIVE);
 
-  if (IS_PC(victim) || !isAggressive || !saves_spell(victim, SAVING_PARA)) {
-    if (isAggressive) {
+  if (IS_PC(victim) || !is_aggressive || !saves_spell(victim, SAVING_PARA)) {
+    if (is_aggressive) {
       REMOVE_BIT(victim->specials.act, ACT_AGGRESSIVE);
     }
 
@@ -4413,7 +4413,7 @@ void cast_locate_object(signed char level, struct char_data* ch, char* arg,
   }
 }
 
-static char ImpSaveSpell(struct char_data* ch, short int save_type, int mod) {
+static char imp_save_spell(struct char_data* ch, short int save_type, int mod) {
   int save;
 
   /* Positive mod is better for save */
@@ -4450,7 +4450,7 @@ static void spell_poison(signed char level, struct char_data* ch,
     }
     if (IS_NPC(ch)) {
       if (!IS_SET(ch->specials.act, ACT_DEADLY)) {
-        if (!ImpSaveSpell(victim, SAVING_PARA, 0)) {
+        if (!imp_save_spell(victim, SAVING_PARA, 0)) {
           af.type = SPELL_POISON;
           af.duration = level * 2;
           af.modifier = -2;
@@ -4467,7 +4467,7 @@ static void spell_poison(signed char level, struct char_data* ch,
           return;
         }
       } else {
-        if (!ImpSaveSpell(victim, SAVING_PARA, 0)) {
+        if (!imp_save_spell(victim, SAVING_PARA, 0)) {
           act("Deadly poison fills your veins.", TRUE, ch, 0, 0, TO_CHAR);
           damage(victim, victim, MAX(100, GET_HIT(victim) * 2), SPELL_POISON);
         } else {
@@ -4475,7 +4475,7 @@ static void spell_poison(signed char level, struct char_data* ch,
         }
       }
     } else {
-      if (!ImpSaveSpell(victim, SAVING_PARA, 0)) {
+      if (!imp_save_spell(victim, SAVING_PARA, 0)) {
         af.type = SPELL_POISON;
         af.duration = level * 2;
         af.modifier = -2;
@@ -4928,7 +4928,7 @@ void cast_fireshield(signed char level, struct char_data* ch, char* arg,
   }
 }
 
-static void FailSleep(struct char_data* victim, struct char_data* ch) {
+static void fail_sleep(struct char_data* victim, struct char_data* ch) {
   send_to_char("You feel sleepy for a moment, but then you recover\n\r",
     victim);
   if (IS_NPC(victim)) {
@@ -4945,21 +4945,21 @@ static void spell_sleep(signed char level, struct char_data* ch,
   assert(victim);
 
   if (IsImmune(victim, IMM_SLEEP)) {
-    FailSleep(victim, ch);
+    fail_sleep(victim, ch);
     return;
   }
   if (IsResist(victim, IMM_SLEEP)) {
     if (saves_spell(victim, SAVING_SPELL)) {
-      FailSleep(victim, ch);
+      fail_sleep(victim, ch);
       return;
     }
     if (saves_spell(victim, SAVING_SPELL)) {
-      FailSleep(victim, ch);
+      fail_sleep(victim, ch);
       return;
     }
   } else if (!IsSusc(victim, IMM_SLEEP)) {
     if (saves_spell(victim, SAVING_SPELL)) {
-      FailSleep(victim, ch);
+      fail_sleep(victim, ch);
       return;
     }
   }
@@ -5208,7 +5208,7 @@ void cast_word_of_recall(signed char level, struct char_data* ch, char* arg,
   }
 }
 
-static void RawSummon(struct char_data* v, struct char_data* c) {
+static void raw_summon(struct char_data* v, struct char_data* c) {
   short int target;
   struct char_data* tmp;
   struct obj_data* o;
@@ -5303,7 +5303,7 @@ void spell_summon(signed char level, struct char_data* ch,
       return;
     }
   }
-  RawSummon(victim, ch);
+  raw_summon(victim, ch);
 }
 
 void cast_summon(signed char level, struct char_data* ch, char* arg, int type,
@@ -5318,7 +5318,7 @@ void cast_summon(signed char level, struct char_data* ch, char* arg, int type,
   }
 }
 
-static void FailCharm(struct char_data* victim, struct char_data* ch) {
+static void fail_charm(struct char_data* victim, struct char_data* ch) {
   if (IS_NPC(victim)) {
     if (!victim->specials.fighting) {
       set_fighting(victim, ch);
@@ -5351,28 +5351,28 @@ static void spell_charm_person(signed char level, struct char_data* ch,
     }
 
     if (GetMaxLevel(victim) > GetMaxLevel(ch) + 3) {
-      FailCharm(victim, ch);
+      fail_charm(victim, ch);
       return;
     }
 
     if (IsImmune(victim, IMM_CHARM) || (WeaponImmune(victim))) {
-      FailCharm(victim, ch);
+      fail_charm(victim, ch);
       return;
     }
     if (IsResist(victim, IMM_CHARM)) {
       if (saves_spell(victim, SAVING_PARA)) {
-        FailCharm(victim, ch);
+        fail_charm(victim, ch);
         return;
       }
 
       if (saves_spell(victim, SAVING_PARA)) {
-        FailCharm(victim, ch);
+        fail_charm(victim, ch);
         return;
       }
     } else {
       if (!IsSusc(victim, IMM_CHARM)) {
         if (saves_spell(victim, SAVING_PARA)) {
-          FailCharm(victim, ch);
+          fail_charm(victim, ch);
           return;
         }
       }
@@ -5439,7 +5439,7 @@ static void spell_charm_monster(signed char level, struct char_data* ch,
   }
 
   if (GetMaxLevel(victim) > GetMaxLevel(ch) + 3) {
-    FailCharm(victim, ch);
+    fail_charm(victim, ch);
     return;
   }
 
@@ -5449,23 +5449,23 @@ static void spell_charm_monster(signed char level, struct char_data* ch,
       return;
     }
     if (IsImmune(victim, IMM_CHARM) || (WeaponImmune(victim))) {
-      FailCharm(victim, ch);
+      fail_charm(victim, ch);
       return;
     }
     if (IsResist(victim, IMM_CHARM)) {
       if (saves_spell(victim, SAVING_PARA)) {
-        FailCharm(victim, ch);
+        fail_charm(victim, ch);
         return;
       }
 
       if (saves_spell(victim, SAVING_PARA)) {
-        FailCharm(victim, ch);
+        fail_charm(victim, ch);
         return;
       }
     } else {
       if (!IsSusc(victim, IMM_CHARM)) {
         if (saves_spell(victim, SAVING_PARA)) {
-          FailCharm(victim, ch);
+          fail_charm(victim, ch);
           return;
         }
       }
@@ -5536,7 +5536,7 @@ static void spell_control_undead(signed char level, struct char_data* ch,
   }
 
   if (GetMaxLevel(victim) > GetMaxLevel(ch) + 3) {
-    FailCharm(victim, ch);
+    fail_charm(victim, ch);
     return;
   }
 
@@ -5546,23 +5546,23 @@ static void spell_control_undead(signed char level, struct char_data* ch,
       return;
     }
     if (IsImmune(victim, IMM_CHARM) || (WeaponImmune(victim))) {
-      FailCharm(victim, ch);
+      fail_charm(victim, ch);
       return;
     }
     if (IsResist(victim, IMM_CHARM)) {
       if (saves_spell(victim, SAVING_PARA)) {
-        FailCharm(victim, ch);
+        fail_charm(victim, ch);
         return;
       }
 
       if (saves_spell(victim, SAVING_PARA)) {
-        FailCharm(victim, ch);
+        fail_charm(victim, ch);
         return;
       }
     } else {
       if (!IsSusc(victim, IMM_CHARM)) {
         if (saves_spell(victim, SAVING_PARA)) {
-          FailCharm(victim, ch);
+          fail_charm(victim, ch);
           return;
         }
       }
@@ -7088,7 +7088,7 @@ void cast_poly_self(signed char level, struct char_data* ch, char* arg,
   int type, struct char_data* tar_ch, struct obj_data* tar_obj) {
   char buffer[40];
   int mobn;
-  int X = LAST_POLY_MOB;
+  int x = LAST_POLY_MOB;
   int found = FALSE;
   struct char_data* mob;
 
@@ -7102,16 +7102,16 @@ void cast_poly_self(signed char level, struct char_data* ch, char* arg,
   switch (type) {
     case SPELL_TYPE_SPELL: {
       while (!found) {
-        if (PolyList[X].level > level) {
-          X--;
+        if (poly_list[x].level > level) {
+          x--;
         } else {
-          if (!str_cmp(PolyList[X].name, buffer)) {
-            mobn = PolyList[X].number;
+          if (!str_cmp(poly_list[x].name, buffer)) {
+            mobn = poly_list[x].number;
             found = TRUE;
           } else {
-            X--;
+            x--;
           }
-          if (X < 0) {
+          if (x < 0) {
             break;
           }
         }
@@ -7439,7 +7439,7 @@ void cast_cacaodemon(signed char level, struct char_data* ch, char* arg,
   }
 }
 
-static void spell_Create_Monster(signed char level, struct char_data* ch,
+static void spell_create_monster(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
   struct affected_type af;
   struct char_data* mob;
@@ -7522,7 +7522,7 @@ void cast_mon_sum1(signed char level, struct char_data* ch, char* arg, int type,
     case SPELL_TYPE_SCROLL:
     case SPELL_TYPE_WAND:
     case SPELL_TYPE_STAFF:
-      spell_Create_Monster(5, ch, 0, 0);
+      spell_create_monster(5, ch, 0, 0);
       break;
     default:
       vlog("Serious screw-up in monster_summoning_1");
@@ -7537,7 +7537,7 @@ void cast_mon_sum2(signed char level, struct char_data* ch, char* arg, int type,
     case SPELL_TYPE_SCROLL:
     case SPELL_TYPE_WAND:
     case SPELL_TYPE_STAFF:
-      spell_Create_Monster(7, ch, 0, 0);
+      spell_create_monster(7, ch, 0, 0);
       break;
     default:
       vlog("Serious screw-up in monster_summoning_1");
@@ -7552,7 +7552,7 @@ void cast_mon_sum3(signed char level, struct char_data* ch, char* arg, int type,
     case SPELL_TYPE_SCROLL:
     case SPELL_TYPE_WAND:
     case SPELL_TYPE_STAFF:
-      spell_Create_Monster(9, ch, 0, 0);
+      spell_create_monster(9, ch, 0, 0);
       break;
     default:
       vlog("Serious screw-up in monster_summoning_1");
@@ -7567,7 +7567,7 @@ void cast_mon_sum4(signed char level, struct char_data* ch, char* arg, int type,
     case SPELL_TYPE_SCROLL:
     case SPELL_TYPE_WAND:
     case SPELL_TYPE_STAFF:
-      spell_Create_Monster(11, ch, 0, 0);
+      spell_create_monster(11, ch, 0, 0);
       break;
     default:
       vlog("Serious screw-up in monster_summoning_1");
@@ -7582,7 +7582,7 @@ void cast_mon_sum5(signed char level, struct char_data* ch, char* arg, int type,
     case SPELL_TYPE_SCROLL:
     case SPELL_TYPE_WAND:
     case SPELL_TYPE_STAFF:
-      spell_Create_Monster(13, ch, 0, 0);
+      spell_create_monster(13, ch, 0, 0);
       break;
     default:
       vlog("Serious screw-up in monster_summoning_1");
@@ -7597,7 +7597,7 @@ void cast_mon_sum6(signed char level, struct char_data* ch, char* arg, int type,
     case SPELL_TYPE_SCROLL:
     case SPELL_TYPE_WAND:
     case SPELL_TYPE_STAFF:
-      spell_Create_Monster(15, ch, 0, 0);
+      spell_create_monster(15, ch, 0, 0);
       break;
     default:
       vlog("Serious screw-up in monster_summoning_1");
@@ -7612,7 +7612,7 @@ void cast_mon_sum7(signed char level, struct char_data* ch, char* arg, int type,
     case SPELL_TYPE_SCROLL:
     case SPELL_TYPE_WAND:
     case SPELL_TYPE_STAFF:
-      spell_Create_Monster(17, ch, 0, 0);
+      spell_create_monster(17, ch, 0, 0);
       break;
     default:
       vlog("Serious screw-up in monster_summoning_1");

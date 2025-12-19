@@ -1485,7 +1485,7 @@ void SpaceForSkills(struct char_data* ch) {
   }
 }
 
-int CountLims(struct obj_data* obj) {
+int count_lims(struct obj_data* obj) {
   int total = 0;
 
   if (!obj) {
@@ -1493,10 +1493,10 @@ int CountLims(struct obj_data* obj) {
   }
 
   if (obj->contains) {
-    total += CountLims(obj->contains);
+    total += count_lims(obj->contains);
   }
   if (obj->next_content) {
-    total += CountLims(obj->next_content);
+    total += count_lims(obj->next_content);
   }
   if (obj->obj_flags.cost_per_day > LIM_ITEM_COST_MIN) {
     total += 1;
@@ -1576,11 +1576,11 @@ int GetApprox(int num, int perc) {
 }
 
 void vlogf(const char* errorMsg, ...) {
-  char messageBuffer[256];
+  char message_buffer[256];
   va_list ap;
 
   va_start(ap, errorMsg);
-  vsprintf(messageBuffer, errorMsg, ap);
+  vsprintf(message_buffer, errorMsg, ap);
   va_end(ap);
-  vlog(messageBuffer);
+  vlog(message_buffer);
 }

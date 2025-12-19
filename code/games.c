@@ -17,7 +17,7 @@
 #include "structs.h"
 #include "utils.h"
 
-static const char* ChooseFirstFruit(void) {
+static const char* choose_first_fruit(void) {
   int num;
   static const char* fruits[8] = {
     "cherry",
@@ -43,7 +43,7 @@ static const char* ChooseFirstFruit(void) {
   return (fruits[0]);
 }
 
-static const char* ChooseSecondFruit(void) {
+static const char* choose_second_fruit(void) {
   int num;
   static const char* fruits[8] = {
     "cherry",
@@ -68,7 +68,7 @@ static const char* ChooseSecondFruit(void) {
   return (fruits[0]);
 }
 
-static const char* ChooseThirdFruit(void) {
+static const char* choose_third_fruit(void) {
   int num;
   static const char* fruits[8] = {
     "cherry",
@@ -361,19 +361,19 @@ static void spin_slot(struct char_data* ch) {
   send_to_char("You stick your coins in the machine.\n\r", ch);
   send_to_char("You pull the arm of the slot machine.\n\r", ch);
 
-  fruit1 = ChooseFirstFruit();
+  fruit1 = choose_first_fruit();
 
   if (strcmp(fruit1, "Seven")) {
     if (number(1, 15) == 1) {
       fruit2 = fruit1;
       fruit3 = fruit1;
     } else {
-      fruit2 = ChooseSecondFruit();
-      fruit3 = ChooseThirdFruit();
+      fruit2 = choose_second_fruit();
+      fruit3 = choose_third_fruit();
     }
   } else {
-    fruit2 = ChooseSecondFruit();
-    fruit3 = ChooseThirdFruit();
+    fruit2 = choose_second_fruit();
+    fruit3 = choose_third_fruit();
   }
 
   sprintf(buf, "%-10s %-10s %-10s", fruit1, fruit2, fruit3);
@@ -744,7 +744,7 @@ static void set_point(struct char_data* ch, int diceroll) {
   send_to_room(buf, ch->in_room);
 }
 
-static void WinLoseCraps(struct char_data* ch, int diceroll) {
+static void win_lose_craps(struct char_data* ch, int diceroll) {
   struct char_data* better;
   struct char_data* temp;
   char buf[255];
@@ -846,7 +846,7 @@ static void roll_dice(struct char_data* ch) {
   if (ch->point_roll == 0) {
     set_point(ch, dice_roll);
   } else if (ch->point_roll == dice_roll) {
-    WinLoseCraps(ch, dice_roll);
+    win_lose_craps(ch, dice_roll);
   }
 }
 
@@ -1007,7 +1007,7 @@ void clear_bets(struct char_data* ch) {
   ch->bet.one_craps = 0;
 }
 
-int CheckForPoint(struct char_data* ch) {
+int check_for_point(struct char_data* ch) {
   struct obj_data* i;
 
   for (i = object_list; i; i = i->next) {

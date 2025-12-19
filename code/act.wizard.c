@@ -3,7 +3,7 @@
  *  Usage : Wizard Commands.                                               *
  *  Copyright (C) 1990, 1991 - see 'license.doc' for complete information. *
  ************************************************************************* */
-#define _POSIX_C_SOURCE 200809L
+#define POSIX_C_SOURCE 200809L
 
 #include <ctype.h>
 #include <features.h>
@@ -28,7 +28,7 @@
 #include "structs.h"
 #include "utils.h"
 
-static void CreateOneRoom(int loc_nr) {
+static void create_one_room(int loc_nr) {
   Room* rp = allocate_room(loc_nr);
 
   if (top_of_zone_table >= 0) {
@@ -78,23 +78,23 @@ void do_demote(struct char_data* ch, char* argument, int cmd) {
   ch->player.time.birth -= SECS_PER_MUD_YEAR;
 }
 
-static struct StrHeap* InitHeap(void) {
-  struct StrHeap* Heap = 0;
+static struct StrHeap* init_heap(void) {
+  struct StrHeap* heap = 0;
 
-  Heap = (struct StrHeap*)malloc(sizeof(struct StrHeap));
-  Heap->str = 0;
+  heap = (struct StrHeap*)malloc(sizeof(struct StrHeap));
+  heap->str = 0;
   /*
      Heap->str = (struct StrHeapList *)malloc(sizeof(struct StrHeapList));
      Heap->str[0].string=0;
      Heap->str[0].total=0;
   */
-  Heap->uniq = 0;
-  return (Heap);
+  heap->uniq = 0;
+  return (heap);
 }
 
 void do_imptest(struct char_data* ch, char* arg, int cmd) {
   struct char_data* i;
-  struct StrHeap* H = 0;
+  struct StrHeap* h = 0;
   int x = 0;
 
   if (strcmp(arg, " test test test")) { /* don't use this command on the */
@@ -105,13 +105,13 @@ void do_imptest(struct char_data* ch, char* arg, int cmd) {
     return;
   }
 
-  H = InitHeap();
+  h = init_heap();
 
   for (i = character_list; i && x++ < 100; i = i->next) {
-    StringHeap(i->player.short_descr, H);
+    StringHeap(i->player.short_descr, h);
   }
 
-  DisplayStringHeap(H, ch, TO_CHAR, TRUE);
+  DisplayStringHeap(h, ch, TO_CHAR, TRUE);
 }
 
 void do_passwd(struct char_data* ch, char* argument, int cmdnum) {
@@ -318,7 +318,7 @@ void do_bamfout(struct char_data* ch, char* arg, int cmd) {
   return;
 }
 
-static FILE* MakeZoneFile(struct char_data* c) {
+static FILE* make_zone_file(struct char_data* c) {
   char buf[256];
   FILE* fp;
 
@@ -330,21 +330,21 @@ static FILE* MakeZoneFile(struct char_data* c) {
   return (0);
 }
 
-static int MobVnum(struct char_data* c) {
+static int mob_vnum(struct char_data* c) {
   if (IS_NPC(c)) {
     return (mob_index[c->nr].virtual);
   }
   return (0);
 }
 
-static void RecZwriteObj(FILE* fp, struct obj_data* o) {
+static void rec_zwrite_obj(FILE* fp, struct obj_data* o) {
   struct obj_data* t;
 
   if (ITEM_TYPE(o) == ITEM_CONTAINER) {
     for (t = o->contains; t; t = t->next_content) {
       Zwrite(fp, 'P', 1, ObjVnum(t), obj_index[t->item_number].number,
         ObjVnum(o), t->short_description);
-      RecZwriteObj(fp, t);
+      rec_zwrite_obj(fp, t);
     }
   } else {
     return;
@@ -383,7 +383,7 @@ void do_instazone(struct char_data* ch, char* argument, int cmdnum) {
     return;
   }
 
-  fp = MakeZoneFile(ch);
+  fp = make_zone_file(ch);
 
   if (!fp) {
     send_to_char("Couldn't make file.. try again later\n\r", ch);
@@ -399,7 +399,7 @@ void do_instazone(struct char_data* ch, char* argument, int cmdnum) {
       for (p = room->people; p; p = p->next_in_room) {
         if (IS_NPC(p)) {
           cmd = 'M';
-          arg1 = MobVnum(p);
+          arg1 = mob_vnum(p);
           arg2 = mob_index[p->nr].number;
           arg3 = i;
           Zwrite(fp, cmd, 0, arg1, arg2, arg3, p->player.short_descr);
@@ -412,7 +412,7 @@ void do_instazone(struct char_data* ch, char* argument, int cmdnum) {
                 arg3 = j;
                 strcpy(buf, p->equipment[j]->short_description);
                 Zwrite(fp, cmd, 1, arg1, arg2, arg3, buf);
-                RecZwriteObj(fp, p->equipment[j]);
+                rec_zwrite_obj(fp, p->equipment[j]);
               }
             }
           }
@@ -424,7 +424,7 @@ void do_instazone(struct char_data* ch, char* argument, int cmdnum) {
               arg3 = 0;
               strcpy(buf, o->short_description);
               Zwrite(fp, cmd, 1, arg1, arg2, arg3, buf);
-              RecZwriteObj(fp, o);
+              rec_zwrite_obj(fp, o);
             }
           }
         }
@@ -440,7 +440,7 @@ void do_instazone(struct char_data* ch, char* argument, int cmdnum) {
           arg3 = i;
           strcpy(buf, o->short_description);
           Zwrite(fp, cmd, 0, arg1, arg2, arg3, buf);
-          RecZwriteObj(fp, o);
+          rec_zwrite_obj(fp, o);
         }
       }
       /*
@@ -677,7 +677,7 @@ static int room_enter(struct room_data* rb[], int key, struct room_data* rm) {
   return (1);
 }
 
-static void RoomLoad(struct char_data* ch, int start, int end) {
+static void room_load(struct char_data* ch, int start, int end) {
   FILE* fp;
   int vnum;
   int found = FALSE;
@@ -761,11 +761,11 @@ void do_rload(struct char_data* ch, char* argument, int cmd) {
   sscanf(argument, "%d %d", &start, &end);
 
   if ((start <= end) && (start != -1) && (end != -2)) {
-    RoomLoad(ch, start, end);
+    room_load(ch, start, end);
   }
 }
 
-static void RoomSave(struct char_data* ch, int start, int end) {
+static void room_save(struct char_data* ch, int start, int end) {
   char fn[80];
   char temp[2048];
   char dots[500];
@@ -946,7 +946,7 @@ void do_rsave(struct char_data* ch, char* argument, int cmd) {
   sscanf(argument, "%d %d", &start, &end);
 
   if ((start <= end) && (start != -1) && (end != -2)) {
-    RoomSave(ch, start, end);
+    room_save(ch, start, end);
   }
 }
 
@@ -1200,7 +1200,7 @@ void do_goto(struct char_data* ch, char* argument, int cmd) {
       if (loc_nr < WORLD_SIZE) {
 #endif
       send_to_char("You form order out of chaos.\n\r", ch);
-      CreateOneRoom(loc_nr);
+      create_one_room(loc_nr);
 
 #ifdef HASH
 #else
@@ -2446,10 +2446,10 @@ void do_load(struct char_data* ch, char* argument, int cmd) {
 
     switch (sscanf(num, "%d %d", &start, &end)) {
       case 2: /* we got both numbers */
-        RoomLoad(ch, start, end);
+        room_load(ch, start, end);
         break;
       case 1: /* we only got one, load it */
-        RoomLoad(ch, start, start);
+        room_load(ch, start, start);
         break;
       default:
         send_to_char("Load? Fine!  Load we must, But what?\n\r", ch);
@@ -2822,7 +2822,7 @@ void do_reroll(struct char_data* ch, char* argument, int cmd) {
   }
 }
 
-static void StartLevels(struct char_data* ch) {
+static void start_levels(struct char_data* ch) {
   if (IS_SET(ch->player.class, CLASS_MAGIC_USER)) {
     advance_level(ch, MAGE_LEVEL_IND);
   }
@@ -2858,7 +2858,7 @@ void do_start(struct char_data* ch) {
   send_to_char("Welcome to SneezyMUD.  Enjoy the game...\n\r", ch);
   *(ch->player.title) = '0';
 
-  StartLevels(ch);
+  start_levels(ch);
 
   GET_EXP(ch) = 1;
 

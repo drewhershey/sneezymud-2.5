@@ -3,7 +3,7 @@
  *  Usage: Procedures controling gain and limit.                           *
  *  Copyright (C) 1990, 1991 - see 'license.doc' for complete information. *
  ************************************************************************* */
-#define _POSIX_C_SOURCE 200809L
+#define POSIX_C_SOURCE 200809L
 #include <features.h>
 #include <stdio.h>
 #include <string.h>
@@ -18,7 +18,7 @@
 #include "structs.h"
 #include "utils.h"
 
-static char* ClassTitles(struct char_data* ch) {
+static char* class_titles(struct char_data* ch) {
   int i;
   int count = 0;
   static char buf[256];
@@ -472,7 +472,7 @@ static void drop_level(struct char_data* ch, int class) {
 void set_title(struct char_data* ch) {
   char buf[256];
 
-  sprintf(buf, "the %s %s", RaceName[ch->race], ClassTitles(ch));
+  sprintf(buf, "the %s %s", RaceName[ch->race], class_titles(ch));
 
   ch->player.title = strdup(buf);
 }
