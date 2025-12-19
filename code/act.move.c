@@ -20,7 +20,8 @@
 #include "utils.h"
 
 void open_door(struct char_data* ch, int dir) {
-  struct room_direction_data *exitp, *back;
+  struct room_direction_data *exitp;
+  struct room_direction_data *back;
   struct room_data* rp;
   char buf[MAX_INPUT_LENGTH];
 
@@ -69,7 +70,8 @@ void open_door(struct char_data* ch, int dir) {
   remove all necessary bits and send messages
 */
 void raw_open_door(struct char_data* ch, int dir) {
-  struct room_direction_data *exitp, *back;
+  struct room_direction_data *exitp;
+  struct room_direction_data *back;
   struct room_data* rp;
   char buf[MAX_INPUT_LENGTH];
 
@@ -169,7 +171,8 @@ static int RawMove(struct char_data* ch, int dir) {
   int need_movement;
   struct obj_data* obj;
   char has_boat;
-  struct room_data *from_here, *to_here;
+  struct room_data *from_here;
+  struct room_data *to_here;
   struct char_data* pers;
 
   if (special(ch, dir + 1, "")) { /* Check for special routines(North is 1)*/
@@ -395,7 +398,8 @@ static int DisplayOneMove(struct char_data* ch, int dir, int was_in) {
 
 static int AddToCharHeap(struct char_data* heap[50], int* top, int total[50],
   struct char_data* k) {
-  int found, i;
+  int found;
+  int i;
 
   if (*top > 50) {
     return (FALSE);
@@ -439,8 +443,12 @@ static int DisplayGroupMove(struct char_data* ch, int dir, int was_in,
 
 void MoveGroup(struct char_data* ch, int dir) {
   struct char_data* heap_ptr[50];
-  int was_in, i, heap_top, heap_tot[50];
-  struct follow_type *k, *next_dude;
+  int was_in;
+  int i;
+  int heap_top;
+  int heap_tot[50];
+  struct follow_type *k;
+  struct follow_type *next_dude;
 
   /*
    *   move the leader. (leader never duplicates)
@@ -552,7 +560,9 @@ int find_door(struct char_data* ch, char* type, char* dir) {
 
 void do_open(struct char_data* ch, char* argument, int cmd) {
   int door;
-  char type[MAX_INPUT_LENGTH], dir[MAX_INPUT_LENGTH], buf[MAX_STRING_LENGTH];
+  char type[MAX_INPUT_LENGTH];
+  char dir[MAX_INPUT_LENGTH];
+  char buf[MAX_STRING_LENGTH];
   struct room_direction_data* back;
   struct obj_data* obj;
   struct char_data* victim;
@@ -599,8 +609,11 @@ void do_open(struct char_data* ch, char* argument, int cmd) {
 
 void do_close(struct char_data* ch, char* argument, int cmd) {
   int door;
-  char type[MAX_INPUT_LENGTH], dir[MAX_INPUT_LENGTH], buf[MAX_STRING_LENGTH];
-  struct room_direction_data *back, *exitp;
+  char type[MAX_INPUT_LENGTH];
+  char dir[MAX_INPUT_LENGTH];
+  char buf[MAX_STRING_LENGTH];
+  struct room_direction_data *back;
+  struct room_direction_data *exitp;
   struct obj_data* obj;
   struct char_data* victim;
   struct room_data* rp;
@@ -674,8 +687,10 @@ int has_key(struct char_data* ch, int key) {
 
 void do_lock(struct char_data* ch, char* argument, int cmd) {
   int door;
-  char type[MAX_INPUT_LENGTH], dir[MAX_INPUT_LENGTH];
-  struct room_direction_data *back, *exitp;
+  char type[MAX_INPUT_LENGTH];
+  char dir[MAX_INPUT_LENGTH];
+  struct room_direction_data *back;
+  struct room_direction_data *exitp;
   struct obj_data* obj;
   struct char_data* victim;
   struct room_data* rp;
@@ -737,8 +752,10 @@ void do_lock(struct char_data* ch, char* argument, int cmd) {
 
 void do_unlock(struct char_data* ch, char* argument, int cmd) {
   int door;
-  char type[MAX_INPUT_LENGTH], dir[MAX_INPUT_LENGTH];
-  struct room_direction_data *back, *exitp;
+  char type[MAX_INPUT_LENGTH];
+  char dir[MAX_INPUT_LENGTH];
+  struct room_direction_data *back;
+  struct room_direction_data *exitp;
   struct obj_data* obj;
   struct char_data* victim;
   struct room_data* rp;
@@ -799,8 +816,10 @@ void do_unlock(struct char_data* ch, char* argument, int cmd) {
 void do_pick(struct char_data* ch, char* argument, int cmd) {
   signed char percent;
   int door;
-  char type[MAX_INPUT_LENGTH], dir[MAX_INPUT_LENGTH];
-  struct room_direction_data *back, *exitp;
+  char type[MAX_INPUT_LENGTH];
+  char dir[MAX_INPUT_LENGTH];
+  struct room_direction_data *back;
+  struct room_direction_data *exitp;
   struct obj_data* obj;
   struct char_data* victim;
   struct room_data* rp;
@@ -880,7 +899,8 @@ void do_pick(struct char_data* ch, char* argument, int cmd) {
 void do_enter(struct char_data* ch, char* argument, int cmd) {
   int door;
   int location;
-  char buf[MAX_INPUT_LENGTH], tmp[MAX_STRING_LENGTH];
+  char buf[MAX_INPUT_LENGTH];
+  char tmp[MAX_STRING_LENGTH];
   struct obj_data* obj_object;
   struct obj_data* next_obj;
 

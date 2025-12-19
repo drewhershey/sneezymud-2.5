@@ -46,7 +46,8 @@ struct pose_type {
 static int list_top = -1;
 
 static char* fread_action(FILE* fl) {
-  char buf[MAX_STRING_LENGTH], *rslt;
+  char buf[MAX_STRING_LENGTH];
+  char *rslt;
 
   for (;;) {
     fgets(buf, MAX_STRING_LENGTH, fl);
@@ -68,7 +69,9 @@ static char* fread_action(FILE* fl) {
 
 void boot_social_messages(void) {
   FILE* fl;
-  int tmp, hide, min_pos;
+  int tmp;
+  int hide;
+  int min_pos;
 
   if (!(fl = fopen(SOCMESS_FILE, "r"))) {
     perror("boot_social_messages");
@@ -120,7 +123,9 @@ void boot_social_messages(void) {
 }
 
 static int find_action(int cmd) {
-  int bot, top, mid;
+  int bot;
+  int top;
+  int mid;
 
   bot = 0;
   top = list_top;
@@ -149,9 +154,11 @@ static int find_action(int cmd) {
 
 void do_action(struct char_data* ch, char* argument, int cmd) {
   int act_nr;
-  char buf[MAX_INPUT_LENGTH], tmp[MAX_STRING_LENGTH];
+  char buf[MAX_INPUT_LENGTH];
+  char tmp[MAX_STRING_LENGTH];
   struct social_messg* action;
-  struct char_data *i, *vict;
+  struct char_data *i;
+  struct char_data *vict;
 
   if ((act_nr = find_action(cmd)) < 0) {
     send_to_char("That action is not supported.\n\r", ch);

@@ -70,9 +70,13 @@ void do_guard(struct char_data* ch, char* argument, int cmd) {
 }
 
 void do_junk(struct char_data* ch, char* argument, int cmd) {
-  char arg[100], buf[100], newarg[100];
+  char arg[100];
+  char buf[100];
+  char newarg[100];
   struct obj_data* tmp_object;
-  int num, p, count;
+  int num;
+  int p;
+  int count;
 
   /*
    *   get object name & verify
@@ -136,7 +140,8 @@ void do_junk(struct char_data* ch, char* argument, int cmd) {
 
 void do_command(struct char_data* ch, char* arg, int cmd) {
   char buf[16384];
-  int no, i;
+  int no;
+  int i;
 
   if (IS_NPC(ch)) {
     return;
@@ -166,7 +171,8 @@ void do_qui(struct char_data* ch, char* argument, int cmd) {
 
 void do_split(struct char_data* ch, char* argument, int cmd) {
   char buf[256];
-  int no_members, share;
+  int no_members;
+  int share;
   int amount;
   struct char_data* k;
   struct follow_type* f;
@@ -352,7 +358,9 @@ static void save_obj_for_save(struct char_data* ch, struct obj_cost* cost,
   int delete) {
   static struct obj_file_u st;
   FILE* fl;
-  int pos, i, j;
+  int pos;
+  int i;
+  int j;
   char found = FALSE;
 
   st.number = 0;
@@ -382,8 +390,11 @@ static void save_obj_for_save(struct char_data* ch, struct obj_cost* cost,
 void do_save(struct char_data* ch, char* argument, int cmd) {
   struct obj_cost cost;
   struct char_data* tmp;
-  struct obj_data *tmp_obj, *tl;
-  struct obj_data *teq[MAX_WEAR], *eq[MAX_WEAR], *o;
+  struct obj_data *tmp_obj;
+  struct obj_data *tl;
+  struct obj_data *teq[MAX_WEAR];
+  struct obj_data *eq[MAX_WEAR];
+  struct obj_data *o;
   int i;
 
   if (IS_NPC(ch) && !(IS_SET(ch->specials.act, ACT_POLYSELF))) {
@@ -532,7 +543,8 @@ void do_hide(struct char_data* ch, char* argument, int cmd) {
 }
 
 void do_bload(struct char_data* ch, char* arg, int cmd) {
-  struct obj_data *obj, *arrow;
+  struct obj_data *obj;
+  struct obj_data *arrow;
   char arrow_name[240];
   char obj_name[240];
   char buf[240];
@@ -575,7 +587,8 @@ void do_bload(struct char_data* ch, char* arg, int cmd) {
 }
 
 void do_reload(struct char_data* ch, char* argument, int cmd) {
-  struct obj_data *obj, *shells;
+  struct obj_data *obj;
+  struct obj_data *shells;
   char shells_name[240];
   char obj_name[240];
   char buf[240];
@@ -631,7 +644,8 @@ void do_steal(struct char_data* ch, char* argument, int cmd) {
   char obj_name[240];
   char buf[240];
   int percent;
-  int gold, eq_pos;
+  int gold;
+  int eq_pos;
   char ohoh = FALSE;
 
   if (!ch->skills) {
@@ -781,7 +795,8 @@ void do_steal(struct char_data* ch, char* argument, int cmd) {
 }
 
 void do_practice(struct char_data* ch, char* arg, int cmd) {
-  char buf[MAX_STRING_LENGTH * 2], buffer[MAX_STRING_LENGTH * 2];
+  char buf[MAX_STRING_LENGTH * 2];
+  char buffer[MAX_STRING_LENGTH * 2];
   int i;
 
   buffer[0] = '\0';
@@ -1143,7 +1158,8 @@ void do_monitor(struct char_data* ch, char* argument, int cmd) {
 }
 
 void do_channel(struct char_data* ch, char* argument, int cmd) {
-  struct obj_data *radio, *radio2;
+  struct obj_data *radio;
+  struct obj_data *radio2;
   struct descriptor_data* i;
   char buf[MAX_STRING_LENGTH];
   char num[200];
@@ -1195,7 +1211,8 @@ void do_channel(struct char_data* ch, char* argument, int cmd) {
 }
 
 void do_prompt(struct char_data* ch, char* arg, int cmd) {
-  char tmp_name[20], buf[80];
+  char tmp_name[20];
+  char buf[80];
 
   if (IS_NPC(ch)) {
     return;
@@ -1218,7 +1235,9 @@ void do_prompt(struct char_data* ch, char* arg, int cmd) {
 }
 
 void do_terminal(struct char_data* ch, char* argument, int cmd) {
-  char buf[80], term[80], screen[80];
+  char buf[80];
+  char term[80];
+  char screen[80];
 
   if (IS_NPC(ch)) {
     return;
@@ -1397,7 +1416,8 @@ void do_compact(struct char_data* ch, char* argument, int cmd) {
 void do_group(struct char_data* ch, char* argument, int cmd) {
   char name[256];
   char buf[256];
-  struct char_data *victim, *k;
+  struct char_data *victim;
+  struct char_data *k;
   struct follow_type* f;
   char found;
 
@@ -1576,9 +1596,11 @@ void do_quaff(struct char_data* ch, char* argument, int cmd) {
 
 void do_recite(struct char_data* ch, char* argument, int cmd) {
   char buf[100];
-  struct obj_data *scroll, *obj;
+  struct obj_data *scroll;
+  struct obj_data *obj;
   struct char_data* victim;
-  int i, bits;
+  int i;
+  int bits;
   char equipped;
 
   equipped = FALSE;
@@ -1646,7 +1668,8 @@ void do_recite(struct char_data* ch, char* argument, int cmd) {
 void do_use(struct char_data* ch, char* argument, int cmd) {
   char buf[100];
   struct char_data* tmp_char;
-  struct obj_data *tmp_object, *stick;
+  struct obj_data *tmp_object;
+  struct obj_data *stick;
 
   int bits;
 

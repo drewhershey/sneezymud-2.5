@@ -224,7 +224,8 @@ int dice(int number, int size) {
 /* returns: 0 if equal, 1 if arg1 > arg2, -1 if arg1 < arg2  */
 /* scan 'till found different or end of both                 */
 int str_cmp(const char* arg1, const char* arg2) {
-  int chk, i;
+  int chk;
+  int i;
 
   if ((!arg2) || (!arg1)) {
     return (1);
@@ -413,7 +414,9 @@ char in_group(struct char_data* ch1, struct char_data* ch2) {
    or put all.bread in bag, or put 2*bread in bag...
 */
 char getall(char* name, char* newname) {
-  char arg[40] = "\0\0\0", tmpname[80] = "\0\0\0\0\0", otname[80] = "\0";
+  char arg[40] = "\0\0\0";
+  char tmpname[80] = "\0\0\0\0\0";
+  char otname[80] = "\0";
   char prd;
 
   sscanf(name, "%s ", otname); /* reads up to first space */
@@ -675,9 +678,12 @@ int DetermineExp(struct char_data* mob, int exp_flags) {
 }
 
 void down_river(int pulse) {
-  struct char_data *ch, *tmp;
-  struct obj_data *obj_object, *next_obj;
-  int rd, or;
+  struct char_data *ch;
+  struct char_data *tmp;
+  struct obj_data *obj_object;
+  struct obj_data *next_obj;
+  int rd;
+  int or;
   char buf[80];
   struct room_data* rp;
 
@@ -927,7 +933,8 @@ int IsExtraPlanar(struct char_data* ch) {
 }
 
 void SetHunting(struct char_data* ch, struct char_data* tch) {
-  int persist, dist;
+  int persist;
+  int dist;
   char buf[256];
 
 #if defined(NOTRACK) && NOTRACK
@@ -963,7 +970,8 @@ void SetHunting(struct char_data* ch, struct char_data* tch) {
 void CallForGuard(struct char_data* ch, struct char_data* vict, int lev,
   int area) {
   struct char_data* i;
-  int type1, type2;
+  int type1;
+  int type2;
 
   switch (area) {
     case MIDGAARD:
@@ -1023,11 +1031,16 @@ void CallForGuard(struct char_data* ch, struct char_data* vict, int lev,
 }
 
 void Teleport(int pulse) {
-  struct char_data *ch, *tmp, *pers;
-  struct obj_data *obj_object, *temp_obj;
-  char buf[20], *tmp_desc = NULL;
+  struct char_data *ch;
+  struct char_data *tmp;
+  struct char_data *pers;
+  struct obj_data *obj_object;
+  struct obj_data *temp_obj;
+  char buf[20];
+  char *tmp_desc = NULL;
   int or;
-  struct room_data *rp, *dest;
+  struct room_data *rp;
+  struct room_data *dest;
 
   if (pulse < 0) {
     return;
@@ -1199,10 +1212,16 @@ void TeleportPulseStuff(int pulse) {
     */
 
   register struct char_data* ch;
-  struct char_data *next, *tmp, *pers;
-  int tick, tm, or;
-  struct room_data *rp, *dest;
-  struct obj_data *obj_object, *temp_obj;
+  struct char_data *next;
+  struct char_data *tmp;
+  struct char_data *pers;
+  int tick;
+  int tm;
+  int or;
+  struct room_data *rp;
+  struct room_data *dest;
+  struct obj_data *obj_object;
+  struct obj_data *temp_obj;
   char* tmp_desc;
 
   tmp_desc = NULL;
@@ -1318,8 +1337,10 @@ void RiverPulseStuff(int pulse) {
   struct char_data* tmp;
   register struct obj_data* obj_object;
   struct obj_data* next_obj;
-  int rd, or;
-  char buf[80], buffer[100];
+  int rd;
+  int or;
+  char buf[80];
+  char buffer[100];
   struct room_data* rp;
 
   if (pulse < 0) {
@@ -1505,7 +1526,9 @@ char* lower(char* s) {
 
 char* strstr(const char* s1, const char* s2) {
   char* cp;
-  int i, j = strlen(s1) - strlen(s2), k = strlen(s2);
+  int i;
+  int j = strlen(s1) - strlen(s2);
+  int k = strlen(s2);
 
   if (j < 0) {
     return NULL;
@@ -1518,7 +1541,9 @@ char* strstr(const char* s1, const char* s2) {
 
 char* strcasestr(const char* s1, const char* s2) {
   char* cp;
-  int i, j = strlen(s1) - strlen(s2), k = strlen(s2);
+  int i;
+  int j = strlen(s1) - strlen(s2);
+  int k = strlen(s2);
 
   if (j < 0) {
     return NULL;
@@ -1531,8 +1556,10 @@ char* strcasestr(const char* s1, const char* s2) {
 
 int GetApprox(int num, int perc) {
   /* perc = 0 - 100 */
-  int adj, r;
-  float fnum, fadj;
+  int adj;
+  int r;
+  float fnum;
+  float fadj;
 
   adj = 100 - perc;
   if (adj < 0) {

@@ -29,7 +29,8 @@ int RecGetObjRoom(struct obj_data* obj) {
 void MakeNoise(int room, const char* local_snd, const char* distant_snd) {
   int door;
   struct char_data* ch;
-  struct room_data *rp, *orp;
+  struct room_data *rp;
+  struct room_data *orp;
 
   rp = real_roomp(room);
 

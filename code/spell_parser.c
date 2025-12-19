@@ -228,7 +228,8 @@ const signed char saving_throws[8][5][ABS_MAX_LVL] = {
 };
 
 static void ObjFromCorpse(struct obj_data* c) {
-  struct obj_data *jj, *next_thing;
+  struct obj_data *jj;
+  struct obj_data *next_thing;
 
   for (jj = c->contains; jj; jj = next_thing) {
     next_thing = jj->next_content; /* Next in inventory */
@@ -615,13 +616,17 @@ static void SpellWearOff(int s, struct char_data* ch) {
 }
 
 void affect_update(int pulse) {
-  static struct affected_type *af, *next_af_dude;
+  static struct affected_type *af;
+  static struct affected_type *next_af_dude;
   register struct char_data* i;
   register struct obj_data* j;
   struct obj_data* next_thing;
   struct char_data* next_char;
   struct room_data* rp;
-  int dead = FALSE, room, cost, k;
+  int dead = FALSE;
+  int room;
+  int cost;
+  int k;
   char buf[200];
 
   for (i = character_list; i; i = next_char) {
@@ -874,7 +879,8 @@ char circle_follow(struct char_data* ch, struct char_data* victim) {
 /* Called when stop following persons, or stopping charm */
 /* This will NOT do if a character quits/dies!!          */
 void stop_follower(struct char_data* ch) {
-  struct follow_type *j, *k;
+  struct follow_type *j;
+  struct follow_type *k;
 
   if (!ch->master) {
     return;
@@ -940,10 +946,12 @@ void add_follower(struct char_data* ch, struct char_data* leader) {
 }
 
 static void say_spell(struct char_data* ch, int si) {
-  char buf[MAX_STRING_LENGTH], splwd[MAX_BUF_LENGTH];
+  char buf[MAX_STRING_LENGTH];
+  char splwd[MAX_BUF_LENGTH];
   char buf2[MAX_STRING_LENGTH];
 
-  int j, offs;
+  int j;
+  int offs;
   struct char_data* temp_char;
 
   struct syllable {
@@ -1056,7 +1064,9 @@ void do_cast(struct char_data* ch, char* argument, int cmd) {
   struct obj_data* tar_obj;
   struct char_data* tar_char;
   char name[MAX_INPUT_LENGTH];
-  int qend, spl, i;
+  int qend;
+  int spl;
+  int i;
   char target_ok;
 
   if (IS_NPC(ch) && (!IS_SET(ch->specials.act, ACT_POLYSELF))) {

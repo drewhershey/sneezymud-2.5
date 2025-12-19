@@ -26,7 +26,8 @@ void weather_and_time(int mode) {
 }
 
 void another_hour(int mode) {
-  char moon[20], buf[100];
+  char moon[20];
+  char buf[100];
 
   time_info.hours++;
 
@@ -104,7 +105,8 @@ void another_hour(int mode) {
 }
 
 void weather_change(void) {
-  int diff, change;
+  int diff;
+  int change;
 
   if ((time_info.month >= 9) && (time_info.month <= 16)) {
     diff = (weather_info.pressure > 985 ? -2 : 2);

@@ -60,7 +60,8 @@ struct oset_field_data oset_field[25] = {
 
 static void set_oedesc(struct char_data* ch, struct obj_data* obj,
   char* keywds) {
-  struct extra_descr_data *tmp, *newdesc;
+  struct extra_descr_data *tmp;
+  struct extra_descr_data *newdesc;
   char buf[256];
 
   if (!*keywds) {
@@ -99,7 +100,9 @@ static void set_oedesc(struct char_data* ch, struct obj_data* obj,
 }
 
 static void set_mtype(struct char_data* ch, struct obj_data* obj, char* arg) {
-  char buf1[256], buf2[256], type[100];
+  char buf1[256];
+  char buf2[256];
+  char type[100];
   int i;
 
   static const char* const obj_type[] = {"", "finger", "neck", "body", "head",
@@ -158,8 +161,12 @@ static void set_mtype(struct char_data* ch, struct obj_data* obj, char* arg) {
 }
 
 static void set_oflags(struct char_data* ch, struct obj_data* obj, char* arg) {
-  char buf1[256], buf2[256], num[100], type[100];
-  int i, number;
+  char buf1[256];
+  char buf2[256];
+  char num[100];
+  char type[100];
+  int i;
+  int number;
 
   static const char* const obj_type[] = {"ITEM_GLOW            1",
     "ITEM_HUM             2", "ITEM_METAL           4  /* undefined...  */",
@@ -204,8 +211,10 @@ static void set_oflags(struct char_data* ch, struct obj_data* obj, char* arg) {
 }
 
 static void set_otype(struct char_data* ch, struct obj_data* obj, char* arg) {
-  char buf1[256], buf2[256];
-  int type, i;
+  char buf1[256];
+  char buf2[256];
+  int type;
+  int i;
 
   static const char* const obj_type[] = {"light", "scroll", "wand", "staff",
     "weapon", "fireweapon", "missile", "treasure", "armor", "potion", "worn",
@@ -238,8 +247,11 @@ static void set_otype(struct char_data* ch, struct obj_data* obj, char* arg) {
 
 static void set_oaffect(struct char_data* ch, struct obj_data* obj, char* arg,
   int a) {
-  char buf1[256], buf2[256];
-  int type, mod, i;
+  char buf1[256];
+  char buf2[256];
+  int type;
+  int mod;
+  int i;
 
   static const char* const oaffects[] = {"strength", "dexterity",
     "intelligence", "wisdom", "constitution", "sex", "class", "level", "age",
@@ -291,11 +303,19 @@ static void set_oaffect(struct char_data* ch, struct obj_data* obj, char* arg,
 }
 
 void do_oset(struct char_data* ch, char* argument, int cmd) {
-  char arg1[256], arg2[256], arg3[256];
-  char buf[256], buf2[256];
-  int i, j;
-  int val, dice, sides, dir;
-  int value, spaces;
+  char arg1[256];
+  char arg2[256];
+  char arg3[256];
+  char buf[256];
+  char buf2[256];
+  int i;
+  int j;
+  int val;
+  int dice;
+  int sides;
+  int dir;
+  int value;
+  int spaces;
   struct obj_data* obj;
   struct extra_descr_data* tmpexd;
 

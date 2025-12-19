@@ -25,7 +25,8 @@
 void do_hit(struct char_data* ch, char* argument, int cmd) {
   char arg[80];
   struct char_data* victim;
-  int ch_level, vict_level;
+  int ch_level;
+  int vict_level;
 
   if (check_blackjack(ch)) {
     do_bj_hit(ch);
@@ -133,7 +134,8 @@ void do_kill(struct char_data* ch, char* argument, int cmd) {
 void do_backstab(struct char_data* ch, char* argument, int cmd) {
   struct char_data* victim;
   char name[256];
-  signed char percent, base = 0;
+  signed char percent;
+  signed char base = 0;
 
   if (check_peaceful(ch, "Naughty, naughty.  None of that here.\n\r")) {
     return;
@@ -228,7 +230,8 @@ static int check_no_order(struct char_data* ch, char* msg) {
 }
 
 void do_order(struct char_data* ch, char* argument, int cmd) {
-  char name[100], message[256];
+  char name[100];
+  char message[256];
   char buf[256];
   char found = FALSE;
   int org_room;
@@ -300,7 +303,13 @@ void do_order(struct char_data* ch, char* argument, int cmd) {
 
 void do_flee(struct char_data* ch, char* argument, int cmd) {
   struct obj_data* weapon;
-  int i, lev_check, attempt, loose, die, percent, losedie;
+  int i;
+  int lev_check;
+  int attempt;
+  int loose;
+  int die;
+  int percent;
+  int losedie;
 
   if (IS_AFFECTED(ch, AFF_PARALYSIS)) {
     return;
@@ -372,7 +381,8 @@ void do_flee(struct char_data* ch, char* argument, int cmd) {
     attempt = number(0, 5); /* Select a random direction */
     if (CAN_GO(ch, attempt) &&
         !IS_SET(real_roomp(EXIT(ch, attempt)->to_room)->room_flags, DEATH)) {
-      int panic, j;
+      int panic;
+      int j;
 
       if (!ch->skills || (number(1, 101) > ch->skills[SKILL_RETREAT].learned)) {
         act("$n panics, and attempts to flee.", TRUE, ch, 0, 0, TO_ROOM);
@@ -528,7 +538,8 @@ void do_bash(struct char_data* ch, char* argument, int cmd) {
 }
 
 void do_rescue(struct char_data* ch, char* argument, int cmd) {
-  struct char_data *victim, *tmp_ch;
+  struct char_data *victim;
+  struct char_data *tmp_ch;
   int percent;
   char victim_name[240];
 
@@ -612,7 +623,8 @@ void do_rescue(struct char_data* ch, char* argument, int cmd) {
 }
 
 void do_assist(struct char_data* ch, char* argument, int cmd) {
-  struct char_data *victim, *tmp_ch;
+  struct char_data *victim;
+  struct char_data *tmp_ch;
   char victim_name[240];
 
   if (check_peaceful(ch, "Noone should need assistance here.\n\r")) {
@@ -751,8 +763,10 @@ const funcp bweapons[] = {cast_geyser, cast_fire_breath, cast_gas_breath,
 
 void do_breath(struct char_data* ch, char* argument, int cmd) {
   struct char_data* victim;
-  char buf[MAX_STRING_LENGTH], name[MAX_STRING_LENGTH];
-  int count, manacost;
+  char buf[MAX_STRING_LENGTH];
+  char name[MAX_STRING_LENGTH];
+  int count;
+  int manacost;
   funcp weapon;
 
   if (check_peaceful(ch, "That wouldn't be nice at all.\n\r")) {
@@ -855,7 +869,8 @@ static void BowHit(struct char_data* ch, struct char_data* victim, int type) {
 
 static void fire(struct char_data* ch, struct char_data* victim) {
   struct obj_data* bow;
-  int tohit = 0, todam = 0;
+  int tohit = 0;
+  int todam = 0;
 
   bow = ch->equipment[HOLD];
 
@@ -961,7 +976,8 @@ static void MissileHit(struct char_data* ch, struct char_data* victim,
 
 static void shoot(struct char_data* ch, struct char_data* victim) {
   struct obj_data* gun;
-  int tohit = 0, todam = 0;
+  int tohit = 0;
+  int todam = 0;
 
   gun = ch->equipment[HOLD];
 

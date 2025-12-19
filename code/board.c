@@ -25,7 +25,8 @@ void InitBoards(void) {
 }
 
 void InitABoard(struct obj_data* obj) {
-  struct Board* new, *tmp;
+  struct Board * new;
+  struct Board *tmp;
   int i;
 
   if (board_list) {
@@ -195,8 +196,10 @@ void board_write_msg(struct char_data* ch, char* arg, struct Board* b) {
 }
 
 int board_remove_msg(struct char_data* ch, char* arg, struct Board* b) {
-  int ind, msg;
-  char buf[256], number[MAX_INPUT_LENGTH];
+  int ind;
+  int msg;
+  char buf[256];
+  char number[MAX_INPUT_LENGTH];
 
   one_argument(arg, number);
 
@@ -241,7 +244,8 @@ int board_remove_msg(struct char_data* ch, char* arg, struct Board* b) {
 }
 
 void board_save_board(struct Board* b) {
-  int ind, len;
+  int ind;
+  int len;
 
   if (!b) {
     return;
@@ -276,7 +280,8 @@ void board_save_board(struct Board* b) {
 }
 
 void board_load_board(struct Board* b) {
-  int ind, len = 0;
+  int ind;
+  int len = 0;
 
   return;
 
@@ -339,7 +344,9 @@ void error_log(const char* str) { /* The original error-handling was MUCH */
 }
 
 int board_display_msg(struct char_data* ch, char* arg, struct Board* b) {
-  char buf[512], number[MAX_INPUT_LENGTH], buffer[MAX_STRING_LENGTH];
+  char buf[512];
+  char number[MAX_INPUT_LENGTH];
+  char buffer[MAX_STRING_LENGTH];
   int msg;
 
   one_argument(arg, number);
@@ -373,7 +380,8 @@ void board_fix_long_desc(struct Board* b) { return; }
 
 int board_show_board(struct char_data* ch, char* arg, struct Board* b) {
   int i;
-  char buf[MAX_STRING_LENGTH], tmp[MAX_INPUT_LENGTH];
+  char buf[MAX_STRING_LENGTH];
+  char tmp[MAX_INPUT_LENGTH];
 
   one_argument(arg, tmp);
 

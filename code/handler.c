@@ -59,10 +59,16 @@ static int split_string(char* str, char* sep, char** argv)
 }
 
 int isname(const char* str, const char* namelist) {
-  char *argv[100], *xargv[100];
-  int argc, xargc, i, j;
+  char *argv[100];
+  char *xargv[100];
+  int argc;
+  int xargc;
+  int i;
+  int j;
   int exact = FALSE;
-  char buf[MAX_INPUT_LENGTH], names[MAX_INPUT_LENGTH], *s;
+  char buf[MAX_INPUT_LENGTH];
+  char names[MAX_INPUT_LENGTH];
+  char *s;
 
   if (!str || !namelist) {
     return FALSE;
@@ -132,7 +138,8 @@ void destroy_string_block(struct string_block* sb) {
 void affect_modify(struct char_data* ch, signed char loc, long mod, long bitv,
   char add) {
   int maxabil;
-  int i, diff;
+  int i;
+  int diff;
 
   if (loc == APPLY_IMMUNE) {
     if (add) {
@@ -373,7 +380,8 @@ void affect_modify(struct char_data* ch, signed char loc, long mod, long bitv,
 /* restoring original abilities, and then affecting all again           */
 void affect_total(struct char_data* ch) {
   struct affected_type* af;
-  int i, j;
+  int i;
+  int j;
 
   for (i = 0; i < MAX_WEAR; i++) {
     if (ch->equipment[i]) {
@@ -915,7 +923,8 @@ int get_number(char** name) {
 /* Search a given list for an object, and return a pointer to that object */
 struct obj_data* get_obj_in_list(char* name, struct obj_data* list) {
   struct obj_data* i;
-  int j, number;
+  int j;
+  int number;
   char tmpname[MAX_INPUT_LENGTH];
   char* tmp;
 
@@ -954,7 +963,8 @@ struct obj_data* get_obj_in_list_num(int num, struct obj_data* list) {
 /*search the entire world for an object, and return a pointer  */
 struct obj_data* get_obj(char* name) {
   struct obj_data* i;
-  int j, number;
+  int j;
+  int number;
   char tmpname[MAX_INPUT_LENGTH];
   char* tmp;
 
@@ -992,7 +1002,8 @@ struct obj_data* get_obj_num(int nr) {
 /* search a room for a char, and return a pointer if found..  */
 struct char_data* get_char_room(char* name, int room) {
   struct char_data* i;
-  int j, number;
+  int j;
+  int number;
   char tmpname[MAX_INPUT_LENGTH];
   char* tmp;
 
@@ -1018,7 +1029,8 @@ struct char_data* get_char_room(char* name, int room) {
 /* search all over the world for a char, and return a pointer if found */
 struct char_data* get_char(char* name) {
   struct char_data* i;
-  int j, number;
+  int j;
+  int number;
   char tmpname[MAX_INPUT_LENGTH];
   char* tmp;
 
@@ -1153,7 +1165,8 @@ void obj_to_obj(struct obj_data* obj, struct obj_data* obj_to) {
 
 /* remove an object from an object */
 void obj_from_obj(struct obj_data* obj) {
-  struct obj_data *tmp, *obj_from;
+  struct obj_data *tmp;
+  struct obj_data *obj_from;
 
   assert(!obj->carried_by && !obj->equipped_by && obj->in_room == NOWHERE);
 
@@ -1230,7 +1243,8 @@ void object_list_new_owner(struct obj_data* list, struct char_data* ch) {
 
 /* Extract an object from the world */
 void extract_obj(struct obj_data* obj) {
-  struct obj_data *temp1, *temp2;
+  struct obj_data *temp1;
+  struct obj_data *temp2;
 
   if (obj->in_room != NOWHERE) {
     obj_from_room(obj);
@@ -1310,7 +1324,8 @@ void update_object(struct obj_data* obj, int use) {
 
 /* Called when a character that follows/is followed dies */
 static void die_follower(struct char_data* ch) {
-  struct follow_type *j, *k;
+  struct follow_type *j;
+  struct follow_type *k;
 
   if (ch->master) {
     stop_follower(ch);
@@ -1324,10 +1339,14 @@ static void die_follower(struct char_data* ch) {
 
 /* Extract a ch completely from the world, and leave his stuff behind */
 void extract_char(struct char_data* ch) {
-  struct obj_data *i, *o;
-  struct char_data *k, *next_char;
+  struct obj_data *i;
+  struct obj_data *o;
+  struct char_data *k;
+  struct char_data *next_char;
   struct descriptor_data* t_desc;
-  int l, was_in, j;
+  int l;
+  int was_in;
+  int j;
 
   if (!IS_NPC(ch) && !ch->desc) {
     for (t_desc = descriptor_list; t_desc; t_desc = t_desc->next) {
@@ -1505,7 +1524,8 @@ void extract_char(struct char_data* ch) {
 
 struct char_data* get_char_room_vis(struct char_data* ch, char* name) {
   struct char_data* i;
-  int j, number;
+  int j;
+  int number;
   char tmpname[MAX_INPUT_LENGTH];
   char* tmp;
 
@@ -1537,7 +1557,8 @@ struct char_data* get_char_vis_world(struct char_data* ch, char* name,
 
 {
   struct char_data* i;
-  int j, number;
+  int j;
+  int number;
   char tmpname[MAX_INPUT_LENGTH];
   char* tmp;
 
@@ -1578,7 +1599,8 @@ struct char_data* get_char_vis(struct char_data* ch, char* name) {
 struct obj_data* get_obj_in_list_vis(struct char_data* ch, char* name,
   struct obj_data* list) {
   struct obj_data* i;
-  int j, number;
+  int j;
+  int number;
   char tmpname[MAX_INPUT_LENGTH];
   char* tmp;
 
@@ -1604,7 +1626,8 @@ struct obj_data* get_obj_in_list_vis(struct char_data* ch, char* name,
 struct obj_data* get_obj_vis_world(struct char_data* ch, char* name,
   int* count) {
   struct obj_data* i;
-  int j, number;
+  int j;
+  int number;
   char tmpname[MAX_INPUT_LENGTH];
   char* tmp;
 
@@ -1652,7 +1675,8 @@ struct obj_data* get_obj_vis(struct char_data* ch, char* name) {
 
 struct obj_data* get_obj_vis_accessible(struct char_data* ch, char* name) {
   struct obj_data* i;
-  int j, number;
+  int j;
+  int number;
   char tmpname[MAX_INPUT_LENGTH];
   char* tmp;
 

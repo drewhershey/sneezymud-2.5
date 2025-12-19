@@ -88,7 +88,8 @@ void do_get(struct char_data* ch, char* argument, int cmd) {
   char fail = FALSE;
   int type = 3;
   char newarg[100];
-  int num, p;
+  int num;
+  int p;
 
   argument_interpreter(argument, arg1, arg2);
 
@@ -413,7 +414,8 @@ void do_drop(struct char_data* ch, char* argument, int cmd) {
   char test = FALSE;
   char newarg[100];
   char* s;
-  int num, p;
+  int num;
+  int p;
 
   s = one_argument(argument, arg);
   if (is_number(arg)) {
@@ -533,7 +535,8 @@ void do_put(struct char_data* ch, char* argument, int cmd) {
   int bits;
   int volume;
   char newarg[100];
-  int num, p;
+  int num;
+  int p;
 
   argument_interpreter(argument, arg1, arg2);
 
@@ -666,9 +669,14 @@ void do_put(struct char_data* ch, char* argument, int cmd) {
 }
 
 void do_give(struct char_data* ch, char* argument, int cmd) {
-  char obj_name[80], vict_name[80], buf[132];
-  char arg[80], newarg[100];
-  int amount, num, p;
+  char obj_name[80];
+  char vict_name[80];
+  char buf[132];
+  char arg[80];
+  char newarg[100];
+  int amount;
+  int num;
+  int p;
   struct char_data* vict;
   struct obj_data* obj;
 

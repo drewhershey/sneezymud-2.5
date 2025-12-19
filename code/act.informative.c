@@ -66,11 +66,16 @@ void do_whozone(Mob* ch, char* argument, int cmd) {
 void do_who(struct char_data* ch, char* argument, int cmd) {
   struct char_data* k;
   struct descriptor_data* d;
-  char buf[256], buf2[256];
+  char buf[256];
+  char buf2[256];
   struct char_data* person;
   struct string_block sb;
-  int listed = 0, count, lcount, l;
-  char arg[256], tempbuf[256];
+  int listed = 0;
+  int count;
+  int lcount;
+  int l;
+  char arg[256];
+  char tempbuf[256];
 
   *buf = *buf2 = *arg = *tempbuf = '\0';
 
@@ -423,9 +428,14 @@ void show_mult_obj_to_char(struct obj_data* object, struct char_data* ch,
 }
 
 void list_obj_in_room(struct obj_data* list, struct char_data* ch) {
-  struct obj_data *i, *cond_ptr[50];
-  int Inventory_Num = 1, num;
-  int k, cond_top, cond_tot[50], found = FALSE;
+  struct obj_data *i;
+  struct obj_data *cond_ptr[50];
+  int Inventory_Num = 1;
+  int num;
+  int k;
+  int cond_top;
+  int cond_tot[50];
+  int found = FALSE;
   char buf[MAX_STRING_LENGTH];
 
   cond_top = 0;
@@ -490,8 +500,12 @@ void list_obj_in_room(struct obj_data* list, struct char_data* ch) {
 }
 
 void list_obj_in_heap(struct obj_data* list, struct char_data* ch) {
-  struct obj_data *i, *cond_ptr[50];
-  int k, cond_top, cond_tot[50], found = FALSE;
+  struct obj_data *i;
+  struct obj_data *cond_ptr[50];
+  int k;
+  int cond_top;
+  int cond_tot[50];
+  int found = FALSE;
   char buf[MAX_STRING_LENGTH];
 
   int Num_Inventory = 1;
@@ -584,7 +598,9 @@ static const char* const where[] = {
 
 void show_char_to_char(struct char_data* i, struct char_data* ch, int mode) {
   char buffer[MAX_STRING_LENGTH];
-  int j, found, percent;
+  int j;
+  int found;
+  int percent;
   struct obj_data* tmp_obj;
 
   if (!mode) {
@@ -802,7 +818,9 @@ void show_mult_char_to_char(struct char_data* i, struct char_data* ch, int mode,
   int num) {
   char buffer[MAX_STRING_LENGTH];
   char tmp[10];
-  int j, found, percent;
+  int j;
+  int found;
+  int percent;
   struct obj_data* tmp_obj;
 
   if (!mode) {
@@ -1022,8 +1040,12 @@ void show_mult_char_to_char(struct char_data* i, struct char_data* ch, int mode,
 }
 
 void list_char_in_room(struct char_data* list, struct char_data* ch) {
-  struct char_data *i, *cond_ptr[50];
-  int k, cond_top, cond_tot[50], found = FALSE;
+  struct char_data *i;
+  struct char_data *cond_ptr[50];
+  int k;
+  int cond_top;
+  int cond_tot[50];
+  int found = FALSE;
 
   cond_top = 0;
 
@@ -1111,7 +1133,8 @@ static const char* const color_liquid[] = {
 
 static void read_book(Mob* ch, Obj* o, char* arg) {
   char buf[256];
-  int vnum, section = 0;
+  int vnum;
+  int section = 0;
 
   if (!ch || !o || (GET_ITEM_TYPE(o) != ITEM_BOOK) || (o->item_number < 0)) {
     return;
@@ -1139,10 +1162,14 @@ void do_look(struct char_data* ch, char* argument, int cmd) {
   char buffer[MAX_STRING_LENGTH];
   char arg1[MAX_INPUT_LENGTH];
   char arg2[MAX_INPUT_LENGTH];
-  int keyword_no, res;
-  int j, bits, temp;
+  int keyword_no;
+  int res;
+  int j;
+  int bits;
+  int temp;
   char found;
-  struct obj_data *tmp_object, *found_object;
+  struct obj_data *tmp_object;
+  struct obj_data *found_object;
   struct char_data* tmp_char;
   char* tmp_desc;
   static const char* const keywords[] = {"north", "east", "south", "west", "up",
@@ -1568,7 +1595,8 @@ void do_read(struct char_data* ch, char* argument, int cmd) {
 }
 
 void do_examine(struct char_data* ch, char* argument, int cmd) {
-  char name[100], buf[100];
+  char name[100];
+  char buf[100];
   int bits;
   struct char_data* tmp_char;
   struct obj_data* tmp_object;
@@ -1766,8 +1794,10 @@ static const char* const month_name[17] = {"Month of Winter", /* 0 */
   "Month of the Great Evil"};
 
 void do_time(struct char_data* ch, char* argument, int cmd) {
-  char buf[100], *suf;
-  int weekday, day;
+  char buf[100];
+  char *suf;
+  int weekday;
+  int day;
 
   sprintf(buf, "It is %d o'clock %s, on ",
     ((time_info.hours % 12 == 0) ? 12 : ((time_info.hours) % 12)),
@@ -1869,7 +1899,8 @@ void do_help(struct char_data* ch, char* argument, int cmd) {
 
 void do_wizhelp(struct char_data* ch, char* argument, int cmd) {
   char buf[MAX_STRING_LENGTH];
-  int no, i;
+  int no;
+  int i;
 
   if (IS_NPC(ch)) {
     return;
@@ -1894,7 +1925,8 @@ void do_wizhelp(struct char_data* ch, char* argument, int cmd) {
 }
 
 void do_users(struct char_data* ch, char* argument, int cmd) {
-  char buf[MAX_STRING_LENGTH], line[200];
+  char buf[MAX_STRING_LENGTH];
+  char line[200];
 
   struct descriptor_data* d;
 
@@ -1922,7 +1954,8 @@ void do_inventory(struct char_data* ch, char* argument, int cmd) {
 }
 
 void do_equipment(struct char_data* ch, char* argument, int cmd) {
-  int j, Worn_Index;
+  int j;
+  int Worn_Index;
   char found;
   char String[256];
 
@@ -2093,12 +2126,14 @@ static void do_where_object(struct char_data* ch, struct obj_data* obj,
 }
 
 void do_where(struct char_data* ch, char* argument, int cmd) {
-  char name[MAX_INPUT_LENGTH], buf[MAX_STRING_LENGTH];
+  char name[MAX_INPUT_LENGTH];
+  char buf[MAX_STRING_LENGTH];
   char* nameonly;
   register struct char_data* i;
   register struct obj_data* k;
   struct descriptor_data* d;
-  int number, count;
+  int number;
+  int count;
   struct string_block sb;
 
   only_argument(argument, name);
@@ -2234,7 +2269,9 @@ static const int RacialMax[][4] = {
 };
 
 void do_levels(struct char_data* ch, char* argument, int cmd) {
-  int i, RaceMax, class;
+  int i;
+  int RaceMax;
+  int class;
   char buf[MAX_STRING_LENGTH];
   char buf2[MAX_STRING_LENGTH];
   struct string_block sb;
@@ -2363,7 +2400,8 @@ static const char* DescDamage(float dam) {
 
 void do_consider(struct char_data* ch, char* argument, int cmd) {
   struct char_data* victim;
-  char name[256], buf[256];
+  char name[256];
+  char buf[256];
   int diff;
 
   only_argument(argument, name);
@@ -2419,7 +2457,8 @@ void do_consider(struct char_data* ch, char* argument, int cmd) {
   if (ch->skills) {
     int skill = 0;
     int learn = 0;
-    int num, num2;
+    int num;
+    int num2;
     float fnum;
 
     if (IsAnimal(victim) && ch->skills[SKILL_CONS_ANIMAL].learned) {
@@ -2543,7 +2582,8 @@ void do_consider(struct char_data* ch, char* argument, int cmd) {
 }
 
 void do_spells(struct char_data* ch, char* argument, int cmd) {
-  int spl, i;
+  int spl;
+  int i;
   char buf[16384];
 
   if (IS_NPC(ch)) {
@@ -2569,8 +2609,10 @@ void do_spells(struct char_data* ch, char* argument, int cmd) {
 
 void do_world(struct char_data* ch, char* argument, int cmd) {
   static char buf[100];
-  long ct, ot;
-  char *tmstr, *otmstr;
+  long ct;
+  long ot;
+  char *tmstr;
+  char *otmstr;
 
   ot = Uptime;
   otmstr = asctime(localtime(&ot));
@@ -2619,7 +2661,8 @@ static const char* const attr_player_bits[] = {"Brief", "Compact", "Wimpy",
   "\n"};
 
 void do_attribute(struct char_data* ch, char* argument, int cmd) {
-  char buf[MAX_STRING_LENGTH], buf2[MAX_STRING_LENGTH];
+  char buf[MAX_STRING_LENGTH];
+  char buf2[MAX_STRING_LENGTH];
   struct affected_type* aff;
 
   sprintf(buf,

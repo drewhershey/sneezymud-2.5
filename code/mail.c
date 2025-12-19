@@ -152,7 +152,8 @@ static void index_mail(char* raw_name_to_index, long pos) {
 int scan_file(void) {
   FILE* mail_file;
   header_block_type next_block;
-  int total_messages = 0, block_num = 0;
+  int total_messages = 0;
+  int block_num = 0;
   char buf[100];
 
   if (!(mail_file = fopen(MAIL_FILE, "r"))) {
@@ -202,7 +203,8 @@ int has_mail(char* recipient) {
 void store_mail(char* to, char* from, char* message_pointer) {
   header_block_type header;
   data_block_type data;
-  long last_address, target_address;
+  long last_address;
+  long target_address;
   char* msg_txt = message_pointer;
   char* tmp;
   int bytes_written = 0;
@@ -303,10 +305,14 @@ header (i.e. the text handed to the player)
 char* read_delete(char* recipient, char* recipient_formatted) {
   header_block_type header;
   data_block_type data;
-  mail_index_type *mail_pointer, *prev_mail;
+  mail_index_type *mail_pointer;
+  mail_index_type *prev_mail;
   position_list_type* position_pointer;
-  long mail_address, following_block;
-  char *message, *tmstr, buf[200];
+  long mail_address;
+  long following_block;
+  char *message;
+  char *tmstr;
+  char buf[200];
   size_t string_size;
 
   if (!*recipient || !*recipient_formatted) {
@@ -407,7 +413,9 @@ char* read_delete(char* recipient, char* recipient_formatted) {
 
 static void postmaster_send_mail(struct char_data* ch, int cmd, char* arg) {
   struct char_data* mailman;
-  char buf[200], recipient[100], *tmp;
+  char buf[200];
+  char recipient[100];
+  char *tmp;
 
   mailman = FindMobInRoomWithFunction(ch->in_room, postmaster);
 
@@ -468,7 +476,9 @@ static void postmaster_send_mail(struct char_data* ch, int cmd, char* arg) {
 
 static void postmaster_check_mail(struct char_data* ch, int cmd, char* arg) {
   struct char_data* mailman;
-  char buf[200], recipient[100], *tmp;
+  char buf[200];
+  char recipient[100];
+  char *tmp;
 
   mailman = FindMobInRoomWithFunction(ch->in_room, postmaster);
 
@@ -494,7 +504,9 @@ static void postmaster_check_mail(struct char_data* ch, int cmd, char* arg) {
 
 static void postmaster_receive_mail(struct char_data* ch, int cmd, char* arg) {
   struct char_data* mailman;
-  char buf[200], recipient[100], *tmp;
+  char buf[200];
+  char recipient[100];
+  char *tmp;
   struct obj_data* tmp_obj;
 
   mailman = FindMobInRoomWithFunction(ch->in_room, postmaster);

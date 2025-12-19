@@ -77,7 +77,8 @@ int HasClass(struct char_data* ch, int class) {
 }
 
 int HowManyClasses(struct char_data* ch) {
-  short i, tot = 0;
+  short i;
+  short tot = 0;
 
   for (i = 0; i < 8; i++) {
     if (GET_LEVEL(ch, i)) {
@@ -219,7 +220,10 @@ int BestMagicClass(struct char_data* ch) {
 }
 
 static int GetALevel(struct char_data* ch, int which) {
-  signed char ind[4], j, k, i;
+  signed char ind[4];
+  signed char j;
+  signed char k;
+  signed char i;
 
   for (i = MAGE_LEVEL_IND; i <= THIEF_LEVEL_IND; i++) {
     ind[i] = GET_LEVEL(ch, i);
@@ -246,7 +250,8 @@ static int GetALevel(struct char_data* ch, int which) {
 }
 
 int GetMaxLevel(struct char_data* ch) {
-  register int max = 0, i;
+  register int max = 0;
+  register int i;
 
   for (i = MAGE_LEVEL_IND; i <= RANGER_LEVEL_IND; i++) {
     if (GET_LEVEL(ch, i) > max) {

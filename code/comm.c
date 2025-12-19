@@ -69,8 +69,11 @@ int tics = 0; /* for extern checkpointing */
  ********************************************************************* */
 
 int main(int argc, char** argv) {
-  int port, a, pos = 1;
-  char buf[512], *dir;
+  int port;
+  int a;
+  int pos = 1;
+  char buf[512];
+  char *dir;
 
   struct rlimit rl;
   int res;
@@ -205,17 +208,35 @@ int run_the_game(int port) {
 
 /* Accept new connects, relay commands, and call 'heartbeat-functs' */
 int game_loop(int s) {
-  fd_set input_set, output_set, exc_set;
-  struct timeval last_time, now, timespent, timeout, null_time;
+  fd_set input_set;
+  fd_set output_set;
+  fd_set exc_set;
+  struct timeval last_time;
+  struct timeval now;
+  struct timeval timespent;
+  struct timeval timeout;
+  struct timeval null_time;
   static struct timeval opt_time;
   char comm[MAX_INPUT_LENGTH];
-  char promptbuf[80], movebuf[80];
-  char buf[80], tempbuf[80], buf2[80];
-  char hitscolor[10], manacolor[10], movescolor[10];
-  struct descriptor_data *point, *next_point;
-  int i, pulse = 0, prompt_per;
-  int current_hit, current_mana, current_moves;
-  int missing_hit, missing_mana, missing_moves;
+  char promptbuf[80];
+  char movebuf[80];
+  char buf[80];
+  char tempbuf[80];
+  char buf2[80];
+  char hitscolor[10];
+  char manacolor[10];
+  char movescolor[10];
+  struct descriptor_data *point;
+  struct descriptor_data *next_point;
+  int i;
+  int pulse = 0;
+  int prompt_per;
+  int current_hit;
+  int current_mana;
+  int current_moves;
+  int missing_hit;
+  int missing_mana;
+  int missing_moves;
   struct room_data* rm;
 
   null_time.tv_sec = 0;
@@ -723,7 +744,8 @@ void write_to_q(const char* txt, struct txt_q* queue) {
 }
 
 struct timeval timediff(struct timeval* a, struct timeval* b) {
-  struct timeval rslt, tmp;
+  struct timeval rslt;
+  struct timeval tmp;
 
   tmp = *a;
 
@@ -819,7 +841,10 @@ int new_connection(int s) {
 static void printhost(struct in_addr* addr, char* buf) {
   struct hostent* h;
   char* s;
-  int n1, n2, n3, n4;
+  int n1;
+  int n2;
+  int n3;
+  int n4;
 
   h = gethostbyaddr((const char*)addr, sizeof(*addr), AF_INET);
   s = (h == NULL) ? NULL : h->h_name;
@@ -840,7 +865,10 @@ static void printhost(struct in_addr* addr, char* buf) {
 static void printhostaddr(struct in_addr* addr, char* buf) {
   struct hostent* h;
   char* s;
-  int n1, n2, n3, n4;
+  int n1;
+  int n2;
+  int n3;
+  int n4;
 
   h = gethostbyaddr((const char*)addr, sizeof(*addr), AF_INET);
   s = (h == NULL) ? NULL : h->h_name;
@@ -853,12 +881,16 @@ static void printhostaddr(struct in_addr* addr, char* buf) {
 }
 
 int new_descriptor(int s) {
-  int desc, a, size;
+  int desc;
+  int a;
+  int size;
   struct descriptor_data* newd;
   struct sockaddr_in sock;
   struct hostent* from;
-  char buf[100], tempbuf[255];
-  char *temphost[255], *temphostaddr[255];
+  char buf[100];
+  char tempbuf[255];
+  char *temphost[255];
+  char *temphostaddr[255];
 
   if ((desc = new_connection(s)) < 0) {
     return (-1);
@@ -978,7 +1010,9 @@ int process_output(struct descriptor_data* t) {
 }
 
 int write_to_descriptor(int desc, const char* txt) {
-  int sofar, thisround, total;
+  int sofar;
+  int thisround;
+  int total;
 
   total = strlen(txt);
   sofar = 0;
@@ -999,8 +1033,15 @@ int write_to_descriptor(int desc, const char* txt) {
 }
 
 int process_input(struct descriptor_data* t) {
-  int sofar, thisround, begin, squelch, i, k, flag;
-  char tmp[MAX_INPUT_LENGTH + 2], buffer[MAX_INPUT_LENGTH + 60];
+  int sofar;
+  int thisround;
+  int begin;
+  int squelch;
+  int i;
+  int k;
+  int flag;
+  char tmp[MAX_INPUT_LENGTH + 2];
+  char buffer[MAX_INPUT_LENGTH + 60];
 
   sofar = 0;
   flag = 0;
@@ -1394,9 +1435,12 @@ void send_to_room_except_two(const char* messg, int room, struct char_data* ch1,
 
 void act(const char* str, int hide_invisible, struct char_data* ch,
   struct obj_data* obj, void* vict_obj, int type) {
-  register const char *strp, *i;
+  register const char *strp;
+  register const char *i;
   register char* point;
-  struct char_data *to, *tmp_victim, *temp;
+  struct char_data *to;
+  struct char_data *tmp_victim;
+  struct char_data *temp;
   char buf[MAX_STRING_LENGTH];
 
   if (!str) {

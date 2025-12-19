@@ -145,7 +145,8 @@ void appear(struct char_data* ch) {
 
 void load_messages(void) {
   FILE* f1;
-  int i, type;
+  int i;
+  int type;
   struct message_type* messages;
   char chk[100];
 
@@ -333,10 +334,12 @@ static const int corpse_volume[] = {
 };
 
 void make_corpse(struct char_data* ch) {
-  struct obj_data *corpse, *o;
+  struct obj_data *corpse;
+  struct obj_data *o;
   struct obj_data* money;
   char buf[MAX_INPUT_LENGTH];
-  int i, ADeadBody = FALSE;
+  int i;
+  int ADeadBody = FALSE;
 
   struct obj_data* create_money(int amount);
 
@@ -457,7 +460,8 @@ void change_alignment(struct char_data* ch, struct char_data* victim) {
 }
 
 void death_cry(struct char_data* ch) {
-  int door, was_in;
+  int door;
+  int was_in;
 
   if (ch->in_room == -1) {
     return;
@@ -574,7 +578,8 @@ void die(struct char_data* ch) {
 
 void group_gain(struct char_data* ch, struct char_data* victim) {
   char buf[256];
-  int no_members, share;
+  int no_members;
+  int share;
   struct char_data* k;
   struct follow_type* f;
   int total;
@@ -677,7 +682,8 @@ char* replace_string(const char* str, const char* weapon,
 void dam_message(int dam, struct char_data* ch, struct char_data* victim,
   int w_type) {
   struct obj_data* wield;
-  struct char_data *tmp_victim, *temp;
+  struct char_data *tmp_victim;
+  struct char_data *temp;
   char* buf;
   int snum;
   int numb;
@@ -901,7 +907,11 @@ static int BrittleCheck(struct char_data* ch, int dam) {
 
 int DamageMessages(struct char_data* ch, struct char_data* v, int dam,
   int attacktype) {
-  int nr, max_hit, i, j, exp;
+  int nr;
+  int max_hit;
+  int i;
+  int j;
+  int exp;
   struct message_type* messages;
   char buf[MAX_INPUT_LENGTH];
 
@@ -1345,7 +1355,8 @@ int CalcThaco(struct char_data* ch) {
 }
 
 int HitOrMiss(struct char_data* ch, struct char_data* victim, int calc_thaco) {
-  int diceroll, victim_ac;
+  int diceroll;
+  int victim_ac;
 
   diceroll = number(1, 20);
 
@@ -1433,7 +1444,8 @@ static int MonkDodge(struct char_data* ch, struct char_data* v, int* dam) {
 }
 
 static int WeaponSpell(struct char_data* c, struct char_data* v, int type) {
-  int j, num;
+  int j;
+  int num;
 
   if ((c->in_room == v->in_room) && (GET_POS(v) != POSITION_DEAD)) {
     if ((c->equipment[WIELD]) &&
@@ -1591,7 +1603,10 @@ int GetFormType(struct char_data* ch) {
 
 void root_hit(struct char_data* ch, struct char_data* victim, int type,
   int (*dam_func)(struct char_data*, struct char_data*, int, int)) {
-  int w_type, thaco, dam, i;
+  int w_type;
+  int thaco;
+  int dam;
+  int i;
   struct obj_data* wielded = 0; /* this is rather important. */
 
   if (IS_AFFECTED(ch, AFF_GRAPPLE)) {
@@ -1646,7 +1661,9 @@ void hit(struct char_data* ch, struct char_data* victim, int type) {
 }
 
 static void DevelopHatred(struct char_data* ch, struct char_data* v) {
-  int diff, patience, var;
+  int diff;
+  int patience;
+  int var;
 
   if (Hates(ch, v)) {
     return;
@@ -1676,8 +1693,12 @@ static void DevelopHatred(struct char_data* ch, struct char_data* v) {
 
 /* control the fights going on */
 void perform_violence(int pulse) {
-  struct char_data *ch, *vict;
-  int i, t, found, perc;
+  struct char_data *ch;
+  struct char_data *vict;
+  int i;
+  int t;
+  int found;
+  int perc;
   float x;
 
   for (ch = combat_list; ch; ch = combat_next_dude) {
@@ -1809,11 +1830,25 @@ void perform_violence(int pulse) {
 struct char_data* FindVictim(struct char_data* ch) {
   struct char_data* tmp_ch;
   unsigned char found = FALSE;
-  unsigned short ftot = 0, ttot = 0, ctot = 0, ntot = 0, mtot = 0, atot = 0,
-                 ptot = 0, ktot = 0, rtot = 0;
+  unsigned short ftot = 0;
+  unsigned short ttot = 0;
+  unsigned short ctot = 0;
+  unsigned short ntot = 0;
+  unsigned short mtot = 0;
+  unsigned short atot = 0;
+  unsigned short ptot = 0;
+  unsigned short ktot = 0;
+  unsigned short rtot = 0;
   unsigned short total;
-  unsigned short fjump = 0, njump = 0, cjump = 0, mjump = 0, tjump = 0,
-                 ajump = 0, pjump = 0, kjump = 0, rjump;
+  unsigned short fjump = 0;
+  unsigned short njump = 0;
+  unsigned short cjump = 0;
+  unsigned short mjump = 0;
+  unsigned short tjump = 0;
+  unsigned short ajump = 0;
+  unsigned short pjump = 0;
+  unsigned short kjump = 0;
+  unsigned short rjump;
 
   if (ch->in_room < 0) {
     return (0);
@@ -1979,11 +2014,25 @@ struct char_data* FindVictim(struct char_data* ch) {
 struct char_data* FindAnyVictim(struct char_data* ch) {
   struct char_data* tmp_ch;
   unsigned char found = FALSE;
-  unsigned short ftot = 0, ttot = 0, ctot = 0, ntot = 0, mtot = 0, atot = 0,
-                 ptot = 0, ktot = 0, rtot = 0;
+  unsigned short ftot = 0;
+  unsigned short ttot = 0;
+  unsigned short ctot = 0;
+  unsigned short ntot = 0;
+  unsigned short mtot = 0;
+  unsigned short atot = 0;
+  unsigned short ptot = 0;
+  unsigned short ktot = 0;
+  unsigned short rtot = 0;
   unsigned short total;
-  unsigned short fjump = 0, njump = 0, cjump = 0, mjump = 0, tjump = 0,
-                 ajump = 0, kjump = 0, rjump = 0, pjump = 0;
+  unsigned short fjump = 0;
+  unsigned short njump = 0;
+  unsigned short cjump = 0;
+  unsigned short mjump = 0;
+  unsigned short tjump = 0;
+  unsigned short ajump = 0;
+  unsigned short kjump = 0;
+  unsigned short rjump = 0;
+  unsigned short pjump = 0;
   if (ch->in_room < 0) {
     return (0);
   }
@@ -2133,7 +2182,9 @@ struct char_data* FindAnyVictim(struct char_data* ch) {
 }
 
 int BreakLifeSaverObj(struct char_data* ch) {
-  int found = FALSE, i, j;
+  int found = FALSE;
+  int i;
+  int j;
   char buf[200];
   struct obj_data* o;
 
@@ -2254,7 +2305,9 @@ int PreProcDam(struct char_data* ch, int type, int dam) {
 }
 
 int WeaponCheck(struct char_data* ch, struct char_data* v, int type, int dam) {
-  int Immunity, total, j;
+  int Immunity;
+  int total;
+  int j;
 
   Immunity = -1;
   if (IS_SET(v->M_immune, IMM_NONMAG)) {
@@ -2358,9 +2411,17 @@ int SkipImmortals(struct char_data* v, int amnt) {
 struct char_data* FindAnAttacker(struct char_data* ch) {
   struct char_data* tmp_ch;
   unsigned char found = FALSE;
-  unsigned short ftot = 0, ttot = 0, ctot = 0, ntot = 0, mtot = 0;
+  unsigned short ftot = 0;
+  unsigned short ttot = 0;
+  unsigned short ctot = 0;
+  unsigned short ntot = 0;
+  unsigned short mtot = 0;
   unsigned short total;
-  unsigned short fjump = 0, njump = 0, cjump = 0, mjump = 0, tjump = 0;
+  unsigned short fjump = 0;
+  unsigned short njump = 0;
+  unsigned short cjump = 0;
+  unsigned short mjump = 0;
+  unsigned short tjump = 0;
 
   if (ch->in_room < 0) {
     return (0);

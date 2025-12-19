@@ -175,7 +175,8 @@ void boot_db(void) {
 
   for (i = 0; i <= top_of_zone_table; i++) {
     char* s;
-    int d, e;
+    int d;
+    int e;
     s = zone_table[i].name;
     d = (i ? (zone_table[i - 1].top + 1) : 0);
     e = zone_table[i].top;
@@ -308,7 +309,8 @@ void update_time(void) {
 
 /* generate index table for the player file */
 void build_player_index(void) {
-  int nr = -1, i;
+  int nr = -1;
+  int i;
   int pc = 0;
   struct char_file_u dummy;
   FILE* fl;
@@ -408,7 +410,8 @@ struct index_data* generate_indices(FILE* fl, int* top) {
 
 void cleanout_room(struct room_data* rp) {
   int i;
-  struct extra_descr_data *exptr, *nptr;
+  struct extra_descr_data *exptr;
+  struct extra_descr_data *nptr;
 
   free(rp->name);
   free(rp->description);
@@ -633,7 +636,8 @@ Room* allocate_room(int room_number) {
   }
 
 void renum_zone_table(void) {
-  int zone, comm;
+  int zone;
+  int comm;
   struct reset_com* cmd;
   char buf[256];
 
@@ -696,8 +700,14 @@ void renum_zone_table(void) {
 /* load the zone table and command tables */
 void boot_zones(void) {
   FILE* fl;
-  int zon = 0, cmd_no = 0, expand, tmp, bc = 100, cc = 20;
-  char *check, buf[81];
+  int zon = 0;
+  int cmd_no = 0;
+  int expand;
+  int tmp;
+  int bc = 100;
+  int cc = 20;
+  char *check;
+  char buf[81];
 
   if (!(fl = fopen(ZONE_FILE, "r"))) {
     perror("boot_zones");
@@ -1255,9 +1265,11 @@ struct char_data* read_mobile(int nr, int type) {
 /* read an object from OBJ_FILE */
 struct obj_data* read_object(int nr, int type) {
   struct obj_data* obj;
-  int tmp, i;
+  int tmp;
+  int i;
   long bc;
-  char chk[50], buf[100];
+  char chk[50];
+  char buf[100];
   struct extra_descr_data* new_descr;
 
   i = nr;
@@ -1392,7 +1404,9 @@ struct obj_data* read_object(int nr, int type) {
 /* update zone ages, queue for reset if necessary, and dequeue when possible */
 void zone_update(void) {
   int i;
-  struct reset_q_element *update_u, *temp, *tmp2;
+  struct reset_q_element *update_u;
+  struct reset_q_element *temp;
+  struct reset_q_element *tmp2;
 
   /* enqueue zones */
 
@@ -1460,11 +1474,13 @@ void zone_update(void) {
 
 /* execute the reset command table of a given zone */
 void reset_zone(int zone) {
-  int cmd_no, last_cmd = 1;
+  int cmd_no;
+  int last_cmd = 1;
   char buf[256];
   struct char_data* mob;
   struct char_data* master;
-  struct obj_data *obj, *obj_to;
+  struct obj_data *obj;
+  struct obj_data *obj_to;
   struct room_data* rp;
 
   mob = 0;
@@ -2073,7 +2089,8 @@ void free_char(struct char_data* ch) {
 
 /* release memory allocated for an obj struct */
 void free_obj(struct obj_data* obj) {
-  struct extra_descr_data* this, *next_one;
+  struct extra_descr_data * this;
+  struct extra_descr_data *next_one;
 
   free(obj->name);
   if (obj->description && *obj->description) {
@@ -2162,10 +2179,13 @@ void ClearDeadBit(struct char_data* ch) {
 
 /* clear some of the the working variables of a char */
 void reset_char(struct char_data* ch) {
-  char buf[100], recipient[100], *tmp;
+  char buf[100];
+  char recipient[100];
+  char *tmp;
   struct affected_type* af;
 
-  int i, j;
+  int i;
+  int j;
 
   for (i = 0; i < MAX_WEAR; i++) { /* Initializing */
     ch->equipment[i] = 0;
@@ -2502,7 +2522,9 @@ struct room_data* real_roomp(int virtual) {
 
 /* returns the real number of the monster with given virtual number */
 int real_mobile(int virtual) {
-  int bot, top, mid;
+  int bot;
+  int top;
+  int mid;
 
   bot = 0;
   top = top_of_mobt;
@@ -2527,7 +2549,9 @@ int real_mobile(int virtual) {
 
 /* returns the real number of the object with given virtual number */
 int real_object(int virtual) {
-  int bot, top, mid;
+  int bot;
+  int top;
+  int mid;
 
   bot = 0;
   top = top_of_objt;

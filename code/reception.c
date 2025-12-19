@@ -78,7 +78,8 @@ static void WriteObjs(FILE* fl, struct obj_file_u* st, int save) {
 
 void update_file(struct char_data* ch, struct obj_file_u* st, int save) {
   FILE* fl;
-  int loc, t;
+  int loc;
+  int t;
   struct obj_file_u tmp;
   char buf[200];
 
@@ -188,7 +189,8 @@ void ZeroRent(char* n) {
 
 /* Puts object in store, at first item which has no -1 */
 void put_obj_in_store(struct obj_data* obj, struct obj_file_u* st) {
-  int i, j;
+  int i;
+  int j;
   char found = FALSE;
   struct obj_file_elem* oe;
   char buf[256];
@@ -313,7 +315,9 @@ void obj_to_store(struct obj_data* obj, struct obj_file_u* st,
 void save_obj(struct char_data* ch, struct obj_cost* cost, int delete) {
   static struct obj_file_u st;
   FILE* fl;
-  int pos, i, j;
+  int pos;
+  int i;
+  int j;
   char found = FALSE;
 
   st.number = 0;
@@ -345,7 +349,8 @@ void save_obj(struct char_data* ch, struct obj_cost* cost, int delete) {
  ************************************************************************* */
 
 static void CountLimitedItems(struct obj_file_u* st) {
-  int i, cost_per_day;
+  int i;
+  int cost_per_day;
   struct obj_data* obj;
 
   if (!st->owner[0]) {
@@ -373,12 +378,17 @@ static void CountLimitedItems(struct obj_file_u* st) {
 }
 
 void update_obj_file(void) {
-  FILE *fl, *char_file;
+  FILE *fl;
+  FILE *char_file;
   struct obj_file_u st;
   struct char_file_u ch_st;
   struct char_data tmp_char;
-  int pos, no_read, i, cost_per_day;
-  long days_passed, secs_lost;
+  int pos;
+  int no_read;
+  int i;
+  int cost_per_day;
+  long days_passed;
+  long secs_lost;
   char buf[MAX_INPUT_LENGTH];
   struct obj_file_u* lim;
   struct obj_data* obj;

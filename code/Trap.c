@@ -51,7 +51,9 @@ int CheckForGetTrap(struct char_data* ch, struct obj_data* i) {
 }
 
 int TriggerTrap(struct char_data* ch, struct obj_data* i) {
-  int adj, fireperc, roll;
+  int adj;
+  int fireperc;
+  int roll;
   struct char_data* v;
 
   if (ITEM_TYPE(i) == ITEM_TRAP) {

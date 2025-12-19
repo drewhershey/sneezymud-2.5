@@ -23,7 +23,8 @@
 #include "utils.h"
 
 static int remove_trap(struct char_data* ch, struct obj_data* trap) {
-  int num, charges;
+  int num;
+  int charges;
 
   if (ITEM_TYPE(trap) != ITEM_TRAP) {
     send_to_char("I don't think thats a trap\n\r", ch);
@@ -51,7 +52,8 @@ void do_disarm(struct char_data* ch, char* argument, int cmd) {
   char name[30];
   int percent;
   struct char_data* victim;
-  struct obj_data *w, *trap;
+  struct obj_data *w;
+  struct obj_data *trap;
 
   if (!ch->skills) {
     return;
@@ -211,7 +213,9 @@ static int named_mobile_in_room(int room, struct hunting_data* c_data) {
 }
 
 void do_track(struct char_data* ch, char* argument, int cmd) {
-  char name[256], buf[256], found = FALSE;
+  char name[256];
+  char buf[256];
+  char found = FALSE;
   // int dist, code;
 
   struct char_data* scan;
@@ -441,7 +445,8 @@ static int hash_enter(struct hash_header* ht, int key, void* data) {
 
 static void destroy_hash_table(struct hash_header* ht, void (*gman)(void*)) {
   int i;
-  struct hash_link *scan, *temp;
+  struct hash_link *scan;
+  struct hash_link *temp;
 
   for (i = 0; i < ht->table_size; i++) {
     for (scan = ht->buckets[i]; scan;) {
@@ -457,10 +462,15 @@ static void destroy_hash_table(struct hash_header* ht, void (*gman)(void*)) {
 
 int find_path(int in_room, struct find_path_data* data, int depth,
   int in_zone) {
-  struct room_q *tmp_q, *q_head, *q_tail;
+  struct room_q *tmp_q;
+  struct room_q *q_head;
+  struct room_q *q_tail;
   struct hash_header x_room;
-  int i, tmp_room, count = 0;
-  struct room_data *herep, *therep;
+  int i;
+  int tmp_room;
+  int count = 0;
+  struct room_data *herep;
+  struct room_data *therep;
 
   struct room_direction_data* exitp;
 
@@ -774,9 +784,12 @@ void do_doorbash(struct char_data* ch, char* arg, int cmd) {
   int dir;
   int ok;
   struct room_direction_data* exitp;
-  int was_in, roll;
+  int was_in;
+  int roll;
 
-  char buf[256], type[128], direction[128];
+  char buf[256];
+  char type[128];
+  char direction[128];
 
   if (GET_MOVE(ch) < 10) {
     send_to_char("You're too tired to do that\n\r", ch);
@@ -945,7 +958,9 @@ void do_spy(struct char_data* ch, char* arg, int cmd) {
 
 void do_throw(struct char_data* ch, char* arg, int cmd) {
   struct char_data* victim;
-  char name[256], obje[100], buf[256];
+  char name[256];
+  char obje[100];
+  char buf[256];
   signed char percent;
   int dr;
   const char* const keyword[] = {"north", "east", "south", "west", "up", "down",

@@ -146,9 +146,12 @@ void quad_arg(char* arg, int* type, char* name, int* field, char* string) {
 
 /* modification of malloc'ed strings in chars/objects */
 void do_string(struct char_data* ch, char* arg, int cmd) {
-  char name[MAX_STRING_LENGTH], string[MAX_STRING_LENGTH];
-  struct extra_descr_data *ed, *tmp;
-  int field, type;
+  char name[MAX_STRING_LENGTH];
+  char string[MAX_STRING_LENGTH];
+  struct extra_descr_data *ed;
+  struct extra_descr_data *tmp;
+  int field;
+  int type;
   struct char_data* mob;
   struct obj_data* obj;
   if (IS_NPC(ch)) {
@@ -369,12 +372,26 @@ void bisect_arg(char* arg, int* field, char* string) {
 }
 
 void do_edit(struct char_data* ch, char* arg, int cmd) {
-  int field, dflags, dir, exroom, dkey, room, rspeed, rdir, tele_room,
-    tele_time, tele_look, moblim;
+  int field;
+  int dflags;
+  int dir;
+  int exroom;
+  int dkey;
+  int room;
+  int rspeed;
+  int rdir;
+  int tele_room;
+  int tele_time;
+  int tele_look;
+  int moblim;
   unsigned r_flags;
-  int zone, s_type;
-  char name[MAX_INPUT_LENGTH], string[512], buf[132];
-  struct extra_descr_data *ed, *tmp;
+  int zone;
+  int s_type;
+  char name[MAX_INPUT_LENGTH];
+  char string[512];
+  char buf[132];
+  struct extra_descr_data *ed;
+  struct extra_descr_data *tmp;
   struct room_data* rp;
 
   rp = real_roomp(ch->in_room);
@@ -666,7 +683,9 @@ void do_setskill(struct char_data* ch, char* arg, int cmd) {
 /* regarded as ONE word                                              */
 
 char* one_word(char* argument, char* first_arg) {
-  int found, begin, look_at;
+  int found;
+  int begin;
+  int look_at;
 
   found = begin = 0;
 
@@ -727,7 +746,8 @@ int start_page_file(struct descriptor_data* d, const char* fpath,
 int page_file(struct descriptor_data* d, char* input) {
   FILE* fp;
   static char buffer[256];
-  int i, numlines;
+  int i;
+  int numlines;
   int sent_something = FALSE;
 
   /* see if they have typed a command / abort */
@@ -785,9 +805,12 @@ void page_string(struct descriptor_data* d, char* str, int keep_internal) {
 }
 
 void show_string(struct descriptor_data* d, char* input) {
-  char buffer[MAX_STRING_LENGTH], buf[MAX_INPUT_LENGTH];
-  register char *scan, *chk;
-  int lines = 0, toggle = 1;
+  char buffer[MAX_STRING_LENGTH];
+  char buf[MAX_INPUT_LENGTH];
+  register char *scan;
+  register char *chk;
+  int lines = 0;
+  int toggle = 1;
 
   one_argument(input, buf);
 
@@ -920,7 +943,9 @@ int load(void) {
   } info;
 
   FILE* fl;
-  int ld, i, sum;
+  int ld;
+  int i;
+  int sum;
   static int previous[5];
   static int p_point = -1;
 
@@ -973,7 +998,8 @@ char* nogames(void) {
 
 /* emulate the game regulator */
 void gr(int s) {
-  char *txt = 0, buf[1024];
+  char *txt = 0;
+  char buf[1024];
   int ld = 0;
   static const char* warnings[3] = {
     "If things don't look better within 3 minutes, the game will pause.\n\r",

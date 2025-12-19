@@ -158,7 +158,8 @@ static int check_for_dice_in_inv(struct char_data* ch) {
 }
 
 static int check_pointroll(struct char_data* ch) {
-  struct char_data *tmp_char, *temp;
+  struct char_data *tmp_char;
+  struct char_data *temp;
 
   for (tmp_char = character_list; tmp_char; tmp_char = temp) {
     temp = tmp_char->next;
@@ -178,7 +179,8 @@ int check_slots(struct char_data* ch) {
 }
 
 int check_slot_player(struct char_data* ch) {
-  struct char_data *better, *temp;
+  struct char_data *better;
+  struct char_data *temp;
 
   for (better = character_list; better; better = temp) {
     temp = better->next;
@@ -193,8 +195,11 @@ int check_slot_player(struct char_data* ch) {
 
 void do_bet(struct char_data* ch, char* arg, int cmd) {
   char buf[255];
-  char amount[15], craps[255];
-  int num, number, opt;
+  char amount[15];
+  char craps[255];
+  int num;
+  int number;
+  int opt;
 
   half_chop(arg, amount, craps);
 
@@ -354,7 +359,8 @@ static void spin_slot(struct char_data* ch) {
   const char* fruit1;
   const char* fruit2;
   const char* fruit3;
-  struct obj_data *coins, *slot;
+  struct obj_data *coins;
+  struct obj_data *slot;
   int bits;
   struct char_data* tmp_char;
 
@@ -464,7 +470,8 @@ static int can_bet_craps(struct char_data* ch) {
 }
 
 static void check_craps(struct char_data* ch, int diceroll) {
-  struct char_data *better, *temp;
+  struct char_data *better;
+  struct char_data *temp;
   char buf[255];
 
   if (diceroll != 2) {
@@ -501,7 +508,8 @@ static void check_craps(struct char_data* ch, int diceroll) {
 }
 
 static void check_seven(struct char_data* ch, int diceroll) {
-  struct char_data *better, *temp;
+  struct char_data *better;
+  struct char_data *temp;
 
   if (diceroll != 7) {
     return;
@@ -548,7 +556,8 @@ static void check_seven(struct char_data* ch, int diceroll) {
 }
 
 void check_eleven(struct char_data* ch, int diceroll) {
-  struct char_data *better, *temp;
+  struct char_data *better;
+  struct char_data *temp;
   char buf[255];
 
   if (diceroll != 11) {
@@ -702,7 +711,8 @@ static void check_field(struct char_data* better, int diceroll) {
 }
 
 static void check_onerolls(struct char_data* ch, int diceroll) {
-  struct char_data *better, *temp;
+  struct char_data *better;
+  struct char_data *temp;
 
   for (better = character_list; better; better = temp) {
     temp = better->next;
@@ -747,7 +757,8 @@ static void set_point(struct char_data* ch, int diceroll) {
 }
 
 static void WinLoseCraps(struct char_data* ch, int diceroll) {
-  struct char_data *better, *temp;
+  struct char_data *better;
+  struct char_data *temp;
   char buf[255];
 
   for (better = character_list; better; better = temp) {
@@ -775,9 +786,13 @@ static void WinLoseCraps(struct char_data* ch, int diceroll) {
 }
 
 static void roll_dice(struct char_data* ch) {
-  int die_one, die_two, dice_roll;
+  int die_one;
+  int die_two;
+  int dice_roll;
   char buf[255];
-  struct char_data *better, *temp, *table_man;
+  struct char_data *better;
+  struct char_data *temp;
+  struct char_data *table_man;
 
   if (!check_for_dice_held(ch)) {
     send_to_char("You dont have control of the dice!\n\r", ch);
@@ -848,9 +863,13 @@ static void roll_dice(struct char_data* ch) {
 }
 
 void do_play(struct char_data* ch, char* arg, int cmd) {
-  char bet[255], buf[255], game[255], options[255];
+  char bet[255];
+  char buf[255];
+  char game[255];
+  char options[255];
   struct obj_data* slot;
-  int option, opt;
+  int option;
+  int opt;
 
   half_chop(arg, game, options);
 
@@ -1039,7 +1058,8 @@ void check_horn(struct char_data* better, int diceroll) {
 }
 
 void check_hard_four(struct char_data* better, int diceroll) {
-  struct char_data *tmp_better, *temp;
+  struct char_data *tmp_better;
+  struct char_data *temp;
   char buf[255];
 }
 
@@ -1055,7 +1075,9 @@ void check_hardrolls(struct char_data* better, int diceroll) {}
 
 int craps_table_man(struct char_data* ch, int cmd, char* arg) {
   struct char_data* crap_man;
-  char buf[255], amount[255], options[255];
+  char buf[255];
+  char amount[255];
+  char options[255];
   char dice[255];
   int bits;
 

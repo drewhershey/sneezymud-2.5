@@ -106,7 +106,9 @@ static int shop_producing(struct obj_data* item, int shop_nr) {
 
 static void shopping_buy(char* arg, struct char_data* ch,
   struct char_data* keeper, int shop_nr) {
-  char argm[100], buf[MAX_STRING_LENGTH], newarg[100];
+  char argm[100];
+  char buf[MAX_STRING_LENGTH];
+  char newarg[100];
   int num = 1;
   struct obj_data* temp1;
   struct char_data* temp_char;
@@ -214,7 +216,8 @@ static void shopping_buy(char* arg, struct char_data* ch,
 
 static void shopping_sell(char* arg, struct char_data* ch,
   struct char_data* keeper, int shop_nr) {
-  char argm[100], buf[MAX_STRING_LENGTH];
+  char argm[100];
+  char buf[MAX_STRING_LENGTH];
   int cost;
   struct obj_data* temp1;
   struct char_data* temp_char;
@@ -313,7 +316,8 @@ static void shopping_sell(char* arg, struct char_data* ch,
 
 void shopping_value(char* arg, struct char_data* ch, struct char_data* keeper,
   int shop_nr) {
-  char argm[100], buf[MAX_STRING_LENGTH];
+  char argm[100];
+  char buf[MAX_STRING_LENGTH];
   struct obj_data* temp1;
 
   if (!(is_ok(keeper, ch, shop_nr))) {
@@ -349,7 +353,9 @@ void shopping_value(char* arg, struct char_data* ch, struct char_data* keeper,
 
 void shopping_list(char* arg, struct char_data* ch, struct char_data* keeper,
   int shop_nr) {
-  char buf[MAX_STRING_LENGTH], buf2[100], buf3[100];
+  char buf[MAX_STRING_LENGTH];
+  char buf2[100];
+  char buf3[100];
   struct obj_data* temp1;
   int found_obj;
 
@@ -410,7 +416,8 @@ void shopping_kill(char* arg, struct char_data* ch, struct char_data* keeper,
 }
 
 int shop_keeper(struct char_data* ch, int cmd, char* arg) {
-  char argm[100], buf[MAX_STRING_LENGTH];
+  char argm[100];
+  char buf[MAX_STRING_LENGTH];
   struct obj_data* temp1;
   struct char_data* temp_char;
   struct char_data* keeper;

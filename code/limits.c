@@ -21,7 +21,8 @@
 #include "utils.h"
 
 static char* ClassTitles(struct char_data* ch) {
-  int i, count = 0;
+  int i;
+  int count = 0;
   static char buf[256];
 
   for (i = MAGE_LEVEL_IND; i <= RANGER_LEVEL_IND; i++) {
@@ -274,7 +275,8 @@ int move_gain(struct char_data* ch) {
 
 /* Gain maximum in various points */
 void advance_level(struct char_data* ch, int class) {
-  int add_hp, i;
+  int add_hp;
+  int i;
 
   if (GET_LEVEL(ch, class) > 0 &&
       GET_EXP(ch) < titles[class][GET_LEVEL(ch, class) + 1].exp) {
@@ -379,7 +381,8 @@ void advance_level(struct char_data* ch, int class) {
 */
 
 static void drop_level(struct char_data* ch, int class) {
-  int add_hp, lin_class;
+  int add_hp;
+  int lin_class;
 
   if (GetMaxLevel(ch) >= LOW_IMMORTAL) {
     return;

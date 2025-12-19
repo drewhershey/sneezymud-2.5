@@ -258,7 +258,8 @@ void do_sign(struct char_data* ch, char* argument, int cmd) {
 void do_send(struct char_data* ch, char* argument, int cmd) {
   char buf1[MAX_INPUT_LENGTH + 40];
   struct descriptor_data* i;
-  struct obj_data *radio, *radio2;
+  struct obj_data *radio;
+  struct obj_data *radio2;
 
   if (!IS_NPC(ch) &&
       (IS_SET(ch->specials.act, PLR_NOSHOUT) || IS_AFFECTED(ch, AFF_SILENT))) {
@@ -309,7 +310,9 @@ void do_send(struct char_data* ch, char* argument, int cmd) {
 
 void do_tell(struct char_data* ch, char* argument, int cmd) {
   struct char_data* vict;
-  char name[100], message[MAX_INPUT_LENGTH + 20], buf[MAX_INPUT_LENGTH + 20];
+  char name[100];
+  char message[MAX_INPUT_LENGTH + 20];
+  char buf[MAX_INPUT_LENGTH + 20];
 
   if (IS_AFFECTED(ch, AFF_SILENT)) {
     send_to_char("You can't make a sound!\n\r", ch);
@@ -373,7 +376,9 @@ void do_tell(struct char_data* ch, char* argument, int cmd) {
 
 void do_whisper(struct char_data* ch, char* argument, int cmd) {
   struct char_data* vict;
-  char name[100], message[MAX_INPUT_LENGTH], buf[MAX_INPUT_LENGTH];
+  char name[100];
+  char message[MAX_INPUT_LENGTH];
+  char buf[MAX_INPUT_LENGTH];
 
   if (IS_AFFECTED(ch, AFF_SILENT)) {
     send_to_char("You can't make a sound!\n\r", ch);
@@ -412,7 +417,9 @@ void do_whisper(struct char_data* ch, char* argument, int cmd) {
 
 void do_ask(struct char_data* ch, char* argument, int cmd) {
   struct char_data* vict;
-  char name[100], message[MAX_INPUT_LENGTH], buf[MAX_INPUT_LENGTH];
+  char name[100];
+  char message[MAX_INPUT_LENGTH];
+  char buf[MAX_INPUT_LENGTH];
 
   if (IS_AFFECTED(ch, AFF_SILENT)) {
     send_to_char("You can't make a sound!\n\r", ch);
@@ -452,9 +459,11 @@ void do_ask(struct char_data* ch, char* argument, int cmd) {
 #define MAX_NOTE_LENGTH 1000 /* arbitrary */
 
 void do_write(struct char_data* ch, char* argument, int cmd) {
-  struct obj_data *paper = 0, *pen = 0;
-  char papername[MAX_INPUT_LENGTH], penname[MAX_INPUT_LENGTH],
-    buf[MAX_STRING_LENGTH];
+  struct obj_data *paper = 0;
+  struct obj_data *pen = 0;
+  char papername[MAX_INPUT_LENGTH];
+  char penname[MAX_INPUT_LENGTH];
+  char buf[MAX_STRING_LENGTH];
 
   argument_interpreter(argument, papername, penname);
 

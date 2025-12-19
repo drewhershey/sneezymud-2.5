@@ -20,7 +20,8 @@
 
 static void mobile_guardian(struct char_data* ch) {
   struct char_data* targ;
-  int i, found = FALSE;
+  int i;
+  int found = FALSE;
 
   if (ch->in_room > -1) {
     if ((!ch->master) || (!IS_AFFECTED(ch, AFF_CHARM))) {
@@ -136,7 +137,8 @@ void MobHunt(struct char_data* ch) {
 }
 
 void MobScavenge(struct char_data* ch) {
-  struct obj_data *best_obj = 0, *obj = 0;
+  struct obj_data *best_obj = 0;
+  struct obj_data *obj = 0;
   int max;
 
   if ((real_roomp(ch->in_room))->contents && !number(0, 5)) {
@@ -183,8 +185,12 @@ static int MobFriend(struct char_data* ch, struct char_data* f) {
 }
 
 static int AssistFriend(struct char_data* ch) {
-  struct char_data *damsel, *targ, *tmp_ch, *next;
-  int t, found;
+  struct char_data *damsel;
+  struct char_data *targ;
+  struct char_data *tmp_ch;
+  struct char_data *next;
+  int t;
+  int found;
 
   damsel = 0;
   targ = 0;

@@ -373,7 +373,8 @@ const char* const command[] = {
 };
 
 int search_block(char* arg, const char* const* list, char exact) {
-  register int i, l;
+  register int i;
+  register int l;
 
   /* Make into lower case, and get length of string */
   for (l = 0; *(arg + l); l++) {
@@ -402,7 +403,9 @@ int search_block(char* arg, const char* const* list, char exact) {
 
 int old_search_block(char* argument, int begin, int length,
   const char* const* list, int mode) {
-  int guess, found, search;
+  int guess;
+  int found;
+  int search;
 
   /* If the word contain 0 letters, then a match is already found */
   found = (length < 1);
@@ -433,7 +436,9 @@ int old_search_block(char* argument, int begin, int length,
 }
 
 void command_interpreter(struct char_data* ch, char* argument) {
-  int look_at, cmd, begin;
+  int look_at;
+  int cmd;
+  int begin;
   char buf[200];
 
   REMOVE_BIT(ch->specials.affected_by, AFF_HIDE);
@@ -442,7 +447,8 @@ void command_interpreter(struct char_data* ch, char* argument) {
    *  a bug check.
    */
   if (!IS_NPC(ch)) {
-    int i, found = FALSE;
+    int i;
+    int found = FALSE;
     if ((!ch->player.name[0]) || (ch->player.name[0] < ' ')) {
       vlog("Error in character name.  Changed to 'Error'");
       free(ch->player.name);
@@ -575,7 +581,9 @@ void command_interpreter(struct char_data* ch, char* argument) {
 }
 
 void argument_interpreter(char* argument, char* first_arg, char* second_arg) {
-  int look_at, found, begin;
+  int look_at;
+  int found;
+  int begin;
 
   found = begin = 0;
 
@@ -634,7 +642,9 @@ int is_number(char* str) {
 /* find the first sub-argument of a string, return pointer to first char in
    primary argument, following the sub-arg			            */
 char* one_argument(char* argument, char* first_arg) {
-  int found, begin, look_at;
+  int found;
+  int begin;
+  int look_at;
 
   found = begin = 0;
 
@@ -1142,7 +1152,8 @@ static void blk_read(struct char_data* ch) {
   FILE* fl;
   char buf[MAX_STRING_LENGTH];
   char buf2[MAX_STRING_LENGTH];
-  int len, i;
+  int len;
+  int i;
 
   if (IS_NPC(ch)) {
     return;
@@ -1197,7 +1208,8 @@ static void blk_read(struct char_data* ch) {
 static void obj_store_to_char(struct char_data* ch, struct obj_file_u* st) {
   struct obj_data* obj;
   char buf[256];
-  int i, j;
+  int i;
+  int j;
 
   for (i = 0; i < st->number; i++) {
     if (st->objects[i].item_number > -1 &&
@@ -1249,7 +1261,9 @@ static void obj_store_to_char(struct char_data* ch, struct obj_file_u* st) {
 
 static void load_char_objs(struct char_data* ch) {
   FILE* fl;
-  int i, j, loc;
+  int i;
+  int j;
+  int loc;
   char found = FALSE;
   float timegold;
   struct obj_file_u st;
@@ -1318,8 +1332,14 @@ static void load_char_objs(struct char_data* ch) {
 
 /* deal with newcomers and other non-playing sockets */
 void nanny(struct descriptor_data* d, char* arg) {
-  char buf[100], buf2[100], recipient[100], *tmp;
-  int player_i, index = 0, count = 0, oops = FALSE;
+  char buf[100];
+  char buf2[100];
+  char recipient[100];
+  char *tmp;
+  int player_i;
+  int index = 0;
+  int count = 0;
+  int oops = FALSE;
   char tmp_name[20];
   struct char_file_u tmp_store;
   struct char_data* tmp_ch;

@@ -49,8 +49,15 @@
 
 void do_brew(struct char_data* ch, char* arg, int cmd) {
   char buf[MAX_STRING_LENGTH];
-  int obj, sacr, sacr1, sacr2, percent;
-  struct obj_data *obje, *sac, *sac1, *sac2;
+  int obj;
+  int sacr;
+  int sacr1;
+  int sacr2;
+  int percent;
+  struct obj_data *obje;
+  struct obj_data *sac;
+  struct obj_data *sac1;
+  struct obj_data *sac2;
   struct obj_data* next_obj;
   struct affected_type af;
 
@@ -167,7 +174,9 @@ void do_brew(struct char_data* ch, char* arg, int cmd) {
 }
 
 void do_search(struct char_data* ch, char* arg, int cmd) {
-  int j, num, learned;
+  int j;
+  int num;
+  int learned;
   char buf[256];
   struct room_data* rp;
   struct room_direction_data* fdd;
@@ -324,8 +333,15 @@ void do_grapple(struct char_data* ch, char* arg, int cmd) {
 
 void do_scribe(struct char_data* ch, char* arg, int cmd) {
   char buf[MAX_STRING_LENGTH];
-  int obj, sacr, pen, paper, percent;
-  struct obj_data *obje, *sac, *penw, *paperw;
+  int obj;
+  int sacr;
+  int pen;
+  int paper;
+  int percent;
+  struct obj_data *obje;
+  struct obj_data *sac;
+  struct obj_data *penw;
+  struct obj_data *paperw;
   struct obj_data* next_obj;
   struct affected_type af;
 
@@ -420,7 +436,8 @@ void do_scribe(struct char_data* ch, char* arg, int cmd) {
 
 void do_glance(struct char_data* ch, char* argument, int cmd) {
   char buffer[MAX_STRING_LENGTH];
-  int bits, percent;
+  int bits;
+  int percent;
   struct char_data* tmp_char;
   struct obj_data* found_object;
 

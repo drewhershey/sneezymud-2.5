@@ -15,7 +15,8 @@
 #include "utils.h"
 
 void FreeHates(struct char_data* ch) {
-  struct char_list *k, *n;
+  struct char_list *k;
+  struct char_list *n;
 
   for (k = ch->hates.clist; k; k = n) {
     n = k->next;
@@ -24,7 +25,8 @@ void FreeHates(struct char_data* ch) {
 }
 
 void FreeFears(struct char_data* ch) {
-  struct char_list *k, *n;
+  struct char_list *k;
+  struct char_list *n;
 
   for (k = ch->fears.clist; k; k = n) {
     n = k->next;
@@ -33,7 +35,8 @@ void FreeFears(struct char_data* ch) {
 }
 
 int RemHated(struct char_data* ch, struct char_data* pud) {
-  struct char_list *oldpud, *t;
+  struct char_list *oldpud;
+  struct char_list *t;
 
   if (pud) {
     for (oldpud = ch->hates.clist; oldpud; oldpud = oldpud->next) {
@@ -300,7 +303,9 @@ int Fears(struct char_data* ch, struct char_data* v) {
 }
 
 int RemFeared(struct char_data* ch, struct char_data* pud) {
-  struct char_list *oldpud, *t, *tmp;
+  struct char_list *oldpud;
+  struct char_list *t;
+  struct char_list *tmp;
 
   if (!IS_SET(ch->specials.act, ACT_AFRAID)) {
     return (FALSE);
