@@ -20,8 +20,9 @@ unsigned char moontype;
 
 void weather_and_time(int mode) {
   another_hour(mode);
-  if (mode)
+  if (mode) {
     weather_change();
+  }
 }
 
 void another_hour(int mode) {
@@ -85,8 +86,9 @@ void another_hour(int mode) {
     time_info.hours -= 24;
     time_info.day++;
     moontype++;
-    if (moontype > 32)
+    if (moontype > 32) {
       moontype = 1;
+    }
 
     if (time_info.day > 34) {
       time_info.day = 0;
@@ -104,10 +106,11 @@ void another_hour(int mode) {
 void weather_change(void) {
   int diff, change;
 
-  if ((time_info.month >= 9) && (time_info.month <= 16))
+  if ((time_info.month >= 9) && (time_info.month <= 16)) {
     diff = (weather_info.pressure > 985 ? -2 : 2);
-  else
+  } else {
     diff = (weather_info.pressure > 1015 ? -2 : 2);
+  }
 
   weather_info.change += (dice(1, 4) * diff + dice(2, 6) - dice(2, 6));
 
@@ -123,47 +126,57 @@ void weather_change(void) {
 
   switch (weather_info.sky) {
     case SKY_CLOUDLESS: {
-      if (weather_info.pressure < 990)
+      if (weather_info.pressure < 990) {
         change = 1;
-      else if (weather_info.pressure < 1010)
-        if (dice(1, 4) == 1)
+      } else if (weather_info.pressure < 1010) {
+        if (dice(1, 4) == 1) {
           change = 1;
+        }
+      }
       break;
     }
     case SKY_CLOUDY: {
-      if (weather_info.pressure < 970)
+      if (weather_info.pressure < 970) {
         change = 2;
-      else if (weather_info.pressure < 990)
-        if (dice(1, 4) == 1)
+      } else if (weather_info.pressure < 990) {
+        if (dice(1, 4) == 1) {
           change = 2;
-        else
+        } else {
           change = 0;
-      else if (weather_info.pressure > 1030)
-        if (dice(1, 4) == 1)
+        }
+      } else if (weather_info.pressure > 1030) {
+        if (dice(1, 4) == 1) {
           change = 3;
+        }
+      }
 
       break;
     }
     case SKY_RAINING: {
-      if (weather_info.pressure < 970)
-        if (dice(1, 4) == 1)
+      if (weather_info.pressure < 970) {
+        if (dice(1, 4) == 1) {
           change = 4;
-        else
+        } else {
           change = 0;
-      else if (weather_info.pressure > 1030)
+        }
+      } else if (weather_info.pressure > 1030) {
         change = 5;
-      else if (weather_info.pressure > 1010)
-        if (dice(1, 4) == 1)
+      } else if (weather_info.pressure > 1010) {
+        if (dice(1, 4) == 1) {
           change = 5;
+        }
+      }
 
       break;
     }
     case SKY_LIGHTNING: {
-      if (weather_info.pressure > 1010)
+      if (weather_info.pressure > 1010) {
         change = 6;
-      else if (weather_info.pressure > 990)
-        if (dice(1, 4) == 1)
+      } else if (weather_info.pressure > 990) {
+        if (dice(1, 4) == 1) {
           change = 6;
+        }
+      }
 
       break;
     }
@@ -178,10 +191,12 @@ void weather_change(void) {
 }
 
 void ChangeWeather(int change) {
-  if (change < 0)
+  if (change < 0) {
     change = 0;
-  if (change > 7)
+  }
+  if (change > 7) {
     change = 6;
+  }
 
   switch (change) {
     case 0:
@@ -192,10 +207,11 @@ void ChangeWeather(int change) {
       break;
     }
     case 2: {
-      if ((time_info.month > 3) && (time_info.month < 14))
+      if ((time_info.month > 3) && (time_info.month < 14)) {
         send_to_outdoor("It starts to rain.\n\r");
-      else
+      } else {
         send_to_outdoor("It starts to snow. \n\r");
+      }
       weather_info.sky = SKY_RAINING;
       break;
     }
@@ -205,26 +221,29 @@ void ChangeWeather(int change) {
       break;
     }
     case 4: {
-      if ((time_info.month > 3) && (time_info.month < 14))
+      if ((time_info.month > 3) && (time_info.month < 14)) {
         send_to_outdoor("You are caught in lightning storm.\n\r");
-      else
+      } else {
         send_to_outdoor("You are caught in a blizzard. \n\r");
+      }
       weather_info.sky = SKY_LIGHTNING;
       break;
     }
     case 5: {
-      if ((time_info.month > 3) && (time_info.month < 14))
+      if ((time_info.month > 3) && (time_info.month < 14)) {
         send_to_outdoor("The rain has stopped.\n\r");
-      else
+      } else {
         send_to_outdoor("The snow has stopped. \n\r");
+      }
       weather_info.sky = SKY_CLOUDY;
       break;
     }
     case 6: {
-      if ((time_info.month > 3) && (time_info.month < 14))
+      if ((time_info.month > 3) && (time_info.month < 14)) {
         send_to_outdoor("The lightning has gone, but it is still raining.\n\r");
-      else
+      } else {
         send_to_outdoor("The blizzard is over, but it is still snowing.\n\r");
+      }
       weather_info.sky = SKY_RAINING;
       break;
     }
@@ -234,27 +253,29 @@ void ChangeWeather(int change) {
 }
 
 void GetMonth(int month) {
-  if (month < 0)
+  if (month < 0) {
     return;
+  }
 
-  if (month <= 1)
+  if (month <= 1) {
     send_to_outdoor(" It is bitterly cold outside\n\r");
-  else if (month <= 2)
+  } else if (month <= 2) {
     send_to_outdoor(" It is very cold \n\r");
-  else if (month <= 4)
+  } else if (month <= 4) {
     send_to_outdoor(" It is chilly outside \n\r");
-  else if (month <= 5)
+  } else if (month <= 5) {
     send_to_outdoor(" The flowers start to bloom \n\r");
-  else if (month <= 11)
+  } else if (month <= 11) {
     send_to_outdoor(" It is warm and humid. \n\r");
-  else if (month <= 12)
+  } else if (month <= 12) {
     send_to_outdoor(" It starts to get a little windy \n\r");
-  else if (month <= 13)
+  } else if (month <= 13) {
     send_to_outdoor(" The air is getting chilly \n\r");
-  else if (month <= 14)
+  } else if (month <= 14) {
     send_to_outdoor(" The leaves start to change colors. \n\r");
-  else if (month <= 15)
+  } else if (month <= 15) {
     send_to_outdoor(" It starts to get cold \n\r");
-  else if (month <= 16)
+  } else if (month <= 16) {
     send_to_outdoor(" It is bitterly cold outside \n\r");
+  }
 }

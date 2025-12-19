@@ -25,16 +25,19 @@ int CheckForMoveTrap(struct char_data* ch, int dir) {
 
   for (i = real_roomp(ch->in_room)->contents; i; i = i->next_content) {
     if ((ITEM_TYPE(i) == ITEM_TRAP) &&
-        (IS_SET(GET_TRAP_EFF(i), TRAP_EFF_MOVE)) && (GET_TRAP_CHARGES(i) > 0))
-      if (IS_SET(GET_TRAP_EFF(i), TrapDir[dir]))
+        (IS_SET(GET_TRAP_EFF(i), TRAP_EFF_MOVE)) && (GET_TRAP_CHARGES(i) > 0)) {
+      if (IS_SET(GET_TRAP_EFF(i), TrapDir[dir])) {
         return (TriggerTrap(ch, i));
+      }
+    }
   }
   return (FALSE);
 }
 
 int CheckForAnyTrap(struct char_data* ch, struct obj_data* i) {
-  if ((ITEM_TYPE(i) == ITEM_TRAP) && (GET_TRAP_CHARGES(i) > 0))
+  if ((ITEM_TYPE(i) == ITEM_TRAP) && (GET_TRAP_CHARGES(i) > 0)) {
     return (TriggerTrap(ch, i));
+  }
 
   return (FALSE);
 }
@@ -100,13 +103,15 @@ void TrapDamage(struct char_data* v, int damtype, int amnt,
     return;
   }
 
-  if (IS_AFFECTED(v, AFF_SANCTUARY))
+  if (IS_AFFECTED(v, AFF_SANCTUARY)) {
     amnt = MAX((int)(amnt / 2), 0); /* Max 1/2 damage when sanct'd */
+  }
 
   amnt = PreProcDam(v, damtype, amnt);
 
-  if (saves_spell(v, SAVING_PETRI))
+  if (saves_spell(v, SAVING_PETRI)) {
     amnt = MAX((int)(amnt / 2), 0);
+  }
 
   amnt = MAX(amnt, 0);
 
@@ -119,9 +124,10 @@ void TrapDamage(struct char_data* v, int damtype, int amnt,
   InformMess(v);
   if (GET_POS(v) == POSITION_DEAD) {
     if (!IS_NPC(v)) {
-      if (real_roomp(v->in_room)->name)
+      if (real_roomp(v->in_room)->name) {
         sprintf(buf, "%s killed by a trap at %s", GET_NAME(v),
           real_roomp(v->in_room)->name);
+      }
       vlog(buf);
 
       /* remove the hatreds of this character */

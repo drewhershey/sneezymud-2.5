@@ -234,14 +234,15 @@ static void ObjFromCorpse(struct obj_data* c) {
     next_thing = jj->next_content; /* Next in inventory */
     if (jj->in_obj) {
       obj_from_obj(jj);
-      if (c->in_obj)
+      if (c->in_obj) {
         obj_to_obj(jj, c->in_obj);
-      else if (c->carried_by)
+      } else if (c->carried_by) {
         obj_to_room(jj, c->carried_by->in_room);
-      else if (c->in_room != NOWHERE)
+      } else if (c->in_room != NOWHERE) {
         obj_to_room(jj, c->in_room);
-      else
+      } else {
         assert(FALSE);
+      }
     } else {
       /*
       **  hmm..  it isn't in the object it says it is in.
@@ -259,8 +260,9 @@ static int IsSingleClass(struct char_data* ch) {
   int i;
 
   for (i = 1; i <= 8; i *= 2) {
-    if (OnlyClass(ch, i))
+    if (OnlyClass(ch, i)) {
       return (TRUE);
+    }
   }
   return (FALSE);
 }
@@ -268,17 +270,23 @@ static int IsSingleClass(struct char_data* ch) {
 static void update_char_objects(struct char_data* ch) {
   int i;
 
-  if (ch->equipment[WEAR_LIGHT])
-    if (ch->equipment[WEAR_LIGHT]->obj_flags.type_flag == ITEM_LIGHT)
-      if (ch->equipment[WEAR_LIGHT]->obj_flags.value[2] > 0)
+  if (ch->equipment[WEAR_LIGHT]) {
+    if (ch->equipment[WEAR_LIGHT]->obj_flags.type_flag == ITEM_LIGHT) {
+      if (ch->equipment[WEAR_LIGHT]->obj_flags.value[2] > 0) {
         (ch->equipment[WEAR_LIGHT]->obj_flags.value[2])--;
+      }
+    }
+  }
 
-  for (i = 0; i < MAX_WEAR; i++)
-    if (ch->equipment[i])
+  for (i = 0; i < MAX_WEAR; i++) {
+    if (ch->equipment[i]) {
       update_object(ch->equipment[i], 1);
+    }
+  }
 
-  if (ch->carrying)
+  if (ch->carrying) {
     update_object(ch->carrying, 1);
+  }
 }
 
 static void check_idling(struct char_data* ch) {
@@ -300,13 +308,15 @@ static void check_idling(struct char_data* ch) {
   } else if (ch->specials.timer == 60) {
     struct obj_cost cost;
     if (ch->in_room != 3) {
-      if (ch->in_room != NOWHERE)
+      if (ch->in_room != NOWHERE) {
         char_from_room(ch);
+      }
 
       char_to_room(ch, 3);
 
-      if (ch->desc)
+      if (ch->desc) {
         close_socket(ch->desc);
+      }
       ch->desc = 0;
 
       save_obj(ch, &cost, 1);
@@ -408,8 +418,9 @@ static const char* const spell_wear_off_soon_room_msg[] = {"", "", "", "", "",
   "\n"};
 
 void SpellWearOffSoon(int s, struct char_data* ch) {
-  if (s > MAX_SKILLS + 10)
+  if (s > MAX_SKILLS + 10) {
     return;
+  }
 
   if (spell_wear_off_soon_msg[s] && *spell_wear_off_soon_msg[s]) {
     send_to_char(spell_wear_off_soon_msg[s], ch);
@@ -534,8 +545,9 @@ static const char* const spell_wear_off_room_msg[] = {"RESERVED DB.C",
 static void check_decharm(struct char_data* ch) {
   struct char_data* m;
 
-  if (!ch->master)
+  if (!ch->master) {
     return;
+  }
 
   m = ch->master;
   stop_follower(ch); /* stop following the master */
@@ -548,13 +560,15 @@ static void check_drowning(struct char_data* ch) {
   struct room_data* rp;
   char buf[256];
 
-  if (IS_AFFECTED(ch, AFF_WATERBREATH))
+  if (IS_AFFECTED(ch, AFF_WATERBREATH)) {
     return;
+  }
 
   rp = real_roomp(ch->in_room);
 
-  if (!rp)
+  if (!rp) {
     return;
+  }
 
   if (rp->sector_type == SECT_UNDERWATER) {
     send_to_char("PANIC!  You're drowning!!!!!!\n\r", ch);
@@ -569,16 +583,18 @@ static void check_drowning(struct char_data* ch) {
     if (GET_HIT(ch) < -10) {
       sprintf(buf, "%s killed by drowning", GET_NAME(ch));
       vlog(buf);
-      if (!ch->desc)
+      if (!ch->desc) {
         GET_GOLD(ch) = 0;
+      }
       die(ch);
     }
   }
 }
 
 static void SpellWearOff(int s, struct char_data* ch) {
-  if (s > MAX_SKILLS + 10)
+  if (s > MAX_SKILLS + 10) {
     return;
+  }
 
   if (spell_wear_off_msg[s] && *spell_wear_off_msg[s]) {
     send_to_char(spell_wear_off_msg[s], ch);
@@ -647,10 +663,11 @@ void affect_update(int pulse) {
     }
     if (!dead) {
       if (real_roomp(i->in_room) == real_roomp(3198)) {
-        if (IsSingleClass(i))
+        if (IsSingleClass(i)) {
           cost = 25 * GetMaxLevel(i);
-        else
+        } else {
           cost = 50 * GetMaxLevel(i);
+        }
         if (GET_GOLD(i) < cost) {
           send_to_char(
             "The hospital guard tells you 'No vagrants allowed'.\n\r", i);
@@ -679,8 +696,9 @@ void affect_update(int pulse) {
           GET_MOVE(i) = MIN(GET_MOVE(i) + move_gain(i), move_limit(i));
         }
       } else if (IS_AFFECTED(i, AFF_POISON)) {
-        if (IS_PC(i))
+        if (IS_PC(i)) {
           damage(i, i, 5, SPELL_POISON);
+        }
       } else if ((GET_COND(i, FULL) == 0) || (GET_COND(i, THIRST) == 0)) {
         if (i->desc) {
           GET_HIT(i) -= 1;
@@ -706,8 +724,9 @@ void affect_update(int pulse) {
       }
       if (!IS_NPC(i)) {
         update_char_objects(i);
-        if ((GetMaxLevel(i) < DEMIGOD) && (i->in_room != 3))
+        if ((GetMaxLevel(i) < DEMIGOD) && (i->in_room != 3)) {
           i->specials.timer++;
+        }
         check_idling(i);
         rp = real_roomp(i->in_room);
         if (rp) {
@@ -731,8 +750,9 @@ void affect_update(int pulse) {
         }
         if (i->specials.tick == time_info.hours) { /* works for 24, change for
                         anything else        */
-          if (!IS_IMMORTAL(i))
+          if (!IS_IMMORTAL(i)) {
             do_save(i, "", 0);
+          }
         }
       }
       check_drowning(i);
@@ -749,8 +769,9 @@ void affect_update(int pulse) {
 
     if (j->obj_flags.decay_time > -1) {
       /* update_char_objects takes care of worn, carried */
-      if (j->in_room != NOWHERE) /*This takes care of objects in room*/
+      if (j->in_room != NOWHERE) { /*This takes care of objects in room*/
         j->obj_flags.decay_time--;
+      }
 
       if (j->obj_flags.decay_time == 0) {
         if (j->name && !strncmp(j->name, "portal", 6)) { /* PORTALS */
@@ -761,11 +782,11 @@ void affect_update(int pulse) {
               real_roomp(j->in_room)->people, j, 0, TO_CHAR);
           }
         } else if (j->name && !strncmp(j->name, "corpse", 6)) { /* CORPSES */
-          if (j->carried_by)
+          if (j->carried_by) {
             act("$p biodegrades in your hands.", FALSE, j->carried_by, j, 0,
               TO_CHAR);
-          else if ((j->in_room != NOWHERE) &&
-                   (real_roomp(j->in_room)->people)) {
+          } else if ((j->in_room != NOWHERE) &&
+                     (real_roomp(j->in_room)->people)) {
             act("$p dissolves into a fertile soil.", TRUE,
               real_roomp(j->in_room)->people, j, 0, TO_ROOM);
             act("$p dissolves into a fertile soil.", TRUE,
@@ -775,11 +796,11 @@ void affect_update(int pulse) {
         }
         /* FOOD */
         else if (GET_ITEM_TYPE(j) == ITEM_FOOD) {
-          if (j->carried_by && !j->in_obj)
+          if (j->carried_by && !j->in_obj) {
             act("$p spoils in your inventory.", FALSE, j->carried_by, j, 0,
               TO_CHAR);
-          else if ((j->in_room != NOWHERE) &&
-                   (real_roomp(j->in_room)->people)) {
+          } else if ((j->in_room != NOWHERE) &&
+                     (real_roomp(j->in_room)->people)) {
             act("$p totally rots, and is gone.", TRUE,
               real_roomp(j->in_room)->people, j, 0, TO_ROOM);
             act("$p totally rots, and is gone.", TRUE,
@@ -790,13 +811,16 @@ void affect_update(int pulse) {
             send_to_char(buf, j->in_obj->carried_by);
           }
         } else {
-          if (j->equipped_by) /* Worn in equipment */ /* EVERYTHING ELSE that
+          if (j->equipped_by) { /* Worn in equipment */ /* EVERYTHING ELSE that
                                                          DECAYS */
             act("$p decays into nothing.", FALSE, j->equipped_by, j, 0,
               TO_CHAR);
-          if (j->carried_by && !j->in_obj) /*  In inverntory but not in a bag */
+          }
+          if (j->carried_by &&
+              !j->in_obj) { /*  In inverntory but not in a bag */
             act("$p biodegrades in your hands.", FALSE, j->carried_by, j, 0,
               TO_CHAR);
+          }
         }
       }
     }
@@ -839,8 +863,9 @@ char circle_follow(struct char_data* ch, struct char_data* victim) {
   struct char_data* k;
 
   for (k = victim; k; k = k->master) {
-    if (k == ch)
+    if (k == ch) {
       return (TRUE);
+    }
   }
 
   return (FALSE);
@@ -851,15 +876,17 @@ char circle_follow(struct char_data* ch, struct char_data* victim) {
 void stop_follower(struct char_data* ch) {
   struct follow_type *j, *k;
 
-  if (!ch->master)
+  if (!ch->master) {
     return;
+  }
 
   if (IS_AFFECTED(ch, AFF_CHARM)) {
     act("You realize that $N is a jerk!", FALSE, ch, 0, ch->master, TO_CHAR);
     act("$n realizes that $N is a jerk!", FALSE, ch, 0, ch->master, TO_NOTVICT);
     act("$n hates your guts!", FALSE, ch, 0, ch->master, TO_VICT);
-    if (affected_by_spell(ch, SPELL_CHARM_PERSON))
+    if (affected_by_spell(ch, SPELL_CHARM_PERSON)) {
       affect_from_char(ch, SPELL_CHARM_PERSON);
+    }
   } else {
     act("You stop following $N.", FALSE, ch, 0, ch->master, TO_CHAR);
     if (!IS_SET(ch->specials.act, PLR_STEALTH)) {
@@ -875,8 +902,9 @@ void stop_follower(struct char_data* ch) {
   } else { /* locate follower who is not head of list */
 
     for (k = ch->master->followers; k->next && k->next->follower != ch;
-      k = k->next)
+      k = k->next) {
       ;
+    }
 
     if (k->next) {
       j = k->next;
@@ -941,30 +969,34 @@ static void say_spell(struct char_data* ch, int si) {
   offs = 0;
 
   while (*(splwd + offs)) {
-    for (j = 0; *(syls[j].org); j++)
+    for (j = 0; *(syls[j].org); j++) {
       if (strncmp(syls[j].org, splwd + offs, strlen(syls[j].org)) == 0) {
         strcat(buf, syls[j].new);
-        if (strlen(syls[j].org))
+        if (strlen(syls[j].org)) {
           offs += strlen(syls[j].org);
-        else
+        } else {
           ++offs;
+        }
       }
+    }
   }
 
   sprintf(buf2, "$n utters the words, '%s'", buf);
   sprintf(buf, "$n utters the words, '%s'", spells[si - 1]);
 
   for (temp_char = real_roomp(ch->in_room)->people; temp_char;
-    temp_char = temp_char->next_in_room)
+    temp_char = temp_char->next_in_room) {
     if (temp_char != ch) {
       /*
       **  Remove-For-Multi-Class
       */
-      if (ch->player.class == temp_char->player.class)
+      if (ch->player.class == temp_char->player.class) {
         act(buf, FALSE, ch, 0, temp_char, TO_VICT);
-      else
+      } else {
         act(buf2, FALSE, ch, 0, temp_char, TO_VICT);
+      }
     }
+  }
 }
 
 char saves_spell(struct char_data* ch, short int save_type) {
@@ -980,16 +1012,18 @@ char saves_spell(struct char_data* ch, short int save_type) {
     */
     save += saving_throws[BestMagicClass(ch)][save_type]
                          [GET_LEVEL(ch, BestMagicClass(ch))];
-    if (GetMaxLevel(ch) > MAX_MORT)
+    if (GetMaxLevel(ch) > MAX_MORT) {
       return (TRUE);
+    }
   }
 
   return (MAX(1, save) < number(1, 20));
 }
 
 static char* skip_spaces(char* string) {
-  for (; *string && (*string) == ' '; string++)
+  for (; *string && (*string) == ' '; string++) {
     ;
+  }
 
   return (string);
 }
@@ -1025,8 +1059,9 @@ void do_cast(struct char_data* ch, char* argument, int cmd) {
   int qend, spl, i;
   char target_ok;
 
-  if (IS_NPC(ch) && (!IS_SET(ch->specials.act, ACT_POLYSELF)))
+  if (IS_NPC(ch) && (!IS_SET(ch->specials.act, ACT_POLYSELF))) {
     return;
+  }
 
   if (!HasHands(ch)) {
     send_to_char("Sorry, you don't have the right form for that.\n\r", ch);
@@ -1055,8 +1090,9 @@ void do_cast(struct char_data* ch, char* argument, int cmd) {
     }
   }
 
-  if (apply_soundproof(ch))
+  if (apply_soundproof(ch)) {
     return;
+  }
 
   if (IS_SET(real_roomp(ch->in_room)->room_flags, NO_MAGIC)) {
     send_to_char("Sorry, this is a no-magic area.\n\r", ch);
@@ -1079,8 +1115,9 @@ void do_cast(struct char_data* ch, char* argument, int cmd) {
 
   /* Locate the last quote && lowercase the magic words (if any) */
 
-  for (qend = 1; *(argument + qend) && (*(argument + qend) != '\''); qend++)
+  for (qend = 1; *(argument + qend) && (*(argument + qend) != '\''); qend++) {
     *(argument + qend) = LOWER(*(argument + qend));
+  }
 
   if (*(argument + qend) != '\'') {
     send_to_char(
@@ -1095,8 +1132,9 @@ void do_cast(struct char_data* ch, char* argument, int cmd) {
     return;
   }
 
-  if (!ch->skills)
+  if (!ch->skills) {
     return;
+  }
 
   if ((spl > 0) && (spl < MAX_SKILLS) && spell_info[spl].spell_pointer) {
     if (GET_POS(ch) < spell_info[spl].minimum_position) {
@@ -1134,8 +1172,9 @@ void do_cast(struct char_data* ch, char* argument, int cmd) {
       }
 
       argument += qend + 1; /* Point to the last ' */
-      for (; *argument == ' '; argument++)
+      for (; *argument == ' '; argument++) {
         ;
+      }
 
       /* **************** Locate targets **************** */
 
@@ -1144,8 +1183,9 @@ void do_cast(struct char_data* ch, char* argument, int cmd) {
       tar_obj = 0;
 
       if (IS_SET(spell_info[spl].targets, TAR_VIOLENT) &&
-          check_peaceful(ch, "Impolite magic is banned here."))
+          check_peaceful(ch, "Impolite magic is banned here.")) {
         return;
+      }
 
       if (IS_SET(spell_info[spl].targets, TAR_SINGLE)) {
         if ((!IsSingleClass(ch)) || (IS_IMMORTAL(ch))) {
@@ -1161,9 +1201,10 @@ void do_cast(struct char_data* ch, char* argument, int cmd) {
           if (IS_SET(spell_info[spl].targets, TAR_CHAR_ROOM)) {
             if (tar_char = get_char_room_vis(ch, name)) {
               if (tar_char == ch || tar_char == ch->specials.fighting ||
-                  tar_char->attackers < 6 || tar_char->specials.fighting == ch)
+                  tar_char->attackers < 6 ||
+                  tar_char->specials.fighting == ch) {
                 target_ok = TRUE;
-              else {
+              } else {
                 send_to_char(
                   "Too much fighting, you can't get a clear shot.\n\r", ch);
                 target_ok = FALSE;
@@ -1172,37 +1213,47 @@ void do_cast(struct char_data* ch, char* argument, int cmd) {
               target_ok = FALSE;
             }
           }
-          if (!target_ok && IS_SET(spell_info[spl].targets, TAR_CHAR_WORLD))
-            if (tar_char = get_char_vis(ch, name))
+          if (!target_ok && IS_SET(spell_info[spl].targets, TAR_CHAR_WORLD)) {
+            if (tar_char = get_char_vis(ch, name)) {
               target_ok = TRUE;
+            }
+          }
 
-          if (!target_ok && IS_SET(spell_info[spl].targets, TAR_OBJ_INV))
-            if (tar_obj = get_obj_in_list_vis(ch, name, ch->carrying))
+          if (!target_ok && IS_SET(spell_info[spl].targets, TAR_OBJ_INV)) {
+            if (tar_obj = get_obj_in_list_vis(ch, name, ch->carrying)) {
               target_ok = TRUE;
+            }
+          }
 
-          if (!target_ok && IS_SET(spell_info[spl].targets, TAR_OBJ_ROOM))
+          if (!target_ok && IS_SET(spell_info[spl].targets, TAR_OBJ_ROOM)) {
             if (tar_obj = get_obj_in_list_vis(ch, name,
-                  real_roomp(ch->in_room)->contents))
+                  real_roomp(ch->in_room)->contents)) {
               target_ok = TRUE;
+            }
+          }
 
-          if (!target_ok && IS_SET(spell_info[spl].targets, TAR_OBJ_WORLD))
-            if (tar_obj = get_obj_vis(ch, name))
+          if (!target_ok && IS_SET(spell_info[spl].targets, TAR_OBJ_WORLD)) {
+            if (tar_obj = get_obj_vis(ch, name)) {
               target_ok = TRUE;
+            }
+          }
 
           if (!target_ok && IS_SET(spell_info[spl].targets, TAR_OBJ_EQUIP)) {
-            for (i = 0; i < MAX_WEAR && !target_ok; i++)
+            for (i = 0; i < MAX_WEAR && !target_ok; i++) {
               if (ch->equipment[i] &&
                   str_cmp(name, ch->equipment[i]->name) == 0) {
                 tar_obj = ch->equipment[i];
                 target_ok = TRUE;
               }
+            }
           }
 
-          if (!target_ok && IS_SET(spell_info[spl].targets, TAR_SELF_ONLY))
+          if (!target_ok && IS_SET(spell_info[spl].targets, TAR_SELF_ONLY)) {
             if (str_cmp(GET_NAME(ch), name) == 0) {
               tar_char = ch;
               target_ok = TRUE;
             }
+          }
 
           if (!target_ok && IS_SET(spell_info[spl].targets, TAR_NAME)) {
             tar_obj = (void*)name;
@@ -1210,27 +1261,30 @@ void do_cast(struct char_data* ch, char* argument, int cmd) {
           }
 
           if (tar_char) {
-            if (IS_NPC(tar_char))
+            if (IS_NPC(tar_char)) {
               if (IS_SET(tar_char->specials.act, ACT_IMMORTAL)) {
                 send_to_char("You can't cast magic on that!", ch);
                 return;
               }
+            }
           }
 
         } else { /* No argument was typed */
 
-          if (IS_SET(spell_info[spl].targets, TAR_FIGHT_SELF))
+          if (IS_SET(spell_info[spl].targets, TAR_FIGHT_SELF)) {
             if (ch->specials.fighting) {
               tar_char = ch;
               target_ok = TRUE;
             }
+          }
 
-          if (!target_ok && IS_SET(spell_info[spl].targets, TAR_FIGHT_VICT))
+          if (!target_ok && IS_SET(spell_info[spl].targets, TAR_FIGHT_VICT)) {
             if (ch->specials.fighting) {
               /* WARNING, MAKE INTO POINTER */
               tar_char = ch->specials.fighting;
               target_ok = TRUE;
             }
+          }
 
           if (!target_ok && IS_SET(spell_info[spl].targets, TAR_SELF_ONLY)) {
             tar_char = ch;
@@ -1244,26 +1298,28 @@ void do_cast(struct char_data* ch, char* argument, int cmd) {
 
       if (!target_ok) {
         if (*name) {
-          if (IS_SET(spell_info[spl].targets, TAR_CHAR_WORLD))
+          if (IS_SET(spell_info[spl].targets, TAR_CHAR_WORLD)) {
             send_to_char("Nobody playing by that name.\n\r", ch);
-          else if (IS_SET(spell_info[spl].targets, TAR_CHAR_ROOM))
+          } else if (IS_SET(spell_info[spl].targets, TAR_CHAR_ROOM)) {
             send_to_char("Nobody here by that name.\n\r", ch);
-          else if (IS_SET(spell_info[spl].targets, TAR_OBJ_INV))
+          } else if (IS_SET(spell_info[spl].targets, TAR_OBJ_INV)) {
             send_to_char("You are not carrying anything like that.\n\r", ch);
-          else if (IS_SET(spell_info[spl].targets, TAR_OBJ_ROOM))
+          } else if (IS_SET(spell_info[spl].targets, TAR_OBJ_ROOM)) {
             send_to_char("Nothing here by that name.\n\r", ch);
-          else if (IS_SET(spell_info[spl].targets, TAR_OBJ_WORLD))
+          } else if (IS_SET(spell_info[spl].targets, TAR_OBJ_WORLD)) {
             send_to_char("Nothing at all by that name.\n\r", ch);
-          else if (IS_SET(spell_info[spl].targets, TAR_OBJ_EQUIP))
+          } else if (IS_SET(spell_info[spl].targets, TAR_OBJ_EQUIP)) {
             send_to_char("You are not wearing anything like that.\n\r", ch);
-          else if (IS_SET(spell_info[spl].targets, TAR_OBJ_WORLD))
+          } else if (IS_SET(spell_info[spl].targets, TAR_OBJ_WORLD)) {
             send_to_char("Nothing at all by that name.\n\r", ch);
+          }
 
         } else { /* Nothing was given as argument */
-          if (spell_info[spl].targets < TAR_OBJ_INV)
+          if (spell_info[spl].targets < TAR_OBJ_INV) {
             send_to_char("Who should the spell be cast upon?\n\r", ch);
-          else
+          } else {
             send_to_char("What should the spell be cast upon?\n\r", ch);
+          }
         }
         return;
       } else { /* TARGET IS OK */
@@ -1289,16 +1345,18 @@ void do_cast(struct char_data* ch, char* argument, int cmd) {
           return;
         }
       }
-      if ((spl != SPELL_VENTRILOQUATE) && can_do_verbal(ch)) /* :-) */
+      if ((spl != SPELL_VENTRILOQUATE) && can_do_verbal(ch)) { /* :-) */
         say_spell(ch, spl);
+      }
 
-      if (!IS_IMMORTAL(ch))
+      if (!IS_IMMORTAL(ch)) {
         WAIT_STATE(ch, spell_info[spl].beats);
+      }
 
-      if ((spell_info[spl].spell_pointer == 0) && spl > 0)
+      if ((spell_info[spl].spell_pointer == 0) && spl > 0) {
         send_to_char("Sorry, this magic has not yet been implemented :(\n\r",
           ch);
-      else {
+      } else {
         if (number(1, 101) > ch->skills[spl].learned) { /* 101% is failure */
           send_to_char("You lost your concentration!\n\r", ch);
           GET_MANA(ch) -= (USE_MANA(ch, spl) >> 1);
@@ -1352,8 +1410,9 @@ void do_cast(struct char_data* ch, char* argument, int cmd) {
 void assign_spell_pointers(void) {
   int i;
 
-  for (i = 0; i < MAX_SPL_LIST; i++)
+  for (i = 0; i < MAX_SPL_LIST; i++) {
     spell_info[i].spell_pointer = 0;
+  }
 
   /* From spells1.c */
 

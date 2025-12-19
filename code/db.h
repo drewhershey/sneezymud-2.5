@@ -196,5 +196,3 @@ extern void assign_objects(void);
 extern void assign_rooms(void);
 extern void boot_the_shops(void);
 extern void assign_the_shopkeepers(void);
-
-

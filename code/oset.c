@@ -150,8 +150,9 @@ static void set_mtype(struct char_data* ch, struct obj_data* obj, char* arg) {
     return;
   }
 
-  for (i = 0; i < 4; i++)
+  for (i = 0; i < 4; i++) {
     obj->obj_flags.value[i] = 0;
+  }
 
   send_to_char("Done.\n\r", ch);
 }
@@ -190,9 +191,9 @@ static void set_oflags(struct char_data* ch, struct obj_data* obj, char* arg) {
   }
 
   only_argument(arg, num);
-  if (isdigit(*num))
+  if (isdigit(*num)) {
     number = atoi(num);
-  else {
+  } else {
     send_to_char("You must enter a number for this flag.\n\r", ch);
     return;
   }
@@ -228,8 +229,9 @@ static void set_otype(struct char_data* ch, struct obj_data* obj, char* arg) {
 
   obj->obj_flags.type_flag = type;
 
-  for (i = 0; i < 4; i++)
+  for (i = 0; i < 4; i++) {
     obj->obj_flags.value[i] = 0;
+  }
 
   send_to_char("Done.\n\r", ch);
 }
@@ -322,8 +324,9 @@ void do_oset(struct char_data* ch, char* argument, int cmd) {
     for (i = 0; *generic_field[i] != '\n'; i++) {
       spaces = 15 - strlen(generic_field[i]);
       sprintf(buf2, "");
-      for (j = 0; j < spaces; j++)
+      for (j = 0; j < spaces; j++) {
         strcat(buf2, " ");
+      }
       sprintf(buf, "%s%s%s\n\r", generic_field[i], buf2, generic_desc[i]);
       send_to_char(buf, ch);
     }
@@ -331,8 +334,9 @@ void do_oset(struct char_data* ch, char* argument, int cmd) {
       if (strcmp(oset_field[obj->obj_flags.type_flag].set[i], "")) {
         spaces = 15 - strlen(oset_field[obj->obj_flags.type_flag].set[i]);
         sprintf(buf2, "");
-        for (j = 0; j < spaces; j++)
+        for (j = 0; j < spaces; j++) {
           strcat(buf2, " ");
+        }
         sprintf(buf, "%s%s%s\n\r", oset_field[obj->obj_flags.type_flag].set[i],
           buf2, oset_field[obj->obj_flags.type_flag].description[i]);
         send_to_char(buf, ch);
@@ -341,15 +345,19 @@ void do_oset(struct char_data* ch, char* argument, int cmd) {
     return;
   }
 
-  for (i = 0; *generic_field[i] != '\n'; i++)
-    if (!strncasecmp(generic_field[i], arg2, strlen(arg2)))
+  for (i = 0; *generic_field[i] != '\n'; i++) {
+    if (!strncasecmp(generic_field[i], arg2, strlen(arg2))) {
       break;
+    }
+  }
 
   switch (i) {
     case 0: /* name */
-      for (tmpexd = obj->ex_description; tmpexd; tmpexd = tmpexd->next)
-        if (!strcasecmp(tmpexd->keyword, obj->name))
+      for (tmpexd = obj->ex_description; tmpexd; tmpexd = tmpexd->next) {
+        if (!strcasecmp(tmpexd->keyword, obj->name)) {
           break;
+        }
+      }
 
       if (tmpexd) {
         free((char*)tmpexd->keyword);
@@ -417,10 +425,12 @@ void do_oset(struct char_data* ch, char* argument, int cmd) {
       return;
   }
 
-  for (i = 0; i < 4; i++)
+  for (i = 0; i < 4; i++) {
     if (!strncasecmp(oset_field[obj->obj_flags.type_flag].set[i], arg2,
-          strlen(arg2)))
+          strlen(arg2))) {
       break;
+    }
+  }
   if (i == 4) {
     send_to_char(
       "That field is invalid.  Type OSET <object> with no arguments for more "
@@ -707,31 +717,31 @@ void do_oset(struct char_data* ch, char* argument, int cmd) {
               "s(m)iting",
               ch);
             return;
-            if ((*arg3 == 'p') || (*arg3 == 'P'))
+            if ((*arg3 == 'p') || (*arg3 == 'P')) {
               obj->obj_flags.value[3] = TYPE_PIERCE;
-            else if ((*arg3 == 's') || (*arg3 == 'S'))
+            } else if ((*arg3 == 's') || (*arg3 == 'S')) {
               obj->obj_flags.value[3] = TYPE_SLASH;
-            else if ((*arg3 == 'b') || (*arg3 == 'B'))
+            } else if ((*arg3 == 'b') || (*arg3 == 'B')) {
               obj->obj_flags.value[3] = TYPE_BLUDGEON;
-            else if ((*arg3 == 'w') || (*arg3 == 'W'))
+            } else if ((*arg3 == 'w') || (*arg3 == 'W')) {
               obj->obj_flags.value[3] = TYPE_WHIP;
-            else if ((*arg3 == 'c') || (*arg3 == 'C'))
+            } else if ((*arg3 == 'c') || (*arg3 == 'C')) {
               obj->obj_flags.value[3] = TYPE_CLAW;
-            else if ((*arg3 == 'i') || (*arg3 == 'I'))
+            } else if ((*arg3 == 'i') || (*arg3 == 'I')) {
               obj->obj_flags.value[3] = TYPE_BITE;
-            else if ((*arg3 == 'n') || (*arg3 == 'N'))
+            } else if ((*arg3 == 'n') || (*arg3 == 'N')) {
               obj->obj_flags.value[3] = TYPE_STING;
-            else if ((*arg3 == 'r') || (*arg3 == 'R'))
+            } else if ((*arg3 == 'r') || (*arg3 == 'R')) {
               obj->obj_flags.value[3] = TYPE_CRUSH;
-            else if ((*arg3 == 'l') || (*arg3 == 'L'))
+            } else if ((*arg3 == 'l') || (*arg3 == 'L')) {
               obj->obj_flags.value[3] = TYPE_CLEAVE;
-            else if ((*arg3 == 't') || (*arg3 == 'T'))
+            } else if ((*arg3 == 't') || (*arg3 == 'T')) {
               obj->obj_flags.value[3] = TYPE_STAB;
-            else if ((*arg3 == 'h') || (*arg3 == 'H'))
+            } else if ((*arg3 == 'h') || (*arg3 == 'H')) {
               obj->obj_flags.value[3] = TYPE_SMASH;
-            else if ((*arg3 == 'm') || (*arg3 == 'M'))
+            } else if ((*arg3 == 'm') || (*arg3 == 'M')) {
               obj->obj_flags.value[3] = TYPE_SMITE;
-            else {
+            } else {
               send_to_char("That is not a valid weapon type.\n\r", ch);
               return;
             }
@@ -939,9 +949,11 @@ void do_oset(struct char_data* ch, char* argument, int cmd) {
                   ch);
                 return;
               }
-              for (i = 0; i < 16; i++)
-                if (!strncasecmp(arg3, drinknames[i], strlen(arg3)))
+              for (i = 0; i < 16; i++) {
+                if (!strncasecmp(arg3, drinknames[i], strlen(arg3))) {
                   break;
+                }
+              }
               if (i == 16) {
                 send_to_char(
                   "There is no such drink.  See HELP ITEM_DRINKCON for a "
@@ -966,11 +978,12 @@ void do_oset(struct char_data* ch, char* argument, int cmd) {
               } else if (!strncasecmp(arg3, "false", strlen(arg3))) {
                 obj->obj_flags.value[3] = FALSE;
                 send_to_char("Done.\n\r", ch);
-              } else
+              } else {
                 send_to_char(
                   "The poisoned setting can be set to either TRUE or "
                   "FALSE.\n\r",
                   ch);
+              }
               break;
             default:
               send_to_char(
@@ -1011,11 +1024,12 @@ void do_oset(struct char_data* ch, char* argument, int cmd) {
               } else if (!strncasecmp(arg3, "false", strlen(arg3))) {
                 obj->obj_flags.value[3] = FALSE;
                 send_to_char("Done.\n\r", ch);
-              } else
+              } else {
                 send_to_char(
                   "The poisoned setting can be set to either TRUE or "
                   "FALSE.\n\r",
                   ch);
+              }
               break;
             default:
               send_to_char(

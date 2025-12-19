@@ -376,19 +376,25 @@ int search_block(char* arg, const char* const* list, char exact) {
   register int i, l;
 
   /* Make into lower case, and get length of string */
-  for (l = 0; *(arg + l); l++)
+  for (l = 0; *(arg + l); l++) {
     *(arg + l) = LOWER(*(arg + l));
+  }
 
   if (exact) {
-    for (i = 0; **(list + i) != '\n'; i++)
-      if (!strcmp(arg, *(list + i)))
+    for (i = 0; **(list + i) != '\n'; i++) {
+      if (!strcmp(arg, *(list + i))) {
         return (i);
+      }
+    }
   } else {
-    if (!l)
+    if (!l) {
       l = 1; /* Avoid "" to match the first available string */
-    for (i = 0; **(list + i) != '\n'; i++)
-      if (!strncmp(arg, *(list + i), l))
+    }
+    for (i = 0; **(list + i) != '\n'; i++) {
+      if (!strncmp(arg, *(list + i), l)) {
         return (i);
+      }
+    }
   }
 
   return (-1);
@@ -405,18 +411,20 @@ int old_search_block(char* argument, int begin, int length,
 
   /* Search for a match */
 
-  if (mode)
+  if (mode) {
     while (NOT found AND * (list[guess]) != '\n') {
       found = (length == strlen(list[guess]));
-      for (search = 0; (search < length AND found); search++)
+      for (search = 0; (search < length AND found); search++) {
         found = (*(argument + begin + search) == *(list[guess] + search));
+      }
       guess++;
     }
-  else {
+  } else {
     while (NOT found AND * (list[guess]) != '\n') {
       found = 1;
-      for (search = 0; (search < length AND found); search++)
+      for (search = 0; (search < length AND found); search++) {
         found = (*(argument + begin + search) == *(list[guess] + search));
+      }
       guess++;
     }
   }
@@ -469,22 +477,25 @@ void command_interpreter(struct char_data* ch, char* argument) {
   }
 
   /* Find first non blank */
-  for (begin = 0; (*(argument + begin) == ' '); begin++)
+  for (begin = 0; (*(argument + begin) == ' '); begin++) {
     ;
+  }
 
   if (*(argument + begin) == '\'') {
     look_at = begin + 1;
-  } else
+  } else {
     /* Find length of first word */
     for (look_at = 0; *(argument + begin + look_at) > ' '; look_at++) {
       /* Make all letters lower case AND find length */
       *(argument + begin + look_at) = LOWER(*(argument + begin + look_at));
     }
+  }
 
   cmd = old_search_block(argument, begin, look_at, command, 0);
 
-  if (!cmd)
+  if (!cmd) {
     return;
+  }
 
   if (cmd > 0 && GetMaxLevel(ch) < cmd_info[cmd].minimum_level) {
     send_to_char("Excuse me?\n\r", ch);
@@ -525,8 +536,9 @@ void command_interpreter(struct char_data* ch, char* argument) {
               break;
           }
         } else {
-          if (!no_specials && special(ch, cmd, argument + begin + look_at))
+          if (!no_specials && special(ch, cmd, argument + begin + look_at)) {
             return;
+          }
 
           if ((GetMaxLevel(ch) >= LOW_IMMORTAL) && (cmd > 6) &&
               (GetMaxLevel(ch) < 60)) {
@@ -554,11 +566,12 @@ void command_interpreter(struct char_data* ch, char* argument) {
       return;
     }
   }
-  if (cmd > 0 && (cmd_info[cmd].command_pointer == 0))
+  if (cmd > 0 && (cmd_info[cmd].command_pointer == 0)) {
     send_to_char("Sorry, but that command has yet to be implemented...\n\r",
       ch);
-  else
+  } else {
     send_to_char("Pardon? \n\r", ch);
+  }
 }
 
 void argument_interpreter(char* argument, char* first_arg, char* second_arg) {
@@ -568,15 +581,16 @@ void argument_interpreter(char* argument, char* first_arg, char* second_arg) {
 
   do {
     /* Find first non blank */
-    for (; *(argument + begin) == ' '; begin++)
+    for (; *(argument + begin) == ' '; begin++) {
       ;
+    }
 
     /* Find length of first word */
-    for (look_at = 0; *(argument + begin + look_at) > ' '; look_at++)
-
+    for (look_at = 0; *(argument + begin + look_at) > ' '; look_at++) {
       /* Make all letters lower case,
          AND copy them to first_arg */
       *(first_arg + look_at) = LOWER(*(argument + begin + look_at));
+    }
 
     *(first_arg + look_at) = '\0';
     begin += look_at;
@@ -585,15 +599,16 @@ void argument_interpreter(char* argument, char* first_arg, char* second_arg) {
 
   do {
     /* Find first non blank */
-    for (; *(argument + begin) == ' '; begin++)
+    for (; *(argument + begin) == ' '; begin++) {
       ;
+    }
 
     /* Find length of first word */
-    for (look_at = 0; *(argument + begin + look_at) > ' '; look_at++)
-
+    for (look_at = 0; *(argument + begin + look_at) > ' '; look_at++) {
       /* Make all letters lower case,
          AND copy them to second_arg */
       *(second_arg + look_at) = LOWER(*(argument + begin + look_at));
+    }
 
     *(second_arg + look_at) = '\0';
     begin += look_at;
@@ -604,12 +619,15 @@ void argument_interpreter(char* argument, char* first_arg, char* second_arg) {
 int is_number(char* str) {
   int look_at;
 
-  if (*str == '\0')
+  if (*str == '\0') {
     return (0);
+  }
 
-  for (look_at = 0; *(str + look_at) != '\0'; look_at++)
-    if ((*(str + look_at) < '0') || (*(str + look_at) > '9'))
+  for (look_at = 0; *(str + look_at) != '\0'; look_at++) {
+    if ((*(str + look_at) < '0') || (*(str + look_at) > '9')) {
       return (0);
+    }
+  }
   return (1);
 }
 
@@ -622,15 +640,16 @@ char* one_argument(char* argument, char* first_arg) {
 
   do {
     /* Find first non blank */
-    for (; isspace(*(argument + begin)); begin++)
+    for (; isspace(*(argument + begin)); begin++) {
       ;
+    }
 
     /* Find length of first word */
-    for (look_at = 0; *(argument + begin + look_at) > ' '; look_at++)
-
+    for (look_at = 0; *(argument + begin + look_at) > ' '; look_at++) {
       /* Make all letters lower case,
          AND copy them to first_arg */
       *(first_arg + look_at) = LOWER(*(argument + begin + look_at));
+    }
 
     *(first_arg + look_at) = '\0';
     begin += look_at;
@@ -640,8 +659,9 @@ char* one_argument(char* argument, char* first_arg) {
 }
 
 void only_argument(char* argument, char* dest) {
-  while (*argument && isspace(*argument))
+  while (*argument && isspace(*argument)) {
     argument++;
+  }
   strcpy(dest, argument);
 }
 
@@ -654,31 +674,38 @@ int fill_word(char* argument) {
 
 /* determine if a given string is an abbreviation of another */
 int is_abbrev(const char* arg1, const char* arg2) {
-  if (!*arg1)
+  if (!*arg1) {
     return (0);
+  }
 
-  for (; *arg1; arg1++, arg2++)
-    if (LOWER(*arg1) != LOWER(*arg2))
+  for (; *arg1; arg1++, arg2++) {
+    if (LOWER(*arg1) != LOWER(*arg2)) {
       return (0);
+    }
+  }
 
   return (1);
 }
 
 /* return first 'word' plus trailing substring of input string */
 void half_chop(char* string, char* arg1, char* arg2) {
-  for (; isspace(*string); string++)
+  for (; isspace(*string); string++) {
     ;
+  }
 
-  for (; !isspace(*arg1 = *string) && *string; string++, arg1++)
+  for (; !isspace(*arg1 = *string) && *string; string++, arg1++) {
     ;
+  }
 
   *arg1 = '\0';
 
-  for (; isspace(*string); string++)
+  for (; isspace(*string); string++) {
     ;
+  }
 
-  for (; *arg2 = *string; string++, arg2++)
+  for (; *arg2 = *string; string++, arg2++) {
     ;
+  }
 }
 
 int special(struct char_data* ch, int cmd, char* arg) {
@@ -692,38 +719,56 @@ int special(struct char_data* ch, int cmd, char* arg) {
   }
 
   /* special in room? */
-  if (real_roomp(ch->in_room)->funct)
-    if ((*real_roomp(ch->in_room)->funct)(ch, cmd, arg))
+  if (real_roomp(ch->in_room)->funct) {
+    if ((*real_roomp(ch->in_room)->funct)(ch, cmd, arg)) {
       return (1);
+    }
+  }
 
   /* special in equipment list? */
-  for (j = 0; j <= (MAX_WEAR - 1); j++)
-    if (ch->equipment[j] && ch->equipment[j]->item_number >= 0)
-      if (obj_index[ch->equipment[j]->item_number].func.obj_f)
+  for (j = 0; j <= (MAX_WEAR - 1); j++) {
+    if (ch->equipment[j] && ch->equipment[j]->item_number >= 0) {
+      if (obj_index[ch->equipment[j]->item_number].func.obj_f) {
         if ((*obj_index[ch->equipment[j]->item_number].func.obj_f)(ch, cmd, arg,
-              ch->equipment[j]))
+              ch->equipment[j])) {
           return (1);
+        }
+      }
+    }
+  }
 
   /* special in inventory? */
-  for (i = ch->carrying; i; i = i->next_content)
-    if (i->item_number >= 0)
-      if (obj_index[i->item_number].func.obj_f)
-        if ((*obj_index[i->item_number].func.obj_f)(ch, cmd, arg, i))
+  for (i = ch->carrying; i; i = i->next_content) {
+    if (i->item_number >= 0) {
+      if (obj_index[i->item_number].func.obj_f) {
+        if ((*obj_index[i->item_number].func.obj_f)(ch, cmd, arg, i)) {
           return (1);
+        }
+      }
+    }
+  }
 
   /* special in mobile present? */
-  for (k = real_roomp(ch->in_room)->people; k; k = k->next_in_room)
-    if (IS_MOB(k))
-      if (mob_index[k->nr].func.mob_f)
-        if ((*mob_index[k->nr].func.mob_f)(ch, cmd, arg))
+  for (k = real_roomp(ch->in_room)->people; k; k = k->next_in_room) {
+    if (IS_MOB(k)) {
+      if (mob_index[k->nr].func.mob_f) {
+        if ((*mob_index[k->nr].func.mob_f)(ch, cmd, arg)) {
           return (1);
+        }
+      }
+    }
+  }
 
   /* special in object present? */
-  for (i = real_roomp(ch->in_room)->contents; i; i = i->next_content)
-    if (i->item_number >= 0)
-      if (obj_index[i->item_number].func.obj_f)
-        if ((*obj_index[i->item_number].func.obj_f)(ch, cmd, arg, i))
+  for (i = real_roomp(ch->in_room)->contents; i; i = i->next_content) {
+    if (i->item_number >= 0) {
+      if (obj_index[i->item_number].func.obj_f) {
+        if ((*obj_index[i->item_number].func.obj_f)(ch, cmd, arg, i)) {
           return (1);
+        }
+      }
+    }
+  }
 
   return (0);
 }
@@ -731,8 +776,9 @@ int special(struct char_data* ch, int cmd, char* arg) {
 void assign_command_pointers(void) {
   int position;
 
-  for (position = 0; position < MAX_CMD_LIST; position++)
+  for (position = 0; position < MAX_CMD_LIST; position++) {
     cmd_info[position].command_pointer = 0;
+  }
 
   COMMANDO(1, POSITION_STANDING, do_move, 0);
   COMMANDO(2, POSITION_STANDING, do_move, 0);
@@ -1063,8 +1109,9 @@ int find_name(char* name) {
   int i;
 
   for (i = 0; i <= top_of_p_table; i++) {
-    if (!str_cmp((player_table + i)->name, name))
+    if (!str_cmp((player_table + i)->name, name)) {
       return (i);
+    }
   }
 
   return (-1);
@@ -1074,15 +1121,19 @@ int parse_name(char* arg, char* name) {
   int i;
 
   /* skip whitespaces */
-  for (; isspace(*arg); arg++)
+  for (; isspace(*arg); arg++) {
     ;
+  }
 
-  for (i = 0; *name = *arg; arg++, i++, name++)
-    if ((*arg < 0) || !isalpha(*arg) || i > 15)
+  for (i = 0; *name = *arg; arg++, i++, name++) {
+    if ((*arg < 0) || !isalpha(*arg) || i > 15) {
       return (1);
+    }
+  }
 
-  if (!i)
+  if (!i) {
     return (1);
+  }
 
   return (0);
 }
@@ -1093,8 +1144,9 @@ static void blk_read(struct char_data* ch) {
   char buf2[MAX_STRING_LENGTH];
   int len, i;
 
-  if (IS_NPC(ch))
+  if (IS_NPC(ch)) {
     return;
+  }
 
   sprintf(buf, "%s%s.blk", path[0], GET_NAME(ch));
   if (!(fl = fopen(buf, "r"))) {
@@ -1106,12 +1158,16 @@ static void blk_read(struct char_data* ch) {
   fgets(buf2, 255, fl);
   fclose(fl);
 
-  for (i = 0; i < strlen(buf); i++)
-    if (buf[i] == '\n')
+  for (i = 0; i < strlen(buf); i++) {
+    if (buf[i] == '\n') {
       buf[i] = '\0';
-  for (i = 0; i < strlen(buf2); i++)
-    if (buf2[i] == '\n')
+    }
+  }
+  for (i = 0; i < strlen(buf2); i++) {
+    if (buf2[i] == '\n') {
       buf2[i] = '\0';
+    }
+  }
 
   SET_BIT(ch->poof.pmask, BIT_POOF_OUT);
   SET_BIT(ch->poof.pmask, BIT_POOF_IN);
@@ -1120,8 +1176,9 @@ static void blk_read(struct char_data* ch) {
     free(ch->poof.poofin);
     ch->poof.poofin = (char*)malloc(len + 1);
   } else {
-    if (!ch->poof.poofin)
+    if (!ch->poof.poofin) {
       ch->poof.poofin = (char*)malloc(len + 1);
+    }
   }
   strcpy(ch->poof.poofin, buf);
   len = strlen(buf2);
@@ -1129,8 +1186,9 @@ static void blk_read(struct char_data* ch) {
     free(ch->poof.poofout);
     ch->poof.poofout = (char*)malloc(len + 1);
   } else {
-    if (!ch->poof.poofout)
+    if (!ch->poof.poofout) {
       ch->poof.poofout = (char*)malloc(len + 1);
+    }
   }
   strcpy(ch->poof.poofout, buf2);
   vlog("Restoring wizard file.");
@@ -1159,12 +1217,15 @@ static void obj_store_to_char(struct char_data* ch, struct obj_file_u* st) {
       obj->obj_flags.decay_time = st->objects[i].decay_time;
 
       /*  new, saving names and descrips stuff */
-      if (obj->name)
+      if (obj->name) {
         free(obj->name);
-      if (obj->short_description)
+      }
+      if (obj->short_description) {
         free(obj->short_description);
-      if (obj->description)
+      }
+      if (obj->description) {
         free(obj->description);
+      }
 
       obj->name = (char*)malloc(strlen(st->objects[i].name) + 1);
       obj->short_description = (char*)malloc(strlen(st->objects[i].sd) + 1);
@@ -1175,8 +1236,9 @@ static void obj_store_to_char(struct char_data* ch, struct obj_file_u* st) {
       strcpy(obj->description, st->objects[i].desc);
       /* end of new, possibly buggy stuff */
 
-      for (j = 0; j < MAX_OBJ_AFFECT; j++)
+      for (j = 0; j < MAX_OBJ_AFFECT; j++) {
         obj->affected[j] = st->objects[i].affected[j];
+      }
 
       obj_to_char(obj, ch);
     }
@@ -1222,28 +1284,31 @@ static void load_char_objs(struct char_data* ch) {
     removed, including bad ones.
   */
 
-  if (st.last_update + 12 * SECS_PER_REAL_HOUR < time(0))
+  if (st.last_update + 12 * SECS_PER_REAL_HOUR < time(0)) {
     RestoreChar(ch);
+  }
 
-  if (st.last_update + 24 * SECS_PER_REAL_HOUR < time(0))
+  if (st.last_update + 24 * SECS_PER_REAL_HOUR < time(0)) {
     RemAllAffects(ch);
+  }
 
   if (ch->in_room == NOWHERE &&
       st.last_update + 6 * SECS_PER_REAL_HOUR > time(0)) {
     found = TRUE;
   } else {
     char buf[MAX_STRING_LENGTH];
-    if (ch->in_room == NOWHERE)
+    if (ch->in_room == NOWHERE) {
       vlog("Char reconnecting after autorent");
+    }
     timegold = 0;
     found = TRUE;
   }
 
   fclose(fl);
 
-  if (found)
+  if (found) {
     obj_store_to_char(ch, &st);
-  else {
+  } else {
     ZeroRent(GET_NAME(ch));
   }
 
@@ -1265,8 +1330,9 @@ void nanny(struct descriptor_data* d, char* arg) {
   switch (STATE(d)) {
     case CON_QRACE:
 
-      for (; isspace(*arg); arg++)
+      for (; isspace(*arg); arg++) {
         ;
+      }
       if (!*arg) {
         SEND_TO_Q("Choose A Race:\n\r", d);
         SEND_TO_Q("D)warf, E)lf, H)uman, G)nome, hoB)bit, O)gre\n\r", d);
@@ -1345,11 +1411,12 @@ void nanny(struct descriptor_data* d, char* arg) {
         d->character->desc = d;
       }
 
-      for (; isspace(*arg); arg++)
+      for (; isspace(*arg); arg++) {
         ;
-      if (!*arg)
+      }
+      if (!*arg) {
         close_socket(d);
-      else {
+      } else {
         if (parse_name(arg, tmp_name)) {
           SEND_TO_Q("Illegal name, please try another.", d);
           SEND_TO_Q("Name: ", d);
@@ -1417,8 +1484,9 @@ void nanny(struct descriptor_data* d, char* arg) {
 
     case CON_NMECNF: /* wait for conf. of new name	*/
       /* skip whitespaces */
-      for (; isspace(*arg); arg++)
+      for (; isspace(*arg); arg++) {
         ;
+      }
 
       if (*arg == 'y' || *arg == 'Y') {
         SEND_TO_Q("New character.\n\r", d);
@@ -1441,11 +1509,12 @@ void nanny(struct descriptor_data* d, char* arg) {
 
     case CON_PWDNRM: /* get pwd for known player	*/
       /* skip whitespaces */
-      for (; isspace(*arg); arg++)
+      for (; isspace(*arg); arg++) {
         ;
-      if (!*arg)
+      }
+      if (!*arg) {
         close_socket(d);
-      else {
+      } else {
         if (strncmp(crypt(arg, d->pwd), d->pwd, 10)) {
           SEND_TO_Q("Wrong password.\n\r", d);
           if (d->max_str > 3) {
@@ -1458,7 +1527,7 @@ void nanny(struct descriptor_data* d, char* arg) {
           return;
         }
         d->max_str = 0;
-        for (tmp_ch = character_list; tmp_ch; tmp_ch = tmp_ch->next)
+        for (tmp_ch = character_list; tmp_ch; tmp_ch = tmp_ch->next) {
           if ((!str_cmp(GET_NAME(d->character), GET_NAME(tmp_ch)) &&
                 !tmp_ch->desc && !IS_NPC(tmp_ch)) ||
               (IS_NPC(tmp_ch) && tmp_ch->orig &&
@@ -1486,6 +1555,7 @@ void nanny(struct descriptor_data* d, char* arg) {
             vlog(buf);
             return;
           }
+        }
 
         sprintf(buf, "%s[%s] has connected.", GET_NAME(d->character), d->host);
         vlog(buf);
@@ -1502,8 +1572,9 @@ void nanny(struct descriptor_data* d, char* arg) {
 
     case CON_PWDGET: /* get pwd for new player	*/
       /* skip whitespaces */
-      for (; isspace(*arg); arg++)
+      for (; isspace(*arg); arg++) {
         ;
+      }
 
       if (!*arg || strlen(arg) > 10) {
         write(d->descriptor, echo_on, 6);
@@ -1524,8 +1595,9 @@ void nanny(struct descriptor_data* d, char* arg) {
 
     case CON_PWDCNF: /* get confirmation of new pwd	*/
       /* skip whitespaces */
-      for (; isspace(*arg); arg++)
+      for (; isspace(*arg); arg++) {
         ;
+      }
 
       if (strncmp(crypt(arg, d->pwd), d->pwd, 10)) {
         write(d->descriptor, echo_on, 6);
@@ -1547,8 +1619,9 @@ void nanny(struct descriptor_data* d, char* arg) {
 
     case CON_QSEX: /* query sex of new user	*/
       /* skip whitespaces */
-      for (; isspace(*arg); arg++)
+      for (; isspace(*arg); arg++) {
         ;
+      }
       switch (*arg) {
         case 'm':
         case 'M':
@@ -1582,19 +1655,24 @@ void nanny(struct descriptor_data* d, char* arg) {
 
     case CON_STAT_LIST:
       /* skip whitespaces */
-      for (; isspace(*arg); arg++)
+      for (; isspace(*arg); arg++) {
         ;
+      }
 
       index = 0;
       while (*arg && index < MAX_STAT) {
-        if (*arg == 'S' || *arg == 's')
+        if (*arg == 'S' || *arg == 's') {
           d->stat[index++] = 's';
-        if (*arg == 'I' || *arg == 'i')
+        }
+        if (*arg == 'I' || *arg == 'i') {
           d->stat[index++] = 'i';
-        if (*arg == 'W' || *arg == 'w')
+        }
+        if (*arg == 'W' || *arg == 'w') {
           d->stat[index++] = 'w';
-        if (*arg == 'D' || *arg == 'd')
+        }
+        if (*arg == 'D' || *arg == 'd') {
           d->stat[index++] = 'd';
+        }
         if (*arg == 'C' || *arg == 'c') {
           arg++;
           if (*arg == 'O' || *arg == 'o') {
@@ -1666,8 +1744,9 @@ void nanny(struct descriptor_data* d, char* arg) {
 
     case CON_QCLASS: {
       /* skip whitespaces */
-      for (; isspace(*arg); arg++)
+      for (; isspace(*arg); arg++) {
         ;
+      }
       d->character->player.class = 0;
       count = 0;
       oops = FALSE;
@@ -1813,8 +1892,9 @@ void nanny(struct descriptor_data* d, char* arg) {
 
     case CON_CITY_CHOICE:
       /* skip whitespaces */
-      for (; isspace(*arg); arg++)
+      for (; isspace(*arg); arg++) {
         ;
+      }
       if (d->character->in_room != NOWHERE) {
         SEND_TO_Q("This choice is only valid when you have been auto-saved\n\r",
           d);
@@ -1842,13 +1922,15 @@ void nanny(struct descriptor_data* d, char* arg) {
             }
 
             d->character->specials.tick = plr_tick_count++;
-            if (plr_tick_count == PLR_TICK_WRAP)
+            if (plr_tick_count == PLR_TICK_WRAP) {
               plr_tick_count = 0;
+            }
 
             act("$n has entered the game.", TRUE, d->character, 0, 0, TO_ROOM);
             STATE(d) = CON_PLYNG;
-            if (!GetMaxLevel(d->character))
+            if (!GetMaxLevel(d->character)) {
               do_start(d->character);
+            }
             do_look(d->character, "", 15);
             d->prompt_mode = 1;
 
@@ -1873,13 +1955,15 @@ void nanny(struct descriptor_data* d, char* arg) {
             }
 
             d->character->specials.tick = plr_tick_count++;
-            if (plr_tick_count == PLR_TICK_WRAP)
+            if (plr_tick_count == PLR_TICK_WRAP) {
               plr_tick_count = 0;
+            }
 
             act("$n has entered the game.", TRUE, d->character, 0, 0, TO_ROOM);
             STATE(d) = CON_PLYNG;
-            if (!GetMaxLevel(d->character))
+            if (!GetMaxLevel(d->character)) {
               do_start(d->character);
+            }
             do_look(d->character, "", 15);
             d->prompt_mode = 1;
 
@@ -1904,14 +1988,16 @@ void nanny(struct descriptor_data* d, char* arg) {
               }
 
               d->character->specials.tick = plr_tick_count++;
-              if (plr_tick_count == PLR_TICK_WRAP)
+              if (plr_tick_count == PLR_TICK_WRAP) {
                 plr_tick_count = 0;
+              }
 
               act("$n has entered the game.", TRUE, d->character, 0, 0,
                 TO_ROOM);
               STATE(d) = CON_PLYNG;
-              if (!GetMaxLevel(d->character))
+              if (!GetMaxLevel(d->character)) {
                 do_start(d->character);
+              }
               do_look(d->character, "", 15);
               d->prompt_mode = 1;
               break;
@@ -1941,14 +2027,16 @@ void nanny(struct descriptor_data* d, char* arg) {
               }
 
               d->character->specials.tick = plr_tick_count++;
-              if (plr_tick_count == PLR_TICK_WRAP)
+              if (plr_tick_count == PLR_TICK_WRAP) {
                 plr_tick_count = 0;
+              }
 
               act("$n has entered the game.", TRUE, d->character, 0, 0,
                 TO_ROOM);
               STATE(d) = CON_PLYNG;
-              if (!GetMaxLevel(d->character))
+              if (!GetMaxLevel(d->character)) {
                 do_start(d->character);
+              }
               do_look(d->character, "", 15);
               d->prompt_mode = 1;
               break;
@@ -1978,14 +2066,16 @@ void nanny(struct descriptor_data* d, char* arg) {
               }
 
               d->character->specials.tick = plr_tick_count++;
-              if (plr_tick_count == PLR_TICK_WRAP)
+              if (plr_tick_count == PLR_TICK_WRAP) {
                 plr_tick_count = 0;
+              }
 
               act("$n has entered the game.", TRUE, d->character, 0, 0,
                 TO_ROOM);
               STATE(d) = CON_PLYNG;
-              if (!GetMaxLevel(d->character))
+              if (!GetMaxLevel(d->character)) {
                 do_start(d->character);
+              }
               do_look(d->character, "", 15);
               d->prompt_mode = 1;
               break;
@@ -2005,8 +2095,9 @@ void nanny(struct descriptor_data* d, char* arg) {
 
     case CON_SLCT: /* get selection from main menu	*/
       /* skip whitespaces */
-      for (; isspace(*arg); arg++)
+      for (; isspace(*arg); arg++) {
         ;
+      }
       switch (*arg) {
         case '0':
           close_socket(d);
@@ -2050,13 +2141,15 @@ void nanny(struct descriptor_data* d, char* arg) {
           }
 
           d->character->specials.tick = plr_tick_count++;
-          if (plr_tick_count == PLR_TICK_WRAP)
+          if (plr_tick_count == PLR_TICK_WRAP) {
             plr_tick_count = 0;
+          }
 
           act("$n has entered the game.", TRUE, d->character, 0, 0, TO_ROOM);
           STATE(d) = CON_PLYNG;
-          if (!GetMaxLevel(d->character))
+          if (!GetMaxLevel(d->character)) {
             do_start(d->character);
+          }
           do_look(d->character, "", 15);
           d->prompt_mode = 1;
           break;
@@ -2093,12 +2186,15 @@ void nanny(struct descriptor_data* d, char* arg) {
           SEND_TO_Q("Where would you like to enter?\n\r", d);
           SEND_TO_Q("1.    Midgaard\n\r", d);
           SEND_TO_Q("2.    Shire\n\r", d);
-          if (GetMaxLevel(d->character) > 5)
+          if (GetMaxLevel(d->character) > 5) {
             SEND_TO_Q("3.    Mordilnia\n\r", d);
-          if (GetMaxLevel(d->character) > 10)
+          }
+          if (GetMaxLevel(d->character) > 10) {
             SEND_TO_Q("4.    New  Thalos\n\r", d);
-          if (GetMaxLevel(d->character) > 20)
+          }
+          if (GetMaxLevel(d->character) > 20) {
             SEND_TO_Q("5.    The Gypsy Village\n\r", d);
+          }
           SEND_TO_Q("Your choice? ", d);
           STATE(d) = CON_CITY_CHOICE;
           break;
@@ -2112,8 +2208,9 @@ void nanny(struct descriptor_data* d, char* arg) {
 
     case CON_PWDNEW:
       /* skip whitespaces */
-      for (; isspace(*arg); arg++)
+      for (; isspace(*arg); arg++) {
         ;
+      }
 
       if (!*arg || strlen(arg) > 10) {
         write(d->descriptor, echo_on, 6);
@@ -2138,8 +2235,9 @@ void nanny(struct descriptor_data* d, char* arg) {
       break;
     case CON_PWDNCNF:
       /* skip whitespaces */
-      for (; isspace(*arg); arg++)
+      for (; isspace(*arg); arg++) {
         ;
+      }
 
       if (strncmp(crypt(arg, d->pwd), d->pwd, 10)) {
         write(d->descriptor, echo_on, 6);

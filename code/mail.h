@@ -60,8 +60,8 @@ char* read_delete(char* recipient, char* recipient_formatted);
 #define LAST_BLOCK (-2)
 #define DELETED_BLOCK (-3)
 
-// Need to use 1-signed char alignment for structs to prevent padding from increasing
-// size past 100 bytes
+// Need to use 1-signed char alignment for structs to prevent padding from
+// increasing size past 100 bytes
 #pragma pack(push, 1)
 
 struct header_block_type_d {
@@ -109,5 +109,3 @@ struct mail_index_type_d {
 };
 
 typedef struct mail_index_type_d mail_index_type;
-
-

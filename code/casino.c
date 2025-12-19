@@ -38,10 +38,11 @@ const char* card_names[14] = {"Nothing", "Ace", "Two", "Three", "Four", "Five",
   "Six", "Seven", "Eight", "Nine", "Ten", "Jack", "Queen", "King"};
 
 int check_blackjack(struct char_data* ch) {
-  if (ch->in_room == BLACKJACK)
+  if (ch->in_room == BLACKJACK) {
     return 1;
-  else
+  } else {
     return 0;
+  }
 }
 
 void bj_shuffle(int inx, struct char_data* ch) {
@@ -50,7 +51,7 @@ void bj_shuffle(int inx, struct char_data* ch) {
 
   send_to_char("The ghostly dealer shuffles the deck.\r\n", ch);
 
-  for (l1 = 0; l1 < 4; l1++)
+  for (l1 = 0; l1 < 4; l1++) {
     for (l2 = 0; l2 < 13; l2++) {
       l3 = l1 * 13 + l2;
       bj_data[inx].deck[l3] = l2 + 1;
@@ -69,6 +70,7 @@ void bj_shuffle(int inx, struct char_data* ch) {
           break;
       }
     }
+  }
 
   for (l1 = 0; l1 < 1000; l1++) {
     l2 = (rand() >> 3) % 52;
@@ -88,8 +90,9 @@ int do_blackjack_enter(struct char_data* ch) {
       inx = l1;
       send_to_char("The dealer says, 'Ah, you have returned.'\n\r", ch);
     }
-    if (inx < 0 && !bj_data[l1].inuse)
+    if (inx < 0 && !bj_data[l1].inuse) {
       inx = l1;
+    }
   }
   if (inx < 0) {
     send_to_char("The table seems to be full.\n\r", ch);
@@ -110,8 +113,9 @@ static int bj_index(struct char_data* ch) {
   int l1, inx;
 
   for (l1 = 0, inx = -1; inx < 0 && l1 < MAX_BLACKJACK; l1++) {
-    if (!strcmp(ch->player.name, bj_data[l1].name))
+    if (!strcmp(ch->player.name, bj_data[l1].name)) {
       inx = l1;
+    }
   }
   return inx;
 }
@@ -134,14 +138,18 @@ void do_blackjack_exit(struct char_data* ch) {
 }
 
 static void add_suit(char* cat_msg, int card) {
-  if (card & HEARTS)
+  if (card & HEARTS) {
     strcat(cat_msg, " of Hearts");
-  if (card & DIAMONDS)
+  }
+  if (card & DIAMONDS) {
     strcat(cat_msg, " of Diamonds");
-  if (card & CLUBS)
+  }
+  if (card & CLUBS) {
     strcat(cat_msg, " of Clubs");
-  if (card & SPADES)
+  }
+  if (card & SPADES) {
     strcat(cat_msg, " of Spades");
+  }
 }
 
 void do_bj_bet(struct char_data* ch, char* arg, int cmd) {
@@ -177,11 +185,13 @@ void do_bj_bet(struct char_data* ch, char* arg, int cmd) {
     bj_data[inx].nd = 0;
     bj_data[inx].np = 0;
     for (l1 = 0; l1 < 12;
-      bj_data[inx].hand[l1] = 0, bj_data[inx].dealer[l1] = 0, l1++)
+      bj_data[inx].hand[l1] = 0, bj_data[inx].dealer[l1] = 0, l1++) {
       ;
+    }
 
-    if (bj_data[inx].deck_inx > 30)
+    if (bj_data[inx].deck_inx > 30) {
       bj_shuffle(inx, ch);
+    }
 
     bj_data[inx].hand[bj_data[inx].np++] =
       bj_data[inx].deck[bj_data[inx].deck_inx++];
@@ -241,12 +251,15 @@ static int best_bj_dealer(int inx) {
     } else {
       l2 += (bj_data[inx].dealer[l1] & 0x0f);
     }
-    if ((bj_data[inx].dealer[l1] & 0x0f) == 1)
+    if ((bj_data[inx].dealer[l1] & 0x0f) == 1) {
       l3++;
+    }
   }
-  for (l1 = 0; l1 < l3; l1++)
-    if ((21 - l2) > 10)
+  for (l1 = 0; l1 < l3; l1++) {
+    if ((21 - l2) > 10) {
       l2 += 10;
+    }
+  }
 
   return l2;
 }
@@ -261,12 +274,15 @@ static int best_bj_score(int inx) {
     } else {
       l2 += (bj_data[inx].hand[l1] & 0x0f);
     }
-    if ((bj_data[inx].hand[l1] & 0x0f) == 1)
+    if ((bj_data[inx].hand[l1] & 0x0f) == 1) {
       l3++;
+    }
   }
-  for (l1 = 0; l1 < l3; l1++)
-    if ((21 - l2) > 10)
+  for (l1 = 0; l1 < l3; l1++) {
+    if ((21 - l2) > 10) {
       l2 += 10;
+    }
+  }
 
   return l2;
 }
@@ -362,8 +378,9 @@ void do_peek(struct char_data* ch, char* arg, int cmd) {
     for (l1 = 0; l1 < bj_data[inx].np; l1++) {
       strcat(log_msg, card_names[bj_data[inx].hand[l1] & 0x0F]);
       add_suit(log_msg, bj_data[inx].hand[l1]);
-      if (l1 == 0)
+      if (l1 == 0) {
         strcat(log_msg, " (down)");
+      }
       strcat(log_msg, "\r\n");
     }
 
@@ -383,12 +400,13 @@ static int min_bj_score(int inx) {
   int l1, l2;
   char log_msg[256];
 
-  for (l1 = 0, l2 = 0; l1 < bj_data[inx].np; l1++)
+  for (l1 = 0, l2 = 0; l1 < bj_data[inx].np; l1++) {
     if ((bj_data[inx].hand[l1] & 0x0f) > 10) {
       l2 += 10;
     } else {
       l2 += bj_data[inx].hand[l1] & 0x0f;
     }
+  }
 
   return l2;
 }

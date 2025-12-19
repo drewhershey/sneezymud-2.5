@@ -35,5 +35,3 @@ extern const char* const apply_types[];
 extern const char* const item_types[];
 extern const char* const extra_bits[];
 extern const char* const material_types[];
-
-

@@ -49,10 +49,12 @@ void InitABoard(struct obj_data* obj) {
     exit(0);
   }
 
-  for (i = 0; i < MAX_MSGS; ++i)
+  for (i = 0; i < MAX_MSGS; ++i) {
     new->head[i] = NULL;
-  for (i = 0; i < MAX_MSGS; ++i)
+  }
+  for (i = 0; i < MAX_MSGS; ++i) {
     new->msgs[i] = NULL;
+  }
 
   new->msg_num = 0;
   new->Rnum = obj->item_number;
@@ -87,14 +89,16 @@ struct Board* FindBoardInRoom(int room) {
   struct obj_data* o;
   struct Board* nb;
 
-  if (!real_roomp(room))
+  if (!real_roomp(room)) {
     return (NULL);
+  }
 
   for (o = real_roomp(room)->contents; o; o = o->next_content) {
     if (obj_index[o->item_number].func.obj_f == board) {
       for (nb = board_list; nb; nb = nb->next) {
-        if (nb->Rnum == o->item_number)
+        if (nb->Rnum == o->item_number) {
           return (nb);
+        }
       }
       return (NULL);
     }
@@ -105,16 +109,19 @@ struct Board* FindBoardInRoom(int room) {
 int board(struct char_data* ch, int cmd, char* arg, Obj* me) {
   struct Board* nb;
 
-  if (!ch)
+  if (!ch) {
     return FALSE;
+  }
 
   nb = FindBoardInRoom(ch->in_room);
 
-  if (!nb)
+  if (!nb) {
     return (FALSE);
+  }
 
-  if (!ch->desc)
+  if (!ch->desc) {
     return (FALSE);
+  }
 
   switch (cmd) {
     case 15: /* look */
@@ -149,8 +156,9 @@ void board_write_msg(struct char_data* ch, char* arg, struct Board* b) {
 
   /* skip blanks */
 
-  for (; isspace(*arg); arg++)
+  for (; isspace(*arg); arg++) {
     ;
+  }
 
   if (!*arg) {
     send_to_char("We must have a headline!\n\r", ch);
@@ -192,10 +200,12 @@ int board_remove_msg(struct char_data* ch, char* arg, struct Board* b) {
 
   one_argument(arg, number);
 
-  if (!*number || !isdigit(*number))
+  if (!*number || !isdigit(*number)) {
     return (0);
-  if (!(msg = atoi(number)))
+  }
+  if (!(msg = atoi(number))) {
     return (0);
+  }
   if (!b->msg_num) {
     send_to_char("The board is empty!\n\r", ch);
     return (1);
@@ -214,8 +224,9 @@ int board_remove_msg(struct char_data* ch, char* arg, struct Board* b) {
 
   ind = msg;
   free(b->head[--ind]);
-  if (b->msgs[ind] && *b->msgs[ind])
+  if (b->msgs[ind] && *b->msgs[ind]) {
     free(b->msgs[ind]);
+  }
   for (; ind < b->msg_num - 1; ind++) {
     b->head[ind] = b->head[ind + 1];
     b->msgs[ind] = b->msgs[ind + 1];
@@ -232,8 +243,9 @@ int board_remove_msg(struct char_data* ch, char* arg, struct Board* b) {
 void board_save_board(struct Board* b) {
   int ind, len;
 
-  if (!b)
+  if (!b) {
     return;
+  }
 
   if (!b->msg_num) {
     error_log("No messages to save.\n\r");
@@ -307,10 +319,12 @@ void board_reset_board(struct Board* b) {
   int ind;
 
   for (ind = 0; ind < MAX_MSGS; ind++) {
-    if (b->head[ind])
+    if (b->head[ind]) {
       free(b->head[ind]);
-    if (b->msgs[ind])
+    }
+    if (b->msgs[ind]) {
       free(b->msgs[ind]);
+    }
     b->head[ind] = b->msgs[ind] = NULL;
   }
   b->msg_num = 0;
@@ -329,10 +343,12 @@ int board_display_msg(struct char_data* ch, char* arg, struct Board* b) {
   int msg;
 
   one_argument(arg, number);
-  if (!*number || !isdigit(*number))
+  if (!*number || !isdigit(*number)) {
     return (0);
-  if (!(msg = atoi(number)))
+  }
+  if (!(msg = atoi(number))) {
     return (0);
+  }
   if (!b->msg_num) {
     send_to_char("The board is empty!\n\r", ch);
     return (1);
@@ -361,8 +377,9 @@ int board_show_board(struct char_data* ch, char* arg, struct Board* b) {
 
   one_argument(arg, tmp);
 
-  if (!*tmp || !isname(tmp, "board bulletin"))
+  if (!*tmp || !isname(tmp, "board bulletin")) {
     return (0);
+  }
 
   if (board_kludge_char) {
     send_to_char("Sorry, but someone is writing a message\n\r", ch);
@@ -381,8 +398,9 @@ int board_show_board(struct char_data* ch, char* arg, struct Board* b) {
   } else {
     sprintf(buf + strlen(buf), "There are %d messages on the board.\n\r",
       b->msg_num);
-    for (i = 0; i < b->msg_num; i++)
+    for (i = 0; i < b->msg_num; i++) {
       sprintf(buf + strlen(buf), "%-2d : %s\n\r", i + 1, b->head[i]);
+    }
   }
   page_string(ch->desc, buf, 1);
 

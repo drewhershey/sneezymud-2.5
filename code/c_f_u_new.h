@@ -53,5 +53,3 @@ struct char_file_u_new {
     short int apply_saving_throw[5];
     int conditions[3];
 };
-
-

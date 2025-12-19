@@ -46,8 +46,9 @@ static long pop_free_list(void) {
     free_list = old_pos->next;
     free(old_pos);
     return return_value;
-  } else
+  } else {
     return file_end_pos;
+  }
 }
 
 static mail_index_type* find_char_in_index(char* searchee) {
@@ -60,8 +61,9 @@ static mail_index_type* find_char_in_index(char* searchee) {
 
   for (temp_rec = mail_index;
     (temp_rec && str_cmp(temp_rec->recipient, searchee));
-    temp_rec = temp_rec->next)
+    temp_rec = temp_rec->next) {
     ;
+  }
 
   return temp_rec;
 }
@@ -116,11 +118,13 @@ static void index_mail(char* raw_name_to_index, long pos) {
     return;
   }
 
-  for (src = raw_name_to_index, i = 0; *src;)
-    if (isupper(*src))
+  for (src = raw_name_to_index, i = 0; *src;) {
+    if (isupper(*src)) {
       name_to_index[i++] = tolower(*src++);
-    else
+    } else {
       name_to_index[i++] = *src++;
+    }
+  }
   name_to_index[i] = 0;
 
   if (!(new_index = find_char_in_index(name_to_index))) {
@@ -162,8 +166,9 @@ int scan_file(void) {
     if (next_block.block_type == HEADER_BLOCK) {
       index_mail(next_block.to, block_num * BLOCK_SIZE);
       total_messages++;
-    } else if (next_block.block_type == DELETED_BLOCK)
+    } else if (next_block.block_type == DELETED_BLOCK) {
       push_free_list(block_num * BLOCK_SIZE);
+    }
     block_num++;
   }
 
@@ -183,8 +188,9 @@ int scan_file(void) {
 /* HAS_MAIL */
 /* a simple little function which tells you if the guy has mail or not */
 int has_mail(char* recipient) {
-  if (find_char_in_index(recipient))
+  if (find_char_in_index(recipient)) {
     return 1;
+  }
   return 0;
 }
 
@@ -215,9 +221,11 @@ void store_mail(char* to, char* from, char* message_pointer) {
   strncpy(header.txt, msg_txt, HEADER_BLOCK_DATASIZE);
   strncpy(header.from, from, NAME_SIZE);
   strncpy(header.to, to, NAME_SIZE);
-  for (tmp = header.to; *tmp; tmp++)
-    if (isupper(*tmp))
+  for (tmp = header.to; *tmp; tmp++) {
+    if (isupper(*tmp)) {
       *tmp = tolower(*tmp);
+    }
+  }
   header.mail_time = time(0);
   header.txt[HEADER_BLOCK_DATASIZE] = header.from[NAME_SIZE] =
     header.to[NAME_SIZE] = '\0';
@@ -226,8 +234,9 @@ void store_mail(char* to, char* from, char* message_pointer) {
   index_mail(to, target_address);   /* add it to mail index in memory */
   write_to_file(&header, BLOCK_SIZE, target_address);
 
-  if (strlen(msg_txt) <= HEADER_BLOCK_DATASIZE)
+  if (strlen(msg_txt) <= HEADER_BLOCK_DATASIZE) {
     return; /* that was the whole message */
+  }
 
   bytes_written = HEADER_BLOCK_DATASIZE;
   msg_txt += HEADER_BLOCK_DATASIZE; /* move pointer to next bit of text */
@@ -325,15 +334,17 @@ char* read_delete(char* recipient, char* recipient_formatted) {
     } else {
       /* find entry before the one we're going to del */
       for (prev_mail = mail_index; prev_mail->next != mail_pointer;
-        prev_mail = prev_mail->next)
+        prev_mail = prev_mail->next) {
         ;
+      }
       prev_mail->next = mail_pointer->next;
       free(mail_pointer);
     }
   } else {
     /* move to next-to-last record */
-    while (position_pointer->next->next)
+    while (position_pointer->next->next) {
       position_pointer = position_pointer->next;
+    }
     mail_address = position_pointer->next->position;
     free(position_pointer->next);
     position_pointer->next = 0;
@@ -400,8 +411,9 @@ static void postmaster_send_mail(struct char_data* ch, int cmd, char* arg) {
 
   mailman = FindMobInRoomWithFunction(ch->in_room, postmaster);
 
-  if (!mailman)
+  if (!mailman) {
     return;
+  }
 
   if (GetMaxLevel(ch) < MIN_MAIL_LEVEL) {
     sprintf(buf, "$n tells you, 'Sorry, you have to be level %d to send mail!'",
@@ -433,9 +445,11 @@ static void postmaster_send_mail(struct char_data* ch, int cmd, char* arg) {
     return;
   }
 
-  for (tmp = recipient; *tmp; tmp++)
-    if (isupper(*tmp))
+  for (tmp = recipient; *tmp; tmp++) {
+    if (isupper(*tmp)) {
       *tmp = tolower(*tmp);
+    }
+  }
 
   act("$n starts to write some mail.", TRUE, ch, 0, 0, TO_ROOM);
   sprintf(buf,
@@ -458,19 +472,23 @@ static void postmaster_check_mail(struct char_data* ch, int cmd, char* arg) {
 
   mailman = FindMobInRoomWithFunction(ch->in_room, postmaster);
 
-  if (!mailman)
+  if (!mailman) {
     return;
+  }
 
   parse_name(GET_NAME(ch), recipient);
 
-  for (tmp = recipient; *tmp; tmp++)
-    if (isupper(*tmp))
+  for (tmp = recipient; *tmp; tmp++) {
+    if (isupper(*tmp)) {
       *tmp = tolower(*tmp);
+    }
+  }
 
-  if (has_mail(recipient))
+  if (has_mail(recipient)) {
     sprintf(buf, "$n tells you, 'You have mail waiting.'");
-  else
+  } else {
     sprintf(buf, "$n tells you, 'Sorry, you don't have any mail waiting.'");
+  }
   act(buf, FALSE, mailman, 0, ch, TO_VICT);
 }
 
@@ -481,14 +499,17 @@ static void postmaster_receive_mail(struct char_data* ch, int cmd, char* arg) {
 
   mailman = FindMobInRoomWithFunction(ch->in_room, postmaster);
 
-  if (!mailman)
+  if (!mailman) {
     return;
+  }
 
   parse_name(GET_NAME(ch), recipient);
 
-  for (tmp = recipient; *tmp; tmp++)
-    if (isupper(*tmp))
+  for (tmp = recipient; *tmp; tmp++) {
+    if (isupper(*tmp)) {
       *tmp = tolower(*tmp);
+    }
+  }
 
   if (!has_mail(recipient)) {
     sprintf(buf, "$n tells you, 'Sorry, you don't have any mail waiting.'");
@@ -512,9 +533,10 @@ static void postmaster_receive_mail(struct char_data* ch, int cmd, char* arg) {
     tmp_obj->obj_flags.cost_per_day = 10;
     tmp_obj->action_description = read_delete(recipient, GET_NAME(ch));
 
-    if (!tmp_obj->action_description)
+    if (!tmp_obj->action_description) {
       tmp_obj->action_description =
         strdup("Mail system buggy, please report!!  Error #8.\n\r");
+    }
 
     tmp_obj->next = object_list;
     object_list = tmp_obj;
@@ -529,8 +551,9 @@ static void postmaster_receive_mail(struct char_data* ch, int cmd, char* arg) {
 }
 
 int postmaster(struct char_data* ch, int cmd, char* arg) {
-  if (!ch->desc)
+  if (!ch->desc) {
     return 0; /* so mobs don't get caught here */
+  }
 
   switch (cmd) {
     case 303: /* mail */

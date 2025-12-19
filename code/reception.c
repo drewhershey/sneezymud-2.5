@@ -32,8 +32,9 @@ char recep_offer(struct char_data* ch, struct char_data* receptionist,
   cost->no_carried = 0;
   cost->ok = TRUE; /* Use if any "-1" objects */
 
-  if (!cost->ok)
+  if (!cost->ok) {
     return (FALSE);
+  }
 
   if (cost->no_carried > MAX_OBJ_SAVE) {
     if (receptionist) {
@@ -45,10 +46,11 @@ char recep_offer(struct char_data* ch, struct char_data* receptionist,
   }
   cost->total_cost = 0;
 
-  if (cost->total_cost > GET_GOLD(ch))
+  if (cost->total_cost > GET_GOLD(ch)) {
     return (FALSE);
-  else
+  } else {
     return (TRUE);
+  }
 }
 
 /* ************************************************************************
@@ -215,26 +217,29 @@ void put_obj_in_store(struct obj_data* obj, struct obj_file_u* st) {
   oe->material_points = obj->obj_flags.material_points;
 
   /*  new, saving names and descrips stuff */
-  if (obj->name)
+  if (obj->name) {
     strcpy(oe->name, obj->name);
-  else {
+  } else {
     sprintf(buf, "object %d has no name!", obj_index[obj->item_number].virtual);
     vlog(buf);
   }
 
-  if (obj->short_description)
+  if (obj->short_description) {
     strcpy(oe->sd, obj->short_description);
-  else
+  } else {
     *oe->sd = '\0';
-  if (obj->description)
+  }
+  if (obj->description) {
     strcpy(oe->desc, obj->description);
-  else
+  } else {
     *oe->desc = '\0';
+  }
 
   /* end of new, possibly buggy stuff */
 
-  for (j = 0; j < MAX_OBJ_AFFECT; j++)
+  for (j = 0; j < MAX_OBJ_AFFECT; j++) {
     oe->affected[j] = obj->affected[j];
+  }
 
   st->number++;
 }
@@ -243,8 +248,9 @@ static int contained_weight(struct obj_data* container) {
   struct obj_data* tmp;
   int rval = 0;
 
-  for (tmp = container->contains; tmp; tmp = tmp->next_content)
+  for (tmp = container->contains; tmp; tmp = tmp->next_content) {
     rval += GET_OBJ_WEIGHT(tmp);
+  }
   return rval;
 }
 
@@ -253,8 +259,9 @@ void obj_to_store(struct obj_data* obj, struct obj_file_u* st,
   struct char_data* ch, int delete) {
   static char buf[240];
 
-  if (!obj)
+  if (!obj) {
     return;
+  }
 
   obj_to_store(obj->contains, st, ch, delete);
   obj_to_store(obj->next_content, st, ch, delete);
@@ -276,14 +283,16 @@ void obj_to_store(struct obj_data* obj, struct obj_file_u* st,
     send_to_char(buf, ch);
 #endif
     if (delete) {
-      if (obj->in_obj)
+      if (obj->in_obj) {
         obj_from_obj(obj);
+      }
       extract_obj(obj);
     }
   } else if (obj->item_number == -1) {
     if (delete) {
-      if (obj->in_obj)
+      if (obj->in_obj) {
         obj_from_obj(obj);
+      }
       extract_obj(obj);
     }
   } else {
@@ -292,8 +301,9 @@ void obj_to_store(struct obj_data* obj, struct obj_file_u* st,
     put_obj_in_store(obj, st);
     GET_OBJ_WEIGHT(obj) += weight;
     if (delete) {
-      if (obj->in_obj)
+      if (obj->in_obj) {
         obj_from_obj(obj);
+      }
       extract_obj(obj);
     }
   }
@@ -312,7 +322,7 @@ void save_obj(struct char_data* ch, struct obj_cost* cost, int delete) {
   st.last_update = time(0);
   st.minimum_stay = 0; /* XXX where does this belong? */
 
-  for (i = 0; i < MAX_WEAR; i++)
+  for (i = 0; i < MAX_WEAR; i++) {
     if (ch->equipment[i]) {
       if (delete) {
         obj_to_store(unequip_char(ch, i), &st, ch, delete);
@@ -320,10 +330,12 @@ void save_obj(struct char_data* ch, struct obj_cost* cost, int delete) {
         obj_to_store(ch->equipment[i], &st, ch, delete);
       }
     }
+  }
 
   obj_to_store(ch->carrying, &st, ch, delete);
-  if (delete)
+  if (delete) {
     ch->carrying = 0;
+  }
 
   update_file(ch, &st, 1);
 }
@@ -336,8 +348,9 @@ static void CountLimitedItems(struct obj_file_u* st) {
   int i, cost_per_day;
   struct obj_data* obj;
 
-  if (!st->owner[0])
+  if (!st->owner[0]) {
     return; /* don't count empty rent units */
+  }
 
   for (i = 0; i < st->number; i++) {
     if (st->objects[i].item_number > -1 &&
@@ -463,22 +476,27 @@ int receptionist(struct char_data* ch, int cmd, char* arg) {
   int number(int from, int to);
   int citizen(struct char_data * ch, int cmd, char* arg);
 
-  if (!ch->desc)
+  if (!ch->desc) {
     return (FALSE); /* You've forgot FALSE - NPC couldn't leave */
+  }
 
   for (temp_char = real_roomp(ch->in_room)->people; (temp_char) && (!recep);
-    temp_char = temp_char->next_in_room)
-    if (IS_MOB(temp_char))
-      if (mob_index[temp_char->nr].func.mob_f == receptionist)
+    temp_char = temp_char->next_in_room) {
+    if (IS_MOB(temp_char)) {
+      if (mob_index[temp_char->nr].func.mob_f == receptionist) {
         recep = temp_char;
+      }
+    }
+  }
 
   if (!recep) {
     vlog("No receptionist.\n\r");
     exit(1);
   }
 
-  if (IS_NPC(ch))
+  if (IS_NPC(ch)) {
     return (FALSE);
+  }
 
   if ((cmd != 92) && (cmd != 93)) {
     if (!cmd) {
@@ -486,8 +504,9 @@ int receptionist(struct char_data* ch, int cmd, char* arg) {
         return (citizen(recep, 0, ""));
       }
     }
-    if (!number(0, 30))
+    if (!number(0, 30)) {
       do_action(recep, "", action_tabel[number(0, 8)]);
+    }
     return (FALSE);
   }
 
@@ -543,22 +562,27 @@ int receptionist_for_outlaws(struct char_data* ch, int cmd, char* arg) {
   int number(int from, int to);
   int citizen(struct char_data * ch, int cmd, char* arg);
 
-  if (!ch->desc)
+  if (!ch->desc) {
     return (FALSE); /* You've forgot FALSE - NPC couldn't leave */
+  }
 
   for (temp_char = real_roomp(ch->in_room)->people; (temp_char) && (!recep);
-    temp_char = temp_char->next_in_room)
-    if (IS_MOB(temp_char))
-      if (mob_index[temp_char->nr].func.mob_f == receptionist_for_outlaws)
+    temp_char = temp_char->next_in_room) {
+    if (IS_MOB(temp_char)) {
+      if (mob_index[temp_char->nr].func.mob_f == receptionist_for_outlaws) {
         recep = temp_char;
+      }
+    }
+  }
 
   if (!recep) {
     vlog("No receptionist.\n\r");
     exit(1);
   }
 
-  if (IS_NPC(ch))
+  if (IS_NPC(ch)) {
     return (FALSE);
+  }
 
   if ((cmd != 92) && (cmd != 93)) {
     if (!cmd) {
@@ -566,8 +590,9 @@ int receptionist_for_outlaws(struct char_data* ch, int cmd, char* arg) {
         return (citizen(recep, 0, ""));
       }
     }
-    if (!number(0, 30))
+    if (!number(0, 30)) {
       do_action(recep, "", action_tabel[number(0, 8)]);
+    }
     return (FALSE);
   }
 
@@ -616,8 +641,9 @@ int receptionist_for_outlaws(struct char_data* ch, int cmd, char* arg) {
 */
 
 void zero_rent(struct char_data* ch) {
-  if (IS_NPC(ch))
+  if (IS_NPC(ch)) {
     return;
+  }
 
   ZeroRent(GET_NAME(ch));
 }

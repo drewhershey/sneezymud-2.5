@@ -18,5 +18,3 @@ int Fears(struct char_data* ch, struct char_data* v);
 
 struct char_data* FindAFearee(struct char_data* ch);
 struct char_data* FindAHatee(struct char_data* ch);
-
-

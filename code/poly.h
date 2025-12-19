@@ -10,5 +10,3 @@ struct PolyType {
     int level;
     int number;
 };
-
-

@@ -12,5 +12,3 @@ int BestThiefClass(struct char_data* ch);
 int BestMagicClass(struct char_data* ch);
 int GetMaxLevel(struct char_data* ch);
 int GetTotLevel(struct char_data* ch);
-
-

@@ -42,8 +42,9 @@ void SwitchStuff(struct char_data* giver, struct char_data* taker) {
    *   hit point ratio
    */
 
-  if (GET_HIT(taker) > GET_HIT(giver))
+  if (GET_HIT(taker) > GET_HIT(giver)) {
     GET_HIT(taker) = GET_HIT(giver);
+  }
 
   /*
    * experience
@@ -58,8 +59,9 @@ void SwitchStuff(struct char_data* giver, struct char_data* taker) {
 
   if (IS_NPC(taker)) {
     taker->player.class = giver->player.class;
-    if (!taker->skills)
+    if (!taker->skills) {
       SpaceForSkills(taker);
+    }
     for (j = 0; j < MAX_SKILLS; j++) {
       taker->skills[j].learned = giver->skills[j].learned;
       taker->skills[j].recognise = giver->skills[j].recognise;

@@ -312,5 +312,3 @@ Gnomes:   Shorter. Less movement. More intelligent. Less wise.\n\r"
 #define STORY \
   " SneezyMUD is a creation of the Public broadcasting System. \n \
   Brought to you today by the letters X and B, and the number 69\n\n\r"
-
-

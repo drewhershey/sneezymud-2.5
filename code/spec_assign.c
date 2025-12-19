@@ -821,8 +821,9 @@ void assign_mobiles(void) {
       sprintf(buf, "mobile_assign: Mobile %d not found in database.",
         mob_specials[i].vnum);
       vlog(buf);
-    } else
+    } else {
       mob_index[rnum].func.mob_f = mob_specials[i].proc;
+    }
   }
 
   boot_the_shops();
@@ -928,9 +929,10 @@ void assign_rooms(void) {
   for (size_t i = 0; i < num_room_specials; ++i) {
     struct room_data* rp = real_roomp(room_specials[i].vnum);
 
-    if (rp)
+    if (rp) {
       rp->funct = room_specials[i].proc;
-    else
+    } else {
       vlog("assign_rooms: unknown room");
+    }
   }
 }

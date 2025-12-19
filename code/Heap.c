@@ -18,8 +18,9 @@ static void SmartStrCpy(char* s1, const char* s2) {
   int i;
 
   i = strlen(s2);
-  while (s2[i] <= ' ')
+  while (s2[i] <= ' ') {
     i--;
+  }
 
   /* null terminate s1 */
   s1[i + 1] = '\0';

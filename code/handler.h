@@ -89,5 +89,3 @@ int page_file(struct descriptor_data* d, char* input);
 void page_string(struct descriptor_data* d, char* str, int keep_internal);
 int get_number(char** name);
 void update_object(struct obj_data* obj, int use);
-
-

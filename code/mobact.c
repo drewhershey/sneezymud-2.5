@@ -23,17 +23,20 @@ static void mobile_guardian(struct char_data* ch) {
   int i, found = FALSE;
 
   if (ch->in_room > -1) {
-    if ((!ch->master) || (!IS_AFFECTED(ch, AFF_CHARM)))
+    if ((!ch->master) || (!IS_AFFECTED(ch, AFF_CHARM))) {
       return;
+    }
     if (ch->master->specials.fighting) { /**/
       for (i = 0; i < 10 && !found; i++) {
         targ = FindAnAttacker(ch->master);
-        if (targ)
+        if (targ) {
           found = TRUE;
+        }
       }
 
-      if (!found)
+      if (!found) {
         return;
+      }
 
       if (!SameRace(targ, ch)) {
         if (IsHumanoid(ch)) {
@@ -42,8 +45,9 @@ static void mobile_guardian(struct char_data* ch) {
         } else {
           act("$n growls angrily!", FALSE, ch, 0, 0, TO_ROOM);
         }
-        if (CAN_SEE(ch, targ))
+        if (CAN_SEE(ch, targ)) {
           hit(ch, targ, 0);
+        }
       }
     }
   }
@@ -57,8 +61,9 @@ void mobile_wander(struct char_data* ch) {
   if (!((GET_POS(ch) == POSITION_STANDING) && ((door = number(0, 15)) <= 5) &&
         exit_ok(exitp = EXIT(ch, door), &rp) &&
         (!IS_SET(rp->room_flags, NO_MOB) || IS_POLICE(ch)) &&
-        !IS_SET(rp->room_flags, DEATH)))
+        !IS_SET(rp->room_flags, DEATH))) {
     return;
+  }
 
   if (IsHumanoid(ch) ? CAN_GO_HUMAN(ch, door) : CAN_GO(ch, door)) {
     if (ch->specials.last_direction == door) {
@@ -111,8 +116,9 @@ void MobHunt(struct char_data* ch) {
       ch->hunt_dist = 0;
     }
   } else if (ch->specials.hunting) {
-    if (ch->hunt_dist <= 50)
+    if (ch->hunt_dist <= 50) {
       ch->hunt_dist = 100;
+    }
     for (k = 1; k <= 1 && ch->specials.hunting; k++) {
       ch->persist -= 1;
       res = dir_track(ch, ch->specials.hunting);
@@ -145,8 +151,9 @@ void MobScavenge(struct char_data* ch) {
     } /* for */
 
     if (best_obj) {
-      if (CheckForAnyTrap(ch, best_obj))
+      if (CheckForAnyTrap(ch, best_obj)) {
         return;
+      }
 
       obj_from_room(best_obj);
       obj_to_char(best_obj, ch);
@@ -165,8 +172,9 @@ static int MobFriend(struct char_data* ch, struct char_data* f) {
         return (FALSE);
       }
     } else {
-      if (IS_NPC(f))
+      if (IS_NPC(f)) {
         return (TRUE);
+      }
     }
   } else {
     return (FALSE);
@@ -181,8 +189,9 @@ static int AssistFriend(struct char_data* ch) {
   damsel = 0;
   targ = 0;
 
-  if (check_peaceful(ch, ""))
+  if (check_peaceful(ch, "")) {
     return 0;
+  }
 
   if (ch->in_room < 0) {
     char_to_room(ch, 0);
@@ -198,8 +207,9 @@ static int AssistFriend(struct char_data* ch) {
     if (CAN_SEE(ch, tmp_ch)) {
       if (!IS_SET(ch->specials.act, ACT_WIMPY)) {
         if (MobFriend(ch, tmp_ch)) {
-          if (tmp_ch->specials.fighting)
+          if (tmp_ch->specials.fighting) {
             damsel = tmp_ch;
+          }
         }
       }
     }
@@ -213,8 +223,9 @@ static int AssistFriend(struct char_data* ch) {
     for (t = 1; t <= 8 && !found; t++) {
       targ = FindAnAttacker(damsel);
       if (targ) {
-        if (targ->specials.fighting)
+        if (targ->specials.fighting) {
           found = TRUE;
+        }
       }
     }
     if (targ) {
@@ -251,8 +262,9 @@ void mobile_activity(struct char_data* ch) {
       vlog(ch->player.name);
       REMOVE_BIT(ch->specials.act, ACT_SPEC);
     } else {
-      if ((*mob_index[ch->nr].func.mob_f)(ch, 0, ""))
+      if ((*mob_index[ch->nr].func.mob_f)(ch, 0, "")) {
         return;
+      }
     }
   }
 
@@ -268,8 +280,9 @@ void mobile_activity(struct char_data* ch) {
 
     if (IS_SET(ch->specials.act, ACT_HUNTING)) {
       MobHunt(ch);
-    } else if ((!IS_SET(ch->specials.act, ACT_SENTINEL)))
+    } else if ((!IS_SET(ch->specials.act, ACT_SENTINEL))) {
       mobile_wander(ch);
+    }
 
     if (GET_HIT(ch) > (GET_MAX_HIT(ch) / 2)) {
       if (IS_SET(ch->specials.act, ACT_HATEFUL)) {
@@ -364,19 +377,23 @@ void mobile_activity(struct char_data* ch) {
 }
 
 int SameRace(struct char_data* ch1, struct char_data* ch2) {
-  if ((!ch1) || (!ch2))
+  if ((!ch1) || (!ch2)) {
     return (FALSE);
+  }
 
-  if (ch1 == ch2)
+  if (ch1 == ch2) {
     return (TRUE);
+  }
 
-  if (IS_NPC(ch1) && (IS_NPC(ch2)))
+  if (IS_NPC(ch1) && (IS_NPC(ch2))) {
     if (mob_index[ch1->nr].virtual == mob_index[ch2->nr].virtual) {
       return (TRUE);
     }
+  }
 
-  if (in_group(ch1, ch2))
+  if (in_group(ch1, ch2)) {
     return (TRUE);
+  }
 
   if (GET_RACE(ch1) == GET_RACE(ch2)) {
     return (TRUE);

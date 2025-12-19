@@ -253,23 +253,26 @@ void reset_time(void) {
   vlog(buf);
 
   weather_info.pressure = 960;
-  if ((time_info.month >= 7) && (time_info.month <= 12))
+  if ((time_info.month >= 7) && (time_info.month <= 12)) {
     weather_info.pressure += dice(1, 50);
-  else
+  } else {
     weather_info.pressure += dice(1, 80);
+  }
 
   weather_info.change = 0;
 
   if (weather_info.pressure <= 980) {
-    if ((time_info.month >= 3) && (time_info.month <= 14))
+    if ((time_info.month >= 3) && (time_info.month <= 14)) {
       weather_info.sky = SKY_LIGHTNING;
-    else
+    } else {
       weather_info.sky = SKY_LIGHTNING;
+    }
   } else if (weather_info.pressure <= 1000) {
-    if ((time_info.month >= 3) && (time_info.month <= 14))
+    if ((time_info.month >= 3) && (time_info.month <= 14)) {
       weather_info.sky = SKY_RAINING;
-    else
+    } else {
       weather_info.sky = SKY_RAINING;
+    }
   } else if (weather_info.pressure <= 1020) {
     weather_info.sky = SKY_CLOUDY;
   } else {
@@ -371,9 +374,9 @@ struct index_data* generate_indices(FILE* fl, int* top) {
   for (;;) {
     if (fgets(buf, sizeof(buf), fl)) {
       if (*buf == '#') {
-        if (!i) /* first cell */
+        if (!i) { /* first cell */
           CREATE(index, struct index_data, bc);
-        else if (i >= bc) {
+        } else if (i >= bc) {
           if (!(index = (struct index_data*)realloc(index,
                   (i + 50) * sizeof(struct index_data)))) {
             perror("load indices");
@@ -390,8 +393,9 @@ struct index_data* generate_indices(FILE* fl, int* top) {
         index[i].name = (index[i].virtual < 99999) ? fread_string(fl) : "omega";
         i++;
       } else {
-        if (*buf == '$') /* EOF */
+        if (*buf == '$') { /* EOF */
           break;
+        }
       }
     } else {
       fprintf(stderr, "generate indices");
@@ -408,13 +412,14 @@ void cleanout_room(struct room_data* rp) {
 
   free(rp->name);
   free(rp->description);
-  for (i = 0; i < 6; i++)
+  for (i = 0; i < 6; i++) {
     if (rp->dir_option[i]) {
       free(rp->dir_option[i]->general_description);
       free(rp->dir_option[i]->keyword);
       free(rp->dir_option[i]);
       rp->dir_option[i] = NULL;
     }
+  }
 
   for (exptr = rp->ex_description; exptr; exptr = nptr) {
     nptr = exptr->next;
@@ -632,8 +637,8 @@ void renum_zone_table(void) {
   struct reset_com* cmd;
   char buf[256];
 
-  for (zone = 0; zone <= top_of_zone_table; zone++)
-    for (comm = 0; zone_table[zone].cmd[comm].command != 'S'; comm++)
+  for (zone = 0; zone <= top_of_zone_table; zone++) {
+    for (comm = 0; zone_table[zone].cmd[comm].command != 'S'; comm++) {
       switch ((cmd = zone_table[zone].cmd + comm)->command) {
         case 'M':
           cmd->arg1 = real_mobile(cmd->arg1);
@@ -684,6 +689,8 @@ void renum_zone_table(void) {
             LOG_ZONE_ERROR('D', "room", zone, comm);
           break;
       }
+    }
+  }
 }
 
 /* load the zone table and command tables */
@@ -701,14 +708,15 @@ void boot_zones(void) {
     fscanf(fl, " #%*d\n");
     check = fread_string(fl);
 
-    if (*check == '$')
+    if (*check == '$') {
       break; /* end of file */
+    }
 
     /* alloc a new zone */
 
-    if (!zon)
+    if (!zon) {
       CREATE(zone_table, struct zone_data, bc);
-    else if (zon >= bc) {
+    } else if (zon >= bc) {
       if (!(zone_table = (struct zone_data*)realloc(zone_table,
               (zon + 10) * sizeof(struct zone_data)))) {
         perror("boot_zones realloc");
@@ -726,10 +734,10 @@ void boot_zones(void) {
     cmd_no = 0;
 
     for (expand = 1;;) {
-      if (expand)
-        if (!cmd_no)
+      if (expand) {
+        if (!cmd_no) {
           CREATE(zone_table[zon].cmd, struct reset_com, cc);
-        else if (cmd_no >= cc) {
+        } else if (cmd_no >= cc) {
           if (!(zone_table[zon].cmd =
                   (struct reset_com*)realloc(zone_table[zon].cmd,
                     (cmd_no + 5) * sizeof(struct reset_com)))) {
@@ -738,14 +746,16 @@ void boot_zones(void) {
           }
           cc += 5;
         }
+      }
 
       expand = 1;
 
       fscanf(fl, " "); /* skip blanks */
       fscanf(fl, "%c", &zone_table[zon].cmd[cmd_no].command);
 
-      if (zone_table[zon].cmd[cmd_no].command == 'S')
+      if (zone_table[zon].cmd[cmd_no].command == 'S') {
         break;
+      }
 
       if (zone_table[zon].cmd[cmd_no].command == '*') {
         expand = 0;
@@ -763,8 +773,9 @@ void boot_zones(void) {
           zone_table[zon].cmd[cmd_no].command == 'C' ||
           zone_table[zon].cmd[cmd_no].command == 'E' ||
           zone_table[zon].cmd[cmd_no].command == 'P' ||
-          zone_table[zon].cmd[cmd_no].command == 'D')
+          zone_table[zon].cmd[cmd_no].command == 'D') {
         fscanf(fl, " %d", &zone_table[zon].cmd[cmd_no].arg3);
+      }
 
       fgets(buf, 80, fl); /* read comment */
 
@@ -816,8 +827,9 @@ static void SetRacialStuff(struct char_data* mob) {
       SET_BIT(mob->M_immune, IMM_NONMAG);
       break;
     case RACE_PREDATOR:
-      if (mob->skills)
+      if (mob->skills) {
         mob->skills[SKILL_HUNT].learned = 100;
+      }
       break;
 
     default:
@@ -1023,7 +1035,8 @@ struct char_data* read_mobile(int nr, int type) {
 
     short hp_bonus = 0;
     fscanf(mob_f, " %hd ", &hp_bonus);
-    mob->points.max_hit = (short)(DICE((int)GET_LEVEL(mob, WARRIOR_LEVEL_IND), 8) + hp_bonus);
+    mob->points.max_hit =
+      (short)(DICE((int)GET_LEVEL(mob, WARRIOR_LEVEL_IND), 8) + hp_bonus);
     mob->points.hit = mob->points.max_hit;
 
     signed char d_num = 0;
@@ -1323,11 +1336,13 @@ struct obj_data* read_object(int nr, int type) {
     CREATE(new_descr, struct extra_descr_data, 1);
     bc += sizeof(struct extra_descr_data);
     new_descr->keyword = fread_string(obj_f);
-    if (new_descr->keyword && *new_descr->keyword)
+    if (new_descr->keyword && *new_descr->keyword) {
       bc += strlen(new_descr->keyword);
+    }
     new_descr->description = fread_string(obj_f);
-    if (new_descr->description && *new_descr->description)
+    if (new_descr->description && *new_descr->description) {
       bc += strlen(new_descr->description);
+    }
 
     new_descr->next = obj->ex_description;
     obj->ex_description = new_descr;
@@ -1382,9 +1397,10 @@ void zone_update(void) {
   /* enqueue zones */
 
   for (i = 0; i <= top_of_zone_table; i++) {
-    if (zone_table[i].age < zone_table[i].lifespan && zone_table[i].reset_mode)
+    if (zone_table[i].age < zone_table[i].lifespan &&
+        zone_table[i].reset_mode) {
       (zone_table[i].age)++;
-    else if (zone_table[i].age < ZO_DEAD && zone_table[i].reset_mode) {
+    } else if (zone_table[i].age < ZO_DEAD && zone_table[i].reset_mode) {
       /* enqueue zone */
 
       CREATE(update_u, struct reset_q_element, 1);
@@ -1392,9 +1408,9 @@ void zone_update(void) {
       update_u->zone_to_reset = i;
       update_u->next = 0;
 
-      if (!reset_q.head)
+      if (!reset_q.head) {
         reset_q.head = reset_q.tail = update_u;
-      else {
+      } else {
         reset_q.tail->next = update_u;
         reset_q.tail = update_u;
       }
@@ -1421,14 +1437,16 @@ void zone_update(void) {
       reset_zone(update_u->zone_to_reset);
       /* dequeue */
 
-      if (update_u == reset_q.head)
+      if (update_u == reset_q.head) {
         reset_q.head = reset_q.head->next;
-      else {
-        for (temp = reset_q.head; temp->next != update_u; temp = temp->next)
+      } else {
+        for (temp = reset_q.head; temp->next != update_u; temp = temp->next) {
           ;
+        }
 
-        if (!update_u->next)
+        if (!update_u->next) {
           reset_q.tail = temp;
+        }
 
         temp->next = update_u->next;
       }
@@ -1452,10 +1470,11 @@ void reset_zone(int zone) {
   mob = 0;
 
   for (cmd_no = 0;; cmd_no++) {
-    if (ZCMD.command == 'S')
+    if (ZCMD.command == 'S') {
       break;
+    }
 
-    if (last_cmd || !ZCMD.if_flag)
+    if (last_cmd || !ZCMD.if_flag) {
       switch (ZCMD.command) {
         case 'M': /* read a mobile */
           if (mob_index[ZCMD.arg1].number < ZCMD.arg2) {
@@ -1463,8 +1482,9 @@ void reset_zone(int zone) {
             mob->specials.zone = zone;
             char_to_room(mob, ZCMD.arg3);
             last_cmd = 1;
-          } else
+          } else {
             last_cmd = 0;
+          }
           break;
 
         case 'C': /* read a mobile.  Charm them to follow prev. */
@@ -1481,25 +1501,29 @@ void reset_zone(int zone) {
               SET_BIT(mob->specials.affected_by, AFF_CHARM);
             }
             last_cmd = 1;
-          } else
+          } else {
             last_cmd = 0;
+          }
           break;
 
         case 'O': /* read an object */
-          if (obj_index[ZCMD.arg1].number < ZCMD.arg2)
+          if (obj_index[ZCMD.arg1].number < ZCMD.arg2) {
             if (ZCMD.arg3 >= 0 && ((rp = real_roomp(ZCMD.arg3)) != NULL)) {
               if ((obj = read_object(ZCMD.arg1, REAL)) != NULL) {
                 obj_to_room(obj, ZCMD.arg3);
                 last_cmd = 1;
-              } else
+              } else {
                 last_cmd = 0;
+              }
             } else if (obj = read_object(ZCMD.arg1, REAL)) {
               sprintf(buf, "Error finding room #%d", ZCMD.arg3);
               vlog(buf);
               extract_obj(obj);
               last_cmd = 1;
-            } else
+            } else {
               last_cmd = 0;
+            }
+          }
           break;
 
         case 'P': /* object to object */
@@ -1512,8 +1536,9 @@ void reset_zone(int zone) {
             } else {
               last_cmd = 0;
             }
-          } else
+          } else {
             last_cmd = 0;
+          }
           break;
 
         case 'G': /* obj_to_char */
@@ -1521,24 +1546,27 @@ void reset_zone(int zone) {
               (obj = read_object(ZCMD.arg1, REAL))) {
             obj_to_char(obj, mob);
             last_cmd = 1;
-          } else
+          } else {
             last_cmd = 0;
+          }
           break;
 
         case 'H': /* hatred to char */
 
-          if (AddHatred(mob, ZCMD.arg1, ZCMD.arg2))
+          if (AddHatred(mob, ZCMD.arg1, ZCMD.arg2)) {
             last_cmd = 1;
-          else
+          } else {
             last_cmd = 0;
+          }
           break;
 
         case 'F': /* fear to char */
 
-          if (AddFears(mob, ZCMD.arg1, ZCMD.arg2))
+          if (AddFears(mob, ZCMD.arg1, ZCMD.arg2)) {
             last_cmd = 1;
-          else
+          } else {
             last_cmd = 0;
+          }
           break;
 
         case 'E': /* object to equipment list */
@@ -1546,8 +1574,9 @@ void reset_zone(int zone) {
               (obj = read_object(ZCMD.arg1, REAL))) {
             equip_char(mob, obj, ZCMD.arg3);
             last_cmd = 1;
-          } else
+          } else {
             last_cmd = 0;
+          }
           break;
 
         case 'D': /* set state of door */
@@ -1579,8 +1608,9 @@ void reset_zone(int zone) {
           vlog(buf);
           break;
       }
-    else
+    } else {
       last_cmd = 0;
+    }
   }
 
   zone_table[zone].age = 0;
@@ -1592,10 +1622,13 @@ void reset_zone(int zone) {
 int is_empty(int zone_nr) {
   struct descriptor_data* i;
 
-  for (i = descriptor_list; i; i = i->next)
-    if (!i->connected)
-      if (real_roomp(i->character->in_room)->zone == zone_nr)
+  for (i = descriptor_list; i; i = i->next) {
+    if (!i->connected) {
+      if (real_roomp(i->character->in_room)->zone == zone_nr) {
         return (0);
+      }
+    }
+  }
 
   return (1);
 }
@@ -1625,9 +1658,9 @@ int load_char(char* name, struct char_file_u* char_element) {
     */
     char_element->talks[2] = TRUE;
     return (player_i);
-  } else
-
+  } else {
     return (-1);
+  }
 }
 
 /* copy data from the file structure to a char struct */
@@ -1637,8 +1670,9 @@ void store_to_char(struct char_file_u* st, struct char_data* ch) {
   GET_SEX(ch) = st->sex;
   ch->player.class = st->class;
 
-  for (i = MAGE_LEVEL_IND; i <= RANGER_LEVEL_IND; i++)
+  for (i = MAGE_LEVEL_IND; i <= RANGER_LEVEL_IND; i++) {
     ch->player.level[i] = st->level[i];
+  }
 
   GET_RACE(ch) = st->race;
 
@@ -1648,14 +1682,16 @@ void store_to_char(struct char_file_u* st, struct char_data* ch) {
   if (*st->title) {
     CREATE(ch->player.title, char, strlen(st->title) + 1);
     strcpy(ch->player.title, st->title);
-  } else
+  } else {
     GET_TITLE(ch) = 0;
+  }
 
   if (*st->description) {
     CREATE(ch->player.description, char, strlen(st->description) + 1);
     strcpy(ch->player.description, st->description);
-  } else
+  } else {
     ch->player.description = 0;
+  }
 
   ch->player.hometown = st->hometown;
 
@@ -1663,8 +1699,9 @@ void store_to_char(struct char_file_u* st, struct char_data* ch) {
   ch->player.time.played = st->played;
   ch->player.time.logon = time(0);
 
-  for (i = 0; i <= MAX_TOUNGE - 1; i++)
+  for (i = 0; i <= MAX_TOUNGE - 1; i++) {
     ch->player.talks[i] = st->talks[i];
+  }
 
   ch->player.weight = st->weight;
   ch->player.height = st->height;
@@ -1675,8 +1712,9 @@ void store_to_char(struct char_file_u* st, struct char_data* ch) {
 
   SpaceForSkills(ch);
 
-  for (i = 0; i <= MAX_SKILLS - 1; i++)
+  for (i = 0; i <= MAX_SKILLS - 1; i++) {
     ch->skills[i] = st->skills[i];
+  }
 
   ch->specials.spells_to_learn = st->spells_to_learn;
   ch->specials.alignment = st->alignment;
@@ -1692,16 +1730,19 @@ void store_to_char(struct char_file_u* st, struct char_data* ch) {
   strcpy(GET_NAME(ch), st->name);
 
   /* Not used as far as I can see (Michael) */
-  for (i = 0; i <= 4; i++)
+  for (i = 0; i <= 4; i++) {
     ch->specials.apply_saving_throw[i] = st->apply_saving_throw[i];
+  }
 
-  for (i = 0; i <= 2; i++)
+  for (i = 0; i <= 2; i++) {
     GET_COND(ch, i) = st->conditions[i];
+  }
 
   /* Add all spell effects */
   for (i = 0; i < MAX_AFFECT; i++) {
-    if (st->affected[i].type)
+    if (st->affected[i].type) {
       affect_to_char(ch, &st->affected[i]);
+    }
   }
   ch->in_room = st->load_room;
   affect_total(ch);
@@ -1716,10 +1757,11 @@ void char_to_store(struct char_data* ch, struct char_file_u* st) {
   /* Unaffect everything a character can be affected by */
 
   for (i = 0; i < MAX_WEAR; i++) {
-    if (ch->equipment[i])
+    if (ch->equipment[i]) {
       char_eq[i] = unequip_char_for_save(ch, i);
-    else
+    } else {
       char_eq[i] = 0;
+    }
   }
 
   for (af = ch->affected, i = 0; i < MAX_AFFECT; i++) {
@@ -1740,8 +1782,9 @@ void char_to_store(struct char_data* ch, struct char_file_u* st) {
     }
   }
 
-  if ((i >= MAX_AFFECT) && af && af->next)
+  if ((i >= MAX_AFFECT) && af && af->next) {
     vlog("WARNING: OUT OF STORE ROOM FOR AFFECTED TYPES!!!");
+  }
 
   ch->tmpabilities = ch->abilities;
 
@@ -1758,8 +1801,9 @@ void char_to_store(struct char_data* ch, struct char_file_u* st) {
   st->height = GET_HEIGHT(ch);
   st->sex = GET_SEX(ch);
   st->class = ch->player.class;
-  for (i = MAGE_LEVEL_IND; i <= RANGER_LEVEL_IND; i++)
+  for (i = MAGE_LEVEL_IND; i <= RANGER_LEVEL_IND; i++) {
     st->level[i] = ch->player.level[i];
+  }
   st->race = GET_RACE(ch);
 
   st->abilities = ch->abilities;
@@ -1772,30 +1816,36 @@ void char_to_store(struct char_data* ch, struct char_file_u* st) {
   st->points.hitroll = 0;
   st->points.damroll = 0;
 
-  if (GET_TITLE(ch))
+  if (GET_TITLE(ch)) {
     strcpy(st->title, GET_TITLE(ch));
-  else
+  } else {
     *st->title = '\0';
+  }
 
-  if (ch->player.description)
+  if (ch->player.description) {
     strcpy(st->description, ch->player.description);
-  else
+  } else {
     *st->description = '\0';
+  }
 
-  for (i = 0; i <= MAX_TOUNGE - 1; i++)
+  for (i = 0; i <= MAX_TOUNGE - 1; i++) {
     st->talks[i] = ch->player.talks[i];
+  }
 
-  for (i = 0; i <= MAX_SKILLS - 1; i++)
+  for (i = 0; i <= MAX_SKILLS - 1; i++) {
     st->skills[i] = ch->skills[i];
+  }
 
   /* Copy name, ensuring null termination within 20-byte limit */
   (void)snprintf(st->name, sizeof(st->name), "%s", GET_NAME(ch));
 
-  for (i = 0; i <= 4; i++)
+  for (i = 0; i <= 4; i++) {
     st->apply_saving_throw[i] = ch->specials.apply_saving_throw[i];
+  }
 
-  for (i = 0; i <= 2; i++)
+  for (i = 0; i <= 2; i++) {
     st->conditions[i] = GET_COND(ch, i);
+  }
 
   for (af = ch->affected, i = 0; i < MAX_AFFECT; i++) {
     if (af) {
@@ -1808,8 +1858,9 @@ void char_to_store(struct char_data* ch, struct char_file_u* st) {
   }
 
   for (i = 0; i < MAX_WEAR; i++) {
-    if (char_eq[i])
+    if (char_eq[i]) {
       equip_char(ch, char_eq[i], i);
+    }
   }
 
   affect_total(ch);
@@ -1833,8 +1884,9 @@ int create_entry(char* name) {
 
   /* copy lowercase equivalent of name to table field */
   for (i = 0; *(player_table[top_of_p_table].name + i) = LOWER(*(name + i));
-    i++)
+    i++) {
     ;
+  }
 
   player_table[top_of_p_table].nr = top_of_p_table;
 
@@ -1849,32 +1901,38 @@ void save_char(struct char_data* ch, short int load_room) {
   int expand;
   struct char_data* tmp;
 
-  if (IS_NPC(ch) && !(IS_SET(ch->specials.act, ACT_POLYSELF)))
+  if (IS_NPC(ch) && !(IS_SET(ch->specials.act, ACT_POLYSELF))) {
     return;
+  }
 
   if (IS_NPC(ch)) {
-    if (!ch->desc)
+    if (!ch->desc) {
       return;
+    }
     tmp = ch->desc->original;
-    if (!tmp)
+    if (!tmp) {
       return;
+    }
 
   } else {
-    if (!ch->desc)
+    if (!ch->desc) {
       return;
+    }
     tmp = 0;
   }
 
   if (expand = (ch->desc->pos > top_of_p_file)) {
     strcpy(mode, "a");
     top_of_p_file++;
-  } else
+  } else {
     strcpy(mode, "r+");
+  }
 
-  if (!tmp)
+  if (!tmp) {
     char_to_store(ch, &st);
-  else
+  } else {
     char_to_store(tmp, &st);
+  }
 
   st.load_room = load_room;
 
@@ -1885,8 +1943,9 @@ void save_char(struct char_data* ch, short int load_room) {
     exit(1);
   }
 
-  if (!expand)
+  if (!expand) {
     fseek(fl, ch->desc->pos * sizeof(struct char_file_u), 0);
+  }
 
   fwrite(&st, sizeof(struct char_file_u), 1, fl);
 
@@ -1980,25 +2039,34 @@ void free_char(struct char_data* ch) {
 
   free(GET_NAME(ch));
 
-  if (ch->player.title)
+  if (ch->player.title) {
     free(ch->player.title);
-  if (ch->act_ptr)
+  }
+  if (ch->act_ptr) {
     free(ch->act_ptr);
-  if (ch->player.short_descr)
+  }
+  if (ch->player.short_descr) {
     free(ch->player.short_descr);
-  if (ch->player.long_descr)
+  }
+  if (ch->player.long_descr) {
     free(ch->player.long_descr);
-  if (ch->player.description)
+  }
+  if (ch->player.description) {
     free(ch->player.description);
-  if (ch->player.sounds)
+  }
+  if (ch->player.sounds) {
     free(ch->player.sounds);
-  if (ch->player.distant_snds)
+  }
+  if (ch->player.distant_snds) {
     free(ch->player.distant_snds);
+  }
 
-  for (af = ch->affected; af; af = af->next)
+  for (af = ch->affected; af; af = af->next) {
     affect_remove(ch, af);
-  if (ch->skills)
+  }
+  if (ch->skills) {
     free(ch->skills);
+  }
 
   free(ch);
 }
@@ -2008,19 +2076,24 @@ void free_obj(struct obj_data* obj) {
   struct extra_descr_data* this, *next_one;
 
   free(obj->name);
-  if (obj->description && *obj->description)
+  if (obj->description && *obj->description) {
     free(obj->description);
-  if (obj->short_description && *obj->short_description)
+  }
+  if (obj->short_description && *obj->short_description) {
     free(obj->short_description);
-  if (obj->action_description && *obj->action_description)
+  }
+  if (obj->action_description && *obj->action_description) {
     free(obj->action_description);
+  }
 
   for (this = obj->ex_description; (this != 0); this = next_one) {
     next_one = this->next;
-    if (this->keyword)
+    if (this->keyword) {
       free(this->keyword);
-    if (this->description)
+    }
+    if (this->description) {
       free(this->description);
+    }
     free(this);
   }
 
@@ -2094,17 +2167,20 @@ void reset_char(struct char_data* ch) {
 
   int i, j;
 
-  for (i = 0; i < MAX_WEAR; i++) /* Initializing */
+  for (i = 0; i < MAX_WEAR; i++) { /* Initializing */
     ch->equipment[i] = 0;
+  }
 
   spell_dispel_magic(IMPLEMENTOR, ch, ch, 0);
 
-  if (IS_SET(ch->specials.act, PLR_MAILING))
+  if (IS_SET(ch->specials.act, PLR_MAILING)) {
     REMOVE_BIT(ch->specials.act, PLR_MAILING);
+  }
 
   if (GET_RACE(ch) == RACE_OGRE) {
-    if (GET_WEIGHT(ch) < 100)
+    if (GET_WEIGHT(ch) < 100) {
       GET_WEIGHT(ch) = (200 + number(1, 10));
+    }
   }
 
   ch->desc->screen_size = 24;
@@ -2133,16 +2209,19 @@ void reset_char(struct char_data* ch) {
   ch->bet_opt.craps_options = 0;
   ch->bet_opt.one_roll = 0;
 
-  if (!GET_RACE(ch))
+  if (!GET_RACE(ch)) {
     GET_RACE(ch) = RACE_HUMAN;
+  }
   if (GET_RACE(ch) == RACE_DWARF) {
-    if (!IS_AFFECTED(ch, AFF_INFRAVISION))
+    if (!IS_AFFECTED(ch, AFF_INFRAVISION)) {
       SET_BIT(ch->specials.affected_by, AFF_INFRAVISION);
+    }
   }
 
   if (HasClass(ch, CLASS_PALADIN)) {
-    if (!IS_AFFECTED(ch, AFF_PROTECT_EVIL))
+    if (!IS_AFFECTED(ch, AFF_PROTECT_EVIL)) {
       SET_BIT(ch->specials.affected_by, AFF_PROTECT_EVIL);
+    }
   }
 
   if ((ch->player.class == 3) && (GET_LEVEL(ch, THIEF_LEVEL_IND))) {
@@ -2164,8 +2243,9 @@ void reset_char(struct char_data* ch) {
 
   /* AC adjustment */
   GET_AC(ch) += dex_app[GET_DEX(ch)].defensive;
-  if (GET_AC(ch) > 100)
+  if (GET_AC(ch) > 100) {
     GET_AC(ch) = 100;
+  }
 
   GET_HITROLL(ch) = 0;
   GET_DAMROLL(ch) = 0;
@@ -2178,12 +2258,15 @@ void reset_char(struct char_data* ch) {
   ch->specials.carry_weight = 0;
   ch->specials.carry_items = 0;
 
-  if (GET_HIT(ch) <= 0)
+  if (GET_HIT(ch) <= 0) {
     GET_HIT(ch) = 1;
-  if (GET_MOVE(ch) <= 0)
+  }
+  if (GET_MOVE(ch) <= 0) {
     GET_MOVE(ch) = 1;
-  if (GET_MANA(ch) <= 0)
+  }
+  if (GET_MANA(ch) <= 0) {
     GET_MANA(ch) = 1;
+  }
 
   ch->points.max_mana = 0;
   ch->points.max_move = 0;
@@ -2210,9 +2293,11 @@ void reset_char(struct char_data* ch) {
 
   parse_name(GET_NAME(ch), recipient);
 
-  for (tmp = recipient; *tmp; tmp++)
-    if (isupper(*tmp))
+  for (tmp = recipient; *tmp; tmp++) {
+    if (isupper(*tmp)) {
       *tmp = tolower(*tmp);
+    }
+  }
 
   if (has_mail(recipient)) {
     sprintf(buf, "You have %sMAIL%s.\n\r", VT_BOLDTEX, VT_NORMALT);
@@ -2234,23 +2319,28 @@ void reset_char(struct char_data* ch) {
     update the affects on the character.
   */
 
-  for (af = ch->affected; af; af = af->next)
+  for (af = ch->affected; af; af = af->next) {
     affect_modify(ch, af->location, (unsigned)af->modifier, af->bitvector,
       TRUE);
+  }
 
-  if (!HasClass(ch, CLASS_MONK))
+  if (!HasClass(ch, CLASS_MONK)) {
     GET_AC(ch) += dex_app[GET_DEX(ch)].defensive;
-  if (GET_AC(ch) > 100)
+  }
+  if (GET_AC(ch) > 100) {
     GET_AC(ch) = 100;
+  }
 
-  for (i = 0; i < 5; i++)
+  for (i = 0; i < 5; i++) {
     ch->specials.apply_saving_throw[i] = 20 - (GetMaxLevel(ch) / 2);
+  }
 
   /*
     clear out the 'dead' bit on characters
   */
-  if (ch->desc)
+  if (ch->desc) {
     ClearDeadBit(ch);
+  }
 }
 
 /* clear ALL the working variables of a char and do NOT free any space
@@ -2300,8 +2390,9 @@ void init_char(struct char_data* ch) {
   ch->player.time.played = 0;
   ch->player.time.logon = time(0);
 
-  for (i = 0; i < MAX_TOUNGE; i++)
+  for (i = 0; i < MAX_TOUNGE; i++) {
     ch->player.talks[i] = 0;
+  }
 
   GET_STR(ch) = 9;
   GET_INT(ch) = 9;
@@ -2375,8 +2466,9 @@ void init_char(struct char_data* ch) {
 
   ch->points.armor = 100;
 
-  if (!ch->skills)
+  if (!ch->skills) {
     SpaceForSkills(ch);
+  }
 
   for (i = 0; i <= MAX_SKILLS - 1; i++) {
     if (GetMaxLevel(ch) < IMPLEMENTOR) {
@@ -2391,11 +2483,13 @@ void init_char(struct char_data* ch) {
   ch->specials.affected_by = 0;
   ch->specials.spells_to_learn = 0;
 
-  for (i = 0; i < 5; i++)
+  for (i = 0; i < 5; i++) {
     ch->specials.apply_saving_throw[i] = 0;
+  }
 
-  for (i = 0; i < 3; i++)
+  for (i = 0; i < 3; i++) {
     GET_COND(ch, i) = (GetMaxLevel(ch) > GOD ? -1 : 24);
+  }
 }
 
 struct room_data* real_roomp(int virtual) {
@@ -2417,14 +2511,17 @@ int real_mobile(int virtual) {
   for (;;) {
     mid = (bot + top) / 2;
 
-    if ((mob_index + mid)->virtual == virtual)
+    if ((mob_index + mid)->virtual == virtual) {
       return (mid);
-    if (bot >= top)
+    }
+    if (bot >= top) {
       return (-1);
-    if ((mob_index + mid)->virtual > virtual)
+    }
+    if ((mob_index + mid)->virtual > virtual) {
       top = mid - 1;
-    else
+    } else {
       bot = mid + 1;
+    }
   }
 }
 
@@ -2439,13 +2536,16 @@ int real_object(int virtual) {
   for (;;) {
     mid = (bot + top) / 2;
 
-    if ((obj_index + mid)->virtual == virtual)
+    if ((obj_index + mid)->virtual == virtual) {
       return (mid);
-    if (bot >= top)
+    }
+    if (bot >= top) {
       return (-1);
-    if ((obj_index + mid)->virtual > virtual)
+    }
+    if ((obj_index + mid)->virtual > virtual) {
       top = mid - 1;
-    else
+    } else {
       bot = mid + 1;
+    }
   }
 }

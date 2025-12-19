@@ -52,11 +52,12 @@ void string_add(struct descriptor_data* d, char* str) {
   int terminator = 0;
 
   /* determine if this is the terminal string, and truncate if so */
-  for (scan = str; *scan; scan++)
+  for (scan = str; *scan; scan++) {
     if (terminator = (*scan == '@')) {
       *scan = '\0';
       break;
     }
+  }
 
   if (!(*d->str)) {
     if (strlen(str) > d->max_str) {
@@ -83,22 +84,26 @@ void string_add(struct descriptor_data* d, char* str) {
   if (terminator) {
     if (!d->connected && (IS_SET(d->character->specials.act, PLR_MAILING))) {
       store_mail(d->name, d->character->player.name, *d->str);
-      if (*d->str)
+      if (*d->str) {
         free(*d->str);
-      if (d->str)
+      }
+      if (d->str) {
         free(d->str);
+      }
       *(d->name) = '\0';
       SEND_TO_Q("Message sent!\n\r", d);
-      if (!IS_NPC(d->character))
+      if (!IS_NPC(d->character)) {
         REMOVE_BIT(d->character->specials.act, PLR_MAILING);
+      }
     }
     d->str = 0;
     if (d->connected == CON_EXDSCR) {
       SEND_TO_Q(MENU, d);
       d->connected = CON_SLCT;
     }
-  } else
+  } else {
     strcat(*d->str, "\n\r");
+  }
 }
 
 #undef MAX_STR
@@ -110,11 +115,11 @@ void quad_arg(char* arg, int* type, char* name, int* field, char* string) {
 
   /* determine type */
   arg = one_argument(arg, buf);
-  if (is_abbrev(buf, "char"))
+  if (is_abbrev(buf, "char")) {
     *type = TP_MOB;
-  else if (is_abbrev(buf, "obj"))
+  } else if (is_abbrev(buf, "obj")) {
     *type = TP_OBJ;
-  else {
+  } else {
     *type = TP_ERROR;
     return;
   }
@@ -124,14 +129,17 @@ void quad_arg(char* arg, int* type, char* name, int* field, char* string) {
 
   /* field name and number */
   arg = one_argument(arg, buf);
-  if (!(*field = old_search_block(buf, 0, strlen(buf), string_fields, 0)))
+  if (!(*field = old_search_block(buf, 0, strlen(buf), string_fields, 0))) {
     return;
+  }
 
   /* string */
-  for (; isspace(*arg); arg++)
+  for (; isspace(*arg); arg++) {
     ;
-  for (; *string = *arg; arg++, string++)
+  }
+  for (; *string = *arg; arg++, string++) {
     ;
+  }
 
   return;
 }
@@ -143,8 +151,9 @@ void do_string(struct char_data* ch, char* arg, int cmd) {
   int field, type;
   struct char_data* mob;
   struct obj_data* obj;
-  if (IS_NPC(ch))
+  if (IS_NPC(ch)) {
     return;
+  }
 
   quad_arg(arg, &type, name, &field, string);
 
@@ -177,9 +186,10 @@ void do_string(struct char_data* ch, char* arg, int cmd) {
           return;
         }
         ch->desc->str = &mob->player.name;
-        if (!IS_NPC(mob))
+        if (!IS_NPC(mob)) {
           send_to_char("WARNING: You have changed the name of a player.\n\r",
             ch);
+        }
         break;
       case 2:
         if (!IS_NPC(mob)) {
@@ -207,9 +217,9 @@ void do_string(struct char_data* ch, char* arg, int cmd) {
           send_to_char("Monsters have no titles.\n\r", ch);
           return;
         }
-        if ((GetMaxLevel(ch) >= GetMaxLevel(mob)) && (ch != mob))
+        if ((GetMaxLevel(ch) >= GetMaxLevel(mob)) && (ch != mob)) {
           ch->desc->str = &mob->player.title;
-        else {
+        } else {
           send_to_char(
             "Sorry, can't set the title of someone of higher level.\n\r", ch);
           return;
@@ -254,7 +264,7 @@ void do_string(struct char_data* ch, char* arg, int cmd) {
           return;
         }
         /* try to locate extra description */
-        for (ed = obj->ex_description;; ed = ed->next)
+        for (ed = obj->ex_description;; ed = ed->next) {
           if (!ed) {
             CREATE(ed, struct extra_descr_data, 1);
             ed->next = obj->ex_description;
@@ -273,6 +283,7 @@ void do_string(struct char_data* ch, char* arg, int cmd) {
             send_to_char("Modifying description.\n\r", ch);
             break;
           }
+        }
         ch->desc->max_str = MAX_STRING_LENGTH;
         return; /* the stndrd (see below) procedure does not apply here */
         break;
@@ -282,21 +293,24 @@ void do_string(struct char_data* ch, char* arg, int cmd) {
           return;
         }
         /* try to locate field */
-        for (ed = obj->ex_description;; ed = ed->next)
+        for (ed = obj->ex_description;; ed = ed->next) {
           if (!ed) {
             send_to_char("No field with that keyword.\n\r", ch);
             return;
           } else if (!str_cmp(ed->keyword, string)) {
             free(ed->keyword);
-            if (ed->description)
+            if (ed->description) {
               free(ed->description);
+            }
 
             /* delete the entry in the desr list */
-            if (ed == obj->ex_description)
+            if (ed == obj->ex_description) {
               obj->ex_description = ed->next;
-            else {
-              for (tmp = obj->ex_description; tmp->next != ed; tmp = tmp->next)
+            } else {
+              for (tmp = obj->ex_description; tmp->next != ed;
+                tmp = tmp->next) {
                 ;
+              }
               tmp->next = ed->next;
             }
             free(ed);
@@ -304,6 +318,7 @@ void do_string(struct char_data* ch, char* arg, int cmd) {
             send_to_char("Field deleted.\n\r", ch);
             return;
           }
+        }
         break;
       default:
         send_to_char("That field is undefined for objects.\n\r", ch);
@@ -338,14 +353,17 @@ void bisect_arg(char* arg, int* field, char* string) {
 
   /* field name and number */
   arg = one_argument(arg, buf);
-  if (!(*field = old_search_block(buf, 0, strlen(buf), room_fields, 0)))
+  if (!(*field = old_search_block(buf, 0, strlen(buf), room_fields, 0))) {
     return;
+  }
 
   /* string */
-  for (; isspace(*arg); arg++)
+  for (; isspace(*arg); arg++) {
     ;
-  for (; *string = *arg; arg++, string++)
+  }
+  for (; *string = *arg; arg++, string++) {
     ;
+  }
 
   return;
 }
@@ -361,11 +379,13 @@ void do_edit(struct char_data* ch, char* arg, int cmd) {
 
   rp = real_roomp(ch->in_room);
 
-  if ((IS_NPC(ch)) || (GetMaxLevel(ch) < LOW_IMMORTAL))
+  if ((IS_NPC(ch)) || (GetMaxLevel(ch) < LOW_IMMORTAL)) {
     return;
+  }
 
-  if (!ch->desc) /* someone is forced to do something. can be bad! */
-    return;      /* the ch->desc->str field will cause problems... */
+  if (!ch->desc) { /* someone is forced to do something. can be bad! */
+    return;        /* the ch->desc->str field will cause problems... */
+  }
 
   bisect_arg(arg, &field, string);
 
@@ -420,16 +440,17 @@ void do_edit(struct char_data* ch, char* arg, int cmd) {
 
       if (rp->dir_option[dir]) {
         send_to_char("modifying exit\n\r", ch);
-        if (dflags == 1)
+        if (dflags == 1) {
           rp->dir_option[dir]->exit_info = EX_ISDOOR;
-        else if (dflags == 2)
+        } else if (dflags == 2) {
           rp->dir_option[dir]->exit_info = EX_ISDOOR | EX_PICKPROOF;
-        else if (dflags == 3)
+        } else if (dflags == 3) {
           rp->dir_option[dir]->exit_info = EX_ISDOOR | EX_SECRET;
-        else if (dflags == 4)
+        } else if (dflags == 4) {
           rp->dir_option[dir]->exit_info = EX_ISDOOR | EX_SECRET | EX_PICKPROOF;
-        else
+        } else {
           rp->dir_option[dir]->exit_info = 0;
+        }
 
         rp->dir_option[dir]->key = dkey;
         if (real_roomp(exroom) != NULL) {
@@ -446,16 +467,17 @@ void do_edit(struct char_data* ch, char* arg, int cmd) {
       } else {
         send_to_char("New exit\n\r", ch);
         CREATE(rp->dir_option[dir], struct room_direction_data, 1);
-        if (dflags == 1)
+        if (dflags == 1) {
           rp->dir_option[dir]->exit_info = EX_ISDOOR;
-        else if (dflags == 2)
+        } else if (dflags == 2) {
           rp->dir_option[dir]->exit_info = EX_ISDOOR | EX_PICKPROOF;
-        else if (dflags == 3)
+        } else if (dflags == 3) {
           rp->dir_option[dir]->exit_info = EX_ISDOOR | EX_SECRET;
-        else if (dflags == 4)
+        } else if (dflags == 4) {
           rp->dir_option[dir]->exit_info = EX_ISDOOR | EX_SECRET | EX_PICKPROOF;
-        else
+        } else {
           rp->dir_option[dir]->exit_info = 0;
+        }
         rp->dir_option[dir]->key = dkey;
         rp->dir_option[dir]->to_room = exroom;
       }
@@ -497,7 +519,7 @@ void do_edit(struct char_data* ch, char* arg, int cmd) {
         return;
       }
       /* try to locate extra description */
-      for (ed = rp->ex_description;; ed = ed->next)
+      for (ed = rp->ex_description;; ed = ed->next) {
         if (!ed) {
           CREATE(ed, struct extra_descr_data, 1);
           ed->next = rp->ex_description;
@@ -516,6 +538,7 @@ void do_edit(struct char_data* ch, char* arg, int cmd) {
           send_to_char("Modifying description.\n\r", ch);
           break;
         }
+      }
       ch->desc->max_str = MAX_STRING_LENGTH;
       return;
       break;
@@ -559,8 +582,9 @@ void do_edit(struct char_data* ch, char* arg, int cmd) {
         break;
       } else {
         real_roomp(ch->in_room)->moblim = moblim;
-        if (!IS_SET(real_roomp(ch->in_room)->room_flags, TUNNEL))
+        if (!IS_SET(real_roomp(ch->in_room)->room_flags, TUNNEL)) {
           SET_BIT(real_roomp(ch->in_room)->room_flags, TUNNEL);
+        }
         return;
         break;
       }
@@ -573,21 +597,23 @@ void do_edit(struct char_data* ch, char* arg, int cmd) {
         return;
       }
       /* try to locate field */
-      for (ed = rp->ex_description;; ed = ed->next)
+      for (ed = rp->ex_description;; ed = ed->next) {
         if (!ed) {
           send_to_char("No field with that keyword.\n\r", ch);
           return;
         } else if (!str_cmp(ed->keyword, string)) {
           free(ed->keyword);
-          if (ed->description)
+          if (ed->description) {
             free(ed->description);
+          }
 
           /* delete the entry in the desr list */
-          if (ed == rp->ex_description)
+          if (ed == rp->ex_description) {
             rp->ex_description = ed->next;
-          else {
-            for (tmp = rp->ex_description; tmp->next != ed; tmp = tmp->next)
+          } else {
+            for (tmp = rp->ex_description; tmp->next != ed; tmp = tmp->next) {
               ;
+            }
             tmp->next = ed->next;
           }
           free(ed);
@@ -595,6 +621,7 @@ void do_edit(struct char_data* ch, char* arg, int cmd) {
           send_to_char("Field deleted.\n\r", ch);
           return;
         }
+      }
       break;
 
     default:
@@ -644,8 +671,9 @@ char* one_word(char* argument, char* first_arg) {
   found = begin = 0;
 
   do {
-    for (; isspace(*(argument + begin)); begin++)
+    for (; isspace(*(argument + begin)); begin++) {
       ;
+    }
 
     if (*(argument + begin) == '\"') { /* is it a quote */
 
@@ -653,15 +681,18 @@ char* one_word(char* argument, char* first_arg) {
 
       for (look_at = 0; (*(argument + begin + look_at) >= ' ') &&
                         (*(argument + begin + look_at) != '\"');
-        look_at++)
+        look_at++) {
         *(first_arg + look_at) = LOWER(*(argument + begin + look_at));
+      }
 
-      if (*(argument + begin + look_at) == '\"')
+      if (*(argument + begin + look_at) == '\"') {
         begin++;
+      }
 
     } else {
-      for (look_at = 0; *(argument + begin + look_at) > ' '; look_at++)
+      for (look_at = 0; *(argument + begin + look_at) > ' '; look_at++) {
         *(first_arg + look_at) = LOWER(*(argument + begin + look_at));
+      }
     }
 
     *(first_arg + look_at) = '\0';
@@ -673,11 +704,13 @@ char* one_word(char* argument, char* first_arg) {
 
 int start_page_file(struct descriptor_data* d, const char* fpath,
   const char* errormsg) {
-  if (!d || !(d->character))
+  if (!d || !(d->character)) {
     return FALSE;
+  }
 
-  if (d->pagedfile)
+  if (d->pagedfile) {
     free(d->pagedfile);
+  }
   d->pagedfile = (char*)calloc(strlen(fpath) + 1, 1);
   strcpy(d->pagedfile, fpath);
   d->position = 0;
@@ -706,12 +739,13 @@ int page_file(struct descriptor_data* d, char* input) {
   }
 
   if (d->connected || (!d->pagedfile) || ((d->position) < 0) ||
-      (!(fp = fopen(d->pagedfile, "r"))))
+      (!(fp = fopen(d->pagedfile, "r")))) {
     return FALSE;
+  }
 
   numlines = (d->screen_size) ? d->screen_size - 2 : 24;
   fseek(fp, d->position, 0);
-  for (i = 0; i < numlines; i++)
+  for (i = 0; i < numlines; i++) {
     if (fgets(buffer, 255, fp) != NULL) {
       send_to_char(buffer, d->character);
       send_to_char("\r", d->character); /* append carriage return/line */
@@ -721,11 +755,13 @@ int page_file(struct descriptor_data* d, char* input) {
       fclose(fp);
       return sent_something;
     }
+  }
 
-  if (!feof(fp))
+  if (!feof(fp)) {
     d->position = ftell(fp);
-  else
+  } else {
     d->position = -1;
+  }
 
   fclose(fp);
 
@@ -733,15 +769,17 @@ int page_file(struct descriptor_data* d, char* input) {
 }
 
 void page_string(struct descriptor_data* d, char* str, int keep_internal) {
-  if (!d)
+  if (!d) {
     return;
+  }
 
   if (keep_internal) {
     CREATE(d->showstr_head, char, strlen(str) + 1);
     strcpy(d->showstr_head, str);
     d->showstr_point = d->showstr_head;
-  } else
+  } else {
     d->showstr_point = str;
+  }
 
   show_string(d, "");
 }
@@ -765,15 +803,16 @@ void show_string(struct descriptor_data* d, char* input) {
   /* show a chunk */
   for (scan = buffer;; scan++, d->showstr_point++) {
     if ((((*scan = *d->showstr_point) == '\n') || (*scan == '\r')) &&
-        ((toggle = -toggle) < 0))
+        ((toggle = -toggle) < 0)) {
       lines++;
-    else if (!*scan || (d->screen_size && (lines >= (d->screen_size - 2)))) {
+    } else if (!*scan || (d->screen_size && (lines >= (d->screen_size - 2)))) {
       *scan = '\0';
       SEND_TO_Q(buffer, d);
 
       /* see if this is the end (or near the end) of the string */
-      for (chk = d->showstr_point; isspace(*chk); chk++)
+      for (chk = d->showstr_point; isspace(*chk); chk++) {
         ;
+      }
       if (!*chk) {
         if (d->showstr_head) {
           free(d->showstr_head);
@@ -793,15 +832,18 @@ void night_watchman(void) {
   tc = time(0);
   t_info = localtime(&tc);
 
-  if ((t_info->tm_hour == 8) && (t_info->tm_wday > 0) && (t_info->tm_wday < 6))
+  if ((t_info->tm_hour == 8) && (t_info->tm_wday > 0) &&
+      (t_info->tm_wday < 6)) {
     if (t_info->tm_min > 50) {
       vlog("Leaving the scene for the serious folks.");
       send_to_all("Closing down. Thank you for flying DikuMUD.\n\r");
       Shutdown = 1;
-    } else if (t_info->tm_min > 40)
+    } else if (t_info->tm_min > 40) {
       send_to_all("ATTENTION: DikuMUD will shut down in 10 minutes.\n\r");
-    else if (t_info->tm_min > 30)
+    } else if (t_info->tm_min > 30) {
       send_to_all("Warning: The game will close in 20 minutes.\n\r");
+    }
+  }
 }
 
 void check_reboot(void) {
@@ -813,7 +855,7 @@ void check_reboot(void) {
   tc = time(0);
   t_info = localtime(&tc);
 
-  if ((t_info->tm_hour + 1) == REBOOT_AT && t_info->tm_min > 30)
+  if ((t_info->tm_hour + 1) == REBOOT_AT && t_info->tm_min > 30) {
     if (boot = fopen("./reboot", "r")) {
       if (t_info->tm_min > 50) {
         vlog("Reboot exists.");
@@ -827,20 +869,23 @@ void check_reboot(void) {
             system("mv ./reboot reboot.FAILED");
             fclose(boot);
             return;
-          } else
+          } else {
             system("mv ./reboot reboot.SUCCEEDED");
+          }
         }
 
         send_to_all("Automatic reboot. Come back in a little while.\n\r");
         Shutdown = rebootmud = 1;
-      } else if (t_info->tm_min > 40)
+      } else if (t_info->tm_min > 40) {
         send_to_all("ATTENTION: DikuMUD will reboot in 10 minutes.\n\r");
-      else if (t_info->tm_min > 30)
+      } else if (t_info->tm_min > 30) {
         send_to_all(
           "Warning: The game will close and reboot in 20 minutes.\n\r");
+      }
 
       fclose(boot);
     }
+  }
 }
 
 #define GR
@@ -893,18 +938,21 @@ int load(void) {
 
   if (p_point < 0) {
     previous[0] = atoi(info.sl_load1);
-    for (i = 1; i < 5; i++)
+    for (i = 1; i < 5; i++) {
       previous[i] = previous[0];
+    }
     p_point = 1;
     return (previous[0]);
   } else {
     /* put new figure in table */
     previous[p_point] = atoi(info.sl_load1);
-    if (++p_point > 4)
+    if (++p_point > 4) {
       p_point = 0;
+    }
 
-    for (i = 0, sum = 0; i < 5; i++)
+    for (i = 0, sum = 0; i < 5; i++) {
       sum += previous[i];
+    }
     return ((int)sum / 5);
   }
 }
@@ -918,8 +966,9 @@ char* nogames(void) {
     fgets(text, 200, fl);
     return (text);
     fclose(fl);
-  } else
+  } else {
     return (0);
+  }
 }
 
 /* emulate the game regulator */
@@ -936,25 +985,26 @@ void gr(int s) {
     if (ld >= 6) {
       sprintf(buf, "The system load is greater than 6.0 (%d)\n\r", ld);
       send_to_all(buf);
-    } else if (slow_death)
+    } else if (slow_death) {
       send_to_all("The game is dying.\n\r");
-    else {
+    } else {
       strcpy(buf, "Game playing is no longer permitted on this machine:\n\r");
       strcat(buf, txt);
       strcat(buf, "\n\r");
       send_to_all(buf);
     }
 
-    if (wnr < 3)
+    if (wnr < 3) {
       send_to_all(warnings[wnr++]);
-    else if (ld >= 6) {
+    } else if (ld >= 6) {
       coma(s);
       wnr = 0;
-    } else
+    } else {
       Shutdown = 1;
-  } else if (workhours())
+    }
+  } else if (workhours()) {
     Shutdown = 1; /* this shouldn't happen */
-  else if (wnr) {
+  } else if (wnr) {
     send_to_all("Things look brighter now - you can continue playing.\n\r");
     wnr = 0;
   }

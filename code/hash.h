@@ -25,5 +25,3 @@ int room_remove(struct room_data* rb[], int key);
 void hash_enter_no_key(struct hash_header* ht, int key, void* data);
 
 #define WORLD_SIZE 30000
-
-

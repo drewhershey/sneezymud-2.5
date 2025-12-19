@@ -18,5 +18,3 @@ void ClassSpecificStuff(struct char_data* ch);
 void gain_exp(struct char_data* ch, int gain);
 void advance_level(struct char_data* ch, int class);
 void set_title(struct char_data* ch);
-
-

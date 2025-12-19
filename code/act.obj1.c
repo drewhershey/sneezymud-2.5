@@ -135,8 +135,9 @@ void do_get(struct char_data* ch, char* argument, int cmd) {
         /*
     check for a trap (traps fire often)
     */
-        if (CheckForAnyTrap(ch, obj_object))
+        if (CheckForAnyTrap(ch, obj_object)) {
           return;
+        }
         if (CAN_SEE_OBJ(ch, obj_object)) {
           if ((IS_CARRYING_N(ch) + obj_object->obj_flags.volume) <=
               CAN_CARRY_N(ch)) {
@@ -172,8 +173,9 @@ void do_get(struct char_data* ch, char* argument, int cmd) {
       if (found) {
         send_to_char("OK.\n\r", ch);
       } else {
-        if (!fail)
+        if (!fail) {
           send_to_char("You see nothing here.\n\r", ch);
+        }
       }
     } break;
       /* get ??? (something) */
@@ -236,8 +238,9 @@ void do_get(struct char_data* ch, char* argument, int cmd) {
           num = 0;
           fail = TRUE;
         }
-        if (num > 0)
+        if (num > 0) {
           num--;
+        }
       }
     } break;
       /* get all all */
@@ -254,8 +257,9 @@ void do_get(struct char_data* ch, char* argument, int cmd) {
           for (obj_object = sub_object->contains; obj_object;
             obj_object = next_obj) {
             /* check for trap (jdb - 11/9) */
-            if (CheckForGetTrap(ch, obj_object))
+            if (CheckForGetTrap(ch, obj_object)) {
               return;
+            }
             next_obj = obj_object->next_content;
             if (CAN_SEE_OBJ(ch, obj_object)) {
               if ((IS_CARRYING_N(ch) + (obj_object->obj_flags.volume)) <
@@ -335,8 +339,9 @@ void do_get(struct char_data* ch, char* argument, int cmd) {
             obj_object = get_obj_in_list_vis(ch, arg1, sub_object->contains);
             if (obj_object) {
               /* check for trap (jdb - 11/9) */
-              if (CheckForInsideTrap(ch, sub_object))
+              if (CheckForInsideTrap(ch, sub_object)) {
                 return;
+              }
               if ((IS_CARRYING_N(ch) + obj_object->obj_flags.volume) <
                   CAN_CARRY_N(ch)) {
                 if ((IS_CARRYING_W(ch) + obj_object->obj_flags.weight) <
@@ -380,8 +385,9 @@ void do_get(struct char_data* ch, char* argument, int cmd) {
               fail = TRUE;
             }
 
-            if (num > 0)
+            if (num > 0) {
               num--;
+            }
           }
         } else {
           sprintf(buffer, "%s is not a container.\n\r",
@@ -427,8 +433,9 @@ void do_drop(struct char_data* ch, char* argument, int cmd) {
       return;
     }
     send_to_char("OK.\n\r", ch);
-    if (amount == 0)
+    if (amount == 0) {
       return;
+    }
 
     act("$n drops some gold.", FALSE, ch, 0, 0, TO_ROOM);
     tmp_object = create_money(amount);
@@ -495,13 +502,15 @@ void do_drop(struct char_data* ch, char* argument, int cmd) {
             num = 0;
           }
         } else {
-          if (num > 0)
+          if (num > 0) {
             send_to_char("You do not have that item.\n\r", ch);
+          }
 
           num = 0;
         }
-        if (num > 0)
+        if (num > 0) {
           num--;
+        }
       }
 #if NODUPLICATES
       do_save(ch, "", 0);
@@ -583,12 +592,13 @@ void do_put(struct char_data* ch, char* argument, int cmd) {
                       IS_CARRYING_W(ch) += GET_OBJ_WEIGHT(obj_object);
                       obj_to_obj(obj_object, sub_object);
                       if (!IS_OBJ_STAT(sub_object, ITEM_HOLDING)) {
-                        if (obj_object->obj_flags.type_flag != ITEM_CONTAINER)
+                        if (obj_object->obj_flags.type_flag != ITEM_CONTAINER) {
                           IS_CARRYING_N(ch) +=
                             (GET_OBJ_VOLUME(obj_object) /
                               vol_mult[obj_object->obj_flags.material_points]);
-                        else
+                        } else {
                           IS_CARRYING_N(ch) += GET_OBJ_VOLUME(obj_object);
+                        }
                       }
 
                       switch (obj_object->obj_flags.material_points) {
@@ -696,8 +706,9 @@ void do_give(struct char_data* ch, char* argument, int cmd) {
     sprintf(buf, "%s gives you %d gold coins.\n\r", PERS(ch, vict), amount);
     send_to_char(buf, vict);
     act("$n gives some gold to $N.", 1, ch, 0, vict, TO_NOTVICT);
-    if (IS_NPC(ch) || (GetMaxLevel(ch) < DEMIGOD))
+    if (IS_NPC(ch) || (GetMaxLevel(ch) < DEMIGOD)) {
       GET_GOLD(ch) -= amount;
+    }
     GET_GOLD(vict) += amount;
     save_char(ch, AUTO_RENT);
     if ((GET_GOLD(vict) > 500000) && (amount > 100000)) {
@@ -727,8 +738,9 @@ void do_give(struct char_data* ch, char* argument, int cmd) {
 
     while (num != 0) {
       if (!(obj = get_obj_in_list_vis(ch, obj_name, ch->carrying))) {
-        if (num >= -1)
+        if (num >= -1) {
           send_to_char("You do not seem to have anything like that.\n\r", ch);
+        }
         return;
       }
       if ((IS_OBJ_STAT(obj, ITEM_NODROP)) && (!IS_IMMORTAL(ch))) {
@@ -762,8 +774,9 @@ void do_give(struct char_data* ch, char* argument, int cmd) {
       act("$n gives you $p.", 0, ch, obj, vict, TO_VICT);
       act("You give $p to $N", 0, ch, obj, vict, TO_CHAR);
 
-      if (num > 0)
+      if (num > 0) {
         num--;
+      }
     }
 #if NODUPLICATES
     do_save(ch, "", 0);

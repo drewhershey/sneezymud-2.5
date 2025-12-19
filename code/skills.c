@@ -53,14 +53,18 @@ void do_disarm(struct char_data* ch, char* argument, int cmd) {
   struct char_data* victim;
   struct obj_data *w, *trap;
 
-  if (!ch->skills)
+  if (!ch->skills) {
     return;
+  }
 
-  if (check_peaceful(ch, "You feel too peaceful to contemplate violence.\n\r"))
+  if (check_peaceful(ch,
+        "You feel too peaceful to contemplate violence.\n\r")) {
     return;
+  }
 
-  if (!IS_PC(ch) && cmd)
+  if (!IS_PC(ch) && cmd) {
     return;
+  }
 
   /*
    *   get victim
@@ -137,8 +141,9 @@ void do_disarm(struct char_data* ch, char* argument, int cmd) {
   }
 
   percent += GetMaxLevel(victim);
-  if (HasClass(victim, CLASS_MONK))
+  if (HasClass(victim, CLASS_MONK)) {
     percent += GetMaxLevel(victim);
+  }
 
   if (HasClass(ch, CLASS_MONK)) {
     percent -= GetMaxLevel(ch);
@@ -196,11 +201,12 @@ void do_disarm(struct char_data* ch, char* argument, int cmd) {
 static int named_mobile_in_room(int room, struct hunting_data* c_data) {
   struct char_data* scan;
 
-  for (scan = real_roomp(room)->people; scan; scan = scan->next_in_room)
+  for (scan = real_roomp(room)->people; scan; scan = scan->next_in_room) {
     if (isname(c_data->name, scan->player.name)) {
       *(c_data->victim) = scan;
       return 1;
     }
+  }
   return 0;
 }
 
@@ -218,10 +224,11 @@ void do_track(struct char_data* ch, char* argument, int cmd) {
   only_argument(argument, name);
 
   found = FALSE;
-  for (scan = character_list; scan; scan = scan->next)
+  for (scan = character_list; scan; scan = scan->next) {
     if (isname(name, scan->player.name)) {
       found = TRUE;
     }
+  }
 
   if (!found) {
     send_to_char("You are unable to find traces of one.\n\r", ch);
@@ -254,8 +261,9 @@ void do_track(struct char_data* ch, char* argument, int cmd) {
       break;
   }
 
-  if (GetMaxLevel(ch) >= IMMORTAL)
+  if (GetMaxLevel(ch) >= IMMORTAL) {
     dist = MAX_ROOMS;
+  }
 
   if (affected_by_spell(ch, SPELL_MINOR_TRACK)) {
     dist = GetMaxLevel(ch) * 50;
@@ -323,8 +331,9 @@ int choose_exit_global(int in_room, int tgt_room, int depth) {
 }
 
 int go_direction(struct char_data* ch, int dir) {
-  if (ch->specials.fighting)
+  if (ch->specials.fighting) {
     return 0;
+  }
 
   if (!IS_SET(EXIT(ch, dir)->exit_info, EX_CLOSED)) {
     do_move(ch, "", dir + 1);
@@ -342,8 +351,9 @@ int track(struct char_data* ch, struct char_data* vict) {
   char buf[256];
   int code;
 
-  if ((!ch) || (!vict))
+  if ((!ch) || (!vict)) {
     return (-1);
+  }
 
   if ((GetMaxLevel(ch) < MIN_GLOB_TRACK_LEV) ||
       (affected_by_spell(ch, SPELL_MINOR_TRACK)) ||
@@ -352,8 +362,9 @@ int track(struct char_data* ch, struct char_data* vict) {
   } else {
     code = choose_exit_global(ch->in_room, vict->in_room, ch->hunt_dist);
   }
-  if ((!ch) || (!vict))
+  if ((!ch) || (!vict)) {
     return (-1);
+  }
 
   if (ch->in_room == vict->in_room) {
     send_to_char("##You have found your target!\n\r", ch);
@@ -373,8 +384,9 @@ int dir_track(struct char_data* ch, struct char_data* vict) {
   char buf[256];
   int code;
 
-  if ((!ch) || (!vict))
+  if ((!ch) || (!vict)) {
     return (-1);
+  }
 
   if ((GetMaxLevel(ch) >= MIN_GLOB_TRACK_LEV) ||
       (affected_by_spell(ch, SPELL_MINOR_TRACK)) ||
@@ -383,8 +395,9 @@ int dir_track(struct char_data* ch, struct char_data* vict) {
   } else {
     code = choose_exit_in_zone(ch->in_room, vict->in_room, ch->hunt_dist);
   }
-  if ((!ch) || (!vict))
+  if ((!ch) || (!vict)) {
     return (-1);
+  }
 
   if (code == -1) {
     if (ch->in_room == vict->in_room) {
@@ -418,8 +431,9 @@ int dir_track(struct char_data* ch, struct char_data* vict) {
 static void donothing(void* data) { (void)data; /* Unused */ }
 
 static int hash_enter(struct hash_header* ht, int key, void* data) {
-  if (hash_find(ht, key))
+  if (hash_find(ht, key)) {
     return 0;
+  }
 
   hash_enter_no_key(ht, key, data);
   return 1;
@@ -429,13 +443,14 @@ static void destroy_hash_table(struct hash_header* ht, void (*gman)(void*)) {
   int i;
   struct hash_link *scan, *temp;
 
-  for (i = 0; i < ht->table_size; i++)
+  for (i = 0; i < ht->table_size; i++) {
     for (scan = ht->buckets[i]; scan;) {
       temp = scan->next;
       (*gman)(scan->data);
       free(scan);
       scan = temp;
     }
+  }
   free(ht->buckets);
   free(ht->keylist);
 }
@@ -452,8 +467,9 @@ int find_path(int in_room, struct find_path_data* data, int depth,
   assert(data && data->type == FIND_TARGET_ROOM && data->fn.is_target_room_fn);
 
   /* If start = destination we are done */
-  if (data->type == FIND_TARGET_ROOM && in_room == data->fn_data.target_room)
+  if (data->type == FIND_TARGET_ROOM && in_room == data->fn_data.target_room) {
     return -1;
+  }
 
   char thru_doors = FALSE;
 
@@ -548,11 +564,14 @@ void do_headbutt(struct char_data* ch, char* argument, int cmd) {
   char name[256];
   signed char percent;
 
-  if (!ch->skills)
+  if (!ch->skills) {
     return;
+  }
 
-  if (check_peaceful(ch, "You feel too peaceful to contemplate violence.\n\r"))
+  if (check_peaceful(ch,
+        "You feel too peaceful to contemplate violence.\n\r")) {
     return;
+  }
 
   only_argument(argument, name);
 
@@ -586,13 +605,15 @@ void do_headbutt(struct char_data* ch, char* argument, int cmd) {
   percent += dex_app[GET_DEX(victim)].reaction * 10;
 
   if (percent > ch->skills[SKILL_HEADBUTT].learned) {
-    if (GET_POS(victim) > POSITION_DEAD)
+    if (GET_POS(victim) > POSITION_DEAD) {
       damage(ch, victim, 0, SKILL_HEADBUTT);
+    }
   } else {
-    if (GET_POS(victim) > POSITION_DEAD)
+    if (GET_POS(victim) > POSITION_DEAD) {
       damage(ch, victim,
         (GET_STR(ch) + (GET_LEVEL(ch, WARRIOR_LEVEL_IND)) + (GET_ADD(ch) / 5)),
         SKILL_HEADBUTT);
+    }
   }
   WAIT_STATE(ch, PULSE_VIOLENCE * 6);
 }
@@ -657,8 +678,9 @@ void do_swim(struct char_data* ch, char* arg, int cmd) {
 
   percent = number(1, 101); /* 101% is a complete failure */
 
-  if (!ch->skills)
+  if (!ch->skills) {
     return;
+  }
 
   if (percent > ch->skills[SKILL_SWIM].learned) {
     send_to_char("You're too afraid to enter the water\n\r", ch);
@@ -688,11 +710,13 @@ void do_swim(struct char_data* ch, char* arg, int cmd) {
 }
 
 int SpyCheck(struct char_data* ch) {
-  if (!ch->skills)
+  if (!ch->skills) {
     return (FALSE);
+  }
 
-  if (number(1, 101) > ch->skills[SKILL_SPY].learned)
+  if (number(1, 101) > ch->skills[SKILL_SPY].learned) {
     return (FALSE);
+  }
 
   return (TRUE);
 }
@@ -717,8 +741,9 @@ void slam_into_wall(struct char_data* ch, struct room_direction_data* exitp) {
   sprintf(buf, "$n crashes against the %s with no effect\n\r", doorname);
   act(buf, FALSE, ch, 0, 0, TO_ROOM);
   GET_HIT(ch) -= number(1, 10) * 2;
-  if (GET_HIT(ch) < 0)
+  if (GET_HIT(ch) < 0) {
     GET_HIT(ch) = 0;
+  }
   GET_POS(ch) = POSITION_STUNNED;
   return;
 }
@@ -762,8 +787,9 @@ void do_doorbash(struct char_data* ch, char* arg, int cmd) {
     make sure that the argument is a direction, or a keyword.
   */
 
-  for (; *arg == ' '; arg++)
+  for (; *arg == ' '; arg++) {
     ;
+  }
 
   argument_interpreter(arg, type, direction);
 
@@ -888,8 +914,9 @@ void do_spy(struct char_data* ch, char* arg, int cmd) {
 
   percent = number(1, 101);
 
-  if (!ch->skills)
+  if (!ch->skills) {
     return;
+  }
 
   if (percent > ch->skills[SKILL_SPY].learned) {
     if (ch->skills[SKILL_SPY].learned < 95 &&
@@ -924,11 +951,13 @@ void do_throw(struct char_data* ch, char* arg, int cmd) {
   const char* const keyword[] = {"north", "east", "south", "west", "up", "down",
     "\n"};
 
-  if (!ch->skills)
+  if (!ch->skills) {
     return;
+  }
 
-  if (check_peaceful(ch, "You can't throw people from this room!\n\r"))
+  if (check_peaceful(ch, "You can't throw people from this room!\n\r")) {
     return;
+  }
 
   half_chop(arg, name, obje);
   if (*name) {
@@ -970,18 +999,21 @@ void do_throw(struct char_data* ch, char* arg, int cmd) {
         send_to_char("You need a direction to throw!\n\r", ch);
         return;
       }
-    } else
+    } else {
       send_to_char("They aren't here.\n\r", ch);
-  } else
+    }
+  } else {
     send_to_char("Throw who?\n\r", ch);
+  }
 }
 
 void do_feign_death(struct char_data* ch, char* arg, int cmd) {
   struct room_data* rp;
   struct char_data* t;
 
-  if (!ch->skills)
+  if (!ch->skills) {
     return;
+  }
 
   if (!ch->specials.fighting) {
     send_to_char("But you are not fighting anything...\n\r", ch);
@@ -994,8 +1026,9 @@ void do_feign_death(struct char_data* ch, char* arg, int cmd) {
   }
 
   rp = real_roomp(ch->in_room);
-  if (!rp)
+  if (!rp) {
     return;
+  }
 
   send_to_char("You try to fake your own demise\n\r", ch);
 
@@ -1007,8 +1040,9 @@ void do_feign_death(struct char_data* ch, char* arg, int cmd) {
     for (t = rp->people; t; t = t->next_in_room) {
       if (t->specials.fighting == ch) {
         stop_fighting(t);
-        if (number(1, 101) < ch->skills[SKILL_FEIGN_DEATH].learned / 2)
+        if (number(1, 101) < ch->skills[SKILL_FEIGN_DEATH].learned / 2) {
           SET_BIT(ch->specials.affected_by, AFF_HIDE);
+        }
         GET_POS(ch) = POSITION_SLEEPING;
       }
     }

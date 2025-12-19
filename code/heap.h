@@ -19,5 +19,3 @@ struct StrHeap {
 void StringHeap(char* string, struct StrHeap* Heap);
 void DisplayStringHeap(struct StrHeap* Heap, struct char_data* ch, int type,
   int destroy);
-
-

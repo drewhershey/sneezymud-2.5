@@ -28,8 +28,9 @@ static void checkpointing(int tmp) {
   if (!tics) {
     vlog("CHECKPOINT shutdown: tics not updated");
     abort();
-  } else
+  } else {
     tics = 0;
+  }
 }
 
 void signal_setup(void) {

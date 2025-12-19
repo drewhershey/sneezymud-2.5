@@ -51,8 +51,10 @@ void name_from_drinkcon(struct obj_data* obj) {
   int i;
   char* new_name;
 
-  for (i = 0; (*((obj->name) + i) != ' ') && (*((obj->name) + i) != '\0'); i++)
+  for (i = 0; (*((obj->name) + i) != ' ') && (*((obj->name) + i) != '\0');
+    i++) {
     ;
+  }
 
   if (*((obj->name) + i) == ' ') {
     new_name = strdup((obj->name) + i + 1);
@@ -129,37 +131,44 @@ void do_drink(struct char_data* ch, char* argument, int cmd) {
       sprintf(buf, "You drink the %s.\n\r", drinks[temp->obj_flags.value[2]]);
       send_to_char(buf, ch);
 
-      if (drink_aff[temp->obj_flags.value[2]][DRUNK] > 0)
+      if (drink_aff[temp->obj_flags.value[2]][DRUNK] > 0) {
         amount = (25 - GET_COND(ch, THIRST)) /
                  drink_aff[temp->obj_flags.value[2]][DRUNK];
-      else
+      } else {
         amount = number(3, 10);
+      }
 
       amount = MIN(amount, temp->obj_flags.value[1]);
       /* Subtract amount, if not a never-emptying container */
       if (!IS_SET(temp->obj_flags.value[3], DRINK_PERM) &&
-          (temp->obj_flags.value[0] > 20))
+          (temp->obj_flags.value[0] > 20)) {
         weight_change_object(temp, -amount);
+      }
 
       gain_condition(ch, DRUNK,
         (int)((int)drink_aff[temp->obj_flags.value[2]][DRUNK] * amount) / 4);
 
-      if (GET_COND(ch, FULL) >= 0)
+      if (GET_COND(ch, FULL) >= 0) {
         gain_condition(ch, FULL,
           (int)((int)drink_aff[temp->obj_flags.value[2]][FULL] * amount) / 4);
+      }
 
-      if (GET_COND(ch, THIRST) >= 0)
+      if (GET_COND(ch, THIRST) >= 0) {
         gain_condition(ch, THIRST,
           (int)((int)drink_aff[temp->obj_flags.value[2]][THIRST] * amount) / 4);
+      }
 
-      if (GET_COND(ch, DRUNK) > 10)
+      if (GET_COND(ch, DRUNK) > 10) {
         act("You feel drunk.", FALSE, ch, 0, 0, TO_CHAR);
+      }
 
-      if (GET_COND(ch, THIRST) > 20)
+      if (GET_COND(ch, THIRST) > 20) {
         act("You do not feel thirsty.", FALSE, ch, 0, 0, TO_CHAR);
+      }
 
-      if (GET_COND(ch, FULL) > 20)
+      if (GET_COND(ch, FULL) > 20) {
         act("You are full.", FALSE, ch, 0, 0, TO_CHAR);
+      }
 
       /* The shit was poisoned ! */
       if (IS_SET(temp->obj_flags.value[3], DRINK_POISON)) {
@@ -175,8 +184,9 @@ void do_drink(struct char_data* ch, char* argument, int cmd) {
       }
 
       /* empty the container, and no longer poison. */
-      if (!IS_SET(temp->obj_flags.value[3], DRINK_PERM))
+      if (!IS_SET(temp->obj_flags.value[3], DRINK_PERM)) {
         temp->obj_flags.value[1] -= amount;
+      }
       if (!temp->obj_flags.value[1]) { /* The last bit */
         temp->obj_flags.value[2] = 0;
         temp->obj_flags.value[3] = 0;
@@ -221,13 +231,15 @@ void do_eat(struct char_data* ch, char* argument, int cmd) {
   act("$n eats $p", TRUE, ch, temp, 0, TO_ROOM);
   act("You eat the $o.", FALSE, ch, temp, 0, TO_CHAR);
 
-  if (GET_COND(ch, FULL) > -1)
+  if (GET_COND(ch, FULL) > -1) {
     gain_condition(ch, FULL, temp->obj_flags.value[0]);
+  }
 
-  if (GET_COND(ch, FULL) > 20)
+  if (GET_COND(ch, FULL) > 20) {
     act("You are full.", FALSE, ch, 0, 0, TO_CHAR);
+  }
 
-  for (j = 0; j < MAX_OBJ_AFFECT; j++)
+  for (j = 0; j < MAX_OBJ_AFFECT; j++) {
     if (temp->affected[j].location == APPLY_EAT_SPELL) {
       num = temp->affected[j].modifier;
 
@@ -235,6 +247,7 @@ void do_eat(struct char_data* ch, char* argument, int cmd) {
 
       ((*spell_info[num].spell_pointer)(6, ch, "", SPELL_TYPE_POTION, ch, 0));
     }
+  }
 
   if (temp->obj_flags.value[3] && (GetMaxLevel(ch) < LOW_IMMORTAL)) {
     act("That tasted rather strange !!", FALSE, ch, 0, 0, TO_CHAR);
@@ -326,8 +339,9 @@ void do_pour(struct char_data* ch, char* argument, int cmd) {
   send_to_char(buf, ch);
 
   /* New alias */
-  if (to_obj->obj_flags.value[1] == 0)
+  if (to_obj->obj_flags.value[1] == 0) {
     name_to_drinkcon(to_obj, from_obj->obj_flags.value[2]);
+  }
 
   /* First same type liq. */
   to_obj->obj_flags.value[2] = from_obj->obj_flags.value[2];
@@ -346,8 +360,9 @@ void do_pour(struct char_data* ch, char* argument, int cmd) {
     name_from_drinkcon(from_obj);
   }
 
-  if (from_obj->obj_flags.value[1] > from_obj->obj_flags.value[0])
+  if (from_obj->obj_flags.value[1] > from_obj->obj_flags.value[0]) {
     from_obj->obj_flags.value[1] = from_obj->obj_flags.value[0];
+  }
 
   /* Then the poison boogie */
   to_obj->obj_flags.value[3] =
@@ -401,17 +416,21 @@ void do_sip(struct char_data* ch, char* argument, int cmd) {
     (int)(drink_aff[temp->obj_flags.value[2]][THIRST] / 4));
 
   if (!IS_SET(temp->obj_flags.value[3], DRINK_PERM) ||
-      (temp->obj_flags.value[0] > 19))
+      (temp->obj_flags.value[0] > 19)) {
     weight_change_object(temp, -1); /* Subtract one unit, unless permanent */
+  }
 
-  if (GET_COND(ch, DRUNK) > 10)
+  if (GET_COND(ch, DRUNK) > 10) {
     act("You feel drunk.", FALSE, ch, 0, 0, TO_CHAR);
+  }
 
-  if (GET_COND(ch, THIRST) > 20)
+  if (GET_COND(ch, THIRST) > 20) {
     act("You do not feel thirsty.", FALSE, ch, 0, 0, TO_CHAR);
+  }
 
-  if (GET_COND(ch, FULL) > 20)
+  if (GET_COND(ch, FULL) > 20) {
     act("You are full.", FALSE, ch, 0, 0, TO_CHAR);
+  }
 
   if (IS_SET(temp->obj_flags.value[3], DRINK_POISON) &&
       !IS_AFFECTED(ch, AFF_POISON)) /* The shit was poisoned ! */
@@ -426,8 +445,9 @@ void do_sip(struct char_data* ch, char* argument, int cmd) {
     affect_to_char(ch, &af);
   }
 
-  if (!IS_SET(temp->obj_flags.value[3], DRINK_PERM))
+  if (!IS_SET(temp->obj_flags.value[3], DRINK_PERM)) {
     temp->obj_flags.value[1]--;
+  }
 
   if (!temp->obj_flags.value[1]) /* The last bit */
   {
@@ -466,8 +486,9 @@ void do_taste(struct char_data* ch, char* argument, int cmd) {
 
   gain_condition(ch, FULL, 1);
 
-  if (GET_COND(ch, FULL) > 20)
+  if (GET_COND(ch, FULL) > 20) {
     act("You are full.", FALSE, ch, 0, 0, TO_CHAR);
+  }
 
   if (temp->obj_flags.value[3] &&
       !IS_AFFECTED(ch, AFF_POISON)) /* The shit was poisoned ! */
@@ -560,8 +581,9 @@ int IsRestricted(int Mask, int Class) {
   int i;
 
   if (IS_SET(Class, CLASS_MONK)) {
-    if (Mask != 0)
+    if (Mask != 0) {
       return (TRUE);
+    }
   }
 
   for (i = CLASS_MAGIC_USER; i <= CLASS_THIEF; i *= 2) {
@@ -569,15 +591,19 @@ int IsRestricted(int Mask, int Class) {
       Mask -= i;
     }
   }
-  if (IS_SET(CLASS_PALADIN, Mask) && (!IS_SET(CLASS_PALADIN, Class)))
+  if (IS_SET(CLASS_PALADIN, Mask) && (!IS_SET(CLASS_PALADIN, Class))) {
     Mask -= CLASS_PALADIN;
-  if (IS_SET(CLASS_ANTIPALADIN, Mask) && (!IS_SET(CLASS_ANTIPALADIN, Class)))
+  }
+  if (IS_SET(CLASS_ANTIPALADIN, Mask) && (!IS_SET(CLASS_ANTIPALADIN, Class))) {
     Mask -= CLASS_ANTIPALADIN;
-  if (IS_SET(CLASS_RANGER, Mask) && (!IS_SET(CLASS_RANGER, Class)))
+  }
+  if (IS_SET(CLASS_RANGER, Mask) && (!IS_SET(CLASS_RANGER, Class))) {
     Mask -= CLASS_RANGER;
+  }
 
-  if (Mask == Class)
+  if (Mask == Class) {
     return (TRUE);
+  }
 
   return (FALSE);
 }
@@ -628,15 +654,16 @@ void wear(struct char_data* ch, struct obj_data* obj_object, int keyword) {
 
   switch (keyword) {
     case 0: { /* LIGHT SOURCE */
-      if (ch->equipment[WEAR_LIGHT])
+      if (ch->equipment[WEAR_LIGHT]) {
         send_to_char("You are already holding a light source.\n\r", ch);
-      else {
+      } else {
         send_to_char("Ok.\n\r", ch);
         perform_wear(ch, obj_object, keyword);
         obj_from_char(obj_object);
         equip_char(ch, obj_object, WEAR_LIGHT);
-        if (obj_object->obj_flags.value[2])
+        if (obj_object->obj_flags.value[2]) {
           real_roomp(ch->in_room)->light++;
+        }
       }
     } break;
 
@@ -962,40 +989,57 @@ void do_wear(struct char_data* ch, char* argument, int cmd) {
         next_obj = obj_object->next_content;
         keyword = -2;
 
-        if (CAN_WEAR(obj_object, ITEM_WEAR_SHIELD))
+        if (CAN_WEAR(obj_object, ITEM_WEAR_SHIELD)) {
           keyword = 14;
-        if (CAN_WEAR(obj_object, ITEM_WEAR_FINGER))
+        }
+        if (CAN_WEAR(obj_object, ITEM_WEAR_FINGER)) {
           keyword = 1;
-        if (CAN_WEAR(obj_object, ITEM_WEAR_NECK))
+        }
+        if (CAN_WEAR(obj_object, ITEM_WEAR_NECK)) {
           keyword = 2;
-        if (CAN_WEAR(obj_object, ITEM_WEAR_WRIST))
+        }
+        if (CAN_WEAR(obj_object, ITEM_WEAR_WRIST)) {
           keyword = 11;
-        if (CAN_WEAR(obj_object, ITEM_WEAR_WAISTE))
+        }
+        if (CAN_WEAR(obj_object, ITEM_WEAR_WAISTE)) {
           keyword = 10;
-        if (CAN_WEAR(obj_object, ITEM_WEAR_ARMS))
+        }
+        if (CAN_WEAR(obj_object, ITEM_WEAR_ARMS)) {
           keyword = 8;
-        if (CAN_WEAR(obj_object, ITEM_WEAR_HANDS))
+        }
+        if (CAN_WEAR(obj_object, ITEM_WEAR_HANDS)) {
           keyword = 7;
-        if (CAN_WEAR(obj_object, ITEM_WEAR_FEET))
+        }
+        if (CAN_WEAR(obj_object, ITEM_WEAR_FEET)) {
           keyword = 6;
-        if (CAN_WEAR(obj_object, ITEM_WEAR_LEGS))
+        }
+        if (CAN_WEAR(obj_object, ITEM_WEAR_LEGS)) {
           keyword = 5;
-        if (CAN_WEAR(obj_object, ITEM_WEAR_ABOUT))
+        }
+        if (CAN_WEAR(obj_object, ITEM_WEAR_ABOUT)) {
           keyword = 9;
-        if (CAN_WEAR(obj_object, ITEM_WEAR_HEAD))
+        }
+        if (CAN_WEAR(obj_object, ITEM_WEAR_HEAD)) {
           keyword = 4;
-        if (CAN_WEAR(obj_object, ITEM_WEAR_BODY))
+        }
+        if (CAN_WEAR(obj_object, ITEM_WEAR_BODY)) {
           keyword = 3;
-        if (CAN_WEAR(obj_object, ITEM_WIELD))
+        }
+        if (CAN_WEAR(obj_object, ITEM_WIELD)) {
           keyword = 12;
-        if (CAN_WEAR(obj_object, ITEM_HOLD))
+        }
+        if (CAN_WEAR(obj_object, ITEM_HOLD)) {
           keyword = 13;
-        if (CAN_WEAR(obj_object, ITEM_WEAR_EAR))
+        }
+        if (CAN_WEAR(obj_object, ITEM_WEAR_EAR)) {
           keyword = 15;
-        if (CAN_WEAR(obj_object, ITEM_WEAR_FACE))
+        }
+        if (CAN_WEAR(obj_object, ITEM_WEAR_FACE)) {
           keyword = 16;
-        if (CAN_WEAR(obj_object, ITEM_WORN_AS_RADIO))
+        }
+        if (CAN_WEAR(obj_object, ITEM_WORN_AS_RADIO)) {
           keyword = 17;
+        }
         if (keyword != -2) {
           sprintf(buf, "%s :", obj_object->short_description);
           send_to_char(buf, ch);
@@ -1018,36 +1062,51 @@ void do_wear(struct char_data* ch, char* argument, int cmd) {
           }
         } else {
           keyword = -2;
-          if (CAN_WEAR(obj_object, ITEM_WEAR_SHIELD))
+          if (CAN_WEAR(obj_object, ITEM_WEAR_SHIELD)) {
             keyword = 14;
-          if (CAN_WEAR(obj_object, ITEM_WEAR_FINGER))
+          }
+          if (CAN_WEAR(obj_object, ITEM_WEAR_FINGER)) {
             keyword = 1;
-          if (CAN_WEAR(obj_object, ITEM_WEAR_NECK))
+          }
+          if (CAN_WEAR(obj_object, ITEM_WEAR_NECK)) {
             keyword = 2;
-          if (CAN_WEAR(obj_object, ITEM_WEAR_WRIST))
+          }
+          if (CAN_WEAR(obj_object, ITEM_WEAR_WRIST)) {
             keyword = 11;
-          if (CAN_WEAR(obj_object, ITEM_WEAR_WAISTE))
+          }
+          if (CAN_WEAR(obj_object, ITEM_WEAR_WAISTE)) {
             keyword = 10;
-          if (CAN_WEAR(obj_object, ITEM_WEAR_ARMS))
+          }
+          if (CAN_WEAR(obj_object, ITEM_WEAR_ARMS)) {
             keyword = 8;
-          if (CAN_WEAR(obj_object, ITEM_WEAR_HANDS))
+          }
+          if (CAN_WEAR(obj_object, ITEM_WEAR_HANDS)) {
             keyword = 7;
-          if (CAN_WEAR(obj_object, ITEM_WEAR_FEET))
+          }
+          if (CAN_WEAR(obj_object, ITEM_WEAR_FEET)) {
             keyword = 6;
-          if (CAN_WEAR(obj_object, ITEM_WEAR_LEGS))
+          }
+          if (CAN_WEAR(obj_object, ITEM_WEAR_LEGS)) {
             keyword = 5;
-          if (CAN_WEAR(obj_object, ITEM_WEAR_ABOUT))
+          }
+          if (CAN_WEAR(obj_object, ITEM_WEAR_ABOUT)) {
             keyword = 9;
-          if (CAN_WEAR(obj_object, ITEM_WEAR_HEAD))
+          }
+          if (CAN_WEAR(obj_object, ITEM_WEAR_HEAD)) {
             keyword = 4;
-          if (CAN_WEAR(obj_object, ITEM_WEAR_BODY))
+          }
+          if (CAN_WEAR(obj_object, ITEM_WEAR_BODY)) {
             keyword = 3;
-          if (CAN_WEAR(obj_object, ITEM_WEAR_EAR))
+          }
+          if (CAN_WEAR(obj_object, ITEM_WEAR_EAR)) {
             keyword = 15;
-          if (CAN_WEAR(obj_object, ITEM_WEAR_FACE))
+          }
+          if (CAN_WEAR(obj_object, ITEM_WEAR_FACE)) {
             keyword = 16;
-          if (CAN_WEAR(obj_object, ITEM_WORN_AS_RADIO))
+          }
+          if (CAN_WEAR(obj_object, ITEM_WORN_AS_RADIO)) {
             keyword = 17;
+          }
 
           sprintf(buf, "%s :", obj_object->short_description);
           send_to_char(buf, ch);
@@ -1095,10 +1154,11 @@ void do_grab(struct char_data* ch, char* argument, int cmd) {
   if (*arg1) {
     obj_object = get_obj_in_list(arg1, ch->carrying);
     if (obj_object) {
-      if (obj_object->obj_flags.type_flag == ITEM_LIGHT)
+      if (obj_object->obj_flags.type_flag == ITEM_LIGHT) {
         wear(ch, obj_object, WEAR_LIGHT);
-      else
+      } else {
         wear(ch, obj_object, 13);
+      }
     } else {
       sprintf(buffer, "You do not seem to have the '%s'.\n\r", arg1);
       send_to_char(buffer, ch);
@@ -1110,11 +1170,15 @@ void do_grab(struct char_data* ch, char* argument, int cmd) {
 
 static struct obj_data* get_object_in_equip_vis(struct char_data* ch, char* arg,
   struct obj_data* equipment[], int* j) {
-  for ((*j) = 0; (*j) < MAX_WEAR; (*j)++)
-    if (equipment[(*j)])
-      if (CAN_SEE_OBJ(ch, equipment[(*j)]))
-        if (isname(arg, equipment[(*j)]->name))
+  for ((*j) = 0; (*j) < MAX_WEAR; (*j)++) {
+    if (equipment[(*j)]) {
+      if (CAN_SEE_OBJ(ch, equipment[(*j)])) {
+        if (isname(arg, equipment[(*j)]->name)) {
           return (equipment[(*j)]);
+        }
+      }
+    }
+  }
 
   return (0);
 }
@@ -1136,9 +1200,11 @@ void do_remove(struct char_data* ch, char* argument, int cmd) {
             if ((obj_object = unequip_char(ch, j)) != NULL) {
               obj_to_char(obj_object, ch);
 
-              if (obj_object->obj_flags.type_flag == ITEM_LIGHT)
-                if (obj_object->obj_flags.value[2])
+              if (obj_object->obj_flags.type_flag == ITEM_LIGHT) {
+                if (obj_object->obj_flags.value[2]) {
                   real_roomp(ch->in_room)->light--;
+                }
+              }
 
               act("You stop using $p.", FALSE, ch, obj_object, 0, TO_CHAR);
             }
@@ -1158,8 +1224,9 @@ void do_remove(struct char_data* ch, char* argument, int cmd) {
 
       for (Num_Equip = j = 0; j < MAX_WEAR; j++) {
         if (CAN_CARRY_N(ch) > IS_CARRYING_N(ch)) {
-          if (ch->equipment[j])
+          if (ch->equipment[j]) {
             Rem_List[Num_Equip++] = j;
+          }
         }
       }
 
@@ -1178,9 +1245,11 @@ void do_remove(struct char_data* ch, char* argument, int cmd) {
               if ((obj_object = unequip_char(ch, j)) != NULL) {
                 obj_to_char(obj_object, ch);
 
-                if (obj_object->obj_flags.type_flag == ITEM_LIGHT)
-                  if (obj_object->obj_flags.value[2])
+                if (obj_object->obj_flags.type_flag == ITEM_LIGHT) {
+                  if (obj_object->obj_flags.value[2]) {
                     real_roomp(ch->in_room)->light--;
+                  }
+                }
 
                 act("You stop using $p.", FALSE, ch, obj_object, 0, TO_CHAR);
                 act("$n stops using $p.", TRUE, ch, obj_object, 0, TO_ROOM);
@@ -1194,10 +1263,11 @@ void do_remove(struct char_data* ch, char* argument, int cmd) {
           sprintf(buffer, "You dont seem to have the %s\n\r", T);
           send_to_char(buffer, ch);
         }
-        if (T != P)
+        if (T != P) {
           T = P + 1;
-        else
+        } else {
           *T = '\0';
+        }
       }
     } else {
       obj_object = get_object_in_equip_vis(ch, arg1, ch->equipment, &j);
@@ -1209,9 +1279,11 @@ void do_remove(struct char_data* ch, char* argument, int cmd) {
         if (CAN_CARRY_N(ch) > IS_CARRYING_N(ch)) {
           obj_to_char(unequip_char(ch, j), ch);
 
-          if (obj_object->obj_flags.type_flag == ITEM_LIGHT)
-            if (obj_object->obj_flags.value[2])
+          if (obj_object->obj_flags.type_flag == ITEM_LIGHT) {
+            if (obj_object->obj_flags.value[2]) {
               real_roomp(ch->in_room)->light--;
+            }
+          }
 
           act("You stop using $p.", FALSE, ch, obj_object, 0, TO_CHAR);
           act("$n stops using $p.", TRUE, ch, obj_object, 0, TO_ROOM);

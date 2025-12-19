@@ -59,8 +59,9 @@ struct room_data* room_find(struct room_data* room_db[], int key) {
 void* hash_find(struct hash_header* ht, int key) {
   struct hash_link* scan = ht->buckets[HASH_KEY(ht, key)];
 
-  while (scan && scan->key != key)
+  while (scan && scan->key != key) {
     scan = scan->next;
+  }
 
   return scan ? scan->data : NULL;
 }
@@ -68,8 +69,9 @@ void* hash_find(struct hash_header* ht, int key) {
 void* hash_find_or_create(struct hash_header* ht, int key) {
   void* rval = hash_find(ht, key);
 
-  if (rval)
+  if (rval) {
     return rval;
+  }
 
   rval = (void*)malloc((size_t)ht->rec_size);
 
@@ -94,8 +96,9 @@ void* hash_remove(struct hash_header* ht, int key) {
 
   scan = ht->buckets + HASH_KEY(ht, key);
 
-  while (*scan && (*scan)->key != key)
+  while (*scan && (*scan)->key != key) {
     scan = &(*scan)->next;
+  }
 
   if (*scan) {
     int i;
@@ -106,9 +109,11 @@ void* hash_remove(struct hash_header* ht, int key) {
     *scan = aux->next;
     free(aux);
 
-    for (i = 0; i < ht->klistlen; i++)
-      if (ht->keylist[i] == key)
+    for (i = 0; i < ht->klistlen; i++) {
+      if (ht->keylist[i] == key) {
         break;
+      }
+    }
 
     if (i < ht->klistlen) {
       bcopy(ht->keylist + i + 1, ht->keylist + i,

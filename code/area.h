@@ -12,5 +12,3 @@
 #define TROGCAVES 4
 #define OUTPOST 5
 #define BEE 6
-
-

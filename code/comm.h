@@ -10,7 +10,7 @@
 #include "structs.h"
 
 #if SITELOCK
-  extern char hostlist[MAX_BAN_HOSTS][30];
+extern char hostlist[MAX_BAN_HOSTS][30];
 extern int numberhosts;
 #endif
 

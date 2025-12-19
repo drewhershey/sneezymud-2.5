@@ -49,5 +49,3 @@
 #define RACE_SARTAN 42
 #define RACE_TYTAN 43
 #define RACE_MONK 44
-
-

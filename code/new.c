@@ -54,8 +54,9 @@ void do_brew(struct char_data* ch, char* arg, int cmd) {
   struct obj_data* next_obj;
   struct affected_type af;
 
-  if (!ch->skills)
+  if (!ch->skills) {
     return;
+  }
 
   one_argument(arg, buf);
 
@@ -232,11 +233,14 @@ void do_grapple(struct char_data* ch, char* arg, int cmd) {
   struct affected_type af;
   int i;
 
-  if (!ch->skills)
+  if (!ch->skills) {
     return;
+  }
 
-  if (check_peaceful(ch, "You feel too peaceful to contemplate violence.\n\r"))
+  if (check_peaceful(ch,
+        "You feel too peaceful to contemplate violence.\n\r")) {
     return;
+  }
 
   only_argument(arg, name);
 
@@ -259,8 +263,9 @@ void do_grapple(struct char_data* ch, char* arg, int cmd) {
   percent -= dex_app[GET_DEX(ch)].reaction * 5;
   percent += dex_app[GET_DEX(victim)].reaction * 10;
 
-  if (GetMaxLevel(victim) > 20)
+  if (GetMaxLevel(victim) > 20) {
     percent += ((GetMaxLevel(victim) - 18) * 5);
+  }
 
   if (percent < ch->skills[SKILL_GRAPPLE].learned) {
     send_to_char("You tie your opponent up, with an excellent maneuver.\n\r",
@@ -275,10 +280,12 @@ void do_grapple(struct char_data* ch, char* arg, int cmd) {
     GET_POS(victim) = POSITION_SITTING;
     WAIT_STATE(ch, 5 * PULSE_VIOLENCE);
 
-    if (ch->specials.fighting)
+    if (ch->specials.fighting) {
       stop_fighting(ch);
-    if (victim->specials.fighting)
+    }
+    if (victim->specials.fighting) {
       stop_fighting(victim);
+    }
     act("$N now turns $S attention to $n!", TRUE, ch, 0, victim, TO_ROOM);
     set_fighting(victim, ch);
 
@@ -291,10 +298,12 @@ void do_grapple(struct char_data* ch, char* arg, int cmd) {
     act("$n makes a nice wrestling move, but falls on his butt.", TRUE, ch, 0,
       0, TO_ROOM);
 
-    if (ch->specials.fighting)
+    if (ch->specials.fighting) {
       stop_fighting(ch);
-    if (victim->specials.fighting)
+    }
+    if (victim->specials.fighting) {
       stop_fighting(victim);
+    }
     act("$N turns $S attention to $n", TRUE, ch, 0, victim, TO_ROOM);
     set_fighting(victim, ch);
   }
@@ -320,8 +329,9 @@ void do_scribe(struct char_data* ch, char* arg, int cmd) {
   struct obj_data* next_obj;
   struct affected_type af;
 
-  if (!ch->skills)
+  if (!ch->skills) {
     return;
+  }
 
   one_argument(arg, buf);
 
@@ -421,34 +431,38 @@ void do_glance(struct char_data* ch, char* argument, int cmd) {
       FIND_OBJ_INV | FIND_OBJ_ROOM | FIND_OBJ_EQUIP | FIND_CHAR_ROOM, ch,
       &tmp_char, &found_object);
     if (tmp_char) {
-      if (GET_MAX_HIT(tmp_char) > 0)
+      if (GET_MAX_HIT(tmp_char) > 0) {
         percent = (100 * GET_HIT(tmp_char)) / GET_MAX_HIT(tmp_char);
-      else
+      } else {
         percent = -1; /* How could MAX_HIT be < 1?? */
+      }
 
-      if (IS_NPC(tmp_char))
+      if (IS_NPC(tmp_char)) {
         strcpy(buffer, tmp_char->player.short_descr);
-      else
+      } else {
         strcpy(buffer, GET_NAME(tmp_char));
+      }
 
-      if (percent >= 100)
+      if (percent >= 100) {
         strcat(buffer, " is in an excellent condition.\n\r");
-      else if (percent >= 90)
+      } else if (percent >= 90) {
         strcat(buffer, " has a few scratches.\n\r");
-      else if (percent >= 75)
+      } else if (percent >= 75) {
         strcat(buffer, " has some small wounds and bruises.\n\r");
-      else if (percent >= 50)
+      } else if (percent >= 50) {
         strcat(buffer, " has quite a few wounds.\n\r");
-      else if (percent >= 30)
+      } else if (percent >= 30) {
         strcat(buffer, " has some big nasty wounds and scratches.\n\r");
-      else if (percent >= 15)
+      } else if (percent >= 15) {
         strcat(buffer, " looks pretty hurt.\n\r");
-      else if (percent >= 0)
+      } else if (percent >= 0) {
         strcat(buffer, " is in an awful condition.\n\r");
-      else
+      } else {
         strcat(buffer, " is bleeding awfully from big wounds.\n\r");
-      if (CAN_SEE(ch, tmp_char))
+      }
+      if (CAN_SEE(ch, tmp_char)) {
         send_to_char(buffer, ch);
+      }
     }
   } else {
     send_to_char("Glance at whom?\n\r", ch);
@@ -461,11 +475,14 @@ void do_deathstroke(struct char_data* ch, char* argument, int cmd) {
   char name[256];
   signed char percent;
 
-  if (!ch->skills)
+  if (!ch->skills) {
     return;
+  }
 
-  if (check_peaceful(ch, "You feel too peaceful to contemplate violence.\n\r"))
+  if (check_peaceful(ch,
+        "You feel too peaceful to contemplate violence.\n\r")) {
     return;
+  }
 
   if (GET_MOVE(ch) < 50) {
     send_to_char("You don't have the vitality to make the move!\n\r", ch);
@@ -508,8 +525,9 @@ void do_deathstroke(struct char_data* ch, char* argument, int cmd) {
   percent += dex_app[GET_DEX(victim)].reaction * 10;
 
   if (percent > ch->skills[SKILL_DEATHSTROKE].learned) {
-    if (GET_POS(victim) > POSITION_DEAD)
+    if (GET_POS(victim) > POSITION_DEAD) {
       damage(ch, victim, 0, SKILL_DEATHSTROKE);
+    }
     /* with great failure, comes great sorrow *grin* */
     WAIT_STATE(ch, PULSE_VIOLENCE * 10);                       /* player stuck
                       for 10 rounds */
@@ -528,11 +546,12 @@ void do_deathstroke(struct char_data* ch, char* argument, int cmd) {
         SKILL_DEATHSTROKE);
     }
   } else {
-    if (GET_POS(victim) > POSITION_DEAD)
+    if (GET_POS(victim) > POSITION_DEAD) {
       damage(ch, victim,
         (3 * GET_STR(ch) + 3 * (GET_LEVEL(ch, WARRIOR_LEVEL_IND)) +
           GET_ADD(ch)),
         SKILL_DEATHSTROKE);
+    }
     /* success is not without drawbacks */
     WAIT_STATE(ch, PULSE_VIOLENCE * 2);
     GET_MOVE(ch) -= 50;
@@ -541,10 +560,12 @@ void do_deathstroke(struct char_data* ch, char* argument, int cmd) {
 
   /* success OR failure make monster attack this player as player is now */
   /* perceived as a greatest threat to the monster's livelyhood */
-  if (ch->specials.fighting)
+  if (ch->specials.fighting) {
     stop_fighting(ch);
-  if (victim->specials.fighting)
+  }
+  if (victim->specials.fighting) {
     stop_fighting(victim);
+  }
   act("$N turns $S attention to $n.", 1, ch, 0, victim, TO_ROOM);
   set_fighting(victim, ch);
 }
@@ -554,11 +575,14 @@ void do_bodyslam(struct char_data* ch, char* argument, int cmd) {
   char name[256];
   signed char percent;
 
-  if (!ch->skills)
+  if (!ch->skills) {
     return;
+  }
 
-  if (check_peaceful(ch, "You feel too peaceful to contemplate violence.\n\r"))
+  if (check_peaceful(ch,
+        "You feel too peaceful to contemplate violence.\n\r")) {
     return;
+  }
 
   only_argument(argument, name);
 

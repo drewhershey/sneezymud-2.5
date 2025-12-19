@@ -46,5 +46,3 @@ void TrapTeleport(struct char_data* v);
 void TrapSleep(struct char_data* v);
 void InformMess(struct char_data* v);
 int TriggerTrap(struct char_data* ch, struct obj_data* i);
-
-

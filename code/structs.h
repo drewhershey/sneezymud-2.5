@@ -365,15 +365,15 @@ struct extra_descr_data {
 #define OBJ_NOTIMER (-7000000)
 
 struct obj_flag_data {
-    int value[4];     /* Values of the item (see list)    */
-    signed char type_flag;   /* Type of item                     */
-    int wear_flags;   /* Where you can wear it            */
-    long extra_flags; /* If it hums,glows etc             */
-    int weight;       /* Weigt what else                  */
-    int cost;         /* Value when sold (gp.)            */
-    int cost_per_day; /* Cost to keep pr. real day        */
-    int timer;        /* Timer for object                 */
-    long bitvector;   /* To set chars bits                */
+    int value[4];          /* Values of the item (see list)    */
+    signed char type_flag; /* Type of item                     */
+    int wear_flags;        /* Where you can wear it            */
+    long extra_flags;      /* If it hums,glows etc             */
+    int weight;            /* Weigt what else                  */
+    int cost;              /* Value when sold (gp.)            */
+    int cost_per_day;      /* Cost to keep pr. real day        */
+    int timer;             /* Timer for object                 */
+    long bitvector;        /* To set chars bits                */
     int decay_time;
     int struct_points;
     int max_struct_points;
@@ -389,14 +389,14 @@ struct obj_affected_type {
 
 /* ======================== Structure for object ========================= */
 struct obj_data {
-    short int item_number;             /* Where in data-base               */
+    short int item_number;          /* Where in data-base               */
     int in_room;                    /* In what room -1 when conta/carr  */
     struct obj_flag_data obj_flags; /* Object information               */
     struct obj_affected_type
       affected[MAX_OBJ_AFFECT]; /* Which abilities in PC to change  */
 
     struct char_data* killer; /* for use with corpses */
-    short int char_vnum;         /* for ressurection     */
+    short int char_vnum;      /* for ressurection     */
     long char_f_pos;          /* for ressurection     */
     char* name;               /* Title of object :get etc.        */
     char* description;        /* When in room                     */
@@ -404,7 +404,7 @@ struct obj_data {
     char* action_description; /* What to write when used          */
     struct extra_descr_data* ex_description; /* extra descriptions     */
     struct char_data* carried_by;  /* Carried by :NULL in room/conta   */
-    signed char eq_pos;                   /* what is the equip. pos?          */
+    signed char eq_pos;            /* what is the equip. pos?          */
     struct char_data* equipped_by; /* equipped by :NULL in room/conta  */
 
     struct obj_data* in_obj;   /* In what object NULL when none    */
@@ -474,7 +474,7 @@ struct obj_data {
 struct room_direction_data {
     char* general_description; /* When look DIR.                  */
     char* keyword;             /* for open/close                  */
-    short int exit_info;          /* Exit info                       */
+    short int exit_info;       /* Exit info                       */
     int key;                   /* Key's number (-1 for no key)    */
     int to_room;               /* Where direction leeds (NOWHERE) */
 };
@@ -483,9 +483,9 @@ typedef int (*room_proc_t)(struct char_data*, int, char*);
 
 /* ========================= Structure for room ========================== */
 struct room_data {
-    short int number;   /* Rooms number                       */
-    short int zone;     /* Room zone (for resetting)          */
-    int sector_type; /* sector type (move/hide)            */
+    short int number; /* Rooms number                       */
+    short int zone;   /* Room zone (for resetting)          */
+    int sector_type;  /* sector type (move/hide)            */
 
     int river_dir;   /* dir of flow on river               */
     int river_speed; /* speed of flow on river             */
@@ -501,7 +501,7 @@ struct room_data {
     struct extra_descr_data* ex_description;   /* for examine/look       */
     struct room_direction_data* dir_option[6]; /* Directions           */
     long room_flags;   /* DEATH,DARK ... etc                 */
-    signed char light;        /* Number of lightsources in room     */
+    signed char light; /* Number of lightsources in room     */
     room_proc_t funct; /* special procedure                  */
 
     struct obj_data* contents; /* List of items in room              */
@@ -730,14 +730,14 @@ struct char_player_data {
     char* title;            /* PC / NPC s title                     */
     char* sounds;           /* Sound that the monster makes (in room) */
     char* distant_snds;     /* Sound that the monster makes (other) */
-    signed char sex;               /* PC / NPC s sex                       */
+    signed char sex;        /* PC / NPC s sex                       */
     unsigned char class;    /* PC s class or NPC alignment          */
-    signed char level[8];          /* PC / NPC s level                     */
+    signed char level[8];   /* PC / NPC s level                     */
     int hometown;           /* PC s Hometown (zone)                 */
     char talks[MAX_TOUNGE]; /* PC s Tounges 0 for NPC           */
     struct time_data time;  /* PC s AGE in days                 */
-    unsigned char weight;           /* PC / NPC s weight                    */
-    unsigned char height;           /* PC / NPC s height                    */
+    unsigned char weight;   /* PC / NPC s weight                    */
+    unsigned char height;   /* PC / NPC s height                    */
 };
 
 /* Used in CHAR_FILE_U *DO*NOT*CHANGE* */
@@ -761,9 +761,9 @@ struct char_point_data {
     short int max_move; /* Max move for NPC                        */
 
     short int armor; /* Internal -100..100, external -10..10 AC */
-    int gold;     /* Money carried                           */
-    int bankgold; /* gold in the bank.                       */
-    int exp;      /* The experience of the player            */
+    int gold;        /* Money carried                           */
+    int bankgold;    /* gold in the bank.                       */
+    int exp;         /* The experience of the player            */
 
     signed char hitroll; /* Any bonus or penalty to the hit roll    */
     signed char damroll; /* Any bonus or penalty to the damage roll */
@@ -785,39 +785,39 @@ struct char_special_data {
 
     signed char tick; /* the tick that the mob/player is on  */
 
-    signed char position;     /* Standing or ...                         */
-    signed char default_pos;  /* Default position for NPC                */
-    unsigned long act; /* flags for NPC behavior                  */
+    signed char position;    /* Standing or ...                         */
+    signed char default_pos; /* Default position for NPC                */
+    unsigned long act;       /* flags for NPC behavior                  */
 
     unsigned char spells_to_learn; /* How many can you learn yet this level   */
 
-    int carry_weight;             /* Carried weight                          */
-    int carry_items;              /* Number of items carried                 */
-    int timer;                    /* Timer for update                        */
-    int was_in_room;              /* storage of location for linkdead people */
+    int carry_weight; /* Carried weight                          */
+    int carry_items;  /* Number of items carried                 */
+    int timer;        /* Timer for update                        */
+    int was_in_room;  /* storage of location for linkdead people */
     short int apply_saving_throw[5]; /* Saving throw (Bonuses)             */
-    signed char conditions[3];          /* Drunk full etc.                        */
+    signed char conditions[3]; /* Drunk full etc.                        */
 
     signed char damnodice;      /* The number of damage dice's            */
     signed char damsizedice;    /* The size of the damage dice's          */
     signed char last_direction; /* The last direction the monster went    */
-    int attack_type;     /* The Attack Type Bitvector for NPC's    */
-    int alignment;       /* +-1000 for alignments                  */
+    int attack_type;            /* The Attack Type Bitvector for NPC's    */
+    int alignment;              /* +-1000 for alignments                  */
 };
 
 /* Used in CHAR_FILE_U *DO*NOT*CHANGE* */
 struct char_skill_data {
-    signed char learned;   /* % chance for success 0 = not learned   */
-    char recognise; /* If you can recognise the scroll etc.   */
+    signed char learned; /* % chance for success 0 = not learned   */
+    char recognise;      /* If you can recognise the scroll etc.   */
 };
 
 /* Used in CHAR_FILE_U *DO*NOT*CHANGE* */
 struct affected_type {
-    short type;      /* The type of spell that caused this      */
-    short int duration; /* For how long its effects will last      */
-    signed char modifier;  /* This is added to apropriate ability     */
-    signed char location;   /* Tells which ability to change(APPLY_XXX)*/
-    long bitvector;  /* Tells which bits to set (AFF_XXX)       */
+    short type;           /* The type of spell that caused this      */
+    short int duration;   /* For how long its effects will last      */
+    signed char modifier; /* This is added to apropriate ability     */
+    signed char location; /* Tells which ability to change(APPLY_XXX)*/
+    long bitvector;       /* Tells which bits to set (AFF_XXX)       */
 
     struct affected_type* next;
 };
@@ -872,8 +872,8 @@ struct mob_act_data {
 
 /* ================== Structure for player/non-player ===================== */
 struct char_data {
-    short int nr;   /* monster nr (pos in file)    */
-    int in_room; /* Location                    */
+    short int nr; /* monster nr (pos in file)    */
+    int in_room;  /* Location                    */
     /*
       will need several new affects
 
@@ -1206,7 +1206,7 @@ struct str_app_type {
 
 struct wis_app_type {
     signed char bonus; /* how many bonus skills a player can */
-                /* practice pr. level                 */
+                       /* practice pr. level                 */
 };
 
 struct int_app_type {
@@ -1220,8 +1220,8 @@ struct con_app_type {
 
 /************************************************************/
 
-typedef void (*funcp)(signed char, struct char_data*, char*, int, struct char_data*,
-  struct obj_data*);
+typedef void (*funcp)(signed char, struct char_data*, char*, int,
+  struct char_data*, struct obj_data*);
 
 struct breather {
     int vnum;
@@ -1235,5 +1235,3 @@ typedef struct room_data Room;
 typedef struct descriptor_data Descriptor;
 
 #define OBJECT_HITTING (-1)
-
-
