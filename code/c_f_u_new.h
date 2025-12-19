@@ -5,8 +5,7 @@
 /*## THE NEW STRUCTURE IN YOU MUD. REMEMBER, ALWAYS TEST BEFORE INSTALLING ##*/
 /*###########################################################################*/
 
-#ifndef C_F_U_NEW_H
-#define C_F_U_NEW_H
+#pragma once
 
 #include <time.h>
 
@@ -55,4 +54,4 @@ struct char_file_u_new {
     int conditions[3];
 };
 
-#endif
+

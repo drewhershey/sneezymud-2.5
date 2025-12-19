@@ -3,8 +3,7 @@
  *  Usage: Various routines for moving about objects/players               *
  ************************************************************************* */
 
-#ifndef HANDLER_H
-#define HANDLER_H
+#pragma once
 
 #include "structs.h"
 
@@ -91,4 +90,4 @@ void page_string(struct descriptor_data* d, char* str, int keep_internal);
 int get_number(char** name);
 void update_object(struct obj_data* obj, int use);
 
-#endif
+

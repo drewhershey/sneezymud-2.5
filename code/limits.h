@@ -3,8 +3,7 @@
  *  Usage: declaration of title type                                       *
  ************************************************************************* */
 
-#ifndef LIMITS_H
-#define LIMITS_H
+#pragma once
 
 #include "structs.h"
 
@@ -20,4 +19,4 @@ void gain_exp(struct char_data* ch, int gain);
 void advance_level(struct char_data* ch, int class);
 void set_title(struct char_data* ch);
 
-#endif
+

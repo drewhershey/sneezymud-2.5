@@ -3,8 +3,7 @@
  *  Usage: Procedures interpreting user command                            *
  ************************************************************************* */
 
-#ifndef INTERPRETER_H
-#define INTERPRETER_H
+#pragma once
 
 #include <stdio.h>
 
@@ -314,4 +313,4 @@ Gnomes:   Shorter. Less movement. More intelligent. Less wise.\n\r"
   " SneezyMUD is a creation of the Public broadcasting System. \n \
   Brought to you today by the letters X and B, and the number 69\n\n\r"
 
-#endif
+

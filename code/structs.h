@@ -3,8 +3,7 @@
  *  Usage: Declarations of central data structures                         *
  ************************************************************************* */
 
-#ifndef STRUCTS_H
-#define STRUCTS_H
+#pragma once
 
 #include <sys/time.h>
 #include <sys/types.h>
@@ -1237,4 +1236,4 @@ typedef struct descriptor_data Descriptor;
 
 #define OBJECT_HITTING (-1)
 
-#endif
+

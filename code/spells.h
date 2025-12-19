@@ -3,8 +3,7 @@
  *  Usage : Spells                                                         *
  ************************************************************************* */
 
-#ifndef SPELLS_H
-#define SPELLS_H
+#pragma once
 
 #include "structs.h"
 
@@ -569,4 +568,4 @@ void cast_lightning_breath(signed char level, struct char_data* ch, char* arg,
 void cast_fire_breath(signed char level, struct char_data* ch, char* arg, int type,
   struct char_data* tar_ch, struct obj_data* tar_obj);
 
-#endif
+

@@ -3,8 +3,7 @@
  *  Usage: Utility macros                                                  *
  ************************************************************************* */
 
-#ifndef UTILS_H
-#define UTILS_H
+#pragma once
 
 #define _GNU_SOURCE
 #include <features.h>
@@ -534,4 +533,4 @@ static inline alloc_result alloc_or_die(size_t count, size_t size) {
 
 #define create(type, count) (type*)alloc_or_die(count, sizeof(type)).ptr
 
-#endif
+

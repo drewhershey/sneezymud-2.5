@@ -1,5 +1,4 @@
-#ifndef RACE_H
-#define RACE_H
+#pragma once
 
 /* Race -- Npc, otherwise */
 #define RACE_NORACE 0 /* Named after Brutius's 1st cousin :) */
@@ -51,4 +50,4 @@
 #define RACE_TYTAN 43
 #define RACE_MONK 44
 
-#endif
+

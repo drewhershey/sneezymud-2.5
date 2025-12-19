@@ -1,7 +1,6 @@
 /* Games.h  :  Stuff to include for the casino. Russ Russell  02/18/93 */
 
-#ifndef GAMES_H
-#define GAMES_H
+#pragma once
 
 #include "structs.h"
 
@@ -137,4 +136,4 @@ void do_blackjack_exit(struct char_data* ch);
 int do_blackjack_enter(struct char_data* ch);
 int check_slot_player(struct char_data* ch);
 
-#endif
+

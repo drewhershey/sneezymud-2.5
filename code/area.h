@@ -1,5 +1,4 @@
-#ifndef AREA_H
-#define AREA_H
+#pragma once
 
 /*
  *  these defines are to make differentiation easier
@@ -14,4 +13,4 @@
 #define OUTPOST 5
 #define BEE 6
 
-#endif
+

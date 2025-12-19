@@ -3,8 +3,7 @@
 **  just for polymorph spell(s)
 */
 
-#ifndef POLY_H
-#define POLY_H
+#pragma once
 
 struct PolyType {
     char name[20];
@@ -12,4 +11,4 @@ struct PolyType {
     int number;
 };
 
-#endif
+

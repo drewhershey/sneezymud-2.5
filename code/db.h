@@ -3,8 +3,7 @@
  *  Usage: Loading/Saving chars booting world.                             *
  ************************************************************************* */
 
-#ifndef DB_H
-#define DB_H
+#pragma once
 
 #include "hash.h"
 #include "structs.h"
@@ -198,4 +197,4 @@ extern void assign_rooms(void);
 extern void boot_the_shops(void);
 extern void assign_the_shopkeepers(void);
 
-#endif
+

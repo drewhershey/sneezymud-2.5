@@ -3,8 +3,7 @@
  ****   compliments of CircleMUD (circle.cs.jhu.edu 4000) ****
  ************************************************************/
 
-#ifndef MAIL_H
-#define MAIL_H
+#pragma once
 
 /* INSTALLATION INSTRUCTIONS in MAIL.C */
 
@@ -111,4 +110,4 @@ struct mail_index_type_d {
 
 typedef struct mail_index_type_d mail_index_type;
 
-#endif
+

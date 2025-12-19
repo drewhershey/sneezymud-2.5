@@ -1,5 +1,4 @@
-#ifndef HASH_H
-#define HASH_H
+#pragma once
 
 struct hash_link {
     int key;
@@ -27,4 +26,4 @@ void hash_enter_no_key(struct hash_header* ht, int key, void* data);
 
 #define WORLD_SIZE 30000
 
-#endif
+

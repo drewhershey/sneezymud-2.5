@@ -1,5 +1,4 @@
-#ifndef TRAPS_H
-#define TRAPS_H
+#pragma once
 
 #include "structs.h"
 
@@ -48,4 +47,4 @@ void TrapSleep(struct char_data* v);
 void InformMess(struct char_data* v);
 int TriggerTrap(struct char_data* ch, struct obj_data* i);
 
-#endif
+

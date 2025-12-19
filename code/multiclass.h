@@ -1,5 +1,4 @@
-#ifndef MULTICLASS_H
-#define MULTICLASS_H
+#pragma once
 
 #include "structs.h"
 
@@ -14,4 +13,4 @@ int BestMagicClass(struct char_data* ch);
 int GetMaxLevel(struct char_data* ch);
 int GetTotLevel(struct char_data* ch);
 
-#endif
+

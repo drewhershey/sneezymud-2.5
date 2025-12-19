@@ -1,5 +1,4 @@
-#ifndef CONSTANTS_H
-#define CONSTANTS_H
+#pragma once
 
 #include "structs.h"
 
@@ -37,4 +36,4 @@ extern const char* const item_types[];
 extern const char* const extra_bits[];
 extern const char* const material_types[];
 
-#endif
+

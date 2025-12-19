@@ -3,15 +3,14 @@
  *  Usage: Prototypes for the common functions in comm.c                   *
  ************************************************************************* */
 
-#ifndef COMM_H
-#define COMM_H
+#pragma once
 
 #include <sys/time.h>
 
 #include "structs.h"
 
 #if SITELOCK
-extern char hostlist[MAX_BAN_HOSTS][30];
+  extern char hostlist[MAX_BAN_HOSTS][30];
 extern int numberhosts;
 #endif
 
@@ -117,5 +116,3 @@ void write_to_q(const char* txt, struct txt_q* queue);
 #define VT_MARGSET "\033[%d;%dr"   /* sets margins */
 #define VT_CURSAVE "\0337"         /* saves cursor position */
 #define VT_CURREST "\0338"         /* restores cursor position */
-
-#endif

@@ -2,8 +2,7 @@
 **  Heap data structs
 */
 
-#ifndef HEAP_H
-#define HEAP_H
+#pragma once
 
 #include "structs.h"
 
@@ -21,4 +20,4 @@ void StringHeap(char* string, struct StrHeap* Heap);
 void DisplayStringHeap(struct StrHeap* Heap, struct char_data* ch, int type,
   int destroy);
 
-#endif
+
