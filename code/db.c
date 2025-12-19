@@ -338,9 +338,17 @@ void build_player_index(void) {
 
       player_table[nr].nr = nr;
 
-      CREATE(player_table[nr].name, char, strlen(dummy.name) + 1);
-      for (i = 0; *(player_table[nr].name + i) = LOWER(*(dummy.name + i)); i++)
-        ;
+      /* Find actual length of name, respecting the 20-byte array limit */
+      int name_len = 0;
+      while (name_len < 20 && dummy.name[name_len] != '\0') {
+        name_len++;
+      }
+
+      CREATE(player_table[nr].name, char, (unsigned long)(name_len + 1));
+      for (i = 0; i < name_len; i++) {
+        player_table[nr].name[i] = LOWER(dummy.name[i]);
+      }
+      player_table[nr].name[name_len] = '\0';
     }
   }
 
@@ -1780,7 +1788,8 @@ void char_to_store(struct char_data* ch, struct char_file_u* st) {
   for (i = 0; i <= MAX_SKILLS - 1; i++)
     st->skills[i] = ch->skills[i];
 
-  strcpy(st->name, GET_NAME(ch));
+  /* Copy name, ensuring null termination within 20-byte limit */
+  (void)snprintf(st->name, sizeof(st->name), "%s", GET_NAME(ch));
 
   for (i = 0; i <= 4; i++)
     st->apply_saving_throw[i] = ch->specials.apply_saving_throw[i];
