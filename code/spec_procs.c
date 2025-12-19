@@ -188,7 +188,7 @@ int AntiGuildMaster(struct char_data* ch, int cmd, char* arg) {
         ch->specials.spells_to_learn);
       send_to_char(buf, ch);
       send_to_char("You can practice any of the following:\n\r", ch);
-      for (i = 0; *spells[i] != '\n'; i++)
+      for (i = 0; *spells[i] != '\n' && i < MAX_SKILLS - 1; i++)
         if (spell_info[i + 1].spell_pointer &&
             (spell_info[i + 1].min_level_anti <=
               GET_LEVEL(ch, ANTIPALADIN_LEVEL_IND)) &&
@@ -401,7 +401,7 @@ int MageGuildMaster(struct char_data* ch, int cmd, char* arg) {
         ch->specials.spells_to_learn);
       send_to_char(buf, ch);
       send_to_char("You can practise any of these spells:\n\r", ch);
-      for (i = 0; *spells[i] != '\n'; i++)
+      for (i = 0; *spells[i] != '\n' && i < MAX_SKILLS - 1; i++)
         if (spell_info[i + 1].spell_pointer &&
             (spell_info[i + 1].min_level_magic <=
               GET_LEVEL(ch, MAGE_LEVEL_IND)) &&
@@ -538,7 +538,7 @@ int PaladinGuildMaster(struct char_data* ch, int cmd, char* arg) {
         ch->specials.spells_to_learn);
       send_to_char(buf, ch);
       send_to_char("You can practice any of the following:\n\r", ch);
-      for (i = 0; *spells[i] != '\n'; i++)
+      for (i = 0; *spells[i] != '\n' && i < MAX_SKILLS - 1; i++)
         if (spell_info[i + 1].spell_pointer &&
             (spell_info[i + 1].min_level_pal <=
               GET_LEVEL(ch, PALADIN_LEVEL_IND)) &&
@@ -747,7 +747,7 @@ int RangerGuildMaster(struct char_data* ch, int cmd, char* arg) {
         ch->specials.spells_to_learn);
       send_to_char(buf, ch);
       send_to_char("You can practice any of the following:\n\r", ch);
-      for (i = 0; *spells[i] != '\n'; i++)
+      for (i = 0; *spells[i] != '\n' && i < MAX_SKILLS - 1; i++)
         if (spell_info[i + 1].spell_pointer &&
             (spell_info[i + 1].min_level_ranger <=
               GET_LEVEL(ch, RANGER_LEVEL_IND)) &&
@@ -990,7 +990,7 @@ int ClericGuildMaster(struct char_data* ch, int cmd, char* arg) {
         ch->specials.spells_to_learn);
       send_to_char(buf, ch);
       send_to_char("You can practise any of these spells:\n\r", ch);
-      for (i = 0; *spells[i] != '\n'; i++)
+      for (i = 0; *spells[i] != '\n' && i < MAX_SKILLS - 1; i++)
         if (spell_info[i + 1].spell_pointer &&
             (spell_info[i + 1].min_level_cleric <=
               GET_LEVEL(ch, CLERIC_LEVEL_IND)) &&

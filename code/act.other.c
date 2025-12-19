@@ -778,7 +778,7 @@ void do_practice(struct char_data* ch, char* arg, int cmd) {
         return;
       }
       send_to_char("You have knowledge of these skills:\n\r", ch);
-      for (i = 0; *spells[i] != '\n' && i < 200; i++)
+      for (i = 0; *spells[i] != '\n' && i < MAX_SKILLS - 1; i++)
         if (!spell_info[i + 1].spell_pointer && ch->skills[i + 1].learned) {
           sprintf(buf, "%-30s %s \n\r", spells[i],
             how_good(ch->skills[i + 1].learned));
@@ -797,7 +797,7 @@ void do_practice(struct char_data* ch, char* arg, int cmd) {
         return;
       }
       send_to_char("You have knowledge of these skills:\n\r", ch);
-      for (i = 0; *spells[i] != '\n' && i < 200; i++)
+      for (i = 0; *spells[i] != '\n' && i < MAX_SKILLS - 1; i++)
         if (!spell_info[i + 1].spell_pointer && ch->skills[i + 1].learned) {
           sprintf(buf, "%-30s %s \n\r", spells[i],
             how_good(ch->skills[i + 1].learned));
@@ -816,7 +816,7 @@ void do_practice(struct char_data* ch, char* arg, int cmd) {
         return;
       }
       send_to_char("You have knowledge of these skills:\n\r", ch);
-      for (i = 0; *spells[i] != '\n' && i < 200; i++)
+      for (i = 0; *spells[i] != '\n' && i < MAX_SKILLS - 1; i++)
         if (!spell_info[i + 1].spell_pointer && ch->skills[i + 1].learned) {
           sprintf(buf, "%-30s %s \n\r", spells[i],
             how_good(ch->skills[i + 1].learned));
@@ -835,7 +835,7 @@ void do_practice(struct char_data* ch, char* arg, int cmd) {
         return;
       }
       send_to_char("You have knowledge of these skills:\n\r", ch);
-      for (i = 0; *spells[i] != '\n' && i < 200; i++)
+      for (i = 0; *spells[i] != '\n' && i < MAX_SKILLS - 1; i++)
         if (!spell_info[i + 1].spell_pointer && ch->skills[i + 1].learned) {
           sprintf(buf, "%-30s %s \n\r", spells[i],
             how_good(ch->skills[i + 1].learned));
@@ -854,7 +854,7 @@ void do_practice(struct char_data* ch, char* arg, int cmd) {
         return;
       }
       send_to_char("You have knowledge of these skills:\n\r", ch);
-      for (i = 0; *spells[i] != '\n' && i < 200; i++)
+      for (i = 0; *spells[i] != '\n' && i < MAX_SKILLS - 1; i++)
         if (!spell_info[i + 1].spell_pointer && ch->skills[i + 1].learned) {
           sprintf(buf, "%-30s %s \n\r", spells[i],
             how_good(ch->skills[i + 1].learned));
@@ -873,7 +873,7 @@ void do_practice(struct char_data* ch, char* arg, int cmd) {
         return;
       }
       send_to_char("Your spellbook holds these spells:\n\r", ch);
-      for (i = 0; *spells[i] != '\n'; i++)
+      for (i = 0; *spells[i] != '\n' && i < MAX_SKILLS - 1; i++)
         if (spell_info[i + 1].spell_pointer &&
             (spell_info[i + 1].min_level_magic <=
               GET_LEVEL(ch, MAGE_LEVEL_IND))) {
@@ -894,7 +894,7 @@ void do_practice(struct char_data* ch, char* arg, int cmd) {
         return;
       }
       send_to_char("You can attempt any of these spells:\n\r", ch);
-      for (i = 0; *spells[i] != '\n'; i++)
+      for (i = 0; *spells[i] != '\n' && i < MAX_SKILLS - 1; i++)
         if (spell_info[i + 1].spell_pointer &&
             (spell_info[i + 1].min_level_cleric <=
               GET_LEVEL(ch, CLERIC_LEVEL_IND))) {
@@ -916,7 +916,7 @@ void do_practice(struct char_data* ch, char* arg, int cmd) {
       }
 
       send_to_char("You have knowledge of these skills:\n\r", ch);
-      for (i = 0; *spells[i] != '\n' && i < 200; i++)
+      for (i = 0; *spells[i] != '\n' && i < MAX_SKILLS - 1; i++)
         if (!spell_info[i + 1].spell_pointer && ch->skills[i + 1].learned) {
           sprintf(buf, "%-30s %s \n\r", spells[i],
             how_good(ch->skills[i + 1].learned));
