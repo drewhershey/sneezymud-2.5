@@ -158,7 +158,8 @@ static const int movement_loss[] = {
   8,  /* Swimming   */
   10, /* Unswimable */
   2,  /* Flying     */
-  20  /* Submarine  */
+  20, /* Submarine  */
+  4   /* Desert     */
 };
 
 static int RawMove(struct char_data* ch, int dir) {
