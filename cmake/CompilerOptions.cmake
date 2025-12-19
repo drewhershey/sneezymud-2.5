@@ -50,6 +50,14 @@ target_compile_options(compiler_options INTERFACE
     -Warray-bounds                  # Array bounds violations
     -Wnull-dereference              # Potential null pointer dereference
 
+    # C23-specific warnings
+    -Wc23-extensions                # C23 features used in older standard modes
+    -Wdeprecated-attributes         # Deprecated attribute usage
+    -Wbitfield-width                # Suspicious bitfield widths
+    -Wformat-type-confusion         # Format string type mismatches
+    -Wnullability-completeness      # Incomplete nullability annotations
+    -Wzero-as-null-pointer-constant # 0 used as null pointer (prefer nullptr)
+
     # Other
     -Waggregate-return              # Returning structures (may cause inefficiencies)
     -Wc++-compat                    # C++ compatibility issues

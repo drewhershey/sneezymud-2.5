@@ -25,6 +25,7 @@ Checks: >
   -readability-identifier-length,
   -readability-magic-numbers,
   misc-include-cleaner,
+  performance-*,
 
 # Disabled checks explained:
 #
@@ -59,10 +60,20 @@ Checks: >
 #   cert-msc32-c - Warns about rand() seeding - acceptable for game
 #   concurrency-* - No threading in this codebase
 #
+# ENABLED FOR C23:
+#   performance-* - All performance optimizations (safe and beneficial)
+#
 # POTENTIALLY USEFUL (consider enabling incrementally):
 #   cert-err33-c - Check return values (currently causes many warnings)
 #   cert-err34-c - Check atoi/scanf returns (currently causes many warnings)
 #   readability-suspicious-call-argument - Can catch real bugs but has false positives
+#
+# C23 MODERNIZATION OPPORTUNITIES:
+#   - Replace NULL with nullptr
+#   - Use [[fallthrough]], [[nodiscard]], [[maybe_unused]] attributes
+#   - Replace _Bool with bool keyword
+#   - Use constexpr for compile-time constants
+#   - Use binary literals (0b) for bit flags
 
 WarningsAsErrors: ''
 
