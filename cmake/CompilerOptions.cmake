@@ -74,3 +74,11 @@ target_compile_options(compiler_options INTERFACE
     $<$<CONFIG:Debug>:-O0>          # No optimization for debugging
     $<$<CONFIG:Release>:-O2>        # Standard optimization for release
 )
+
+# Enable LTO for release builds (interprocedural optimization)
+target_compile_options(compiler_options INTERFACE
+    $<$<CONFIG:Release>:-flto=auto>
+)
+target_link_options(compiler_options INTERFACE
+    $<$<CONFIG:Release>:-flto=auto>
+)
