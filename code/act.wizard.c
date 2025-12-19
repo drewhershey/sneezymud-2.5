@@ -3125,14 +3125,14 @@ static void print_room(int rnum, struct room_data* rp,
   append_to_string_block(sb, buf);
 }
 
-static void print_death_room(int rnum, struct room_data* rp,
-  struct string_block* sb) {
+static void print_death_room(int rnum, struct room_data* rp, void* data) {
+  struct string_block* sb = (struct string_block*)data;
   if (rp && rp->room_flags & DEATH)
     print_room(rnum, rp, sb);
 }
 
-static void print_private_room(int rnum, struct room_data* rp,
-  struct string_block* sb) {
+static void print_private_room(int rnum, struct room_data* rp, void* data) {
+  struct string_block* sb = (struct string_block*)data;
   if (rp && rp->room_flags & PRIVATE)
     print_room(rnum, rp, sb);
 }
@@ -3144,8 +3144,8 @@ struct show_room_zone_struct {
     struct string_block* sb;
 };
 
-static void show_room_zone(int rnum, struct room_data* rp,
-  struct show_room_zone_struct* srzs) {
+static void show_room_zone(int rnum, struct room_data* rp, void* data) {
+  struct show_room_zone_struct* srzs = (struct show_room_zone_struct*)data;
   char buf[MAX_STRING_LENGTH];
 
   if (!rp || rp->number < srzs->bottom || rp->number > srzs->top)
@@ -3177,8 +3177,8 @@ static void show_room_zone(int rnum, struct room_data* rp,
   print_room(rnum, rp, srzs->sb);
 }
 
-static void room_iterate(struct room_data* rb[], void (*func)(void),
-  void* cdata) {
+static void room_iterate(struct room_data* rb[],
+  void (*func)(int, struct room_data*, void*), void* cdata) {
   register int i;
   for (i = 0; i < WORLD_SIZE; i++) {
     struct room_data* temp;
