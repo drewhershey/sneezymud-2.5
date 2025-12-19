@@ -23,7 +23,7 @@ const char* const OBJ_FILE_FREE = "\0\0\0";
  * Routines used for the "Offer"                                           *
  ************************************************************************* */
 
-bool recep_offer(struct char_data* ch, struct char_data* receptionist,
+char recep_offer(struct char_data* ch, struct char_data* receptionist,
   struct obj_cost* cost) {
   int i;
   char buf[MAX_INPUT_LENGTH];
@@ -187,7 +187,7 @@ void ZeroRent(char* n) {
 /* Puts object in store, at first item which has no -1 */
 void put_obj_in_store(struct obj_data* obj, struct obj_file_u* st) {
   int i, j;
-  bool found = FALSE;
+  char found = FALSE;
   struct obj_file_elem* oe;
   char buf[256];
 
@@ -304,7 +304,7 @@ void save_obj(struct char_data* ch, struct obj_cost* cost, int delete) {
   static struct obj_file_u st;
   FILE* fl;
   int pos, i, j;
-  bool found = FALSE;
+  char found = FALSE;
 
   st.number = 0;
   st.gold_left = GET_GOLD(ch);
@@ -456,8 +456,8 @@ int receptionist(struct char_data* ch, int cmd, char* arg) {
   struct obj_cost cost;
   struct char_data* recep = 0;
   struct char_data* temp_char;
-  sh_int save_room;
-  sh_int action_tabel[9] = {23, 24, 36, 105, 106, 109, 111, 142, 147};
+  short int save_room;
+  short int action_tabel[9] = {23, 24, 36, 105, 106, 109, 111, 142, 147};
 
   void do_action(struct char_data * ch, char* argument, int cmd);
   int number(int from, int to);
@@ -536,8 +536,8 @@ int receptionist_for_outlaws(struct char_data* ch, int cmd, char* arg) {
   struct obj_cost cost;
   struct char_data* recep = 0;
   struct char_data* temp_char;
-  sh_int save_room;
-  sh_int action_tabel[9] = {23, 24, 36, 105, 106, 109, 111, 142, 147};
+  short int save_room;
+  short int action_tabel[9] = {23, 24, 36, 105, 106, 109, 111, 142, 147};
 
   void do_action(struct char_data * ch, char* argument, int cmd);
   int number(int from, int to);

@@ -176,7 +176,7 @@ int BestMagicClass(struct char_data* ch) {
 }
 
 static int GetALevel(struct char_data* ch, int which) {
-  byte ind[4], j, k, i;
+  signed char ind[4], j, k, i;
 
   for (i = MAGE_LEVEL_IND; i <= THIEF_LEVEL_IND; i++) {
     ind[i] = GET_LEVEL(ch, i);

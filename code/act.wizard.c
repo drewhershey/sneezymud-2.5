@@ -1016,7 +1016,7 @@ void do_trans(struct char_data* ch, char* argument, int cmd) {
   struct descriptor_data* i;
   struct char_data* victim;
   char buf[100];
-  sh_int target;
+  short int target;
 
   if (IS_NPC(ch))
     return;
@@ -1248,7 +1248,7 @@ void do_stat(struct char_data* ch, char* argument, int cmd) {
   struct follow_type* fol;
   int i, virtual;
   int i2, count;
-  bool found;
+  char found;
 
   if (IS_NPC(ch))
     return;
@@ -2588,8 +2588,8 @@ void do_purge(struct char_data* ch, char* argument, int cmd) {
 /* Give pointers to the five abilities */
 void roll_abilities(struct char_data* ch) {
   int i, j, k, temp;
-  ubyte table[MAX_STAT];
-  ubyte rools[4];
+  unsigned char table[MAX_STAT];
+  unsigned char rools[4];
   char buf[256];
 
   for (i = 0; i < MAX_STAT; table[i++] = 0)
@@ -2793,7 +2793,7 @@ void do_start(struct char_data* ch) {
 
 static void gain_exp_regardless(struct char_data* ch, int gain, int class) {
   int i;
-  bool is_altered = FALSE;
+  char is_altered = FALSE;
 
   save_char(ch, AUTO_RENT);
   if (!IS_NPC(ch)) {

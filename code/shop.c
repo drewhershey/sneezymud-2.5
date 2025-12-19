@@ -25,7 +25,7 @@ struct shop_data {
     int producing[MAX_PROD]; /* Which item to produce (virtual)      */
     float profit_buy;        /* Factor to multiply cost with.        */
     float profit_sell;       /* Factor to multiply cost with.        */
-    byte type[MAX_TRADE];    /* Which item to trade.                 */
+    signed char type[MAX_TRADE];    /* Which item to trade.                 */
     char* no_such_item1;     /* Message if keeper hasn't got an item */
     char* no_such_item2;     /* Message if player hasn't got an item */
     char* missing_cash1;     /* Message if keeper hasn't got cash    */
@@ -502,7 +502,7 @@ void boot_the_shops(void) {
       fscanf(shop_f, "%f \n", &shop_index[number_of_shops].profit_sell);
       for (count = 0; count < MAX_TRADE; count++) {
         fscanf(shop_f, "%d \n", &temp);
-        shop_index[number_of_shops].type[count] = (byte)temp;
+        shop_index[number_of_shops].type[count] = (signed char)temp;
       }
       shop_index[number_of_shops].no_such_item1 = fread_string(shop_f);
       shop_index[number_of_shops].no_such_item2 = fread_string(shop_f);

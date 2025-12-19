@@ -1722,7 +1722,7 @@ int mayor(struct char_data* ch, int cmd, char* arg) {
 
   static char* path;
   static int index;
-  static bool move = FALSE;
+  static char move = FALSE;
 
   if (!move) {
     if (time_info.hours == 6) {
@@ -2432,7 +2432,7 @@ command will be executed immediately.
 /* Execute a social command.                                        */
 static void exec_social(struct char_data* npc, char* cmd, int next_line,
   int* cur_line, void** thing) {
-  bool ok;
+  char ok;
 
   if (GET_POS(npc) == POSITION_FIGHTING)
     return;
@@ -3402,7 +3402,7 @@ static struct char_data* FindMobDiffZoneSameRace(struct char_data* ch) {
 int magic_user(struct char_data* ch, int cmd, char* arg) {
   struct char_data* vict;
   struct room_data* rp;
-  byte lspell;
+  signed char lspell;
   char buf[200];
 
   if (cmd || !AWAKE(ch) || IS_AFFECTED(ch, AFF_PARALYSIS))
@@ -3754,7 +3754,7 @@ int magic_user(struct char_data* ch, int cmd, char* arg) {
 
 int cleric(struct char_data* ch, int cmd, char* arg) {
   struct char_data* vict;
-  byte lspell, healperc = 0;
+  signed char lspell, healperc = 0;
 
   if (cmd || !AWAKE(ch))
     return (FALSE);
@@ -5598,7 +5598,7 @@ int bank(struct char_data* ch, int cmd, char* arg) {
 int pray_for_items(struct char_data* ch, int cmd, char* arg) {
   char buf[256];
   int key_room, gold;
-  bool found;
+  char found;
   struct obj_data *tmp_obj, *obj;
   struct extra_descr_data* ext;
 
@@ -6433,7 +6433,7 @@ static int is_weapon(struct obj_data* o) {
   return o->obj_flags.type_flag == ITEM_WEAPON;
 }
 
-static bool FindABetterWeapon(struct char_data* mob) {
+static char FindABetterWeapon(struct char_data* mob) {
   struct obj_data *o, *best;
   /*
     pick up and wield weapons
@@ -7202,7 +7202,7 @@ New improved magic_user
 
 int magic_user2(struct char_data* ch, int cmd, char* arg) {
   struct char_data* vict;
-  byte lspell;
+  signed char lspell;
 
   if (cmd || !AWAKE(ch))
     return (FALSE);
@@ -7695,7 +7695,7 @@ int nodrop(Mob* ch, int cmd, char* arg, Obj* me) {
   struct char_data* t;
   struct obj_data *obj, *i;
   char buf[80], obj_name[80], vict_name[80], *name;
-  bool do_all;
+  char do_all;
   int j, num;
   int (*knowdrop)(Mob*, int, char*, Obj*);
 
@@ -8300,7 +8300,7 @@ int lattimore(struct char_data* ch, int cmd, char* arg) {
 
 int coldcaster(struct char_data* ch, int cmd, char* arg) {
   struct char_data* vict;
-  byte lspell;
+  signed char lspell;
 
   if (cmd || !AWAKE(ch))
     return (FALSE);
@@ -8726,7 +8726,7 @@ int Valik(struct char_data* ch, int cmd, char* arg) {
   struct char_data *vict, *tch, *master;
   struct obj_data* obj;
   int (*valik)(struct char_data*, int, char*);
-  bool gave_this_click = FALSE;
+  char gave_this_click = FALSE;
   short quest_lines[4] = {6, 7, 5, 7};
   short valik_dests[9] = {104, 1638, 7902, 13551, 16764, 17330, 19244, 21325,
     25230};
@@ -9071,7 +9071,7 @@ int guardian(struct char_data* ch, int cmd, char* arg) {
       return FALSE;
     }
 
-    const bool room_soundproof = check_soundproof(ch);
+    const char room_soundproof = check_soundproof(ch);
 
     FILE* pass = fopen(RHYODIN_FILE, "a");
 

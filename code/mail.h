@@ -61,7 +61,7 @@ char* read_delete(char* recipient, char* recipient_formatted);
 #define LAST_BLOCK (-2)
 #define DELETED_BLOCK (-3)
 
-// Need to use 1-byte alignment for structs to prevent padding from increasing
+// Need to use 1-signed char alignment for structs to prevent padding from increasing
 // size past 100 bytes
 #pragma pack(push, 1)
 

@@ -372,7 +372,7 @@ const char* const command[] = {
   "\n",
 };
 
-int search_block(char* arg, const char* const* list, bool exact) {
+int search_block(char* arg, const char* const* list, char exact) {
   register int i, l;
 
   /* Make into lower case, and get length of string */
@@ -1188,7 +1188,7 @@ static void obj_store_to_char(struct char_data* ch, struct obj_file_u* st) {
 static void load_char_objs(struct char_data* ch) {
   FILE* fl;
   int i, j, loc;
-  bool found = FALSE;
+  char found = FALSE;
   float timegold;
   struct obj_file_u st;
   char buf[200];

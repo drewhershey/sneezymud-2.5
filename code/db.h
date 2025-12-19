@@ -46,7 +46,7 @@
 /* public procedures in db.c */
 
 void boot_db(void);
-void save_char(struct char_data* ch, sh_int load_room);
+void save_char(struct char_data* ch, short int load_room);
 int create_entry(char* name);
 void zone_update(void);
 void init_char(struct char_data* ch);
@@ -90,7 +90,7 @@ struct char_data* read_mobile(int nr, int type);
 /* structure for the reset commands */
 struct reset_com {
     char command; /* current command                      */
-    bool if_flag; /* if TRUE: exe only if preceding exe'd */
+    char if_flag; /* if TRUE: exe only if preceding exe'd */
     int arg1;     /*                                      */
     int arg2;     /* Arguments to the command             */
     int arg3;     /*                                      */

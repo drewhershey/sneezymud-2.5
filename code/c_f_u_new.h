@@ -13,22 +13,22 @@
 #include "structs.h"
 
 struct char_file_u_new {
-    byte sex;
+    signed char sex;
     unsigned char class;
-    byte level[12];
+    signed char level[12];
     time_t birth; /* Time of birth of character     */
     int played;   /* Number of secs played in total */
 
     int race;
-    ubyte weight;
-    ubyte height;
+    unsigned char weight;
+    unsigned char height;
 
     char title[80];
-    sh_int hometown;
+    short int hometown;
     char description[240];
-    bool talks[MAX_TOUNGE];
+    char talks[MAX_TOUNGE];
 
-    sh_int load_room; /* Which room to place char in  */
+    short int load_room; /* Which room to place char in  */
 
     struct char_ability_data abilities;
 
@@ -40,7 +40,7 @@ struct char_file_u_new {
 
     /* specials */
 
-    byte spells_to_learn;
+    signed char spells_to_learn;
     int alignment;
 
     time_t last_logon; /* Time (in secs) of last logon */
@@ -51,7 +51,7 @@ struct char_file_u_new {
     /* char data */
     char name[20];
     char pwd[11];
-    sh_int apply_saving_throw[5];
+    short int apply_saving_throw[5];
     int conditions[3];
 };
 

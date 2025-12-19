@@ -19,8 +19,8 @@ extern int Silence;
 
 struct command_info {
     void (*command_pointer)(struct char_data* ch, char* argument, int cmd);
-    byte minimum_position;
-    byte minimum_level;
+    signed char minimum_position;
+    signed char minimum_level;
 };
 
 extern struct command_info cmd_info[MAX_CMD_LIST];
@@ -28,7 +28,7 @@ extern struct command_info cmd_info[MAX_CMD_LIST];
 int ReadObjs(FILE* fl, struct obj_file_u* st);
 void ZeroRent(char* n);
 void command_interpreter(struct char_data* ch, char* argument);
-int search_block(char* arg, const char* const* list, bool exact);
+int search_block(char* arg, const char* const* list, char exact);
 int old_search_block(char* argument, int begin, int length,
   const char* const* list, int mode);
 void argument_interpreter(char* argument, char* first_arg, char* second_arg);

@@ -516,11 +516,11 @@ void list_obj_in_heap(struct obj_data* list, struct char_data* ch) {
 
 #if 0
 void list_obj_to_char(struct obj_data *list,struct char_data *ch, int mode,
-            bool show) {
+            char show) {
   char buf[MAX_STRING_LENGTH];
   int Num_In_Bag = 1;
   struct obj_data *i;
-  bool found;
+  char found;
 
   found = FALSE;
   for ( i = list ; i ; i = i->next_content ) {
@@ -1079,7 +1079,7 @@ void do_look(struct char_data* ch, char* argument, int cmd) {
   char arg2[MAX_INPUT_LENGTH];
   int keyword_no, res;
   int j, bits, temp;
-  bool found;
+  char found;
   struct obj_data *tmp_object, *found_object;
   struct char_data* tmp_char;
   char* tmp_desc;
@@ -1837,7 +1837,7 @@ void do_inventory(struct char_data* ch, char* argument, int cmd) {
 
 void do_equipment(struct char_data* ch, char* argument, int cmd) {
   int j, Worn_Index;
-  bool found;
+  char found;
   char String[256];
 
   send_to_char("You are using:\n\r", ch);

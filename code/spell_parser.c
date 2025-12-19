@@ -82,7 +82,7 @@ const char* const spells[] = {"armor", "teleport", "bless", "blindness",
   "frost breath", "acid breath", "lightning breath", "****", "****", "****",
   "****", "****", "****", "SKILL_HUNT", "\n"};
 
-const byte saving_throws[8][5][ABS_MAX_LVL] = {
+const signed char saving_throws[8][5][ABS_MAX_LVL] = {
   {
     {16, 14, 14, 14, 14, 14, 13, 13, 13, 13, 13, 11, 11, 11, 11, 11, 10, 10, 10,
       10, 10, 8, 6, 4, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
@@ -835,7 +835,7 @@ void clone_obj(struct obj_data* obj) {}
 
 /* Check if making CH follow VICTIM will create an illegal */
 /* Follow "Loop/circle"                                    */
-bool circle_follow(struct char_data* ch, struct char_data* victim) {
+char circle_follow(struct char_data* ch, struct char_data* victim) {
   struct char_data* k;
 
   for (k = victim; k; k = k->master) {
@@ -967,7 +967,7 @@ static void say_spell(struct char_data* ch, int si) {
     }
 }
 
-bool saves_spell(struct char_data* ch, sh_int save_type) {
+char saves_spell(struct char_data* ch, short int save_type) {
   int save;
 
   /* Negative apply_saving_throw makes saving throw better! */
@@ -1023,7 +1023,7 @@ void do_cast(struct char_data* ch, char* argument, int cmd) {
   struct char_data* tar_char;
   char name[MAX_INPUT_LENGTH];
   int qend, spl, i;
-  bool target_ok;
+  char target_ok;
 
   if (IS_NPC(ch) && (!IS_SET(ch->specials.act, ACT_POLYSELF)))
     return;

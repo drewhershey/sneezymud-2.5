@@ -84,8 +84,8 @@ void do_get(struct char_data* ch, char* argument, int cmd) {
   struct obj_data* sub_object;
   struct obj_data* obj_object;
   struct obj_data* next_obj;
-  bool found = FALSE;
-  bool fail = FALSE;
+  char found = FALSE;
+  char fail = FALSE;
   int type = 3;
   char newarg[100];
   int num, p;
@@ -404,7 +404,7 @@ void do_drop(struct char_data* ch, char* argument, int cmd) {
   char buffer[MAX_STRING_LENGTH];
   struct obj_data* tmp_object;
   struct obj_data* next_obj;
-  bool test = FALSE;
+  char test = FALSE;
   char newarg[100];
   char* s;
   int num, p;

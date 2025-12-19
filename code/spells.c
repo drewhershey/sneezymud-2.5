@@ -28,7 +28,7 @@
 
 struct room_data* world = NULL; /* dyn alloc'ed array of rooms     */
 
-static void spell_burning_hands(byte level, struct char_data* ch,
+static void spell_burning_hands(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
   int dam;
   struct char_data *tmp_victim, *temp;
@@ -61,7 +61,7 @@ static void spell_burning_hands(byte level, struct char_data* ch,
   }
 }
 
-void cast_burning_hands(byte level, struct char_data* ch, char* arg, int type,
+void cast_burning_hands(signed char level, struct char_data* ch, char* arg, int type,
   struct char_data* victim, struct obj_data* tar_obj) {
   switch (type) {
     case SPELL_TYPE_WAND:
@@ -76,7 +76,7 @@ void cast_burning_hands(byte level, struct char_data* ch, char* arg, int type,
   }
 }
 
-static void spell_call_lightning(byte level, struct char_data* ch,
+static void spell_call_lightning(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
   int dam;
 
@@ -93,7 +93,7 @@ static void spell_call_lightning(byte level, struct char_data* ch,
   }
 }
 
-void cast_call_lightning(byte level, struct char_data* ch, char* arg, int type,
+void cast_call_lightning(signed char level, struct char_data* ch, char* arg, int type,
   struct char_data* victim, struct obj_data* tar_obj) {
   switch (type) {
     case SPELL_TYPE_SPELL:
@@ -131,7 +131,7 @@ void cast_call_lightning(byte level, struct char_data* ch, char* arg, int type,
   }
 }
 
-static void spell_chill_touch(byte level, struct char_data* ch,
+static void spell_chill_touch(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
   struct affected_type af;
   int dam;
@@ -154,7 +154,7 @@ static void spell_chill_touch(byte level, struct char_data* ch,
   damage(ch, victim, dam, SPELL_CHILL_TOUCH);
 }
 
-void cast_chill_touch(byte level, struct char_data* ch, char* arg, int type,
+void cast_chill_touch(signed char level, struct char_data* ch, char* arg, int type,
   struct char_data* victim, struct obj_data* tar_obj) {
   switch (type) {
     case SPELL_TYPE_SPELL:
@@ -167,7 +167,7 @@ void cast_chill_touch(byte level, struct char_data* ch, char* arg, int type,
   }
 }
 
-static void spell_vampiric_touch(byte level, struct char_data* ch,
+static void spell_vampiric_touch(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
   int hitp;
 
@@ -209,7 +209,7 @@ static void spell_vampiric_touch(byte level, struct char_data* ch,
   }
 }
 
-void cast_vampiric_touch(byte level, struct char_data* ch, char* arg, int type,
+void cast_vampiric_touch(signed char level, struct char_data* ch, char* arg, int type,
   struct char_data* victim, struct obj_data* tar_obj) {
   switch (type) {
     case SPELL_TYPE_SPELL:
@@ -222,7 +222,7 @@ void cast_vampiric_touch(byte level, struct char_data* ch, char* arg, int type,
   }
 }
 
-static void spell_life_leech(byte level, struct char_data* ch,
+static void spell_life_leech(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
   int hitp;
   struct char_data *tmp_victim, *temp;
@@ -256,7 +256,7 @@ static void spell_life_leech(byte level, struct char_data* ch,
   }
 }
 
-void cast_life_leech(byte level, struct char_data* ch, char* arg, int type,
+void cast_life_leech(signed char level, struct char_data* ch, char* arg, int type,
   struct char_data* victim, struct obj_data* tar_obj) {
   switch (type) {
     case SPELL_TYPE_SPELL:
@@ -268,7 +268,7 @@ void cast_life_leech(byte level, struct char_data* ch, char* arg, int type,
   }
 }
 
-static void spell_shocking_grasp(byte level, struct char_data* ch,
+static void spell_shocking_grasp(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
   int dam;
 
@@ -283,7 +283,7 @@ static void spell_shocking_grasp(byte level, struct char_data* ch,
   damage(ch, victim, dam, SPELL_SHOCKING_GRASP);
 }
 
-void cast_shocking_grasp(byte level, struct char_data* ch, char* arg, int type,
+void cast_shocking_grasp(signed char level, struct char_data* ch, char* arg, int type,
   struct char_data* victim, struct obj_data* tar_obj) {
   switch (type) {
     case SPELL_TYPE_SPELL:
@@ -295,7 +295,7 @@ void cast_shocking_grasp(byte level, struct char_data* ch, char* arg, int type,
   }
 }
 
-static void spell_colour_spray(byte level, struct char_data* ch,
+static void spell_colour_spray(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
   int dam;
 
@@ -310,7 +310,7 @@ static void spell_colour_spray(byte level, struct char_data* ch,
   MissileDamage(ch, victim, dam, SPELL_COLOUR_SPRAY);
 }
 
-void cast_colour_spray(byte level, struct char_data* ch, char* arg, int type,
+void cast_colour_spray(signed char level, struct char_data* ch, char* arg, int type,
   struct char_data* victim, struct obj_data* tar_obj) {
   switch (type) {
     case SPELL_TYPE_SPELL:
@@ -332,7 +332,7 @@ void cast_colour_spray(byte level, struct char_data* ch, char* arg, int type,
   }
 }
 
-static void spell_earthquake(byte level, struct char_data* ch,
+static void spell_earthquake(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
   int dam;
 
@@ -368,7 +368,7 @@ static void spell_earthquake(byte level, struct char_data* ch,
   }
 }
 
-void cast_earthquake(byte level, struct char_data* ch, char* arg, int type,
+void cast_earthquake(signed char level, struct char_data* ch, char* arg, int type,
   struct char_data* victim, struct obj_data* tar_obj) {
   switch (type) {
     case SPELL_TYPE_SPELL:
@@ -383,7 +383,7 @@ void cast_earthquake(byte level, struct char_data* ch, char* arg, int type,
 }
 
 /* Drain XP, MANA, HP - caster gains HP and MANA */
-static void spell_energy_drain(byte level, struct char_data* ch,
+static void spell_energy_drain(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
   int dam, xp, mana;
 
@@ -417,7 +417,7 @@ static void spell_energy_drain(byte level, struct char_data* ch,
   }
 }
 
-void cast_energy_drain(byte level, struct char_data* ch, char* arg, int type,
+void cast_energy_drain(signed char level, struct char_data* ch, char* arg, int type,
   struct char_data* victim, struct obj_data* tar_obj) {
   switch (type) {
     case SPELL_TYPE_SPELL:
@@ -449,7 +449,7 @@ void cast_energy_drain(byte level, struct char_data* ch, char* arg, int type,
   }
 }
 
-static void spell_fireball(byte level, struct char_data* ch,
+static void spell_fireball(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
   int dam;
   struct char_data *tmp_victim, *temp;
@@ -492,7 +492,7 @@ static void spell_fireball(byte level, struct char_data* ch,
   }
 }
 
-void cast_fireball(byte level, struct char_data* ch, char* arg, int type,
+void cast_fireball(signed char level, struct char_data* ch, char* arg, int type,
   struct char_data* victim, struct obj_data* tar_obj) {
   switch (type) {
     case SPELL_TYPE_WAND:
@@ -507,7 +507,7 @@ void cast_fireball(byte level, struct char_data* ch, char* arg, int type,
   }
 }
 
-static void spell_harm(byte level, struct char_data* ch,
+static void spell_harm(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
   int dam;
 
@@ -527,7 +527,7 @@ static void spell_harm(byte level, struct char_data* ch,
   damage(ch, victim, dam, SPELL_HARM);
 }
 
-void cast_harm(byte level, struct char_data* ch, char* arg, int type,
+void cast_harm(signed char level, struct char_data* ch, char* arg, int type,
   struct char_data* victim, struct obj_data* tar_obj) {
   switch (type) {
     case SPELL_TYPE_SPELL:
@@ -548,7 +548,7 @@ void cast_harm(byte level, struct char_data* ch, char* arg, int type,
   }
 }
 
-static void spell_lightning_bolt(byte level, struct char_data* ch,
+static void spell_lightning_bolt(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
   int dam;
 
@@ -563,7 +563,7 @@ static void spell_lightning_bolt(byte level, struct char_data* ch,
   MissileDamage(ch, victim, dam, SPELL_LIGHTNING_BOLT);
 }
 
-void cast_lightning_bolt(byte level, struct char_data* ch, char* arg, int type,
+void cast_lightning_bolt(signed char level, struct char_data* ch, char* arg, int type,
   struct char_data* victim, struct obj_data* tar_obj) {
   switch (type) {
     case SPELL_TYPE_SPELL:
@@ -585,7 +585,7 @@ void cast_lightning_bolt(byte level, struct char_data* ch, char* arg, int type,
   }
 }
 
-static void spell_acid_blast(byte level, struct char_data* ch,
+static void spell_acid_blast(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
   int dam;
 
@@ -600,7 +600,7 @@ static void spell_acid_blast(byte level, struct char_data* ch,
   MissileDamage(ch, victim, dam, SPELL_ACID_BLAST);
 }
 
-void cast_acid_blast(byte level, struct char_data* ch, char* arg, int type,
+void cast_acid_blast(signed char level, struct char_data* ch, char* arg, int type,
   struct char_data* victim, struct obj_data* tar_obj) {
   switch (type) {
     case SPELL_TYPE_SPELL:
@@ -622,7 +622,7 @@ void cast_acid_blast(byte level, struct char_data* ch, char* arg, int type,
   }
 }
 
-static void spell_cone_of_cold(byte level, struct char_data* ch,
+static void spell_cone_of_cold(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
   int dam;
   struct char_data *tmpv, *temp;
@@ -653,7 +653,7 @@ static void spell_cone_of_cold(byte level, struct char_data* ch,
   }
 }
 
-void cast_cone_of_cold(byte level, struct char_data* ch, char* arg, int type,
+void cast_cone_of_cold(signed char level, struct char_data* ch, char* arg, int type,
   struct char_data* victim, struct obj_data* tar_obj) {
   switch (type) {
     case SPELL_TYPE_SPELL:
@@ -668,7 +668,7 @@ void cast_cone_of_cold(byte level, struct char_data* ch, char* arg, int type,
   }
 }
 
-void spell_ice_storm(byte level, struct char_data* ch, struct char_data* victim,
+void spell_ice_storm(signed char level, struct char_data* ch, struct char_data* victim,
   struct obj_data* obj) {
   int dam;
   struct char_data *tmpv, *temp;
@@ -697,7 +697,7 @@ void spell_ice_storm(byte level, struct char_data* ch, struct char_data* victim,
   }
 }
 
-void cast_ice_storm(byte level, struct char_data* ch, char* arg, int type,
+void cast_ice_storm(signed char level, struct char_data* ch, char* arg, int type,
   struct char_data* victim, struct obj_data* tar_obj) {
   switch (type) {
     case SPELL_TYPE_SPELL:
@@ -712,7 +712,7 @@ void cast_ice_storm(byte level, struct char_data* ch, char* arg, int type,
   }
 }
 
-static void spell_meteor_swarm(byte level, struct char_data* ch,
+static void spell_meteor_swarm(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
   int dam;
 
@@ -727,7 +727,7 @@ static void spell_meteor_swarm(byte level, struct char_data* ch,
   MissileDamage(ch, victim, dam, SPELL_METEOR_SWARM);
 }
 
-void cast_meteor_swarm(byte level, struct char_data* ch, char* arg, int type,
+void cast_meteor_swarm(signed char level, struct char_data* ch, char* arg, int type,
   struct char_data* victim, struct obj_data* tar_obj) {
   switch (type) {
     case SPELL_TYPE_SPELL:
@@ -749,7 +749,7 @@ void cast_meteor_swarm(byte level, struct char_data* ch, char* arg, int type,
   }
 }
 
-static void spell_disintegrate(byte level, struct char_data* ch,
+static void spell_disintegrate(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
   int dam;
 
@@ -762,7 +762,7 @@ static void spell_disintegrate(byte level, struct char_data* ch,
     MissileDamage(ch, victim, dam, SPELL_DISINTEGRATE);
 }
 
-void cast_disintegrate(byte level, struct char_data* ch, char* arg, int type,
+void cast_disintegrate(signed char level, struct char_data* ch, char* arg, int type,
   struct char_data* victim, struct obj_data* tar_obj) {
   switch (type) {
     case SPELL_TYPE_SPELL:
@@ -784,7 +784,7 @@ void cast_disintegrate(byte level, struct char_data* ch, char* arg, int type,
   }
 }
 
-static void spell_flamestrike(byte level, struct char_data* ch,
+static void spell_flamestrike(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
   int dam;
 
@@ -799,7 +799,7 @@ static void spell_flamestrike(byte level, struct char_data* ch,
   MissileDamage(ch, victim, dam, SPELL_FLAMESTRIKE);
 }
 
-void cast_flamestrike(byte level, struct char_data* ch, char* arg, int type,
+void cast_flamestrike(signed char level, struct char_data* ch, char* arg, int type,
   struct char_data* victim, struct obj_data* tar_obj) {
   switch (type) {
     case SPELL_TYPE_SPELL:
@@ -821,7 +821,7 @@ void cast_flamestrike(byte level, struct char_data* ch, char* arg, int type,
   }
 }
 
-static void spell_magic_missile(byte level, struct char_data* ch,
+static void spell_magic_missile(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
   int dam;
 
@@ -836,7 +836,7 @@ static void spell_magic_missile(byte level, struct char_data* ch,
   MissileDamage(ch, victim, dam, SPELL_MAGIC_MISSILE);
 }
 
-void cast_magic_missile(byte level, struct char_data* ch, char* arg, int type,
+void cast_magic_missile(signed char level, struct char_data* ch, char* arg, int type,
   struct char_data* victim, struct obj_data* tar_obj) {
   switch (type) {
     case SPELL_TYPE_SPELL:
@@ -858,7 +858,7 @@ void cast_magic_missile(byte level, struct char_data* ch, char* arg, int type,
   }
 }
 
-static void spell_cause_light(byte level, struct char_data* ch,
+static void spell_cause_light(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
   int dam;
 
@@ -870,7 +870,7 @@ static void spell_cause_light(byte level, struct char_data* ch,
   damage(ch, victim, dam, SPELL_CAUSE_LIGHT);
 }
 
-void cast_cause_light(byte level, struct char_data* ch, char* arg, int type,
+void cast_cause_light(signed char level, struct char_data* ch, char* arg, int type,
   struct char_data* victim, struct obj_data* tar_obj) {
   switch (type) {
     case SPELL_TYPE_SPELL:
@@ -891,7 +891,7 @@ void cast_cause_light(byte level, struct char_data* ch, char* arg, int type,
   }
 }
 
-static void spell_cause_serious(byte level, struct char_data* ch,
+static void spell_cause_serious(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
   int dam;
 
@@ -903,7 +903,7 @@ static void spell_cause_serious(byte level, struct char_data* ch,
   damage(ch, victim, dam, SPELL_CAUSE_SERIOUS);
 }
 
-void cast_cause_serious(byte level, struct char_data* ch, char* arg, int type,
+void cast_cause_serious(signed char level, struct char_data* ch, char* arg, int type,
   struct char_data* victim, struct obj_data* tar_obj) {
   switch (type) {
     case SPELL_TYPE_SPELL:
@@ -930,7 +930,7 @@ void cast_cause_serious(byte level, struct char_data* ch, char* arg, int type,
   }
 }
 
-static void spell_cause_critical(byte level, struct char_data* ch,
+static void spell_cause_critical(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
   int dam;
 
@@ -942,7 +942,7 @@ static void spell_cause_critical(byte level, struct char_data* ch,
   damage(ch, victim, dam, SPELL_CAUSE_CRITICAL);
 }
 
-void cast_cause_critic(byte level, struct char_data* ch, char* arg, int type,
+void cast_cause_critic(signed char level, struct char_data* ch, char* arg, int type,
   struct char_data* victim, struct obj_data* tar_obj) {
   switch (type) {
     case SPELL_TYPE_SPELL:
@@ -975,7 +975,7 @@ void cast_cause_critic(byte level, struct char_data* ch, char* arg, int type,
   }
 }
 
-static void spell_geyser(byte level, struct char_data* ch,
+static void spell_geyser(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
   int dam;
 
@@ -1005,7 +1005,7 @@ static void spell_geyser(byte level, struct char_data* ch,
   }
 }
 
-void cast_geyser(byte level, struct char_data* ch, char* arg, int type,
+void cast_geyser(signed char level, struct char_data* ch, char* arg, int type,
   struct char_data* victim, struct obj_data* tar_obj) {
   switch (type) {
     case SPELL_TYPE_SPELL:
@@ -1020,7 +1020,7 @@ void cast_geyser(byte level, struct char_data* ch, char* arg, int type,
   }
 }
 
-static void spell_green_slime(byte level, struct char_data* ch,
+static void spell_green_slime(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
   int dam;
   int hpch;
@@ -1042,7 +1042,7 @@ static void spell_green_slime(byte level, struct char_data* ch,
   damage(ch, victim, dam, SPELL_GREEN_SLIME);
 }
 
-void cast_green_slime(byte level, struct char_data* ch, char* arg, int type,
+void cast_green_slime(signed char level, struct char_data* ch, char* arg, int type,
   struct char_data* victim, struct obj_data* tar_obj) {
   switch (type) {
     case SPELL_TYPE_SPELL:
@@ -1199,7 +1199,7 @@ static int task_check(struct char_data* ch, int difficulty, int modifier) {
   return NORMAL_RESULT;
 }
 
-static void spell_create_golem(byte level, struct char_data* ch,
+static void spell_create_golem(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
   int control, power, nc, modifier = 0, target;
   struct affected_type af;
@@ -1287,7 +1287,7 @@ static void spell_create_golem(byte level, struct char_data* ch,
   }
 }
 
-void cast_create_golem(byte level, struct char_data* ch, char* arg, int type,
+void cast_create_golem(signed char level, struct char_data* ch, char* arg, int type,
   struct char_data* victim, struct obj_data* tar_obj) {
   switch (type) {
     case SPELL_TYPE_SPELL:
@@ -1320,7 +1320,7 @@ const struct PolyType PolyList[40] = {{"goblin", 4, 201}, {"parrot", 4, 9001},
  **   time (if a pc)
  */
 
-void spell_resurrection(byte level, Mob* ch, Mob* victim, Obj* obj) {
+void spell_resurrection(signed char level, Mob* ch, Mob* victim, Obj* obj) {
   struct char_file_u st;
   struct affected_type af;
   struct obj_data *obj_object, *next_obj;
@@ -1403,7 +1403,7 @@ void spell_resurrection(byte level, Mob* ch, Mob* victim, Obj* obj) {
   }
 }
 
-void cast_resurrection(byte level, struct char_data* ch, char* arg, int type,
+void cast_resurrection(signed char level, struct char_data* ch, char* arg, int type,
   struct char_data* tar_ch, struct obj_data* tar_obj) {
   switch (type) {
     case SPELL_TYPE_SPELL:
@@ -1422,7 +1422,7 @@ void cast_resurrection(byte level, struct char_data* ch, char* arg, int type,
   }
 }
 
-static void spell_track(byte level, struct char_data* ch,
+static void spell_track(signed char level, struct char_data* ch,
   struct char_data* targ, int obj) {
   struct char_data* scan;
   char name[256], buf[256], found = FALSE;
@@ -1452,7 +1452,7 @@ static void spell_track(byte level, struct char_data* ch,
   affect_to_char(targ, &af);
 }
 
-void cast_major_track(byte level, struct char_data* ch, char* arg, int type,
+void cast_major_track(signed char level, struct char_data* ch, char* arg, int type,
   struct char_data* tar_ch, struct obj_data* tar_obj) {
   switch (type) {
     case SPELL_TYPE_SPELL:
@@ -1486,7 +1486,7 @@ void cast_major_track(byte level, struct char_data* ch, char* arg, int type,
   }
 }
 
-void cast_minor_track(byte level, struct char_data* ch, char* arg, int type,
+void cast_minor_track(signed char level, struct char_data* ch, char* arg, int type,
   struct char_data* tar_ch, struct obj_data* tar_obj) {
   switch (type) {
     case SPELL_TYPE_SPELL:
@@ -1520,7 +1520,7 @@ void cast_minor_track(byte level, struct char_data* ch, char* arg, int type,
   }
 }
 
-static void spell_mana(byte level, struct char_data* ch,
+static void spell_mana(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
   int dam;
 
@@ -1536,7 +1536,7 @@ static void spell_mana(byte level, struct char_data* ch,
     GET_MANA(ch) += dam;
 }
 
-void cast_mana(byte level, struct char_data* ch, char* arg, int type,
+void cast_mana(signed char level, struct char_data* ch, char* arg, int type,
   struct char_data* tar_ch, struct obj_data* tar_obj) {
   switch (type) {
     case SPELL_TYPE_POTION:
@@ -1558,7 +1558,7 @@ void cast_mana(byte level, struct char_data* ch, char* arg, int type,
   }
 }
 
-void spell_armor(byte level, struct char_data* ch, struct char_data* victim,
+void spell_armor(signed char level, struct char_data* ch, struct char_data* victim,
   struct obj_data* obj) {
   struct affected_type af;
 
@@ -1579,7 +1579,7 @@ void spell_armor(byte level, struct char_data* ch, struct char_data* victim,
   }
 }
 
-void cast_armor(byte level, struct char_data* ch, char* arg, int type,
+void cast_armor(signed char level, struct char_data* ch, char* arg, int type,
   struct char_data* tar_ch, struct obj_data* tar_obj) {
   switch (type) {
     case SPELL_TYPE_SPELL:
@@ -1619,7 +1619,7 @@ void cast_armor(byte level, struct char_data* ch, char* arg, int type,
   }
 }
 
-static void spell_stone_skin(byte level, struct char_data* ch,
+static void spell_stone_skin(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
   struct affected_type af;
 
@@ -1647,7 +1647,7 @@ static void spell_stone_skin(byte level, struct char_data* ch,
   }
 }
 
-void cast_stone_skin(byte level, struct char_data* ch, char* arg, int type,
+void cast_stone_skin(signed char level, struct char_data* ch, char* arg, int type,
   struct char_data* tar_ch, struct obj_data* tar_obj) {
   switch (type) {
     case SPELL_TYPE_SPELL:
@@ -1682,12 +1682,12 @@ void cast_stone_skin(byte level, struct char_data* ch, char* arg, int type,
   }
 }
 
-static void spell_vitalize_mana(byte level, struct char_data* ch,
+static void spell_vitalize_mana(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
   send_to_char("Vitalize mana has been disabled.\n\r", ch);
 }
 
-void cast_vitalize_mana(byte level, struct char_data* ch, char* arg, int type,
+void cast_vitalize_mana(signed char level, struct char_data* ch, char* arg, int type,
   struct char_data* tar_ch, struct obj_data* tar_obj) {
   switch (type) {
     case SPELL_TYPE_SPELL:
@@ -1708,7 +1708,7 @@ void cast_vitalize_mana(byte level, struct char_data* ch, char* arg, int type,
   }
 }
 
-void spell_astral_walk(byte level, struct char_data* ch,
+void spell_astral_walk(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
   int location;
   struct room_data* rp;
@@ -1740,7 +1740,7 @@ void spell_astral_walk(byte level, struct char_data* ch,
   }
 }
 
-void cast_astral_walk(byte level, struct char_data* ch, char* arg, int type,
+void cast_astral_walk(signed char level, struct char_data* ch, char* arg, int type,
   struct char_data* tar_ch, struct obj_data* tar_obj) {
   switch (type) {
     case SPELL_TYPE_WAND:
@@ -1760,9 +1760,9 @@ void cast_astral_walk(byte level, struct char_data* ch, char* arg, int type,
   }
 }
 
-static void spell_farlook(byte level, struct char_data* ch,
+static void spell_farlook(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
-  sh_int target;
+  short int target;
   struct char_data *tmpv, *temp;
   char buf[MAX_STRING_LENGTH], buf1[MAX_STRING_LENGTH];
 
@@ -1790,7 +1790,7 @@ static void spell_farlook(byte level, struct char_data* ch,
   }
 }
 
-void cast_farlook(byte level, struct char_data* ch, char* arg, int type,
+void cast_farlook(signed char level, struct char_data* ch, char* arg, int type,
   struct char_data* tar_ch, struct obj_data* tar_obj) {
   switch (type) {
     case SPELL_TYPE_SPELL:
@@ -1810,7 +1810,7 @@ void cast_farlook(byte level, struct char_data* ch, char* arg, int type,
   }
 }
 
-static void spell_portal(byte level, struct char_data* ch,
+static void spell_portal(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
   int location;
   char buf[30000];
@@ -1884,7 +1884,7 @@ static void spell_portal(byte level, struct char_data* ch,
     TO_CHAR);
 }
 
-void cast_portal(byte level, struct char_data* ch, char* arg, int type,
+void cast_portal(signed char level, struct char_data* ch, char* arg, int type,
   struct char_data* tar_ch, struct obj_data* tar_obj) {
   switch (type) {
     case SPELL_TYPE_SPELL:
@@ -1901,7 +1901,7 @@ void cast_portal(byte level, struct char_data* ch, char* arg, int type,
   }
 }
 
-void spell_teleport(byte level, struct char_data* ch, struct char_data* victim,
+void spell_teleport(signed char level, struct char_data* ch, struct char_data* victim,
   struct obj_data* obj) {
   int to_room;
   struct room_data* room;
@@ -1948,7 +1948,7 @@ void spell_teleport(byte level, struct char_data* ch, struct char_data* victim,
   }
 }
 
-void cast_teleport(byte level, struct char_data* ch, char* arg, int type,
+void cast_teleport(signed char level, struct char_data* ch, char* arg, int type,
   struct char_data* tar_ch, struct obj_data* tar_obj) {
   switch (type) {
     case SPELL_TYPE_SCROLL:
@@ -1978,7 +1978,7 @@ void cast_teleport(byte level, struct char_data* ch, char* arg, int type,
   }
 }
 
-static void spell_bless(byte level, struct char_data* ch,
+static void spell_bless(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
   struct affected_type af;
 
@@ -2010,7 +2010,7 @@ static void spell_bless(byte level, struct char_data* ch,
   }
 }
 
-void cast_bless(byte level, struct char_data* ch, char* arg, int type,
+void cast_bless(signed char level, struct char_data* ch, char* arg, int type,
   struct char_data* tar_ch, struct obj_data* tar_obj) {
   struct affected_type af;
 
@@ -2076,7 +2076,7 @@ void cast_bless(byte level, struct char_data* ch, char* arg, int type,
   }
 }
 
-static void spell_infravision(byte level, struct char_data* ch,
+static void spell_infravision(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
   struct affected_type af;
 
@@ -2100,7 +2100,7 @@ static void spell_infravision(byte level, struct char_data* ch,
   }
 }
 
-void cast_infravision(byte level, struct char_data* ch, char* arg, int type,
+void cast_infravision(signed char level, struct char_data* ch, char* arg, int type,
   struct char_data* tar_ch, struct obj_data* tar_obj) {
   struct affected_type af;
 
@@ -2146,7 +2146,7 @@ void cast_infravision(byte level, struct char_data* ch, char* arg, int type,
   }
 }
 
-void spell_true_seeing(byte level, struct char_data* ch,
+void spell_true_seeing(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
   struct affected_type af;
 
@@ -2172,7 +2172,7 @@ void spell_true_seeing(byte level, struct char_data* ch,
   }
 }
 
-void cast_true_seeing(byte level, struct char_data* ch, char* arg, int type,
+void cast_true_seeing(signed char level, struct char_data* ch, char* arg, int type,
   struct char_data* tar_ch, struct obj_data* tar_obj) {
   switch (type) {
     case SPELL_TYPE_SPELL:
@@ -2216,7 +2216,7 @@ void cast_true_seeing(byte level, struct char_data* ch, char* arg, int type,
   }
 }
 
-void spell_blindness(byte level, struct char_data* ch, struct char_data* victim,
+void spell_blindness(signed char level, struct char_data* ch, struct char_data* victim,
   struct obj_data* obj) {
   struct affected_type af;
 
@@ -2245,7 +2245,7 @@ void spell_blindness(byte level, struct char_data* ch, struct char_data* victim,
     set_fighting(victim, ch);
 }
 
-void cast_blindness(byte level, struct char_data* ch, char* arg, int type,
+void cast_blindness(signed char level, struct char_data* ch, char* arg, int type,
   struct char_data* tar_ch, struct obj_data* tar_obj) {
   struct affected_type af;
 
@@ -2293,7 +2293,7 @@ void cast_blindness(byte level, struct char_data* ch, char* arg, int type,
   }
 }
 
-static void spell_light(byte level, struct char_data* ch,
+static void spell_light(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
   /*
      creates a ball of light in the hands.
@@ -2318,7 +2318,7 @@ static void spell_light(byte level, struct char_data* ch,
     TO_CHAR);
 }
 
-void cast_light(byte level, struct char_data* ch, char* arg, int type,
+void cast_light(signed char level, struct char_data* ch, char* arg, int type,
   struct char_data* tar_ch, struct obj_data* tar_obj) {
   switch (type) {
     case SPELL_TYPE_SPELL:
@@ -2340,7 +2340,7 @@ void cast_light(byte level, struct char_data* ch, char* arg, int type,
   }
 }
 
-static void spell_cont_light(byte level, struct char_data* ch,
+static void spell_cont_light(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
   struct obj_data* tmp_obj;
 
@@ -2361,7 +2361,7 @@ static void spell_cont_light(byte level, struct char_data* ch,
     TO_CHAR);
 }
 
-void cast_cont_light(byte level, struct char_data* ch, char* arg, int type,
+void cast_cont_light(signed char level, struct char_data* ch, char* arg, int type,
   struct char_data* tar_ch, struct obj_data* tar_obj) {
   switch (type) {
     case SPELL_TYPE_SPELL:
@@ -2384,11 +2384,11 @@ void cast_cont_light(byte level, struct char_data* ch, char* arg, int type,
 }
 
 /* removes aggressive bit from monsters */
-static void spell_calm(byte level, struct char_data* ch,
+static void spell_calm(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
   assert(ch && victim);
 
-  const bool isAggressive = IS_SET(victim->specials.act, ACT_AGGRESSIVE);
+  const char isAggressive = IS_SET(victim->specials.act, ACT_AGGRESSIVE);
 
   if (IS_PC(victim) || !isAggressive || !saves_spell(victim, SAVING_PARA)) {
     if (isAggressive) {
@@ -2406,7 +2406,7 @@ static void spell_calm(byte level, struct char_data* ch,
     set_fighting(victim, ch);
 }
 
-void cast_calm(byte level, struct char_data* ch, char* arg, int type,
+void cast_calm(signed char level, struct char_data* ch, char* arg, int type,
   struct char_data* tar_ch, struct obj_data* tar_obj) {
   switch (type) {
     case SPELL_TYPE_SPELL:
@@ -2437,7 +2437,7 @@ void cast_calm(byte level, struct char_data* ch, char* arg, int type,
   }
 }
 
-static void spell_web(byte level, struct char_data* ch,
+static void spell_web(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
   struct affected_type af;
 
@@ -2459,14 +2459,14 @@ static void spell_web(byte level, struct char_data* ch,
   affect_to_char(victim, &af);
 }
 
-void cast_web(byte level, struct char_data* ch, char* arg, int type,
+void cast_web(signed char level, struct char_data* ch, char* arg, int type,
   struct char_data* tar_ch, struct obj_data* tar_obj) {
   if (affected_by_spell(tar_ch, SPELL_WEB))
     return;
   spell_web(level, ch, tar_ch, 0);
 }
 
-static void spell_clone(byte level, struct char_data* ch,
+static void spell_clone(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
   assert(ch && (victim || obj));
   assert((level >= 0) && (level <= ABS_MAX_LVL));
@@ -2479,7 +2479,7 @@ static void spell_clone(byte level, struct char_data* ch,
   }
 }
 
-void cast_clone(byte level, struct char_data* ch, char* arg, int type,
+void cast_clone(signed char level, struct char_data* ch, char* arg, int type,
   struct char_data* tar_ch, struct obj_data* tar_obj) {
   struct char_data* vict;
   char buf[MAX_STRING_LENGTH];
@@ -2518,7 +2518,7 @@ void cast_clone(byte level, struct char_data* ch, char* arg, int type,
   /* MISSING REST OF SWITCH -- POTION, SCROLL, WAND */
 }
 
-void cast_control_weather(byte level, struct char_data* ch, char* arg, int type,
+void cast_control_weather(signed char level, struct char_data* ch, char* arg, int type,
   struct char_data* tar_ch, struct obj_data* tar_obj) {
   char buffer[MAX_STRING_LENGTH];
 
@@ -2593,7 +2593,7 @@ void cast_control_weather(byte level, struct char_data* ch, char* arg, int type,
   }
 }
 
-static void spell_create_food(byte level, struct char_data* ch,
+static void spell_create_food(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
   int foodnum;
   struct obj_data* tmp_obj;
@@ -2637,7 +2637,7 @@ static void spell_create_food(byte level, struct char_data* ch,
   act("$p suddenly appears.", TRUE, ch, tmp_obj, 0, TO_CHAR);
 }
 
-void cast_create_food(byte level, struct char_data* ch, char* arg, int type,
+void cast_create_food(signed char level, struct char_data* ch, char* arg, int type,
   struct char_data* tar_ch, struct obj_data* tar_obj) {
   switch (type) {
     case SPELL_TYPE_SPELL:
@@ -2657,7 +2657,7 @@ void cast_create_food(byte level, struct char_data* ch, char* arg, int type,
   }
 }
 
-static void spell_create_water(byte level, struct char_data* ch,
+static void spell_create_water(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
   assert(ch && obj);
 
@@ -2690,7 +2690,7 @@ static void spell_create_water(byte level, struct char_data* ch,
   }
 }
 
-void cast_create_water(byte level, struct char_data* ch, char* arg, int type,
+void cast_create_water(signed char level, struct char_data* ch, char* arg, int type,
   struct char_data* tar_ch, struct obj_data* tar_obj) {
   switch (type) {
     case SPELL_TYPE_SPELL:
@@ -2706,7 +2706,7 @@ void cast_create_water(byte level, struct char_data* ch, char* arg, int type,
   }
 }
 
-static void spell_water_breath(byte level, struct char_data* ch,
+static void spell_water_breath(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
   struct affected_type af;
 
@@ -2726,7 +2726,7 @@ static void spell_water_breath(byte level, struct char_data* ch,
   affect_to_char(victim, &af);
 }
 
-void cast_water_breath(byte level, struct char_data* ch, char* arg, int type,
+void cast_water_breath(signed char level, struct char_data* ch, char* arg, int type,
   struct char_data* tar_ch, struct obj_data* tar_obj) {
   switch (type) {
     case SPELL_TYPE_SPELL:
@@ -2745,7 +2745,7 @@ void cast_water_breath(byte level, struct char_data* ch, char* arg, int type,
   }
 }
 
-static void spell_fly(byte level, struct char_data* ch,
+static void spell_fly(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
   struct affected_type af;
 
@@ -2767,7 +2767,7 @@ static void spell_fly(byte level, struct char_data* ch,
   affect_to_char(victim, &af);
 }
 
-void cast_flying(byte level, struct char_data* ch, char* arg, int type,
+void cast_flying(signed char level, struct char_data* ch, char* arg, int type,
   struct char_data* tar_ch, struct obj_data* tar_obj) {
   switch (type) {
     case SPELL_TYPE_SPELL:
@@ -2786,7 +2786,7 @@ void cast_flying(byte level, struct char_data* ch, char* arg, int type,
   }
 }
 
-static void spell_fly_group(byte level, struct char_data* ch,
+static void spell_fly_group(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
   struct affected_type af;
   struct char_data* tch;
@@ -2817,7 +2817,7 @@ static void spell_fly_group(byte level, struct char_data* ch,
   }
 }
 
-void cast_fly_group(byte level, struct char_data* ch, char* arg, int type,
+void cast_fly_group(signed char level, struct char_data* ch, char* arg, int type,
   struct char_data* tar_ch, struct obj_data* tar_obj) {
   switch (type) {
     case SPELL_TYPE_SPELL:
@@ -2834,7 +2834,7 @@ void cast_fly_group(byte level, struct char_data* ch, char* arg, int type,
   }
 }
 
-static void spell_heroes_feast(byte level, struct char_data* ch,
+static void spell_heroes_feast(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
   struct room_data* rp;
   struct char_data* tch;
@@ -2858,7 +2858,7 @@ static void spell_heroes_feast(byte level, struct char_data* ch,
   }
 }
 
-void cast_heroes_feast(byte level, struct char_data* ch, char* arg, int type,
+void cast_heroes_feast(signed char level, struct char_data* ch, char* arg, int type,
   struct char_data* tar_ch, struct obj_data* tar_obj) {
   switch (type) {
     case SPELL_TYPE_SPELL:
@@ -2872,7 +2872,7 @@ void cast_heroes_feast(byte level, struct char_data* ch, char* arg, int type,
   }
 }
 
-static void spell_synostodweomer(byte level, struct char_data* ch,
+static void spell_synostodweomer(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
   int hitp;
   assert(victim);
@@ -2898,7 +2898,7 @@ static void spell_synostodweomer(byte level, struct char_data* ch,
   send_to_char("You give half of your hit points to a needy person!\n\r", ch);
 }
 
-void cast_synostodweomer(byte level, struct char_data* ch, char* arg, int type,
+void cast_synostodweomer(signed char level, struct char_data* ch, char* arg, int type,
   struct char_data* tar_ch, struct obj_data* tar_obj) {
   switch (type) {
     case SPELL_TYPE_SPELL:
@@ -2910,7 +2910,7 @@ void cast_synostodweomer(byte level, struct char_data* ch, char* arg, int type,
   }
 }
 
-static void spell_heal_spray(byte level, struct char_data* ch,
+static void spell_heal_spray(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
   struct room_data* rp;
   struct char_data* tch;
@@ -2930,7 +2930,7 @@ static void spell_heal_spray(byte level, struct char_data* ch,
   }
 }
 
-void cast_heal_spray(byte level, struct char_data* ch, char* arg, int type,
+void cast_heal_spray(signed char level, struct char_data* ch, char* arg, int type,
   struct char_data* tar_ch, struct obj_data* tar_obj) {
   switch (type) {
     case SPELL_TYPE_SPELL:
@@ -2944,7 +2944,7 @@ void cast_heal_spray(byte level, struct char_data* ch, char* arg, int type,
   }
 }
 
-static void spell_cure_blind(byte level, struct char_data* ch,
+static void spell_cure_blind(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
   assert(victim);
   assert((level >= 0) && (level <= ABS_MAX_LVL));
@@ -2956,7 +2956,7 @@ static void spell_cure_blind(byte level, struct char_data* ch,
   }
 }
 
-void cast_cure_blind(byte level, struct char_data* ch, char* arg, int type,
+void cast_cure_blind(signed char level, struct char_data* ch, char* arg, int type,
   struct char_data* tar_ch, struct obj_data* tar_obj) {
   switch (type) {
     case SPELL_TYPE_SPELL:
@@ -2977,7 +2977,7 @@ void cast_cure_blind(byte level, struct char_data* ch, char* arg, int type,
   }
 }
 
-static void spell_cure_critic(byte level, struct char_data* ch,
+static void spell_cure_critic(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
   int healpoints;
 
@@ -2996,7 +2996,7 @@ static void spell_cure_critic(byte level, struct char_data* ch,
   update_pos(victim);
 }
 
-void cast_cure_critic(byte level, struct char_data* ch, char* arg, int type,
+void cast_cure_critic(signed char level, struct char_data* ch, char* arg, int type,
   struct char_data* tar_ch, struct obj_data* tar_obj) {
   switch (type) {
     case SPELL_TYPE_SPELL:
@@ -3025,7 +3025,7 @@ void cast_cure_critic(byte level, struct char_data* ch, char* arg, int type,
   }
 }
 
-static void spell_cure_light(byte level, struct char_data* ch,
+static void spell_cure_light(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
   int healpoints;
 
@@ -3044,7 +3044,7 @@ static void spell_cure_light(byte level, struct char_data* ch,
   update_pos(victim);
 }
 
-void cast_cure_light(byte level, struct char_data* ch, char* arg, int type,
+void cast_cure_light(signed char level, struct char_data* ch, char* arg, int type,
   struct char_data* tar_ch, struct obj_data* tar_obj) {
   switch (type) {
     case SPELL_TYPE_SPELL:
@@ -3077,7 +3077,7 @@ void cast_cure_light(byte level, struct char_data* ch, char* arg, int type,
   }
 }
 
-static void spell_cure_serious(byte level, struct char_data* ch,
+static void spell_cure_serious(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
   int dam;
 
@@ -3096,7 +3096,7 @@ static void spell_cure_serious(byte level, struct char_data* ch,
   update_pos(victim);
 }
 
-void cast_cure_serious(byte level, struct char_data* ch, char* arg, int type,
+void cast_cure_serious(signed char level, struct char_data* ch, char* arg, int type,
   struct char_data* tar_ch, struct obj_data* tar_obj) {
   switch (type) {
     case SPELL_TYPE_SPELL:
@@ -3122,7 +3122,7 @@ void cast_cure_serious(byte level, struct char_data* ch, char* arg, int type,
   }
 }
 
-static void spell_refresh(byte level, struct char_data* ch,
+static void spell_refresh(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
   int dam;
 
@@ -3140,7 +3140,7 @@ static void spell_refresh(byte level, struct char_data* ch,
   send_to_char("You feel less tired\n\r", victim);
 }
 
-void cast_refresh(byte level, struct char_data* ch, char* arg, int type,
+void cast_refresh(signed char level, struct char_data* ch, char* arg, int type,
   struct char_data* tar_ch, struct obj_data* tar_obj) {
   switch (type) {
     case SPELL_TYPE_SPELL:
@@ -3166,7 +3166,7 @@ void cast_refresh(byte level, struct char_data* ch, char* arg, int type,
   }
 }
 
-static void spell_second_wind(byte level, struct char_data* ch,
+static void spell_second_wind(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
   int dam;
 
@@ -3183,7 +3183,7 @@ static void spell_second_wind(byte level, struct char_data* ch,
   send_to_char("You feel less tired\n\r", victim);
 }
 
-void cast_second_wind(byte level, struct char_data* ch, char* arg, int type,
+void cast_second_wind(signed char level, struct char_data* ch, char* arg, int type,
   struct char_data* tar_ch, struct obj_data* tar_obj) {
   switch (type) {
     case SPELL_TYPE_SPELL:
@@ -3213,7 +3213,7 @@ void cast_second_wind(byte level, struct char_data* ch, char* arg, int type,
   }
 }
 
-static void spell_shield(byte level, struct char_data* ch,
+static void spell_shield(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
   struct affected_type af;
 
@@ -3241,7 +3241,7 @@ static void spell_shield(byte level, struct char_data* ch,
   }
 }
 
-void cast_shield(byte level, struct char_data* ch, char* arg, int type,
+void cast_shield(signed char level, struct char_data* ch, char* arg, int type,
   struct char_data* tar_ch, struct obj_data* tar_obj) {
   switch (type) {
     case SPELL_TYPE_SPELL:
@@ -3267,7 +3267,7 @@ void cast_shield(byte level, struct char_data* ch, char* arg, int type,
   }
 }
 
-static void spell_curse(byte level, struct char_data* ch,
+static void spell_curse(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
   struct affected_type af;
 
@@ -3305,7 +3305,7 @@ static void spell_curse(byte level, struct char_data* ch,
   }
 }
 
-void cast_curse(byte level, struct char_data* ch, char* arg, int type,
+void cast_curse(signed char level, struct char_data* ch, char* arg, int type,
   struct char_data* tar_ch, struct obj_data* tar_obj) {
   char buf[255];
 
@@ -3351,7 +3351,7 @@ void cast_curse(byte level, struct char_data* ch, char* arg, int type,
   }
 }
 
-static void spell_dispel_invisible(byte level, struct char_data* ch,
+static void spell_dispel_invisible(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
   struct affected_type af;
   assert((ch && obj) || victim);
@@ -3373,7 +3373,7 @@ static void spell_dispel_invisible(byte level, struct char_data* ch,
   }
 }
 
-void cast_dispel_invisible(byte level, struct char_data* ch, char* arg,
+void cast_dispel_invisible(signed char level, struct char_data* ch, char* arg,
   int type, struct char_data* tar_ch, struct obj_data* tar_obj) {
   char buf[255];
 
@@ -3395,7 +3395,7 @@ void cast_dispel_invisible(byte level, struct char_data* ch, char* arg,
   }
 }
 
-static void spell_detect_evil(byte level, struct char_data* ch,
+static void spell_detect_evil(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
   struct affected_type af;
 
@@ -3417,7 +3417,7 @@ static void spell_detect_evil(byte level, struct char_data* ch,
   send_to_char("Your eyes tingle.\n\r", victim);
 }
 
-void cast_detect_evil(byte level, struct char_data* ch, char* arg, int type,
+void cast_detect_evil(signed char level, struct char_data* ch, char* arg, int type,
   struct char_data* tar_ch, struct obj_data* tar_obj) {
   switch (type) {
     case SPELL_TYPE_SPELL:
@@ -3445,7 +3445,7 @@ void cast_detect_evil(byte level, struct char_data* ch, char* arg, int type,
   }
 }
 
-static void spell_detect_invisibility(byte level, struct char_data* ch,
+static void spell_detect_invisibility(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
   struct affected_type af;
 
@@ -3466,7 +3466,7 @@ static void spell_detect_invisibility(byte level, struct char_data* ch,
   send_to_char("Your eyes tingle.\n\r", victim);
 }
 
-void cast_detect_invisibility(byte level, struct char_data* ch, char* arg,
+void cast_detect_invisibility(signed char level, struct char_data* ch, char* arg,
   int type, struct char_data* tar_ch, struct obj_data* tar_obj) {
   switch (type) {
     case SPELL_TYPE_SPELL:
@@ -3503,7 +3503,7 @@ void cast_detect_invisibility(byte level, struct char_data* ch, char* arg,
   }
 }
 
-static void spell_detect_magic(byte level, struct char_data* ch,
+static void spell_detect_magic(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
   struct affected_type af;
 
@@ -3523,7 +3523,7 @@ static void spell_detect_magic(byte level, struct char_data* ch,
   send_to_char("Your eyes tingle.\n\r", victim);
 }
 
-void cast_detect_magic(byte level, struct char_data* ch, char* arg, int type,
+void cast_detect_magic(signed char level, struct char_data* ch, char* arg, int type,
   struct char_data* tar_ch, struct obj_data* tar_obj) {
   switch (type) {
     case SPELL_TYPE_SPELL:
@@ -3551,7 +3551,7 @@ void cast_detect_magic(byte level, struct char_data* ch, char* arg, int type,
   }
 }
 
-void spell_detect_poison(byte level, struct char_data* ch,
+void spell_detect_poison(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
   assert(ch && (victim || obj));
 
@@ -3577,7 +3577,7 @@ void spell_detect_poison(byte level, struct char_data* ch,
   }
 }
 
-void cast_detect_poison(byte level, struct char_data* ch, char* arg, int type,
+void cast_detect_poison(signed char level, struct char_data* ch, char* arg, int type,
   struct char_data* tar_ch, struct obj_data* tar_obj) {
   switch (type) {
     case SPELL_TYPE_SPELL:
@@ -3601,7 +3601,7 @@ void cast_detect_poison(byte level, struct char_data* ch, char* arg, int type,
   }
 }
 
-static void spell_dispel_evil(byte level, struct char_data* ch,
+static void spell_dispel_evil(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
   int dam;
 
@@ -3631,7 +3631,7 @@ static void spell_dispel_evil(byte level, struct char_data* ch,
   }
 }
 
-void cast_dispel_evil(byte level, struct char_data* ch, char* arg, int type,
+void cast_dispel_evil(signed char level, struct char_data* ch, char* arg, int type,
   struct char_data* tar_ch, struct obj_data* tar_obj) {
   switch (type) {
     case SPELL_TYPE_SPELL:
@@ -3664,7 +3664,7 @@ void cast_dispel_evil(byte level, struct char_data* ch, char* arg, int type,
   }
 }
 
-static void spell_dispel_good(byte level, struct char_data* ch,
+static void spell_dispel_good(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
   int dam;
 
@@ -3693,7 +3693,7 @@ static void spell_dispel_good(byte level, struct char_data* ch,
   }
 }
 
-void cast_dispel_good(byte level, struct char_data* ch, char* arg, int type,
+void cast_dispel_good(signed char level, struct char_data* ch, char* arg, int type,
   struct char_data* tar_ch, struct obj_data* tar_obj) {
   switch (type) {
     case SPELL_TYPE_SPELL:
@@ -3726,7 +3726,7 @@ void cast_dispel_good(byte level, struct char_data* ch, char* arg, int type,
   }
 }
 
-void spell_faerie_fire(byte level, struct char_data* ch,
+void spell_faerie_fire(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
   struct affected_type af;
 
@@ -3751,7 +3751,7 @@ void spell_faerie_fire(byte level, struct char_data* ch,
   affect_to_char(victim, &af);
 }
 
-void cast_faerie_fire(byte level, struct char_data* ch, char* arg, int type,
+void cast_faerie_fire(signed char level, struct char_data* ch, char* arg, int type,
   struct char_data* tar_ch, struct obj_data* tar_obj) {
   switch (type) {
     case SPELL_TYPE_SPELL:
@@ -3784,7 +3784,7 @@ void cast_faerie_fire(byte level, struct char_data* ch, char* arg, int type,
   }
 }
 
-static void spell_enchant_weapon(byte level, struct char_data* ch,
+static void spell_enchant_weapon(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
   int i;
 
@@ -3829,7 +3829,7 @@ static void spell_enchant_weapon(byte level, struct char_data* ch,
   }
 }
 
-void cast_enchant_weapon(byte level, struct char_data* ch, char* arg, int type,
+void cast_enchant_weapon(signed char level, struct char_data* ch, char* arg, int type,
   struct char_data* tar_ch, struct obj_data* tar_obj) {
   switch (type) {
     case SPELL_TYPE_SPELL:
@@ -3847,7 +3847,7 @@ void cast_enchant_weapon(byte level, struct char_data* ch, char* arg, int type,
   }
 }
 
-void cast_enchant_armor(byte level, struct char_data* ch, char* arg, int type,
+void cast_enchant_armor(signed char level, struct char_data* ch, char* arg, int type,
   struct char_data* tar_ch, struct obj_data* tar_obj) {
   switch (type) {
     case SPELL_TYPE_SPELL:
@@ -3865,7 +3865,7 @@ void cast_enchant_armor(byte level, struct char_data* ch, char* arg, int type,
   }
 }
 
-static void spell_heal(byte level, struct char_data* ch,
+static void spell_heal(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
   assert(victim);
 
@@ -3881,7 +3881,7 @@ static void spell_heal(byte level, struct char_data* ch,
   send_to_char("A warm feeling fills your body.\n\r", victim);
 }
 
-void cast_heal(byte level, struct char_data* ch, char* arg, int type,
+void cast_heal(signed char level, struct char_data* ch, char* arg, int type,
   struct char_data* tar_ch, struct obj_data* tar_obj) {
   switch (type) {
     case SPELL_TYPE_SPELL:
@@ -3909,7 +3909,7 @@ void cast_heal(byte level, struct char_data* ch, char* arg, int type,
   }
 }
 
-static void spell_full_heal(byte level, struct char_data* ch,
+static void spell_full_heal(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
   assert(victim);
 
@@ -3925,7 +3925,7 @@ static void spell_full_heal(byte level, struct char_data* ch,
   send_to_char("A hot rush runs through your body.\n\r", victim);
 }
 
-void cast_full_heal(byte level, struct char_data* ch, char* arg, int type,
+void cast_full_heal(signed char level, struct char_data* ch, char* arg, int type,
   struct char_data* tar_ch, struct obj_data* tar_obj) {
   switch (type) {
     case SPELL_TYPE_SPELL:
@@ -3948,7 +3948,7 @@ void cast_full_heal(byte level, struct char_data* ch, char* arg, int type,
   }
 }
 
-void spell_invis_group(byte level, struct char_data* ch,
+void spell_invis_group(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
   struct char_data *tmpv, *temp;
   struct affected_type af;
@@ -3975,7 +3975,7 @@ void spell_invis_group(byte level, struct char_data* ch,
   }
 }
 
-static void spell_invisibility(byte level, struct char_data* ch,
+static void spell_invisibility(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
   struct affected_type af;
 
@@ -4002,7 +4002,7 @@ static void spell_invisibility(byte level, struct char_data* ch,
   }
 }
 
-void cast_invisibility(byte level, struct char_data* ch, char* arg, int type,
+void cast_invisibility(signed char level, struct char_data* ch, char* arg, int type,
   struct char_data* tar_ch, struct obj_data* tar_obj) {
   switch (type) {
     case SPELL_TYPE_SPELL:
@@ -4056,7 +4056,7 @@ void cast_invisibility(byte level, struct char_data* ch, char* arg, int type,
   }
 }
 
-static void spell_locate_object(byte level, struct char_data* ch,
+static void spell_locate_object(signed char level, struct char_data* ch,
   struct char_data* victim, char* obj) {
   struct obj_data* i;
   char name[256];
@@ -4102,7 +4102,7 @@ static void spell_locate_object(byte level, struct char_data* ch,
     send_to_char("No such object.\n\r", ch);
 }
 
-void cast_locate_object(byte level, struct char_data* ch, char* arg, int type,
+void cast_locate_object(signed char level, struct char_data* ch, char* arg, int type,
   struct char_data* tar_ch, struct obj_data* tar_obj) {
   switch (type) {
     case SPELL_TYPE_SPELL:
@@ -4114,7 +4114,7 @@ void cast_locate_object(byte level, struct char_data* ch, char* arg, int type,
   }
 }
 
-static bool ImpSaveSpell(struct char_data* ch, sh_int save_type, int mod) {
+static char ImpSaveSpell(struct char_data* ch, short int save_type, int mod) {
   int save;
 
   /* Positive mod is better for save */
@@ -4136,7 +4136,7 @@ static bool ImpSaveSpell(struct char_data* ch, sh_int save_type, int mod) {
   return (MAX(1, save) < number(1, 20));
 }
 
-static void spell_poison(byte level, struct char_data* ch,
+static void spell_poison(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
   struct affected_type af;
 
@@ -4196,7 +4196,7 @@ static void spell_poison(byte level, struct char_data* ch,
   }
 }
 
-void cast_poison(byte level, struct char_data* ch, char* arg, int type,
+void cast_poison(signed char level, struct char_data* ch, char* arg, int type,
   struct char_data* tar_ch, struct obj_data* tar_obj) {
   switch (type) {
     case SPELL_TYPE_SPELL:
@@ -4218,7 +4218,7 @@ void cast_poison(byte level, struct char_data* ch, char* arg, int type,
   }
 }
 
-static void spell_protection_from_evil(byte level, struct char_data* ch,
+static void spell_protection_from_evil(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
   struct affected_type af;
 
@@ -4241,7 +4241,7 @@ static void spell_protection_from_evil(byte level, struct char_data* ch,
   }
 }
 
-void cast_protection_from_evil(byte level, struct char_data* ch, char* arg,
+void cast_protection_from_evil(signed char level, struct char_data* ch, char* arg,
   int type, struct char_data* tar_ch, struct obj_data* tar_obj) {
   switch (type) {
     case SPELL_TYPE_SPELL:
@@ -4269,7 +4269,7 @@ void cast_protection_from_evil(byte level, struct char_data* ch, char* arg,
   }
 }
 
-static void spell_protection_from_good(byte level, struct char_data* ch,
+static void spell_protection_from_good(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
   struct affected_type af;
 
@@ -4291,7 +4291,7 @@ static void spell_protection_from_good(byte level, struct char_data* ch,
   }
 }
 
-void cast_protection_from_good(byte level, struct char_data* ch, char* arg,
+void cast_protection_from_good(signed char level, struct char_data* ch, char* arg,
   int type, struct char_data* tar_ch, struct obj_data* tar_obj) {
   switch (type) {
     case SPELL_TYPE_SPELL:
@@ -4319,7 +4319,7 @@ void cast_protection_from_good(byte level, struct char_data* ch, char* arg,
   }
 }
 
-static void spell_remove_curse(byte level, struct char_data* ch,
+static void spell_remove_curse(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
   struct affected_type af;
 
@@ -4339,7 +4339,7 @@ static void spell_remove_curse(byte level, struct char_data* ch,
   }
 }
 
-void cast_remove_curse(byte level, struct char_data* ch, char* arg, int type,
+void cast_remove_curse(signed char level, struct char_data* ch, char* arg, int type,
   struct char_data* tar_ch, struct obj_data* tar_obj) {
   switch (type) {
     case SPELL_TYPE_SPELL:
@@ -4369,7 +4369,7 @@ void cast_remove_curse(byte level, struct char_data* ch, char* arg, int type,
   }
 }
 
-static void spell_remove_poison(byte level, struct char_data* ch,
+static void spell_remove_poison(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
   assert(ch && (victim || obj));
 
@@ -4389,7 +4389,7 @@ static void spell_remove_poison(byte level, struct char_data* ch,
   }
 }
 
-void cast_remove_poison(byte level, struct char_data* ch, char* arg, int type,
+void cast_remove_poison(signed char level, struct char_data* ch, char* arg, int type,
   struct char_data* tar_ch, struct obj_data* tar_obj) {
   switch (type) {
     case SPELL_TYPE_SPELL:
@@ -4410,7 +4410,7 @@ void cast_remove_poison(byte level, struct char_data* ch, char* arg, int type,
   }
 }
 
-static void spell_remove_paralysis(byte level, struct char_data* ch,
+static void spell_remove_paralysis(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
   assert(ch && victim);
 
@@ -4421,7 +4421,7 @@ static void spell_remove_paralysis(byte level, struct char_data* ch,
   }
 }
 
-void cast_remove_paralysis(byte level, struct char_data* ch, char* arg,
+void cast_remove_paralysis(signed char level, struct char_data* ch, char* arg,
   int type, struct char_data* tar_ch, struct obj_data* tar_obj) {
   switch (type) {
     case SPELL_TYPE_SPELL:
@@ -4447,7 +4447,7 @@ void cast_remove_paralysis(byte level, struct char_data* ch, char* arg,
   }
 }
 
-static void spell_sanctuary(byte level, struct char_data* ch,
+static void spell_sanctuary(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
   struct affected_type af;
 
@@ -4465,7 +4465,7 @@ static void spell_sanctuary(byte level, struct char_data* ch,
   }
 }
 
-void cast_sanctuary(byte level, struct char_data* ch, char* arg, int type,
+void cast_sanctuary(signed char level, struct char_data* ch, char* arg, int type,
   struct char_data* tar_ch, struct obj_data* tar_obj) {
   switch (type) {
     case SPELL_TYPE_SPELL:
@@ -4495,7 +4495,7 @@ void cast_sanctuary(byte level, struct char_data* ch, char* arg, int type,
   }
 }
 
-static void spell_silence(byte level, struct char_data* ch,
+static void spell_silence(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
   struct affected_type af;
 
@@ -4519,7 +4519,7 @@ static void spell_silence(byte level, struct char_data* ch,
   }
 }
 
-void cast_silence(byte level, struct char_data* ch, char* arg, int type,
+void cast_silence(signed char level, struct char_data* ch, char* arg, int type,
   struct char_data* tar_ch, struct obj_data* tar_obj) {
   switch (type) {
     case SPELL_TYPE_SPELL:
@@ -4549,7 +4549,7 @@ void cast_silence(byte level, struct char_data* ch, char* arg, int type,
   }
 }
 
-static void spell_fireshield(byte level, struct char_data* ch,
+static void spell_fireshield(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
   struct affected_type af;
 
@@ -4566,7 +4566,7 @@ static void spell_fireshield(byte level, struct char_data* ch,
   }
 }
 
-void cast_fireshield(byte level, struct char_data* ch, char* arg, int type,
+void cast_fireshield(signed char level, struct char_data* ch, char* arg, int type,
   struct char_data* tar_ch, struct obj_data* tar_obj) {
   switch (type) {
     case SPELL_TYPE_SPELL:
@@ -4604,7 +4604,7 @@ static void FailSleep(struct char_data* victim, struct char_data* ch) {
       set_fighting(victim, ch);
 }
 
-static void spell_sleep(byte level, struct char_data* ch,
+static void spell_sleep(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
   struct affected_type af;
 
@@ -4644,7 +4644,7 @@ static void spell_sleep(byte level, struct char_data* ch,
   }
 }
 
-void cast_sleep(byte level, struct char_data* ch, char* arg, int type,
+void cast_sleep(signed char level, struct char_data* ch, char* arg, int type,
   struct char_data* tar_ch, struct obj_data* tar_obj) {
   switch (type) {
     case SPELL_TYPE_SPELL:
@@ -4677,7 +4677,7 @@ void cast_sleep(byte level, struct char_data* ch, char* arg, int type,
   }
 }
 
-static void spell_strength(byte level, struct char_data* ch,
+static void spell_strength(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
   struct affected_type af;
 
@@ -4709,7 +4709,7 @@ static void spell_strength(byte level, struct char_data* ch,
   }
 }
 
-void cast_strength(byte level, struct char_data* ch, char* arg, int type,
+void cast_strength(signed char level, struct char_data* ch, char* arg, int type,
   struct char_data* tar_ch, struct obj_data* tar_obj) {
   switch (type) {
     case SPELL_TYPE_WAND:
@@ -4738,7 +4738,7 @@ void cast_strength(byte level, struct char_data* ch, char* arg, int type,
   }
 }
 
-void cast_ventriloquate(byte level, struct char_data* ch, char* arg, int type,
+void cast_ventriloquate(signed char level, struct char_data* ch, char* arg, int type,
   struct char_data* tar_ch, struct obj_data* tar_obj) {
   struct char_data* tmp_ch;
   char buf1[MAX_STRING_LENGTH];
@@ -4777,10 +4777,10 @@ void cast_ventriloquate(byte level, struct char_data* ch, char* arg, int type,
   }
 }
 
-static void spell_word_of_recall(byte level, struct char_data* ch,
+static void spell_word_of_recall(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
   int location, premove;
-  bool found = FALSE;
+  char found = FALSE;
   struct room_data* rp;
 
   assert(victim);
@@ -4820,7 +4820,7 @@ static void spell_word_of_recall(byte level, struct char_data* ch,
   update_pos(victim);
 }
 
-void cast_word_of_recall(byte level, struct char_data* ch, char* arg, int type,
+void cast_word_of_recall(signed char level, struct char_data* ch, char* arg, int type,
   struct char_data* tar_ch, struct obj_data* tar_obj) {
   switch (type) {
     case SPELL_TYPE_SPELL:
@@ -4854,7 +4854,7 @@ void cast_word_of_recall(byte level, struct char_data* ch, char* arg, int type,
 }
 
 static void RawSummon(struct char_data* v, struct char_data* c) {
-  sh_int target;
+  short int target;
   struct char_data* tmp;
   struct obj_data *o, *n;
   int j, i;
@@ -4905,7 +4905,7 @@ static void RawSummon(struct char_data* v, struct char_data* c) {
   }
 }
 
-void spell_summon(byte level, struct char_data* ch, struct char_data* victim,
+void spell_summon(signed char level, struct char_data* ch, struct char_data* victim,
   struct obj_data* obj) {
   struct char_data* tmp;
   int count;
@@ -4949,7 +4949,7 @@ void spell_summon(byte level, struct char_data* ch, struct char_data* victim,
   RawSummon(victim, ch);
 }
 
-void cast_summon(byte level, struct char_data* ch, char* arg, int type,
+void cast_summon(signed char level, struct char_data* ch, char* arg, int type,
   struct char_data* tar_ch, struct obj_data* tar_obj) {
   switch (type) {
     case SPELL_TYPE_SPELL:
@@ -4971,7 +4971,7 @@ static void FailCharm(struct char_data* victim, struct char_data* ch) {
   }
 }
 
-static void spell_charm_person(byte level, struct char_data* ch,
+static void spell_charm_person(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
   struct affected_type af;
 
@@ -5042,7 +5042,7 @@ static void spell_charm_person(byte level, struct char_data* ch,
   }
 }
 
-void cast_charm_person(byte level, struct char_data* ch, char* arg, int type,
+void cast_charm_person(signed char level, struct char_data* ch, char* arg, int type,
   struct char_data* tar_ch, struct obj_data* tar_obj) {
   switch (type) {
     case SPELL_TYPE_SPELL:
@@ -5065,7 +5065,7 @@ void cast_charm_person(byte level, struct char_data* ch, char* arg, int type,
   }
 }
 
-static void spell_charm_monster(byte level, struct char_data* ch,
+static void spell_charm_monster(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
   struct affected_type af;
 
@@ -5130,7 +5130,7 @@ static void spell_charm_monster(byte level, struct char_data* ch,
   }
 }
 
-void cast_charm_monster(byte level, struct char_data* ch, char* arg, int type,
+void cast_charm_monster(signed char level, struct char_data* ch, char* arg, int type,
   struct char_data* tar_ch, struct obj_data* tar_obj) {
   switch (type) {
     case SPELL_TYPE_SPELL:
@@ -5153,7 +5153,7 @@ void cast_charm_monster(byte level, struct char_data* ch, char* arg, int type,
   }
 }
 
-static void spell_control_undead(byte level, struct char_data* ch,
+static void spell_control_undead(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
   struct affected_type af;
 
@@ -5221,7 +5221,7 @@ static void spell_control_undead(byte level, struct char_data* ch,
   }
 }
 
-void cast_control_undead(byte level, struct char_data* ch, char* arg, int type,
+void cast_control_undead(signed char level, struct char_data* ch, char* arg, int type,
   struct char_data* tar_ch, struct obj_data* tar_obj) {
   switch (type) {
     case SPELL_TYPE_SPELL:
@@ -5244,7 +5244,7 @@ void cast_control_undead(byte level, struct char_data* ch, char* arg, int type,
   }
 }
 
-static void spell_sense_life(byte level, struct char_data* ch,
+static void spell_sense_life(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
   struct affected_type af;
 
@@ -5262,7 +5262,7 @@ static void spell_sense_life(byte level, struct char_data* ch,
   }
 }
 
-void cast_sense_life(byte level, struct char_data* ch, char* arg, int type,
+void cast_sense_life(signed char level, struct char_data* ch, char* arg, int type,
   struct char_data* tar_ch, struct obj_data* tar_obj) {
   switch (type) {
     case SPELL_TYPE_SPELL:
@@ -5289,11 +5289,11 @@ void cast_sense_life(byte level, struct char_data* ch, char* arg, int type,
   }
 }
 
-static void spell_identify(byte level, struct char_data* ch,
+static void spell_identify(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
   char buf[256], buf2[256];
   int i;
-  bool found;
+  char found;
   float av_dam;
 
   assert(ch && (obj || victim));
@@ -5448,7 +5448,7 @@ static void spell_identify(byte level, struct char_data* ch,
   }
 }
 
-void cast_identify(byte level, struct char_data* ch, char* arg, int type,
+void cast_identify(signed char level, struct char_data* ch, char* arg, int type,
   struct char_data* tar_ch, struct obj_data* tar_obj) {
   switch (type) {
     case SPELL_TYPE_SCROLL:
@@ -5473,7 +5473,7 @@ struct pbreath {
   {0},
 };
 
-void cast_dragon_breath(byte level, struct char_data* ch, char* arg, int type,
+void cast_dragon_breath(signed char level, struct char_data* ch, char* arg, int type,
   struct char_data* tar_ch, struct obj_data* potion) {
   struct pbreath* scan;
   int i;
@@ -5522,7 +5522,7 @@ void cast_dragon_breath(byte level, struct char_data* ch, char* arg, int type,
   }
 }
 
-static void spell_fire_breath(byte level, struct char_data* ch,
+static void spell_fire_breath(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
   int dam;
   int hpch;
@@ -5559,7 +5559,7 @@ static void spell_fire_breath(byte level, struct char_data* ch,
   }
 }
 
-void cast_fire_breath(byte level, struct char_data* ch, char* arg, int type,
+void cast_fire_breath(signed char level, struct char_data* ch, char* arg, int type,
   struct char_data* tar_ch, struct obj_data* tar_obj) {
   switch (type) {
     case SPELL_TYPE_SPELL:
@@ -5571,7 +5571,7 @@ void cast_fire_breath(byte level, struct char_data* ch, char* arg, int type,
   }
 }
 
-static void spell_frost_breath(byte level, struct char_data* ch,
+static void spell_frost_breath(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
   int dam;
   int hpch;
@@ -5603,7 +5603,7 @@ static void spell_frost_breath(byte level, struct char_data* ch,
   }
 }
 
-void cast_frost_breath(byte level, struct char_data* ch, char* arg, int type,
+void cast_frost_breath(signed char level, struct char_data* ch, char* arg, int type,
   struct char_data* tar_ch, struct obj_data* tar_obj) {
   switch (type) {
     case SPELL_TYPE_SPELL:
@@ -5615,7 +5615,7 @@ void cast_frost_breath(byte level, struct char_data* ch, char* arg, int type,
   }
 }
 
-static void spell_acid_breath(byte level, struct char_data* ch,
+static void spell_acid_breath(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
   int dam;
   int hpch;
@@ -5632,7 +5632,7 @@ static void spell_acid_breath(byte level, struct char_data* ch,
   MissileDamage(ch, victim, dam, SPELL_ACID_BREATH);
 }
 
-void cast_acid_breath(byte level, struct char_data* ch, char* arg, int type,
+void cast_acid_breath(signed char level, struct char_data* ch, char* arg, int type,
   struct char_data* tar_ch, struct obj_data* tar_obj) {
   switch (type) {
     case SPELL_TYPE_SPELL:
@@ -5644,7 +5644,7 @@ void cast_acid_breath(byte level, struct char_data* ch, char* arg, int type,
   }
 }
 
-static void spell_gas_breath(byte level, struct char_data* ch,
+static void spell_gas_breath(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
   int dam;
   int hpch;
@@ -5660,7 +5660,7 @@ static void spell_gas_breath(byte level, struct char_data* ch,
   MissileDamage(ch, victim, dam, SPELL_GAS_BREATH);
 }
 
-void cast_gas_breath(byte level, struct char_data* ch, char* arg, int type,
+void cast_gas_breath(signed char level, struct char_data* ch, char* arg, int type,
   struct char_data* tar_ch, struct obj_data* tar_obj) {
   switch (type) {
     case SPELL_TYPE_SPELL:
@@ -5673,7 +5673,7 @@ void cast_gas_breath(byte level, struct char_data* ch, char* arg, int type,
   }
 }
 
-static void spell_lightning_breath(byte level, struct char_data* ch,
+static void spell_lightning_breath(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
   int dam;
   int hpch;
@@ -5689,7 +5689,7 @@ static void spell_lightning_breath(byte level, struct char_data* ch,
   MissileDamage(ch, victim, dam, SPELL_LIGHTNING_BREATH);
 }
 
-void cast_lightning_breath(byte level, struct char_data* ch, char* arg,
+void cast_lightning_breath(signed char level, struct char_data* ch, char* arg,
   int type, struct char_data* tar_ch, struct obj_data* tar_obj) {
   switch (type) {
     case SPELL_TYPE_SPELL:
@@ -5701,9 +5701,9 @@ void cast_lightning_breath(byte level, struct char_data* ch, char* arg,
   }
 }
 
-void cast_knock(byte level, struct char_data* ch, char* arg, int type,
+void cast_knock(signed char level, struct char_data* ch, char* arg, int type,
   struct char_data* tar_ch, struct obj_data* tar_obj) {
-  byte percent;
+  signed char percent;
   int door, other_room;
   char dir[MAX_INPUT_LENGTH], buf[MAX_STRING_LENGTH];
   char otype[MAX_INPUT_LENGTH];
@@ -5772,7 +5772,7 @@ void cast_knock(byte level, struct char_data* ch, char* arg, int type,
   }
 }
 
-static void spell_know_alignment(byte level, struct char_data* ch,
+static void spell_know_alignment(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
   int ap;
   char buf[200], name[100];
@@ -5808,7 +5808,7 @@ static void spell_know_alignment(byte level, struct char_data* ch,
   send_to_char(buf, ch);
 }
 
-void cast_know_alignment(byte level, struct char_data* ch, char* arg, int type,
+void cast_know_alignment(signed char level, struct char_data* ch, char* arg, int type,
   struct char_data* tar_ch, struct obj_data* tar_obj) {
   switch (type) {
     case SPELL_TYPE_SPELL:
@@ -5828,7 +5828,7 @@ void cast_know_alignment(byte level, struct char_data* ch, char* arg, int type,
   }
 }
 
-static void spell_weakness(byte level, struct char_data* ch,
+static void spell_weakness(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
   struct affected_type af;
   float modifier;
@@ -5853,7 +5853,7 @@ static void spell_weakness(byte level, struct char_data* ch,
     }
 }
 
-void cast_weakness(byte level, struct char_data* ch, char* arg, int type,
+void cast_weakness(signed char level, struct char_data* ch, char* arg, int type,
   struct char_data* tar_ch, struct obj_data* tar_obj) {
   switch (type) {
     case SPELL_TYPE_WAND:
@@ -5871,7 +5871,7 @@ void cast_weakness(byte level, struct char_data* ch, char* arg, int type,
   }
 }
 
-void spell_dispel_magic(byte level, struct char_data* ch,
+void spell_dispel_magic(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
   int yes = 0;
 
@@ -6079,7 +6079,7 @@ void spell_dispel_magic(byte level, struct char_data* ch,
   }
 }
 
-void cast_dispel_magic(byte level, struct char_data* ch, char* arg, int type,
+void cast_dispel_magic(signed char level, struct char_data* ch, char* arg, int type,
   struct char_data* tar_ch, struct obj_data* tar_obj) {
   switch (type) {
     case SPELL_TYPE_WAND:
@@ -6112,7 +6112,7 @@ void cast_dispel_magic(byte level, struct char_data* ch, char* arg, int type,
   }
 }
 
-void spell_animate_dead(byte level, struct char_data* ch,
+void spell_animate_dead(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* corpse) {
   struct char_data* mob;
   struct obj_data *obj_object, *sub_object, *next_obj, *i;
@@ -6182,7 +6182,7 @@ void spell_animate_dead(byte level, struct char_data* ch,
   extract_obj(corpse);
 }
 
-void cast_animate_dead(byte level, struct char_data* ch, char* arg, int type,
+void cast_animate_dead(signed char level, struct char_data* ch, char* arg, int type,
   struct char_data* tar_ch, struct obj_data* tar_obj) {
   struct obj_data* i;
 
@@ -6219,7 +6219,7 @@ void cast_animate_dead(byte level, struct char_data* ch, char* arg, int type,
   }
 }
 
-static void spell_succor(byte level, struct char_data* ch,
+static void spell_succor(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
   struct obj_data* o;
 
@@ -6230,7 +6230,7 @@ static void spell_succor(byte level, struct char_data* ch,
   act("You wave your hand and create $p.", TRUE, ch, o, 0, TO_CHAR);
 }
 
-void cast_succor(byte level, struct char_data* ch, char* arg, int type,
+void cast_succor(signed char level, struct char_data* ch, char* arg, int type,
   struct char_data* tar_ch, struct obj_data* tar_obj) {
   switch (type) {
     case SPELL_TYPE_SPELL:
@@ -6240,7 +6240,7 @@ void cast_succor(byte level, struct char_data* ch, char* arg, int type,
   }
 }
 
-static void spell_well_of_knowledge(byte level, struct char_data* ch,
+static void spell_well_of_knowledge(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
   struct obj_data* o;
 
@@ -6251,7 +6251,7 @@ static void spell_well_of_knowledge(byte level, struct char_data* ch,
   act("You wave your hand and create $p.", TRUE, ch, o, 0, TO_CHAR);
 }
 
-void cast_well_of_knowledge(byte level, struct char_data* ch, char* arg,
+void cast_well_of_knowledge(signed char level, struct char_data* ch, char* arg,
   int type, struct char_data* victim, struct obj_data* tar_obj) {
   switch (type) {
     case SPELL_TYPE_SPELL:
@@ -6269,7 +6269,7 @@ static void paralyze_fail(struct char_data* victim, struct char_data* ch) {
       set_fighting(victim, ch);
 }
 
-void spell_paralyze(byte level, struct char_data* ch, struct char_data* victim,
+void spell_paralyze(signed char level, struct char_data* ch, struct char_data* victim,
   struct obj_data* obj) {
   struct affected_type af;
 
@@ -6312,7 +6312,7 @@ void spell_paralyze(byte level, struct char_data* ch, struct char_data* victim,
   }
 }
 
-void cast_paralyze(byte level, struct char_data* ch, char* arg, int type,
+void cast_paralyze(signed char level, struct char_data* ch, char* arg, int type,
   struct char_data* tar_ch, struct obj_data* tar_obj) {
   switch (type) {
     case SPELL_TYPE_SPELL:
@@ -6345,7 +6345,7 @@ void cast_paralyze(byte level, struct char_data* ch, char* arg, int type,
   }
 }
 
-void spell_fear(byte level, struct char_data* ch, struct char_data* victim,
+void spell_fear(signed char level, struct char_data* ch, struct char_data* victim,
   struct obj_data* obj) {
   struct affected_type af;
 
@@ -6371,7 +6371,7 @@ void spell_fear(byte level, struct char_data* ch, struct char_data* victim,
   }
 }
 
-void cast_fear(byte level, struct char_data* ch, char* arg, int type,
+void cast_fear(signed char level, struct char_data* ch, char* arg, int type,
   struct char_data* tar_ch, struct obj_data* tar_obj) {
   switch (type) {
     case SPELL_TYPE_SPELL:
@@ -6406,7 +6406,7 @@ void cast_fear(byte level, struct char_data* ch, char* arg, int type,
   }
 }
 
-static void spell_turn(byte level, struct char_data* ch,
+static void spell_turn(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
   int diff, i;
 
@@ -6442,7 +6442,7 @@ static void spell_turn(byte level, struct char_data* ch,
   }
 }
 
-void cast_turn(byte level, struct char_data* ch, char* arg, int type,
+void cast_turn(signed char level, struct char_data* ch, char* arg, int type,
   struct char_data* tar_ch, struct obj_data* tar_obj) {
   switch (type) {
     case SPELL_TYPE_SPELL:
@@ -6474,7 +6474,7 @@ void cast_turn(byte level, struct char_data* ch, char* arg, int type,
   }
 }
 
-static void spell_faerie_fog(byte level, struct char_data* ch,
+static void spell_faerie_fog(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
   struct affected_type af;
   struct char_data* tmpv;
@@ -6511,7 +6511,7 @@ static void spell_faerie_fog(byte level, struct char_data* ch,
   }
 }
 
-void cast_faerie_fog(byte level, struct char_data* ch, char* arg, int type,
+void cast_faerie_fog(signed char level, struct char_data* ch, char* arg, int type,
   struct char_data* victim, struct obj_data* tar_obj) {
   switch (type) {
     case SPELL_TYPE_SPELL:
@@ -6525,7 +6525,7 @@ void cast_faerie_fog(byte level, struct char_data* ch, char* arg, int type,
   }
 }
 
-static void spell_poly_self(byte level, struct char_data* ch,
+static void spell_poly_self(signed char level, struct char_data* ch,
   struct char_data* mob, struct obj_data* obj) {
   char* buf;
 
@@ -6626,7 +6626,7 @@ static void spell_poly_self(byte level, struct char_data* ch,
   mob->player.long_descr = buf;
 }
 
-void cast_poly_self(byte level, struct char_data* ch, char* arg, int type,
+void cast_poly_self(signed char level, struct char_data* ch, char* arg, int type,
   struct char_data* tar_ch, struct obj_data* tar_obj) {
   char buffer[40];
   int mobn, X = LAST_POLY_MOB, found = FALSE;
@@ -6684,7 +6684,7 @@ void cast_poly_self(byte level, struct char_data* ch, char* arg, int type,
 #define WATER_BARREL 6013
 #define BREAD 3010
 
-static void spell_minor_create(byte level, struct char_data* ch,
+static void spell_minor_create(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
   assert(ch && obj);
 
@@ -6696,7 +6696,7 @@ static void spell_minor_create(byte level, struct char_data* ch,
   obj_to_room(obj, ch->in_room);
 }
 
-void cast_minor_creation(byte level, struct char_data* ch, char* arg, int type,
+void cast_minor_creation(signed char level, struct char_data* ch, char* arg, int type,
   struct char_data* tar_ch, struct obj_data* tar_obj) {
   char buffer[40];
   int mob, obj;
@@ -6748,7 +6748,7 @@ void cast_minor_creation(byte level, struct char_data* ch, char* arg, int type,
 #define GREY_STONE 5239
 #define CLEAR_STONE 5243
 
-static void spell_conjure_elemental(byte level, struct char_data* ch,
+static void spell_conjure_elemental(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
   struct affected_type af;
 
@@ -6791,7 +6791,7 @@ static void spell_conjure_elemental(byte level, struct char_data* ch,
   affect_to_char(victim, &af);
 }
 
-void cast_conjure_elemental(byte level, struct char_data* ch, char* arg,
+void cast_conjure_elemental(signed char level, struct char_data* ch, char* arg,
   int type, struct char_data* tar_ch, struct obj_data* tar_obj) {
   char buffer[40];
   int mob, obj;
@@ -6863,7 +6863,7 @@ void cast_conjure_elemental(byte level, struct char_data* ch, char* arg,
 #define JEWELLED_DAGGER 25019
 #define SWORD_SHARPNESS 25017
 
-void spell_cacaodemon(byte level, struct char_data* ch,
+void spell_cacaodemon(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
   struct affected_type af;
 
@@ -6903,7 +6903,7 @@ void spell_cacaodemon(byte level, struct char_data* ch,
     SET_BIT(victim->specials.act, ACT_SENTINEL);
 }
 
-void cast_cacaodemon(byte level, struct char_data* ch, char* arg, int type,
+void cast_cacaodemon(signed char level, struct char_data* ch, char* arg, int type,
   struct char_data* tar_ch, struct obj_data* tar_obj) {
   char buffer[40];
   int mob, obj;
@@ -6972,7 +6972,7 @@ void cast_cacaodemon(byte level, struct char_data* ch, char* arg, int type,
   }
 }
 
-static void spell_Create_Monster(byte level, struct char_data* ch,
+static void spell_Create_Monster(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
   struct affected_type af;
   struct char_data* mob;
@@ -7045,7 +7045,7 @@ static void spell_Create_Monster(byte level, struct char_data* ch,
   }
 }
 
-void cast_mon_sum1(byte level, struct char_data* ch, char* arg, int type,
+void cast_mon_sum1(signed char level, struct char_data* ch, char* arg, int type,
   struct char_data* tar_ch, struct obj_data* tar_obj) {
   switch (type) {
     case SPELL_TYPE_SPELL:
@@ -7060,7 +7060,7 @@ void cast_mon_sum1(byte level, struct char_data* ch, char* arg, int type,
   }
 }
 
-void cast_mon_sum2(byte level, struct char_data* ch, char* arg, int type,
+void cast_mon_sum2(signed char level, struct char_data* ch, char* arg, int type,
   struct char_data* tar_ch, struct obj_data* tar_obj) {
   switch (type) {
     case SPELL_TYPE_SPELL:
@@ -7075,7 +7075,7 @@ void cast_mon_sum2(byte level, struct char_data* ch, char* arg, int type,
   }
 }
 
-void cast_mon_sum3(byte level, struct char_data* ch, char* arg, int type,
+void cast_mon_sum3(signed char level, struct char_data* ch, char* arg, int type,
   struct char_data* tar_ch, struct obj_data* tar_obj) {
   switch (type) {
     case SPELL_TYPE_SPELL:
@@ -7090,7 +7090,7 @@ void cast_mon_sum3(byte level, struct char_data* ch, char* arg, int type,
   }
 }
 
-void cast_mon_sum4(byte level, struct char_data* ch, char* arg, int type,
+void cast_mon_sum4(signed char level, struct char_data* ch, char* arg, int type,
   struct char_data* tar_ch, struct obj_data* tar_obj) {
   switch (type) {
     case SPELL_TYPE_SPELL:
@@ -7105,7 +7105,7 @@ void cast_mon_sum4(byte level, struct char_data* ch, char* arg, int type,
   }
 }
 
-void cast_mon_sum5(byte level, struct char_data* ch, char* arg, int type,
+void cast_mon_sum5(signed char level, struct char_data* ch, char* arg, int type,
   struct char_data* tar_ch, struct obj_data* tar_obj) {
   switch (type) {
     case SPELL_TYPE_SPELL:
@@ -7120,7 +7120,7 @@ void cast_mon_sum5(byte level, struct char_data* ch, char* arg, int type,
   }
 }
 
-void cast_mon_sum6(byte level, struct char_data* ch, char* arg, int type,
+void cast_mon_sum6(signed char level, struct char_data* ch, char* arg, int type,
   struct char_data* tar_ch, struct obj_data* tar_obj) {
   switch (type) {
     case SPELL_TYPE_SPELL:
@@ -7135,7 +7135,7 @@ void cast_mon_sum6(byte level, struct char_data* ch, char* arg, int type,
   }
 }
 
-void cast_mon_sum7(byte level, struct char_data* ch, char* arg, int type,
+void cast_mon_sum7(signed char level, struct char_data* ch, char* arg, int type,
   struct char_data* tar_ch, struct obj_data* tar_obj) {
   switch (type) {
     case SPELL_TYPE_SPELL:

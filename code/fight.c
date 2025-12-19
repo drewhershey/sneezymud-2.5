@@ -1385,7 +1385,7 @@ static int WeaponSpell(struct char_data* c, struct char_data* v, int type) {
 }
 
 /* New single class thiefbackstab multiplier (single class only) */
-static const byte single_backstab_mult[ABS_MAX_LVL] = {1, /* 0 */
+static const signed char single_backstab_mult[ABS_MAX_LVL] = {1, /* 0 */
   2,                                                      /* 1 */
   2, 2, 3, 3,                                             /* 5 */
   3, 3, 4, 4, 4,                                          /* 10 */
@@ -1400,7 +1400,7 @@ static const byte single_backstab_mult[ABS_MAX_LVL] = {1, /* 0 */
   10, 10, 10, 10, 10};
 
 /* [level] backstab multiplyer (thieves only) */
-static const byte backstab_mult[ABS_MAX_LVL] = {
+static const signed char backstab_mult[ABS_MAX_LVL] = {
   1,                            /* 0 */
   2,                            /* 1 */
   2, 2, 2, 3,                   /* 5 */

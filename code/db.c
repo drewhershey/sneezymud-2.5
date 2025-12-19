@@ -817,7 +817,7 @@ static void SetRacialStuff(struct char_data* mob) {
   }
 }
 
-static bool is_valid_position(byte pos) {
+static char is_valid_position(signed char pos) {
   return pos >= POSITION_DEAD && pos <= POSITION_STANDING;
 }
 
@@ -897,9 +897,9 @@ struct char_data* read_mobile(int nr, int type) {
     mob->points.max_hit = DICE(hd_num, hd_type) + hd_bonus;
     mob->points.hit = mob->points.max_hit;
 
-    sbyte d_num = 0;
-    sbyte d_type = 0;
-    sbyte bonus = 0;
+    signed char d_num = 0;
+    signed char d_type = 0;
+    signed char bonus = 0;
 
     fscanf(mob_f, " %hhdd%hhd+%hhd \n", &d_num, &d_type, &bonus);
     mob->points.damroll = bonus;
@@ -924,8 +924,8 @@ struct char_data* read_mobile(int nr, int type) {
       fscanf(mob_f, " %d \n", &mob->points.exp);
     }
 
-    byte position = 0;
-    byte default_pos = 0;
+    signed char position = 0;
+    signed char default_pos = 0;
 
     if (fscanf(mob_f, " %hhd ", &position) != 1 ||
         fscanf(mob_f, " %hhd ", &default_pos) != 1) {
@@ -945,7 +945,7 @@ struct char_data* read_mobile(int nr, int type) {
     mob->specials.position = position;
     mob->specials.default_pos = default_pos;
 
-    byte sex = 0;
+    signed char sex = 0;
     fscanf(mob_f, " %hhd ", &sex);
 
     if (sex < 3) {
@@ -954,7 +954,7 @@ struct char_data* read_mobile(int nr, int type) {
       mob->M_immune = 0;
       mob->susc = 0;
     } else if (sex < 6) {
-      mob->player.sex = (byte)(sex - 3);
+      mob->player.sex = (signed char)(sex - 3);
       fscanf(mob_f, " %u ", &mob->immune);
       fscanf(mob_f, " %u ", &mob->M_immune);
       fscanf(mob_f, " %u ", &mob->susc);
@@ -1008,7 +1008,7 @@ struct char_data* read_mobile(int nr, int type) {
     }
 
     fscanf(mob_f, " %hhd ", &mob->points.hitroll);
-    mob->points.hitroll = (sbyte)(20 - mob->points.hitroll);
+    mob->points.hitroll = (signed char)(20 - mob->points.hitroll);
 
     fscanf(mob_f, " %hd ", &mob->points.armor);
     mob->points.armor *= 10;
@@ -1018,9 +1018,9 @@ struct char_data* read_mobile(int nr, int type) {
     mob->points.max_hit = DICE(GET_LEVEL(mob, WARRIOR_LEVEL_IND), 8) + hp_bonus;
     mob->points.hit = mob->points.max_hit;
 
-    sbyte d_num = 0;
-    sbyte d_type = 0;
-    sbyte bonus = 0;
+    signed char d_num = 0;
+    signed char d_type = 0;
+    signed char bonus = 0;
 
     fscanf(mob_f, " %hhdd%hhd+%hhd \n", &d_num, &d_type, &bonus);
     mob->points.damroll = bonus;
@@ -1053,8 +1053,8 @@ struct char_data* read_mobile(int nr, int type) {
       GET_EXP(mob) = DetermineExp(mob, exp) + mob->points.gold;
     }
 
-    byte position = 0;
-    byte default_pos = 0;
+    signed char position = 0;
+    signed char default_pos = 0;
 
     if (fscanf(mob_f, " %hhd ", &position) != 1 ||
         fscanf(mob_f, " %hhd ", &default_pos) != 1) {
@@ -1138,8 +1138,8 @@ struct char_data* read_mobile(int nr, int type) {
     fscanf(mob_f, " %d ", &mob->points.gold);
     fscanf(mob_f, " %d \n", &GET_EXP(mob));
 
-    byte position = 0;
-    byte default_pos = 0;
+    signed char position = 0;
+    signed char default_pos = 0;
 
     if (fscanf(mob_f, " %hhd ", &position) != 1 ||
         fscanf(mob_f, " %hhd ", &default_pos) != 1) {
@@ -1220,7 +1220,7 @@ struct char_data* read_mobile(int nr, int type) {
 
   /* set up distributed movement system */
 
-  mob->specials.tick = (byte)mob_tick_count++;
+  mob->specials.tick = (signed char)mob_tick_count++;
 
   if (mob_tick_count == TICK_WRAP_COUNT) {
     mob_tick_count = 0;
@@ -1305,7 +1305,7 @@ struct obj_data* read_object(int nr, int type) {
   fscanf(obj_f, " %d ", &tmp);
   obj->obj_flags.volume = tmp;
   fscanf(obj_f, " %d ", &tmp);
-  obj->obj_flags.material_points = (ubyte)tmp;
+  obj->obj_flags.material_points = (unsigned char)tmp;
 
   /* *** extra descriptions *** */
 
@@ -1833,7 +1833,7 @@ int create_entry(char* name) {
 }
 
 /* write the vital data of a player to the player file */
-void save_char(struct char_data* ch, sh_int load_room) {
+void save_char(struct char_data* ch, short int load_room) {
   struct char_file_u st;
   FILE* fl;
   char mode[4];

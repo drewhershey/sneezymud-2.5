@@ -228,7 +228,7 @@ void do_set_traps(struct char_data* ch, char* arg, int cmd) {
 void do_grapple(struct char_data* ch, char* arg, int cmd) {
   struct char_data* victim;
   char name[256];
-  byte percent;
+  signed char percent;
   struct affected_type af;
   int i;
 
@@ -459,7 +459,7 @@ void do_glance(struct char_data* ch, char* argument, int cmd) {
 void do_deathstroke(struct char_data* ch, char* argument, int cmd) {
   struct char_data* victim;
   char name[256];
-  byte percent;
+  signed char percent;
 
   if (!ch->skills)
     return;
@@ -552,7 +552,7 @@ void do_deathstroke(struct char_data* ch, char* argument, int cmd) {
 void do_bodyslam(struct char_data* ch, char* argument, int cmd) {
   struct char_data* victim;
   char name[256];
-  byte percent;
+  signed char percent;
 
   if (!ch->skills)
     return;

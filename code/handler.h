@@ -12,14 +12,14 @@ extern struct char_data* combat_list;
 
 /* handling the affected-structures */
 void affect_total(struct char_data* ch);
-void affect_modify(struct char_data* ch, byte loc, long mod, long bitv,
-  bool add);
+void affect_modify(struct char_data* ch, signed char loc, long mod, long bitv,
+  char add);
 void affect_to_char(struct char_data* ch, struct affected_type* af);
 void affect_remove(struct char_data* ch, struct affected_type* af);
 void affect_from_char(struct char_data* ch, short skill);
-bool affected_by_spell(struct char_data* ch, short skill);
-void affect_join(struct char_data* ch, struct affected_type* af, bool avg_dur,
-  bool avg_mod);
+char affected_by_spell(struct char_data* ch, short skill);
+void affect_join(struct char_data* ch, struct affected_type* af, char avg_dur,
+  char avg_mod);
 
 /* utility */
 struct obj_data* create_money(int amount);

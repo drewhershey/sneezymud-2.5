@@ -336,7 +336,7 @@ static void save_obj_for_save(struct char_data* ch, struct obj_cost* cost,
   static struct obj_file_u st;
   FILE* fl;
   int pos, i, j;
-  bool found = FALSE;
+  char found = FALSE;
 
   st.number = 0;
   st.gold_left = GET_GOLD(ch);
@@ -435,7 +435,7 @@ void do_not_here(struct char_data* ch, char* argument, int cmd) {
 
 void do_sneak(struct char_data* ch, char* argument, int cmd) {
   struct affected_type af;
-  byte percent;
+  signed char percent;
 
   if (IS_AFFECTED(ch, AFF_SNEAK)) {
     affect_from_char(ch, SKILL_SNEAK);
@@ -474,7 +474,7 @@ void do_sneak(struct char_data* ch, char* argument, int cmd) {
 }
 
 void do_hide(struct char_data* ch, char* argument, int cmd) {
-  byte percent;
+  signed char percent;
 
   send_to_char("you attempt to hide yourself.\n\r", ch);
 
@@ -603,7 +603,7 @@ void do_steal(struct char_data* ch, char* argument, int cmd) {
   char buf[240];
   int percent;
   int gold, eq_pos;
-  bool ohoh = FALSE;
+  char ohoh = FALSE;
 
   if (!ch->skills)
     return;
@@ -1327,7 +1327,7 @@ void do_group(struct char_data* ch, char* argument, int cmd) {
   char buf[256];
   struct char_data *victim, *k;
   struct follow_type* f;
-  bool found;
+  char found;
 
   only_argument(argument, name);
 
@@ -1426,7 +1426,7 @@ void do_quaff(struct char_data* ch, char* argument, int cmd) {
   char buf[100];
   struct obj_data* temp;
   int i;
-  bool equipped;
+  char equipped;
 
   equipped = FALSE;
 
@@ -1486,7 +1486,7 @@ void do_quaff(struct char_data* ch, char* argument, int cmd) {
   for (i = 1; i < 4; i++)
     if (temp->obj_flags.value[i] >= 1)
       ((*spell_info[temp->obj_flags.value[i]].spell_pointer)(
-        (byte)temp->obj_flags.value[0], ch, "", SPELL_TYPE_POTION, ch, temp));
+        (signed char)temp->obj_flags.value[0], ch, "", SPELL_TYPE_POTION, ch, temp));
 
   if (equipped)
     temp = unequip_char(ch, HOLD);
@@ -1501,7 +1501,7 @@ void do_recite(struct char_data* ch, char* argument, int cmd) {
   struct obj_data *scroll, *obj;
   struct char_data* victim;
   int i, bits;
-  bool equipped;
+  char equipped;
 
   equipped = FALSE;
   obj = 0;
@@ -1553,7 +1553,7 @@ void do_recite(struct char_data* ch, char* argument, int cmd) {
           check_peaceful(ch, "Impolite magic is banned here."))
         continue;
       ((*spell_info[scroll->obj_flags.value[i]].spell_pointer)(
-        (byte)scroll->obj_flags.value[0], ch, "", SPELL_TYPE_SCROLL, victim,
+        (signed char)scroll->obj_flags.value[0], ch, "", SPELL_TYPE_SCROLL, victim,
         obj));
     }
   if (equipped)
@@ -1591,7 +1591,7 @@ void do_use(struct char_data* ch, char* argument, int cmd) {
     if (stick->obj_flags.value[2] > 0) { /* Is there any charges left? */
       stick->obj_flags.value[2]--;
       ((*spell_info[stick->obj_flags.value[3]].spell_pointer)(
-        (byte)stick->obj_flags.value[0], ch, "", SPELL_TYPE_STAFF, 0, 0));
+        (signed char)stick->obj_flags.value[0], ch, "", SPELL_TYPE_STAFF, 0, 0));
       WAIT_STATE(ch, PULSE_VIOLENCE);
     } else {
       send_to_char("The staff seems powerless.\n\r", ch);
@@ -1631,7 +1631,7 @@ void do_use(struct char_data* ch, char* argument, int cmd) {
 
       if (stick->obj_flags.value[2] > 0) { /* Is there any charges left? */
         stick->obj_flags.value[2]--;
-        ((*spellp->spell_pointer)((byte)stick->obj_flags.value[0], ch, "",
+        ((*spellp->spell_pointer)((signed char)stick->obj_flags.value[0], ch, "",
           SPELL_TYPE_WAND, tmp_char, tmp_object));
         WAIT_STATE(ch, PULSE_VIOLENCE);
       } else {

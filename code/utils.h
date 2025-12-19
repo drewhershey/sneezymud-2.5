@@ -424,7 +424,7 @@ void raw_open_door(struct char_data* ch, int dir);
 int MobCountInRoom(struct char_data* list);
 int DisplayMove(struct char_data* ch, int dir, int was_in, int total);
 void open_door(struct char_data* ch, int dir);
-bool circle_follow(struct char_data* ch, struct char_data* victim);
+char circle_follow(struct char_data* ch, struct char_data* victim);
 int RecGetObjRoom(struct obj_data* obj);
 int MissileDamage(struct char_data* ch, struct char_data* victim, int dam,
   int attacktype);
@@ -455,7 +455,7 @@ void Zwrite(FILE* fp, char cmd, int tf, int arg1, int arg2, int arg3,
   char* desc);
 int ObjVnum(struct obj_data* o);
 char* lower(char* s);
-bool recep_offer(struct char_data* ch, struct char_data* receptionist,
+char recep_offer(struct char_data* ch, struct char_data* receptionist,
   struct obj_cost* cost);
 struct char_data* char_holding(struct obj_data* obj);
 int track(struct char_data* ch, struct char_data* vict);

@@ -125,8 +125,8 @@ void destroy_string_block(struct string_block* sb) {
   sb->data = NULL;
 }
 
-void affect_modify(struct char_data* ch, byte loc, long mod, long bitv,
-  bool add) {
+void affect_modify(struct char_data* ch, signed char loc, long mod, long bitv,
+  char add) {
   int maxabil;
   int i, diff;
 
@@ -487,7 +487,7 @@ void affect_from_char(struct char_data* ch, short skill) {
 
 /* Return if a char is affected by a spell (SPELL_XXX), NULL indicates
    not affected                                                        */
-bool affected_by_spell(struct char_data* ch, short skill) {
+char affected_by_spell(struct char_data* ch, short skill) {
   struct affected_type* hjp;
 
   for (hjp = ch->affected; hjp; hjp = hjp->next)
@@ -497,10 +497,10 @@ bool affected_by_spell(struct char_data* ch, short skill) {
   return (FALSE);
 }
 
-void affect_join(struct char_data* ch, struct affected_type* af, bool avg_dur,
-  bool avg_mod) {
+void affect_join(struct char_data* ch, struct affected_type* af, char avg_dur,
+  char avg_mod) {
   struct affected_type* hjp;
-  bool found = FALSE;
+  char found = FALSE;
 
   for (hjp = ch->affected; !found && hjp; hjp = hjp->next) {
     if (hjp->type == af->type) {
@@ -1626,7 +1626,7 @@ int generic_find(char* arg, int bitvector, struct char_data* ch,
 
   int i;
   char name[256];
-  bool found;
+  char found;
 
   found = FALSE;
 

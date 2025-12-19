@@ -436,7 +436,7 @@ void set_title(struct char_data* ch) {
 
 void gain_exp(struct char_data* ch, int gain) {
   int i;
-  bool is_altered = FALSE;
+  char is_altered = FALSE;
   char buf[256];
 
   save_char(ch, AUTO_RENT);
@@ -499,7 +499,7 @@ void gain_exp(struct char_data* ch, int gain) {
 }
 
 void gain_condition(struct char_data* ch, int condition, int value) {
-  bool intoxicated;
+  char intoxicated;
 
   if (GET_COND(ch, condition) == -1) /* No change */
     return;

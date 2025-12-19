@@ -130,7 +130,7 @@ void do_kill(struct char_data* ch, char* argument, int cmd) {
 void do_backstab(struct char_data* ch, char* argument, int cmd) {
   struct char_data* victim;
   char name[256];
-  byte percent, base = 0;
+  signed char percent, base = 0;
 
   if (check_peaceful(ch, "Naughty, naughty.  None of that here.\n\r"))
     return;
@@ -226,7 +226,7 @@ static int check_no_order(struct char_data* ch, char* msg) {
 void do_order(struct char_data* ch, char* argument, int cmd) {
   char name[100], message[256];
   char buf[256];
-  bool found = FALSE;
+  char found = FALSE;
   int org_room;
   struct char_data* victim;
   struct follow_type* k;
@@ -442,7 +442,7 @@ void do_flee(struct char_data* ch, char* argument, int cmd) {
 void do_bash(struct char_data* ch, char* argument, int cmd) {
   struct char_data* victim;
   char name[256];
-  byte percent;
+  signed char percent;
 
   if (!ch->skills)
     return;
@@ -642,7 +642,7 @@ void do_assist(struct char_data* ch, char* argument, int cmd) {
 void do_kick(struct char_data* ch, char* argument, int cmd) {
   struct char_data* victim;
   char name[256];
-  byte percent;
+  signed char percent;
   int dam;
 
   if (!ch->skills)
@@ -986,7 +986,7 @@ void do_shoot(struct char_data* ch, char* argument, int cmd) {
 void do_springleap(struct char_data* ch, char* argument, int cmd) {
   struct char_data* victim;
   char name[256];
-  byte percent;
+  signed char percent;
 
   if (!ch->skills)
     return;
@@ -1065,7 +1065,7 @@ void do_springleap(struct char_data* ch, char* argument, int cmd) {
 void do_quivering_palm(struct char_data* ch, char* arg, int cmd) {
   struct char_data* victim;
   struct affected_type af;
-  byte percent;
+  signed char percent;
   char name[256];
 
   if (!ch->skills)

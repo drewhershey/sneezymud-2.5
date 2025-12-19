@@ -455,7 +455,7 @@ int find_path(int in_room, struct find_path_data* data, int depth,
   if (data->type == FIND_TARGET_ROOM && in_room == data->fn_data.target_room)
     return -1;
 
-  bool thru_doors = FALSE;
+  char thru_doors = FALSE;
 
   if (depth < 0) {
     thru_doors = TRUE;
@@ -546,7 +546,7 @@ int find_path(int in_room, struct find_path_data* data, int depth,
 void do_headbutt(struct char_data* ch, char* argument, int cmd) {
   struct char_data* victim;
   char name[256];
-  byte percent;
+  signed char percent;
 
   if (!ch->skills)
     return;
@@ -600,7 +600,7 @@ void do_headbutt(struct char_data* ch, char* argument, int cmd) {
 void do_subterfuge(struct char_data* ch, char* arg, int cmd) {
   struct char_data* npc;
   char name[MAX_STRING_LENGTH];
-  byte percent;
+  signed char percent;
 
   if (GET_POS(ch) == POSITION_FIGHTING) {
     send_to_char("No way!! You simply can NOT concentrate!\n\r", ch);
@@ -641,7 +641,7 @@ void do_subterfuge(struct char_data* ch, char* arg, int cmd) {
 
 void do_swim(struct char_data* ch, char* arg, int cmd) {
   struct affected_type af;
-  byte percent;
+  signed char percent;
 
   send_to_char("Ok, you'll try to swim for a while.\n\r", ch);
 
@@ -873,7 +873,7 @@ void do_doorbash(struct char_data* ch, char* arg, int cmd) {
 
 void do_spy(struct char_data* ch, char* arg, int cmd) {
   struct affected_type af;
-  byte percent;
+  signed char percent;
 
   send_to_char("Ok, you'll try to be 007\n\r", ch);
 
@@ -919,7 +919,7 @@ void do_spy(struct char_data* ch, char* arg, int cmd) {
 void do_throw(struct char_data* ch, char* arg, int cmd) {
   struct char_data* victim;
   char name[256], obje[100], buf[256];
-  byte percent;
+  signed char percent;
   int dr;
   const char* const keyword[] = {"north", "east", "south", "west", "up", "down",
     "\n"};

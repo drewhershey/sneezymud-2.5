@@ -164,7 +164,7 @@ static const int movement_loss[] = {
 static int RawMove(struct char_data* ch, int dir) {
   int need_movement;
   struct obj_data* obj;
-  bool has_boat;
+  char has_boat;
   struct room_data *from_here, *to_here;
   struct char_data* pers;
 
@@ -772,7 +772,7 @@ void do_unlock(struct char_data* ch, char* argument, int cmd) {
 }
 
 void do_pick(struct char_data* ch, char* argument, int cmd) {
-  byte percent;
+  signed char percent;
   int door;
   char type[MAX_INPUT_LENGTH], dir[MAX_INPUT_LENGTH];
   struct room_direction_data *back, *exitp;

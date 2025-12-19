@@ -241,9 +241,9 @@ void do_insult(struct char_data* ch, char* argument, int cmd) {
 
 void boot_pose_messages(void) {
   FILE* fl;
-  byte counter;
+  signed char counter;
   int tmp;
-  byte class;
+  signed char class;
 
   if (!(fl = fopen(POSEMESS_FILE, "r"))) {
     perror("boot_pose_messages");
@@ -264,8 +264,8 @@ void boot_pose_messages(void) {
 }
 
 void do_pose(struct char_data* ch, char* argument, int cmd) {
-  byte to_pose;
-  byte counter;
+  signed char to_pose;
+  signed char counter;
 
   send_to_char("Sorry Buggy command.\n\r", ch);
   return;
