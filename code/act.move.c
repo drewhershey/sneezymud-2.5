@@ -20,8 +20,8 @@
 #include "utils.h"
 
 void open_door(struct char_data* ch, int dir) {
-  struct room_direction_data *exitp;
-  struct room_direction_data *back;
+  struct room_direction_data* exitp;
+  struct room_direction_data* back;
   struct room_data* rp;
   char buf[MAX_INPUT_LENGTH];
 
@@ -70,8 +70,8 @@ void open_door(struct char_data* ch, int dir) {
   remove all necessary bits and send messages
 */
 void raw_open_door(struct char_data* ch, int dir) {
-  struct room_direction_data *exitp;
-  struct room_direction_data *back;
+  struct room_direction_data* exitp;
+  struct room_direction_data* back;
   struct room_data* rp;
   char buf[MAX_INPUT_LENGTH];
 
@@ -117,7 +117,8 @@ int ValidMove(struct char_data* ch, int cmd) {
   if (!exit_ok(exitp, NULL)) {
     NotLegalMove(ch);
     return (FALSE);
-  } else if (IS_SET(exitp->exit_info, EX_CLOSED)) {
+  }
+  if (IS_SET(exitp->exit_info, EX_CLOSED)) {
     if (IS_IMMORTAL(ch)) {
       if (!IS_SET(ch->specials.act, PLR_STEALTH)) {
         act("$n's body splits into a cloud of atoms before before your eyes!",
@@ -132,25 +133,22 @@ int ValidMove(struct char_data* ch, int cmd) {
         sprintf(tmp, "The %s seems to be closed.\n\r", fname(exitp->keyword));
         send_to_char(tmp, ch);
         return (FALSE);
-      } else {
-        NotLegalMove(ch);
-        return (FALSE);
       }
-    } else {
       NotLegalMove(ch);
       return (FALSE);
     }
-  } else {
-    struct room_data* rp;
-    rp = real_roomp(exitp->to_room);
-    if (IS_SET(rp->room_flags, TUNNEL)) {
-      if ((MobCountInRoom(rp->people) > rp->moblim) && (!IS_IMMORTAL(ch))) {
-        send_to_char("Sorry, there is no room to get in there.\n\r", ch);
-        return (FALSE);
-      }
-    }
-    return (TRUE);
+    NotLegalMove(ch);
+    return (FALSE);
   }
+  struct room_data* rp;
+  rp = real_roomp(exitp->to_room);
+  if (IS_SET(rp->room_flags, TUNNEL)) {
+    if ((MobCountInRoom(rp->people) > rp->moblim) && (!IS_IMMORTAL(ch))) {
+      send_to_char("Sorry, there is no room to get in there.\n\r", ch);
+      return (FALSE);
+    }
+  }
+  return (TRUE);
 }
 
 static const int movement_loss[] = {
@@ -171,8 +169,8 @@ static int RawMove(struct char_data* ch, int dir) {
   int need_movement;
   struct obj_data* obj;
   char has_boat;
-  struct room_data *from_here;
-  struct room_data *to_here;
+  struct room_data* from_here;
+  struct room_data* to_here;
   struct char_data* pers;
 
   if (special(ch, dir + 1, "")) { /* Check for special routines(North is 1)*/
@@ -403,24 +401,24 @@ static int AddToCharHeap(struct char_data* heap[50], int* top, int total[50],
 
   if (*top > 50) {
     return (FALSE);
-  } else {
-    found = FALSE;
-    for (i = 0; (i < *top && !found); i++) {
-      if (*top > 0) {
-        if ((IS_NPC(k)) && (k->nr == heap[i]->nr) &&
-            (heap[i]->player.short_descr) &&
-            (!strcmp(k->player.short_descr, heap[i]->player.short_descr))) {
-          total[i] += 1;
-          found = TRUE;
-        }
+  }
+  found = FALSE;
+  for (i = 0; (i < *top && !found); i++) {
+    if (*top > 0) {
+      if ((IS_NPC(k)) && (k->nr == heap[i]->nr) &&
+          (heap[i]->player.short_descr) &&
+          (!strcmp(k->player.short_descr, heap[i]->player.short_descr))) {
+        total[i] += 1;
+        found = TRUE;
       }
     }
-    if (!found) {
-      heap[*top] = k;
-      total[*top] = 1;
-      *top += 1;
-    }
   }
+  if (!found) {
+    heap[*top] = k;
+    total[*top] = 1;
+    *top += 1;
+  }
+
   return TRUE;
 }
 
@@ -431,9 +429,8 @@ int MoveOne(struct char_data* ch, int dir) {
   if (RawMove(ch, dir)) { /* no error */
     DisplayOneMove(ch, dir, was_in);
     return TRUE;
-  } else {
-    return FALSE;
   }
+  return FALSE;
 }
 
 static int DisplayGroupMove(struct char_data* ch, int dir, int was_in,
@@ -447,8 +444,8 @@ void MoveGroup(struct char_data* ch, int dir) {
   int i;
   int heap_top;
   int heap_tot[50];
-  struct follow_type *k;
-  struct follow_type *next_dude;
+  struct follow_type* k;
+  struct follow_type* next_dude;
 
   /*
    *   move the leader. (leader never duplicates)
@@ -534,28 +531,26 @@ int find_door(struct char_data* ch, char* type, char* dir) {
       }
       if ((isname(type, exitp->keyword)) && (strcmp(type, "secret"))) {
         return (door);
-      } else {
-        sprintf(buf, "I see no %s there.\n\r", type);
-        send_to_char(buf, ch);
-        return (-1);
       }
-    } else {
       sprintf(buf, "I see no %s there.\n\r", type);
       send_to_char(buf, ch);
       return (-1);
     }
-  } else { /* try to locate the keyword */
-    for (door = 0; door <= 5; door++) {
-      if ((exitp = EXIT(ch, door)) && exitp->keyword &&
-          isname(type, exitp->keyword)) {
-        return (door);
-      }
-    }
-
-    sprintf(buf, "I see no %s here.\n\r", type);
+    sprintf(buf, "I see no %s there.\n\r", type);
     send_to_char(buf, ch);
     return (-1);
+
+  } /* try to locate the keyword */
+  for (door = 0; door <= 5; door++) {
+    if ((exitp = EXIT(ch, door)) && exitp->keyword &&
+        isname(type, exitp->keyword)) {
+      return (door);
+    }
   }
+
+  sprintf(buf, "I see no %s here.\n\r", type);
+  send_to_char(buf, ch);
+  return (-1);
 }
 
 void do_open(struct char_data* ch, char* argument, int cmd) {
@@ -612,8 +607,8 @@ void do_close(struct char_data* ch, char* argument, int cmd) {
   char type[MAX_INPUT_LENGTH];
   char dir[MAX_INPUT_LENGTH];
   char buf[MAX_STRING_LENGTH];
-  struct room_direction_data *back;
-  struct room_direction_data *exitp;
+  struct room_direction_data* back;
+  struct room_direction_data* exitp;
   struct obj_data* obj;
   struct char_data* victim;
   struct room_data* rp;
@@ -689,8 +684,8 @@ void do_lock(struct char_data* ch, char* argument, int cmd) {
   int door;
   char type[MAX_INPUT_LENGTH];
   char dir[MAX_INPUT_LENGTH];
-  struct room_direction_data *back;
-  struct room_direction_data *exitp;
+  struct room_direction_data* back;
+  struct room_direction_data* exitp;
   struct obj_data* obj;
   struct char_data* victim;
   struct room_data* rp;
@@ -754,8 +749,8 @@ void do_unlock(struct char_data* ch, char* argument, int cmd) {
   int door;
   char type[MAX_INPUT_LENGTH];
   char dir[MAX_INPUT_LENGTH];
-  struct room_direction_data *back;
-  struct room_direction_data *exitp;
+  struct room_direction_data* back;
+  struct room_direction_data* exitp;
   struct obj_data* obj;
   struct char_data* victim;
   struct room_data* rp;
@@ -818,8 +813,8 @@ void do_pick(struct char_data* ch, char* argument, int cmd) {
   int door;
   char type[MAX_INPUT_LENGTH];
   char dir[MAX_INPUT_LENGTH];
-  struct room_direction_data *back;
-  struct room_direction_data *exitp;
+  struct room_direction_data* back;
+  struct room_direction_data* exitp;
   struct obj_data* obj;
   struct char_data* victim;
   struct room_data* rp;

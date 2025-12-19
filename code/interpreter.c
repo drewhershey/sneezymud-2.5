@@ -561,16 +561,13 @@ void command_interpreter(struct char_data* ch, char* argument) {
             cmd));
         }
         return;
-      } else {
-        send_to_char("You are paralyzed, you can't do much of anything!\n\r",
-          ch);
-        return;
       }
-    } else {
-      send_to_char("You are brewing, you MUST concentrate on your potion.\n\r",
-        ch);
+      send_to_char("You are paralyzed, you can't do much of anything!\n\r", ch);
       return;
     }
+    send_to_char("You are brewing, you MUST concentrate on your potion.\n\r",
+      ch);
+    return;
   }
   if (cmd > 0 && (cmd_info[cmd].command_pointer == 0)) {
     send_to_char("Sorry, but that command has yet to be implemented...\n\r",
@@ -1335,7 +1332,7 @@ void nanny(struct descriptor_data* d, char* arg) {
   char buf[100];
   char buf2[100];
   char recipient[100];
-  char *tmp;
+  char* tmp;
   int player_i;
   int index = 0;
   int count = 0;
@@ -1627,14 +1624,14 @@ void nanny(struct descriptor_data* d, char* arg) {
         STATE(d) = CON_PWDGET;
         write(d->descriptor, echo_off, 4);
         return;
-      } else {
-        write(d->descriptor, echo_on, 6);
-
-        SEND_TO_Q("Choose A Race:\n\r", d);
-        SEND_TO_Q("D)warf, E)lf, H)uman, O)gre, hoB)bit, G)nome\n\r", d);
-        SEND_TO_Q("For help type '?'. \n\r RACE:  ", d);
-        STATE(d) = CON_QRACE;
       }
+      write(d->descriptor, echo_on, 6);
+
+      SEND_TO_Q("Choose A Race:\n\r", d);
+      SEND_TO_Q("D)warf, E)lf, H)uman, O)gre, hoB)bit, G)nome\n\r", d);
+      SEND_TO_Q("For help type '?'. \n\r RACE:  ", d);
+      STATE(d) = CON_QRACE;
+
       break;
 
     case CON_QSEX: /* query sex of new user	*/
@@ -1735,32 +1732,28 @@ void nanny(struct descriptor_data* d, char* arg) {
         SEND_TO_Q("Your choice? ", d);
         STATE(d) = CON_STAT_LIST;
         break;
-      } else {
-        SEND_TO_Q(
-          "Please pick one of the following combinations for your class.\n\r",
-          d);
-        SEND_TO_Q("1. Warrior                    A. Antipaladin\n\r", d);
-        SEND_TO_Q("2. Cleric                     B. Paladin\n\r", d);
-        SEND_TO_Q("3. Magic-user                 C. Monk\n\r", d);
-        SEND_TO_Q("4. Thief                      D. Ranger\n\r", d);
-        SEND_TO_Q("5. Warrior/Thief              E. Mage/Cleric\n\r", d);
-        SEND_TO_Q("6. Warrior/Cleric             F. Warrior/Cleric/Thief\n\r",
-          d);
-        SEND_TO_Q("7. Mage/thief                 G. Mage/Cleric/Thief\n\r", d);
-        SEND_TO_Q("8. Mage/Warrior               H. Mage/Cleric/Warrior\n\r",
-          d);
-        SEND_TO_Q("9. Cleric/Thief               I. Mage/Thief/Warrior\n\r\n\r",
-          d);
-        SEND_TO_Q("There are advantages and disadvantages to each choice.\n\r",
-          d);
-        SEND_TO_Q(
-          "Type ? to see a help file telling you these advantages and "
-          "disadvantages.\n\r",
-          d);
-        SEND_TO_Q("Class :", d);
-        STATE(d) = CON_QCLASS;
-        break;
       }
+      SEND_TO_Q(
+        "Please pick one of the following combinations for your class.\n\r", d);
+      SEND_TO_Q("1. Warrior                    A. Antipaladin\n\r", d);
+      SEND_TO_Q("2. Cleric                     B. Paladin\n\r", d);
+      SEND_TO_Q("3. Magic-user                 C. Monk\n\r", d);
+      SEND_TO_Q("4. Thief                      D. Ranger\n\r", d);
+      SEND_TO_Q("5. Warrior/Thief              E. Mage/Cleric\n\r", d);
+      SEND_TO_Q("6. Warrior/Cleric             F. Warrior/Cleric/Thief\n\r", d);
+      SEND_TO_Q("7. Mage/thief                 G. Mage/Cleric/Thief\n\r", d);
+      SEND_TO_Q("8. Mage/Warrior               H. Mage/Cleric/Warrior\n\r", d);
+      SEND_TO_Q("9. Cleric/Thief               I. Mage/Thief/Warrior\n\r\n\r",
+        d);
+      SEND_TO_Q("There are advantages and disadvantages to each choice.\n\r",
+        d);
+      SEND_TO_Q(
+        "Type ? to see a help file telling you these advantages and "
+        "disadvantages.\n\r",
+        d);
+      SEND_TO_Q("Class :", d);
+      STATE(d) = CON_QCLASS;
+      break;
 
     case CON_QCLASS: {
       /* skip whitespaces */

@@ -49,17 +49,20 @@ static int graf(int age, int p0, int p1, int p2, int p3, int p4, int p5,
   int p6) {
   if (age < 15) {
     return (p0); /* < 15   */
-  } else if (age <= 29) {
-    return (int)(p1 + (((age - 15) * (p2 - p1)) / 15)); /* 15..29 */
-  } else if (age <= 44) {
-    return (int)(p2 + (((age - 30) * (p3 - p2)) / 15)); /* 30..44 */
-  } else if (age <= 59) {
-    return (int)(p3 + (((age - 45) * (p4 - p3)) / 15)); /* 45..59 */
-  } else if (age <= 79) {
-    return (int)(p4 + (((age - 60) * (p5 - p4)) / 20)); /* 60..79 */
-  } else {
-    return (p6); /* >= 80 */
   }
+  if (age <= 29) {
+    return (int)(p1 + (((age - 15) * (p2 - p1)) / 15)); /* 15..29 */
+  }
+  if (age <= 44) {
+    return (int)(p2 + (((age - 30) * (p3 - p2)) / 15)); /* 30..44 */
+  }
+  if (age <= 59) {
+    return (int)(p3 + (((age - 45) * (p4 - p3)) / 15)); /* 45..59 */
+  }
+  if (age <= 79) {
+    return (int)(p4 + (((age - 60) * (p5 - p4)) / 20)); /* 60..79 */
+  }
+  return (p6); /* >= 80 */
 }
 
 /* The three MAX functions define a characters Effective maximum */
@@ -234,25 +237,24 @@ int move_gain(struct char_data* ch) {
   if (IS_NPC(ch)) {
     return (GetTotLevel(ch));
     /* Neat and fast */
+  }
+  if (GET_POS(ch) != POSITION_FIGHTING) {
+    gain = 5 + GET_CON(ch);
   } else {
-    if (GET_POS(ch) != POSITION_FIGHTING) {
-      gain = 5 + GET_CON(ch);
-    } else {
-      gain = 0;
-    }
+    gain = 0;
+  }
 
-    /* Position calculations    */
-    switch (GET_POS(ch)) {
-      case POSITION_SLEEPING:
-        gain += (gain >> 1); /* Divide by 2 */
-        break;
-      case POSITION_RESTING:
-        gain += (gain >> 2); /* Divide by 4 */
-        break;
-      case POSITION_SITTING:
-        gain += (gain >> 3); /* Divide by 8 */
-        break;
-    }
+  /* Position calculations    */
+  switch (GET_POS(ch)) {
+    case POSITION_SLEEPING:
+      gain += (gain >> 1); /* Divide by 2 */
+      break;
+    case POSITION_RESTING:
+      gain += (gain >> 2); /* Divide by 4 */
+      break;
+    case POSITION_SITTING:
+      gain += (gain >> 3); /* Divide by 8 */
+      break;
   }
 
   if (GET_RACE(ch) == RACE_DWARF) {
@@ -501,7 +503,8 @@ void gain_exp(struct char_data* ch, int gain) {
                 ch);
               GET_EXP(ch) = titles[i][GET_LEVEL(ch, i) + 2].exp - 1;
               return;
-            } else if (GET_EXP(ch) >= titles[i][GET_LEVEL(ch, i) + 1].exp) {
+            }
+            if (GET_EXP(ch) >= titles[i][GET_LEVEL(ch, i) + 1].exp) {
               /* do nothing..this is cool */
             } else if (GET_EXP(ch) + gain >=
                        titles[i][GET_LEVEL(ch, i) + 1].exp) {

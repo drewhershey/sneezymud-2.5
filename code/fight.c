@@ -201,7 +201,8 @@ void load_messages(void) {
 void update_pos(struct char_data* victim) {
   if ((GET_HIT(victim) > 0) && (GET_POS(victim) > POSITION_STUNNED)) {
     return;
-  } else if (GET_HIT(victim) > 0) {
+  }
+  if (GET_HIT(victim) > 0) {
     if (GET_POS(victim) == POSITION_STUNNED) {
       GET_POS(victim) = POSITION_SITTING;
     }
@@ -334,8 +335,8 @@ static const int corpse_volume[] = {
 };
 
 void make_corpse(struct char_data* ch) {
-  struct obj_data *corpse;
-  struct obj_data *o;
+  struct obj_data* corpse;
+  struct obj_data* o;
   struct obj_data* money;
   char buf[MAX_INPUT_LENGTH];
   int i;
@@ -682,8 +683,8 @@ char* replace_string(const char* str, const char* weapon,
 void dam_message(int dam, struct char_data* ch, struct char_data* victim,
   int w_type) {
   struct obj_data* wield;
-  struct char_data *tmp_victim;
-  struct char_data *temp;
+  struct char_data* tmp_victim;
+  struct char_data* temp;
   char* buf;
   int snum;
   int numb;
@@ -1101,9 +1102,8 @@ int DamageEpilog(struct char_data* ch, struct char_data* victim) {
      */
     victim = 0;
     return (TRUE);
-  } else {
-    return (FALSE);
   }
+  return (FALSE);
 }
 
 int MissileDamage(struct char_data* ch, struct char_data* victim, int dam,
@@ -1371,9 +1371,8 @@ int HitOrMiss(struct char_data* ch, struct char_data* victim, int calc_thaco) {
   if ((diceroll < 20) && AWAKE(victim) &&
       ((diceroll == 1) || ((calc_thaco - diceroll) > victim_ac))) {
     return (FALSE);
-  } else {
-    return (TRUE);
   }
+  return (TRUE);
 }
 
 int MissVictim(struct char_data* ch, struct char_data* v, int type, int w_type,
@@ -1545,9 +1544,9 @@ int GetFormType(struct char_data* ch) {
     case RACE_LABRAT: {
       if (num <= 33) {
         return (TYPE_BITE);
-      } else {
-        return (TYPE_CLAW);
       }
+      return (TYPE_CLAW);
+
       break;
     }
     case RACE_INSECT:
@@ -1693,8 +1692,8 @@ static void DevelopHatred(struct char_data* ch, struct char_data* v) {
 
 /* control the fights going on */
 void perform_violence(int pulse) {
-  struct char_data *ch;
-  struct char_data *vict;
+  struct char_data* ch;
+  struct char_data* vict;
   int i;
   int t;
   int found;
@@ -2332,31 +2331,27 @@ int WeaponCheck(struct char_data* ch, struct char_data* v, int type, int dam) {
 
   if ((type < TYPE_HIT) || (type > TYPE_SMITE)) {
     return (dam);
-  } else {
-    if (type == TYPE_HIT || IS_NPC(ch)) {
-      if (IS_NPC(ch) && (GetMaxLevel(ch) > (3 * Immunity) + 1)) {
-        return (dam);
-      } else {
-        return (0);
-      }
-    } else {
-      total = 0;
-      if (!ch->equipment[WIELD]) {
-        return (0);
-      }
-      for (j = 0; j < MAX_OBJ_AFFECT; j++) {
-        if ((ch->equipment[WIELD]->affected[j].location == APPLY_HITROLL) ||
-            (ch->equipment[WIELD]->affected[j].location == APPLY_HITNDAM)) {
-          total += ch->equipment[WIELD]->affected[j].modifier;
-        }
-      }
-      if (total > Immunity) {
-        return (dam);
-      } else {
-        return (0);
-      }
+  }
+  if (type == TYPE_HIT || IS_NPC(ch)) {
+    if (IS_NPC(ch) && (GetMaxLevel(ch) > (3 * Immunity) + 1)) {
+      return (dam);
+    }
+    return (0);
+  }
+  total = 0;
+  if (!ch->equipment[WIELD]) {
+    return (0);
+  }
+  for (j = 0; j < MAX_OBJ_AFFECT; j++) {
+    if ((ch->equipment[WIELD]->affected[j].location == APPLY_HITROLL) ||
+        (ch->equipment[WIELD]->affected[j].location == APPLY_HITNDAM)) {
+      total += ch->equipment[WIELD]->affected[j].modifier;
     }
   }
+  if (total > Immunity) {
+    return (dam);
+  }
+  return (0);
 }
 
 int GetItemDamageType(int type) {

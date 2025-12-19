@@ -73,7 +73,7 @@ int main(int argc, char** argv) {
   int a;
   int pos = 1;
   char buf[512];
-  char *dir;
+  char* dir;
 
   struct rlimit rl;
   int res;
@@ -226,8 +226,8 @@ int game_loop(int s) {
   char hitscolor[10];
   char manacolor[10];
   char movescolor[10];
-  struct descriptor_data *point;
-  struct descriptor_data *next_point;
+  struct descriptor_data* point;
+  struct descriptor_data* next_point;
   int i;
   int pulse = 0;
   int prompt_per;
@@ -889,8 +889,8 @@ int new_descriptor(int s) {
   struct hostent* from;
   char buf[100];
   char tempbuf[255];
-  char *temphost[255];
-  char *temphostaddr[255];
+  char* temphost[255];
+  char* temphostaddr[255];
 
   if ((desc = new_connection(s)) < 0) {
     return (-1);
@@ -903,7 +903,8 @@ int new_descriptor(int s) {
     write_to_descriptor(desc, "Sorry.. The game is full...\n\r");
     close(desc);
     return (0);
-  } else if (desc > maxdesc) {
+  }
+  if (desc > maxdesc) {
     maxdesc = desc;
   }
 
@@ -1057,13 +1058,11 @@ int process_input(struct descriptor_data* t) {
         if (errno != EWOULDBLOCK) {
           perror("Read1 - ERROR");
           return (-1);
-        } else {
-          break;
         }
-      } else {
-        vlog("EOF encountered on socket read.");
-        return (-1);
+        break;
       }
+      vlog("EOF encountered on socket read.");
+      return (-1);
     }
   } while (!ISNEWL(*(t->buf + begin + sofar - 1)));
 
@@ -1435,12 +1434,12 @@ void send_to_room_except_two(const char* messg, int room, struct char_data* ch1,
 
 void act(const char* str, int hide_invisible, struct char_data* ch,
   struct obj_data* obj, void* vict_obj, int type) {
-  register const char *strp;
-  register const char *i;
+  register const char* strp;
+  register const char* i;
   register char* point;
-  struct char_data *to;
-  struct char_data *tmp_victim;
-  struct char_data *temp;
+  struct char_data* to;
+  struct char_data* tmp_victim;
+  struct char_data* temp;
   char buf[MAX_STRING_LENGTH];
 
   if (!str) {

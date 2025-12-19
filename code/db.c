@@ -410,8 +410,8 @@ struct index_data* generate_indices(FILE* fl, int* top) {
 
 void cleanout_room(struct room_data* rp) {
   int i;
-  struct extra_descr_data *exptr;
-  struct extra_descr_data *nptr;
+  struct extra_descr_data* exptr;
+  struct extra_descr_data* nptr;
 
   free(rp->name);
   free(rp->description);
@@ -706,7 +706,7 @@ void boot_zones(void) {
   int tmp;
   int bc = 100;
   int cc = 20;
-  char *check;
+  char* check;
   char buf[81];
 
   if (!(fl = fopen(ZONE_FILE, "r"))) {
@@ -1404,9 +1404,9 @@ struct obj_data* read_object(int nr, int type) {
 /* update zone ages, queue for reset if necessary, and dequeue when possible */
 void zone_update(void) {
   int i;
-  struct reset_q_element *update_u;
-  struct reset_q_element *temp;
-  struct reset_q_element *tmp2;
+  struct reset_q_element* update_u;
+  struct reset_q_element* temp;
+  struct reset_q_element* tmp2;
 
   /* enqueue zones */
 
@@ -1479,8 +1479,8 @@ void reset_zone(int zone) {
   char buf[256];
   struct char_data* mob;
   struct char_data* master;
-  struct obj_data *obj;
-  struct obj_data *obj_to;
+  struct obj_data* obj;
+  struct obj_data* obj_to;
   struct room_data* rp;
 
   mob = 0;
@@ -1674,9 +1674,8 @@ int load_char(char* name, struct char_file_u* char_element) {
     */
     char_element->talks[2] = TRUE;
     return (player_i);
-  } else {
-    return (-1);
   }
+  return (-1);
 }
 
 /* copy data from the file structure to a char struct */
@@ -2089,8 +2088,8 @@ void free_char(struct char_data* ch) {
 
 /* release memory allocated for an obj struct */
 void free_obj(struct obj_data* obj) {
-  struct extra_descr_data * this;
-  struct extra_descr_data *next_one;
+  struct extra_descr_data* this;
+  struct extra_descr_data* next_one;
 
   free(obj->name);
   if (obj->description && *obj->description) {
@@ -2181,7 +2180,7 @@ void ClearDeadBit(struct char_data* ch) {
 void reset_char(struct char_data* ch) {
   char buf[100];
   char recipient[100];
-  char *tmp;
+  char* tmp;
   struct affected_type* af;
 
   int i;

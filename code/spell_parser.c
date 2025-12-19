@@ -228,8 +228,8 @@ const signed char saving_throws[8][5][ABS_MAX_LVL] = {
 };
 
 static void ObjFromCorpse(struct obj_data* c) {
-  struct obj_data *jj;
-  struct obj_data *next_thing;
+  struct obj_data* jj;
+  struct obj_data* next_thing;
 
   for (jj = c->contains; jj; jj = next_thing) {
     next_thing = jj->next_content; /* Next in inventory */
@@ -616,8 +616,8 @@ static void SpellWearOff(int s, struct char_data* ch) {
 }
 
 void affect_update(int pulse) {
-  static struct affected_type *af;
-  static struct affected_type *next_af_dude;
+  static struct affected_type* af;
+  static struct affected_type* next_af_dude;
   register struct char_data* i;
   register struct obj_data* j;
   struct obj_data* next_thing;
@@ -680,15 +680,15 @@ void affect_update(int pulse) {
           char_from_room(i);
           char_to_room(i, 3001);
           return;
-        } else {
-          sprintf(buf, "You are charged %d coins by the hospital.\n\r", cost);
-          send_to_char(buf, i);
-          GET_GOLD(i) -= cost;
-          send_to_char("You feel much fresher than usual.\n\r", i);
-          GET_HIT(i) = MIN(GET_HIT(i) + 4 * hit_gain(i), hit_limit(i));
-          GET_MANA(i) = MIN(GET_MANA(i) + mana_gain(i), mana_limit(i));
-          GET_MOVE(i) = MIN(GET_MOVE(i) + move_gain(i), move_limit(i));
         }
+        sprintf(buf, "You are charged %d coins by the hospital.\n\r", cost);
+        send_to_char(buf, i);
+        GET_GOLD(i) -= cost;
+        send_to_char("You feel much fresher than usual.\n\r", i);
+        GET_HIT(i) = MIN(GET_HIT(i) + 4 * hit_gain(i), hit_limit(i));
+        GET_MANA(i) = MIN(GET_MANA(i) + mana_gain(i), mana_limit(i));
+        GET_MOVE(i) = MIN(GET_MOVE(i) + move_gain(i), move_limit(i));
+
       } else if ((GET_POS(i) > POSITION_STUNNED) &&
                  (IS_SET(real_roomp(i->in_room)->room_flags, NO_HEAL))) {
         GET_MOVE(i) = MIN(GET_MOVE(i) + move_gain(i), move_limit(i));
@@ -879,8 +879,8 @@ char circle_follow(struct char_data* ch, struct char_data* victim) {
 /* Called when stop following persons, or stopping charm */
 /* This will NOT do if a character quits/dies!!          */
 void stop_follower(struct char_data* ch) {
-  struct follow_type *j;
-  struct follow_type *k;
+  struct follow_type* j;
+  struct follow_type* k;
 
   if (!ch->master) {
     return;
@@ -1047,16 +1047,18 @@ int can_do_verbal(struct char_data* ch) {
 static int SPELL_LEVEL(struct char_data* ch, int sn) {
   if (HasClass(ch, CLASS_ANTIPALADIN)) {
     return (spell_info[sn].min_level_anti);
-  } else if (HasClass(ch, CLASS_PALADIN)) {
+  }
+  if (HasClass(ch, CLASS_PALADIN)) {
     return (spell_info[sn].min_level_pal);
-  } else if ((HasClass(ch, CLASS_MAGIC_USER)) && (HasClass(ch, CLASS_CLERIC))) {
+  }
+  if ((HasClass(ch, CLASS_MAGIC_USER)) && (HasClass(ch, CLASS_CLERIC))) {
     return (
       MIN(spell_info[sn].min_level_magic, spell_info[sn].min_level_cleric));
-  } else if (HasClass(ch, CLASS_MAGIC_USER)) {
-    return (spell_info[sn].min_level_magic);
-  } else {
-    return (spell_info[sn].min_level_cleric);
   }
+  if (HasClass(ch, CLASS_MAGIC_USER)) {
+    return (spell_info[sn].min_level_magic);
+  }
+  return (spell_info[sn].min_level_cleric);
 }
 
 /* Assumes that *argument does start with first letter of chopped string */
@@ -1082,7 +1084,8 @@ void do_cast(struct char_data* ch, char* argument, int cmd) {
     if (BestMagicClass(ch) == WARRIOR_LEVEL_IND) {
       send_to_char("Think you had better stick to fighting...\n\r", ch);
       return;
-    } else if (BestMagicClass(ch) == THIEF_LEVEL_IND) {
+    }
+    if (BestMagicClass(ch) == THIEF_LEVEL_IND) {
       send_to_char("Think you should stick to robbing and killing...\n\r", ch);
       return;
     }
@@ -1332,20 +1335,18 @@ void do_cast(struct char_data* ch, char* argument, int cmd) {
           }
         }
         return;
-      } else { /* TARGET IS OK */
-        if ((tar_char == ch) &&
-            IS_SET(spell_info[spl].targets, TAR_SELF_NONO)) {
-          send_to_char("You can not cast this spell upon yourself.\n\r", ch);
-          return;
-        } else if ((tar_char != ch) &&
-                   IS_SET(spell_info[spl].targets, TAR_SELF_ONLY)) {
-          send_to_char("You can only cast this spell upon yourself.\n\r", ch);
-          return;
-        } else if (IS_AFFECTED(ch, AFF_CHARM) && (ch->master == tar_char)) {
-          send_to_char("You are afraid that it could harm your master.\n\r",
-            ch);
-          return;
-        }
+      } /* TARGET IS OK */
+      if ((tar_char == ch) && IS_SET(spell_info[spl].targets, TAR_SELF_NONO)) {
+        send_to_char("You can not cast this spell upon yourself.\n\r", ch);
+        return;
+      }
+      if ((tar_char != ch) && IS_SET(spell_info[spl].targets, TAR_SELF_ONLY)) {
+        send_to_char("You can only cast this spell upon yourself.\n\r", ch);
+        return;
+      }
+      if (IS_AFFECTED(ch, AFF_CHARM) && (ch->master == tar_char)) {
+        send_to_char("You are afraid that it could harm your master.\n\r", ch);
+        return;
       }
 
       if (GetMaxLevel(ch) < LOW_IMMORTAL) {

@@ -166,8 +166,8 @@ void do_commune(struct char_data* ch, char* argument, int cmd) {
   }
 }
 
-const char* RandomWord(void) {
-  static const char* string[50] = {
+static const char* random_word(void) {
+  static const char* const words[] = {
     "argle", "bargle", "glop", "glyph", "hussamah",                    /* 5 */
     "rodina", "mustafah", "angina", "the", "fribble",                  /* 10 */
     "fnort", "frobozz", "zarp", "ripple", "yrk",                       /* 15 */
@@ -179,8 +179,9 @@ const char* RandomWord(void) {
     "pterodactyl", "frob", "yuma", "gumma", "lo-pan",                  /* 45 */
     "sushi", "yaya", "yoyodine", "your", "mother"                      /* 50 */
   };
+  static constexpr size_t max_words = sizeof(words) / sizeof(words[0]);
 
-  return (string[number(0, 49)]);
+  return words[number(0, (int)(max_words - 1))];
 }
 
 void do_sign(struct char_data* ch, char* argument, int cmd) {
@@ -224,7 +225,7 @@ void do_sign(struct char_data* ch, char* argument, int cmd) {
           number(1, 75 + strlen(p)) < ch->skills[SKILL_SIGN].learned) {
         strcat(buf2, p);
       } else {
-        strcat(buf2, RandomWord());
+        strcat(buf2, random_word());
       }
       strcat(buf2, " ");
       diff -= 1;
@@ -258,8 +259,8 @@ void do_sign(struct char_data* ch, char* argument, int cmd) {
 void do_send(struct char_data* ch, char* argument, int cmd) {
   char buf1[MAX_INPUT_LENGTH + 40];
   struct descriptor_data* i;
-  struct obj_data *radio;
-  struct obj_data *radio2;
+  struct obj_data* radio;
+  struct obj_data* radio2;
 
   if (!IS_NPC(ch) &&
       (IS_SET(ch->specials.act, PLR_NOSHOUT) || IS_AFFECTED(ch, AFF_SILENT))) {
@@ -330,19 +331,24 @@ void do_tell(struct char_data* ch, char* argument, int cmd) {
   if (!*name || !*message) {
     send_to_char("Who do you wish to tell what??\n\r", ch);
     return;
-  } else if (!(vict = get_char_vis(ch, name))) {
+  }
+  if (!(vict = get_char_vis(ch, name))) {
     send_to_char("No-one by that name here..\n\r", ch);
     return;
-  } else if (ch == vict) {
+  }
+  if (ch == vict) {
     send_to_char("You try to tell yourself something.\n\r", ch);
     return;
-  } else if (GET_POS(vict) == POSITION_SLEEPING) {
+  }
+  if (GET_POS(vict) == POSITION_SLEEPING) {
     act("$E is asleep, shhh.", FALSE, ch, 0, vict, TO_CHAR);
     return;
-  } else if (IS_NPC(vict) && !(vict->desc)) {
+  }
+  if (IS_NPC(vict) && !(vict->desc)) {
     send_to_char("No-one by that name here..\n\r", ch);
     return;
-  } else if (!vict->desc) {
+  }
+  if (!vict->desc) {
     send_to_char("They can't hear you", ch);
     return;
   }
@@ -459,8 +465,8 @@ void do_ask(struct char_data* ch, char* argument, int cmd) {
 #define MAX_NOTE_LENGTH 1000 /* arbitrary */
 
 void do_write(struct char_data* ch, char* argument, int cmd) {
-  struct obj_data *paper = 0;
-  struct obj_data *pen = 0;
+  struct obj_data* paper = 0;
+  struct obj_data* pen = 0;
   char papername[MAX_INPUT_LENGTH];
   char penname[MAX_INPUT_LENGTH];
   char buf[MAX_STRING_LENGTH];

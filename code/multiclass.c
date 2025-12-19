@@ -87,39 +87,39 @@ int HowManyClasses(struct char_data* ch) {
   }
   if (tot) {
     return (tot);
-  } else {
-    if (IS_SET(ch->player.class, CLASS_MAGIC_USER)) {
-      tot++;
-    }
-
-    if (IS_SET(ch->player.class, CLASS_WARRIOR)) {
-      tot++;
-    }
-
-    if (IS_SET(ch->player.class, CLASS_THIEF)) {
-      tot++;
-    }
-
-    if (IS_SET(ch->player.class, CLASS_CLERIC)) {
-      tot++;
-    }
-
-    if (IS_SET(ch->player.class, CLASS_ANTIPALADIN)) {
-      tot++;
-    }
-
-    if (IS_SET(ch->player.class, CLASS_PALADIN)) {
-      tot++;
-    }
-
-    if (IS_SET(ch->player.class, CLASS_RANGER)) {
-      tot++;
-    }
-
-    if (IS_SET(ch->player.class, CLASS_MONK)) {
-      tot++;
-    }
   }
+  if (IS_SET(ch->player.class, CLASS_MAGIC_USER)) {
+    tot++;
+  }
+
+  if (IS_SET(ch->player.class, CLASS_WARRIOR)) {
+    tot++;
+  }
+
+  if (IS_SET(ch->player.class, CLASS_THIEF)) {
+    tot++;
+  }
+
+  if (IS_SET(ch->player.class, CLASS_CLERIC)) {
+    tot++;
+  }
+
+  if (IS_SET(ch->player.class, CLASS_ANTIPALADIN)) {
+    tot++;
+  }
+
+  if (IS_SET(ch->player.class, CLASS_PALADIN)) {
+    tot++;
+  }
+
+  if (IS_SET(ch->player.class, CLASS_RANGER)) {
+    tot++;
+  }
+
+  if (IS_SET(ch->player.class, CLASS_MONK)) {
+    tot++;
+  }
+
   return tot;
 }
 

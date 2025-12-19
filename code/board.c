@@ -25,8 +25,8 @@ void InitBoards(void) {
 }
 
 void InitABoard(struct obj_data* obj) {
-  struct Board * new;
-  struct Board *tmp;
+  struct Board* new;
+  struct Board* tmp;
   int i;
 
   if (board_list) {

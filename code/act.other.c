@@ -390,11 +390,11 @@ static void save_obj_for_save(struct char_data* ch, struct obj_cost* cost,
 void do_save(struct char_data* ch, char* argument, int cmd) {
   struct obj_cost cost;
   struct char_data* tmp;
-  struct obj_data *tmp_obj;
-  struct obj_data *tl;
-  struct obj_data *teq[MAX_WEAR];
-  struct obj_data *eq[MAX_WEAR];
-  struct obj_data *o;
+  struct obj_data* tmp_obj;
+  struct obj_data* tl;
+  struct obj_data* teq[MAX_WEAR];
+  struct obj_data* eq[MAX_WEAR];
+  struct obj_data* o;
   int i;
 
   if (IS_NPC(ch) && !(IS_SET(ch->specials.act, ACT_POLYSELF))) {
@@ -456,11 +456,10 @@ void do_save(struct char_data* ch, char* argument, int cmd) {
     }
 
     return;
-  } else {
-    recep_offer(ch, NULL, &cost);
-    save_obj_for_save(ch, &cost, 0);
-    save_char(ch, AUTO_RENT);
   }
+  recep_offer(ch, NULL, &cost);
+  save_obj_for_save(ch, &cost, 0);
+  save_char(ch, AUTO_RENT);
 }
 
 void do_not_here(struct char_data* ch, char* argument, int cmd) {
@@ -543,8 +542,8 @@ void do_hide(struct char_data* ch, char* argument, int cmd) {
 }
 
 void do_bload(struct char_data* ch, char* arg, int cmd) {
-  struct obj_data *obj;
-  struct obj_data *arrow;
+  struct obj_data* obj;
+  struct obj_data* arrow;
   char arrow_name[240];
   char obj_name[240];
   char buf[240];
@@ -587,8 +586,8 @@ void do_bload(struct char_data* ch, char* arg, int cmd) {
 }
 
 void do_reload(struct char_data* ch, char* argument, int cmd) {
-  struct obj_data *obj;
-  struct obj_data *shells;
+  struct obj_data* obj;
+  struct obj_data* shells;
   char shells_name[240];
   char obj_name[240];
   char buf[240];
@@ -662,7 +661,8 @@ void do_steal(struct char_data* ch, char* argument, int cmd) {
   if (!(victim = get_char_room_vis(ch, victim_name))) {
     send_to_char("Steal what from who?\n\r", ch);
     return;
-  } else if (victim == ch) {
+  }
+  if (victim == ch) {
     send_to_char("Come on now, that's rather stupid!\n\r", ch);
     return;
   }
@@ -707,20 +707,19 @@ void do_steal(struct char_data* ch, char* argument, int cmd) {
       if (!obj) {
         act("$E has not got that item.", FALSE, ch, 0, victim, TO_CHAR);
         return;
-      } else { /* It is equipment */
-        if ((GET_POS(victim) > POSITION_STUNNED)) {
-          send_to_char("Steal the equipment now? Impossible!\n\r", ch);
-          return;
-        } else {
-          act("You unequip $p and steal it.", FALSE, ch, obj, 0, TO_CHAR);
-          act("$n steals $p from $N.", FALSE, ch, obj, victim, TO_NOTVICT);
-          obj_to_char(unequip_char(victim, eq_pos), ch);
-#if NODUPLICATES
-          do_save(ch, "", 0);
-          do_save(victim, "", 0);
-#endif
-        }
+      } /* It is equipment */
+      if ((GET_POS(victim) > POSITION_STUNNED)) {
+        send_to_char("Steal the equipment now? Impossible!\n\r", ch);
+        return;
       }
+      act("You unequip $p and steal it.", FALSE, ch, obj, 0, TO_CHAR);
+      act("$n steals $p from $N.", FALSE, ch, obj, victim, TO_NOTVICT);
+      obj_to_char(unequip_char(victim, eq_pos), ch);
+#if NODUPLICATES
+      do_save(ch, "", 0);
+      do_save(victim, "", 0);
+#endif
+
     } else { /* obj found in inventory */
 
       if (IS_OBJ_STAT(obj, ITEM_NODROP)) {
@@ -1138,28 +1137,26 @@ void do_monitor(struct char_data* ch, char* argument, int cmd) {
       ch);
     send_to_char("that you want to monitor\n\r", ch);
     return;
+  }
+  number = atoi(num);
+  if (number > radio->obj_flags.value[1]) {
+    send_to_char("Your radio doesnt handle that many channels.\n\r", ch);
+    return;
+  }
+  radio->obj_flags.value[2] = number;
+  if (number > 1) {
+    sprintf(buf, "You are now monitoring channels 1 - %d\n\r",
+      radio->obj_flags.value[2]);
+    send_to_char(buf, ch);
   } else {
-    number = atoi(num);
-    if (number > radio->obj_flags.value[1]) {
-      send_to_char("Your radio doesnt handle that many channels.\n\r", ch);
-      return;
-    } else {
-      radio->obj_flags.value[2] = number;
-      if (number > 1) {
-        sprintf(buf, "You are now monitoring channels 1 - %d\n\r",
-          radio->obj_flags.value[2]);
-        send_to_char(buf, ch);
-      } else {
-        send_to_char("Turning off your monitor\n\r", ch);
-        return;
-      }
-    }
+    send_to_char("Turning off your monitor\n\r", ch);
+    return;
   }
 }
 
 void do_channel(struct char_data* ch, char* argument, int cmd) {
-  struct obj_data *radio;
-  struct obj_data *radio2;
+  struct obj_data* radio;
+  struct obj_data* radio2;
   struct descriptor_data* i;
   char buf[MAX_STRING_LENGTH];
   char num[200];
@@ -1267,46 +1264,45 @@ void do_terminal(struct char_data* ch, char* argument, int cmd) {
       if (IS_SET(ch->specials.act, PLR_ANSI)) {
         send_to_char("You are already in Ansi mode.\n\r", ch);
         return;
-      } else {
-        send_to_char(VT_CLENSEQ, ch);
-        sprintf(buf, VT_MARGSET, 1, (ch->desc->screen_size - 2));
-        send_to_char(buf, ch);
-        send_to_char("Setting term type to Ansi...\n\r", ch);
-        SET_BIT(ch->specials.act, PLR_ANSI);
-        if (IS_SET(ch->specials.act, PLR_VT100)) {
-          REMOVE_BIT(ch->specials.act, PLR_VT100);
-        }
       }
+      send_to_char(VT_CLENSEQ, ch);
+      sprintf(buf, VT_MARGSET, 1, (ch->desc->screen_size - 2));
+      send_to_char(buf, ch);
+      send_to_char("Setting term type to Ansi...\n\r", ch);
+      SET_BIT(ch->specials.act, PLR_ANSI);
+      if (IS_SET(ch->specials.act, PLR_VT100)) {
+        REMOVE_BIT(ch->specials.act, PLR_VT100);
+      }
+
     } else if (is_abbrev(term, "vt")) {
       if (IS_SET(ch->specials.act, PLR_VT100)) {
         send_to_char("You are already in vt100 mode!\n\r", ch);
         return;
-      } else {
-        send_to_char(VT_CLENSEQ, ch);
-        sprintf(buf, VT_MARGSET, 1, (ch->desc->screen_size - 2));
-        send_to_char(buf, ch);
-        send_to_char("Setting term type to vt100...\n\r", ch);
-        SET_BIT(ch->specials.act, PLR_VT100);
-        if (IS_SET(ch->specials.act, PLR_ANSI)) {
-          REMOVE_BIT(ch->specials.act, PLR_ANSI);
-        }
       }
+      send_to_char(VT_CLENSEQ, ch);
+      sprintf(buf, VT_MARGSET, 1, (ch->desc->screen_size - 2));
+      send_to_char(buf, ch);
+      send_to_char("Setting term type to vt100...\n\r", ch);
+      SET_BIT(ch->specials.act, PLR_VT100);
+      if (IS_SET(ch->specials.act, PLR_ANSI)) {
+        REMOVE_BIT(ch->specials.act, PLR_ANSI);
+      }
+
     } else if (is_abbrev(term, "none")) {
       if (!IS_SET(ch->specials.act, PLR_ANSI) &&
           !IS_SET(ch->specials.act, PLR_VT100)) {
         send_to_char("You already don't have a terminal type set.\n\r", ch);
         return;
-      } else {
-        send_to_char(VT_CLENSEQ, ch);
-        sprintf(buf, VT_MARGSET, 1, ch->desc->screen_size);
-        send_to_char(buf, ch);
-        send_to_char("Setting term type to NONE...\n\r", ch);
-        if (IS_SET(ch->specials.act, PLR_ANSI)) {
-          REMOVE_BIT(ch->specials.act, PLR_ANSI);
-        }
-        if (IS_SET(ch->specials.act, PLR_VT100)) {
-          REMOVE_BIT(ch->specials.act, PLR_VT100);
-        }
+      }
+      send_to_char(VT_CLENSEQ, ch);
+      sprintf(buf, VT_MARGSET, 1, ch->desc->screen_size);
+      send_to_char(buf, ch);
+      send_to_char("Setting term type to NONE...\n\r", ch);
+      if (IS_SET(ch->specials.act, PLR_ANSI)) {
+        REMOVE_BIT(ch->specials.act, PLR_ANSI);
+      }
+      if (IS_SET(ch->specials.act, PLR_VT100)) {
+        REMOVE_BIT(ch->specials.act, PLR_VT100);
       }
     }
   } else {
@@ -1368,10 +1364,12 @@ void do_log(struct char_data* ch, char* argument, int cmd) {
   if (!(vict = get_char_vis(ch, name))) {
     send_to_char("Noone here by that name.\n\r", ch);
     return;
-  } else if (GetMaxLevel(vict) > GetMaxLevel(ch)) {
+  }
+  if (GetMaxLevel(vict) > GetMaxLevel(ch)) {
     send_to_char("I dont think they would like that.\n\r", ch);
     return;
-  } else if (!IS_SET(vict->specials.act, PLR_LOGGED)) {
+  }
+  if (!IS_SET(vict->specials.act, PLR_LOGGED)) {
     sprintf(buf, "%s will now be logged.\n\r", GET_NAME(vict));
     send_to_char(buf, ch);
     SET_BIT(vict->specials.act, PLR_LOGGED);
@@ -1416,8 +1414,8 @@ void do_compact(struct char_data* ch, char* argument, int cmd) {
 void do_group(struct char_data* ch, char* argument, int cmd) {
   char name[256];
   char buf[256];
-  struct char_data *victim;
-  struct char_data *k;
+  struct char_data* victim;
+  struct char_data* k;
   struct follow_type* f;
   char found;
 
@@ -1538,9 +1536,8 @@ void do_quaff(struct char_data* ch, char* argument, int cmd) {
     if (GET_COND(ch, FULL) > 20) {
       act("Your stomach can't contain anymore!", FALSE, ch, 0, 0, TO_CHAR);
       return;
-    } else {
-      GET_COND(ch, FULL) += 1;
     }
+    GET_COND(ch, FULL) += 1;
   }
 
   if (temp->obj_flags.type_flag != ITEM_POTION) {
@@ -1596,8 +1593,8 @@ void do_quaff(struct char_data* ch, char* argument, int cmd) {
 
 void do_recite(struct char_data* ch, char* argument, int cmd) {
   char buf[100];
-  struct obj_data *scroll;
-  struct obj_data *obj;
+  struct obj_data* scroll;
+  struct obj_data* obj;
   struct char_data* victim;
   int i;
   int bits;
@@ -1668,8 +1665,8 @@ void do_recite(struct char_data* ch, char* argument, int cmd) {
 void do_use(struct char_data* ch, char* argument, int cmd) {
   char buf[100];
   struct char_data* tmp_char;
-  struct obj_data *tmp_object;
-  struct obj_data *stick;
+  struct obj_data* tmp_object;
+  struct obj_data* stick;
 
   int bits;
 

@@ -322,12 +322,11 @@ void do_flee(struct char_data* ch, char* argument, int cmd) {
       act("$n struggles against the webs that hold $m", FALSE, ch, 0, 0,
         TO_ROOM);
       return;
-    } else {
-      send_to_char("You pull free from the sticky webbing!\n\r", ch);
-      act("$n manages to pull free from the sticky webbing!", FALSE, ch, 0, 0,
-        TO_ROOM);
-      GET_MOVE(ch) -= 50;
     }
+    send_to_char("You pull free from the sticky webbing!\n\r", ch);
+    act("$n manages to pull free from the sticky webbing!", FALSE, ch, 0, 0,
+      TO_ROOM);
+    GET_MOVE(ch) -= 50;
   }
 
   if (ch->specials.fighting) {
@@ -363,13 +362,12 @@ void do_flee(struct char_data* ch, char* argument, int cmd) {
           /* The escape has succeded */
           send_to_char("You flee head over heels.\n\r", ch);
           return;
-        } else {
-          if (!die) {
-            act("$n tries to flee, but is too exhausted!", TRUE, ch, 0, 0,
-              TO_ROOM);
-          }
-          return;
         }
+        if (!die) {
+          act("$n tries to flee, but is too exhausted!", TRUE, ch, 0, 0,
+            TO_ROOM);
+        }
+        return;
       }
     } /* for */
     /* No exits was found */
@@ -451,13 +449,11 @@ void do_flee(struct char_data* ch, char* argument, int cmd) {
           stop_fighting(ch);
         }
         return;
-      } else {
-        if (!die) {
-          act("$n tries to flee, but is too exhausted!", TRUE, ch, 0, 0,
-            TO_ROOM);
-        }
-        return;
       }
+      if (!die) {
+        act("$n tries to flee, but is too exhausted!", TRUE, ch, 0, 0, TO_ROOM);
+      }
+      return;
     }
   } /* for */
 
@@ -538,8 +534,8 @@ void do_bash(struct char_data* ch, char* argument, int cmd) {
 }
 
 void do_rescue(struct char_data* ch, char* argument, int cmd) {
-  struct char_data *victim;
-  struct char_data *tmp_ch;
+  struct char_data* victim;
+  struct char_data* tmp_ch;
   int percent;
   char victim_name[240];
 
@@ -623,8 +619,8 @@ void do_rescue(struct char_data* ch, char* argument, int cmd) {
 }
 
 void do_assist(struct char_data* ch, char* argument, int cmd) {
-  struct char_data *victim;
-  struct char_data *tmp_ch;
+  struct char_data* victim;
+  struct char_data* tmp_ch;
   char victim_name[240];
 
   if (check_peaceful(ch, "Noone should need assistance here.\n\r")) {
@@ -748,9 +744,9 @@ void do_wimpy(struct char_data* ch, char* arg, int cmd) {
     send_to_char("You are no longer a wimp\n\r", ch);
     REMOVE_BIT(ch->specials.act, PLR_WIMPY);
     return;
-  } else {
-    SET_BIT(ch->specials.act, PLR_WIMPY);
   }
+  SET_BIT(ch->specials.act, PLR_WIMPY);
+
   sprintf(buff, "Your min hit point before fleeing is %d\n\r",
     (hit_limit(ch) / 5));
 
@@ -877,14 +873,13 @@ static void fire(struct char_data* ch, struct char_data* victim) {
   if (!bow || bow->obj_flags.type_flag != ITEM_BOW) {
     send_to_char("You must be holding a bow to fire one!\n\r", ch);
     return;
+  }
+  if (bow->obj_flags.value[3] >= 1) {
+    bow->obj_flags.value[3]--;
+    BowHit(ch, victim, SPEC_BOW);
   } else {
-    if (bow->obj_flags.value[3] >= 1) {
-      bow->obj_flags.value[3]--;
-      BowHit(ch, victim, SPEC_BOW);
-    } else {
-      send_to_char(
-        "Your bow has no arrow. It twangs as you try to shoot it!\n\r", ch);
-    }
+    send_to_char("Your bow has no arrow. It twangs as you try to shoot it!\n\r",
+      ch);
   }
 }
 
@@ -905,15 +900,15 @@ void do_fire(struct char_data* ch, char* argument, int cmd) {
       if (victim == ch) {
         send_to_char("Your mother would be SO sad!\n\r", ch);
         return;
-      } else {
-        if (IS_AFFECTED(ch, AFF_CHARM) && (ch->master == victim)) {
-          act("$N is just such a good friends, you simply can't fire at $M.",
-            FALSE, ch, 0, victim, TO_CHAR);
-          return;
-        }
-        fire(ch, victim);
-        WAIT_STATE(ch, PULSE_VIOLENCE * 2);
       }
+      if (IS_AFFECTED(ch, AFF_CHARM) && (ch->master == victim)) {
+        act("$N is just such a good friends, you simply can't fire at $M.",
+          FALSE, ch, 0, victim, TO_CHAR);
+        return;
+      }
+      fire(ch, victim);
+      WAIT_STATE(ch, PULSE_VIOLENCE * 2);
+
     } else {
       send_to_char("They aren't here.\n\r", ch);
     }
@@ -984,23 +979,20 @@ static void shoot(struct char_data* ch, struct char_data* victim) {
   if (!gun || gun->obj_flags.type_flag != ITEM_FIREWEAPON) {
     send_to_char("You need to be holding a gun.\n\r", ch);
     return;
+  } /*
+     **  for guns:  value[0] = arror type
+     **             value[1] = rolls
+     **             value[2] = dice max
+     **             value[3] = current shots
+     **
+     **   fire the weapon.
+     */
+  if (gun->obj_flags.value[3] >= 1) {
+    gun->obj_flags.value[3]--;
+    MissileHit(ch, victim, SPEC_SHOOT);
   } else {
-    /*
-    **  for guns:  value[0] = arror type
-    **             value[1] = rolls
-    **             value[2] = dice max
-    **             value[3] = current shots
-    **
-    **   fire the weapon.
-    */
-    if (gun->obj_flags.value[3] >= 1) {
-      gun->obj_flags.value[3]--;
-      MissileHit(ch, victim, SPEC_SHOOT);
-    } else {
-      send_to_char("Click!  It seems to be empty.\n\r", ch);
-      act("Click!  $n tries to fire an empty weapon.", FALSE, ch, 0, 0,
-        TO_ROOM);
-    }
+    send_to_char("Click!  It seems to be empty.\n\r", ch);
+    act("Click!  $n tries to fire an empty weapon.", FALSE, ch, 0, 0, TO_ROOM);
   }
 }
 
@@ -1021,22 +1013,22 @@ void do_shoot(struct char_data* ch, char* argument, int cmd) {
       if (victim == ch) {
         send_to_char("You can't shoot things at yourself!", ch);
         return;
-      } else {
-        if (IS_AFFECTED(ch, AFF_CHARM) && (ch->master == victim)) {
-          act("$N is just such a good friend, you simply can't shoot at $M.",
-            FALSE, ch, 0, victim, TO_CHAR);
-          return;
-        }
-
-        /*** Let me shoot during fighting, atleast for testing
-        if (ch->specials.fighting) {
-          send_to_char("You're at too close range to fire a weapon!\n\r", ch);
-          return;
-        }
-        ******************************************************/
-        shoot(ch, victim);
-        WAIT_STATE(ch, PULSE_VIOLENCE);
       }
+      if (IS_AFFECTED(ch, AFF_CHARM) && (ch->master == victim)) {
+        act("$N is just such a good friend, you simply can't shoot at $M.",
+          FALSE, ch, 0, victim, TO_CHAR);
+        return;
+      }
+
+      /*** Let me shoot during fighting, atleast for testing
+      if (ch->specials.fighting) {
+        send_to_char("You're at too close range to fire a weapon!\n\r", ch);
+        return;
+      }
+      ******************************************************/
+      shoot(ch, victim);
+      WAIT_STATE(ch, PULSE_VIOLENCE);
+
     } else {
       send_to_char("They aren't here.\n\r", ch);
     }
@@ -1111,18 +1103,16 @@ void do_springleap(struct char_data* ch, char* argument, int cmd) {
     }
     WAIT_STATE(ch, PULSE_VIOLENCE * 3);
     return;
-
-  } else {
-    if (HitOrMiss(ch, victim, CalcThaco(ch))) {
-      if (GET_POS(victim) > POSITION_DEAD) {
-        damage(ch, victim, GET_LEVEL(ch, BestFightingClass(ch)) >> 1,
-          SKILL_KICK);
-      }
-    } else {
-      damage(ch, victim, 0, SKILL_KICK);
-    }
-    WAIT_STATE(victim, PULSE_VIOLENCE);
   }
+  if (HitOrMiss(ch, victim, CalcThaco(ch))) {
+    if (GET_POS(victim) > POSITION_DEAD) {
+      damage(ch, victim, GET_LEVEL(ch, BestFightingClass(ch)) >> 1, SKILL_KICK);
+    }
+  } else {
+    damage(ch, victim, 0, SKILL_KICK);
+  }
+  WAIT_STATE(victim, PULSE_VIOLENCE);
+
   WAIT_STATE(ch, PULSE_VIOLENCE * 1);
   GET_POS(ch) = POSITION_STANDING;
   update_pos(ch);
@@ -1194,17 +1184,15 @@ void do_quivering_palm(struct char_data* ch, char* arg, int cmd) {
     }
     WAIT_STATE(ch, PULSE_VIOLENCE * 3);
     return;
-
-  } else {
-    if (GET_MAX_HIT(victim) > GET_MAX_HIT(ch) * 2 ||
-        GetMaxLevel(victim) > GetMaxLevel(ch)) {
-      damage(ch, victim, 0, SKILL_QUIV_PALM);
-      return;
-    }
-    if (HitOrMiss(ch, victim, CalcThaco(ch))) {
-      if (GET_POS(victim) > POSITION_DEAD) {
-        damage(ch, victim, GET_MAX_HIT(victim) * 20, SKILL_QUIV_PALM);
-      }
+  }
+  if (GET_MAX_HIT(victim) > GET_MAX_HIT(ch) * 2 ||
+      GetMaxLevel(victim) > GetMaxLevel(ch)) {
+    damage(ch, victim, 0, SKILL_QUIV_PALM);
+    return;
+  }
+  if (HitOrMiss(ch, victim, CalcThaco(ch))) {
+    if (GET_POS(victim) > POSITION_DEAD) {
+      damage(ch, victim, GET_MAX_HIT(victim) * 20, SKILL_QUIV_PALM);
     }
   }
 

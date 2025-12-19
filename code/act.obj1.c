@@ -444,9 +444,8 @@ void do_drop(struct char_data* ch, char* argument, int cmd) {
     obj_to_room(tmp_object, ch->in_room);
     GET_GOLD(ch) -= amount;
     return;
-  } else {
-    only_argument(argument, arg);
   }
+  only_argument(argument, arg);
 
   if (*arg) {
     if (!str_cmp(arg, "all")) {
@@ -555,110 +554,108 @@ void do_put(struct char_data* ch, char* argument, int cmd) {
       if (!strcmp(arg1, "all")) {
         send_to_char("sorry, you can't do that (yet)\n\r", ch);
         return;
-
-      } else {
-        while (num != 0) {
+      }
+      while (num != 0) {
 #if 1
-          bits = generic_find(arg1, FIND_OBJ_INV, ch, &tmp_char, &obj_object);
+        bits = generic_find(arg1, FIND_OBJ_INV, ch, &tmp_char, &obj_object);
 #else
-          obj_object = get_obj_in_list_vis(ch, arg1, ch->carrying);
+        obj_object = get_obj_in_list_vis(ch, arg1, ch->carrying);
 #endif
 
-          if (obj_object) {
-            if (IS_OBJ_STAT(obj_object, ITEM_NODROP)) {
-              send_to_char("You can't let go of it, it must be CURSED!\n\r",
-                ch);
-              return;
-            }
-            if (GET_ITEM_TYPE(obj_object) == ITEM_CONTAINER) {
-              send_to_char(
-                "Putting a bag in a bag can be hazardous for your health!\n\r",
-                ch);
-              return;
-            }
-            bits = generic_find(arg2, FIND_OBJ_INV | FIND_OBJ_ROOM, ch,
-              &tmp_char, &sub_object);
-            if (sub_object) {
-              if (GET_ITEM_TYPE(sub_object) == ITEM_CONTAINER) {
-                if (!IS_SET(sub_object->obj_flags.value[1], CONT_CLOSED)) {
-                  if (obj_object == sub_object) {
-                    send_to_char(
-                      "You attempt to fold it into itself, but fail.\n\r", ch);
-                    return;
-                  }
-                  if (((sub_object->obj_flags.weight) +
-                        (obj_object->obj_flags.weight)) <
-                      (sub_object->obj_flags.value[0])) {
-                    if (bits == FIND_OBJ_INV) {
-                      obj_from_char(obj_object);
-                      /* make up for above line */
-                      IS_CARRYING_W(ch) += GET_OBJ_WEIGHT(obj_object);
-                      obj_to_obj(obj_object, sub_object);
-                      if (!IS_OBJ_STAT(sub_object, ITEM_HOLDING)) {
-                        if (obj_object->obj_flags.type_flag != ITEM_CONTAINER) {
-                          IS_CARRYING_N(ch) +=
-                            (GET_OBJ_VOLUME(obj_object) /
-                              vol_mult[obj_object->obj_flags.material_points]);
-                        } else {
-                          IS_CARRYING_N(ch) += GET_OBJ_VOLUME(obj_object);
-                        }
-                      }
-
-                      switch (obj_object->obj_flags.material_points) {
-                        case 1:
-                        case 2:
-                        case 6:
-                        case 54:
-                        case 55: {
-                          act("You fold $p into $P.", TRUE, ch, obj_object,
-                            sub_object, TO_CHAR);
-                          act("$n folds $p into $P.", TRUE, ch, obj_object,
-                            sub_object, TO_ROOM);
-                        } break;
-                        case 4:
-                        case 61: {
-                          act("You gently place $p in $P.", TRUE, ch,
-                            obj_object, sub_object, TO_CHAR);
-                          act("$n gently places $p in $P.", TRUE, ch,
-                            obj_object, sub_object, TO_ROOM);
-                        } break;
-                        default: {
-                          act("You pack $p into $P.", TRUE, ch, obj_object,
-                            sub_object, TO_CHAR);
-                          act("$n packs $s $p into $P,", TRUE, ch, obj_object,
-                            sub_object, TO_ROOM);
-                        } break;
+        if (obj_object) {
+          if (IS_OBJ_STAT(obj_object, ITEM_NODROP)) {
+            send_to_char("You can't let go of it, it must be CURSED!\n\r", ch);
+            return;
+          }
+          if (GET_ITEM_TYPE(obj_object) == ITEM_CONTAINER) {
+            send_to_char(
+              "Putting a bag in a bag can be hazardous for your health!\n\r",
+              ch);
+            return;
+          }
+          bits = generic_find(arg2, FIND_OBJ_INV | FIND_OBJ_ROOM, ch, &tmp_char,
+            &sub_object);
+          if (sub_object) {
+            if (GET_ITEM_TYPE(sub_object) == ITEM_CONTAINER) {
+              if (!IS_SET(sub_object->obj_flags.value[1], CONT_CLOSED)) {
+                if (obj_object == sub_object) {
+                  send_to_char(
+                    "You attempt to fold it into itself, but fail.\n\r", ch);
+                  return;
+                }
+                if (((sub_object->obj_flags.weight) +
+                      (obj_object->obj_flags.weight)) <
+                    (sub_object->obj_flags.value[0])) {
+                  if (bits == FIND_OBJ_INV) {
+                    obj_from_char(obj_object);
+                    /* make up for above line */
+                    IS_CARRYING_W(ch) += GET_OBJ_WEIGHT(obj_object);
+                    obj_to_obj(obj_object, sub_object);
+                    if (!IS_OBJ_STAT(sub_object, ITEM_HOLDING)) {
+                      if (obj_object->obj_flags.type_flag != ITEM_CONTAINER) {
+                        IS_CARRYING_N(ch) +=
+                          (GET_OBJ_VOLUME(obj_object) /
+                            vol_mult[obj_object->obj_flags.material_points]);
+                      } else {
+                        IS_CARRYING_N(ch) += GET_OBJ_VOLUME(obj_object);
                       }
                     }
-                    num--;
-                  } else {
-                    send_to_char("It won't fit.\n\r", ch);
-                    num = 0;
+
+                    switch (obj_object->obj_flags.material_points) {
+                      case 1:
+                      case 2:
+                      case 6:
+                      case 54:
+                      case 55: {
+                        act("You fold $p into $P.", TRUE, ch, obj_object,
+                          sub_object, TO_CHAR);
+                        act("$n folds $p into $P.", TRUE, ch, obj_object,
+                          sub_object, TO_ROOM);
+                      } break;
+                      case 4:
+                      case 61: {
+                        act("You gently place $p in $P.", TRUE, ch, obj_object,
+                          sub_object, TO_CHAR);
+                        act("$n gently places $p in $P.", TRUE, ch, obj_object,
+                          sub_object, TO_ROOM);
+                      } break;
+                      default: {
+                        act("You pack $p into $P.", TRUE, ch, obj_object,
+                          sub_object, TO_CHAR);
+                        act("$n packs $s $p into $P,", TRUE, ch, obj_object,
+                          sub_object, TO_ROOM);
+                      } break;
+                    }
                   }
+                  num--;
                 } else {
-                  send_to_char("It seems to be closed.\n\r", ch);
+                  send_to_char("It won't fit.\n\r", ch);
                   num = 0;
                 }
               } else {
-                sprintf(buffer, "%s is not a container.\n\r",
-                  sub_object->short_description);
-                send_to_char(buffer, ch);
+                send_to_char("It seems to be closed.\n\r", ch);
                 num = 0;
               }
             } else {
-              sprintf(buffer, "You don't have the %s.\n\r", arg2);
+              sprintf(buffer, "%s is not a container.\n\r",
+                sub_object->short_description);
               send_to_char(buffer, ch);
               num = 0;
             }
           } else {
-            if ((num > 0) || (num == -1)) {
-              sprintf(buffer, "You don't have the %s.\n\r", arg1);
-              send_to_char(buffer, ch);
-            }
+            sprintf(buffer, "You don't have the %s.\n\r", arg2);
+            send_to_char(buffer, ch);
             num = 0;
           }
+        } else {
+          if ((num > 0) || (num == -1)) {
+            sprintf(buffer, "You don't have the %s.\n\r", arg1);
+            send_to_char(buffer, ch);
+          }
+          num = 0;
         }
       }
+
     } else {
       sprintf(buffer, "Put %s in what?\n\r", arg1);
       send_to_char(buffer, ch);
@@ -726,69 +723,68 @@ void do_give(struct char_data* ch, char* argument, int cmd) {
     }
 
     return;
-  } else {
-    argument = one_argument(argument, vict_name);
+  }
+  argument = one_argument(argument, vict_name);
 
-    if (!*obj_name || !*vict_name) {
-      send_to_char("Give what to who?\n\r", ch);
+  if (!*obj_name || !*vict_name) {
+    send_to_char("Give what to who?\n\r", ch);
+    return;
+  }
+  /* &&&& */
+  if (getall(obj_name, newarg)) {
+    num = -1;
+    strcpy(obj_name, newarg);
+  } else if ((p = getabunch(obj_name, newarg))) {
+    num = p;
+    strcpy(obj_name, newarg);
+  } else {
+    num = 1;
+  }
+
+  while (num != 0) {
+    if (!(obj = get_obj_in_list_vis(ch, obj_name, ch->carrying))) {
+      if (num >= -1) {
+        send_to_char("You do not seem to have anything like that.\n\r", ch);
+      }
       return;
     }
-    /* &&&& */
-    if (getall(obj_name, newarg)) {
-      num = -1;
-      strcpy(obj_name, newarg);
-    } else if ((p = getabunch(obj_name, newarg))) {
-      num = p;
-      strcpy(obj_name, newarg);
-    } else {
-      num = 1;
+    if ((IS_OBJ_STAT(obj, ITEM_NODROP)) && (!IS_IMMORTAL(ch))) {
+      send_to_char("You can't let go of it, it must be CURSED!\n\r", ch);
+      return;
     }
-
-    while (num != 0) {
-      if (!(obj = get_obj_in_list_vis(ch, obj_name, ch->carrying))) {
-        if (num >= -1) {
-          send_to_char("You do not seem to have anything like that.\n\r", ch);
-        }
-        return;
-      }
-      if ((IS_OBJ_STAT(obj, ITEM_NODROP)) && (!IS_IMMORTAL(ch))) {
-        send_to_char("You can't let go of it, it must be CURSED!\n\r", ch);
-        return;
-      }
-      if (!(vict = get_char_room_vis(ch, vict_name))) {
-        send_to_char("No one by that name around here.\n\r", ch);
-        return;
-      }
-      if (vict == ch) {
-        send_to_char("Ok.\n\r", ch);
-        return;
-      }
-      if (!ObjLevelCheck(obj, vict)) {
-        act("$N wouldn't know how to use the $o if you gave it to $M!", FALSE,
-          ch, obj, vict, TO_CHAR);
-        return;
-      }
-      if ((obj->obj_flags.volume + IS_CARRYING_N(vict)) > CAN_CARRY_N(vict)) {
-        act("$N seems to have $S hands full.", 0, ch, 0, vict, TO_CHAR);
-        return;
-      }
-      if (obj->obj_flags.weight + IS_CARRYING_W(vict) > CAN_CARRY_W(vict)) {
-        act("$E can't carry that much weight.", 0, ch, 0, vict, TO_CHAR);
-        return;
-      }
-      obj_from_char(obj);
-      obj_to_char(obj, vict);
-      act("$n gives $p to $N.", 1, ch, obj, vict, TO_NOTVICT);
-      act("$n gives you $p.", 0, ch, obj, vict, TO_VICT);
-      act("You give $p to $N", 0, ch, obj, vict, TO_CHAR);
-
-      if (num > 0) {
-        num--;
-      }
+    if (!(vict = get_char_room_vis(ch, vict_name))) {
+      send_to_char("No one by that name around here.\n\r", ch);
+      return;
     }
-#if NODUPLICATES
-    do_save(ch, "", 0);
-    do_save(vict, "", 0);
-#endif
+    if (vict == ch) {
+      send_to_char("Ok.\n\r", ch);
+      return;
+    }
+    if (!ObjLevelCheck(obj, vict)) {
+      act("$N wouldn't know how to use the $o if you gave it to $M!", FALSE, ch,
+        obj, vict, TO_CHAR);
+      return;
+    }
+    if ((obj->obj_flags.volume + IS_CARRYING_N(vict)) > CAN_CARRY_N(vict)) {
+      act("$N seems to have $S hands full.", 0, ch, 0, vict, TO_CHAR);
+      return;
+    }
+    if (obj->obj_flags.weight + IS_CARRYING_W(vict) > CAN_CARRY_W(vict)) {
+      act("$E can't carry that much weight.", 0, ch, 0, vict, TO_CHAR);
+      return;
+    }
+    obj_from_char(obj);
+    obj_to_char(obj, vict);
+    act("$n gives $p to $N.", 1, ch, obj, vict, TO_NOTVICT);
+    act("$n gives you $p.", 0, ch, obj, vict, TO_VICT);
+    act("You give $p to $N", 0, ch, obj, vict, TO_CHAR);
+
+    if (num > 0) {
+      num--;
+    }
   }
+#if NODUPLICATES
+  do_save(ch, "", 0);
+  do_save(vict, "", 0);
+#endif
 }

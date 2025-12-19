@@ -47,7 +47,7 @@ static int list_top = -1;
 
 static char* fread_action(FILE* fl) {
   char buf[MAX_STRING_LENGTH];
-  char *rslt;
+  char* rslt;
 
   for (;;) {
     fgets(buf, MAX_STRING_LENGTH, fl);
@@ -58,12 +58,11 @@ static char* fread_action(FILE* fl) {
 
     if (*buf == '#') {
       return (0);
-    } else {
-      *(buf + strlen(buf) - 1) = '\0';
-      CREATE(rslt, char, strlen(buf) + 1);
-      strcpy(rslt, buf);
-      return (rslt);
     }
+    *(buf + strlen(buf) - 1) = '\0';
+    CREATE(rslt, char, strlen(buf) + 1);
+    strcpy(rslt, buf);
+    return (rslt);
   }
 }
 
@@ -157,8 +156,8 @@ void do_action(struct char_data* ch, char* argument, int cmd) {
   char buf[MAX_INPUT_LENGTH];
   char tmp[MAX_STRING_LENGTH];
   struct social_messg* action;
-  struct char_data *i;
-  struct char_data *vict;
+  struct char_data* i;
+  struct char_data* vict;
 
   if ((act_nr = find_action(cmd)) < 0) {
     send_to_char("That action is not supported.\n\r", ch);

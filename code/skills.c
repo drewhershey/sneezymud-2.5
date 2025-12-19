@@ -40,20 +40,19 @@ static int remove_trap(struct char_data* ch, struct obj_data* trap) {
     act("$n disarms $p", FALSE, ch, trap, 0, TO_ROOM);
     GET_TRAP_CHARGES(trap) = 0;
     return (TRUE);
-  } else {
-    send_to_char("Click. (whoops)\n\r", ch);
-    act("$n tries to disarm $p", FALSE, ch, trap, 0, TO_ROOM);
-    TriggerTrap(ch, trap);
-    return (TRUE);
   }
+  send_to_char("Click. (whoops)\n\r", ch);
+  act("$n tries to disarm $p", FALSE, ch, trap, 0, TO_ROOM);
+  TriggerTrap(ch, trap);
+  return (TRUE);
 }
 
 void do_disarm(struct char_data* ch, char* argument, int cmd) {
   char name[30];
   int percent;
   struct char_data* victim;
-  struct obj_data *w;
-  struct obj_data *trap;
+  struct obj_data* w;
+  struct obj_data* trap;
 
   if (!ch->skills) {
     return;
@@ -79,18 +78,17 @@ void do_disarm(struct char_data* ch, char* argument, int cmd) {
       if (!ch->skills[SKILL_REMOVE_TRAP].learned) {
         send_to_char("Disarm who?\n\r", ch);
         return;
-      } else {
-        if (!(trap = get_obj_in_list_vis(ch, name,
-                real_roomp(ch->in_room)->contents))) {
-          if (!(trap = get_obj_in_list_vis(ch, name, ch->carrying))) {
-            send_to_char("Disarm what?\n\r", ch);
-            return;
-          }
-        }
-        if (trap) {
-          remove_trap(ch, trap);
+      }
+      if (!(trap = get_obj_in_list_vis(ch, name,
+              real_roomp(ch->in_room)->contents))) {
+        if (!(trap = get_obj_in_list_vis(ch, name, ch->carrying))) {
+          send_to_char("Disarm what?\n\r", ch);
           return;
         }
+      }
+      if (trap) {
+        remove_trap(ch, trap);
+        return;
       }
     }
   }
@@ -377,11 +375,10 @@ int track(struct char_data* ch, struct char_data* vict) {
   if (code == -1) {
     send_to_char("##You have lost the trail.\n\r", ch);
     return (FALSE);
-  } else {
-    sprintf(buf, "##You see a faint trail to the %s\n\r", dirs[code]);
-    send_to_char(buf, ch);
-    return (TRUE);
   }
+  sprintf(buf, "##You see a faint trail to the %s\n\r", dirs[code]);
+  send_to_char(buf, ch);
+  return (TRUE);
 }
 
 int dir_track(struct char_data* ch, struct char_data* vict) {
@@ -410,11 +407,10 @@ int dir_track(struct char_data* ch, struct char_data* vict) {
       send_to_char("##You have lost the trail.\n\r", ch);
     }
     return (-1); /* false to continue the hunt */
-  } else {
-    sprintf(buf, "##You see a faint trail to the %s\n\r", dirs[code]);
-    send_to_char(buf, ch);
-    return (code);
   }
+  sprintf(buf, "##You see a faint trail to the %s\n\r", dirs[code]);
+  send_to_char(buf, ch);
+  return (code);
 }
 
 /** Perform breadth first search on rooms from start (in_room) **/
@@ -445,8 +441,8 @@ static int hash_enter(struct hash_header* ht, int key, void* data) {
 
 static void destroy_hash_table(struct hash_header* ht, void (*gman)(void*)) {
   int i;
-  struct hash_link *scan;
-  struct hash_link *temp;
+  struct hash_link* scan;
+  struct hash_link* temp;
 
   for (i = 0; i < ht->table_size; i++) {
     for (scan = ht->buckets[i]; scan;) {
@@ -462,15 +458,15 @@ static void destroy_hash_table(struct hash_header* ht, void (*gman)(void*)) {
 
 int find_path(int in_room, struct find_path_data* data, int depth,
   int in_zone) {
-  struct room_q *tmp_q;
-  struct room_q *q_head;
-  struct room_q *q_tail;
+  struct room_q* tmp_q;
+  struct room_q* q_head;
+  struct room_q* q_tail;
   struct hash_header x_room;
   int i;
   int tmp_room;
   int count = 0;
-  struct room_data *herep;
-  struct room_data *therep;
+  struct room_data* herep;
+  struct room_data* therep;
 
   struct room_direction_data* exitp;
 
@@ -543,15 +539,14 @@ int find_path(int in_room, struct find_path_data* data, int depth,
                 destroy_hash_table(&x_room, donothing);
               }
               return (i);
-            } else { /* else return the ancestor */
-              int i;
+            } /* else return the ancestor */
+            int i;
 
-              i = (int)hash_find(&x_room, tmp_room);
-              if (x_room.buckets) { /* junk left over from a previous track */
-                destroy_hash_table(&x_room, donothing);
-              }
-              return (-1 + i);
+            i = (int)hash_find(&x_room, tmp_room);
+            if (x_room.buckets) { /* junk left over from a previous track */
+              destroy_hash_table(&x_room, donothing);
             }
+            return (-1 + i);
           }
         }
       }
@@ -893,11 +888,10 @@ void do_doorbash(struct char_data* ch, char* arg, int cmd) {
           WAIT_STATE(ch, PULSE_VIOLENCE * 3);
           GET_MOVE(ch) -= 10;
           return;
-        } else {
-          WAIT_STATE(ch, PULSE_VIOLENCE * 1);
-          GET_MOVE(ch) -= 5;
-          return;
         }
+        WAIT_STATE(ch, PULSE_VIOLENCE * 1);
+        GET_MOVE(ch) -= 5;
+        return;
       }
     } else {
       send_to_char("You just don't know the nuances of door-bashing.\n\r", ch);
@@ -1063,14 +1057,13 @@ void do_feign_death(struct char_data* ch, char* arg, int cmd) {
     }
     WAIT_STATE(ch, PULSE_VIOLENCE * 2);
     return;
-  } else {
-    GET_POS(ch) = POSITION_SLEEPING;
-    WAIT_STATE(ch, PULSE_VIOLENCE * 3);
-    if (ch->skills[SKILL_FEIGN_DEATH].learned < 95 &&
-        ch->skills[SKILL_FEIGN_DEATH].learned > 0) {
-      if (number(1, 101) > ch->skills[SKILL_FEIGN_DEATH].learned) {
-        ch->skills[SKILL_FEIGN_DEATH].learned++;
-      }
+  }
+  GET_POS(ch) = POSITION_SLEEPING;
+  WAIT_STATE(ch, PULSE_VIOLENCE * 3);
+  if (ch->skills[SKILL_FEIGN_DEATH].learned < 95 &&
+      ch->skills[SKILL_FEIGN_DEATH].learned > 0) {
+    if (number(1, 101) > ch->skills[SKILL_FEIGN_DEATH].learned) {
+      ch->skills[SKILL_FEIGN_DEATH].learned++;
     }
   }
 }

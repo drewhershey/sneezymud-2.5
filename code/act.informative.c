@@ -113,202 +113,201 @@ void do_who(struct char_data* ch, char* argument, int cmd) {
     sprintf(buf, "\n\rTotal Players : [%d]\n\r", count);
     send_to_char(buf, ch);
     return;
-  } else {
-    argument = one_argument(argument, arg); /*  'who playername' command */
-    if (k = get_char_vis(ch, arg)) {
-      if (IS_NPC(k)) {
-        send_to_char("\n\rTotal Players : [0]\n\r", ch);
-        return;
-      }
-      sprintf(buf, "%s %s   ", GET_NAME(k),
-        (k->player.title ? k->player.title : "(NULL)"));
-      if (!strcmp(k->player.name, "Spawn")) {
-        sprintf(tempbuf, "Level:[God O' da Jank] ");
-      } else if (!strcmp(k->player.name, "Stargazer")) {
-        sprintf(tempbuf, "Level:[De Code Boy] ");
-      } else if (!strcmp(k->player.name, "Batopr")) {
-        sprintf(tempbuf, "Level:[The Lord of Worlds]");
-      } else if (!strcmp(k->player.name, "Trick")) {
-        sprintf(tempbuf, "Level:[  Goddess  ] ");
-      } else if (GetMaxLevel(k) == 60) {
-        sprintf(tempbuf, "Level:[GrandPoobah] ");
-      } else if (GetMaxLevel(k) == 59) {
-        sprintf(tempbuf, "Level:[GrandWizard] ");
-      } else if (GetMaxLevel(k) == 58) {
-        sprintf(tempbuf, "Level:[Senior Lord] ");
-      } else if (GetMaxLevel(k) == 57) {
-        sprintf(tempbuf, "Level:[Junior Lord] ");
-      } else if (GetMaxLevel(k) == 56) {
-        sprintf(tempbuf, "Level:[    God    ] ");
-      } else if (GetMaxLevel(k) == 55) {
-        sprintf(tempbuf, "Level:[Lesser  God] ");
-      } else if (GetMaxLevel(k) == 54) {
-        sprintf(tempbuf, "Level:[  DemiGod  ] ");
-      } else if (GetMaxLevel(k) == 53) {
-        sprintf(tempbuf, "Level:[   Saint   ] ");
-      } else if (GetMaxLevel(k) == 52) {
-        sprintf(tempbuf, "Level:[LowImmortal] ");
-      } else if (GetMaxLevel(k) == 51) {
-        sprintf(tempbuf, "Level:[Area Design] ");
-      } else if (HasClass(k, CLASS_MONK)) {
-        sprintf(tempbuf, "Level:[Monk     %d] ", k->player.level[6]);
-      } else if (HasClass(k, CLASS_PALADIN)) {
-        sprintf(tempbuf, "Level:[Paladin  %d] ", k->player.level[5]);
-      } else if (HasClass(k, CLASS_ANTIPALADIN)) {
-        sprintf(tempbuf, "Level:[Antipal  %d] ", k->player.level[4]);
-      } else if (HasClass(k, CLASS_RANGER)) {
-        sprintf(tempbuf, "Level:[Ranger   %d] ", k->player.level[7]);
-      } else {
-        sprintf(tempbuf, "Level:[%-2d/%-2d/%-2d/%-2d] ", k->player.level[0],
-          k->player.level[1], k->player.level[2], k->player.level[3]);
-      }
-      strcat(buf, tempbuf);
-      strcat(buf, "\n\r");
-      send_to_char(buf, ch);
+  }
+  argument = one_argument(argument, arg); /*  'who playername' command */
+  if (k = get_char_vis(ch, arg)) {
+    if (IS_NPC(k)) {
+      send_to_char("\n\rTotal Players : [0]\n\r", ch);
       return;
-    } else if (arg[0] == '-') {
-      if (strchr(arg, '?')) {
-        if (IS_IMMORTAL(ch)) {
-          send_to_char("[-]i=idle l=levels t=title h=hit/mana/move\n\r", ch);
-          send_to_char("[-]d=linkdead g=God o=Mort s=stats\n\r", ch);
-          send_to_char(
-            "[-] "
-            "[1]Mage[2]Cleric[3]War[4]Thief[5]Anti[6]Paladin[7]Monk[8]"
-            "Ranger\n\r\n\r",
-            ch);
-        } else {
-          send_to_char("[-]l=levels t=title g=god o=mort\n\r", ch);
-          send_to_char(
-            "[-] "
-            "[1]Mage[2]Cleric[3]War[4]Thief[5]Anti[6]Paladin[7]Monk[8]"
-            "Ranger\n\r\n\r",
-            ch);
-        }
-      }
-      for (person = character_list; person; person = person->next) {
-        if (!IS_NPC(person)) {
-          count++;
-          if (!person->desc) {
-            lcount++;
-          }
-          if (!(!CAN_SEE(ch, person) ||
-                (strchr(arg, 'g') && !IS_IMMORTAL(person)) ||
-                (strchr(arg, 'k') &&
-                  !IS_SET(person->specials.act, PLR_KILLER) &&
-                  !IS_SET(person->specials.act, PLR_OUTLAW)) ||
-                (strchr(arg, 'o') && IS_IMMORTAL(person)) ||
-                (strchr(arg, '1') && !HasClass(person, CLASS_MAGIC_USER)) ||
-                (strchr(arg, '2') && !HasClass(person, CLASS_CLERIC)) ||
-                (strchr(arg, '3') && !HasClass(person, CLASS_WARRIOR)) ||
-                (strchr(arg, '4') && !HasClass(person, CLASS_THIEF)) ||
-                (strchr(arg, '5') && !HasClass(person, CLASS_ANTIPALADIN)) ||
-                (strchr(arg, '6') && !HasClass(person, CLASS_PALADIN)) ||
-                (!strchr(arg, 'd') && !person->desc) ||
-                (strchr(arg, '7') && !HasClass(person, CLASS_MONK)) ||
-                (strchr(arg, '8') && !HasClass(person, CLASS_RANGER)))) {
-            if (!person->desc) {
-              sprintf(buf, "[%-12s] ", GET_NAME(person));
-            } else if (IS_NPC(person) &&
-                       IS_SET(person->specials.act, ACT_POLYSELF)) {
-              sprintf(buf, "(%-14s) ", GET_NAME(person));
-            } else {
-              sprintf(buf, "%-14s ", GET_NAME(person));
-            }
-            listed++;
-            for (l = 1; l <= strlen(arg); l++) {
-              switch (arg[l]) {
-                case 'i':
-                  if (IS_IMMORTAL(ch)) {
-                    sprintf(tempbuf, "Idle:[%-3d] ", person->specials.timer);
-                    strcat(buf, tempbuf);
-                  }
-                  break;
-                case 'l':
-                  if (GetMaxLevel(person) == 60) {
-                    sprintf(tempbuf, "Level:[GrandPoobah] ");
-                  } else if (GetMaxLevel(person) == 59) {
-                    sprintf(tempbuf, "Level:[GrandWizard] ");
-                  } else if (GetMaxLevel(person) == 58) {
-                    sprintf(tempbuf, "Level:[Senior Lord] ");
-                  } else if (GetMaxLevel(person) == 57) {
-                    sprintf(tempbuf, "Level:[Junior Lord] ");
-                  } else if (GetMaxLevel(person) == 56) {
-                    sprintf(tempbuf, "Level:[    God    ] ");
-                  } else if (GetMaxLevel(person) == 55) {
-                    sprintf(tempbuf, "Level:[Lesser  God] ");
-                  } else if (GetMaxLevel(person) == 54) {
-                    sprintf(tempbuf, "Level:[  DemiGod  ] ");
-                  } else if (GetMaxLevel(person) == 53) {
-                    sprintf(tempbuf, "Level:[   Saint   ] ");
-                  } else if (GetMaxLevel(person) == 52) {
-                    sprintf(tempbuf, "Level:[LowImmortal] ");
-                  } else if (GetMaxLevel(person) == 51) {
-                    sprintf(tempbuf, "Level:[Area Design] ");
-                  } else if (HasClass(person, CLASS_MONK)) {
-                    sprintf(tempbuf, "Level:[Monk Lev %d] ",
-                      person->player.level[6]);
-                  } else if (HasClass(person, CLASS_ANTIPALADIN)) {
-                    sprintf(tempbuf, "Level:[Anti Lev %d] ",
-                      person->player.level[4]);
-                  } else if (HasClass(person, CLASS_PALADIN)) {
-                    sprintf(tempbuf, "Level:[Pala Lev %d] ",
-                      person->player.level[5]);
-                  } else if (HasClass(person, CLASS_RANGER)) {
-                    sprintf(tempbuf, "Level:[Rang Lev %d] ",
-                      person->player.level[7]);
-                  } else {
-                    sprintf(tempbuf, "Level:[%-2d/%-2d/%-2d/%-2d] ",
-                      person->player.level[0], person->player.level[1],
-                      person->player.level[2], person->player.level[3]);
-                  }
-                  strcat(buf, tempbuf);
-                  break;
-                case 'h':
-                  if (IS_IMMORTAL(ch)) {
-                    sprintf(tempbuf, "Hit:[%-3d] Mana:[%-3d] Move:[%-3d] ",
-                      GET_HIT(person), GET_MANA(person), GET_MOVE(person));
-                    strcat(buf, tempbuf);
-                  }
-                  break;
-                case 's':
-                  if (IS_IMMORTAL(ch)) {
-                    sprintf(tempbuf, "[S:%-2d I:%-2d W:%-2d C:%-2d D:%-2d] ",
-                      GET_STR(person), GET_INT(person), GET_WIS(person),
-                      GET_CON(person), GET_DEX(person));
-                    strcat(buf, tempbuf);
-                  }
-                  break;
-                case 't':
-                  sprintf(tempbuf, " %-16s ",
-                    (person->player.title ? person->player.title : "(null)"));
-                  strcat(buf, tempbuf);
-                  break;
-                default:
-                  break;
-              } /* end of switch statement */
-            } /* end of for-loop */
-            strcat(buf, "\n\r");
-            send_to_char(buf, ch);
-          } /* end of 'should I skip this fool' if-statement */
-        } /* end of !NPC(person) loop */
-      } /* end of 'step through the character list' loop */
     }
-    if (IS_IMMORTAL(ch)) {
-      if (!listed) {
-        sprintf(buf, "\n\rTotal players / Link dead [%d/%d] (%2.0f%%)\n\r",
-          count, lcount, ((float)lcount / (int)count) * 100);
-      } else {
-        sprintf(buf,
-          "\n\rTotal players / Link dead [%d/%d] (%2.0f%%) Number Listed: "
-          "%d\n\r",
-          count, lcount, ((float)lcount / (int)count) * 100, listed);
-      }
+    sprintf(buf, "%s %s   ", GET_NAME(k),
+      (k->player.title ? k->player.title : "(NULL)"));
+    if (!strcmp(k->player.name, "Spawn")) {
+      sprintf(tempbuf, "Level:[God O' da Jank] ");
+    } else if (!strcmp(k->player.name, "Stargazer")) {
+      sprintf(tempbuf, "Level:[De Code Boy] ");
+    } else if (!strcmp(k->player.name, "Batopr")) {
+      sprintf(tempbuf, "Level:[The Lord of Worlds]");
+    } else if (!strcmp(k->player.name, "Trick")) {
+      sprintf(tempbuf, "Level:[  Goddess  ] ");
+    } else if (GetMaxLevel(k) == 60) {
+      sprintf(tempbuf, "Level:[GrandPoobah] ");
+    } else if (GetMaxLevel(k) == 59) {
+      sprintf(tempbuf, "Level:[GrandWizard] ");
+    } else if (GetMaxLevel(k) == 58) {
+      sprintf(tempbuf, "Level:[Senior Lord] ");
+    } else if (GetMaxLevel(k) == 57) {
+      sprintf(tempbuf, "Level:[Junior Lord] ");
+    } else if (GetMaxLevel(k) == 56) {
+      sprintf(tempbuf, "Level:[    God    ] ");
+    } else if (GetMaxLevel(k) == 55) {
+      sprintf(tempbuf, "Level:[Lesser  God] ");
+    } else if (GetMaxLevel(k) == 54) {
+      sprintf(tempbuf, "Level:[  DemiGod  ] ");
+    } else if (GetMaxLevel(k) == 53) {
+      sprintf(tempbuf, "Level:[   Saint   ] ");
+    } else if (GetMaxLevel(k) == 52) {
+      sprintf(tempbuf, "Level:[LowImmortal] ");
+    } else if (GetMaxLevel(k) == 51) {
+      sprintf(tempbuf, "Level:[Area Design] ");
+    } else if (HasClass(k, CLASS_MONK)) {
+      sprintf(tempbuf, "Level:[Monk     %d] ", k->player.level[6]);
+    } else if (HasClass(k, CLASS_PALADIN)) {
+      sprintf(tempbuf, "Level:[Paladin  %d] ", k->player.level[5]);
+    } else if (HasClass(k, CLASS_ANTIPALADIN)) {
+      sprintf(tempbuf, "Level:[Antipal  %d] ", k->player.level[4]);
+    } else if (HasClass(k, CLASS_RANGER)) {
+      sprintf(tempbuf, "Level:[Ranger   %d] ", k->player.level[7]);
     } else {
-      sprintf(buf, "\n\rTotal players [%d]\n\r", count);
+      sprintf(tempbuf, "Level:[%-2d/%-2d/%-2d/%-2d] ", k->player.level[0],
+        k->player.level[1], k->player.level[2], k->player.level[3]);
     }
+    strcat(buf, tempbuf);
+    strcat(buf, "\n\r");
     send_to_char(buf, ch);
     return;
   }
+  if (arg[0] == '-') {
+    if (strchr(arg, '?')) {
+      if (IS_IMMORTAL(ch)) {
+        send_to_char("[-]i=idle l=levels t=title h=hit/mana/move\n\r", ch);
+        send_to_char("[-]d=linkdead g=God o=Mort s=stats\n\r", ch);
+        send_to_char(
+          "[-] "
+          "[1]Mage[2]Cleric[3]War[4]Thief[5]Anti[6]Paladin[7]Monk[8]"
+          "Ranger\n\r\n\r",
+          ch);
+      } else {
+        send_to_char("[-]l=levels t=title g=god o=mort\n\r", ch);
+        send_to_char(
+          "[-] "
+          "[1]Mage[2]Cleric[3]War[4]Thief[5]Anti[6]Paladin[7]Monk[8]"
+          "Ranger\n\r\n\r",
+          ch);
+      }
+    }
+    for (person = character_list; person; person = person->next) {
+      if (!IS_NPC(person)) {
+        count++;
+        if (!person->desc) {
+          lcount++;
+        }
+        if (!(!CAN_SEE(ch, person) ||
+              (strchr(arg, 'g') && !IS_IMMORTAL(person)) ||
+              (strchr(arg, 'k') && !IS_SET(person->specials.act, PLR_KILLER) &&
+                !IS_SET(person->specials.act, PLR_OUTLAW)) ||
+              (strchr(arg, 'o') && IS_IMMORTAL(person)) ||
+              (strchr(arg, '1') && !HasClass(person, CLASS_MAGIC_USER)) ||
+              (strchr(arg, '2') && !HasClass(person, CLASS_CLERIC)) ||
+              (strchr(arg, '3') && !HasClass(person, CLASS_WARRIOR)) ||
+              (strchr(arg, '4') && !HasClass(person, CLASS_THIEF)) ||
+              (strchr(arg, '5') && !HasClass(person, CLASS_ANTIPALADIN)) ||
+              (strchr(arg, '6') && !HasClass(person, CLASS_PALADIN)) ||
+              (!strchr(arg, 'd') && !person->desc) ||
+              (strchr(arg, '7') && !HasClass(person, CLASS_MONK)) ||
+              (strchr(arg, '8') && !HasClass(person, CLASS_RANGER)))) {
+          if (!person->desc) {
+            sprintf(buf, "[%-12s] ", GET_NAME(person));
+          } else if (IS_NPC(person) &&
+                     IS_SET(person->specials.act, ACT_POLYSELF)) {
+            sprintf(buf, "(%-14s) ", GET_NAME(person));
+          } else {
+            sprintf(buf, "%-14s ", GET_NAME(person));
+          }
+          listed++;
+          for (l = 1; l <= strlen(arg); l++) {
+            switch (arg[l]) {
+              case 'i':
+                if (IS_IMMORTAL(ch)) {
+                  sprintf(tempbuf, "Idle:[%-3d] ", person->specials.timer);
+                  strcat(buf, tempbuf);
+                }
+                break;
+              case 'l':
+                if (GetMaxLevel(person) == 60) {
+                  sprintf(tempbuf, "Level:[GrandPoobah] ");
+                } else if (GetMaxLevel(person) == 59) {
+                  sprintf(tempbuf, "Level:[GrandWizard] ");
+                } else if (GetMaxLevel(person) == 58) {
+                  sprintf(tempbuf, "Level:[Senior Lord] ");
+                } else if (GetMaxLevel(person) == 57) {
+                  sprintf(tempbuf, "Level:[Junior Lord] ");
+                } else if (GetMaxLevel(person) == 56) {
+                  sprintf(tempbuf, "Level:[    God    ] ");
+                } else if (GetMaxLevel(person) == 55) {
+                  sprintf(tempbuf, "Level:[Lesser  God] ");
+                } else if (GetMaxLevel(person) == 54) {
+                  sprintf(tempbuf, "Level:[  DemiGod  ] ");
+                } else if (GetMaxLevel(person) == 53) {
+                  sprintf(tempbuf, "Level:[   Saint   ] ");
+                } else if (GetMaxLevel(person) == 52) {
+                  sprintf(tempbuf, "Level:[LowImmortal] ");
+                } else if (GetMaxLevel(person) == 51) {
+                  sprintf(tempbuf, "Level:[Area Design] ");
+                } else if (HasClass(person, CLASS_MONK)) {
+                  sprintf(tempbuf, "Level:[Monk Lev %d] ",
+                    person->player.level[6]);
+                } else if (HasClass(person, CLASS_ANTIPALADIN)) {
+                  sprintf(tempbuf, "Level:[Anti Lev %d] ",
+                    person->player.level[4]);
+                } else if (HasClass(person, CLASS_PALADIN)) {
+                  sprintf(tempbuf, "Level:[Pala Lev %d] ",
+                    person->player.level[5]);
+                } else if (HasClass(person, CLASS_RANGER)) {
+                  sprintf(tempbuf, "Level:[Rang Lev %d] ",
+                    person->player.level[7]);
+                } else {
+                  sprintf(tempbuf, "Level:[%-2d/%-2d/%-2d/%-2d] ",
+                    person->player.level[0], person->player.level[1],
+                    person->player.level[2], person->player.level[3]);
+                }
+                strcat(buf, tempbuf);
+                break;
+              case 'h':
+                if (IS_IMMORTAL(ch)) {
+                  sprintf(tempbuf, "Hit:[%-3d] Mana:[%-3d] Move:[%-3d] ",
+                    GET_HIT(person), GET_MANA(person), GET_MOVE(person));
+                  strcat(buf, tempbuf);
+                }
+                break;
+              case 's':
+                if (IS_IMMORTAL(ch)) {
+                  sprintf(tempbuf, "[S:%-2d I:%-2d W:%-2d C:%-2d D:%-2d] ",
+                    GET_STR(person), GET_INT(person), GET_WIS(person),
+                    GET_CON(person), GET_DEX(person));
+                  strcat(buf, tempbuf);
+                }
+                break;
+              case 't':
+                sprintf(tempbuf, " %-16s ",
+                  (person->player.title ? person->player.title : "(null)"));
+                strcat(buf, tempbuf);
+                break;
+              default:
+                break;
+            } /* end of switch statement */
+          } /* end of for-loop */
+          strcat(buf, "\n\r");
+          send_to_char(buf, ch);
+        } /* end of 'should I skip this fool' if-statement */
+      } /* end of !NPC(person) loop */
+    } /* end of 'step through the character list' loop */
+  }
+  if (IS_IMMORTAL(ch)) {
+    if (!listed) {
+      sprintf(buf, "\n\rTotal players / Link dead [%d/%d] (%2.0f%%)\n\r", count,
+        lcount, ((float)lcount / (int)count) * 100);
+    } else {
+      sprintf(buf,
+        "\n\rTotal players / Link dead [%d/%d] (%2.0f%%) Number Listed: "
+        "%d\n\r",
+        count, lcount, ((float)lcount / (int)count) * 100, listed);
+    }
+  } else {
+    sprintf(buf, "\n\rTotal players [%d]\n\r", count);
+  }
+  send_to_char(buf, ch);
+  return;
 }
 
 /*  A note about "mode" in "show_obj_to_char".
@@ -393,7 +392,8 @@ void show_mult_obj_to_char(struct obj_data* object, struct char_data* ch,
         act("It's blank.", FALSE, ch, 0, 0, TO_CHAR);
       }
       return;
-    } else if ((object->obj_flags.type_flag != ITEM_DRINKCON)) {
+    }
+    if ((object->obj_flags.type_flag != ITEM_DRINKCON)) {
       strcpy(buffer, "You see nothing special..");
     } else { /* ITEM_TYPE == ITEM_DRINKCON */
       strcpy(buffer, "It looks like a drink container.");
@@ -428,8 +428,8 @@ void show_mult_obj_to_char(struct obj_data* object, struct char_data* ch,
 }
 
 void list_obj_in_room(struct obj_data* list, struct char_data* ch) {
-  struct obj_data *i;
-  struct obj_data *cond_ptr[50];
+  struct obj_data* i;
+  struct obj_data* cond_ptr[50];
   int Inventory_Num = 1;
   int num;
   int k;
@@ -500,8 +500,8 @@ void list_obj_in_room(struct obj_data* list, struct char_data* ch) {
 }
 
 void list_obj_in_heap(struct obj_data* list, struct char_data* ch) {
-  struct obj_data *i;
-  struct obj_data *cond_ptr[50];
+  struct obj_data* i;
+  struct obj_data* cond_ptr[50];
   int k;
   int cond_top;
   int cond_tot[50];
@@ -1040,8 +1040,8 @@ void show_mult_char_to_char(struct char_data* i, struct char_data* ch, int mode,
 }
 
 void list_char_in_room(struct char_data* list, struct char_data* ch) {
-  struct char_data *i;
-  struct char_data *cond_ptr[50];
+  struct char_data* i;
+  struct char_data* cond_ptr[50];
   int k;
   int cond_top;
   int cond_tot[50];
@@ -1168,8 +1168,8 @@ void do_look(struct char_data* ch, char* argument, int cmd) {
   int bits;
   int temp;
   char found;
-  struct obj_data *tmp_object;
-  struct obj_data *found_object;
+  struct obj_data* tmp_object;
+  struct obj_data* found_object;
   struct char_data* tmp_char;
   char* tmp_desc;
   static const char* const keywords[] = {"north", "east", "south", "west", "up",
@@ -1795,7 +1795,7 @@ static const char* const month_name[17] = {"Month of Winter", /* 0 */
 
 void do_time(struct char_data* ch, char* argument, int cmd) {
   char buf[100];
-  char *suf;
+  char* suf;
   int weekday;
   int day;
 
@@ -1997,7 +1997,8 @@ void do_atlas(struct char_data* ch, char* argument, int cmd) {
       "An argument (1-4) is needed to look at different atlas volumes.\n\r",
       ch);
     return;
-  } else if (isdigit(*name)) {
+  }
+  if (isdigit(*name)) {
     volume = atoi(name);
 
     if (volume == 1) {
@@ -2115,7 +2116,8 @@ static void do_where_object(struct char_data* ch, struct obj_data* obj,
   if (recurse) {
     if (obj->in_room != NOWHERE) {
       return;
-    } else if (obj->carried_by != NULL) {
+    }
+    if (obj->carried_by != NULL) {
       do_where_person(ch, obj->carried_by, sb);
     } else if (obj->equipped_by != NULL) {
       do_where_person(ch, obj->equipped_by, sb);
@@ -2142,29 +2144,28 @@ void do_where(struct char_data* ch, char* argument, int cmd) {
     if (GetMaxLevel(ch) < LOW_IMMORTAL) {
       send_to_char("What are you looking for?\n\r", ch);
       return;
-    } else {
-      init_string_block(&sb);
-      append_to_string_block(&sb, "Players:\n\r--------\n\r");
-
-      for (d = descriptor_list; d; d = d->next) {
-        if (d->character && (d->connected == CON_PLYNG) &&
-            (d->character->in_room != NOWHERE)) {
-          if (d->original) { /* If switched */
-            sprintf(buf, "%-20s - %s [%d] In body of %s\n\r",
-              d->original->player.name, real_roomp(d->character->in_room)->name,
-              d->character->in_room, fname(d->character->player.name));
-          } else {
-            sprintf(buf, "%-20s - %s [%d]\n\r", d->character->player.name,
-              real_roomp(d->character->in_room)->name, d->character->in_room);
-          }
-
-          append_to_string_block(&sb, buf);
-        }
-      }
-      page_string_block(&sb, ch);
-      destroy_string_block(&sb);
-      return;
     }
+    init_string_block(&sb);
+    append_to_string_block(&sb, "Players:\n\r--------\n\r");
+
+    for (d = descriptor_list; d; d = d->next) {
+      if (d->character && (d->connected == CON_PLYNG) &&
+          (d->character->in_room != NOWHERE)) {
+        if (d->original) { /* If switched */
+          sprintf(buf, "%-20s - %s [%d] In body of %s\n\r",
+            d->original->player.name, real_roomp(d->character->in_room)->name,
+            d->character->in_room, fname(d->character->player.name));
+        } else {
+          sprintf(buf, "%-20s - %s [%d]\n\r", d->character->player.name,
+            real_roomp(d->character->in_room)->name, d->character->in_room);
+        }
+
+        append_to_string_block(&sb, buf);
+      }
+    }
+    page_string_block(&sb, ch);
+    destroy_string_block(&sb);
+    return;
   }
 
   if (isdigit(*name)) {
@@ -2347,55 +2348,67 @@ void do_levels(struct char_data* ch, char* argument, int cmd) {
 static const char* DescRatio(float f) {
   if (f > 1.0f) {
     return ("More than twice yours");
-  } else if (f > .75f) {
-    return ("More than half again greater than yours");
-  } else if (f > .6f) {
-    return ("At least a third greater than yours");
-  } else if (f > .4f) {
-    return ("About the same as yours");
-  } else if (f > .3f) {
-    return ("A little worse than yours");
-  } else if (f > .1f) {
-    return ("Much worse than yours");
-  } else {
-    return ("Extremely inferior");
   }
+  if (f > .75f) {
+    return ("More than half again greater than yours");
+  }
+  if (f > .6f) {
+    return ("At least a third greater than yours");
+  }
+  if (f > .4f) {
+    return ("About the same as yours");
+  }
+  if (f > .3f) {
+    return ("A little worse than yours");
+  }
+  if (f > .1f) {
+    return ("Much worse than yours");
+  }
+  return ("Extremely inferior");
 }
 
 static const char* DescAttacks(float a) {
   if (a < 1.0f) {
     return ("Not many");
-  } else if (a < 2.0f) {
-    return ("About average");
-  } else if (a < 3.0f) {
-    return ("A few");
-  } else if (a < 5.0f) {
-    return ("A lot");
-  } else if (a < 9.0f) {
-    return ("Many");
-  } else {
-    return ("A whole bunch");
   }
+  if (a < 2.0f) {
+    return ("About average");
+  }
+  if (a < 3.0f) {
+    return ("A few");
+  }
+  if (a < 5.0f) {
+    return ("A lot");
+  }
+  if (a < 9.0f) {
+    return ("Many");
+  }
+  return ("A whole bunch");
 }
 
 static const char* DescDamage(float dam) {
   if (dam < 1.0f) {
     return ("Minimal Damage");
-  } else if (dam <= 2.0f) {
-    return ("Slight damage");
-  } else if (dam <= 4.0f) {
-    return ("A bit of damage");
-  } else if (dam <= 10.0f) {
-    return ("A decent amount of damage");
-  } else if (dam <= 15.0f) {
-    return ("A lot of damage");
-  } else if (dam <= 25.0f) {
-    return ("A whole lot of damage");
-  } else if (dam <= 35.0f) {
-    return ("A very large amount");
-  } else {
-    return ("A TON of damage");
   }
+  if (dam <= 2.0f) {
+    return ("Slight damage");
+  }
+  if (dam <= 4.0f) {
+    return ("A bit of damage");
+  }
+  if (dam <= 10.0f) {
+    return ("A decent amount of damage");
+  }
+  if (dam <= 15.0f) {
+    return ("A lot of damage");
+  }
+  if (dam <= 25.0f) {
+    return ("A whole lot of damage");
+  }
+  if (dam <= 35.0f) {
+    return ("A very large amount");
+  }
+  return ("A TON of damage");
 }
 
 void do_consider(struct char_data* ch, char* argument, int cmd) {
@@ -2611,8 +2624,8 @@ void do_world(struct char_data* ch, char* argument, int cmd) {
   static char buf[100];
   long ct;
   long ot;
-  char *tmstr;
-  char *otmstr;
+  char* tmstr;
+  char* otmstr;
 
   ot = Uptime;
   otmstr = asctime(localtime(&ot));
@@ -2902,33 +2915,40 @@ real_roomp(w)->dir_option[3]->to_room != NOWHERE &&
 const char* DescMoves(float a) {
   if (a < .1) {
     return ("very tired");
-  } else if (a < .3) {
-    return ("slightly tired");
-  } else if (a < .5) {
-    return ("not very tired");
-  } else if (a < .7) {
-    return ("well rested");
-  } else {
-    return ("totally rested");
   }
+  if (a < .3) {
+    return ("slightly tired");
+  }
+  if (a < .5) {
+    return ("not very tired");
+  }
+  if (a < .7) {
+    return ("well rested");
+  }
+  return ("totally rested");
 }
 
 const char* ac_for_score(int a) {
   if (a > 75) {
     return ("scantily clothed");
-  } else if (a > 50) {
-    return ("heavily clothed");
-  } else if (a > 25) {
-    return ("slightly armored");
-  } else if (a > 0) {
-    return ("moderately armored");
-  } else if (a > -25) {
-    return ("armored rather heavily");
-  } else if (a > -50) {
-    return ("armored very heavily");
-  } else if (a > -100) {
-    return ("armored extremely heavily");
-  } else {
-    return ("totally armored");
   }
+  if (a > 50) {
+    return ("heavily clothed");
+  }
+  if (a > 25) {
+    return ("slightly armored");
+  }
+  if (a > 0) {
+    return ("moderately armored");
+  }
+  if (a > -25) {
+    return ("armored rather heavily");
+  }
+  if (a > -50) {
+    return ("armored very heavily");
+  }
+  if (a > -100) {
+    return ("armored extremely heavily");
+  }
+  return ("totally armored");
 }

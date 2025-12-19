@@ -48,9 +48,8 @@ char recep_offer(struct char_data* ch, struct char_data* receptionist,
 
   if (cost->total_cost > GET_GOLD(ch)) {
     return (FALSE);
-  } else {
-    return (TRUE);
   }
+  return (TRUE);
 }
 
 /* ************************************************************************
@@ -378,8 +377,8 @@ static void CountLimitedItems(struct obj_file_u* st) {
 }
 
 void update_obj_file(void) {
-  FILE *fl;
-  FILE *char_file;
+  FILE* fl;
+  FILE* char_file;
   struct obj_file_u st;
   struct char_file_u ch_st;
   struct char_data tmp_char;

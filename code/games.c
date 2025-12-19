@@ -33,13 +33,14 @@ static const char* ChooseFirstFruit(void) {
 
   if (num == 1) {
     return (fruits[7]);
-  } else if (num <= 3) {
-    return (fruits[6]);
-  } else if (num <= 12) {
-    return (fruits[number(1, 5)]);
-  } else {
-    return (fruits[0]);
   }
+  if (num <= 3) {
+    return (fruits[6]);
+  }
+  if (num <= 12) {
+    return (fruits[number(1, 5)]);
+  }
+  return (fruits[0]);
 }
 
 static const char* ChooseSecondFruit(void) {
@@ -57,13 +58,14 @@ static const char* ChooseSecondFruit(void) {
   num = number(1, 15);
   if (num == 1) {
     return (fruits[7]);
-  } else if (num <= 3) {
-    return (fruits[6]);
-  } else if (num <= 12) {
-    return (fruits[number(1, 5)]);
-  } else {
-    return (fruits[0]);
   }
+  if (num <= 3) {
+    return (fruits[6]);
+  }
+  if (num <= 12) {
+    return (fruits[number(1, 5)]);
+  }
+  return (fruits[0]);
 }
 
 static const char* ChooseThirdFruit(void) {
@@ -81,13 +83,14 @@ static const char* ChooseThirdFruit(void) {
   num = number(1, 15);
   if (num == 1) {
     return (fruits[7]);
-  } else if (num <= 3) {
-    return (fruits[6]);
-  } else if (num <= 12) {
-    return (fruits[number(1, 5)]);
-  } else {
-    return (fruits[0]);
   }
+  if (num <= 3) {
+    return (fruits[6]);
+  }
+  if (num <= 12) {
+    return (fruits[number(1, 5)]);
+  }
+  return (fruits[0]);
 }
 
 static void lose_dice(struct char_data* ch) {
@@ -114,23 +117,22 @@ static void get_dice(struct char_data* ch) {
 
   if (!crap_man) {
     return;
-  } else {
-    dice = get_obj_in_list_vis(crap_man, "qwert", crap_man->carrying);
-    if (!dice) {
-      return;
-    }
-    sprintf(buf, "Fine %s, Here are the dice!", GET_NAME(ch));
-    do_say(crap_man, buf, 0);
-    do_say(crap_man, "Hold the dice, and throw them when I say its ok!", 0);
-    obj_from_char(dice);
-    obj_to_char(dice, ch);
-
-    if (!crap_man->act_ptr) {
-      crap_man->act_ptr = (struct mob_act_data*)calloc(1, (sizeof(int)));
-    }
-
-    (*((int*)crap_man->act_ptr)) = START_BETS;
   }
+  dice = get_obj_in_list_vis(crap_man, "qwert", crap_man->carrying);
+  if (!dice) {
+    return;
+  }
+  sprintf(buf, "Fine %s, Here are the dice!", GET_NAME(ch));
+  do_say(crap_man, buf, 0);
+  do_say(crap_man, "Hold the dice, and throw them when I say its ok!", 0);
+  obj_from_char(dice);
+  obj_to_char(dice, ch);
+
+  if (!crap_man->act_ptr) {
+    crap_man->act_ptr = (struct mob_act_data*)calloc(1, (sizeof(int)));
+  }
+
+  (*((int*)crap_man->act_ptr)) = START_BETS;
 }
 
 static int check_for_dice_held(struct char_data* ch) {
@@ -140,9 +142,8 @@ static int check_for_dice_held(struct char_data* ch) {
 
   if (dice) {
     return (TRUE);
-  } else {
-    return (FALSE);
   }
+  return (FALSE);
 }
 
 static int check_for_dice_in_inv(struct char_data* ch) {
@@ -152,14 +153,13 @@ static int check_for_dice_in_inv(struct char_data* ch) {
 
   if (dice) {
     return (TRUE);
-  } else {
-    return (FALSE);
   }
+  return (FALSE);
 }
 
 static int check_pointroll(struct char_data* ch) {
-  struct char_data *tmp_char;
-  struct char_data *temp;
+  struct char_data* tmp_char;
+  struct char_data* temp;
 
   for (tmp_char = character_list; tmp_char; tmp_char = temp) {
     temp = tmp_char->next;
@@ -173,14 +173,13 @@ static int check_pointroll(struct char_data* ch) {
 int check_slots(struct char_data* ch) {
   if ((ch->in_room < 8414) && (ch->in_room > 8403)) {
     return (TRUE);
-  } else {
-    return (FALSE);
   }
+  return (FALSE);
 }
 
 int check_slot_player(struct char_data* ch) {
-  struct char_data *better;
-  struct char_data *temp;
+  struct char_data* better;
+  struct char_data* temp;
 
   for (better = character_list; better; better = temp) {
     temp = better->next;
@@ -210,145 +209,140 @@ void do_bet(struct char_data* ch, char* arg, int cmd) {
   if (!*amount) {
     send_to_char(BET_OPTIONS, ch);
     return;
-  } else {
-    if (is_abbrev(amount, "one")) {
-      if (!*craps) {
-        send_to_char(ONEROLL_OPTIONS, ch);
+  }
+  if (is_abbrev(amount, "one")) {
+    if (!*craps) {
+      send_to_char(ONEROLL_OPTIONS, ch);
+      return;
+    }
+  }
+  if (*craps) {
+    if (isdigit(*craps)) {
+      num = atoi(craps);
+      if (num > GET_GOLD(ch)) {
+        send_to_char("You don't have that much to bet!\n\r", ch);
         return;
       }
-    }
-    if (*craps) {
-      if (isdigit(*craps)) {
-        num = atoi(craps);
-        if (num > GET_GOLD(ch)) {
-          send_to_char("You don't have that much to bet!\n\r", ch);
-          return;
-        }
-        if (num <= 0) {
-          send_to_char("Nice try.\n\r", ch);
-          return;
-        }
-        if (is_abbrev(amount, "crap")) {
-          if (ch->bet.crap == 0) {
-            ch->bet_opt.craps_options += CRAP_OUT;
-            sprintf(buf, "You just placed %d gold down on a no pass bet.\n\r",
-              num);
-            send_to_char(buf, ch);
-          } else {
-            sprintf(buf, "You just added %d gold to your no pass bet.\n\r",
-              num);
-            send_to_char(buf, ch);
-          }
-          GET_GOLD(ch) -= num;
-          ch->bet.crap += num;
-        } else if (is_abbrev(amount, "come")) {
-          get_dice(ch);
-          if (ch->bet.come == 0) {
-            ch->bet_opt.craps_options += COME_OUT;
-            sprintf(buf,
-              "You just placed %d gold down on the come out roll.\n\r", num);
-          } else {
-            sprintf(buf,
-              "You add %d gold to your bet on the come out roll.\n\r", num);
-          }
+      if (num <= 0) {
+        send_to_char("Nice try.\n\r", ch);
+        return;
+      }
+      if (is_abbrev(amount, "crap")) {
+        if (ch->bet.crap == 0) {
+          ch->bet_opt.craps_options += CRAP_OUT;
+          sprintf(buf, "You just placed %d gold down on a no pass bet.\n\r",
+            num);
           send_to_char(buf, ch);
-          GET_GOLD(ch) -= num;
-          ch->bet.come += num;
-        } else if (is_abbrev(amount, "three")) {
-          if (ch->bet.three == 0) {
-            ch->bet_opt.one_roll += THREE3;
-            sprintf(buf,
-              "You just placed %d gold down on a oneroll three (3) bet\n\r",
-              num);
-          } else {
-            sprintf(buf,
-              "You add %d gold to your bet on the oneroll three (3).\n\r", num);
-          }
-          send_to_char(buf, ch);
-          GET_GOLD(ch) -= num;
-          ch->bet.three += num;
-        } else if (is_abbrev(amount, "two")) {
-          if (ch->bet.two == 0) {
-            ch->bet_opt.one_roll += TWO2;
-            sprintf(buf,
-              "You just placed %d gold down on a oneroll two (2) bet\n\r", num);
-          } else {
-            sprintf(buf,
-              "You add %d gold to your bet on the oneroll two (2).\n\r", num);
-          }
-          send_to_char(buf, ch);
-          GET_GOLD(ch) -= num;
-          ch->bet.two += num;
-        } else if (is_abbrev(amount, "eleven")) {
-          if (ch->bet.eleven == 0) {
-            ch->bet_opt.one_roll += ELEVEN;
-            sprintf(buf,
-              "You just placed %d gold down on a oneroll eleven (11) bet.\n\r",
-              num);
-          } else {
-            sprintf(buf,
-              "You add %d gold to your bet on the oneroll eleven (11).\n\r",
-              num);
-          }
-          send_to_char(buf, ch);
-          GET_GOLD(ch) -= num;
-          ch->bet.eleven += num;
-        } else if (is_abbrev(amount, "twelve")) {
-          if (ch->bet.twelve == 0) {
-            ch->bet_opt.one_roll += TWELVE;
-            sprintf(buf,
-              "You just placed %d gold down on a oneroll twelve (12) bet.\n\r",
-              num);
-          } else {
-            sprintf(buf,
-              "You add %d gold to your bet on a oneroll twelve (12) bet.\n\r",
-              num);
-          }
-          send_to_char(buf, ch);
-          GET_GOLD(ch) -= num;
-          ch->bet.twelve += num;
-        } else if (is_abbrev(amount, "horn")) {
-          if (ch->bet.horn_bet == 0) {
-            ch->bet_opt.one_roll += HORN_BET;
-            sprintf(buf,
-              "You just placed %d gold down on a oneroll horn bet.\n\r", num);
-          } else {
-            sprintf(buf,
-              "You add %d gold to your bet on a oneroll horn bet.\n\r", num);
-          }
-          send_to_char(buf, ch);
-          GET_GOLD(ch) -= num;
-          ch->bet.horn_bet += num;
-        } else if (is_abbrev(amount, "field")) {
-          if (ch->bet.field_bet == 0) {
-            ch->bet_opt.one_roll += FIELD_BET;
-            sprintf(buf,
-              "You just placed %d gold down on a oneroll field bet.\n\r", num);
-          } else {
-            sprintf(buf,
-              "You add %d gold to your bet on a oneroll field bet.\n\r", num);
-          }
-          send_to_char(buf, ch);
-          GET_GOLD(ch) -= num;
-          ch->bet.field_bet += num;
-        } else if (is_abbrev(amount, "seven")) {
-          if (ch->bet.seven == 0) {
-            ch->bet_opt.one_roll += SEVEN;
-            sprintf(buf,
-              "You just placed %d gold down on a oneroll seven (7) bet.\n\r",
-              num);
-          } else {
-            sprintf(buf,
-              "You add %d gold to your bet on a oneroll seven (7) bet.\n\r",
-              num);
-          }
-          send_to_char(buf, ch);
-          GET_GOLD(ch) -= num;
-          ch->bet.seven += num;
         } else {
-          send_to_char("Wrong option.\n\r", ch);
-          return;
+          sprintf(buf, "You just added %d gold to your no pass bet.\n\r", num);
+          send_to_char(buf, ch);
         }
+        GET_GOLD(ch) -= num;
+        ch->bet.crap += num;
+      } else if (is_abbrev(amount, "come")) {
+        get_dice(ch);
+        if (ch->bet.come == 0) {
+          ch->bet_opt.craps_options += COME_OUT;
+          sprintf(buf, "You just placed %d gold down on the come out roll.\n\r",
+            num);
+        } else {
+          sprintf(buf, "You add %d gold to your bet on the come out roll.\n\r",
+            num);
+        }
+        send_to_char(buf, ch);
+        GET_GOLD(ch) -= num;
+        ch->bet.come += num;
+      } else if (is_abbrev(amount, "three")) {
+        if (ch->bet.three == 0) {
+          ch->bet_opt.one_roll += THREE3;
+          sprintf(buf,
+            "You just placed %d gold down on a oneroll three (3) bet\n\r", num);
+        } else {
+          sprintf(buf,
+            "You add %d gold to your bet on the oneroll three (3).\n\r", num);
+        }
+        send_to_char(buf, ch);
+        GET_GOLD(ch) -= num;
+        ch->bet.three += num;
+      } else if (is_abbrev(amount, "two")) {
+        if (ch->bet.two == 0) {
+          ch->bet_opt.one_roll += TWO2;
+          sprintf(buf,
+            "You just placed %d gold down on a oneroll two (2) bet\n\r", num);
+        } else {
+          sprintf(buf,
+            "You add %d gold to your bet on the oneroll two (2).\n\r", num);
+        }
+        send_to_char(buf, ch);
+        GET_GOLD(ch) -= num;
+        ch->bet.two += num;
+      } else if (is_abbrev(amount, "eleven")) {
+        if (ch->bet.eleven == 0) {
+          ch->bet_opt.one_roll += ELEVEN;
+          sprintf(buf,
+            "You just placed %d gold down on a oneroll eleven (11) bet.\n\r",
+            num);
+        } else {
+          sprintf(buf,
+            "You add %d gold to your bet on the oneroll eleven (11).\n\r", num);
+        }
+        send_to_char(buf, ch);
+        GET_GOLD(ch) -= num;
+        ch->bet.eleven += num;
+      } else if (is_abbrev(amount, "twelve")) {
+        if (ch->bet.twelve == 0) {
+          ch->bet_opt.one_roll += TWELVE;
+          sprintf(buf,
+            "You just placed %d gold down on a oneroll twelve (12) bet.\n\r",
+            num);
+        } else {
+          sprintf(buf,
+            "You add %d gold to your bet on a oneroll twelve (12) bet.\n\r",
+            num);
+        }
+        send_to_char(buf, ch);
+        GET_GOLD(ch) -= num;
+        ch->bet.twelve += num;
+      } else if (is_abbrev(amount, "horn")) {
+        if (ch->bet.horn_bet == 0) {
+          ch->bet_opt.one_roll += HORN_BET;
+          sprintf(buf,
+            "You just placed %d gold down on a oneroll horn bet.\n\r", num);
+        } else {
+          sprintf(buf, "You add %d gold to your bet on a oneroll horn bet.\n\r",
+            num);
+        }
+        send_to_char(buf, ch);
+        GET_GOLD(ch) -= num;
+        ch->bet.horn_bet += num;
+      } else if (is_abbrev(amount, "field")) {
+        if (ch->bet.field_bet == 0) {
+          ch->bet_opt.one_roll += FIELD_BET;
+          sprintf(buf,
+            "You just placed %d gold down on a oneroll field bet.\n\r", num);
+        } else {
+          sprintf(buf,
+            "You add %d gold to your bet on a oneroll field bet.\n\r", num);
+        }
+        send_to_char(buf, ch);
+        GET_GOLD(ch) -= num;
+        ch->bet.field_bet += num;
+      } else if (is_abbrev(amount, "seven")) {
+        if (ch->bet.seven == 0) {
+          ch->bet_opt.one_roll += SEVEN;
+          sprintf(buf,
+            "You just placed %d gold down on a oneroll seven (7) bet.\n\r",
+            num);
+        } else {
+          sprintf(buf,
+            "You add %d gold to your bet on a oneroll seven (7) bet.\n\r", num);
+        }
+        send_to_char(buf, ch);
+        GET_GOLD(ch) -= num;
+        ch->bet.seven += num;
+      } else {
+        send_to_char("Wrong option.\n\r", ch);
+        return;
       }
     }
   }
@@ -359,8 +353,8 @@ static void spin_slot(struct char_data* ch) {
   const char* fruit1;
   const char* fruit2;
   const char* fruit3;
-  struct obj_data *coins;
-  struct obj_data *slot;
+  struct obj_data* coins;
+  struct obj_data* slot;
   int bits;
   struct char_data* tmp_char;
 
@@ -398,54 +392,49 @@ static void spin_slot(struct char_data* ch) {
         obj_to_obj(coins, slot);
         ch->bet.slot = 0;
         return;
-      } else {
-        sprintf(buf, "No slot machine in room %d", ch->in_room);
-        vlog(buf);
-        return;
       }
-    } else {
-      send_to_char("You win!\n\r", ch);
-      coins = create_money(4 * (ch->bet.slot));
-      if (coins && (bits == FIND_OBJ_ROOM)) {
-        obj_to_obj(coins, slot);
-        ch->bet.slot = 0;
-        return;
-      } else {
-        sprintf(buf, "No slot machine in room %d", ch->in_room);
-        vlog(buf);
-        return;
-      }
+      sprintf(buf, "No slot machine in room %d", ch->in_room);
+      vlog(buf);
+      return;
     }
-  } else if (strcmp(fruit1, "Seven") && (fruit1 == fruit2) &&
-             (fruit2 == fruit3)) {
+    send_to_char("You win!\n\r", ch);
+    coins = create_money(4 * (ch->bet.slot));
+    if (coins && (bits == FIND_OBJ_ROOM)) {
+      obj_to_obj(coins, slot);
+      ch->bet.slot = 0;
+      return;
+    }
+    sprintf(buf, "No slot machine in room %d", ch->in_room);
+    vlog(buf);
+    return;
+  }
+  if (strcmp(fruit1, "Seven") && (fruit1 == fruit2) && (fruit2 == fruit3)) {
     send_to_char("You win!\n\r", ch);
     coins = create_money(9 * (ch->bet.slot));
     if (coins && (bits == FIND_OBJ_ROOM)) {
       obj_to_obj(coins, slot);
       ch->bet.slot = 0;
       return;
-    } else {
-      sprintf(buf, "No slot machine in room %d", ch->in_room);
-      vlog(buf);
-      return;
     }
-  } else if (!strcmp(fruit3, "bally") && (fruit2 == fruit1)) {
+    sprintf(buf, "No slot machine in room %d", ch->in_room);
+    vlog(buf);
+    return;
+  }
+  if (!strcmp(fruit3, "bally") && (fruit2 == fruit1)) {
     send_to_char("You win!\n\r", ch);
     coins = create_money(20 * (ch->bet.slot));
     if (coins && (bits == FIND_OBJ_ROOM)) {
       obj_to_obj(coins, slot);
       ch->bet.slot = 0;
       return;
-    } else {
-      sprintf(buf, "No slot machine in room %d", ch->in_room);
-      vlog(buf);
-      return;
     }
-  } else {
-    send_to_char("You lose!\n\r", ch);
-    ch->bet.slot = 0;
+    sprintf(buf, "No slot machine in room %d", ch->in_room);
+    vlog(buf);
     return;
   }
+  send_to_char("You lose!\n\r", ch);
+  ch->bet.slot = 0;
+  return;
 }
 
 static int can_bet_craps(struct char_data* ch) {
@@ -464,14 +453,13 @@ static int can_bet_craps(struct char_data* ch) {
 
   if ((*((int*)crap_man->act_ptr)) == 0) {
     return (TRUE);
-  } else {
-    return (FALSE);
   }
+  return (FALSE);
 }
 
 static void check_craps(struct char_data* ch, int diceroll) {
-  struct char_data *better;
-  struct char_data *temp;
+  struct char_data* better;
+  struct char_data* temp;
   char buf[255];
 
   if (diceroll != 2) {
@@ -508,8 +496,8 @@ static void check_craps(struct char_data* ch, int diceroll) {
 }
 
 static void check_seven(struct char_data* ch, int diceroll) {
-  struct char_data *better;
-  struct char_data *temp;
+  struct char_data* better;
+  struct char_data* temp;
 
   if (diceroll != 7) {
     return;
@@ -556,8 +544,8 @@ static void check_seven(struct char_data* ch, int diceroll) {
 }
 
 void check_eleven(struct char_data* ch, int diceroll) {
-  struct char_data *better;
-  struct char_data *temp;
+  struct char_data* better;
+  struct char_data* temp;
   char buf[255];
 
   if (diceroll != 11) {
@@ -711,8 +699,8 @@ static void check_field(struct char_data* better, int diceroll) {
 }
 
 static void check_onerolls(struct char_data* ch, int diceroll) {
-  struct char_data *better;
-  struct char_data *temp;
+  struct char_data* better;
+  struct char_data* temp;
 
   for (better = character_list; better; better = temp) {
     temp = better->next;
@@ -757,8 +745,8 @@ static void set_point(struct char_data* ch, int diceroll) {
 }
 
 static void WinLoseCraps(struct char_data* ch, int diceroll) {
-  struct char_data *better;
-  struct char_data *temp;
+  struct char_data* better;
+  struct char_data* temp;
   char buf[255];
 
   for (better = character_list; better; better = temp) {
@@ -790,9 +778,9 @@ static void roll_dice(struct char_data* ch) {
   int die_two;
   int dice_roll;
   char buf[255];
-  struct char_data *better;
-  struct char_data *temp;
-  struct char_data *table_man;
+  struct char_data* better;
+  struct char_data* temp;
+  struct char_data* table_man;
 
   if (!check_for_dice_held(ch)) {
     send_to_char("You dont have control of the dice!\n\r", ch);
@@ -879,7 +867,8 @@ void do_play(struct char_data* ch, char* arg, int cmd) {
     send_to_char("Typing <play game> will show the options for each game.\n\r",
       ch);
     return;
-  } else if (is_abbrev(game, "slots")) {
+  }
+  if (is_abbrev(game, "slots")) {
     if (!(GET_POS(ch) == POSITION_SITTING)) {
       send_to_char("You must sit at the slot machine to play it.\n\r", ch);
       return;
@@ -989,16 +978,14 @@ void do_play(struct char_data* ch, char* arg, int cmd) {
     if (!*options) {
       send_to_char(CRAPS_OPTIONS, ch);
       return;
-    } else {
-      if (isdigit(*options)) {
-        option = atoi(options);
-        roll_dice(ch);
-        return;
-      } else {
-        send_to_char("Options need to be numbers between 1-20\n\r", ch);
-        return;
-      }
     }
+    if (isdigit(*options)) {
+      option = atoi(options);
+      roll_dice(ch);
+      return;
+    }
+    send_to_char("Options need to be numbers between 1-20\n\r", ch);
+    return;
   }
 }
 
@@ -1029,9 +1016,8 @@ int CheckForPoint(struct char_data* ch) {
         if (i->carried_by->in_room == ch->in_room) {
           if (i->carried_by->point_roll != 0) {
             return (TRUE);
-          } else {
-            return (FALSE);
           }
+          return (FALSE);
         }
       }
     }
@@ -1058,8 +1044,8 @@ void check_horn(struct char_data* better, int diceroll) {
 }
 
 void check_hard_four(struct char_data* better, int diceroll) {
-  struct char_data *tmp_better;
-  struct char_data *temp;
+  struct char_data* tmp_better;
+  struct char_data* temp;
   char buf[255];
 }
 
@@ -1105,12 +1091,10 @@ int craps_table_man(struct char_data* ch, int cmd, char* arg) {
           do_say(crap_man, buf, 0);
           do_say(crap_man, "or no-pass after a pointroll has been called.", 0);
           return (TRUE);
-        } else {
-          return (FALSE);
         }
-      } else {
         return (FALSE);
       }
+      return (FALSE);
     }
 
     if (cmd == 280) {

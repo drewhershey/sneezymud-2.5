@@ -59,8 +59,8 @@ static int split_string(char* str, char* sep, char** argv)
 }
 
 int isname(const char* str, const char* namelist) {
-  char *argv[100];
-  char *xargv[100];
+  char* argv[100];
+  char* xargv[100];
   int argc;
   int xargc;
   int i;
@@ -68,7 +68,7 @@ int isname(const char* str, const char* namelist) {
   int exact = FALSE;
   char buf[MAX_INPUT_LENGTH];
   char names[MAX_INPUT_LENGTH];
-  char *s;
+  char* s;
 
   if (!str || !namelist) {
     return FALSE;
@@ -805,10 +805,9 @@ void equip_char(struct char_data* ch, struct obj_data* obj, int pos) {
         TO_ROOM);
       obj_to_room(obj, ch->in_room);
       return;
-    } else {
-      vlog("ch->in_room = NOWHERE when equipping char.");
-      abort();
     }
+    vlog("ch->in_room = NOWHERE when equipping char.");
+    abort();
   }
 
   ch->equipment[pos] = obj;
@@ -1165,8 +1164,8 @@ void obj_to_obj(struct obj_data* obj, struct obj_data* obj_to) {
 
 /* remove an object from an object */
 void obj_from_obj(struct obj_data* obj) {
-  struct obj_data *tmp;
-  struct obj_data *obj_from;
+  struct obj_data* tmp;
+  struct obj_data* obj_from;
 
   assert(!obj->carried_by && !obj->equipped_by && obj->in_room == NOWHERE);
 
@@ -1243,8 +1242,8 @@ void object_list_new_owner(struct obj_data* list, struct char_data* ch) {
 
 /* Extract an object from the world */
 void extract_obj(struct obj_data* obj) {
-  struct obj_data *temp1;
-  struct obj_data *temp2;
+  struct obj_data* temp1;
+  struct obj_data* temp2;
 
   if (obj->in_room != NOWHERE) {
     obj_from_room(obj);
@@ -1324,8 +1323,8 @@ void update_object(struct obj_data* obj, int use) {
 
 /* Called when a character that follows/is followed dies */
 static void die_follower(struct char_data* ch) {
-  struct follow_type *j;
-  struct follow_type *k;
+  struct follow_type* j;
+  struct follow_type* k;
 
   if (ch->master) {
     stop_follower(ch);
@@ -1339,10 +1338,10 @@ static void die_follower(struct char_data* ch) {
 
 /* Extract a ch completely from the world, and leave his stuff behind */
 void extract_char(struct char_data* ch) {
-  struct obj_data *i;
-  struct obj_data *o;
-  struct char_data *k;
-  struct char_data *next_char;
+  struct obj_data* i;
+  struct obj_data* o;
+  struct char_data* k;
+  struct char_data* next_char;
   struct descriptor_data* t_desc;
   int l;
   int was_in;
@@ -1691,9 +1690,8 @@ struct obj_data* get_obj_vis_accessible(struct char_data* ch, char* name) {
     if (isname(tmp, i->name) && CAN_SEE_OBJ(ch, i)) {
       if (j == number) {
         return (i);
-      } else {
-        j++;
       }
+      j++;
     }
   }
   for (i = real_roomp(ch->in_room)->contents; i && j <= number;
@@ -1701,9 +1699,8 @@ struct obj_data* get_obj_vis_accessible(struct char_data* ch, char* name) {
     if (isname(tmp, i->name) && CAN_SEE_OBJ(ch, i)) {
       if (j == number) {
         return (i);
-      } else {
-        j++;
       }
+      j++;
     }
   }
   return 0;

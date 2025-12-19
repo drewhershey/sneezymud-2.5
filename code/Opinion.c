@@ -15,8 +15,8 @@
 #include "utils.h"
 
 void FreeHates(struct char_data* ch) {
-  struct char_list *k;
-  struct char_list *n;
+  struct char_list* k;
+  struct char_list* n;
 
   for (k = ch->hates.clist; k; k = n) {
     n = k->next;
@@ -25,8 +25,8 @@ void FreeHates(struct char_data* ch) {
 }
 
 void FreeFears(struct char_data* ch) {
-  struct char_list *k;
-  struct char_list *n;
+  struct char_list* k;
+  struct char_list* n;
 
   for (k = ch->fears.clist; k; k = n) {
     n = k->next;
@@ -35,8 +35,8 @@ void FreeFears(struct char_data* ch) {
 }
 
 int RemHated(struct char_data* ch, struct char_data* pud) {
-  struct char_list *oldpud;
-  struct char_list *t;
+  struct char_list* oldpud;
+  struct char_list* t;
 
   if (pud) {
     for (oldpud = ch->hates.clist; oldpud; oldpud = oldpud->next) {
@@ -50,15 +50,14 @@ int RemHated(struct char_data* ch, struct char_data* pud) {
             ch->hates.clist = 0;
             free(t);
             break;
-          } else {
-            for (oldpud = ch->hates.clist; oldpud->next != t;
-              oldpud = oldpud->next) {
-              ;
-            }
-            oldpud->next = oldpud->next->next;
-            free(t);
-            break;
           }
+          for (oldpud = ch->hates.clist; oldpud->next != t;
+            oldpud = oldpud->next) {
+            ;
+          }
+          oldpud->next = oldpud->next->next;
+          free(t);
+          break;
         }
       } else {
         if (!strcmp(oldpud->name, GET_NAME(pud))) {
@@ -67,15 +66,14 @@ int RemHated(struct char_data* ch, struct char_data* pud) {
             ch->hates.clist = 0;
             free(t);
             break;
-          } else {
-            for (oldpud = ch->hates.clist; oldpud->next != t;
-              oldpud = oldpud->next) {
-              ;
-            }
-            oldpud->next = oldpud->next->next;
-            free(t);
-            break;
           }
+          for (oldpud = ch->hates.clist; oldpud->next != t;
+            oldpud = oldpud->next) {
+            ;
+          }
+          oldpud->next = oldpud->next->next;
+          free(t);
+          break;
         }
       }
     }
@@ -303,9 +301,9 @@ int Fears(struct char_data* ch, struct char_data* v) {
 }
 
 int RemFeared(struct char_data* ch, struct char_data* pud) {
-  struct char_list *oldpud;
-  struct char_list *t;
-  struct char_list *tmp;
+  struct char_list* oldpud;
+  struct char_list* t;
+  struct char_list* tmp;
 
   if (!IS_SET(ch->specials.act, ACT_AFRAID)) {
     return (FALSE);
@@ -325,15 +323,14 @@ int RemFeared(struct char_data* ch, struct char_data* pud) {
             ch->fears.clist = 0;
             free(t);
             break;
-          } else {
-            for (oldpud = ch->fears.clist; oldpud->next != t;
-              oldpud = oldpud->next) {
-              ;
-            }
-            oldpud->next = oldpud->next->next;
-            free(t);
-            break;
           }
+          for (oldpud = ch->fears.clist; oldpud->next != t;
+            oldpud = oldpud->next) {
+            ;
+          }
+          oldpud->next = oldpud->next->next;
+          free(t);
+          break;
         }
       } else {
         if (!strcmp(oldpud->name, GET_NAME(pud))) {
@@ -342,15 +339,14 @@ int RemFeared(struct char_data* ch, struct char_data* pud) {
             ch->fears.clist = 0;
             free(t);
             break;
-          } else {
-            for (oldpud = ch->fears.clist; oldpud->next != t;
-              oldpud = oldpud->next) {
-              ;
-            }
-            oldpud->next = oldpud->next->next;
-            free(t);
-            break;
           }
+          for (oldpud = ch->fears.clist; oldpud->next != t;
+            oldpud = oldpud->next) {
+            ;
+          }
+          oldpud->next = oldpud->next->next;
+          free(t);
+          break;
         }
       }
     }
@@ -446,10 +442,9 @@ struct char_data* FindAHatee(struct char_data* ch) {
       if (ch->in_room == tmp_ch->in_room) {
         if (ch != tmp_ch) {
           return (tmp_ch);
-        } else {
-          RemHated(ch, tmp_ch);
-          return (0);
         }
+        RemHated(ch, tmp_ch);
+        return (0);
       }
     }
   }

@@ -35,9 +35,8 @@ int CAN_SEE_FOR_WHO(struct char_data* s, struct char_data* o) {
   if (IS_IMMORTAL(s)) {
     if (GetMaxLevel(s) < (o->invis_level)) {
       return (FALSE);
-    } else {
-      return (TRUE);
     }
+    return (TRUE);
   }
 
   if ((GetMaxLevel(s) < (o->invis_level)) && (IS_IMMORTAL(o))) {
@@ -88,9 +87,8 @@ int CAN_SEE(struct char_data* s, struct char_data* o) {
   if (IS_IMMORTAL(s)) {
     if (GetMaxLevel(s) < (o->invis_level)) {
       return (FALSE);
-    } else {
-      return (TRUE);
     }
+    return (TRUE);
   }
 
   if (GetMaxLevel(s) < (o->invis_level)) {
@@ -158,9 +156,8 @@ int exit_ok(struct room_direction_data* exit, struct room_data** rpp) {
 int ObjVnum(struct obj_data* o) {
   if (o->item_number >= 0) {
     return (obj_index[o->item_number].virtual);
-  } else {
-    return (-1);
   }
+  return (-1);
 }
 
 void Zwrite(FILE* fp, char cmd, int tf, int arg1, int arg2, int arg3,
@@ -199,9 +196,8 @@ int IsSusc(struct char_data* ch, int bit) { return (IS_SET(bit, ch->susc)); }
 int number(int from, int to) {
   if (to - from + 1) {
     return ((rand() % (to - from + 1)) + from);
-  } else {
-    return (from);
   }
+  return (from);
 }
 
 /* simulates dice roll */
@@ -235,9 +231,8 @@ int str_cmp(const char* arg1, const char* arg2) {
     if (chk = LOWER(*(arg1 + i)) - LOWER(*(arg2 + i))) {
       if (chk < 0) {
         return (-1);
-      } else {
-        return (1);
       }
+      return (1);
     }
   }
   return (0);
@@ -678,10 +673,10 @@ int DetermineExp(struct char_data* mob, int exp_flags) {
 }
 
 void down_river(int pulse) {
-  struct char_data *ch;
-  struct char_data *tmp;
-  struct obj_data *obj_object;
-  struct obj_data *next_obj;
+  struct char_data* ch;
+  struct char_data* tmp;
+  struct obj_data* obj_object;
+  struct obj_data* next_obj;
   int rd;
   int or;
   char buf[80];
@@ -1031,16 +1026,16 @@ void CallForGuard(struct char_data* ch, struct char_data* vict, int lev,
 }
 
 void Teleport(int pulse) {
-  struct char_data *ch;
-  struct char_data *tmp;
-  struct char_data *pers;
-  struct obj_data *obj_object;
-  struct obj_data *temp_obj;
+  struct char_data* ch;
+  struct char_data* tmp;
+  struct char_data* pers;
+  struct obj_data* obj_object;
+  struct obj_data* temp_obj;
   char buf[20];
-  char *tmp_desc = NULL;
+  char* tmp_desc = NULL;
   int or;
-  struct room_data *rp;
-  struct room_data *dest;
+  struct room_data* rp;
+  struct room_data* dest;
 
   if (pulse < 0) {
     return;
@@ -1147,15 +1142,17 @@ int RecCompObjNum(struct obj_data* o, int obj_num) {
 struct char_data* char_holding(struct obj_data* obj) {
   if (obj->in_room != NOWHERE) {
     return NULL;
-  } else if (obj->carried_by) {
-    return obj->carried_by;
-  } else if (obj->equipped_by) {
-    return obj->equipped_by;
-  } else if (obj->in_obj) {
-    return char_holding(obj->in_obj);
-  } else {
-    return NULL;
   }
+  if (obj->carried_by) {
+    return obj->carried_by;
+  }
+  if (obj->equipped_by) {
+    return obj->equipped_by;
+  }
+  if (obj->in_obj) {
+    return char_holding(obj->in_obj);
+  }
+  return NULL;
 }
 
 void RestoreChar(struct char_data* ch) {
@@ -1177,9 +1174,8 @@ int ObjLevelCheck(struct obj_data* obj, struct char_data* ch) {
       (IS_OBJ_STAT(obj, ITEM_LEVEL35) && (GetMaxLevel(ch) < 35)) ||
       (IS_OBJ_STAT(obj, ITEM_LEVEL40) && (GetMaxLevel(ch) < 40))) {
     return (FALSE);
-  } else {
-    return (TRUE);
   }
+  return (TRUE);
 }
 
 /* static void check_mobile_activity(int pulse) {
@@ -1212,16 +1208,16 @@ void TeleportPulseStuff(int pulse) {
     */
 
   register struct char_data* ch;
-  struct char_data *next;
-  struct char_data *tmp;
-  struct char_data *pers;
+  struct char_data* next;
+  struct char_data* tmp;
+  struct char_data* pers;
   int tick;
   int tm;
   int or;
-  struct room_data *rp;
-  struct room_data *dest;
-  struct obj_data *obj_object;
-  struct obj_data *temp_obj;
+  struct room_data* rp;
+  struct room_data* dest;
+  struct obj_data* obj_object;
+  struct obj_data* temp_obj;
   char* tmp_desc;
 
   tmp_desc = NULL;

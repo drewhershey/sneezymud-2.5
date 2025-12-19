@@ -137,8 +137,8 @@ void MobHunt(struct char_data* ch) {
 }
 
 void MobScavenge(struct char_data* ch) {
-  struct obj_data *best_obj = 0;
-  struct obj_data *obj = 0;
+  struct obj_data* best_obj = 0;
+  struct obj_data* obj = 0;
   int max;
 
   if ((real_roomp(ch->in_room))->contents && !number(0, 5)) {
@@ -170,14 +170,13 @@ static int MobFriend(struct char_data* ch, struct char_data* f) {
     if (IS_GOOD(ch)) {
       if (IS_GOOD(f)) {
         return (TRUE);
-      } else {
-        return (FALSE);
       }
-    } else {
-      if (IS_NPC(f)) {
-        return (TRUE);
-      }
+      return (FALSE);
     }
+    if (IS_NPC(f)) {
+      return (TRUE);
+    }
+
   } else {
     return (FALSE);
   }
@@ -185,10 +184,10 @@ static int MobFriend(struct char_data* ch, struct char_data* f) {
 }
 
 static int AssistFriend(struct char_data* ch) {
-  struct char_data *damsel;
-  struct char_data *targ;
-  struct char_data *tmp_ch;
-  struct char_data *next;
+  struct char_data* damsel;
+  struct char_data* targ;
+  struct char_data* tmp_ch;
+  struct char_data* next;
   int t;
   int found;
 

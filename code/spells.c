@@ -31,8 +31,8 @@ struct room_data* world = NULL; /* dyn alloc'ed array of rooms     */
 static void spell_burning_hands(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
   int dam;
-  struct char_data *tmp_victim;
-  struct char_data *temp;
+  struct char_data* tmp_victim;
+  struct char_data* temp;
 
   assert(ch);
   assert((level >= 1) && (level <= ABS_MAX_LVL));
@@ -235,8 +235,8 @@ void cast_vampiric_touch(signed char level, struct char_data* ch, char* arg,
 static void spell_life_leech(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
   int hitp;
-  struct char_data *tmp_victim;
-  struct char_data *temp;
+  struct char_data* tmp_victim;
+  struct char_data* temp;
 
   assert(ch);
 
@@ -251,13 +251,13 @@ static void spell_life_leech(signed char level, struct char_data* ch,
           send_to_char("Some puny mortal tried to drink you blood!\n\r",
             tmp_victim);
           return;
-        } else {
-          hitp = MIN(dice(level, 2), GET_MAX_HIT(tmp_victim));
-          GET_HIT(tmp_victim) -= hitp;
-          GET_HIT(ch) += hitp;
-          send_to_char("You feel your blood pressure drop!!\n\r", tmp_victim);
-          SetVictFighting(ch, tmp_victim);
         }
+        hitp = MIN(dice(level, 2), GET_MAX_HIT(tmp_victim));
+        GET_HIT(tmp_victim) -= hitp;
+        GET_HIT(ch) += hitp;
+        send_to_char("You feel your blood pressure drop!!\n\r", tmp_victim);
+        SetVictFighting(ch, tmp_victim);
+
       } else {
         act("You dodge your groupmembers attempt to leech your life!!!\n\r",
           FALSE, ch, 0, tmp_victim, TO_VICT);
@@ -351,8 +351,8 @@ static void spell_earthquake(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
   int dam;
 
-  struct char_data *tmp_victim;
-  struct char_data *temp;
+  struct char_data* tmp_victim;
+  struct char_data* temp;
 
   assert(ch);
   assert((level >= 1) && (level <= ABS_MAX_LVL));
@@ -476,8 +476,8 @@ void cast_energy_drain(signed char level, struct char_data* ch, char* arg,
 static void spell_fireball(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
   int dam;
-  struct char_data *tmp_victim;
-  struct char_data *temp;
+  struct char_data* tmp_victim;
+  struct char_data* temp;
 
   assert(ch);
   assert((level >= 1) && (level <= ABS_MAX_LVL));
@@ -497,12 +497,12 @@ static void spell_fireball(signed char level, struct char_data* ch,
           send_to_char("Some puny mortal tries to toast you with a fireball",
             tmp_victim);
           return;
-        } else {
-          if (saves_spell(tmp_victim, SAVING_SPELL)) {
-            dam >>= 1;
-          }
-          MissileDamage(ch, tmp_victim, dam, SPELL_FIREBALL);
         }
+        if (saves_spell(tmp_victim, SAVING_SPELL)) {
+          dam >>= 1;
+        }
+        MissileDamage(ch, tmp_victim, dam, SPELL_FIREBALL);
+
       } else {
         act("You dodge the mass of flame!!\n\r", FALSE, ch, 0, tmp_victim,
           TO_VICT);
@@ -660,8 +660,8 @@ void cast_acid_blast(signed char level, struct char_data* ch, char* arg,
 static void spell_cone_of_cold(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
   int dam;
-  struct char_data *tmpv;
-  struct char_data *temp;
+  struct char_data* tmpv;
+  struct char_data* temp;
 
   assert(ch);
   assert((level >= 1) && (level <= ABS_MAX_LVL));
@@ -709,8 +709,8 @@ void cast_cone_of_cold(signed char level, struct char_data* ch, char* arg,
 void spell_ice_storm(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
   int dam;
-  struct char_data *tmpv;
-  struct char_data *temp;
+  struct char_data* tmpv;
+  struct char_data* temp;
 
   assert(ch);
   assert((level >= 1) && (level <= ABS_MAX_LVL));
@@ -1043,8 +1043,8 @@ static void spell_geyser(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
   int dam;
 
-  struct char_data *tmpv;
-  struct char_data *temp;
+  struct char_data* tmpv;
+  struct char_data* temp;
 
   if (ch->in_room < 0) {
     return;
@@ -1416,8 +1416,8 @@ const struct PolyType PolyList[40] = {{"goblin", 4, 201}, {"parrot", 4, 9001},
 void spell_resurrection(signed char level, Mob* ch, Mob* victim, Obj* obj) {
   struct char_file_u st;
   struct affected_type af;
-  struct obj_data *obj_object;
-  struct obj_data *next_obj;
+  struct obj_data* obj_object;
+  struct obj_data* next_obj;
   FILE* fl;
 
   if (!obj) {
@@ -1429,9 +1429,8 @@ void spell_resurrection(signed char level, Mob* ch, Mob* victim, Obj* obj) {
       if (GET_GOLD(ch) < 10000) {
         send_to_char("The gods are not happy with your sacrifice.\n\r", ch);
         return;
-      } else {
-        GET_GOLD(ch) -= 10000;
       }
+      GET_GOLD(ch) -= 10000;
 
       victim = read_mobile(obj->char_vnum, VIRTUAL);
       if (IS_SET(victim->specials.act, ACT_IMMORTAL)) {
@@ -1856,15 +1855,14 @@ void spell_astral_walk(signed char level, struct char_data* ch,
   if (dice(1, 8) == 8) {
     send_to_char("You failed.\n\r", ch);
     return;
-  } else {
-    act("$n opens a door to another dimension and steps through!", FALSE, ch, 0,
-      0, TO_ROOM);
-    char_from_room(ch);
-    char_to_room(ch, location);
-    act("You are blinded for a moment as $n appears in a flash of light!",
-      FALSE, ch, 0, 0, TO_ROOM);
-    do_look(ch, "", 15);
   }
+  act("$n opens a door to another dimension and steps through!", FALSE, ch, 0,
+    0, TO_ROOM);
+  char_from_room(ch);
+  char_to_room(ch, location);
+  act("You are blinded for a moment as $n appears in a flash of light!", FALSE,
+    ch, 0, 0, TO_ROOM);
+  do_look(ch, "", 15);
 }
 
 void cast_astral_walk(signed char level, struct char_data* ch, char* arg,
@@ -1891,8 +1889,8 @@ void cast_astral_walk(signed char level, struct char_data* ch, char* arg,
 static void spell_farlook(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
   short int target;
-  struct char_data *tmpv;
-  struct char_data *temp;
+  struct char_data* tmpv;
+  struct char_data* temp;
   char buf[MAX_STRING_LENGTH];
   char buf1[MAX_STRING_LENGTH];
 
@@ -2052,9 +2050,8 @@ void spell_teleport(signed char level, struct char_data* ch,
         send_to_char("You feel strange, but the effect fades.\n\r", victim);
       }
       return;
-    } else {
-      ch = victim; /* the character (target) is now the victim */
     }
+    ch = victim; /* the character (target) is now the victim */
   }
 
   do {
@@ -2748,34 +2745,34 @@ void cast_control_weather(signed char level, struct char_data* ch, char* arg,
           weather_info.sky = SKY_RAINING;
         }
         return;
-      } else {
-        if (weather_info.sky == SKY_CLOUDLESS) {
-          send_to_outdoor("The sky is getting cloudy.\n\r");
-          weather_info.sky = SKY_CLOUDY;
-          return;
-        }
-        if (weather_info.sky == SKY_CLOUDY) {
-          if ((time_info.month > 3) && (time_info.month < 14)) {
-            send_to_outdoor("It starts to rain.\n\r");
-          } else {
-            send_to_outdoor("It starts to snow. \n\r");
-          }
-          weather_info.sky = SKY_RAINING;
-        }
-        if (weather_info.sky == SKY_RAINING) {
-          if ((time_info.month > 3) && (time_info.month < 14)) {
-            send_to_outdoor("You are caught in lightning storm.\n\r");
-          } else {
-            send_to_outdoor("You are caught in a blizzard. \n\r");
-          }
-          weather_info.sky = SKY_LIGHTNING;
-        }
-        if (weather_info.sky == SKY_LIGHTNING) {
-          return;
-        }
-
+      }
+      if (weather_info.sky == SKY_CLOUDLESS) {
+        send_to_outdoor("The sky is getting cloudy.\n\r");
+        weather_info.sky = SKY_CLOUDY;
         return;
       }
+      if (weather_info.sky == SKY_CLOUDY) {
+        if ((time_info.month > 3) && (time_info.month < 14)) {
+          send_to_outdoor("It starts to rain.\n\r");
+        } else {
+          send_to_outdoor("It starts to snow. \n\r");
+        }
+        weather_info.sky = SKY_RAINING;
+      }
+      if (weather_info.sky == SKY_RAINING) {
+        if ((time_info.month > 3) && (time_info.month < 14)) {
+          send_to_outdoor("You are caught in lightning storm.\n\r");
+        } else {
+          send_to_outdoor("You are caught in a blizzard. \n\r");
+        }
+        weather_info.sky = SKY_LIGHTNING;
+      }
+      if (weather_info.sky == SKY_LIGHTNING) {
+        return;
+      }
+
+      return;
+
       break;
 
     default:
@@ -4236,8 +4233,8 @@ void cast_full_heal(signed char level, struct char_data* ch, char* arg,
 
 void spell_invis_group(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
-  struct char_data *tmpv;
-  struct char_data *temp;
+  struct char_data* tmpv;
+  struct char_data* temp;
   struct affected_type af;
 
   assert(ch);
@@ -5214,8 +5211,8 @@ void cast_word_of_recall(signed char level, struct char_data* ch, char* arg,
 static void RawSummon(struct char_data* v, struct char_data* c) {
   short int target;
   struct char_data* tmp;
-  struct obj_data *o;
-  struct obj_data *n;
+  struct obj_data* o;
+  struct obj_data* n;
   int j;
   int i;
 
@@ -6132,7 +6129,8 @@ void cast_knock(signed char level, struct char_data* ch, char* arg, int type,
         }
         send_to_char(buf, ch);
         return;
-      } else if ((door = find_door(ch, otype, dir)) >= 0) {
+      }
+      if ((door = find_door(ch, otype, dir)) >= 0) {
         if (!IS_SET(EXIT(ch, door)->exit_info, EX_ISDOOR)) {
           send_to_char("That's absurd.\n\r", ch);
         } else if (!IS_SET(EXIT(ch, door)->exit_info, EX_CLOSED)) {
@@ -6546,10 +6544,10 @@ void cast_dispel_magic(signed char level, struct char_data* ch, char* arg,
 void spell_animate_dead(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* corpse) {
   struct char_data* mob;
-  struct obj_data *obj_object;
-  struct obj_data *sub_object;
-  struct obj_data *next_obj;
-  struct obj_data *i;
+  struct obj_data* obj_object;
+  struct obj_data* sub_object;
+  struct obj_data* next_obj;
+  struct obj_data* i;
   char buf[MAX_STRING_LENGTH];
   int r_num = 100; /* virtual # for zombie */
   int k;
@@ -6867,22 +6865,22 @@ static void spell_turn(signed char level, struct char_data* ch,
     if (diff <= 0) {
       act("You are powerless to affect $N", TRUE, ch, 0, victim, TO_CHAR);
       return;
-    } else {
-      for (i = 1; i <= diff; i++) {
-        if (!saves_spell(victim, SAVING_SPELL)) {
-          act("$n forces $N from this room.", TRUE, ch, 0, victim, TO_NOTVICT);
-          act("You force $N from this room.", TRUE, ch, 0, victim, TO_CHAR);
-          act("$n forces you from this room.", TRUE, ch, 0, victim, TO_VICT);
-          do_flee(victim, "", 0);
-          break;
-        }
-      }
-      if (i < diff) {
-        act("You laugh at $n.", TRUE, ch, 0, victim, TO_VICT);
-        act("$N laughs at $n.", TRUE, ch, 0, victim, TO_NOTVICT);
-        act("$N laughs at you.", TRUE, ch, 0, victim, TO_CHAR);
+    }
+    for (i = 1; i <= diff; i++) {
+      if (!saves_spell(victim, SAVING_SPELL)) {
+        act("$n forces $N from this room.", TRUE, ch, 0, victim, TO_NOTVICT);
+        act("You force $N from this room.", TRUE, ch, 0, victim, TO_CHAR);
+        act("$n forces you from this room.", TRUE, ch, 0, victim, TO_VICT);
+        do_flee(victim, "", 0);
+        break;
       }
     }
+    if (i < diff) {
+      act("You laugh at $n.", TRUE, ch, 0, victim, TO_VICT);
+      act("$N laughs at $n.", TRUE, ch, 0, victim, TO_NOTVICT);
+      act("$N laughs at you.", TRUE, ch, 0, victim, TO_CHAR);
+    }
+
   } else {
     act("$n just tried to turn you, what a moron!", TRUE, ch, 0, victim,
       TO_VICT);
@@ -7122,15 +7120,14 @@ void cast_poly_self(signed char level, struct char_data* ch, char* arg,
       if (!found) {
         send_to_char("Couldn't find any of those\n\r", ch);
         return;
-      } else {
-        mob = read_mobile(mobn, VIRTUAL);
-        if (mob) {
-          spell_poly_self(level, ch, mob, 0);
-        } else {
-          send_to_char("You couldn't summon an image of that creature\n\r", ch);
-        }
-        return;
       }
+      mob = read_mobile(mobn, VIRTUAL);
+      if (mob) {
+        spell_poly_self(level, ch, mob, 0);
+      } else {
+        send_to_char("You couldn't summon an image of that creature\n\r", ch);
+      }
+      return;
 
     } break;
 

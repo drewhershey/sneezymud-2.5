@@ -103,8 +103,8 @@ void* hash_remove(struct hash_header* ht, int key) {
   if (*scan) {
     int i;
 
-    struct hash_link *temp;
-    struct hash_link *aux;
+    struct hash_link* temp;
+    struct hash_link* aux;
     temp = (*scan)->data;
     aux = *scan;
     *scan = aux->next;

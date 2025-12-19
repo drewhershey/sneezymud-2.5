@@ -10,8 +10,8 @@
 #include "utils.h"
 
 void SwitchStuff(struct char_data* giver, struct char_data* taker) {
-  struct obj_data *obj;
-  struct obj_data *next;
+  struct obj_data* obj;
+  struct obj_data* next;
   float ratio;
   int j;
 

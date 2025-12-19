@@ -54,10 +54,10 @@ void do_brew(struct char_data* ch, char* arg, int cmd) {
   int sacr1;
   int sacr2;
   int percent;
-  struct obj_data *obje;
-  struct obj_data *sac;
-  struct obj_data *sac1;
-  struct obj_data *sac2;
+  struct obj_data* obje;
+  struct obj_data* sac;
+  struct obj_data* sac1;
+  struct obj_data* sac2;
   struct obj_data* next_obj;
   struct affected_type af;
 
@@ -124,28 +124,28 @@ void do_brew(struct char_data* ch, char* arg, int cmd) {
           if (!obje) {
             send_to_char("There are no potions of that type available\n\r", ch);
             return;
-          } else {
-            send_to_char("You start to brew your potion.\n\r", ch);
-            act("$n starts to brew a potion.", TRUE, ch, 0, 0, TO_ROOM);
-
-            if (!IS_IMMORTAL(ch)) {
-              af.type = SKILL_BREW;
-              af.duration = 3;
-              af.modifier = 0;
-              af.location = 0;
-              af.bitvector = AFF_BREWING;
-
-              affect_to_char(ch, &af);
-            }
-
-            obj_to_char(obje, ch);
-            obj_from_char(sac);
-            extract_obj(sac);
-            obj_from_char(sac1);
-            extract_obj(sac1);
-            obj_from_char(sac2);
-            extract_obj(sac2);
           }
+          send_to_char("You start to brew your potion.\n\r", ch);
+          act("$n starts to brew a potion.", TRUE, ch, 0, 0, TO_ROOM);
+
+          if (!IS_IMMORTAL(ch)) {
+            af.type = SKILL_BREW;
+            af.duration = 3;
+            af.modifier = 0;
+            af.location = 0;
+            af.bitvector = AFF_BREWING;
+
+            affect_to_char(ch, &af);
+          }
+
+          obj_to_char(obje, ch);
+          obj_from_char(sac);
+          extract_obj(sac);
+          obj_from_char(sac1);
+          extract_obj(sac1);
+          obj_from_char(sac2);
+          extract_obj(sac2);
+
         } else {
           send_to_char("You try to mix a potion.\n\r", ch);
           send_to_char("Your incompetence results in an unusable potion.\n\r",
@@ -338,10 +338,10 @@ void do_scribe(struct char_data* ch, char* arg, int cmd) {
   int pen;
   int paper;
   int percent;
-  struct obj_data *obje;
-  struct obj_data *sac;
-  struct obj_data *penw;
-  struct obj_data *paperw;
+  struct obj_data* obje;
+  struct obj_data* sac;
+  struct obj_data* penw;
+  struct obj_data* paperw;
   struct obj_data* next_obj;
   struct affected_type af;
 
@@ -393,26 +393,26 @@ void do_scribe(struct char_data* ch, char* arg, int cmd) {
             send_to_char("There are no scrolls of that type available.\n\r",
               ch);
             return;
-          } else {
-            send_to_char("You start to write your scroll.\n\r", ch);
-            act("$n starts to write a scroll.", TRUE, ch, 0, 0, TO_ROOM);
-
-            if (!IS_IMMORTAL(ch)) {
-              af.type = SKILL_SCRIBE;
-              af.duration = 3;
-              af.modifier = 0;
-              af.location = 0;
-              af.bitvector = AFF_BREWING;
-
-              affect_to_char(ch, &af);
-            }
-
-            obj_to_char(obje, ch);
-            obj_from_char(sac);
-            extract_obj(sac);
-            obj_from_char(paperw);
-            extract_obj(paperw);
           }
+          send_to_char("You start to write your scroll.\n\r", ch);
+          act("$n starts to write a scroll.", TRUE, ch, 0, 0, TO_ROOM);
+
+          if (!IS_IMMORTAL(ch)) {
+            af.type = SKILL_SCRIBE;
+            af.duration = 3;
+            af.modifier = 0;
+            af.location = 0;
+            af.bitvector = AFF_BREWING;
+
+            affect_to_char(ch, &af);
+          }
+
+          obj_to_char(obje, ch);
+          obj_from_char(sac);
+          extract_obj(sac);
+          obj_from_char(paperw);
+          extract_obj(paperw);
+
         } else {
           send_to_char("You try to write a scroll.\n\r", ch);
           send_to_char("Your incompetence results in an unusable scroll.\n\r",

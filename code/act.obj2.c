@@ -978,8 +978,8 @@ void do_wear(struct char_data* ch, char* argument, int cmd) {
   char arg2[MAX_INPUT_LENGTH];
   char buf[256];
   char buffer[MAX_INPUT_LENGTH];
-  struct obj_data *obj_object;
-  struct obj_data *next_obj;
+  struct obj_data* obj_object;
+  struct obj_data* next_obj;
   int keyword;
   static const char* const keywords[] = {"finger", "neck", "body", "head",
     "legs", "feet", "hands", "arms", "about", "waist", "wrist", "shield", "\n"};
@@ -1187,8 +1187,8 @@ static struct obj_data* get_object_in_equip_vis(struct char_data* ch, char* arg,
 
 void do_remove(struct char_data* ch, char* argument, int cmd) {
   char arg1[128];
-  char *T;
-  char *P;
+  char* T;
+  char* P;
   char buffer[256];
   int Rem_List[20];
   int Num_Equip;

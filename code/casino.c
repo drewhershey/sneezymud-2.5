@@ -40,9 +40,8 @@ const char* card_names[14] = {"Nothing", "Ace", "Two", "Three", "Four", "Five",
 int check_blackjack(struct char_data* ch) {
   if (ch->in_room == BLACKJACK) {
     return 1;
-  } else {
-    return 0;
   }
+  return 0;
 }
 
 void bj_shuffle(int inx, struct char_data* ch) {

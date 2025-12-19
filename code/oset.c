@@ -60,8 +60,8 @@ struct oset_field_data oset_field[25] = {
 
 static void set_oedesc(struct char_data* ch, struct obj_data* obj,
   char* keywds) {
-  struct extra_descr_data *tmp;
-  struct extra_descr_data *newdesc;
+  struct extra_descr_data* tmp;
+  struct extra_descr_data* newdesc;
   char buf[256];
 
   if (!*keywds) {

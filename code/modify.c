@@ -148,8 +148,8 @@ void quad_arg(char* arg, int* type, char* name, int* field, char* string) {
 void do_string(struct char_data* ch, char* arg, int cmd) {
   char name[MAX_STRING_LENGTH];
   char string[MAX_STRING_LENGTH];
-  struct extra_descr_data *ed;
-  struct extra_descr_data *tmp;
+  struct extra_descr_data* ed;
+  struct extra_descr_data* tmp;
   int field;
   int type;
   struct char_data* mob;
@@ -278,7 +278,8 @@ void do_string(struct char_data* ch, char* arg, int cmd) {
             ch->desc->str = &ed->description;
             send_to_char("New field.\n\r", ch);
             break;
-          } else if (!str_cmp(ed->keyword, string)) /* the field exists */
+          }
+          if (!str_cmp(ed->keyword, string)) /* the field exists */
           {
             free(ed->description);
             ed->description = 0;
@@ -300,7 +301,8 @@ void do_string(struct char_data* ch, char* arg, int cmd) {
           if (!ed) {
             send_to_char("No field with that keyword.\n\r", ch);
             return;
-          } else if (!str_cmp(ed->keyword, string)) {
+          }
+          if (!str_cmp(ed->keyword, string)) {
             free(ed->keyword);
             if (ed->description) {
               free(ed->description);
@@ -390,8 +392,8 @@ void do_edit(struct char_data* ch, char* arg, int cmd) {
   char name[MAX_INPUT_LENGTH];
   char string[512];
   char buf[132];
-  struct extra_descr_data *ed;
-  struct extra_descr_data *tmp;
+  struct extra_descr_data* ed;
+  struct extra_descr_data* tmp;
   struct room_data* rp;
 
   rp = real_roomp(ch->in_room);
@@ -505,9 +507,8 @@ void do_edit(struct char_data* ch, char* arg, int cmd) {
         send_to_char("terminate with an @ on the same line.\n\r", ch);
         ch->desc->str = &rp->dir_option[dir]->keyword;
         break;
-      } else {
-        return;
       }
+      return;
 
     case 5:
       dir = -1;
@@ -547,7 +548,8 @@ void do_edit(struct char_data* ch, char* arg, int cmd) {
           ch->desc->str = &ed->description;
           send_to_char("New field.\n\r", ch);
           break;
-        } else if (!str_cmp(ed->keyword, string)) {
+        }
+        if (!str_cmp(ed->keyword, string)) {
           /* the field exists */
           free(ed->description);
           ed->description = 0;
@@ -583,13 +585,12 @@ void do_edit(struct char_data* ch, char* arg, int cmd) {
         send_to_char(" edit tele <time> <room_nr> <look-flag>\n\r", ch);
         return;
         break;
-      } else {
-        real_roomp(ch->in_room)->tele_time = tele_time;
-        real_roomp(ch->in_room)->tele_targ = tele_room;
-        real_roomp(ch->in_room)->tele_look = tele_look;
-        return;
-        break;
       }
+      real_roomp(ch->in_room)->tele_time = tele_time;
+      real_roomp(ch->in_room)->tele_targ = tele_room;
+      real_roomp(ch->in_room)->tele_look = tele_look;
+      return;
+      break;
 
       return;
     case 9:
@@ -618,7 +619,8 @@ void do_edit(struct char_data* ch, char* arg, int cmd) {
         if (!ed) {
           send_to_char("No field with that keyword.\n\r", ch);
           return;
-        } else if (!str_cmp(ed->keyword, string)) {
+        }
+        if (!str_cmp(ed->keyword, string)) {
           free(ed->keyword);
           if (ed->description) {
             free(ed->description);
@@ -807,8 +809,8 @@ void page_string(struct descriptor_data* d, char* str, int keep_internal) {
 void show_string(struct descriptor_data* d, char* input) {
   char buffer[MAX_STRING_LENGTH];
   char buf[MAX_INPUT_LENGTH];
-  register char *scan;
-  register char *chk;
+  register char* scan;
+  register char* chk;
   int lines = 0;
   int toggle = 1;
 
@@ -892,9 +894,8 @@ void check_reboot(void) {
             system("mv ./reboot reboot.FAILED");
             fclose(boot);
             return;
-          } else {
-            system("mv ./reboot reboot.SUCCEEDED");
           }
+          system("mv ./reboot reboot.SUCCEEDED");
         }
 
         send_to_all("Automatic reboot. Come back in a little while.\n\r");
@@ -968,18 +969,16 @@ int load(void) {
     }
     p_point = 1;
     return (previous[0]);
-  } else {
-    /* put new figure in table */
-    previous[p_point] = atoi(info.sl_load1);
-    if (++p_point > 4) {
-      p_point = 0;
-    }
-
-    for (i = 0, sum = 0; i < 5; i++) {
-      sum += previous[i];
-    }
-    return ((int)sum / 5);
+  } /* put new figure in table */
+  previous[p_point] = atoi(info.sl_load1);
+  if (++p_point > 4) {
+    p_point = 0;
   }
+
+  for (i = 0, sum = 0; i < 5; i++) {
+    sum += previous[i];
+  }
+  return ((int)sum / 5);
 }
 
 char* nogames(void) {
@@ -991,14 +990,13 @@ char* nogames(void) {
     fgets(text, 200, fl);
     return (text);
     fclose(fl);
-  } else {
-    return (0);
   }
+  return (0);
 }
 
 /* emulate the game regulator */
 void gr(int s) {
-  char *txt = 0;
+  char* txt = 0;
   char buf[1024];
   int ld = 0;
   static const char* warnings[3] = {

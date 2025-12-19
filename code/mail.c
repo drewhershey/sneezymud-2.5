@@ -46,9 +46,8 @@ static long pop_free_list(void) {
     free_list = old_pos->next;
     free(old_pos);
     return return_value;
-  } else {
-    return file_end_pos;
   }
+  return file_end_pos;
 }
 
 static mail_index_type* find_char_in_index(char* searchee) {
@@ -305,13 +304,13 @@ header (i.e. the text handed to the player)
 char* read_delete(char* recipient, char* recipient_formatted) {
   header_block_type header;
   data_block_type data;
-  mail_index_type *mail_pointer;
-  mail_index_type *prev_mail;
+  mail_index_type* mail_pointer;
+  mail_index_type* prev_mail;
   position_list_type* position_pointer;
   long mail_address;
   long following_block;
-  char *message;
-  char *tmstr;
+  char* message;
+  char* tmstr;
   char buf[200];
   size_t string_size;
 
@@ -415,7 +414,7 @@ static void postmaster_send_mail(struct char_data* ch, int cmd, char* arg) {
   struct char_data* mailman;
   char buf[200];
   char recipient[100];
-  char *tmp;
+  char* tmp;
 
   mailman = FindMobInRoomWithFunction(ch->in_room, postmaster);
 
@@ -478,7 +477,7 @@ static void postmaster_check_mail(struct char_data* ch, int cmd, char* arg) {
   struct char_data* mailman;
   char buf[200];
   char recipient[100];
-  char *tmp;
+  char* tmp;
 
   mailman = FindMobInRoomWithFunction(ch->in_room, postmaster);
 
@@ -506,7 +505,7 @@ static void postmaster_receive_mail(struct char_data* ch, int cmd, char* arg) {
   struct char_data* mailman;
   char buf[200];
   char recipient[100];
-  char *tmp;
+  char* tmp;
   struct obj_data* tmp_obj;
 
   mailman = FindMobInRoomWithFunction(ch->in_room, postmaster);
