@@ -343,7 +343,18 @@ int game_loop(int s) {
             command_interpreter(point->character, comm);
         } else
           nanny(point, comm);
-        if (point->position < 0) { /* done with page_file output */
+
+        /* Check if descriptor still valid (not freed by nanny/etc) */
+        struct descriptor_data* check;
+        int still_valid = 0;
+        for (check = descriptor_list; check; check = check->next) {
+          if (check == point) {
+            still_valid = 1;
+            break;
+          }
+        }
+
+        if (still_valid && point->position < 0) { /* done with page_file output */
           if (point->pagedfile) {
             free(point->pagedfile);
             point->pagedfile = NULL;
