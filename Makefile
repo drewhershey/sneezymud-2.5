@@ -84,3 +84,16 @@ iwyu-check: build
 iwyu-fix: build
 	@echo "Running include-what-you-use and applying fixes..."
 	@cmake --build build --target iwyu-fix
+
+# Run Clang Static Analyzer (scan-build)
+# Disables ccache to ensure all files are analyzed
+# Uses analyze-build which reads from compile_commands.json
+scan-build: clean
+	@echo "Configuring project..."
+	@cmake --preset dev
+	@echo "Running static analyzer with ccache disabled..."
+	@CCACHE_DISABLE=1 /usr/lib/llvm-19/bin/analyze-build \
+		--cdb build/compile_commands.json \
+		--output scan-results \
+		--sarif \
+		--status-bugs
