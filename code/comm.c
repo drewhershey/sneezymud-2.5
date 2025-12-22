@@ -529,6 +529,14 @@ int game_loop(int s) {
                 sprintf(promptbuf, "%sH:%d %sR:%d>%s ", ANSI_CYAN,
                   point->character->points.hit, ANSI_VIOLET, rm->number,
                   ANSI_WHITE);
+                /* Add wait state indicator if character is locked out */
+                if (point->wait > 1) {
+                  char wait_buf[32];
+                  double wait_seconds = (double)(point->wait - 1) / 4.0;
+                  (void)snprintf(wait_buf, sizeof(wait_buf), "%s[Wait:%.1fs]%s ",
+                    ANSI_ORANGE, wait_seconds, ANSI_WHITE);
+                  strcat(promptbuf, wait_buf);
+                }
                 write_to_q(promptbuf, &point->output);
               } else if (HasClass(point->character, CLASS_MAGIC_USER) ||
                          HasClass(point->character, CLASS_ANTIPALADIN) ||
@@ -560,6 +568,14 @@ int game_loop(int s) {
                   point->character->points.hit, ANSI_WHITE, manacolor,
                   point->character->points.mana, ANSI_WHITE, movescolor,
                   point->character->points.move, ANSI_WHITE, ANSI_NORMAL);
+                /* Add wait state indicator if character is locked out */
+                if (point->wait > 1) {
+                  char wait_buf[32];
+                  double wait_seconds = (double)(point->wait - 1) / 4.0;
+                  (void)snprintf(wait_buf, sizeof(wait_buf), "%s[Wait:%.1fs]%s ",
+                    ANSI_ORANGE, wait_seconds, ANSI_NORMAL);
+                  strcat(promptbuf, wait_buf);
+                }
                 write_to_q(promptbuf, &point->output);
               } else if (HasClass(point->character, CLASS_THIEF) ||
                          HasClass(point->character, CLASS_WARRIOR) ||
@@ -581,6 +597,14 @@ int game_loop(int s) {
                 sprintf(promptbuf, "H:%s%d %sV:%s%d%s>%s ", hitscolor,
                   point->character->points.hit, ANSI_WHITE, movescolor,
                   point->character->points.move, ANSI_WHITE, ANSI_NORMAL);
+                /* Add wait state indicator if character is locked out */
+                if (point->wait > 1) {
+                  char wait_buf[32];
+                  double wait_seconds = (double)(point->wait - 1) / 4.0;
+                  (void)snprintf(wait_buf, sizeof(wait_buf), "%s[Wait:%.1fs]%s ",
+                    ANSI_ORANGE, wait_seconds, ANSI_NORMAL);
+                  strcat(promptbuf, wait_buf);
+                }
                 write_to_q(promptbuf, &point->output);
               } else {
                 prompt_per = point->character->points.hit * 100 /
@@ -600,6 +624,14 @@ int game_loop(int s) {
                 sprintf(promptbuf, "*H:%s%d %sV:%s%d%s>%s ", hitscolor,
                   point->character->points.hit, ANSI_WHITE, movescolor,
                   point->character->points.move, ANSI_WHITE, ANSI_NORMAL);
+                /* Add wait state indicator if character is locked out */
+                if (point->wait > 1) {
+                  char wait_buf[32];
+                  double wait_seconds = (double)(point->wait - 1) / 4.0;
+                  (void)snprintf(wait_buf, sizeof(wait_buf), "%s[Wait:%.1fs]%s ",
+                    ANSI_ORANGE, wait_seconds, ANSI_NORMAL);
+                  strcat(promptbuf, wait_buf);
+                }
                 write_to_q(promptbuf, &point->output);
               }
             } else {
