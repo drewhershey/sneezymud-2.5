@@ -610,7 +610,7 @@ void group_gain(struct char_data* ch, struct char_data* victim) {
   }
 
   if (no_members < 1) {
-    share = 0;
+    return;
   }
 
   if (!IS_NPC(ch)) {

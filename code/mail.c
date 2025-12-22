@@ -303,7 +303,7 @@ header (i.e. the text handed to the player)
 */
 char* read_delete(char* recipient, char* recipient_formatted) {
   header_block_type header;
-  data_block_type data;
+  data_block_type data = {0};
   mail_index_type* mail_pointer;
   mail_index_type* prev_mail;
   position_list_type* position_pointer;

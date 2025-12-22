@@ -68,9 +68,9 @@ static char* fread_action(FILE* fl) {
 
 void boot_social_messages(void) {
   FILE* fl;
-  int tmp;
-  int hide;
-  int min_pos;
+  int tmp = -1;
+  int hide = 0;
+  int min_pos = 0;
 
   if (!(fl = fopen(SOCMESS_FILE, "r"))) {
     perror("boot_social_messages");

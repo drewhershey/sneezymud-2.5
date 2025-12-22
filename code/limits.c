@@ -430,6 +430,7 @@ static void drop_level(struct char_data* ch, int class) {
       }
     } break;
     case CLASS_ANTIPALADIN: {
+      lin_class = ANTIPALADIN_LEVEL_IND;
       if (GET_LEVEL(ch, ANTIPALADIN_LEVEL_IND) < 12) {
         add_hp += number(7, 11);
       } else {
@@ -437,6 +438,7 @@ static void drop_level(struct char_data* ch, int class) {
       }
     } break;
     case CLASS_PALADIN: {
+      lin_class = PALADIN_LEVEL_IND;
       if (GET_LEVEL(ch, PALADIN_LEVEL_IND) < 12) {
         add_hp += number(7, 11);
       } else {
@@ -444,11 +446,15 @@ static void drop_level(struct char_data* ch, int class) {
       }
     } break;
     case CLASS_RANGER: {
+      lin_class = RANGER_LEVEL_IND;
       if (GET_LEVEL(ch, RANGER_LEVEL_IND) < 12) {
         add_hp += number(6, 11);
       } else {
         add_hp += number(3, 9);
       }
+    } break;
+    default: {
+      lin_class = MAGE_LEVEL_IND;  /* Fallback to prevent undefined behavior */
     } break;
   }
 

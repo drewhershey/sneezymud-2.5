@@ -438,6 +438,10 @@ int shop_keeper(struct char_data* ch, int cmd, char* arg) {
     }
   }
 
+  if (!keeper) {
+    return (FALSE);
+  }
+
   for (shop_nr = 0; shop_index[shop_nr].keeper != keeper->nr; shop_nr++) {
     ;
   }

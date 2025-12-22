@@ -1554,6 +1554,7 @@ void act(const char* str, int hide_invisible, struct char_data* ch,
             default:
               vlog("Illegal $-code to act():");
               vlog(str);
+              i = "";
               break;
           }
 

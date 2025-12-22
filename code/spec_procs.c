@@ -6067,12 +6067,10 @@ int chalice(struct char_data* ch, int cmd, char* arg) {
 
   switch (cmd) {
     case 10: /* get */
-      if (!(chalice =
-              get_obj_in_list_num(chl, real_roomp(ch->in_room)->contents)) &&
-          CAN_SEE_OBJ(ch, chalice)) {
-        if (!(chalice =
-                get_obj_in_list_num(achl, real_roomp(ch->in_room)->contents)) &&
-            CAN_SEE_OBJ(ch, chalice)) {
+      chalice = get_obj_in_list_num(chl, real_roomp(ch->in_room)->contents);
+      if (!chalice || !CAN_SEE_OBJ(ch, chalice)) {
+        chalice = get_obj_in_list_num(achl, real_roomp(ch->in_room)->contents);
+        if (!chalice || !CAN_SEE_OBJ(ch, chalice)) {
           return (0);
         }
       }
@@ -9286,10 +9284,13 @@ int valik(struct char_data* ch, int cmd, char* arg) {
   }
 
   vict = get_char_room_vis(ch, "valik");
+  if (!vict) {
+    return (FALSE);
+  }
 
-  valik = valik;
   if (!vict->act_ptr) {
-    vict->act_ptr = (struct mob_act_data*)calloc(1, sizeof(int));
+    vict->act_ptr =
+      (struct mob_act_data*)calloc(1, sizeof(struct mob_act_data));
   }
   switch ((*((int*)vict->act_ptr))) {
     case VALIK_WANDERING:
