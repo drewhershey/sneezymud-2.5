@@ -209,9 +209,17 @@ static int raw_move(struct char_data* ch, int dir) {
   if (IS_AFFECTED(ch, AFF_FLYING)) {
     need_movement = 1;
   } else {
-    need_movement = (movement_loss[from_here->sector_type] +
-                      movement_loss[to_here->sector_type]) /
-                    2;
+    /* Clamp sector types to valid range to prevent buffer overflow */
+    int from_sector = from_here->sector_type;
+    int to_sector = to_here->sector_type;
+    if (from_sector < 0 || from_sector > SECT_DESERT) {
+      from_sector = SECT_FIELD; /* Default to field if invalid */
+    }
+    if (to_sector < 0 || to_sector > SECT_DESERT) {
+      to_sector = SECT_FIELD; /* Default to field if invalid */
+    }
+    need_movement =
+      (movement_loss[from_sector] + movement_loss[to_sector]) / 2;
   }
 
   /*
