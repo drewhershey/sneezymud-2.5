@@ -105,43 +105,36 @@ int read_objs(FILE* fl, struct obj_file_u* st) {
   int i;
 
   if (feof(fl)) {
-    puts("Ending at 1.");
     fclose(fl);
     return (FALSE);
   }
   fread(&st->owner, sizeof(st->owner), 1, fl);
   if (feof(fl)) {
-    puts("Ending at 2.");
     fclose(fl);
     return (FALSE);
   }
   fread(&st->gold_left, sizeof(st->gold_left), 1, fl);
   if (feof(fl)) {
-    puts("Ending at 3.");
     fclose(fl);
     return (FALSE);
   }
   fread(&st->total_cost, sizeof(st->total_cost), 1, fl);
   if (feof(fl)) {
-    puts("Ending at 4.");
     fclose(fl);
     return (FALSE);
   }
   fread(&st->last_update, sizeof(st->last_update), 1, fl);
   if (feof(fl)) {
-    puts("Ending at 5.");
     fclose(fl);
     return (FALSE);
   }
   fread(&st->minimum_stay, sizeof(st->minimum_stay), 1, fl);
   if (feof(fl)) {
-    puts("Ending at 6.");
     fclose(fl);
     return (FALSE);
   }
   fread(&st->number, sizeof(st->number), 1, fl);
   if (feof(fl)) {
-    puts("Ending at 7.");
     fclose(fl);
     return (FALSE);
   }
@@ -238,7 +231,8 @@ void put_obj_in_store(struct obj_data* obj, struct obj_file_u* st) {
   /* end of new, possibly buggy stuff */
 
   for (j = 0; j < MAX_OBJ_AFFECT; j++) {
-    oe->affected[j] = obj->affected[j];
+    oe->affected[j].location = obj->affected[j].location;
+    oe->affected[j].modifier = ULONG_TO_COMPAT(obj->affected[j].modifier);
   }
 
   st->number++;

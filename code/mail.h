@@ -5,6 +5,8 @@
 
 #pragma once
 
+#include "compat_types.h"
+
 /* INSTALLATION INSTRUCTIONS in MAIL.C */
 
 /* You can modify the following constants to fit your own MUD.  */
@@ -44,7 +46,7 @@ char* read_delete(char* recipient, char* recipient_formatted);
 
 #define INT_SIZE sizeof(int)
 #define CHAR_SIZE sizeof(char)
-#define LONG_SIZE sizeof(long)
+#define LONG_SIZE sizeof(compat_long) /* 32-bit for file compat */
 
 #define HEADER_BLOCK_DATASIZE \
   (BLOCK_SIZE - 1 - ((CHAR_SIZE * (NAME_SIZE + 1) * 2) + (3 * LONG_SIZE)))
@@ -65,8 +67,8 @@ char* read_delete(char* recipient, char* recipient_formatted);
 #pragma pack(push, 1)
 
 struct header_block_type_d {
-    long block_type; /* is this a header block or data block? */
-    long next_block; /* if header block, link to next block   */
+    compat_long block_type; /* is this a header block or data block? */
+    compat_long next_block; /* if header block, link to next block   */
     /* note: next_block is part of header_blk*/
     /* in a data block; we can't combine them*/
     /* here because we have to be able to    */
@@ -74,12 +76,12 @@ struct header_block_type_d {
     /* header block when booting mail system */
     char from[NAME_SIZE + 1];            /* who is this letter from?		 */
     char to[NAME_SIZE + 1];              /* who is this letter to?		 */
-    long mail_time;                      /* when was the letter mailed?		 */
+    compat_long mail_time;               /* when was the letter mailed?		 */
     char txt[HEADER_BLOCK_DATASIZE + 1]; /* the actual text	*/
 };
 
 struct data_block_type_d {
-    long block_type; /* -1 if header block, -2 if last data block
+    compat_long block_type; /* -1 if header block, -2 if last data block
           in mail, otherwise a link to the next */
     char txt[DATA_BLOCK_DATASIZE + 1]; /* the actual text		 */
 };

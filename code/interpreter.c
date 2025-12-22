@@ -1242,7 +1242,9 @@ static void obj_store_to_char(struct char_data* ch, struct obj_file_u* st) {
       /* end of new, possibly buggy stuff */
 
       for (j = 0; j < MAX_OBJ_AFFECT; j++) {
-        obj->affected[j] = st->objects[i].affected[j];
+        obj->affected[j].location = st->objects[i].affected[j].location;
+        obj->affected[j].modifier =
+          COMPAT_TO_ULONG(st->objects[i].affected[j].modifier);
       }
 
       obj_to_char(obj, ch);

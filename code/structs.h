@@ -9,6 +9,8 @@
 #include <sys/types.h>
 #include <time.h>
 
+#include "compat_types.h"
+
 /*
    my new stuff
 */
@@ -381,10 +383,17 @@ struct obj_flag_data {
     int volume;
 };
 
-/* Used in OBJ_FILE_ELEM *DO*NOT*CHANGE* */
+/* Runtime version for in-memory objects */
 struct obj_affected_type {
     short location;         /* Which ability to change (APPLY_XXX) */
     unsigned long modifier; /* How much it changes by              */
+};
+
+/* File format version - 32-bit compatible for binary file I/O */
+/* Used in OBJ_FILE_ELEM *DO*NOT*CHANGE* (maintains original 32-bit layout) */
+struct obj_affected_type_file {
+    short location;
+    compat_ulong modifier; /* 32-bit for file compat */
 };
 
 /* ======================== Structure for object ========================= */
@@ -811,7 +820,7 @@ struct char_skill_data {
     char recognise;      /* If you can recognise the scroll etc.   */
 };
 
-/* Used in CHAR_FILE_U *DO*NOT*CHANGE* */
+/* Runtime version - used for in-memory linked lists */
 struct affected_type {
     short type;           /* The type of spell that caused this      */
     short int duration;   /* For how long its effects will last      */
@@ -820,6 +829,17 @@ struct affected_type {
     long bitvector;       /* Tells which bits to set (AFF_XXX)       */
 
     struct affected_type* next;
+};
+
+/* File format version - 32-bit compatible for binary file I/O */
+/* Used in CHAR_FILE_U *DO*NOT*CHANGE* (maintains original 32-bit layout) */
+struct affected_type_file {
+    short type;
+    short int duration;
+    signed char modifier;
+    signed char location;
+    compat_long bitvector; /* 32-bit for file compat */
+    compat_ptr next;       /* 32-bit placeholder (unused in files) */
 };
 
 struct follow_type {
@@ -964,14 +984,15 @@ struct weather_data {
 
 /* ***********************************************************************
  *  file element for player file. BEWARE: Changing it will ruin the file  *
+ *  Uses compat types to maintain 32-bit binary file compatibility        *
  *********************************************************************** */
 
 struct char_file_u {
     signed char sex;
     unsigned char class;
     signed char level[8];
-    time_t birth; /* Time of birth of character     */
-    int played;   /* Number of secs played in total */
+    compat_time birth; /* Time of birth of character (32-bit for compat) */
+    int played;        /* Number of secs played in total */
 
     int race;
     unsigned char weight;
@@ -990,15 +1011,15 @@ struct char_file_u {
 
     struct char_skill_data skills[MAX_SKILLS];
 
-    struct affected_type affected[MAX_AFFECT];
+    struct affected_type_file affected[MAX_AFFECT];
 
     /* specials */
 
     signed char spells_to_learn;
     int alignment;
 
-    time_t last_logon; /* Time (in secs) of last logon */
-    unsigned long act; /* ACT Flags                    */
+    compat_time last_logon; /* Time (in secs) of last logon (32-bit compat) */
+    compat_ulong act;       /* ACT Flags (32-bit for compat) */
 
     /* char data */
     char name[20];
@@ -1027,11 +1048,11 @@ struct obj_file_elem {
     int extra_flags;
     int weight;
     int timer;
-    long bitvector;
-    char name[128]; /* big, but not horrendously so */
+    compat_long bitvector; /* 32-bit for file compat */
+    char name[128];        /* big, but not horrendously so */
     char sd[128];
     char desc[256];
-    struct obj_affected_type affected[MAX_OBJ_AFFECT];
+    struct obj_affected_type_file affected[MAX_OBJ_AFFECT];
     int decay_time;
     int struct_points;
     int max_struct_points;
@@ -1040,12 +1061,12 @@ struct obj_file_elem {
 };
 
 struct obj_file_u {
-    char owner[20];    /* Name of player                     */
-    int gold_left;     /* Number of goldcoins left at owner  */
-    int total_cost;    /* The cost for all items, per day    */
-    long last_update;  /* Time in seconds, when last updated */
-    long minimum_stay; /* For stasis */
-    int number;        /* number of objects */
+    char owner[20];           /* Name of player                     */
+    int gold_left;            /* Number of goldcoins left at owner  */
+    int total_cost;           /* The cost for all items, per day    */
+    compat_long last_update;  /* Time in seconds (32-bit compat)  */
+    compat_long minimum_stay; /* For stasis (32-bit compat)       */
+    int number;               /* number of objects */
     struct obj_file_elem objects[MAX_OBJ_SAVE];
 };
 

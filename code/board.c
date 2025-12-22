@@ -62,8 +62,6 @@ void InitABoard(struct obj_data* obj) {
 
   sprintf(new->filename, "%d.messages", obj_index[obj->item_number].virtual);
 
-  OpenBoardFile(new);
-
   board_load_board(new);
 
   /*
@@ -73,8 +71,6 @@ void InitABoard(struct obj_data* obj) {
   tmp = board_list;
   new->next = tmp;
   board_list = new;
-
-  fclose(new->file);
 }
 
 void OpenBoardFile(struct Board* b) {
@@ -282,8 +278,6 @@ void board_save_board(struct Board* b) {
 void board_load_board(struct Board* b) {
   int ind;
   int len = 0;
-
-  return;
 
   OpenBoardFile(b);
   board_reset_board(b);

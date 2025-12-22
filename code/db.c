@@ -1781,11 +1781,16 @@ void char_to_store(struct char_data* ch, struct char_file_u* st) {
 
   for (af = ch->affected, i = 0; i < MAX_AFFECT; i++) {
     if (af) {
-      st->affected[i] = *af;
+      /* Copy affected_type to affected_type_file with compat conversion */
+      st->affected[i].type = af->type;
+      st->affected[i].duration = af->duration;
+      st->affected[i].modifier = af->modifier;
+      st->affected[i].location = af->location;
+      st->affected[i].bitvector = LONG_TO_COMPAT(af->bitvector);
       st->affected[i].next = 0;
       /* subtract effect of the spell or the effect will be doubled */
       affect_modify(ch, st->affected[i].location, st->affected[i].modifier,
-        st->affected[i].bitvector, FALSE);
+        COMPAT_TO_LONG(st->affected[i].bitvector), FALSE);
       af = af->next;
     } else {
       st->affected[i].type = 0; /* Zero signifies not used */
