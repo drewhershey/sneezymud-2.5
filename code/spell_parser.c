@@ -798,6 +798,7 @@ void affect_update(int pulse) {
               real_roomp(j->in_room)->people, j, 0, TO_CHAR);
           }
           obj_from_corpse(j);
+          continue; /* Skip rest of loop - object has been freed */
         }
         /* FOOD */
         else if (GET_ITEM_TYPE(j) == ITEM_FOOD) {
