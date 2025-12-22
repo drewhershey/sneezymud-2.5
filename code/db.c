@@ -16,6 +16,7 @@
 
 #include "board.h"
 #include "comm.h"
+#include "compat_types.h"
 #include "constants.h"
 #include "handler.h"
 #include "hash.h"
@@ -1756,7 +1757,15 @@ void store_to_char(struct char_file_u* st, struct char_data* ch) {
   /* Add all spell effects */
   for (i = 0; i < MAX_AFFECT; i++) {
     if (st->affected[i].type) {
-      affect_to_char(ch, &st->affected[i]);
+      /* Convert from file format to runtime format */
+      struct affected_type af;
+      af.type = st->affected[i].type;
+      af.duration = st->affected[i].duration;
+      af.modifier = st->affected[i].modifier;
+      af.location = st->affected[i].location;
+      af.bitvector = COMPAT_TO_LONG(st->affected[i].bitvector);
+      af.next = NULL;
+      affect_to_char(ch, &af);
     }
   }
   ch->in_room = st->load_room;
