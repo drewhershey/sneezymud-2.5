@@ -1160,8 +1160,8 @@ static void read_book(Mob* ch, Obj* o, char* arg) {
 
 void do_look(struct char_data* ch, char* argument, int cmd) {
   char buffer[MAX_STRING_LENGTH];
-  char arg1[MAX_INPUT_LENGTH];
-  char arg2[MAX_INPUT_LENGTH];
+  char arg1[MAX_INPUT_LENGTH] = "";
+  char arg2[MAX_INPUT_LENGTH] = "";
   int keyword_no;
   int res;
   int j;

@@ -1210,7 +1210,7 @@ void TeleportPulseStuff(int pulse) {
   struct char_data* next;
   struct char_data* tmp;
   struct char_data* pers;
-  int tick;
+  int tick = 0;
   int tm;
   int or;
   struct room_data* rp;

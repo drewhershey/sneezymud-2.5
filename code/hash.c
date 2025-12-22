@@ -11,7 +11,7 @@
 void init_hash_table(struct hash_header* ht, int rec_size, int table_size) {
   ht->rec_size = rec_size;
   ht->table_size = table_size;
-  ht->buckets = calloc(sizeof(struct hash_link**), table_size);
+  ht->buckets = calloc((size_t)table_size, sizeof(struct hash_link*));
   ht->keylist = malloc(sizeof(*ht->keylist) * (ht->klistsize = 128));
   ht->klistlen = 0;
 }

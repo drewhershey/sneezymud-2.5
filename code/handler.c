@@ -1788,7 +1788,7 @@ int generic_find(char* arg, int bitvector, struct char_data* ch,
   static const char* const ignore[] = {"the", "in", "on", "at", "\n"};
 
   int i;
-  char name[256];
+  char name[256] = "";
   char found;
 
   found = FALSE;

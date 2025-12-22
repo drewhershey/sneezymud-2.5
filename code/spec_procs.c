@@ -5019,7 +5019,8 @@ int whirlwind(struct char_data* ch, int cmd, char* arg) {
     return (FALSE);
   }
   if (!ch->act_ptr) {
-    ch->act_ptr = (struct mob_act_data*)calloc(1, sizeof(int));
+    ch->act_ptr =
+      (struct mob_act_data*)calloc(1, sizeof(struct mob_act_data));
   }
   if (cmd == 0 && (*((int*)ch->act_ptr)) == WW_LOOSE) {
     for (tmp = real_roomp(ch->in_room)->people; tmp; tmp = tmp->next_in_room) {
@@ -5064,7 +5065,8 @@ int NudgeNudge(struct char_data* ch, int cmd, char* arg) {
   }
 
   if (!ch->act_ptr) {
-    ch->act_ptr = (struct mob_act_data*)calloc(1, sizeof(int));
+    ch->act_ptr =
+      (struct mob_act_data*)calloc(1, sizeof(struct mob_act_data));
   }
   switch ((*((int*)ch->act_ptr))) {
     case NN_LOOSE:
@@ -6011,6 +6013,7 @@ int vorpal(Mob* victim, int cmd, char* arg, Obj* me) {
 
   ch = me->equipped_by;
 
+  exp = GET_EXP(victim);
   vhit = GET_HIT(victim);
 
   percent = 300 * (((float)GET_HIT(victim)) / ((float)GET_MAX_HIT(victim)));
@@ -6525,7 +6528,8 @@ int delivery_elf(struct char_data* ch, int cmd, char* arg) {
   }
 
   if (!ch->act_ptr) {
-    ch->act_ptr = (struct mob_act_data*)calloc(1, sizeof(int));
+    ch->act_ptr =
+      (struct mob_act_data*)calloc(1, sizeof(struct mob_act_data));
   }
   switch ((*((int*)ch->act_ptr))) {
     case ELF_INIT:
@@ -7281,7 +7285,8 @@ int NewThalosMayor(struct char_data* ch, int cmd, char* arg) {
     return (FALSE);
   }
   if (!ch->act_ptr) {
-    ch->act_ptr = (struct mob_act_data*)calloc(1, sizeof(int));
+    ch->act_ptr =
+      (struct mob_act_data*)calloc(1, sizeof(struct mob_act_data));
   }
   if (ch->specials.fighting) {
     return (FALSE);
@@ -8342,15 +8347,14 @@ static int affect_status(struct mob_act_lattimore* mem, struct char_data* ch,
   }
 
   if (!mem->c) {
-    mem->names = (char**)malloc(sizeof(char));
-    mem->status = (int*)malloc(sizeof(char));
+    mem->names = (char**)malloc(sizeof(char*));
+    mem->status = (int*)malloc(sizeof(int));
   } else {
-    mem->names = (char**)realloc(mem->names, (sizeof(char) * mem->c));
-    mem->status = (int*)realloc(mem->status, (sizeof(char) * mem->c));
+    mem->names = (char**)realloc(mem->names, sizeof(char*) * (size_t)(mem->c + 1));
+    mem->status = (int*)realloc(mem->status, sizeof(int) * (size_t)(mem->c + 1));
   }
-  mem->names[mem->c] = (char*)malloc(sizeof(strlen(GET_NAME(t) + 2)));
+  mem->names[mem->c] = (char*)malloc(strlen(GET_NAME(t)) + 1);
   strcpy(mem->names[mem->c], GET_NAME(t));
-  mem->status[mem->c] = (int)malloc(sizeof(int));
   mem->status[mem->c] = aff_status;
   ++mem->c;
   return (mem->c - 1);
@@ -11512,7 +11516,8 @@ int creeping_death(struct char_data* ch, int cmd, char* arg) {
     return (FALSE);
   }
   if (!ch->act_ptr) {
-    ch->act_ptr = (struct mob_act_data*)calloc(1, sizeof(int));
+    ch->act_ptr =
+      (struct mob_act_data*)calloc(1, sizeof(struct mob_act_data));
   }
   if (ch->specials.fighting) { /* kill */
 

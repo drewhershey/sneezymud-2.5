@@ -302,7 +302,7 @@ recipient_formatted is the name as it should appear on the mail
 header (i.e. the text handed to the player)
 */
 char* read_delete(char* recipient, char* recipient_formatted) {
-  header_block_type header;
+  header_block_type header = {0};
   data_block_type data = {0};
   mail_index_type* mail_pointer;
   mail_index_type* prev_mail;

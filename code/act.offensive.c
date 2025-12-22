@@ -305,7 +305,7 @@ void do_flee(struct char_data* ch, char* argument, int cmd) {
   int i;
   int lev_check;
   int attempt;
-  int loose;
+  int loose = 0;
   int die;
   int percent;
   int losedie;

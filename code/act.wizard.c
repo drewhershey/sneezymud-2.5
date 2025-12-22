@@ -679,7 +679,7 @@ static int room_enter(struct room_data* rb[], int key, struct room_data* rm) {
 
 static void room_load(struct char_data* ch, int start, int end) {
   FILE* fp;
-  int vnum;
+  int vnum = 0;
   int found = FALSE;
   int x;
   char chk[50];

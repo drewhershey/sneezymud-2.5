@@ -1143,8 +1143,8 @@ int parse_name(char* arg, char* name) {
 
 static void blk_read(struct char_data* ch) {
   FILE* fl;
-  char buf[MAX_STRING_LENGTH];
-  char buf2[MAX_STRING_LENGTH];
+  char buf[MAX_STRING_LENGTH] = "";
+  char buf2[MAX_STRING_LENGTH] = "";
   int len;
   int i;
 
