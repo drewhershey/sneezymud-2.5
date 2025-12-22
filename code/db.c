@@ -2081,7 +2081,9 @@ void free_char(struct char_data* ch) {
     free(ch->player.distant_snds);
   }
 
-  for (af = ch->affected; af; af = af->next) {
+  struct affected_type* next_af;
+  for (af = ch->affected; af; af = next_af) {
+    next_af = af->next;
     affect_remove(ch, af);
   }
   if (ch->skills) {
