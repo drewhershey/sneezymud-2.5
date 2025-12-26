@@ -1,11 +1,24 @@
 {
   "version": 6,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 25,
+    "patch": 0
+  },
   "configurePresets": [
+    {
+      "name": "base",
+      "hidden": true,
+      "binaryDir": "${sourceDir}/build",
+      "generator": "Ninja",
+      "cacheVariables": {
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
+      }
+    },
     {
       "name": "dev",
       "displayName": "Development (Debug + Sanitizers)",
-      "generator": "Ninja",
-      "binaryDir": "${sourceDir}/build",
+      "inherits": "base",
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Debug",
         "CMAKE_C_COMPILER": "clang",
@@ -15,12 +28,23 @@
     {
       "name": "release",
       "displayName": "Release (Optimized + Sanitizers)",
-      "generator": "Ninja",
-      "binaryDir": "${sourceDir}/build",
+      "inherits": "base",
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Release",
         "CMAKE_C_COMPILER": "clang",
         "ENABLE_SANITIZERS": "ON"
+      }
+    },
+    {
+      "name": "minimal",
+      "hidden": true,
+      "displayName": "Minimal (Hidden)",
+      "description": "Debug build without sanitizers - only for debugging sanitizer issues",
+      "inherits": "base",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "CMAKE_C_COMPILER": "clang",
+        "ENABLE_SANITIZERS": "OFF"
       }
     }
   ],

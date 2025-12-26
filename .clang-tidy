@@ -1,8 +1,43 @@
-# Clang-Tidy configuration for SneezeMUD 2.5
-# Enable all checks, then selectively disable inappropriate ones
+# .clang-tidy - clang-tidy configuration for SneezyMUD 2.5 (C23)
+# Run with: python3 scripts/analyze.py run
+#
+# Comprehensive C23 checks for legacy codebase refactoring.
+# This is intentionally strict - use it to ensure touched code follows modern best practices.
+# Legacy code will have **many** warnings; fix them incrementally as you work on each file.
+#
+# Requires: clang-tidy 17+ for misc-include-cleaner (Ubuntu 24.04 LTS provides 19 by default)
+#
+# Disabled check explanations:
+#   - Platform/library-specific: abseil, altera, android, boost, darwin, fuchsia, linuxkernel, llvmlibc, mpi, objc, openmp, zircon
+#   - C++ only (not applicable to C): cppcoreguidelines-*, modernize-*, hicpp-*, (most are C++ specific)
+#   - Style preferences: llvm-* (LLVM-specific naming conventions)
+#   - Too noisy for legacy code:
+#       bugprone-easily-swappable-parameters (many false positives in C APIs),
+#       readability-function-cognitive-complexity (legacy code has complex functions),
+#       readability-identifier-length (short names like 'i', 'ch' are idiomatic in C),
+#       readability-magic-numbers (would flag nearly every number literal),
+#       misc-no-recursion (recursion is used intentionally in some places)
+#   - Security/randomness (intentionally relaxed for game):
+#       cert-msc30-c (warns about rand() - acceptable for non-crypto game RNG),
+#       cert-msc32-c (warns about rand() seeding - acceptable for game)
+#   - Concurrency (no threading in this codebase): concurrency-*
+#
+# C23 Modernization Opportunities:
+#   - Replace NULL with nullptr
+#   - Use [[fallthrough]], [[nodiscard]], [[maybe_unused]] attributes
+#   - Replace _Bool with bool keyword
+#   - Use constexpr for compile-time constants
+#   - Use binary literals (0b) for bit flags
+
+---
+# Ensure we see bugs in all project files
+HeaderFilterRegex: 'code/.*'
 
 Checks: >
   *,
+  misc-header-include-cycle,
+  misc-include-cleaner,
+  -abseil-*,
   -altera-*,
   -android-*,
   -boost-*,
@@ -11,82 +46,51 @@ Checks: >
   -cert-msc32-c,
   -concurrency-*,
   -cppcoreguidelines-*,
+  -darwin-*,
   -fuchsia-*,
   -google-*,
   -hicpp-*,
+  -linuxkernel-*,
   -llvm-header-guard,
+  -llvm-include-order,
+  -llvm-namespace-comment,
   -llvmlibc-*,
   -misc-no-recursion,
   -modernize-*,
   -mpi-*,
   -objc-*,
   -openmp-*,
+  -readability-avoid-nested-conditional-operator,
   -readability-function-cognitive-complexity,
+  -readability-function-size,
   -readability-identifier-length,
   -readability-magic-numbers,
-  misc-include-cleaner,
-  performance-*,
-
-# Disabled checks explained:
-#
-# PLATFORM-SPECIFIC (not relevant):
-#   altera-*           - FPGA/Altera specific
-#   android-*          - Android platform specific
-#   boost-*            - Boost library specific
-#   fuchsia-*          - Fuchsia OS specific
-#   llvmlibc-*         - LLVM libc implementation specific
-#   mpi-*              - MPI parallel computing specific
-#   objc-*             - Objective-C specific
-#   openmp-*           - OpenMP specific
-#
-# C++ SPECIFIC (not relevant for C code):
-#   cppcoreguidelines-* - C++ Core Guidelines
-#   hicpp-*             - High Integrity C++ guidelines
-#   modernize-*         - C++ modernization (auto, nullptr, etc.)
-#
-# STYLE GUIDE SPECIFIC:
-#   google-*           - Google C++ style guide (conflicts with project style)
-#   llvm-header-guard  - LLVM header guard style (project uses different style)
-#
-# TOO NOISY FOR LEGACY CODE:
-#   bugprone-easily-swappable-parameters - Many false positives in C APIs
-#   readability-function-cognitive-complexity - Legacy code has complex functions
-#   readability-identifier-length - Short names like 'i', 'ch' are idiomatic in C
-#   readability-magic-numbers - Would flag nearly every number literal
-#   misc-no-recursion - Recursion is used intentionally in some places
-#
-# SECURITY/RANDOMNESS (intentionally relaxed for game):
-#   cert-msc30-c - Warns about rand() - acceptable for non-crypto game RNG
-#   cert-msc32-c - Warns about rand() seeding - acceptable for game
-#   concurrency-* - No threading in this codebase
-#
-# ENABLED FOR C23:
-#   performance-* - All performance optimizations (safe and beneficial)
-#
-# POTENTIALLY USEFUL (consider enabling incrementally):
-#   cert-err33-c - Check return values (currently causes many warnings)
-#   cert-err34-c - Check atoi/scanf returns (currently causes many warnings)
-#   readability-suspicious-call-argument - Can catch real bugs but has false positives
-#
-# C23 MODERNIZATION OPPORTUNITIES:
-#   - Replace NULL with nullptr
-#   - Use [[fallthrough]], [[nodiscard]], [[maybe_unused]] attributes
-#   - Replace _Bool with bool keyword
-#   - Use constexpr for compile-time constants
-#   - Use binary literals (0b) for bit flags
-
-WarningsAsErrors: ''
-
-HeaderFilterRegex: '.*'
+  -zircon-*,
 
 CheckOptions:
-  # Allow short names for loop variables and common idioms
+  # Naming Conventions (match existing C codebase patterns)
+  - key: readability-identifier-naming.FunctionCase
+    value: lower_case
   - key: readability-identifier-naming.VariableCase
     value: lower_case
-  - key: readability-identifier-naming.FunctionCase
+  - key: readability-identifier-naming.ParameterCase
     value: lower_case
   - key: readability-identifier-naming.MacroDefinitionCase
     value: UPPER_CASE
+  - key: readability-identifier-naming.EnumConstantCase
+    value: UPPER_CASE
+  - key: readability-identifier-naming.GlobalConstantCase
+    value: UPPER_CASE
+  - key: readability-identifier-naming.StaticConstantCase
+    value: UPPER_CASE
+  - key: readability-identifier-naming.StructCase
+    value: lower_case
+
+  # Allow short names for loop variables and common idioms
+  - key: readability-identifier-length.MinimumVariableNameLength
+    value: 1
+  - key: readability-identifier-length.MinimumParameterNameLength
+    value: 1
 
   # Reasonable thresholds for complexity checks (if re-enabled)
   - key: readability-function-cognitive-complexity.Threshold
@@ -94,8 +98,24 @@ CheckOptions:
   - key: readability-function-size.LineThreshold
     value: 500
 
-  # Allow common short names
-  - key: readability-identifier-length.MinimumVariableNameLength
-    value: 1
-  - key: readability-identifier-length.MinimumParameterNameLength
-    value: 1
+# Production-critical checks surfaced as errors in IDE
+# These are also the checks CodeChecker will run via clang-tidy analyzer for CI blocking
+# Criteria: issues likely to cause crashes, memory/data corruption, or invalid game state
+#
+# Note: Many C++-specific checks from the original list are removed (exception-escape,
+# dangling-handle, string-constructor, use-after-move, virtual-near-miss, etc.)
+WarningsAsErrors: >
+  bugprone-assert-side-effect,
+  bugprone-bool-pointer-implicit-conversion,
+  bugprone-infinite-loop,
+  bugprone-integer-division,
+  bugprone-misplaced-widening-cast,
+  bugprone-multi-level-implicit-pointer-conversion,
+  bugprone-not-null-terminated-result,
+  bugprone-signal-handler,
+  bugprone-sizeof-expression,
+  bugprone-suspicious-memset-usage,
+  bugprone-suspicious-semicolon,
+  bugprone-suspicious-string-compare,
+  bugprone-swapped-arguments,
+  bugprone-undefined-memory-manipulation
