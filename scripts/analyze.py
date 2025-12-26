@@ -22,6 +22,10 @@ Examples:
     python3 scripts/analyze.py export --format text
     python3 scripts/analyze.py export --format text --critical-only
     python3 scripts/analyze.py export --format sqlite
+
+Decision Tracking:
+    Issue decisions are tracked in codechecker-report/decisions.db (preserved by make clean-all).
+    Use the /review-issues Claude command to analyze issues and record decisions.
 """
 from __future__ import annotations
 

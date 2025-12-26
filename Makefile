@@ -73,11 +73,20 @@ clean:
 	@rm -f compile_commands.json
 	@echo "Clean complete"
 
-# Clean build directory and analysis results
+# Clean build directory and analysis results (preserves decisions.db)
 clean-all:
 	@echo "Removing build directory and analysis results..."
-	@rm -rf build .codechecker-results codechecker-report compile_commands.json
-	@echo "Clean complete"
+	@rm -rf build .codechecker-results compile_commands.json
+	@# Preserve decisions.db when cleaning codechecker-report
+	@if [ -f codechecker-report/decisions.db ]; then \
+		mv codechecker-report/decisions.db /tmp/decisions.db.bak 2>/dev/null; \
+		rm -rf codechecker-report; \
+		mkdir -p codechecker-report; \
+		mv /tmp/decisions.db.bak codechecker-report/decisions.db; \
+	else \
+		rm -rf codechecker-report; \
+	fi
+	@echo "Clean complete (decisions.db preserved if present)"
 
 # Reconfigure CMake
 reconfigure:
