@@ -71,6 +71,11 @@ static void write_to_file(void* buf, int size, long filepos) {
   FILE* mail_file;
 
   mail_file = fopen(MAIL_FILE, "r+b");
+  if (!mail_file) {
+    vlog("Mail system -- fatal error: cannot open mail file for writing!");
+    no_mail = 1;
+    return;
+  }
 
   if (filepos % BLOCK_SIZE) {
     vlog("Mail system -- fatal error #2!!!");
@@ -92,6 +97,11 @@ static void read_from_file(void* buf, int size, long filepos) {
   FILE* mail_file;
 
   mail_file = fopen(MAIL_FILE, "r+b");
+  if (!mail_file) {
+    vlog("Mail system -- fatal error: cannot open mail file for reading!");
+    no_mail = 1;
+    return;
+  }
 
   if (filepos % BLOCK_SIZE) {
     vlog("Mail system -- fatal error #3!!!");
@@ -158,7 +168,12 @@ int scan_file(void) {
   if (!(mail_file = fopen(MAIL_FILE, "r"))) {
     vlog("Mail file non-existant... creating new file.");
     mail_file = fopen(MAIL_FILE, "w");
-    fclose(mail_file);
+    if (mail_file) {
+      (void)fclose(mail_file);
+    } else {
+      vlog("Mail system -- fatal error: cannot create mail file!");
+      no_mail = 1;
+    }
     return 1;
   }
 
@@ -173,6 +188,7 @@ int scan_file(void) {
   }
 
   file_end_pos = ftell(mail_file);
+  (void)fclose(mail_file);
   sprintf(buf, "   %ld bytes read.", file_end_pos);
   vlog(buf);
   if (file_end_pos % BLOCK_SIZE) {

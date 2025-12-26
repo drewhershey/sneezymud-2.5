@@ -9569,6 +9569,7 @@ int guardian(struct char_data* ch, int cmd, char* arg) {
       CREATE(act_data->names[act_data->num_names - 1], char, 15);
       strcpy(act_data->names[act_data->num_names - 1], name);
     }
+    (void)fclose(pass);
   }
 
   // Default behavior when proc executes without a cmd

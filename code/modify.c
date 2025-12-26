@@ -957,6 +957,7 @@ int load(void) {
   }
   if (!fread(&info, sizeof(info), 1, fl)) {
     perror("fread sysline (dying)");
+    (void)fclose(fl);
     slow_death = 1;
     return (-1);
   }
@@ -985,11 +986,11 @@ char* nogames(void) {
   static char text[200];
   FILE* fl;
 
-  if (fl = fopen("lib/nogames", "r")) {
+  if ((fl = fopen("lib/nogames", "r"))) {
     vlog("/usr/games/nogames exists");
-    fgets(text, 200, fl);
+    (void)fgets(text, 200, fl);
+    (void)fclose(fl);
     return (text);
-    fclose(fl);
   }
   return (0);
 }
