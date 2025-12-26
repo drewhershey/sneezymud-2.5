@@ -1508,7 +1508,7 @@ char* lower(char* s) {
   static char c[1000];
   int i = 0;
 
-  strcpy(c, s);
+  (void)snprintf(c, sizeof(c), "%s", s);
 
   while (c[i]) {
     if (isupper(c[i])) {

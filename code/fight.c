@@ -146,9 +146,9 @@ void appear(struct char_data* ch) {
 void load_messages(void) {
   FILE* f1;
   int i;
-  int type;
+  int type = 0;
   struct message_type* messages;
-  char chk[100];
+  char chk[100] = "";
 
   if (!(f1 = fopen(MESS_FILE, "r"))) {
     perror("read messages");
@@ -161,12 +161,12 @@ void load_messages(void) {
     fight_messages[i].msg = 0;
   }
 
-  fscanf(f1, " %s \n", chk);
+  (void)fscanf(f1, " %s \n", chk);
 
   i = 0;
 
   while (*chk == 'M') {
-    fscanf(f1, " %d\n", &type);
+    (void)fscanf(f1, " %d\n", &type);
 
     if (i >= MAX_MESSAGES) {
       vlog("Too many combat messages.");
@@ -191,7 +191,7 @@ void load_messages(void) {
     messages->god_msg.attacker_msg = fread_string(f1);
     messages->god_msg.victim_msg = fread_string(f1);
     messages->god_msg.room_msg = fread_string(f1);
-    fscanf(f1, " %s \n", chk);
+    (void)fscanf(f1, " %s \n", chk);
     i++;
   }
 

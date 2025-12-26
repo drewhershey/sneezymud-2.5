@@ -1293,7 +1293,7 @@ static void spell_create_golem(signed char level, struct char_data* ch,
   int modifier = 0;
   int target;
   struct affected_type af;
-  struct char_data* golem;
+  struct char_data* golem = NULL;
 
   if (!ch) {
     return;

@@ -826,7 +826,7 @@ void do_breath(struct char_data* ch, char* argument, int cmd) {
 
 static int bow_missile_damage(struct char_data* ch, struct char_data* victim,
   int olddam, int attacktype) {
-  int dam;
+  int dam = 0;
   struct obj_data* bow;
 
   if (!DamDetailsOk(ch, victim, dam, attacktype)) {
@@ -918,7 +918,7 @@ void do_fire(struct char_data* ch, char* argument, int cmd) {
 
 int gun_missile_damage(struct char_data* ch, struct char_data* victim,
   int olddam, int attacktype) {
-  int dam;
+  int dam = 0;
   struct obj_data* gun;
 
   if (!DamDetailsOk(ch, victim, dam, attacktype)) {

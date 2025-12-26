@@ -2289,8 +2289,8 @@ int eric_johnson(struct char_data* ch, int cmd, char* arg) {
         break;
     }
 
+    char* s = NULL;
     switch (state) {
-      char* s;
       case E_SLEEPING:
         if (time_info.hours > 9 && time_info.hours < 12) {
           do_wake(eric, "", -1);
@@ -3616,7 +3616,7 @@ static struct char_data* find_mob_diff_zone_same_race(struct char_data* ch) {
 }
 
 int magic_user(struct char_data* ch, int cmd, char* arg) {
-  struct char_data* vict;
+  struct char_data* vict = NULL;
   struct room_data* rp;
   signed char lspell;
   char buf[200];
@@ -6265,6 +6265,8 @@ int mirror_room(struct char_data* ch, int cmd, char* arg) {
     to_room = 11301;
   } else if (ch->in_room == 11301) {
     to_room = 100;
+  } else {
+    return (FALSE);
   }
 
   one_argument(arg, name);
@@ -8395,6 +8397,13 @@ static struct mob_act_lattimore* init_lattimore(struct char_data* ch) {
   return mem;
 }
 
+static struct mob_act_lattimore* get_lattimore_mem(struct char_data* ch) {
+  if (!ch->act_ptr) {
+    return init_lattimore(ch);
+  }
+  return &ch->act_ptr->data.lattimore;
+}
+
 int lattimore(struct char_data* ch, int cmd, char* arg) {
   assert(ch && "ch cannot be NULL");
   assert((!ch->act_ptr || ch->act_ptr->type == MOB_ACT_LATTIMORE) &&
@@ -8410,14 +8419,7 @@ int lattimore(struct char_data* ch, int cmd, char* arg) {
       return FALSE;
     }
 
-    if (!ch->act_ptr) {
-      mem = init_lattimore(ch);
-      mem->pointer = 0;
-      mem->c = 0;
-      mem->index = 0;
-    } else {
-      mem = &ch->act_ptr->data.lattimore;
-    }
+    mem = get_lattimore_mem(ch);
 
     if (ch->master) {
       mem->pointer = 0;
@@ -8698,6 +8700,8 @@ int lattimore(struct char_data* ch, int cmd, char* arg) {
   if (cmd != 72) {
     return FALSE;
   }
+
+  mem = get_lattimore_mem(ch);
 
   char obj_name[80];
   arg = one_argument(arg, obj_name);
@@ -9264,7 +9268,6 @@ int valik(struct char_data* ch, int cmd, char* arg) {
   struct char_data* tch;
   struct char_data* master;
   struct obj_data* obj;
-  int (*valik)(struct char_data*, int, char*);
   char gave_this_click = FALSE;
   short quest_lines[4] = {6, 7, 5, 7};
   short valik_dests[9] = {104, 1638, 7902, 13551, 16764, 17330, 19244, 21325,

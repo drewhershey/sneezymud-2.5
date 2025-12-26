@@ -30,6 +30,9 @@
 
 static void create_one_room(int loc_nr) {
   Room* rp = allocate_room(loc_nr);
+  if (!rp) {
+    return;
+  }
 
   if (top_of_zone_table >= 0) {
     int zone = 0;
@@ -667,6 +670,10 @@ void do_wizlock(struct char_data* ch, char* argument, int cmd) {
 }
 
 static int room_enter(struct room_data* rb[], int key, struct room_data* rm) {
+  if (key < 0 || key >= WORLD_SIZE) {
+    return (0);
+  }
+
   struct room_data* temp = room_find(rb, key);
 
   if (temp) {

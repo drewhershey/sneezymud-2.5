@@ -597,7 +597,13 @@ void boot_world(void) {
       exit(0);
     }
 
-    load_one_room(fl, allocate_room(virtual_nr));
+    Room* room = allocate_room(virtual_nr);
+    if (!room) {
+      vlogf("Failed to allocate room %d", virtual_nr);
+      (void)fclose(fl);
+      exit(1);
+    }
+    load_one_room(fl, room);
   }
 
   fclose(fl);
@@ -607,6 +613,12 @@ void boot_world(void) {
 // room_number and return a pointer. If one doesn't exist, allocate a new room
 // and add it to the database, then return a pointer.
 Room* allocate_room(int room_number) {
+  if (room_number < 0 || room_number >= WORLD_SIZE) {
+    vlogf("allocate_room: room_number %d out of bounds (0-%d)", room_number,
+      WORLD_SIZE - 1);
+    return NULL;
+  }
+
   if (room_number > top_of_world) {
     top_of_world = room_number;
   }

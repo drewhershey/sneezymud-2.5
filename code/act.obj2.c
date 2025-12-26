@@ -1191,7 +1191,7 @@ void do_remove(struct char_data* ch, char* argument, int cmd) {
   char buffer[256];
   int rem_list[20];
   int num_equip;
-  struct obj_data* obj_object;
+  struct obj_data* obj_object = NULL;
   int j;
 
   one_argument(argument, arg1);
