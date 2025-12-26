@@ -70,7 +70,7 @@ static int check_for_inside_trap(struct char_data* ch, struct obj_data* i) {
       return (TriggerTrap(ch, t));
     }
   }
-  return (false);
+  return 0;
 }
 
 /**
@@ -84,8 +84,8 @@ void do_get(struct char_data* ch, char* argument, int cmd) {
   struct obj_data* sub_object;
   struct obj_data* obj_object;
   struct obj_data* next_obj;
-  char found = false;
-  char fail = false;
+  char found = 0;
+  char fail = 0;
   int type = 3;
   char newarg[100];
   int num;
@@ -128,8 +128,8 @@ void do_get(struct char_data* ch, char* argument, int cmd) {
       /* get all */
     case 1: {
       sub_object = 0;
-      found = false;
-      fail = false;
+      found = 0;
+      fail = 0;
       for (obj_object = real_roomp(ch->in_room)->contents; obj_object;
         obj_object = next_obj) {
         next_obj = obj_object->next_content;
@@ -147,27 +147,27 @@ void do_get(struct char_data* ch, char* argument, int cmd) {
               if (CAN_WEAR(obj_object, ITEM_TAKE)) {
                 if (ObjLevelCheck(obj_object, ch)) {
                   get(ch, obj_object, sub_object);
-                  found = true;
+                  found = 1;
                 } else {
                   act("You wouldnt know how to use the $o if you took it!",
-                    false, ch, obj_object, 0, TO_CHAR);
-                  fail = true;
+                    0, ch, obj_object, 0, TO_CHAR);
+                  fail = 1;
                 }
               } else {
                 send_to_char("You can't take that\n\r", ch);
-                fail = true;
+                fail = 1;
               }
             } else {
               sprintf(buffer, "%s : You can't carry that much weight.\n\r",
                 obj_object->short_description);
               send_to_char(buffer, ch);
-              fail = true;
+              fail = 1;
             }
           } else {
             sprintf(buffer, "%s : You can't carry that much volume.\n\r",
               obj_object->short_description);
             send_to_char(buffer, ch);
-            fail = true;
+            fail = 1;
           }
         }
       }
@@ -182,8 +182,8 @@ void do_get(struct char_data* ch, char* argument, int cmd) {
       /* get ??? (something) */
     case 2: {
       sub_object = 0;
-      found = false;
-      fail = false;
+      found = 0;
+      fail = 0;
       if (getall(arg1, newarg)) {
         strcpy(arg1, newarg);
         num = -1;
@@ -205,30 +205,30 @@ void do_get(struct char_data* ch, char* argument, int cmd) {
               if (CAN_WEAR(obj_object, ITEM_TAKE)) {
                 if (ObjLevelCheck(obj_object, ch)) {
                   get(ch, obj_object, sub_object);
-                  found = true;
+                  found = 1;
                 } else {
                   act("You wouldn't know how to use the $o if you took it!",
-                    false, ch, obj_object, 0, TO_CHAR);
-                  fail = true;
+                    0, ch, obj_object, 0, TO_CHAR);
+                  fail = 1;
                   num = 0;
                 }
               } else {
                 send_to_char("You can't take that\n\r", ch);
-                fail = true;
+                fail = 1;
                 num = 0;
               }
             } else {
               sprintf(buffer, "%s : You can't carry that much weight.\n\r",
                 obj_object->short_description);
               send_to_char(buffer, ch);
-              fail = true;
+              fail = 1;
               num = 0;
             }
           } else {
             sprintf(buffer, "%s : You can't carry that much volume\n\r",
               obj_object->short_description);
             send_to_char(buffer, ch);
-            fail = true;
+            fail = 1;
             num = 0;
           }
         } else {
@@ -237,7 +237,7 @@ void do_get(struct char_data* ch, char* argument, int cmd) {
             send_to_char(buffer, ch);
           }
           num = 0;
-          fail = true;
+          fail = 1;
         }
         if (num > 0) {
           num--;
@@ -250,8 +250,8 @@ void do_get(struct char_data* ch, char* argument, int cmd) {
     } break;
       /* get all ??? */
     case 4: {
-      found = false;
-      fail = false;
+      found = 0;
+      fail = 0;
       sub_object = get_obj_vis_accessible(ch, arg2);
       if (sub_object) {
         if (GET_ITEM_TYPE(sub_object) == ITEM_CONTAINER) {
@@ -270,27 +270,27 @@ void do_get(struct char_data* ch, char* argument, int cmd) {
                   if (CAN_WEAR(obj_object, ITEM_TAKE)) {
                     if (ObjLevelCheck(obj_object, ch)) {
                       get(ch, obj_object, sub_object);
-                      found = true;
+                      found = 1;
                     } else {
                       act("You wouldn't know how to use the $o if you took it!",
-                        false, ch, obj_object, 0, TO_CHAR);
-                      fail = true;
+                        0, ch, obj_object, 0, TO_CHAR);
+                      fail = 1;
                     }
                   } else {
                     send_to_char("You can't take that\n\r", ch);
-                    fail = true;
+                    fail = 1;
                   }
                 } else {
                   sprintf(buffer, "%s : You can't carry that much weight.\n\r",
                     obj_object->short_description);
                   send_to_char(buffer, ch);
-                  fail = true;
+                  fail = 1;
                 }
               } else {
                 sprintf(buffer, "%s : You can't carry that much volume\n\r",
                   obj_object->short_description);
                 send_to_char(buffer, ch);
-                fail = true;
+                fail = 1;
               }
             }
           }
@@ -298,18 +298,18 @@ void do_get(struct char_data* ch, char* argument, int cmd) {
             sprintf(buffer, "You do not see anything in %s.\n\r",
               sub_object->short_description);
             send_to_char(buffer, ch);
-            fail = true;
+            fail = 1;
           }
         } else {
           sprintf(buffer, "%s is not a container.\n\r",
             sub_object->short_description);
           send_to_char(buffer, ch);
-          fail = true;
+          fail = 1;
         }
       } else {
         sprintf(buffer, "You do not see or have the %s.\n\r", arg2);
         send_to_char(buffer, ch);
-        fail = true;
+        fail = 1;
       }
     } break;
     case 5: {
@@ -321,8 +321,8 @@ void do_get(struct char_data* ch, char* argument, int cmd) {
         */
 
     case 6: {
-      found = false;
-      fail = false;
+      found = 0;
+      fail = 0;
       sub_object = get_obj_vis_accessible(ch, arg2);
       if (sub_object) {
         if (GET_ITEM_TYPE(sub_object) == ITEM_CONTAINER) {
@@ -350,30 +350,30 @@ void do_get(struct char_data* ch, char* argument, int cmd) {
                   if (CAN_WEAR(obj_object, ITEM_TAKE)) {
                     if (ObjLevelCheck(obj_object, ch)) {
                       get(ch, obj_object, sub_object);
-                      found = true;
+                      found = 1;
                     } else {
                       act("You wouldn't know how to use the $o if you took it!",
-                        false, ch, obj_object, 0, TO_CHAR);
-                      fail = true;
+                        0, ch, obj_object, 0, TO_CHAR);
+                      fail = 1;
                       num = 0;
                     }
                   } else {
                     send_to_char("You can't take that\n\r", ch);
-                    fail = true;
+                    fail = 1;
                     num = 0;
                   }
                 } else {
                   sprintf(buffer, "%s : You can't carry that much weight.\n\r",
                     obj_object->short_description);
                   send_to_char(buffer, ch);
-                  fail = true;
+                  fail = 1;
                   num = 0;
                 }
               } else {
                 sprintf(buffer, "%s : You can't carry that much volume\n\r",
                   obj_object->short_description);
                 send_to_char(buffer, ch);
-                fail = true;
+                fail = 1;
                 num = 0;
               }
             } else {
@@ -383,7 +383,7 @@ void do_get(struct char_data* ch, char* argument, int cmd) {
                 send_to_char(buffer, ch);
               }
               num = 0;
-              fail = true;
+              fail = 1;
             }
 
             if (num > 0) {
@@ -394,12 +394,12 @@ void do_get(struct char_data* ch, char* argument, int cmd) {
           sprintf(buffer, "%s is not a container.\n\r",
             sub_object->short_description);
           send_to_char(buffer, ch);
-          fail = true;
+          fail = 1;
         }
       } else {
         sprintf(buffer, "You do not see or have the %s.\n\r", arg2);
         send_to_char(buffer, ch);
-        fail = true;
+        fail = 1;
       }
     } break;
   }
@@ -411,7 +411,7 @@ void do_drop(struct char_data* ch, char* argument, int cmd) {
   char buffer[MAX_STRING_LENGTH];
   struct obj_data* tmp_object;
   struct obj_data* next_obj;
-  char test = false;
+  char test = 0;
   char newarg[100];
   char* s;
   int num;
@@ -439,7 +439,7 @@ void do_drop(struct char_data* ch, char* argument, int cmd) {
       return;
     }
 
-    act("$n drops some gold.", false, ch, 0, 0, TO_ROOM);
+    act("$n drops some gold.", 0, ch, 0, 0, TO_ROOM);
     tmp_object = create_money(amount);
     obj_to_room(tmp_object, ch->in_room);
     GET_GOLD(ch) -= amount;
@@ -461,13 +461,13 @@ void do_drop(struct char_data* ch, char* argument, int cmd) {
           act("$n drops $p.", 1, ch, tmp_object, 0, TO_ROOM);
           obj_from_char(tmp_object);
           obj_to_room(tmp_object, ch->in_room);
-          test = true;
+          test = 1;
         } else {
           if (CAN_SEE_OBJ(ch, tmp_object)) {
             sprintf(buffer, "You can't drop  %s, it must be CURSED!\n\r",
               tmp_object->short_description);
             send_to_char(buffer, ch);
-            test = true;
+            test = 1;
           }
         }
       }
@@ -607,22 +607,22 @@ void do_put(struct char_data* ch, char* argument, int cmd) {
                       case 6:
                       case 54:
                       case 55: {
-                        act("You fold $p into $P.", true, ch, obj_object,
+                        act("You fold $p into $P.", 1, ch, obj_object,
                           sub_object, TO_CHAR);
-                        act("$n folds $p into $P.", true, ch, obj_object,
+                        act("$n folds $p into $P.", 1, ch, obj_object,
                           sub_object, TO_ROOM);
                       } break;
                       case 4:
                       case 61: {
-                        act("You gently place $p in $P.", true, ch, obj_object,
+                        act("You gently place $p in $P.", 1, ch, obj_object,
                           sub_object, TO_CHAR);
-                        act("$n gently places $p in $P.", true, ch, obj_object,
+                        act("$n gently places $p in $P.", 1, ch, obj_object,
                           sub_object, TO_ROOM);
                       } break;
                       default: {
-                        act("You pack $p into $P.", true, ch, obj_object,
+                        act("You pack $p into $P.", 1, ch, obj_object,
                           sub_object, TO_CHAR);
-                        act("$n packs $s $p into $P,", true, ch, obj_object,
+                        act("$n packs $s $p into $P,", 1, ch, obj_object,
                           sub_object, TO_ROOM);
                       } break;
                     }
@@ -761,7 +761,7 @@ void do_give(struct char_data* ch, char* argument, int cmd) {
       return;
     }
     if (!ObjLevelCheck(obj, vict)) {
-      act("$N wouldn't know how to use the $o if you gave it to $M!", false, ch,
+      act("$N wouldn't know how to use the $o if you gave it to $M!", 0, ch,
         obj, vict, TO_CHAR);
       return;
     }

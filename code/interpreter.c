@@ -445,7 +445,7 @@ void command_interpreter(struct char_data* ch, char* argument) {
    */
   if (!IS_NPC(ch)) {
     int i;
-    int found = false;
+    int found = 0;
     if ((!ch->player.name[0]) || (ch->player.name[0] < ' ')) {
       vlog("Error in character name.  Changed to 'Error'");
       free(ch->player.name);
@@ -459,7 +459,7 @@ void command_interpreter(struct char_data* ch, char* argument) {
     strcpy(buf, ch->player.name);
     for (i = 0; i < strlen(buf) && !found; i++) {
       if (buf[i] < 65) {
-        found = true;
+        found = 1;
       }
     }
     if (found) {
@@ -673,7 +673,7 @@ int fill_word(char* argument) {
   static const char* const fill[] = {"in", "from", "with", "the", "on", "at",
     "to", "\n"};
 
-  return (search_block(argument, fill, true) >= 0);
+  return (search_block(argument, fill, 1) >= 0);
 }
 
 /* determine if a given string is an abbreviation of another */
@@ -1260,7 +1260,7 @@ static void load_char_objs(struct char_data* ch) {
   int i;
   int j;
   int loc;
-  char found = false;
+  char found = 0;
   float timegold;
   struct obj_file_u st;
   char buf[200];
@@ -1304,14 +1304,14 @@ static void load_char_objs(struct char_data* ch) {
 
   if (ch->in_room == NOWHERE &&
       st.last_update + 6 * SECS_PER_REAL_HOUR > time(0)) {
-    found = true;
+    found = 1;
   } else {
     char buf[MAX_STRING_LENGTH];
     if (ch->in_room == NOWHERE) {
       vlog("Char reconnecting after autorent");
     }
     timegold = 0;
-    found = true;
+    found = 1;
   }
 
   fclose(fl);
@@ -1335,7 +1335,7 @@ void nanny(struct descriptor_data* d, char* arg) {
   int player_i;
   int index = 0;
   int count = 0;
-  int oops = false;
+  int oops = 0;
   char tmp_name[20];
   struct char_file_u tmp_store;
   struct char_data* tmp_ch;
@@ -1566,7 +1566,7 @@ void nanny(struct descriptor_data* d, char* arg) {
 
             d->screen_size = 24;
 
-            act("$n has reconnected.", true, tmp_ch, 0, 0, TO_ROOM);
+            act("$n has reconnected.", 1, tmp_ch, 0, 0, TO_ROOM);
             sprintf(buf, "%s[%s] has reconnected.", GET_NAME(d->character),
               d->host);
             vlog(buf);
@@ -1762,7 +1762,7 @@ void nanny(struct descriptor_data* d, char* arg) {
       }
       d->character->player.class = 0;
       count = 0;
-      oops = false;
+      oops = 0;
       switch (*arg) {
         case '1': {
           d->character->player.class = CLASS_WARRIOR;
@@ -1852,12 +1852,12 @@ void nanny(struct descriptor_data* d, char* arg) {
         case '?': {
           SEND_TO_Q(CLASSHELP, d);
           STATE(d) = CON_QCLASS;
-          oops = true;
+          oops = 1;
         } break;
         default:
           SEND_TO_Q("Please enter either (1-9) or (A-I)\n\r", d);
           STATE(d) = CON_QCLASS;
-          oops = true;
+          oops = 1;
           break;
       }
 #if PLAYER_AUTH
@@ -1939,7 +1939,7 @@ void nanny(struct descriptor_data* d, char* arg) {
               plr_tick_count = 0;
             }
 
-            act("$n has entered the game.", true, d->character, 0, 0, TO_ROOM);
+            act("$n has entered the game.", 1, d->character, 0, 0, TO_ROOM);
             STATE(d) = CON_PLYNG;
             if (!GetMaxLevel(d->character)) {
               do_start(d->character);
@@ -1972,7 +1972,7 @@ void nanny(struct descriptor_data* d, char* arg) {
               plr_tick_count = 0;
             }
 
-            act("$n has entered the game.", true, d->character, 0, 0, TO_ROOM);
+            act("$n has entered the game.", 1, d->character, 0, 0, TO_ROOM);
             STATE(d) = CON_PLYNG;
             if (!GetMaxLevel(d->character)) {
               do_start(d->character);
@@ -2005,7 +2005,7 @@ void nanny(struct descriptor_data* d, char* arg) {
                 plr_tick_count = 0;
               }
 
-              act("$n has entered the game.", true, d->character, 0, 0,
+              act("$n has entered the game.", 1, d->character, 0, 0,
                 TO_ROOM);
               STATE(d) = CON_PLYNG;
               if (!GetMaxLevel(d->character)) {
@@ -2044,7 +2044,7 @@ void nanny(struct descriptor_data* d, char* arg) {
                 plr_tick_count = 0;
               }
 
-              act("$n has entered the game.", true, d->character, 0, 0,
+              act("$n has entered the game.", 1, d->character, 0, 0,
                 TO_ROOM);
               STATE(d) = CON_PLYNG;
               if (!GetMaxLevel(d->character)) {
@@ -2083,7 +2083,7 @@ void nanny(struct descriptor_data* d, char* arg) {
                 plr_tick_count = 0;
               }
 
-              act("$n has entered the game.", true, d->character, 0, 0,
+              act("$n has entered the game.", 1, d->character, 0, 0,
                 TO_ROOM);
               STATE(d) = CON_PLYNG;
               if (!GetMaxLevel(d->character)) {
@@ -2158,7 +2158,7 @@ void nanny(struct descriptor_data* d, char* arg) {
             plr_tick_count = 0;
           }
 
-          act("$n has entered the game.", true, d->character, 0, 0, TO_ROOM);
+          act("$n has entered the game.", 1, d->character, 0, 0, TO_ROOM);
           STATE(d) = CON_PLYNG;
           if (!GetMaxLevel(d->character)) {
             do_start(d->character);

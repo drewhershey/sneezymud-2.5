@@ -726,7 +726,7 @@ char* one_word(char* argument, char* first_arg) {
 int start_page_file(struct descriptor_data* d, const char* fpath,
   const char* errormsg) {
   if (!d || !(d->character)) {
-    return false;
+    return 0;
   }
 
   if (d->pagedfile) {
@@ -738,9 +738,9 @@ int start_page_file(struct descriptor_data* d, const char* fpath,
   if (!page_file(d, "")) { /* couldn't open file, etc. */
     d->position = -1;
     send_to_char(errormsg, d->character);
-    return false;
+    return 0;
   }
-  return true;
+  return 1;
 }
 
 /* page_file returns true if something was paged, false if nothing got sent */
@@ -750,19 +750,19 @@ int page_file(struct descriptor_data* d, char* input) {
   static char buffer[256];
   int i;
   int numlines;
-  int sent_something = false;
+  int sent_something = 0;
 
   /* see if they have typed a command / abort */
   one_argument(input, buffer);
   if (*buffer) {
     d->position = -1;
     send_to_char("*** INTERUPTED ***\n\r", d->character);
-    return false;
+    return 0;
   }
 
   if (d->connected || (!d->pagedfile) || ((d->position) < 0) ||
       (!(fp = fopen(d->pagedfile, "r")))) {
-    return false;
+    return 0;
   }
 
   numlines = (d->screen_size) ? d->screen_size - 2 : 24;
@@ -771,7 +771,7 @@ int page_file(struct descriptor_data* d, char* input) {
     if (fgets(buffer, 255, fp) != nullptr) {
       send_to_char(buffer, d->character);
       send_to_char("\r", d->character); /* append carriage return/line */
-      sent_something = true;
+      sent_something = 1;
     } else {
       d->position = -1;
       fclose(fp);

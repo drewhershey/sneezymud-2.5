@@ -63,13 +63,13 @@ int isname(const char* str, const char* namelist) {
   int xargc;
   int i;
   int j;
-  int exact = false;
+  int exact = 0;
   char buf[MAX_INPUT_LENGTH];
   char names[MAX_INPUT_LENGTH];
   char* s;
 
   if (!str || !namelist) {
-    return false;
+    return 0;
   }
 
   strcpy(buf, str);
@@ -83,14 +83,14 @@ int isname(const char* str, const char* namelist) {
     size_t len = strlen(s);
     if (len > 0) {
       if (s[len - 1] == '.') {
-        exact = true;
+        exact = 1;
         s[len - 1] = '\0';
       }
     }
   }
 
   if (exact && argc != xargc) {
-    return false;
+    return 0;
   }
 
   for (i = 0; i < argc; i++) {
@@ -101,10 +101,10 @@ int isname(const char* str, const char* namelist) {
       }
     }
     if (j >= xargc) {
-      return false;
+      return 0;
     }
   }
-  return true;
+  return 1;
 }
 
 void init_string_block(struct string_block* sb) {
@@ -386,13 +386,13 @@ void affect_total(struct char_data* ch) {
       for (j = 0; j < MAX_OBJ_AFFECT; j++) {
         affect_modify(ch, ch->equipment[i]->affected[j].location,
           (long)ch->equipment[i]->affected[j].modifier,
-          ch->equipment[i]->obj_flags.bitvector, false);
+          ch->equipment[i]->obj_flags.bitvector, 0);
       }
     }
   }
 
   for (af = ch->affected; af; af = af->next) {
-    affect_modify(ch, af->location, af->modifier, af->bitvector, false);
+    affect_modify(ch, af->location, af->modifier, af->bitvector, 0);
   }
 
   ch->tmpabilities = ch->abilities;
@@ -402,13 +402,13 @@ void affect_total(struct char_data* ch) {
       for (j = 0; j < MAX_OBJ_AFFECT; j++) {
         affect_modify(ch, ch->equipment[i]->affected[j].location,
           (long)ch->equipment[i]->affected[j].modifier,
-          ch->equipment[i]->obj_flags.bitvector, true);
+          ch->equipment[i]->obj_flags.bitvector, 1);
       }
     }
   }
 
   for (af = ch->affected; af; af = af->next) {
-    affect_modify(ch, af->location, af->modifier, af->bitvector, true);
+    affect_modify(ch, af->location, af->modifier, af->bitvector, 1);
   }
 
   /* Make certain values are between 0..25, not < 0 and not > 25! */
@@ -466,7 +466,7 @@ void affect_to_char(struct char_data* ch, struct affected_type* af) {
   affected_alloc->next = ch->affected;
   ch->affected = affected_alloc;
 
-  affect_modify(ch, af->location, af->modifier, af->bitvector, true);
+  affect_modify(ch, af->location, af->modifier, af->bitvector, 1);
   affect_total(ch);
 }
 
@@ -482,7 +482,7 @@ void affect_remove(struct char_data* ch, struct affected_type* af) {
     return;
   }
 
-  affect_modify(ch, af->location, af->modifier, af->bitvector, false);
+  affect_modify(ch, af->location, af->modifier, af->bitvector, 0);
 
   /* remove structure *af from linked list */
 
@@ -528,17 +528,17 @@ char affected_by_spell(struct char_data* ch, short skill) {
 
   for (hjp = ch->affected; hjp; hjp = hjp->next) {
     if (hjp->type == skill) {
-      return (true);
+      return 1;
     }
   }
 
-  return (false);
+  return 0;
 }
 
 void affect_join(struct char_data* ch, struct affected_type* af, char avg_dur,
   char avg_mod) {
   struct affected_type* hjp;
-  char found = false;
+  char found = 0;
 
   for (hjp = ch->affected; !found && hjp; hjp = hjp->next) {
     if (hjp->type == af->type) {
@@ -554,7 +554,7 @@ void affect_join(struct char_data* ch, struct affected_type* af, char avg_dur,
 
       affect_remove(ch, hjp);
       affect_to_char(ch, af);
-      found = true;
+      found = 1;
       break; /* Exit loop immediately to avoid use-after-free on hjp */
     }
   }
@@ -774,9 +774,9 @@ void equip_char(struct char_data* ch, struct obj_data* obj, int pos) {
       (IS_OBJ_STAT(obj, ITEM_ANTI_GOOD) && IS_GOOD(ch)) ||
       (IS_OBJ_STAT(obj, ITEM_ANTI_NEUTRAL) && IS_NEUTRAL(ch))) {
     if (ch->in_room != NOWHERE) {
-      act("You are zapped by $p and instantly drop it.", false, ch, obj, 0,
+      act("You are zapped by $p and instantly drop it.", 0, ch, obj, 0,
         TO_CHAR);
-      act("$n is zapped by $p and instantly drops it.", false, ch, obj, 0,
+      act("$n is zapped by $p and instantly drops it.", 0, ch, obj, 0,
         TO_ROOM);
       obj_to_room(obj, ch->in_room);
       return;
@@ -795,12 +795,12 @@ void equip_char(struct char_data* ch, struct obj_data* obj, int pos) {
       (IS_OBJ_STAT(obj, ITEM_LEVEL35) && (GetMaxLevel(ch) < 35)) ||
       (IS_OBJ_STAT(obj, ITEM_LEVEL40) && (GetMaxLevel(ch) < 40))) {
     if (ch->in_room != NOWHERE) {
-      act("You do not know how to use the $p.", false, ch, obj, 0, TO_CHAR);
+      act("You do not know how to use the $p.", 0, ch, obj, 0, TO_CHAR);
       send_to_char(
         "Maybe a little more experience will help you understand!\n\r", ch);
-      act("You are zapped by $p and instantly drop it.", false, ch, obj, 0,
+      act("You are zapped by $p and instantly drop it.", 0, ch, obj, 0,
         TO_CHAR);
-      act("$n is zapped by $p and instantly drops it.", false, ch, obj, 0,
+      act("$n is zapped by $p and instantly drops it.", 0, ch, obj, 0,
         TO_ROOM);
       obj_to_room(obj, ch->in_room);
       return;
@@ -819,7 +819,7 @@ void equip_char(struct char_data* ch, struct obj_data* obj, int pos) {
 
   for (j = 0; j < MAX_OBJ_AFFECT; j++) {
     affect_modify(ch, obj->affected[j].location,
-      (long)obj->affected[j].modifier, obj->obj_flags.bitvector, true);
+      (long)obj->affected[j].modifier, obj->obj_flags.bitvector, 1);
   }
 
   if (GET_ITEM_TYPE(obj) == ITEM_WEAPON) {
@@ -853,7 +853,7 @@ struct obj_data* unequip_char(struct char_data* ch, int pos) {
 
   for (j = 0; j < MAX_OBJ_AFFECT; j++) {
     affect_modify(ch, obj->affected[j].location, obj->affected[j].modifier,
-      obj->obj_flags.bitvector, false);
+      obj->obj_flags.bitvector, 0);
   }
 
   affect_total(ch);
@@ -888,7 +888,7 @@ struct obj_data* unequip_char_for_save(struct char_data* ch, int pos) {
 
   for (j = 0; j < MAX_OBJ_AFFECT; j++) {
     affect_modify(ch, obj->affected[j].location, obj->affected[j].modifier,
-      obj->obj_flags.bitvector, false);
+      obj->obj_flags.bitvector, 0);
   }
 
   affect_total(ch);
@@ -1792,7 +1792,7 @@ int generic_find(char* arg, int bitvector, struct char_data* ch,
   char name[256] = "";
   char found;
 
-  found = false;
+  found = 0;
 
   /* Eliminate spaces and "ignore" words */
   while (*arg && !found) {
@@ -1805,8 +1805,8 @@ int generic_find(char* arg, int bitvector, struct char_data* ch,
     }
     name[i] = 0;
     arg += i;
-    if (search_block(name, ignore, true) > -1) {
-      found = true;
+    if (search_block(name, ignore, 1) > -1) {
+      found = 1;
     }
   }
 
@@ -1830,10 +1830,10 @@ int generic_find(char* arg, int bitvector, struct char_data* ch,
   }
 
   if (IS_SET(bitvector, FIND_OBJ_EQUIP)) {
-    for (found = false, i = 0; i < MAX_WEAR && !found; i++) {
+    for (found = 0, i = 0; i < MAX_WEAR && !found; i++) {
       if (ch->equipment[i] && str_cmp(name, ch->equipment[i]->name) == 0) {
         *tar_obj = ch->equipment[i];
-        found = true;
+        found = 1;
       }
     }
     if (found) {

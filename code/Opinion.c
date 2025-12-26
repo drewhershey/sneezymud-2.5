@@ -43,7 +43,7 @@ int RemHated(struct char_data* ch, struct char_data* pud) {
   if (pud) {
     for (oldpud = ch->hates.clist; oldpud; oldpud = oldpud->next) {
       if (!oldpud) {
-        return (false);
+        return 0;
       }
       if (oldpud->op_ch) {
         if (oldpud->op_ch == pud) {
@@ -90,14 +90,14 @@ int RemHated(struct char_data* ch, struct char_data* pud) {
     }
   }
 
-  return ((pud) ? true : false);
+  return ((pud) ? 1 : 0);
 }
 
 int AddHated(struct char_data* ch, struct char_data* pud) {
   struct char_list* newpud;
 
   if (ch == pud) {
-    return (false);
+    return 0;
   }
 
   if (pud) {
@@ -117,7 +117,7 @@ int AddHated(struct char_data* ch, struct char_data* pud) {
     }
   }
 
-  return ((pud) ? true : false);
+  return ((pud) ? 1 : 0);
 }
 
 int AddHatred(struct char_data* ch, int parm_type, int parm) {
@@ -164,18 +164,18 @@ int AddHatred(struct char_data* ch, int parm_type, int parm) {
       SET_BIT(ch->specials.act, ACT_HATEFUL);
     }
   }
-  return true;
+  return 1;
 }
 
 int Hates(struct char_data* ch, struct char_data* v) {
   struct char_list* i;
 
   if (IS_AFFECTED(ch, AFF_PARALYSIS)) {
-    return (false);
+    return 0;
   }
 
   if (ch == v) {
-    return (false);
+    return 0;
   }
 
   if (IS_SET(ch->hatefield, HATE_CHAR)) {
@@ -183,11 +183,11 @@ int Hates(struct char_data* ch, struct char_data* v) {
       for (i = ch->hates.clist; i; i = i->next) {
         if (i->op_ch) {
           if ((i->op_ch == v) && (!strcmp(i->name, GET_NAME(v)))) {
-            return (true);
+            return 1;
           }
         } else {
           if (!strcmp(i->name, GET_NAME(v))) {
-            return (true);
+            return 1;
           }
         }
       }
@@ -196,37 +196,37 @@ int Hates(struct char_data* ch, struct char_data* v) {
   if (IS_SET(ch->hatefield, HATE_RACE)) {
     if (ch->hates.race != -1) {
       if (ch->hates.race == GET_RACE(v)) {
-        return (true);
+        return 1;
       }
     }
   }
 
   if (IS_SET(ch->hatefield, HATE_SEX)) {
     if (ch->hates.sex == GET_SEX(v)) {
-      return (true);
+      return 1;
     }
   }
   if (IS_SET(ch->hatefield, HATE_GOOD)) {
     if (ch->hates.good < GET_ALIGNMENT(v)) {
-      return (true);
+      return 1;
     }
   }
   if (IS_SET(ch->hatefield, HATE_EVIL)) {
     if (ch->hates.evil > GET_ALIGNMENT(v)) {
-      return (true);
+      return 1;
     }
   }
   if (IS_SET(ch->hatefield, HATE_CLASS)) {
     if (HasClass(v, ch->hates.class)) {
-      return (true);
+      return 1;
     }
   }
   if (IS_SET(ch->hatefield, HATE_VNUM)) {
     if (ch->hates.vnum == mob_index[v->nr].virtual) {
-      return (true);
+      return 1;
     }
   }
-  return (false);
+  return 0;
 }
 
 int Fears(struct char_data* ch, struct char_data* v) {
@@ -234,11 +234,11 @@ int Fears(struct char_data* ch, struct char_data* v) {
   char buf[255];
 
   if (IS_AFFECTED(ch, AFF_PARALYSIS)) {
-    return (false);
+    return 0;
   }
 
   if (!IS_SET(ch->specials.act, ACT_AFRAID)) {
-    return (false);
+    return 0;
   }
 
   if (IS_SET(ch->fearfield, FEAR_CHAR)) {
@@ -248,7 +248,7 @@ int Fears(struct char_data* ch, struct char_data* v) {
           if (i->op_ch) {
             if (i->name) {
               if ((i->op_ch == v) && (!strcmp(i->name, GET_NAME(v)))) {
-                return (true);
+                return 1;
               }
             } else {
               /* lets see if this clears the problem */
@@ -257,7 +257,7 @@ int Fears(struct char_data* ch, struct char_data* v) {
           } else {
             if (i->name) {
               if (!strcmp(i->name, GET_NAME(v))) {
-                return (true);
+                return 1;
               }
             }
           }
@@ -268,38 +268,38 @@ int Fears(struct char_data* ch, struct char_data* v) {
   if (IS_SET(ch->fearfield, FEAR_RACE)) {
     if (ch->fears.race != -1) {
       if (ch->fears.race == GET_RACE(v)) {
-        return (true);
+        return 1;
       }
     }
   }
   if (IS_SET(ch->fearfield, FEAR_SEX)) {
     if (ch->fears.sex == GET_SEX(v)) {
-      return (true);
+      return 1;
     }
   }
   if (IS_SET(ch->fearfield, FEAR_GOOD)) {
     if (ch->fears.good < GET_ALIGNMENT(v)) {
-      return (true);
+      return 1;
     }
   }
   if (IS_SET(ch->fearfield, FEAR_EVIL)) {
     if (ch->fears.evil > GET_ALIGNMENT(v)) {
-      return (true);
+      return 1;
     }
   }
   if (IS_SET(ch->fearfield, FEAR_CLASS)) {
     if (HasClass(v, ch->hates.class)) {
-      return (true);
+      return 1;
     }
   }
   if (IS_SET(ch->fearfield, FEAR_VNUM)) {
     sprintf(buf, "you fear %i \n\r", ch->fears.vnum);
     send_to_char(buf, ch);
     if (ch->fears.vnum == mob_index[v->nr].virtual) {
-      return (true);
+      return 1;
     }
   }
-  return (false);
+  return 0;
 }
 
 int RemFeared(struct char_data* ch, struct char_data* pud) {
@@ -308,14 +308,14 @@ int RemFeared(struct char_data* ch, struct char_data* pud) {
   struct char_list* tmp;
 
   if (!IS_SET(ch->specials.act, ACT_AFRAID)) {
-    return (false);
+    return 0;
   }
 
   if (pud && (ch->fears.clist != 0)) {
     tmp = ch->fears.clist;
     for (oldpud = ch->fears.clist; (oldpud != 0); oldpud = tmp) {
       if (oldpud == 0) {
-        return (false);
+        return 0;
       }
       tmp = oldpud->next;
       if (oldpud->op_ch) {
@@ -359,7 +359,7 @@ int RemFeared(struct char_data* ch, struct char_data* pud) {
   if (!ch->fearfield) {
     REMOVE_BIT(ch->specials.act, ACT_AFRAID);
   }
-  return ((pud) ? true : false);
+  return ((pud) ? 1 : 0);
 }
 
 int AddFeared(struct char_data* ch, struct char_data* pud) {
@@ -383,7 +383,7 @@ int AddFeared(struct char_data* ch, struct char_data* pud) {
     }
   }
 
-  return ((pud) ? true : false);
+  return ((pud) ? 1 : 0);
 }
 
 int AddFears(struct char_data* ch, int parm_type, int parm) {
@@ -428,7 +428,7 @@ int AddFears(struct char_data* ch, int parm_type, int parm) {
   if (!IS_SET(ch->specials.act, ACT_AFRAID)) {
     SET_BIT(ch->specials.act, ACT_AFRAID);
   }
-  return true;
+  return 1;
 }
 
 struct char_data* FindAHatee(struct char_data* ch) {

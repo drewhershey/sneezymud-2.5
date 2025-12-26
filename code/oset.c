@@ -991,10 +991,10 @@ void do_oset(struct char_data* ch, char* argument, int cmd) {
                 return;
               }
               if (!strncasecmp(arg3, "true", strlen(arg3))) {
-                obj->obj_flags.value[3] = true;
+                obj->obj_flags.value[3] = 1;
                 send_to_char("Done.\n\r", ch);
               } else if (!strncasecmp(arg3, "false", strlen(arg3))) {
-                obj->obj_flags.value[3] = false;
+                obj->obj_flags.value[3] = 0;
                 send_to_char("Done.\n\r", ch);
               } else {
                 send_to_char(
@@ -1037,10 +1037,10 @@ void do_oset(struct char_data* ch, char* argument, int cmd) {
                 return;
               }
               if (!strncasecmp(arg3, "true", strlen(arg3))) {
-                obj->obj_flags.value[3] = true;
+                obj->obj_flags.value[3] = 1;
                 send_to_char("Done.\n\r", ch);
               } else if (!strncasecmp(arg3, "false", strlen(arg3))) {
-                obj->obj_flags.value[3] = false;
+                obj->obj_flags.value[3] = 0;
                 send_to_char("Done.\n\r", ch);
               } else {
                 send_to_char(

@@ -440,12 +440,12 @@ static void postmaster_send_mail(struct char_data* ch, int cmd, char* arg) {
   if (GetMaxLevel(ch) < MIN_MAIL_LEVEL) {
     sprintf(buf, "$n tells you, 'Sorry, you have to be level %d to send mail!'",
       MIN_MAIL_LEVEL);
-    act(buf, false, mailman, 0, ch, TO_VICT);
+    act(buf, 0, mailman, 0, ch, TO_VICT);
     return;
   }
 
   if (!*arg) { /* you'll get no argument from me! */
-    act("$n tells you, 'You need to specify an addressee!'", false, mailman, 0,
+    act("$n tells you, 'You need to specify an addressee!'", 0, mailman, 0,
       ch, TO_VICT);
     return;
   }
@@ -455,14 +455,14 @@ static void postmaster_send_mail(struct char_data* ch, int cmd, char* arg) {
       "$n tells you, 'A stamp costs %d coins.'\n\r"
       "$n tells you, '...which I see you can't afford.'",
       STAMP_PRICE);
-    act(buf, false, mailman, 0, ch, TO_VICT);
+    act(buf, 0, mailman, 0, ch, TO_VICT);
     return;
   }
 
   parse_name(arg, recipient);
 
   if (find_name(recipient) < 0) {
-    act("$n tells you, 'No one by that name is registered here!'", false,
+    act("$n tells you, 'No one by that name is registered here!'", 0,
       mailman, 0, ch, TO_VICT);
     return;
   }
@@ -473,12 +473,12 @@ static void postmaster_send_mail(struct char_data* ch, int cmd, char* arg) {
     }
   }
 
-  act("$n starts to write some mail.", true, ch, 0, 0, TO_ROOM);
+  act("$n starts to write some mail.", 1, ch, 0, 0, TO_ROOM);
   sprintf(buf,
     "$n tells you, 'I'll take %d coins for the stamp.'\n\r"
     "$n tells you, 'Write your message, use @ when done.'",
     STAMP_PRICE);
-  act(buf, false, mailman, 0, ch, TO_VICT);
+  act(buf, 0, mailman, 0, ch, TO_VICT);
   GET_GOLD(ch) -= STAMP_PRICE;
   SET_BIT(ch->specials.act, PLR_MAILING);
 
@@ -513,7 +513,7 @@ static void postmaster_check_mail(struct char_data* ch, int cmd, char* arg) {
   } else {
     sprintf(buf, "$n tells you, 'Sorry, you don't have any mail waiting.'");
   }
-  act(buf, false, mailman, 0, ch, TO_VICT);
+  act(buf, 0, mailman, 0, ch, TO_VICT);
 }
 
 static void postmaster_receive_mail(struct char_data* ch, int cmd, char* arg) {
@@ -539,7 +539,7 @@ static void postmaster_receive_mail(struct char_data* ch, int cmd, char* arg) {
 
   if (!has_mail(recipient)) {
     sprintf(buf, "$n tells you, 'Sorry, you don't have any mail waiting.'");
-    act(buf, false, mailman, 0, ch, TO_VICT);
+    act(buf, 0, mailman, 0, ch, TO_VICT);
     return;
   }
 
@@ -571,8 +571,8 @@ static void postmaster_receive_mail(struct char_data* ch, int cmd, char* arg) {
 
     tmp_obj->item_number = -1;
 
-    act("$n gives you a piece of mail.", false, mailman, 0, ch, TO_VICT);
-    act("$N gives $n a piece of mail.", false, ch, 0, mailman, TO_ROOM);
+    act("$n gives you a piece of mail.", 0, mailman, 0, ch, TO_VICT);
+    act("$N gives $n a piece of mail.", 0, ch, 0, mailman, TO_ROOM);
   }
 }
 

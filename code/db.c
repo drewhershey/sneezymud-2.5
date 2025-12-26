@@ -1674,7 +1674,7 @@ int load_char(char* name, struct char_file_u* char_element) {
     /*
     **  Kludge for ressurection
     */
-    char_element->talks[2] = true;
+    char_element->talks[2] = 1;
     return (player_i);
   }
   return (-1);
@@ -1800,7 +1800,7 @@ void char_to_store(struct char_data* ch, struct char_file_u* st) {
       st->affected[i].next = 0;
       /* subtract effect of the spell or the effect will be doubled */
       affect_modify(ch, st->affected[i].location, st->affected[i].modifier,
-        COMPAT_TO_LONG(st->affected[i].bitvector), false);
+        COMPAT_TO_LONG(st->affected[i].bitvector), 0);
       af = af->next;
     } else {
       st->affected[i].type = 0; /* Zero signifies not used */
@@ -1882,7 +1882,7 @@ void char_to_store(struct char_data* ch, struct char_file_u* st) {
       /* Add effect of the spell or it will be lost */
       /* When saving without quitting               */
       affect_modify(ch, st->affected[i].location, st->affected[i].modifier,
-        st->affected[i].bitvector, true);
+        st->affected[i].bitvector, 1);
       af = af->next;
     }
   }
@@ -2360,7 +2360,7 @@ void reset_char(struct char_data* ch) {
 
   for (af = ch->affected; af; af = af->next) {
     affect_modify(ch, af->location, (unsigned)af->modifier, af->bitvector,
-      true);
+      1);
   }
 
   if (!HasClass(ch, CLASS_MONK)) {
@@ -2512,10 +2512,10 @@ void init_char(struct char_data* ch) {
   for (i = 0; i <= MAX_SKILLS - 1; i++) {
     if (GetMaxLevel(ch) < IMPLEMENTOR) {
       ch->skills[i].learned = 0;
-      ch->skills[i].recognise = false;
+      ch->skills[i].recognise = 0;
     } else {
       ch->skills[i].learned = 100;
-      ch->skills[i].recognise = false;
+      ch->skills[i].recognise = 0;
     }
   }
 

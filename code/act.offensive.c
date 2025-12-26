@@ -48,10 +48,10 @@ void do_hit(struct char_data* ch, char* argument, int cmd) {
     if (victim) {
       if (victim == ch) {
         send_to_char("You hit yourself..OUCH!.\n\r", ch);
-        act("$n hits $mself, and says OUCH!", false, ch, 0, victim, TO_ROOM);
+        act("$n hits $mself, and says OUCH!", 0, ch, 0, victim, TO_ROOM);
       } else {
         if (IS_AFFECTED(ch, AFF_CHARM) && (ch->master == victim)) {
-          act("$N is just such a good friend, you simply can't hit $M.", false,
+          act("$N is just such a good friend, you simply can't hit $M.", 0,
             ch, 0, victim, TO_CHAR);
           return;
         }
@@ -72,7 +72,7 @@ void do_hit(struct char_data* ch, char* argument, int cmd) {
                   send_to_char("There's no room to switch!\n\r", ch);
                 }
                 send_to_char("You switch opponents\n\r", ch);
-                act("$n switches targets", false, ch, 0, 0, TO_ROOM);
+                act("$n switches targets", 0, ch, 0, 0, TO_ROOM);
                 WAIT_STATE(ch, PULSE_VIOLENCE + 2);
               } else {
                 send_to_char(
@@ -121,10 +121,10 @@ void do_kill(struct char_data* ch, char* argument, int cmd) {
     } else if (ch == victim) {
       send_to_char("Your mother would be so sad.. :(\n\r", ch);
     } else {
-      act("You chop $M to pieces! Ah! The blood!", false, ch, 0, victim,
+      act("You chop $M to pieces! Ah! The blood!", 0, ch, 0, victim,
         TO_CHAR);
-      act("$N chops you to pieces!", false, victim, 0, ch, TO_CHAR);
-      act("$n brutally slays $N", false, ch, 0, victim, TO_NOTVICT);
+      act("$N chops you to pieces!", 0, victim, 0, ch, TO_CHAR);
+      act("$n brutally slays $N", 0, ch, 0, victim, TO_NOTVICT);
       raw_kill(victim);
     }
   }
@@ -232,7 +232,7 @@ void do_order(struct char_data* ch, char* argument, int cmd) {
   char name[100];
   char message[256];
   char buf[256];
-  char found = false;
+  char found = 0;
   int org_room;
   struct char_data* victim;
   struct follow_type* k;
@@ -268,25 +268,25 @@ void do_order(struct char_data* ch, char* argument, int cmd) {
         return;
       }
       sprintf(buf, "$N orders you to '%s'", message);
-      act(buf, false, victim, 0, ch, TO_CHAR);
-      act("$n gives $N an order.", false, ch, 0, victim, TO_ROOM);
+      act(buf, 0, victim, 0, ch, TO_CHAR);
+      act("$n gives $N an order.", 0, ch, 0, victim, TO_ROOM);
 
       if ((victim->master != ch) || !IS_AFFECTED(victim, AFF_CHARM)) {
-        act("$n has an indifferent look.", false, victim, 0, 0, TO_ROOM);
+        act("$n has an indifferent look.", 0, victim, 0, 0, TO_ROOM);
       } else {
         send_to_char("Ok.\n\r", ch);
         command_interpreter(victim, message);
       }
     } else { /* This is order "followers" */
       sprintf(buf, "$n issues the order '%s'.", message);
-      act(buf, false, ch, 0, victim, TO_ROOM);
+      act(buf, 0, ch, 0, victim, TO_ROOM);
 
       org_room = ch->in_room;
 
       for (k = ch->followers; k; k = k->next) {
         if (org_room == k->follower->in_room) {
           if (IS_AFFECTED(k->follower, AFF_CHARM)) {
-            found = true;
+            found = 1;
             command_interpreter(k->follower, message);
           }
         }
@@ -318,12 +318,12 @@ void do_flee(struct char_data* ch, char* argument, int cmd) {
     if (!saves_spell(ch, SAVING_PARA)) {
       WAIT_STATE(ch, PULSE_VIOLENCE);
       send_to_char("You are ensared in webs, you cannot move!\n\r", ch);
-      act("$n struggles against the webs that hold $m", false, ch, 0, 0,
+      act("$n struggles against the webs that hold $m", 0, ch, 0, 0,
         TO_ROOM);
       return;
     }
     send_to_char("You pull free from the sticky webbing!\n\r", ch);
-    act("$n manages to pull free from the sticky webbing!", false, ch, 0, 0,
+    act("$n manages to pull free from the sticky webbing!", 0, ch, 0, 0,
       TO_ROOM);
     GET_MOVE(ch) -= 50;
   }
@@ -332,11 +332,11 @@ void do_flee(struct char_data* ch, char* argument, int cmd) {
     lev_check = (GetMaxLevel(ch->specials.fighting) - GetMaxLevel(ch));
     if (number(1, 100) < lev_check) {
       WAIT_STATE(ch, PULSE_VIOLENCE);
-      act("$N grabs you by the collar and stops you from fleeing!", false, ch,
+      act("$N grabs you by the collar and stops you from fleeing!", 0, ch,
         0, ch->specials.fighting, TO_CHAR);
-      act("You grab $N by the collar and stop them from fleeing!", false,
+      act("You grab $N by the collar and stop them from fleeing!", 0,
         ch->specials.fighting, 0, ch, TO_CHAR);
-      act("$N grabs $n by the collar and stops $m from fleeing!", false, ch, 0,
+      act("$N grabs $n by the collar and stops $m from fleeing!", 0, ch, 0,
         ch->specials.fighting, TO_NOTVICT);
       return;
     }
@@ -344,8 +344,8 @@ void do_flee(struct char_data* ch, char* argument, int cmd) {
 
   if (GET_POS(ch) <= POSITION_SITTING) {
     GET_MOVE(ch) -= 10;
-    act("$n scrambles madly to $s feet!", true, ch, 0, 0, TO_ROOM);
-    act("Panic-stricken, you scramble to your feet.", true, ch, 0, 0, TO_CHAR);
+    act("$n scrambles madly to $s feet!", 1, ch, 0, 0, TO_ROOM);
+    act("Panic-stricken, you scramble to your feet.", 1, ch, 0, 0, TO_CHAR);
     GET_POS(ch) = POSITION_STANDING;
     WAIT_STATE(ch, PULSE_VIOLENCE);
     return;
@@ -356,14 +356,14 @@ void do_flee(struct char_data* ch, char* argument, int cmd) {
       attempt = number(0, 5); /* Select a random direction */
       if (CAN_GO(ch, attempt) &&
           !IS_SET(real_roomp(EXIT(ch, attempt)->to_room)->room_flags, DEATH)) {
-        act("$n panics, and attempts to flee.", true, ch, 0, 0, TO_ROOM);
+        act("$n panics, and attempts to flee.", 1, ch, 0, 0, TO_ROOM);
         if ((die = MoveOne(ch, attempt)) == 1) {
           /* The escape has succeded */
           send_to_char("You flee head over heels.\n\r", ch);
           return;
         }
         if (!die) {
-          act("$n tries to flee, but is too exhausted!", true, ch, 0, 0,
+          act("$n tries to flee, but is too exhausted!", 1, ch, 0, 0,
             TO_ROOM);
         }
         return;
@@ -382,12 +382,12 @@ void do_flee(struct char_data* ch, char* argument, int cmd) {
       int j;
 
       if (!ch->skills || (number(1, 101) > ch->skills[SKILL_RETREAT].learned)) {
-        act("$n panics, and attempts to flee.", true, ch, 0, 0, TO_ROOM);
-        panic = true;
+        act("$n panics, and attempts to flee.", 1, ch, 0, 0, TO_ROOM);
+        panic = 1;
         LearnFromMistake(ch, SKILL_RETREAT, 0, 90);
       } else {
-        act("$n skillfully retreats from battle", true, ch, 0, 0, TO_ROOM);
-        panic = false;
+        act("$n skillfully retreats from battle", 1, ch, 0, 0, TO_ROOM);
+        panic = 0;
       }
 
       if (IS_PC(ch)) {
@@ -450,7 +450,7 @@ void do_flee(struct char_data* ch, char* argument, int cmd) {
         return;
       }
       if (!die) {
-        act("$n tries to flee, but is too exhausted!", true, ch, 0, 0, TO_ROOM);
+        act("$n tries to flee, but is too exhausted!", 1, ch, 0, 0, TO_ROOM);
       }
       return;
     }
@@ -580,7 +580,7 @@ void do_rescue(struct char_data* ch, char* argument, int cmd) {
   }
 
   if (!tmp_ch) {
-    act("But nobody is fighting $M?", false, ch, 0, victim, TO_CHAR);
+    act("But nobody is fighting $M?", 0, ch, 0, victim, TO_CHAR);
     return;
   }
 
@@ -596,9 +596,9 @@ void do_rescue(struct char_data* ch, char* argument, int cmd) {
     }
 
     send_to_char("Banzai! To the rescue...\n\r", ch);
-    act("You are rescued by $N, you are confused!", false, victim, 0, ch,
+    act("You are rescued by $N, you are confused!", 0, victim, 0, ch,
       TO_CHAR);
-    act("$n heroically rescues $N.", false, ch, 0, victim, TO_NOTVICT);
+    act("$n heroically rescues $N.", 0, ch, 0, victim, TO_NOTVICT);
 
     if (victim->specials.fighting == tmp_ch) {
       stop_fighting(victim);
@@ -663,7 +663,7 @@ void do_assist(struct char_data* ch, char* argument, int cmd) {
   (tmp_ch->specials.fighting != victim); tmp_ch=tmp_ch->next_in_room)  ;
   */
   if (!tmp_ch) {
-    act("But he's not fighting anyone.", false, ch, 0, victim, TO_CHAR);
+    act("But he's not fighting anyone.", 0, ch, 0, victim, TO_CHAR);
     return;
   }
 
@@ -830,7 +830,7 @@ static int bow_missile_damage(struct char_data* ch, struct char_data* victim,
   struct obj_data* bow;
 
   if (!DamDetailsOk(ch, victim, dam, attacktype)) {
-    return (false);
+    return 0;
   }
 
   bow = ch->equipment[HOLD];
@@ -846,16 +846,16 @@ static int bow_missile_damage(struct char_data* ch, struct char_data* victim,
   dam = DamageTrivia(ch, victim, dam, attacktype);
 
   if (DoDamage(ch, victim, dam, attacktype)) {
-    return (true);
+    return 1;
   }
 
   DamageMessages(ch, victim, dam, SPEC_BOW);
 
   if (DamageEpilog(ch, victim)) {
-    return (true);
+    return 1;
   }
 
-  return (false);
+  return 0;
 }
 
 static void bow_hit(struct char_data* ch, struct char_data* victim, int type) {
@@ -902,7 +902,7 @@ void do_fire(struct char_data* ch, char* argument, int cmd) {
       }
       if (IS_AFFECTED(ch, AFF_CHARM) && (ch->master == victim)) {
         act("$N is just such a good friends, you simply can't fire at $M.",
-          false, ch, 0, victim, TO_CHAR);
+          0, ch, 0, victim, TO_CHAR);
         return;
       }
       fire(ch, victim);
@@ -922,7 +922,7 @@ int gun_missile_damage(struct char_data* ch, struct char_data* victim,
   struct obj_data* gun;
 
   if (!DamDetailsOk(ch, victim, dam, attacktype)) {
-    return (false);
+    return 0;
   }
 
   gun = ch->equipment[HOLD];
@@ -930,9 +930,9 @@ int gun_missile_damage(struct char_data* ch, struct char_data* victim,
   if (gun->obj_flags.value[2] > 0) {
     dam += dice(gun->obj_flags.value[1], gun->obj_flags.value[2]);
   } else {
-    act("$p jams and refuses to fire.", true, ch, gun, 0, TO_CHAR);
-    act("$p jams on $n", true, ch, gun, 0, TO_ROOM);
-    return (false);
+    act("$p jams and refuses to fire.", 1, ch, gun, 0, TO_CHAR);
+    act("$p jams on $n", 1, ch, gun, 0, TO_ROOM);
+    return 0;
   }
 
   if (GET_POS(victim) < POSITION_FIGHTING) {
@@ -951,16 +951,16 @@ int gun_missile_damage(struct char_data* ch, struct char_data* victim,
   dam = DamageTrivia(ch, victim, dam, attacktype);
 
   if (DoDamage(ch, victim, dam, attacktype)) {
-    return (true);
+    return 1;
   }
 
   DamageMessages(ch, victim, dam, SPEC_SHOOT);
 
   if (DamageEpilog(ch, victim)) {
-    return (true);
+    return 1;
   }
 
-  return (false); /* not dead */
+  return 0; /* not dead */
 }
 
 static void missile_hit(struct char_data* ch, struct char_data* victim,
@@ -991,7 +991,7 @@ static void shoot(struct char_data* ch, struct char_data* victim) {
     missile_hit(ch, victim, SPEC_SHOOT);
   } else {
     send_to_char("Click!  It seems to be empty.\n\r", ch);
-    act("Click!  $n tries to fire an empty weapon.", false, ch, 0, 0, TO_ROOM);
+    act("Click!  $n tries to fire an empty weapon.", 0, ch, 0, 0, TO_ROOM);
   }
 }
 
@@ -1015,7 +1015,7 @@ void do_shoot(struct char_data* ch, char* argument, int cmd) {
       }
       if (IS_AFFECTED(ch, AFF_CHARM) && (ch->master == victim)) {
         act("$N is just such a good friend, you simply can't shoot at $M.",
-          false, ch, 0, victim, TO_CHAR);
+          0, ch, 0, victim, TO_CHAR);
         return;
       }
 
@@ -1088,17 +1088,17 @@ void do_springleap(struct char_data* ch, char* argument, int cmd) {
 
   percent = number(1, 101);
 
-  act("$n does a really nifty move, and aims a leg towards $N", false, ch, 0,
+  act("$n does a really nifty move, and aims a leg towards $N", 0, ch, 0,
     victim, TO_ROOM);
-  act("You leap off the ground at $N", false, ch, 0, victim, TO_CHAR);
-  act("$n leaps off the ground at you", false, ch, 0, victim, TO_VICT);
+  act("You leap off the ground at $N", 0, ch, 0, victim, TO_CHAR);
+  act("$n leaps off the ground at you", 0, ch, 0, victim, TO_VICT);
 
   if (percent > ch->skills[SKILL_SPRING_LEAP].learned) {
     if (GET_POS(victim) > POSITION_DEAD) {
       damage(ch, victim, 0, SKILL_KICK);
       LearnFromMistake(ch, SKILL_SPRING_LEAP, 0, 90);
       send_to_char("You fall on your butt\n\r", ch);
-      act("$n falls on $s butt", false, ch, 0, 0, TO_ROOM);
+      act("$n falls on $s butt", 0, ch, 0, 0, TO_ROOM);
     }
     WAIT_STATE(ch, PULSE_VIOLENCE * 3);
     return;

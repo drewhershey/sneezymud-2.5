@@ -30,7 +30,7 @@ void do_say(struct char_data* ch, char* argument, int cmd) {
 
   if (IS_AFFECTED(ch, AFF_SILENT)) {
     send_to_char("You can't make a sound!\n\r", ch);
-    act("$n waves $s hands and points silently toward his $s mouth.", false, ch,
+    act("$n waves $s hands and points silently toward his $s mouth.", 0, ch,
       0, 0, TO_ROOM);
     return;
   }
@@ -39,7 +39,7 @@ void do_say(struct char_data* ch, char* argument, int cmd) {
     send_to_char("Yes, but WHAT do you want to say?\n\r", ch);
   } else {
     sprintf(buf, "$n says '%s'", argument + i);
-    act(buf, false, ch, 0, 0, TO_ROOM);
+    act(buf, 0, ch, 0, 0, TO_ROOM);
     sprintf(buf, "You say '%s'\n\r", argument + i);
     send_to_char(buf, ch);
   }
@@ -51,7 +51,7 @@ void do_shout(struct char_data* ch, char* argument, int cmd) {
 
   if (IS_AFFECTED(ch, AFF_SILENT)) {
     send_to_char("You can't make a sound!\n\r", ch);
-    act("$n waves $s hands and points silently toward his $s mouth.", false, ch,
+    act("$n waves $s hands and points silently toward his $s mouth.", 0, ch,
       0, 0, TO_ROOM);
     return;
   }
@@ -105,7 +105,7 @@ void do_grouptell(struct char_data* ch, char* argument, int cmd) {
 
   if (IS_AFFECTED(ch, AFF_SILENT)) {
     send_to_char("You can't make a sound!\n\r", ch);
-    act("$n waves $s hands and points silently toward his $s mouth.", false, ch,
+    act("$n waves $s hands and points silently toward his $s mouth.", 0, ch,
       0, 0, TO_ROOM);
     return;
   }
@@ -244,9 +244,9 @@ void do_sign(struct char_data* ch, char* argument, int cmd) {
     for (t = rp->people; t; t = t->next_in_room) {
       if (t != ch) {
         if (t->skills && number(1, diff) < t->skills[SKILL_SIGN].learned) {
-          act(buf, false, ch, 0, t, TO_VICT);
+          act(buf, 0, ch, 0, t, TO_VICT);
         } else {
-          act("$n makes funny motions with $s hands", false, ch, 0, t, TO_VICT);
+          act("$n makes funny motions with $s hands", 0, ch, 0, t, TO_VICT);
         }
       }
     }
@@ -317,7 +317,7 @@ void do_tell(struct char_data* ch, char* argument, int cmd) {
 
   if (IS_AFFECTED(ch, AFF_SILENT)) {
     send_to_char("You can't make a sound!\n\r", ch);
-    act("$n waves $s hands and points silently toward his $s mouth.", false, ch,
+    act("$n waves $s hands and points silently toward his $s mouth.", 0, ch,
       0, 0, TO_ROOM);
     return;
   }
@@ -341,7 +341,7 @@ void do_tell(struct char_data* ch, char* argument, int cmd) {
     return;
   }
   if (GET_POS(vict) == POSITION_SLEEPING) {
-    act("$E is asleep, shhh.", false, ch, 0, vict, TO_CHAR);
+    act("$E is asleep, shhh.", 0, ch, 0, vict, TO_CHAR);
     return;
   }
   if (IS_NPC(vict) && !(vict->desc)) {
@@ -388,7 +388,7 @@ void do_whisper(struct char_data* ch, char* argument, int cmd) {
 
   if (IS_AFFECTED(ch, AFF_SILENT)) {
     send_to_char("You can't make a sound!\n\r", ch);
-    act("$n waves $s hands and points silently toward his $s mouth.", false, ch,
+    act("$n waves $s hands and points silently toward his $s mouth.", 0, ch,
       0, 0, TO_ROOM);
     return;
   }
@@ -404,7 +404,7 @@ void do_whisper(struct char_data* ch, char* argument, int cmd) {
   } else if (!(vict = get_char_room_vis(ch, name))) {
     send_to_char("No-one by that name here..\n\r", ch);
   } else if (vict == ch) {
-    act("$n whispers quietly to $mself.", false, ch, 0, 0, TO_ROOM);
+    act("$n whispers quietly to $mself.", 0, ch, 0, 0, TO_ROOM);
     send_to_char(
       "You can't seem to get your mouth close enough to your ear...\n\r", ch);
   } else {
@@ -413,11 +413,11 @@ void do_whisper(struct char_data* ch, char* argument, int cmd) {
     }
 
     sprintf(buf, "$n whispers to you, '%s'", message);
-    act(buf, false, ch, 0, vict, TO_VICT);
+    act(buf, 0, ch, 0, vict, TO_VICT);
     sprintf(buf, "You whisper to %s, '%s'\n\r",
       (IS_NPC(vict) ? vict->player.name : GET_NAME(vict)), message);
     send_to_char(buf, ch);
-    act("$n whispers something to $N.", false, ch, 0, vict, TO_NOTVICT);
+    act("$n whispers something to $N.", 0, ch, 0, vict, TO_NOTVICT);
   }
 }
 
@@ -429,7 +429,7 @@ void do_ask(struct char_data* ch, char* argument, int cmd) {
 
   if (IS_AFFECTED(ch, AFF_SILENT)) {
     send_to_char("You can't make a sound!\n\r", ch);
-    act("$n waves $s hands and points silently toward his $s mouth.", false, ch,
+    act("$n waves $s hands and points silently toward his $s mouth.", 0, ch,
       0, 0, TO_ROOM);
     return;
   }
@@ -445,7 +445,7 @@ void do_ask(struct char_data* ch, char* argument, int cmd) {
   } else if (!(vict = get_char_room_vis(ch, name))) {
     send_to_char("No-one by that name here..\n\r", ch);
   } else if (vict == ch) {
-    act("$n quietly asks $mself a question.", false, ch, 0, 0, TO_ROOM);
+    act("$n quietly asks $mself a question.", 0, ch, 0, 0, TO_ROOM);
     send_to_char("You think about it for a while...\n\r", ch);
   } else {
     if (check_soundproof(vict)) {
@@ -453,12 +453,12 @@ void do_ask(struct char_data* ch, char* argument, int cmd) {
     }
 
     sprintf(buf, "$n asks you '%s'", message);
-    act(buf, false, ch, 0, vict, TO_VICT);
+    act(buf, 0, ch, 0, vict, TO_VICT);
 
     sprintf(buf, "You ask %s, '%s'\n\r",
       (IS_NPC(vict) ? vict->player.name : GET_NAME(vict)), message);
     send_to_char(buf, ch);
-    act("$n asks $N a question.", false, ch, 0, vict, TO_NOTVICT);
+    act("$n asks $N a question.", 0, ch, 0, vict, TO_NOTVICT);
   }
 }
 
@@ -499,16 +499,16 @@ void do_write(struct char_data* ch, char* argument, int cmd) {
 
   /* ok.. now let's see what kind of stuff we've found */
   if (pen->obj_flags.type_flag != ITEM_PEN) {
-    act("$p is no good for writing with.", false, ch, pen, 0, TO_CHAR);
+    act("$p is no good for writing with.", 0, ch, pen, 0, TO_CHAR);
   } else if (paper->obj_flags.type_flag != ITEM_NOTE) {
-    act("You can't write on $p.", false, ch, paper, 0, TO_CHAR);
+    act("You can't write on $p.", 0, ch, paper, 0, TO_CHAR);
   } else if (paper->action_description) {
     send_to_char("There's something written on it already.\n\r", ch);
     return;
   } else {
     /* we can write - hooray! */
     send_to_char("Ok.. go ahead and write.. end the note with a @.\n\r", ch);
-    act("$n begins to jot down a note.", true, ch, 0, 0, TO_ROOM);
+    act("$n begins to jot down a note.", 1, ch, 0, 0, TO_ROOM);
     ch->desc->str = &paper->action_description;
     ch->desc->max_str = MAX_NOTE_LENGTH;
   }
