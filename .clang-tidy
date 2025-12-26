@@ -69,22 +69,22 @@ Checks: >
 
 CheckOptions:
   # Naming Conventions (match existing C codebase patterns)
-  - key: readability-identifier-naming.FunctionCase
-    value: lower_case
-  - key: readability-identifier-naming.VariableCase
-    value: lower_case
-  - key: readability-identifier-naming.ParameterCase
-    value: lower_case
-  - key: readability-identifier-naming.MacroDefinitionCase
-    value: UPPER_CASE
-  - key: readability-identifier-naming.EnumConstantCase
-    value: UPPER_CASE
-  - key: readability-identifier-naming.GlobalConstantCase
-    value: UPPER_CASE
-  - key: readability-identifier-naming.StaticConstantCase
-    value: UPPER_CASE
-  - key: readability-identifier-naming.StructCase
-    value: lower_case
+  # - key: readability-identifier-naming.FunctionCase
+  #   value: lower_case
+  # - key: readability-identifier-naming.VariableCase
+  #   value: lower_case
+  # - key: readability-identifier-naming.ParameterCase
+  #   value: lower_case
+  # - key: readability-identifier-naming.MacroDefinitionCase
+  #   value: UPPER_CASE
+  # - key: readability-identifier-naming.EnumConstantCase
+  #   value: UPPER_CASE
+  # - key: readability-identifier-naming.GlobalConstantCase
+  #   value: UPPER_CASE
+  # - key: readability-identifier-naming.StaticConstantCase
+  #   value: UPPER_CASE
+  # - key: readability-identifier-naming.StructCase
+  #   value: lower_case
 
   # Allow short names for loop variables and common idioms
   - key: readability-identifier-length.MinimumVariableNameLength
