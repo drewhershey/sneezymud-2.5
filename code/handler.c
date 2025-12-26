@@ -1279,8 +1279,11 @@ void extract_obj(struct obj_data* obj) {
     }
   }
 
-  for (; obj->contains; extract_obj(obj->contains)) {
-    ;
+  while (obj->contains) {
+    struct obj_data* contained = obj->contains;
+    obj->contains = contained->next_content;
+    contained->in_obj = NULL; /* Already unlinked from parent */
+    extract_obj(contained);
   }
   /* leaves nothing ! */
 
