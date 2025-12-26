@@ -14,7 +14,6 @@
 #include <ctype.h>
 #include <errno.h>
 #include <fcntl.h>
-#include <features.h>
 #include <netdb.h>
 #include <netinet/in.h>
 #include <signal.h>

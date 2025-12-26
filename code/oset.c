@@ -2,8 +2,6 @@
  * of this frienndly reminder is punishable by death by slooow torture  */
 
 #define POSIX_C_SOURCE 200809L
-#include <features.h>
-
 #include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>

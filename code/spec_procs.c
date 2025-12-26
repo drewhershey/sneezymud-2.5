@@ -5,7 +5,6 @@
  ************************************************************************* */
 #define POSIX_C_SOURCE 200809L
 #define GNU_SOURCE
-#include <features.h>
 #include <assert.h>
 #include <ctype.h>
 #include <stdio.h>

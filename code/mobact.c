@@ -4,8 +4,6 @@
  *  copyright (c) 1990, 1991 - see 'license.doc' for complete information. *
  ************************************************************************* */
 
-#include <stddef.h>
-
 #include "comm.h"
 #include "db.h"
 #include "handler.h"

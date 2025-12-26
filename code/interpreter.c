@@ -22,6 +22,7 @@
 #include "race.h"
 #include "structs.h"
 #include "utils.h"
+#include "compat_types.h"
 
 #define COMMANDO(number, min_pos, pointer, min_level) \
   {                                                   \

@@ -6,7 +6,6 @@
 #define POSIX_C_SOURCE 200809L
 
 #include <ctype.h>
-#include <features.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

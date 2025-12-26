@@ -14,6 +14,7 @@
 #include "handler.h"
 #include "structs.h"
 #include "utils.h"
+#include "compat_types.h"
 
 const char* const obj_save_file = "pcobjs.obj";
 const char* const obj_file_free = "\0\0\0";

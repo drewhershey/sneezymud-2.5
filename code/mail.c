@@ -3,8 +3,6 @@
  ****   compliments of CircleMUD (circle.cs.jhu.edu 4000) ****
  ************************************************************/
 #define POSIX_C_SOURCE 200809L
-#include <features.h>
-
 #include <assert.h>
 #include <ctype.h>
 #include <stdio.h>

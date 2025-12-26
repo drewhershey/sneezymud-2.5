@@ -4,8 +4,6 @@
  *  Copyright (C) 1990, 1991 - see 'license.doc' for complete information. *
  ************************************************************************* */
 #define POSIX_C_SOURCE 200809L
-#include <features.h>
-
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
