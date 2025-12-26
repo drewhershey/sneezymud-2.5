@@ -127,7 +127,8 @@ static void index_mail(char* raw_name_to_index, long pos) {
     return;
   }
 
-  for (src = raw_name_to_index, i = 0; *src && i < (int)sizeof(name_to_index) - 1;) {
+  for (src = raw_name_to_index, i = 0;
+    *src && i < (int)sizeof(name_to_index) - 1;) {
     if (isupper(*src)) {
       name_to_index[i++] = tolower(*src++);
     } else {

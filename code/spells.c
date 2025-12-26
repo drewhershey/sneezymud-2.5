@@ -5969,7 +5969,8 @@ static void spell_frost_breath(signed char level, struct char_data* ch,
 
   MissileDamage(ch, victim, dam, SPELL_FROST_BREATH);
 
-  /* And now for the damage on inventory - liquid containers freeze and shatter */
+  /* And now for the damage on inventory - liquid containers freeze and shatter
+   */
 
   struct obj_data* next_obj;
   for (frozen = victim->carrying; frozen; frozen = next_obj) {

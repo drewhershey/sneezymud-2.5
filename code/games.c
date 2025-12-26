@@ -409,7 +409,8 @@ static void spin_slot(struct char_data* ch) {
     vlog(buf);
     return;
   }
-  if (strcmp(fruit1, "Seven") != 0 && (fruit1 == fruit2) && (fruit2 == fruit3)) {
+  if (strcmp(fruit1, "Seven") != 0 && (fruit1 == fruit2) &&
+      (fruit2 == fruit3)) {
     send_to_char("You win!\n\r", ch);
     coins = create_money(9 * (ch->bet.slot));
     if (coins && (bits == FIND_OBJ_ROOM)) {
@@ -1123,7 +1124,8 @@ int craps_table_man(struct char_data* ch, int cmd, char* arg) {
     }
   } else {
     if (!ch->act_ptr) {
-      ch->act_ptr = (struct mob_act_data*)calloc(1, sizeof(struct mob_act_data));
+      ch->act_ptr =
+        (struct mob_act_data*)calloc(1, sizeof(struct mob_act_data));
     }
 
     switch ((*((int*)ch->act_ptr))) {

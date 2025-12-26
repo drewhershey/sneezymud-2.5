@@ -557,7 +557,7 @@ void affect_join(struct char_data* ch, struct affected_type* af, char avg_dur,
       affect_remove(ch, hjp);
       affect_to_char(ch, af);
       found = TRUE;
-      break;  /* Exit loop immediately to avoid use-after-free on hjp */
+      break; /* Exit loop immediately to avoid use-after-free on hjp */
     }
   }
   if (!found) {

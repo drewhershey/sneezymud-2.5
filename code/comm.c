@@ -533,8 +533,8 @@ int game_loop(int s) {
                 if (point->wait > 1) {
                   char wait_buf[32];
                   double wait_seconds = (double)(point->wait - 1) / 4.0;
-                  (void)snprintf(wait_buf, sizeof(wait_buf), "%s[Wait:%.1fs]%s ",
-                    ANSI_ORANGE, wait_seconds, ANSI_WHITE);
+                  (void)snprintf(wait_buf, sizeof(wait_buf),
+                    "%s[Wait:%.1fs]%s ", ANSI_ORANGE, wait_seconds, ANSI_WHITE);
                   strcat(promptbuf, wait_buf);
                 }
                 write_to_q(promptbuf, &point->output);
@@ -572,8 +572,9 @@ int game_loop(int s) {
                 if (point->wait > 1) {
                   char wait_buf[32];
                   double wait_seconds = (double)(point->wait - 1) / 4.0;
-                  (void)snprintf(wait_buf, sizeof(wait_buf), "%s[Wait:%.1fs]%s ",
-                    ANSI_ORANGE, wait_seconds, ANSI_NORMAL);
+                  (void)snprintf(wait_buf, sizeof(wait_buf),
+                    "%s[Wait:%.1fs]%s ", ANSI_ORANGE, wait_seconds,
+                    ANSI_NORMAL);
                   strcat(promptbuf, wait_buf);
                 }
                 write_to_q(promptbuf, &point->output);
@@ -601,8 +602,9 @@ int game_loop(int s) {
                 if (point->wait > 1) {
                   char wait_buf[32];
                   double wait_seconds = (double)(point->wait - 1) / 4.0;
-                  (void)snprintf(wait_buf, sizeof(wait_buf), "%s[Wait:%.1fs]%s ",
-                    ANSI_ORANGE, wait_seconds, ANSI_NORMAL);
+                  (void)snprintf(wait_buf, sizeof(wait_buf),
+                    "%s[Wait:%.1fs]%s ", ANSI_ORANGE, wait_seconds,
+                    ANSI_NORMAL);
                   strcat(promptbuf, wait_buf);
                 }
                 write_to_q(promptbuf, &point->output);
@@ -628,8 +630,9 @@ int game_loop(int s) {
                 if (point->wait > 1) {
                   char wait_buf[32];
                   double wait_seconds = (double)(point->wait - 1) / 4.0;
-                  (void)snprintf(wait_buf, sizeof(wait_buf), "%s[Wait:%.1fs]%s ",
-                    ANSI_ORANGE, wait_seconds, ANSI_NORMAL);
+                  (void)snprintf(wait_buf, sizeof(wait_buf),
+                    "%s[Wait:%.1fs]%s ", ANSI_ORANGE, wait_seconds,
+                    ANSI_NORMAL);
                   strcat(promptbuf, wait_buf);
                 }
                 write_to_q(promptbuf, &point->output);

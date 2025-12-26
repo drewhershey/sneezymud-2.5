@@ -101,7 +101,7 @@ void do_imptest(struct char_data* ch, char* arg, int cmd) {
   int x = 0;
 
   if (strcmp(arg, " test test test") != 0) { /* don't use this command on the */
-    return;                             /* regular game */
+    return;                                  /* regular game */
   }
 
   if (GetMaxLevel(ch) < IMPLEMENTOR) {
@@ -1202,20 +1202,13 @@ void do_goto(struct char_data* ch, char* argument, int cmd) {
         send_to_char("No room exists with that number.\n\r", ch);
         return;
       }
-#ifdef HASH
-#else
       if (loc_nr < WORLD_SIZE) {
-#endif
-      send_to_char("You form order out of chaos.\n\r", ch);
-      create_one_room(loc_nr);
-
-#ifdef HASH
-#else
+        send_to_char("You form order out of chaos.\n\r", ch);
+        create_one_room(loc_nr);
       } else {
         send_to_char("Sorry, that room # is too large.\n\r", ch);
         return;
       }
-#endif
     }
     location = loc_nr;
   } else if (target_mob = get_char_vis_world(ch, buf, NULL)) {
@@ -2521,11 +2514,7 @@ static void purge_one_room(int rnum, struct room_data* rp, int* range) {
   }
 
   completely_cleanout_room(rp); /* clear out the pointers */
-#ifdef HASH
-  hash_remove(&room_db, rnum); /* remove it from the database */
-#else
   room_remove(room_db, rnum);
-#endif
   room_count--;
 }
 
@@ -2562,22 +2551,6 @@ void do_link(struct char_data* ch, char* argument, int cmd) {
 
     if (d) {
       close_socket(d);
-    }
-  }
-}
-
-static void hash_iterate(struct hash_header* ht,
-  void (*func)(int, void*, void*), void* cdata) {
-  int i;
-  for (i = 0; i < ht->klistlen; i++) {
-    void* temp;
-    register int key;
-
-    key = ht->keylist[i];
-    temp = hash_find(ht, key);
-    (*func)(key, temp, cdata);
-    if (ht->keylist[i] != key) { /* They must have deleted this room */
-      i--;                       /* Hit this slot again. */
     }
   }
 }
@@ -2662,9 +2635,6 @@ void do_purge(struct char_data* ch, char* argument, int cmd) {
           send_to_char("usage: purge room start [end]\n\r", ch);
           return;
         }
-#ifdef HASH
-        hash_iterate(&room_db, purge_one_room, range);
-#else
         if (range[0] >= WORLD_SIZE || range[1] >= WORLD_SIZE) {
           send_to_char("only purging to WORLD_SIZE\n\r", ch);
           return;
@@ -2674,7 +2644,6 @@ void do_purge(struct char_data* ch, char* argument, int cmd) {
             purge_one_room(i, rp, range);
           }
         }
-#endif
       } else {
         send_to_char("I don't see that here.\n\r", ch);
         return;
@@ -3442,18 +3411,10 @@ void do_show(struct char_data* ch, char* argument, int cmd) {
 
     append_to_string_block(&sb, "VNUM  rnum type         name [BITS]\n\r");
     if (is_abbrev(zonenum, "death")) {
-#ifdef HASH
-      hash_iterate(&room_db, print_death_room, &sb);
-#else
       room_iterate(room_db, print_death_room, &sb);
-#endif
 
     } else if (is_abbrev(zonenum, "private")) {
-#ifdef HASH
-      hash_iterate(&room_db, print_private_room, &sb);
-#else
       room_iterate(room_db, print_private_room, &sb);
-#endif
 
     } else if (1 != sscanf(zonenum, "%i", &zone) || zone < 0 ||
                zone > top_of_zone_table) {
@@ -3467,11 +3428,7 @@ void do_show(struct char_data* ch, char* argument, int cmd) {
 
       srzs.blank = 0;
       srzs.sb = &sb;
-#ifdef HASH
-      hash_iterate(&room_db, show_room_zone, &srzs);
-#else
       room_iterate(room_db, show_room_zone, &srzs);
-#endif
 
       if (srzs.blank) {
         sprintf(buf, "rooms %d-%d are blank\n\r", srzs.startblank,

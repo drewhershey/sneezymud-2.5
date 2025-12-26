@@ -218,8 +218,7 @@ static int raw_move(struct char_data* ch, int dir) {
     if (to_sector < 0 || to_sector > SECT_DESERT) {
       to_sector = SECT_FIELD; /* Default to field if invalid */
     }
-    need_movement =
-      (movement_loss[from_sector] + movement_loss[to_sector]) / 2;
+    need_movement = (movement_loss[from_sector] + movement_loss[to_sector]) / 2;
   }
 
   /*

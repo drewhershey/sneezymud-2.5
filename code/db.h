@@ -167,11 +167,7 @@ extern struct char_data* character_list;
 extern struct time_info_data time_info;
 extern struct weather_data weather_info;
 
-#if defined(HASH) && HASH
-extern struct hash_header room_db;
-#else
 extern struct room_data* room_db[WORLD_SIZE];
-#endif
 
 extern int top_of_world;
 extern int top_of_mobt;

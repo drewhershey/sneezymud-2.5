@@ -19,7 +19,6 @@ option(ENABLE_CCACHE "Use ccache if available" ON)
 option(ENABLE_NODUPLICATES "Define NODUPLICATES" ON)
 
 # Optional game feature defines
-option(ENABLE_HASH "Use hash tables for rooms (more CPU, less storage)" OFF)
 option(ENABLE_NOTRACK "Disable tracking feature (lower CPU usage)" OFF)
 option(ENABLE_LIMITED_ITEMS "Limit items above specific rent cost" OFF)
 option(ENABLE_DEBUG "Enable debugging features" OFF)
@@ -66,9 +65,6 @@ target_compile_definitions(sneezy PRIVATE _DEFAULT_SOURCE)
 
 if(ENABLE_NODUPLICATES)
     target_compile_definitions(sneezy PRIVATE NODUPLICATES)
-endif()
-if(ENABLE_HASH)
-    target_compile_definitions(sneezy PRIVATE HASH)
 endif()
 if(ENABLE_NOTRACK)
     target_compile_definitions(sneezy PRIVATE NOTRACK)

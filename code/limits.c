@@ -454,7 +454,7 @@ static void drop_level(struct char_data* ch, int class) {
       }
     } break;
     default: {
-      lin_class = MAGE_LEVEL_IND;  /* Fallback to prevent undefined behavior */
+      lin_class = MAGE_LEVEL_IND; /* Fallback to prevent undefined behavior */
     } break;
   }
 

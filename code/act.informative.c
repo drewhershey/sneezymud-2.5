@@ -2597,11 +2597,7 @@ void do_world(struct char_data* ch, char* argument, int cmd) {
   sprintf(buf, "Current time is: %s (CST)\n\r", tmstr);
   send_to_char(buf, ch);
 
-#if defined(HASH) && HASH
-  sprintf(buf, "Total number of rooms in world: %d\n\r", room_db.klistlen);
-#else
-  sprintf(buf, "Total number of rooms in world: %d\n\r", room_count);
-#endif
+  sprintf(buf, "Total number of rooms in world: %ld\n\r", room_count);
 
   send_to_char(buf, ch);
   sprintf(buf, "Total number of zones in world: %d\n\r\n\r",

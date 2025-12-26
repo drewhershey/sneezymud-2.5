@@ -40,11 +40,7 @@ struct reset_q_type reset_q;
 
 int top_of_world = 0; /* ref to the top element of world */
 
-#if defined(HASH) && HASH
-struct hash_header room_db;
-#else
 struct room_data* room_db[WORLD_SIZE];
-#endif
 
 struct obj_data* object_list = NULL;     /* the global linked list of obj's */
 struct char_data* character_list = NULL; /* global l-list of chars          */
@@ -576,11 +572,7 @@ void load_one_room(FILE* fl, Room* rp) {
 
 /* load the rooms */
 void boot_world(void) {
-#if defined(HASH) && HASH
-  init_hash_table(&room_db, sizeof(struct room_data), 2048);
-#else
   memset((void*)room_db, 0, sizeof(struct room_data*) * WORLD_SIZE);
-#endif
 
   assert(!character_list && !object_list);
 
@@ -626,9 +618,6 @@ Room* allocate_room(int room_number) {
     top_of_world = room_number;
   }
 
-#if defined(HASH) && HASH
-  return hash_find_or_create(&room_db, room_number);
-#else
   Room* room = room_find(room_db, room_number);
 
   if (room) {
@@ -641,7 +630,6 @@ Room* allocate_room(int room_number) {
   room_db[room_number] = room;
 
   return room;
-#endif
 }
 
 #define LOG_ZONE_ERROR(ch, type, zone, cmd)                          \
@@ -2544,11 +2532,7 @@ void init_char(struct char_data* ch) {
 }
 
 struct room_data* real_roomp(int virtual) {
-#if defined(HASH) && HASH
-  return hash_find(&room_db, virtual);
-#else
   return (virtual < WORLD_SIZE) && (virtual > -1) ? room_db[virtual] : NULL;
-#endif
 }
 
 /* returns the real number of the monster with given virtual number */

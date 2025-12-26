@@ -249,11 +249,7 @@ void mobile_activity(struct char_data* ch) {
   /* Examine call for special procedure */
 
   /* some status checking for errors */
-#if HASH
-  if ((ch->in_room < 0) || !hash_find(&room_db, ch->in_room)) {
-#else
   if ((ch->in_room < 0) || !room_find(room_db, ch->in_room)) {
-#endif
     vlog("Char not in correct room.  moving to 50 ");
     char_from_room(ch);
     char_to_room(ch, 50);
