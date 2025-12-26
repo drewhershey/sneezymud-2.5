@@ -692,7 +692,7 @@ static void room_load(struct char_data* ch, int start, int end) {
   char chk[50];
   char buf[80];
   struct room_data* rp;
-  struct room_data dummy;
+  struct room_data dummy = {0};
 
   sprintf(buf, "areas/%s", ch->player.name);
 
@@ -2532,6 +2532,7 @@ static void purge_one_room(int rnum, struct room_data* rp, int* range) {
 void do_link(struct char_data* ch, char* argument, int cmd) {
   struct char_data* victim;
   struct descriptor_data* d;
+  struct descriptor_data* next_d;
   int done = FALSE;
   char name[100];
 
@@ -2542,7 +2543,8 @@ void do_link(struct char_data* ch, char* argument, int cmd) {
   argument = one_argument(argument, name);
 
   if (!*name) {
-    for (d = descriptor_list; d; d = d->next) {
+    for (d = descriptor_list; d; d = next_d) {
+      next_d = d->next;
       if (!d->character || !d->character->player.name) {
         close_socket(d);
       }
@@ -2598,9 +2600,11 @@ void do_purge(struct char_data* ch, char* argument, int cmd) {
   if (*name) { /* argument supplied. destroy single object or char */
     if (strcmp(name, "links") == 0 && GetMaxLevel(ch) >= IMPLEMENTOR) {
       struct descriptor_data* d;
+      struct descriptor_data* next_d;
 
-      for (d = descriptor_list; d; d = d->next) {
-        if (d->character->specials.timer > 10) {
+      for (d = descriptor_list; d; d = next_d) {
+        next_d = d->next;
+        if (d->character && d->character->specials.timer > 10) {
           close_socket(d);
         }
       }
@@ -3410,7 +3414,8 @@ void do_show(struct char_data* ch, char* argument, int cmd) {
     zone = -1;
     if (1 == sscanf(zonenum, "%i", &zone) &&
         (zone < 0 || zone > top_of_zone_table)) {
-      append_to_string_block(&sb, "That is not a valid zone_number\n\r");
+      send_to_char("That is not a valid zone_number\n\r", ch);
+      destroy_string_block(&sb);
       return;
     }
     if (zone >= 0) {

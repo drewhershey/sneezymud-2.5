@@ -8349,8 +8349,8 @@ static int affect_status(struct mob_act_lattimore* mem, struct char_data* ch,
   }
 
   if (!mem->c) {
-    mem->names = (char**)malloc(sizeof(char*));
-    mem->status = (int*)malloc(sizeof(int));
+    mem->names = (char**)calloc(1, sizeof(char*));
+    mem->status = (int*)calloc(1, sizeof(int));
   } else {
     mem->names = (char**)realloc(mem->names, sizeof(char*) * (size_t)(mem->c + 1));
     mem->status = (int*)realloc(mem->status, sizeof(int) * (size_t)(mem->c + 1));

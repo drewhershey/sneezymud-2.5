@@ -499,6 +499,7 @@ void load_one_room(FILE* fl, Room* rp) {
     rp->zone = (short)zone;
   }
 
+  rp->room_flags = 0; /* default in case fscanf fails */
   fscanf(fl, " %ld ", &rp->room_flags);
 
   rp->sector_type = 0; /* default in case fscanf fails */
@@ -2015,7 +2016,7 @@ char* fread_string(FILE* fl) {
     if (!fgets(tmp, MAX_STRING_LENGTH, fl)) {
       perror("fread_str");
       vlog("File read error.");
-      return ("Empty");
+      return strdup("Empty");
     }
 
     if (strlen(tmp) + strlen(buf) + 1 > MAX_STRING_LENGTH) {
