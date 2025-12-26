@@ -1559,7 +1559,7 @@ void reset_zone(int zone) {
           break;
 
         case 'G': /* obj_to_char */
-          if (obj_index[ZCMD.arg1].number < ZCMD.arg2 &&
+          if (mob && obj_index[ZCMD.arg1].number < ZCMD.arg2 &&
               (obj = read_object(ZCMD.arg1, REAL))) {
             obj_to_char(obj, mob);
             last_cmd = 1;
@@ -1569,8 +1569,7 @@ void reset_zone(int zone) {
           break;
 
         case 'H': /* hatred to char */
-
-          if (AddHatred(mob, ZCMD.arg1, ZCMD.arg2)) {
+          if (mob && AddHatred(mob, ZCMD.arg1, ZCMD.arg2)) {
             last_cmd = 1;
           } else {
             last_cmd = 0;
@@ -1578,8 +1577,7 @@ void reset_zone(int zone) {
           break;
 
         case 'F': /* fear to char */
-
-          if (AddFears(mob, ZCMD.arg1, ZCMD.arg2)) {
+          if (mob && AddFears(mob, ZCMD.arg1, ZCMD.arg2)) {
             last_cmd = 1;
           } else {
             last_cmd = 0;
@@ -1587,7 +1585,7 @@ void reset_zone(int zone) {
           break;
 
         case 'E': /* object to equipment list */
-          if (obj_index[ZCMD.arg1].number < ZCMD.arg2 &&
+          if (mob && obj_index[ZCMD.arg1].number < ZCMD.arg2 &&
               (obj = read_object(ZCMD.arg1, REAL))) {
             equip_char(mob, obj, ZCMD.arg3);
             last_cmd = 1;

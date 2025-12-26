@@ -931,6 +931,10 @@ int DamageMessages(struct char_data* ch, struct char_data* v, int dam,
           messages = messages->next;
         }
 
+        if (!messages) {
+          continue;
+        }
+
         if (!IS_NPC(v) && (GetMaxLevel(v) > MAX_MORT)) {
           act(messages->god_msg.attacker_msg, FALSE, ch, ch->equipment[WIELD],
             v, TO_CHAR);

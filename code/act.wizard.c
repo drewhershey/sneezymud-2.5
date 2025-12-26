@@ -1285,10 +1285,10 @@ void do_goto(struct char_data* ch, char* argument, int cmd) {
     }
   } else {
     if (!IS_SET(ch->poof.pmask, BIT_POOF_IN) || !ch->poof.poofin) {
-      act("$n appears with an explosion of rose-petals.", FALSE, ch, 0, v,
+      act("$n appears with an explosion of rose-petals.", FALSE, ch, 0, 0,
         TO_ROOM);
     } else if (*ch->poof.poofin != '!') {
-      act(ch->poof.poofin, FALSE, ch, 0, v, TO_ROOM);
+      act(ch->poof.poofin, FALSE, ch, 0, 0, TO_ROOM);
     } else {
       command_interpreter(ch, (ch->poof.poofin + 1));
     }
