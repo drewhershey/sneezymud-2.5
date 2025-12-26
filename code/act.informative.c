@@ -2302,7 +2302,7 @@ void do_levels(struct char_data* ch, char* argument, int cmd) {
   }
 
 static const char* desc_ratio(float f) {
-  if (f > 1.0f) {
+  if (f > 1.0F) {
     return ("More than twice yours");
   }
   if (f > .75f) {
@@ -2324,44 +2324,44 @@ static const char* desc_ratio(float f) {
 }
 
 static const char* desc_attacks(float a) {
-  if (a < 1.0f) {
+  if (a < 1.0F) {
     return ("Not many");
   }
-  if (a < 2.0f) {
+  if (a < 2.0F) {
     return ("About average");
   }
-  if (a < 3.0f) {
+  if (a < 3.0F) {
     return ("A few");
   }
-  if (a < 5.0f) {
+  if (a < 5.0F) {
     return ("A lot");
   }
-  if (a < 9.0f) {
+  if (a < 9.0F) {
     return ("Many");
   }
   return ("A whole bunch");
 }
 
 static const char* desc_damage(float dam) {
-  if (dam < 1.0f) {
+  if (dam < 1.0F) {
     return ("Minimal Damage");
   }
-  if (dam <= 2.0f) {
+  if (dam <= 2.0F) {
     return ("Slight damage");
   }
-  if (dam <= 4.0f) {
+  if (dam <= 4.0F) {
     return ("A bit of damage");
   }
-  if (dam <= 10.0f) {
+  if (dam <= 10.0F) {
     return ("A decent amount of damage");
   }
-  if (dam <= 15.0f) {
+  if (dam <= 15.0F) {
     return ("A lot of damage");
   }
-  if (dam <= 25.0f) {
+  if (dam <= 25.0F) {
     return ("A whole lot of damage");
   }
-  if (dam <= 35.0f) {
+  if (dam <= 35.0F) {
     return ("A very large amount");
   }
   return ("A TON of damage");

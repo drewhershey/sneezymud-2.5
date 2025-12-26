@@ -1680,7 +1680,7 @@ static void develop_hatred(struct char_data* ch, struct char_data* v) {
   diff /= 20;
 
   if (GET_MAX_HIT(ch)) {
-    patience = (int)(100.0f * (float)GET_HIT(ch) / (float)GET_MAX_HIT(ch));
+    patience = (int)(100.0F * (float)GET_HIT(ch) / (float)GET_MAX_HIT(ch));
   } else {
     patience = 10;
   }
@@ -1830,7 +1830,7 @@ void perform_violence(int pulse) {
 
 struct char_data* FindVictim(struct char_data* ch) {
   struct char_data* tmp_ch;
-  unsigned char found = 0u;
+  unsigned char found = 0U;
   unsigned short ftot = 0;
   unsigned short ttot = 0;
   unsigned short ctot = 0;
@@ -1865,7 +1865,7 @@ struct char_data* FindVictim(struct char_data* ch) {
       if (!IS_SET(ch->specials.act, ACT_WIMPY) || !AWAKE(tmp_ch)) {
         if (!IS_NPC(tmp_ch) || (IS_SET(tmp_ch->specials.act, ACT_ANNOYING))) {
           if (!(IS_AFFECTED(ch, AFF_CHARM)) || (ch->master != tmp_ch)) {
-            found = 1u; /* a potential victim has been found */
+            found = 1U; /* a potential victim has been found */
             if (!IS_NPC(tmp_ch)) {
               if (HasClass(tmp_ch, CLASS_WARRIOR)) {
                 ftot++;
@@ -2014,7 +2014,7 @@ struct char_data* FindVictim(struct char_data* ch) {
 
 struct char_data* FindAnyVictim(struct char_data* ch) {
   struct char_data* tmp_ch;
-  unsigned char found = 0u;
+  unsigned char found = 0U;
   unsigned short ftot = 0;
   unsigned short ttot = 0;
   unsigned short ctot = 0;
@@ -2044,7 +2044,7 @@ struct char_data* FindAnyVictim(struct char_data* ch) {
         (!IS_SET(tmp_ch->specials.act, PLR_NOHASSLE))) {
       if (!(IS_AFFECTED(ch, AFF_CHARM)) || (ch->master != tmp_ch)) {
         if (!SameRace(ch, tmp_ch) || (!IS_NPC(tmp_ch))) {
-          found = 1u; /* a potential victim has been found */
+          found = 1U; /* a potential victim has been found */
           if (!IS_NPC(tmp_ch)) {
             if (HasClass(tmp_ch, CLASS_WARRIOR)) {
               ftot++;
@@ -2407,7 +2407,7 @@ int SkipImmortals(struct char_data* v, int amnt) {
 
 struct char_data* FindAnAttacker(struct char_data* ch) {
   struct char_data* tmp_ch;
-  unsigned char found = 0u;
+  unsigned char found = 0U;
   unsigned short ftot = 0;
   unsigned short ttot = 0;
   unsigned short ctot = 0;
@@ -2428,7 +2428,7 @@ struct char_data* FindAnAttacker(struct char_data* ch) {
     tmp_ch = tmp_ch->next_in_room) {
     if (ch != tmp_ch) {
       if (tmp_ch->specials.fighting == ch) {
-        found = 1u; /* a potential victim has been found */
+        found = 1U; /* a potential victim has been found */
         if (!IS_NPC(tmp_ch)) {
           if (HasClass(tmp_ch, CLASS_WARRIOR)) {
             ftot++;
@@ -2528,7 +2528,7 @@ struct char_data* FindAnAttacker(struct char_data* ch) {
 
 struct char_data* FindMetaVictim(struct char_data* ch) {
   struct char_data* tmp_ch;
-  unsigned char found = 0u;
+  unsigned char found = 0U;
   unsigned short total = 0;
 
   if (ch->in_room < 0) {
@@ -2541,7 +2541,7 @@ struct char_data* FindMetaVictim(struct char_data* ch) {
         (!IS_SET(tmp_ch->specials.act, PLR_NOHASSLE))) {
       if (!(IS_AFFECTED(ch, AFF_CHARM)) || (ch->master != tmp_ch)) {
         if (!IS_NPC(ch)) {
-          found = 1u;
+          found = 1U;
           total++;
         }
       }
