@@ -5921,23 +5921,21 @@ static void spell_fire_breath(signed char level, struct char_data* ch,
 
   MissileDamage(ch, victim, dam, SPELL_FIRE_BREATH);
 
-  /* And now for the damage on inventory */
+  /* And now for the damage on inventory - flammable items burn */
 
-  /*
-    DamageStuff(victim, FIRE_DAMAGE);
-  */
-
-  for (burn = victim->carrying;
-    burn && (burn->obj_flags.type_flag != ITEM_SCROLL) &&
-    (burn->obj_flags.type_flag != ITEM_WAND) &&
-    (burn->obj_flags.type_flag != ITEM_STAFF) &&
-    (burn->obj_flags.type_flag != ITEM_BOAT);
-    burn = burn->next_content) {
+  struct obj_data* next_obj;
+  for (burn = victim->carrying; burn; burn = next_obj) {
+    next_obj = burn->next_content;
+    /* Only paper and wood items are vulnerable to fire */
+    if (burn->obj_flags.type_flag != ITEM_SCROLL &&
+        burn->obj_flags.type_flag != ITEM_WAND &&
+        burn->obj_flags.type_flag != ITEM_STAFF &&
+        burn->obj_flags.type_flag != ITEM_BOAT) {
+      continue;
+    }
     if (!saves_spell(victim, SAVING_BREATH)) {
-      if (burn) {
-        act("$o burns", 0, victim, burn, 0, TO_CHAR);
-        extract_obj(burn);
-      }
+      act("$o burns", 0, victim, burn, 0, TO_CHAR);
+      extract_obj(burn);
     }
   }
 }
@@ -5971,18 +5969,19 @@ static void spell_frost_breath(signed char level, struct char_data* ch,
 
   MissileDamage(ch, victim, dam, SPELL_FROST_BREATH);
 
-  /* And now for the damage on inventory */
+  /* And now for the damage on inventory - liquid containers freeze and shatter */
 
-  for (frozen = victim->carrying;
-    frozen && (frozen->obj_flags.type_flag != ITEM_DRINKCON) &&
-    (frozen->obj_flags.type_flag != ITEM_ARMOR) &&
-    (frozen->obj_flags.type_flag != ITEM_POTION);
-    frozen = frozen->next_content) {
+  struct obj_data* next_obj;
+  for (frozen = victim->carrying; frozen; frozen = next_obj) {
+    next_obj = frozen->next_content;
+    /* Only liquid containers are vulnerable to frost */
+    if (frozen->obj_flags.type_flag != ITEM_DRINKCON &&
+        frozen->obj_flags.type_flag != ITEM_POTION) {
+      continue;
+    }
     if (!saves_spell(victim, SAVING_BREATH)) {
-      if (frozen) {
-        act("$o shatters.", 0, victim, frozen, 0, TO_CHAR);
-        extract_obj(frozen);
-      }
+      act("$o shatters.", 0, victim, frozen, 0, TO_CHAR);
+      extract_obj(frozen);
     }
   }
 }
