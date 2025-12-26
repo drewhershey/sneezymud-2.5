@@ -500,6 +500,8 @@ void load_one_room(FILE* fl, Room* rp) {
   }
 
   fscanf(fl, " %ld ", &rp->room_flags);
+
+  rp->sector_type = 0; /* default in case fscanf fails */
   fscanf(fl, " %d ", &rp->sector_type);
 
   if (rp->sector_type == -1) {
@@ -716,7 +718,7 @@ void boot_zones(void) {
   int zon = 0;
   int cmd_no = 0;
   int expand;
-  int tmp;
+  int tmp = 0;
   int bc = 100;
   int cc = 20;
   char* check;

@@ -1405,7 +1405,7 @@ const struct PolyType poly_list[40] = {{"goblin", 4, 201}, {"parrot", 4, 9001},
   {"roc", 22, 3724}, {"giant", 24, 9406}, {"white", 26, 243},
   {"master", 28, 7200}, {"mulichort", 35, 15830}, {"beholder", 40, 5200}};
 
-#define LAST_POLY_MOB 40
+#define LAST_POLY_MOB 36
 
 /*
  **   requires the sacrifice of 150k coins, victim loses a con point, and

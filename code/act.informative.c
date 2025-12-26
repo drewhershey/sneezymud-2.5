@@ -1598,8 +1598,8 @@ void do_examine(struct char_data* ch, char* argument, int cmd) {
   char name[100];
   char buf[100];
   int bits;
-  struct char_data* tmp_char;
-  struct obj_data* tmp_object;
+  struct char_data* tmp_char = NULL;
+  struct obj_data* tmp_object = NULL;
 
   sprintf(buf, "at %s", argument);
   do_look(ch, buf, 15);
@@ -2230,48 +2230,8 @@ void do_where(struct char_data* ch, char* argument, int cmd) {
   destroy_string_block(&sb);
 }
 
-static const int racial_max[][4] = {
-  {
-    (LOW_IMMORTAL - 1),
-    (LOW_IMMORTAL - 1),
-    (LOW_IMMORTAL - 1),
-    (LOW_IMMORTAL - 1),
-  },
-  {
-    (LOW_IMMORTAL - 1),
-    (LOW_IMMORTAL - 1),
-    (LOW_IMMORTAL - 1),
-    (LOW_IMMORTAL - 1),
-  },
-  {
-    (LOW_IMMORTAL - 1),
-    (LOW_IMMORTAL - 1),
-    (LOW_IMMORTAL - 1),
-    (LOW_IMMORTAL - 1),
-  },
-  {
-    (LOW_IMMORTAL - 1),
-    (LOW_IMMORTAL - 1),
-    (LOW_IMMORTAL - 1),
-    (LOW_IMMORTAL - 1),
-  },
-  {
-    (LOW_IMMORTAL - 1),
-    (LOW_IMMORTAL - 1),
-    (LOW_IMMORTAL - 1),
-    (LOW_IMMORTAL - 1),
-  },
-  {
-    (LOW_IMMORTAL - 1),
-    (LOW_IMMORTAL - 1),
-    (LOW_IMMORTAL - 1),
-    (LOW_IMMORTAL - 1),
-  },
-};
-
 void do_levels(struct char_data* ch, char* argument, int cmd) {
   int i;
-  int race_max;
   int class;
   char buf[MAX_STRING_LENGTH];
   char buf2[MAX_STRING_LENGTH];
@@ -2332,8 +2292,6 @@ void do_levels(struct char_data* ch, char* argument, int cmd) {
       return;
       break;
   }
-
-  race_max = racial_max[GET_RACE(ch)][class];
 
   for (i = 1; i <= 50; i++) {
     sprintf(buf, "[%2d] %9d : %s\n\r", i, titles[class][i].exp,

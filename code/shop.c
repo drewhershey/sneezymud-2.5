@@ -502,7 +502,7 @@ int shop_keeper(struct char_data* ch, int cmd, char* arg) {
 
 void boot_the_shops(void) {
   char* buf;
-  int temp;
+  int temp = 0;
   int count;
   FILE* shop_f;
 

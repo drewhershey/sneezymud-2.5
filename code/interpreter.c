@@ -643,7 +643,7 @@ char* one_argument(char* argument, char* first_arg) {
 
   do {
     /* Find first non blank */
-    for (; isspace(*(argument + begin)); begin++) {
+    for (; *(argument + begin) && isspace(*(argument + begin)); begin++) {
       ;
     }
 

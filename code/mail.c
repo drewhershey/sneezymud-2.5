@@ -429,7 +429,7 @@ char* read_delete(char* recipient, char* recipient_formatted) {
 static void postmaster_send_mail(struct char_data* ch, int cmd, char* arg) {
   struct char_data* mailman;
   char buf[200];
-  char recipient[100];
+  char recipient[100] = "";
   char* tmp;
 
   mailman = FindMobInRoomWithFunction(ch->in_room, postmaster);
@@ -492,7 +492,7 @@ static void postmaster_send_mail(struct char_data* ch, int cmd, char* arg) {
 static void postmaster_check_mail(struct char_data* ch, int cmd, char* arg) {
   struct char_data* mailman;
   char buf[200];
-  char recipient[100];
+  char recipient[100] = "";
   char* tmp;
 
   mailman = FindMobInRoomWithFunction(ch->in_room, postmaster);
@@ -520,7 +520,7 @@ static void postmaster_check_mail(struct char_data* ch, int cmd, char* arg) {
 static void postmaster_receive_mail(struct char_data* ch, int cmd, char* arg) {
   struct char_data* mailman;
   char buf[200];
-  char recipient[100];
+  char recipient[100] = "";
   char* tmp;
   struct obj_data* tmp_obj;
 

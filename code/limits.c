@@ -458,10 +458,10 @@ static void drop_level(struct char_data* ch, int class) {
     } break;
   }
 
-  GET_LEVEL(ch, class) -= 1;
+  GET_LEVEL(ch, lin_class) -= 1;
 
-  if (GET_LEVEL(ch, class) < 1) {
-    GET_LEVEL(ch, class) = 1;
+  if (GET_LEVEL(ch, lin_class) < 1) {
+    GET_LEVEL(ch, lin_class) = 1;
   }
 
   ch->points.max_hit -= MAX(1, add_hp);

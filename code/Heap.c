@@ -17,17 +17,20 @@
 static void smart_str_cpy(char* s1, const char* s2) {
   int i;
 
-  i = strlen(s2);
-  while (s2[i] <= ' ') {
+  i = (int)strlen(s2);
+
+  /* Back up from end, skipping trailing whitespace/control chars */
+  while (i > 0 && s2[i - 1] <= ' ') {
     i--;
   }
 
-  /* null terminate s1 */
-  s1[i + 1] = '\0';
+  /* null terminate s1 at the trimmed length */
+  s1[i] = '\0';
 
-  while (i >= 0) {
-    s1[i] = s2[i];
+  /* copy characters */
+  while (i > 0) {
     i--;
+    s1[i] = s2[i];
   }
 }
 

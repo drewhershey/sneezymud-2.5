@@ -1477,8 +1477,8 @@ void SpaceForSkills(struct char_data* ch) {
     create space for the skills for some mobile or character.
   */
 
-  ch->skills = (struct char_skill_data*)malloc(
-    MAX_SKILLS * sizeof(struct char_skill_data));
+  ch->skills =
+    (struct char_skill_data*)calloc(MAX_SKILLS, sizeof(struct char_skill_data));
 
   if (ch->skills == 0) {
     abort();
@@ -1510,7 +1510,7 @@ char* lower(char* s) {
 
   (void)snprintf(c, sizeof(c), "%s", s);
 
-  while (c[i]) {
+  while (i < (int)sizeof(c) - 1 && c[i]) {
     if (isupper(c[i])) {
       c[i] = tolower(c[i]);
     }
