@@ -188,7 +188,7 @@ void do_action(struct char_data* ch, char* argument, int cmd) {
     act(action->others_auto, action->hide, ch, 0, 0, TO_ROOM);
   } else {
     if (GET_POS(vict) < action->min_victim_position) {
-      act("$N is not in a proper position for that.", FALSE, ch, 0, vict,
+      act("$N is not in a proper position for that.", false, ch, 0, vict,
         TO_CHAR);
     } else {
       act(action->char_found, 0, ch, 0, vict, TO_CHAR);
@@ -219,33 +219,33 @@ void do_insult(struct char_data* ch, char* argument, int cmd) {
           case 0: {
             if (GET_SEX(ch) == SEX_MALE) {
               if (GET_SEX(victim) == SEX_MALE) {
-                act("$n accuses you of fighting like a woman!", FALSE, ch, 0,
+                act("$n accuses you of fighting like a woman!", false, ch, 0,
                   victim, TO_VICT);
               } else {
-                act("$n says that women can't fight.", FALSE, ch, 0, victim,
+                act("$n says that women can't fight.", false, ch, 0, victim,
                   TO_VICT);
               }
             } else { /* Ch == Woman */
               if (GET_SEX(victim) == SEX_MALE) {
-                act("$n accuses you of having the smallest.... (brain?)", FALSE,
+                act("$n accuses you of having the smallest.... (brain?)", false,
                   ch, 0, victim, TO_VICT);
               } else {
                 act(
                   "$n tells you that you'd loose a beautycontest against a "
                   "troll.",
-                  FALSE, ch, 0, victim, TO_VICT);
+                  false, ch, 0, victim, TO_VICT);
               }
             }
           } break;
           case 1: {
-            act("$n calls your mother a bitch!", FALSE, ch, 0, victim, TO_VICT);
+            act("$n calls your mother a bitch!", false, ch, 0, victim, TO_VICT);
           } break;
           default: {
-            act("$n tells you to get lost!", FALSE, ch, 0, victim, TO_VICT);
+            act("$n tells you to get lost!", false, ch, 0, victim, TO_VICT);
           } break;
         } /* end switch */
 
-        act("$n insults $N.", TRUE, ch, 0, victim, TO_NOTVICT);
+        act("$n insults $N.", true, ch, 0, victim, TO_NOTVICT);
       } else { /* ch == victim */
         send_to_char("You feel insulted.\n\r", ch);
       }

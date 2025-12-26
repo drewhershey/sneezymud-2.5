@@ -107,17 +107,17 @@ int board(struct char_data* ch, int cmd, char* arg, Obj* me) {
   struct Board* nb;
 
   if (!ch) {
-    return FALSE;
+    return false;
   }
 
   nb = FindBoardInRoom(ch->in_room);
 
   if (!nb) {
-    return (FALSE);
+    return (false);
   }
 
   if (!ch->desc) {
-    return (FALSE);
+    return (false);
   }
 
   switch (cmd) {
@@ -183,7 +183,7 @@ void board_write_msg(struct char_data* ch, char* arg, struct Board* b) {
   b->msgs[b->msg_num] = nullptr;
 
   send_to_char("Write your message. Terminate with an @.\n\r\n\r", ch);
-  act("$n starts to write a message.", TRUE, ch, 0, 0, TO_ROOM);
+  act("$n starts to write a message.", true, ch, 0, 0, TO_ROOM);
 
   ch->desc->str = &b->msgs[b->msg_num];
   ch->desc->max_str = MAX_MESSAGE_LENGTH;
@@ -233,7 +233,7 @@ int board_remove_msg(struct char_data* ch, char* arg, struct Board* b) {
   b->msg_num--;
   send_to_char("Message removed.\n\r", ch);
   sprintf(buf, "$n just removed message %d.", msg);
-  act(buf, FALSE, ch, 0, 0, TO_ROOM);
+  act(buf, false, ch, 0, 0, TO_ROOM);
   board_save_board(b);
 
   return (1);
@@ -360,7 +360,7 @@ int board_display_msg(struct char_data* ch, char* arg, struct Board* b) {
   }
 
   sprintf(buf, "$n reads message %d titled : %s.", msg, b->head[msg - 1]);
-  act(buf, TRUE, ch, 0, 0, TO_ROOM);
+  act(buf, true, ch, 0, 0, TO_ROOM);
 
   /* Bad news */
 
@@ -388,7 +388,7 @@ int board_show_board(struct char_data* ch, char* arg, struct Board* b) {
     return (0);
   }
 
-  act("$n studies the board.", TRUE, ch, 0, 0, TO_ROOM);
+  act("$n studies the board.", true, ch, 0, 0, TO_ROOM);
 
   strcpy(buf,
     "This is a bulletin board. Usage: READ/REMOVE <messg #>, WRITE "

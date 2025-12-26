@@ -42,12 +42,12 @@ void open_door(struct char_data* ch, int dir) {
   if (exitp->keyword) {
     if (!IS_SET(exitp->exit_info, EX_SECRET)) {
       sprintf(buf, "$n opens the %s", fname(exitp->keyword));
-      act(buf, FALSE, ch, 0, 0, TO_ROOM);
+      act(buf, false, ch, 0, 0, TO_ROOM);
     } else {
-      act("$n reveals a hidden passage!", FALSE, ch, 0, 0, TO_ROOM);
+      act("$n reveals a hidden passage!", false, ch, 0, 0, TO_ROOM);
     }
   } else {
-    act("$n opens the door.", FALSE, ch, 0, 0, TO_ROOM);
+    act("$n opens the door.", false, ch, 0, 0, TO_ROOM);
   }
 
   /* now for opening the OTHER side of the door! */
@@ -116,39 +116,39 @@ int ValidMove(struct char_data* ch, int cmd) {
 
   if (!exit_ok(exitp, nullptr)) {
     not_legal_move(ch);
-    return (FALSE);
+    return (false);
   }
   if (IS_SET(exitp->exit_info, EX_CLOSED)) {
     if (IS_IMMORTAL(ch)) {
       if (!IS_SET(ch->specials.act, PLR_STEALTH)) {
         act("$n's body splits into a cloud of atoms before before your eyes!",
-          FALSE, ch, 0, nullptr, TO_ROOM);
+          false, ch, 0, nullptr, TO_ROOM);
       }
       send_to_char("You make yourself ethreal to pass through the barrier.\n\r",
         ch);
-      return TRUE;
+      return true;
     }
     if (exitp->keyword) {
       if (!IS_SET(exitp->exit_info, EX_SECRET)) {
         sprintf(tmp, "The %s seems to be closed.\n\r", fname(exitp->keyword));
         send_to_char(tmp, ch);
-        return (FALSE);
+        return (false);
       }
       not_legal_move(ch);
-      return (FALSE);
+      return (false);
     }
     not_legal_move(ch);
-    return (FALSE);
+    return (false);
   }
   struct room_data* rp;
   rp = real_roomp(exitp->to_room);
   if (IS_SET(rp->room_flags, TUNNEL)) {
     if ((MobCountInRoom(rp->people) > rp->moblim) && (!IS_IMMORTAL(ch))) {
       send_to_char("Sorry, there is no room to get in there.\n\r", ch);
-      return (FALSE);
+      return (false);
     }
   }
-  return (TRUE);
+  return (true);
 }
 
 static const int movement_loss[] = {
@@ -174,20 +174,20 @@ static int raw_move(struct char_data* ch, int dir) {
   struct char_data* pers;
 
   if (special(ch, dir + 1, "")) { /* Check for special routines(North is 1)*/
-    return (FALSE);
+    return (false);
   }
 
   if (!ValidMove(ch, dir)) {
-    return (FALSE);
+    return (false);
   }
 
   if (IS_AFFECTED(ch, AFF_CHARM) && (ch->master) &&
       (ch->in_room == ch->master->in_room)) {
-    act("$n bursts into tears.", FALSE, ch, 0, 0, TO_ROOM);
-    act("You burst into tears at the thought of leaving $N", FALSE, ch, 0,
+    act("$n bursts into tears.", false, ch, 0, 0, TO_ROOM);
+    act("You burst into tears at the thought of leaving $N", false, ch, 0,
       ch->master, TO_CHAR);
 
-    return (FALSE);
+    return (false);
   }
 
   from_here = real_roomp(ch->in_room);
@@ -203,7 +203,7 @@ static int raw_move(struct char_data* ch, int dir) {
       ch);
     do_look(ch, "\0", 15);
 
-    return TRUE;
+    return true;
   }
 
   if (IS_AFFECTED(ch, AFF_FLYING)) {
@@ -228,16 +228,16 @@ static int raw_move(struct char_data* ch, int dir) {
   if ((from_here->sector_type == SECT_WATER_NOSWIM) ||
       (to_here->sector_type == SECT_WATER_NOSWIM)) {
     if ((!IS_AFFECTED(ch, AFF_WATERBREATH)) && (!IS_AFFECTED(ch, AFF_FLYING))) {
-      has_boat = FALSE;
+      has_boat = false;
       /* See if char is carrying a boat */
       for (obj = ch->carrying; obj; obj = obj->next_content) {
         if (obj->obj_flags.type_flag == ITEM_BOAT) {
-          has_boat = TRUE;
+          has_boat = true;
         }
       }
       if (!has_boat) {
         send_to_char("You need a boat to go there.\n\r", ch);
-        return (FALSE);
+        return (false);
       }
       if (has_boat) {
         need_movement = 1;
@@ -252,7 +252,7 @@ static int raw_move(struct char_data* ch, int dir) {
       (to_here->sector_type == SECT_AIR)) {
     if (!IS_AFFECTED(ch, AFF_FLYING)) {
       send_to_char("You would have to Fly to go there!\n\r", ch);
-      return (FALSE);
+      return (false);
     }
   }
 
@@ -262,20 +262,20 @@ static int raw_move(struct char_data* ch, int dir) {
   if (to_here->sector_type == SECT_UNDERWATER) {
     if (IS_NPC(ch)) {
       if (!IS_AFFECTED(ch, AFF_WATERBREATH)) {
-        return (FALSE);
+        return (false);
       }
     }
   }
   if (from_here->sector_type == SECT_UNDERWATER) {
     if (!IS_AFFECTED(ch, AFF_WATERBREATH)) {
       send_to_char("You would need gills to go there!\n\r", ch);
-      return (FALSE);
+      return (false);
     }
   }
 
   if (GET_MOVE(ch) < need_movement) {
     send_to_char("You are too exhausted.\n\r", ch);
-    return (FALSE);
+    return (false);
   }
 
   if (!IS_IMMORTAL(ch)) {
@@ -290,7 +290,7 @@ static int raw_move(struct char_data* ch, int dir) {
    *  nail the unlucky with traps.
    */
   if (CheckForMoveTrap(ch, dir)) {
-    return (FALSE);
+    return (false);
   }
 
   char_from_room(ch);
@@ -315,7 +315,7 @@ static int raw_move(struct char_data* ch, int dir) {
     }
     zero_rent(ch);
     extract_char(ch);
-    return (FALSE);
+    return (false);
   }
 
   /*
@@ -337,7 +337,7 @@ static int raw_move(struct char_data* ch, int dir) {
     }
   }
 
-  return (TRUE);
+  return (true);
 }
 
 // MoveOne and MoveGroup print messages.  Raw move sends success or failure.
@@ -394,7 +394,7 @@ int DisplayMove(struct char_data* ch, int dir, int was_in, int total) {
       }
     }
   }
-  return TRUE;
+  return true;
 }
 
 static int display_one_move(struct char_data* ch, int dir, int was_in) {
@@ -407,16 +407,16 @@ static int add_to_char_heap(struct char_data* heap[50], int* top, int total[50],
   int i;
 
   if (*top > 50) {
-    return (FALSE);
+    return (false);
   }
-  found = FALSE;
+  found = false;
   for (i = 0; (i < *top && !found); i++) {
     if (*top > 0) {
       if ((IS_NPC(k)) && (k->nr == heap[i]->nr) &&
           (heap[i]->player.short_descr) &&
           (!strcmp(k->player.short_descr, heap[i]->player.short_descr))) {
         total[i] += 1;
-        found = TRUE;
+        found = true;
       }
     }
   }
@@ -426,7 +426,7 @@ static int add_to_char_heap(struct char_data* heap[50], int* top, int total[50],
     *top += 1;
   }
 
-  return TRUE;
+  return true;
 }
 
 int MoveOne(struct char_data* ch, int dir) {
@@ -435,9 +435,9 @@ int MoveOne(struct char_data* ch, int dir) {
   was_in = ch->in_room;
   if (raw_move(ch, dir)) { /* no error */
     display_one_move(ch, dir, was_in);
-    return TRUE;
+    return true;
   }
-  return FALSE;
+  return false;
 }
 
 static int display_group_move(struct char_data* ch, int dir, int was_in,
@@ -470,7 +470,7 @@ void move_group(struct char_data* ch, int dir) {
          */
         if ((was_in == k->follower->in_room) &&
             (GET_POS(k->follower) >= POSITION_STANDING)) {
-          act("You follow $N.", FALSE, k->follower, 0, ch, TO_CHAR);
+          act("You follow $N.", false, k->follower, 0, ch, TO_CHAR);
           if (k->follower->followers) {
             move_group(k->follower, dir);
           } else {
@@ -528,7 +528,7 @@ int find_door(struct char_data* ch, char* type, char* dir) {
   struct room_direction_data* exitp;
 
   if (*dir) { /* a direction was specified */
-    if ((door = search_block(dir, dirs, FALSE)) == -1) { /* Partial Match */
+    if ((door = search_block(dir, dirs, false)) == -1) { /* Partial Match */
       send_to_char("That's not a direction.\n\r", ch);
       return (-1);
     }
@@ -590,7 +590,7 @@ void do_open(struct char_data* ch, char* argument, int cmd) {
     } else {
       REMOVE_BIT(obj->obj_flags.value[1], CONT_CLOSED);
       send_to_char("Ok.\n\r", ch);
-      act("$n opens $p.", FALSE, ch, obj, 0, TO_ROOM);
+      act("$n opens $p.", false, ch, obj, 0, TO_ROOM);
     }
   } else if ((door = find_door(ch, type, dir)) >= 0) {
     /* perhaps it is a door */
@@ -638,7 +638,7 @@ void do_close(struct char_data* ch, char* argument, int cmd) {
     } else {
       SET_BIT(obj->obj_flags.value[1], CONT_CLOSED);
       send_to_char("Ok.\n\r", ch);
-      act("$n closes $p.", FALSE, ch, obj, 0, TO_ROOM);
+      act("$n closes $p.", false, ch, obj, 0, TO_ROOM);
     }
   } else if ((door = find_door(ch, type, dir)) >= 0) {
     /* Or a door */
@@ -652,7 +652,7 @@ void do_close(struct char_data* ch, char* argument, int cmd) {
       if (exitp->keyword) {
         act("$n closes the $F.", 0, ch, 0, exitp->keyword, TO_ROOM);
       } else {
-        act("$n closes the door.", FALSE, ch, 0, 0, TO_ROOM);
+        act("$n closes the door.", false, ch, 0, 0, TO_ROOM);
       }
       send_to_char("Ok.\n\r", ch);
       /* now for closing the other side, too */
@@ -719,7 +719,7 @@ void do_lock(struct char_data* ch, char* argument, int cmd) {
     } else {
       SET_BIT(obj->obj_flags.value[1], CONT_LOCKED);
       send_to_char("*Cluck*\n\r", ch);
-      act("$n locks $p - 'cluck', it says.", FALSE, ch, obj, 0, TO_ROOM);
+      act("$n locks $p - 'cluck', it says.", false, ch, obj, 0, TO_ROOM);
     }
   } else if ((door = find_door(ch, type, dir)) >= 0) {
     /* a door, perhaps */
@@ -740,7 +740,7 @@ void do_lock(struct char_data* ch, char* argument, int cmd) {
       if (exitp->keyword) {
         act("$n locks the $F.", 0, ch, 0, exitp->keyword, TO_ROOM);
       } else {
-        act("$n locks the door.", FALSE, ch, 0, 0, TO_ROOM);
+        act("$n locks the door.", false, ch, 0, 0, TO_ROOM);
       }
       send_to_char("*Click*\n\r", ch);
       /* now for locking the other side, too */
@@ -782,7 +782,7 @@ void do_unlock(struct char_data* ch, char* argument, int cmd) {
     } else {
       REMOVE_BIT(obj->obj_flags.value[1], CONT_LOCKED);
       send_to_char("*Click*\n\r", ch);
-      act("$n unlocks $p.", FALSE, ch, obj, 0, TO_ROOM);
+      act("$n unlocks $p.", false, ch, obj, 0, TO_ROOM);
     }
   } else if ((door = find_door(ch, type, dir)) >= 0) {
     /* it is a door */
@@ -803,7 +803,7 @@ void do_unlock(struct char_data* ch, char* argument, int cmd) {
       if (exitp->keyword) {
         act("$n unlocks the $F.", 0, ch, 0, exitp->keyword, TO_ROOM);
       } else {
-        act("$n unlocks the door.", FALSE, ch, 0, 0, TO_ROOM);
+        act("$n unlocks the door.", false, ch, 0, 0, TO_ROOM);
       }
       send_to_char("*click*\n\r", ch);
       /* now for unlocking the other side, too */
@@ -866,7 +866,7 @@ void do_pick(struct char_data* ch, char* argument, int cmd) {
     } else {
       REMOVE_BIT(obj->obj_flags.value[1], CONT_LOCKED);
       send_to_char("*Click*\n\r", ch);
-      act("$n fiddles with $p.", FALSE, ch, obj, 0, TO_ROOM);
+      act("$n fiddles with $p.", false, ch, obj, 0, TO_ROOM);
     }
   } else if ((door = find_door(ch, type, dir)) >= 0) {
     exitp = EXIT(ch, door);
@@ -886,7 +886,7 @@ void do_pick(struct char_data* ch, char* argument, int cmd) {
         act("$n skillfully picks the lock of the $F.", 0, ch, 0, exitp->keyword,
           TO_ROOM);
       } else {
-        act("$n picks the lock.", TRUE, ch, 0, 0, TO_ROOM);
+        act("$n picks the lock.", true, ch, 0, 0, TO_ROOM);
       }
       send_to_char("The lock quickly yields to your skills.\n\r", ch);
       /* now for unlocking the other side, too */
@@ -928,12 +928,12 @@ void do_enter(struct char_data* ch, char* argument, int cmd) {
     if (obj_object) {
       send_to_char(
         "You step into the portal and are thrown into another room.\n\r", ch);
-      act("$n disappears as $e step into the portal.", FALSE, ch, 0, 0,
+      act("$n disappears as $e step into the portal.", false, ch, 0, 0,
         TO_ROOM);
       location = obj_object->obj_flags.value[0];
       char_from_room(ch);
       char_to_room(ch, location);
-      act("$n arrives in the room through a magical portal.", FALSE, ch, 0, 0,
+      act("$n arrives in the room through a magical portal.", false, ch, 0, 0,
         TO_ROOM);
       do_look(ch, "", 15);
     } else {
@@ -983,33 +983,33 @@ void do_leave(struct char_data* ch, char* argument, int cmd) {
 void do_stand(struct char_data* ch, char* argument, int cmd) {
   switch (GET_POS(ch)) {
     case POSITION_STANDING: {
-      act("You are already standing.", FALSE, ch, 0, 0, TO_CHAR);
+      act("You are already standing.", false, ch, 0, 0, TO_CHAR);
     } break;
     case POSITION_SITTING: {
       if (check_blackjack(ch)) {
         do_blackjack_exit(ch);
       }
-      act("You stand up.", FALSE, ch, 0, 0, TO_CHAR);
-      act("$n clambers on $s feet.", TRUE, ch, 0, 0, TO_ROOM);
+      act("You stand up.", false, ch, 0, 0, TO_CHAR);
+      act("$n clambers on $s feet.", true, ch, 0, 0, TO_ROOM);
       GET_POS(ch) = POSITION_STANDING;
     } break;
     case POSITION_RESTING: {
-      act("You stop resting, and stand up.", FALSE, ch, 0, 0, TO_CHAR);
-      act("$n stops resting, and clambers on $s feet.", TRUE, ch, 0, 0,
+      act("You stop resting, and stand up.", false, ch, 0, 0, TO_CHAR);
+      act("$n stops resting, and clambers on $s feet.", true, ch, 0, 0,
         TO_ROOM);
       GET_POS(ch) = POSITION_STANDING;
     } break;
     case POSITION_SLEEPING: {
-      act("You have to wake up first!", FALSE, ch, 0, 0, TO_CHAR);
+      act("You have to wake up first!", false, ch, 0, 0, TO_CHAR);
     } break;
     case POSITION_FIGHTING: {
-      act("Do you not consider fighting as standing?", FALSE, ch, 0, 0,
+      act("Do you not consider fighting as standing?", false, ch, 0, 0,
         TO_CHAR);
     } break;
     default: {
-      act("You stop floating around, and put your feet on the ground.", FALSE,
+      act("You stop floating around, and put your feet on the ground.", false,
         ch, 0, 0, TO_CHAR);
-      act("$n stops floating around, and puts $s feet on the ground.", TRUE, ch,
+      act("$n stops floating around, and puts $s feet on the ground.", true, ch,
         0, 0, TO_ROOM);
     } break;
   }
@@ -1029,27 +1029,27 @@ void do_sit(struct char_data* ch, char* argument, int cmd) {
   }
   switch (GET_POS(ch)) {
     case POSITION_STANDING: {
-      act("You sit down.", FALSE, ch, 0, 0, TO_CHAR);
-      act("$n sits down.", FALSE, ch, 0, 0, TO_ROOM);
+      act("You sit down.", false, ch, 0, 0, TO_CHAR);
+      act("$n sits down.", false, ch, 0, 0, TO_ROOM);
       GET_POS(ch) = POSITION_SITTING;
     } break;
     case POSITION_SITTING: {
       send_to_char("You'r sitting already.\n\r", ch);
     } break;
     case POSITION_RESTING: {
-      act("You stop resting, and sit up.", FALSE, ch, 0, 0, TO_CHAR);
-      act("$n stops resting.", TRUE, ch, 0, 0, TO_ROOM);
+      act("You stop resting, and sit up.", false, ch, 0, 0, TO_CHAR);
+      act("$n stops resting.", true, ch, 0, 0, TO_ROOM);
       GET_POS(ch) = POSITION_SITTING;
     } break;
     case POSITION_SLEEPING: {
-      act("You have to wake up first.", FALSE, ch, 0, 0, TO_CHAR);
+      act("You have to wake up first.", false, ch, 0, 0, TO_CHAR);
     } break;
     case POSITION_FIGHTING: {
-      act("Sit down while fighting? are you MAD?", FALSE, ch, 0, 0, TO_CHAR);
+      act("Sit down while fighting? are you MAD?", false, ch, 0, 0, TO_CHAR);
     } break;
     default: {
-      act("You stop floating around, and sit down.", FALSE, ch, 0, 0, TO_CHAR);
-      act("$n stops floating around, and sits down.", TRUE, ch, 0, 0, TO_ROOM);
+      act("You stop floating around, and sit down.", false, ch, 0, 0, TO_CHAR);
+      act("$n stops floating around, and sits down.", true, ch, 0, 0, TO_ROOM);
       GET_POS(ch) = POSITION_SITTING;
     } break;
   }
@@ -1058,31 +1058,31 @@ void do_sit(struct char_data* ch, char* argument, int cmd) {
 void do_rest(struct char_data* ch, char* argument, int cmd) {
   switch (GET_POS(ch)) {
     case POSITION_STANDING: {
-      act("You sit down and rest your tired bones.", FALSE, ch, 0, 0, TO_CHAR);
-      act("$n sits down and rests.", TRUE, ch, 0, 0, TO_ROOM);
+      act("You sit down and rest your tired bones.", false, ch, 0, 0, TO_CHAR);
+      act("$n sits down and rests.", true, ch, 0, 0, TO_ROOM);
       GET_POS(ch) = POSITION_RESTING;
     } break;
     case POSITION_SITTING: {
       if (check_blackjack(ch)) {
         do_blackjack_exit(ch);
       }
-      act("You rest your tired bones.", FALSE, ch, 0, 0, TO_CHAR);
-      act("$n rests.", TRUE, ch, 0, 0, TO_ROOM);
+      act("You rest your tired bones.", false, ch, 0, 0, TO_CHAR);
+      act("$n rests.", true, ch, 0, 0, TO_ROOM);
       GET_POS(ch) = POSITION_RESTING;
     } break;
     case POSITION_RESTING: {
-      act("You are already resting.", FALSE, ch, 0, 0, TO_CHAR);
+      act("You are already resting.", false, ch, 0, 0, TO_CHAR);
     } break;
     case POSITION_SLEEPING: {
-      act("You have to wake up first.", FALSE, ch, 0, 0, TO_CHAR);
+      act("You have to wake up first.", false, ch, 0, 0, TO_CHAR);
     } break;
     case POSITION_FIGHTING: {
-      act("Rest while fighting? are you MAD?", FALSE, ch, 0, 0, TO_CHAR);
+      act("Rest while fighting? are you MAD?", false, ch, 0, 0, TO_CHAR);
     } break;
     default: {
-      act("You stop floating around, and stop to rest your tired bones.", FALSE,
+      act("You stop floating around, and stop to rest your tired bones.", false,
         ch, 0, 0, TO_CHAR);
-      act("$n stops floating around, and rests.", FALSE, ch, 0, 0, TO_ROOM);
+      act("$n stops floating around, and rests.", false, ch, 0, 0, TO_ROOM);
       GET_POS(ch) = POSITION_SITTING;
     } break;
   }
@@ -1093,12 +1093,12 @@ void do_sleep(struct char_data* ch, char* argument, int cmd) {
     case POSITION_STANDING:
     case POSITION_RESTING: {
       send_to_char("You go to sleep.\n\r", ch);
-      act("$n lies down and falls asleep.", TRUE, ch, 0, 0, TO_ROOM);
+      act("$n lies down and falls asleep.", true, ch, 0, 0, TO_ROOM);
       GET_POS(ch) = POSITION_SLEEPING;
       break;
       case POSITION_SITTING:
         send_to_char("You go to sleep.\n\r", ch);
-        act("$n lies down and falls asleep.", TRUE, ch, 0, 0, TO_ROOM);
+        act("$n lies down and falls asleep.", true, ch, 0, 0, TO_ROOM);
         GET_POS(ch) = POSITION_SLEEPING;
         if (check_blackjack(ch)) {
           do_blackjack_exit(ch);
@@ -1111,9 +1111,9 @@ void do_sleep(struct char_data* ch, char* argument, int cmd) {
       send_to_char("Sleep while fighting? are you MAD?\n\r", ch);
     } break;
     default: {
-      act("You stop floating around, and lie down to sleep.", FALSE, ch, 0, 0,
+      act("You stop floating around, and lie down to sleep.", false, ch, 0, 0,
         TO_CHAR);
-      act("$n stops floating around, and lie down to sleep.", TRUE, ch, 0, 0,
+      act("$n stops floating around, and lie down to sleep.", true, ch, 0, 0,
         TO_ROOM);
       GET_POS(ch) = POSITION_SLEEPING;
     } break;
@@ -1127,33 +1127,33 @@ void do_wake(struct char_data* ch, char* argument, int cmd) {
   one_argument(argument, arg);
   if (*arg) {
     if (GET_POS(ch) == POSITION_SLEEPING) {
-      act("You can't wake people up if you are asleep yourself!", FALSE, ch, 0,
+      act("You can't wake people up if you are asleep yourself!", false, ch, 0,
         0, TO_CHAR);
     } else {
       tmp_char = get_char_room_vis(ch, arg);
       if (tmp_char) {
         if (tmp_char == ch) {
-          act("If you want to wake yourself up, just type 'wake'", FALSE, ch, 0,
+          act("If you want to wake yourself up, just type 'wake'", false, ch, 0,
             0, TO_CHAR);
         } else {
           if (GET_POS(tmp_char) == POSITION_SLEEPING) {
             if (IS_AFFECTED(tmp_char, AFF_SLEEP)) {
-              act("You can not wake $M up!", FALSE, ch, 0, tmp_char, TO_CHAR);
+              act("You can not wake $M up!", false, ch, 0, tmp_char, TO_CHAR);
             } else {
               if (check_blackjack(tmp_char)) {
-                act("You wake $M up and drag $m to $M feet.", FALSE, ch, 0,
+                act("You wake $M up and drag $m to $M feet.", false, ch, 0,
                   tmp_char, TO_CHAR);
                 GET_POS(tmp_char) = POSITION_STANDING;
-                act("You are awakened and drug to your feet by $n.", FALSE, ch,
+                act("You are awakened and drug to your feet by $n.", false, ch,
                   0, tmp_char, TO_VICT);
               } else {
-                act("You wake $M up.", FALSE, ch, 0, tmp_char, TO_CHAR);
+                act("You wake $M up.", false, ch, 0, tmp_char, TO_CHAR);
                 GET_POS(tmp_char) = POSITION_SITTING;
-                act("You are awakened by $n.", FALSE, ch, 0, tmp_char, TO_VICT);
+                act("You are awakened by $n.", false, ch, 0, tmp_char, TO_VICT);
               }
             }
           } else {
-            act("$N is already awake.", FALSE, ch, 0, tmp_char, TO_CHAR);
+            act("$N is already awake.", false, ch, 0, tmp_char, TO_CHAR);
           }
         }
       } else {
@@ -1170,11 +1170,11 @@ void do_wake(struct char_data* ch, char* argument, int cmd) {
         if (check_blackjack(ch)) {
           send_to_char("You wake and decide to stand to see the games.\n\r",
             ch);
-          act("$n awakens and clambers to his feet.", TRUE, ch, 0, 0, TO_ROOM);
+          act("$n awakens and clambers to his feet.", true, ch, 0, 0, TO_ROOM);
           GET_POS(ch) = POSITION_STANDING;
         } else {
           send_to_char("You wake, and sit up.\n\r", ch);
-          act("$n awakens.", TRUE, ch, 0, 0, TO_ROOM);
+          act("$n awakens.", true, ch, 0, 0, TO_ROOM);
           GET_POS(ch) = POSITION_SITTING;
         }
       }
@@ -1199,7 +1199,7 @@ void do_follow(struct char_data* ch, char* argument, int cmd) {
   }
 
   if (IS_AFFECTED(ch, AFF_CHARM) && (ch->master)) {
-    act("But you only feel like following $N!", FALSE, ch, 0, ch->master,
+    act("But you only feel like following $N!", false, ch, 0, ch->master,
       TO_CHAR);
 
   } else { /* Not Charmed follow person */
@@ -1212,7 +1212,7 @@ void do_follow(struct char_data* ch, char* argument, int cmd) {
       stop_follower(ch);
     } else {
       if (circle_follow(ch, leader)) {
-        act("Sorry, but following in 'loops' is not allowed", FALSE, ch, 0, 0,
+        act("Sorry, but following in 'loops' is not allowed", false, ch, 0, 0,
           TO_CHAR);
         return;
       }

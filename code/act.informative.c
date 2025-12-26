@@ -389,7 +389,7 @@ void show_mult_obj_to_char(struct obj_data* object, struct char_data* ch,
         strcat(buffer, object->action_description);
         page_string(ch->desc, buffer, 1);
       } else {
-        act("It's blank.", FALSE, ch, 0, 0, TO_CHAR);
+        act("It's blank.", false, ch, 0, 0, TO_CHAR);
       }
       return;
     }
@@ -435,7 +435,7 @@ void list_obj_in_room(struct obj_data* list, struct char_data* ch) {
   int k;
   int cond_top;
   int cond_tot[50];
-  int found = FALSE;
+  int found = false;
   char buf[MAX_STRING_LENGTH];
 
   cond_top = 0;
@@ -443,14 +443,14 @@ void list_obj_in_room(struct obj_data* list, struct char_data* ch) {
   for (i = list; i; i = i->next_content) {
     if (CAN_SEE_OBJ(ch, i)) {
       if (cond_top < 50) {
-        found = FALSE;
+        found = false;
         for (k = 0; (k < cond_top && !found); k++) {
           if (cond_top > 0) {
             if ((i->item_number == cond_ptr[k]->item_number) &&
                 (i->description && cond_ptr[k]->description &&
                   !strcmp(i->description, cond_ptr[k]->description))) {
               cond_tot[k] += 1;
-              found = TRUE;
+              found = true;
             }
           }
         }
@@ -505,7 +505,7 @@ void list_obj_in_heap(struct obj_data* list, struct char_data* ch) {
   int k;
   int cond_top;
   int cond_tot[50];
-  int found = FALSE;
+  int found = false;
   char buf[MAX_STRING_LENGTH];
 
   int num_inventory = 1;
@@ -514,7 +514,7 @@ void list_obj_in_heap(struct obj_data* list, struct char_data* ch) {
   for (i = list; i; i = i->next_content) {
     if (CAN_SEE_OBJ(ch, i)) {
       if (cond_top < 50) {
-        found = FALSE;
+        found = false;
         for (k = 0; (k < cond_top && !found); k++) {
           if (cond_top > 0) {
             if ((i->item_number == cond_ptr[k]->item_number) &&
@@ -522,7 +522,7 @@ void list_obj_in_heap(struct obj_data* list, struct char_data* ch) {
                   (!strcmp(i->short_description,
                     cond_ptr[k]->short_description)))) {
               cond_tot[k] += 1;
-              found = TRUE;
+              found = true;
             }
           }
         }
@@ -559,13 +559,13 @@ void list_obj_to_char(struct obj_data *list,struct char_data *ch, int mode,
   struct obj_data *i;
   char found;
 
-  found = FALSE;
+  found = false;
   for ( i = list ; i ; i = i->next_content ) {
     if (CAN_SEE_OBJ(ch,i)) {
       sprintf(buf,"[%2d] ",Num_In_Bag++);
       send_to_char(buf,ch);
       show_obj_to_char(i, ch, mode);
-      found = TRUE;
+      found = true;
     }
   }
   if ((! found) && (show)) send_to_char("Nothing\n\r", ch);
@@ -708,26 +708,26 @@ void show_char_to_char(struct char_data* i, struct char_data* ch, int mode) {
     }
 
     if (IS_AFFECTED(i, AFF_SANCTUARY)) {
-      act(".....$n glows with a bright light!", FALSE, i, 0, ch, TO_VICT);
+      act(".....$n glows with a bright light!", false, i, 0, ch, TO_VICT);
     }
     if (affected_by_spell(i, SPELL_FIRESHIELD)) {
-      act(".....$n glows with a red light!", FALSE, i, 0, ch, TO_VICT);
+      act(".....$n glows with a red light!", false, i, 0, ch, TO_VICT);
     }
     if (IS_AFFECTED(i, AFF_FLYING)) {
-      act(".....$n is hovering above the ground!", FALSE, i, 0, ch, TO_VICT);
+      act(".....$n is hovering above the ground!", false, i, 0, ch, TO_VICT);
     }
     if (IS_AFFECTED(i, AFF_BREWING)) {
-      act(".....$n is brewing a potion!", FALSE, i, 0, ch, TO_VICT);
+      act(".....$n is brewing a potion!", false, i, 0, ch, TO_VICT);
     }
     if (check_slots(i) && GET_POS(i) == POSITION_SITTING) {
-      act(".....$n is sitting at the slot machine!", FALSE, i, 0, ch, TO_VICT);
+      act(".....$n is sitting at the slot machine!", false, i, 0, ch, TO_VICT);
     }
 
   } else if (mode == 1) {
     if (i->player.description) {
       send_to_char(i->player.description, ch);
     } else {
-      act("You see nothing special about $m.", FALSE, i, 0, ch, TO_VICT);
+      act("You see nothing special about $m.", false, i, 0, ch, TO_VICT);
     }
 
     /* Show a character to another */
@@ -764,16 +764,16 @@ void show_char_to_char(struct char_data* i, struct char_data* ch, int mode) {
 
     send_to_char(buffer, ch);
 
-    found = FALSE;
+    found = false;
     for (j = 0; j < MAX_WEAR; j++) {
       if (i->equipment[j]) {
         if (CAN_SEE_OBJ(ch, i->equipment[j])) {
-          found = TRUE;
+          found = true;
         }
       }
     }
     if (found) {
-      act("\n\r$n is using:", FALSE, i, 0, ch, TO_VICT);
+      act("\n\r$n is using:", false, i, 0, ch, TO_VICT);
       for (j = 0; j < MAX_WEAR; j++) {
         if (i->equipment[j]) {
           if (CAN_SEE_OBJ(ch, i->equipment[j])) {
@@ -784,13 +784,13 @@ void show_char_to_char(struct char_data* i, struct char_data* ch, int mode) {
       }
     }
     if (HasClass(ch, CLASS_THIEF) && (ch != i) && (!IS_IMMORTAL(ch))) {
-      found = FALSE;
+      found = false;
       send_to_char("\n\rYou attempt to peek at the inventory:\n\r", ch);
       for (tmp_obj = i->carrying; tmp_obj; tmp_obj = tmp_obj->next_content) {
         if (CAN_SEE_OBJ(ch, tmp_obj) &&
             (number(0, MAX_MORT) < GetMaxLevel(ch))) {
           show_obj_to_char(tmp_obj, ch, 1);
-          found = TRUE;
+          found = true;
         }
       }
       if (!found) {
@@ -800,7 +800,7 @@ void show_char_to_char(struct char_data* i, struct char_data* ch, int mode) {
       send_to_char("Inventory:\n\r", ch);
       for (tmp_obj = i->carrying; tmp_obj; tmp_obj = tmp_obj->next_content) {
         show_obj_to_char(tmp_obj, ch, 1);
-        found = TRUE;
+        found = true;
       }
       if (!found) {
         send_to_char("Nothing\n\r", ch);
@@ -809,7 +809,7 @@ void show_char_to_char(struct char_data* i, struct char_data* ch, int mode) {
 
   } else if (mode == 2) {
     /* Lists inventory */
-    act("$n is carrying:", FALSE, i, 0, ch, TO_VICT);
+    act("$n is carrying:", false, i, 0, ch, TO_VICT);
     list_obj_in_heap(i->carrying, ch);
   }
 }
@@ -948,20 +948,20 @@ void show_mult_char_to_char(struct char_data* i, struct char_data* ch, int mode,
     }
 
     if (IS_AFFECTED(i, AFF_SANCTUARY)) {
-      act("$n glows with a bright light!", FALSE, i, 0, ch, TO_VICT);
+      act("$n glows with a bright light!", false, i, 0, ch, TO_VICT);
     }
     if (affected_by_spell(i, SPELL_FIRESHIELD)) {
-      act("$n glows with a red light!", FALSE, i, 0, ch, TO_VICT);
+      act("$n glows with a red light!", false, i, 0, ch, TO_VICT);
     }
     if (affected_by_spell(i, SPELL_FLY)) {
-      act("$n is hovering above the ground!", FALSE, i, 0, ch, TO_VICT);
+      act("$n is hovering above the ground!", false, i, 0, ch, TO_VICT);
     }
 
   } else if (mode == 1) {
     if (i->player.description) {
       send_to_char(i->player.description, ch);
     } else {
-      act("You see nothing special about $m.", FALSE, i, 0, ch, TO_VICT);
+      act("You see nothing special about $m.", false, i, 0, ch, TO_VICT);
     }
 
     /* Show a character to another */
@@ -998,16 +998,16 @@ void show_mult_char_to_char(struct char_data* i, struct char_data* ch, int mode,
 
     send_to_char(buffer, ch);
 
-    found = FALSE;
+    found = false;
     for (j = 0; j < MAX_WEAR; j++) {
       if (i->equipment[j]) {
         if (CAN_SEE_OBJ(ch, i->equipment[j])) {
-          found = TRUE;
+          found = true;
         }
       }
     }
     if (found) {
-      act("\n\r$n is using:", FALSE, i, 0, ch, TO_VICT);
+      act("\n\r$n is using:", false, i, 0, ch, TO_VICT);
       for (j = 0; j < MAX_WEAR; j++) {
         if (i->equipment[j]) {
           if (CAN_SEE_OBJ(ch, i->equipment[j])) {
@@ -1018,13 +1018,13 @@ void show_mult_char_to_char(struct char_data* i, struct char_data* ch, int mode,
       }
     }
     if (HasClass(ch, CLASS_THIEF) && (ch != i)) {
-      found = FALSE;
+      found = false;
       send_to_char("\n\rYou attempt to peek at the inventory:\n\r", ch);
       for (tmp_obj = i->carrying; tmp_obj; tmp_obj = tmp_obj->next_content) {
         if (CAN_SEE_OBJ(ch, tmp_obj) &&
             (number(0, MAX_MORT) < GetMaxLevel(ch))) {
           show_obj_to_char(tmp_obj, ch, 1);
-          found = TRUE;
+          found = true;
         }
       }
       if (!found) {
@@ -1034,7 +1034,7 @@ void show_mult_char_to_char(struct char_data* i, struct char_data* ch, int mode,
 
   } else if (mode == 2) {
     /* Lists inventory */
-    act("$n is carrying:", FALSE, i, 0, ch, TO_VICT);
+    act("$n is carrying:", false, i, 0, ch, TO_VICT);
     list_obj_in_heap(i->carrying, ch);
   }
 }
@@ -1045,7 +1045,7 @@ void list_char_in_room(struct char_data* list, struct char_data* ch) {
   int k;
   int cond_top;
   int cond_tot[50];
-  int found = FALSE;
+  int found = false;
 
   cond_top = 0;
 
@@ -1053,7 +1053,7 @@ void list_char_in_room(struct char_data* list, struct char_data* ch) {
     if ((ch != i) && (IS_AFFECTED(ch, AFF_SENSE_LIFE) ||
                        (CAN_SEE(ch, i) && !IS_AFFECTED(i, AFF_HIDE)))) {
       if (cond_top < 50) {
-        found = FALSE;
+        found = false;
         if (IS_NPC(i)) {
           for (k = 0; (k < cond_top && !found); k++) {
             if (cond_top > 0) {
@@ -1066,7 +1066,7 @@ void list_char_in_room(struct char_data* list, struct char_data* ch) {
                     0 == strcmp(i->player.short_descr,
                            cond_ptr[k]->player.short_descr))) {
                 cond_tot[k] += 1;
-                found = TRUE;
+                found = true;
               }
             }
           }
@@ -1140,8 +1140,8 @@ static void read_book(Mob* ch, Obj* o, char* arg) {
     return;
   }
 
-  act("With curious eyes, you begin to read $p...", TRUE, ch, o, 0, TO_CHAR);
-  act("$n begins reading $p...", TRUE, ch, o, 0, TO_ROOM);
+  act("With curious eyes, you begin to read $p...", true, ch, o, 0, TO_CHAR);
+  act("$n begins reading $p...", true, ch, o, 0, TO_ROOM);
 
   vnum = obj_index[o->item_number].virtual;
   /* in next sscanf, buf eats 'words' like 'sect', 'section', 'chapter'... */
@@ -1202,7 +1202,7 @@ void do_look(struct char_data* ch, char* argument, int cmd) {
       only_argument(argument + 3, arg2);
       keyword_no = 6;
     } else {
-      keyword_no = search_block(arg1, keywords, FALSE);
+      keyword_no = search_block(arg1, keywords, false);
     }
 
     if ((keyword_no == -1) && *arg1) {
@@ -1210,7 +1210,7 @@ void do_look(struct char_data* ch, char* argument, int cmd) {
       only_argument(argument, arg2);
     }
 
-    found = FALSE;
+    found = false;
     tmp_object = 0;
     tmp_char = 0;
     tmp_desc = 0;
@@ -1256,7 +1256,7 @@ void do_look(struct char_data* ch, char* argument, int cmd) {
             send_to_char(buffer, ch);
 
             sprintf(buffer, "$n looks %swards.", dirs[keyword_no]);
-            act(buffer, FALSE, ch, 0, 0, TO_ROOM);
+            act(buffer, false, ch, 0, 0, TO_ROOM);
 
             rp = real_roomp(exitp->to_room);
             if (!rp) {
@@ -1282,7 +1282,7 @@ void do_look(struct char_data* ch, char* argument, int cmd) {
           if (bits) { /* Found something */
             if (GET_ITEM_TYPE(tmp_object) == ITEM_DRINKCON) {
               if (tmp_object->obj_flags.value[1] <= 0) {
-                act("It is empty.", FALSE, ch, 0, 0, TO_CHAR);
+                act("It is empty.", false, ch, 0, 0, TO_CHAR);
               } else {
                 temp = ((tmp_object->obj_flags.value[1] * 3) /
                         tmp_object->obj_flags.value[0]);
@@ -1328,8 +1328,8 @@ void do_look(struct char_data* ch, char* argument, int cmd) {
           if (tmp_char) {
             show_char_to_char(tmp_char, ch, 1);
             if (ch != tmp_char) {
-              act("$n looks at you.", TRUE, ch, 0, tmp_char, TO_VICT);
-              act("$n looks at $N.", TRUE, ch, 0, tmp_char, TO_NOTVICT);
+              act("$n looks at you.", true, ch, 0, tmp_char, TO_VICT);
+              act("$n looks at $N.", true, ch, 0, tmp_char, TO_NOTVICT);
             }
             return;
           }
@@ -1368,7 +1368,7 @@ void do_look(struct char_data* ch, char* argument, int cmd) {
                     find_ex_description(arg2, ch->equipment[j]->ex_description);
                   if (tmp_desc) {
                     page_string(ch->desc, tmp_desc, 1);
-                    found = TRUE;
+                    found = true;
                   }
                 }
               }
@@ -1383,7 +1383,7 @@ void do_look(struct char_data* ch, char* argument, int cmd) {
                   find_ex_description(arg2, tmp_object->ex_description);
                 if (tmp_desc) {
                   page_string(ch->desc, tmp_desc, 1);
-                  found = TRUE;
+                  found = true;
                 }
               }
             }
@@ -1398,7 +1398,7 @@ void do_look(struct char_data* ch, char* argument, int cmd) {
                   find_ex_description(arg2, tmp_object->ex_description);
                 if (tmp_desc) {
                   page_string(ch->desc, tmp_desc, 1);
-                  found = TRUE;
+                  found = true;
                   return;
                 }
               }
@@ -1766,7 +1766,7 @@ void do_score(struct char_data* ch, char* argument, int cmd) {
       break;
     case POSITION_FIGHTING:
       if (ch->specials.fighting) {
-        act("You are fighting $N.\n\r", FALSE, ch, 0, ch->specials.fighting,
+        act("You are fighting $N.\n\r", false, ch, 0, ch->specials.fighting,
           TO_CHAR);
       } else {
         send_to_char("You are fighting thin air.\n\r", ch);
@@ -1960,7 +1960,7 @@ void do_equipment(struct char_data* ch, char* argument, int cmd) {
   char string[256];
 
   send_to_char("You are using:\n\r", ch);
-  found = FALSE;
+  found = false;
   for (worn_index = j = 0; j < MAX_WEAR; j++) {
     if (ch->equipment[j]) {
       worn_index++;
@@ -1968,10 +1968,10 @@ void do_equipment(struct char_data* ch, char* argument, int cmd) {
       send_to_char(string, ch);
       if (CAN_SEE_OBJ(ch, ch->equipment[j])) {
         show_obj_to_char(ch->equipment[j], ch, 1);
-        found = TRUE;
+        found = true;
       } else {
         send_to_char("Something.\n\r", ch);
-        found = TRUE;
+        found = true;
       }
     }
   }
@@ -2122,7 +2122,7 @@ static void do_where_object(struct char_data* ch, struct obj_data* obj,
     } else if (obj->equipped_by != nullptr) {
       do_where_person(ch, obj->equipped_by, sb);
     } else if (obj->in_obj != nullptr) {
-      do_where_object(ch, obj->in_obj, TRUE, sb);
+      do_where_object(ch, obj->in_obj, true, sb);
     }
   }
 }
@@ -2392,8 +2392,8 @@ void do_consider(struct char_data* ch, char* argument, int cmd) {
     return;
   }
 
-  act("$n looks at $N", FALSE, ch, 0, victim, TO_NOTVICT);
-  act("$n looks at you", FALSE, ch, 0, victim, TO_VICT);
+  act("$n looks at $N", false, ch, 0, victim, TO_NOTVICT);
+  act("$n looks at you", false, ch, 0, victim, TO_VICT);
 
   diff = GetMaxLevel(victim) - GetMaxLevel(ch);
   if (diff <= -10) {
@@ -2435,14 +2435,14 @@ void do_consider(struct char_data* ch, char* argument, int cmd) {
     if (IsAnimal(victim) && ch->skills[SKILL_CONS_ANIMAL].learned) {
       skill = SKILL_CONS_ANIMAL;
       learn = ch->skills[skill].learned;
-      act("$N seems to be an animal", FALSE, ch, 0, victim, TO_CHAR);
+      act("$N seems to be an animal", false, ch, 0, victim, TO_CHAR);
     }
     if (IsVeggie(victim) && ch->skills[SKILL_CONS_VEGGIE].learned) {
       if (!skill) {
         skill = SKILL_CONS_VEGGIE;
       }
       learn = MAX(learn, ch->skills[SKILL_CONS_VEGGIE].learned);
-      act("$N seems to be an ambulatory vegetable", FALSE, ch, 0, victim,
+      act("$N seems to be an ambulatory vegetable", false, ch, 0, victim,
         TO_CHAR);
     }
     if (IsDiabolic(victim) && ch->skills[SKILL_CONS_DEMON].learned) {
@@ -2450,21 +2450,21 @@ void do_consider(struct char_data* ch, char* argument, int cmd) {
         skill = SKILL_CONS_DEMON;
       }
       learn = MAX(learn, ch->skills[SKILL_CONS_DEMON].learned);
-      act("$N seems to be a demon!", FALSE, ch, 0, victim, TO_CHAR);
+      act("$N seems to be a demon!", false, ch, 0, victim, TO_CHAR);
     }
     if (IsReptile(victim) && ch->skills[SKILL_CONS_REPTILE].learned) {
       if (!skill) {
         skill = SKILL_CONS_REPTILE;
       }
       learn = MAX(learn, ch->skills[SKILL_CONS_REPTILE].learned);
-      act("$N seems to be a reptilian creature", FALSE, ch, 0, victim, TO_CHAR);
+      act("$N seems to be a reptilian creature", false, ch, 0, victim, TO_CHAR);
     }
     if (IsUndead(victim) && ch->skills[SKILL_CONS_UNDEAD].learned) {
       if (!skill) {
         skill = SKILL_CONS_UNDEAD;
       }
       learn = MAX(learn, ch->skills[SKILL_CONS_UNDEAD].learned);
-      act("$N seems to be undead", FALSE, ch, 0, victim, TO_CHAR);
+      act("$N seems to be undead", false, ch, 0, victim, TO_CHAR);
     }
 
     if (IsGiantish(victim) && ch->skills[SKILL_CONS_GIANT].learned) {
@@ -2472,14 +2472,14 @@ void do_consider(struct char_data* ch, char* argument, int cmd) {
         skill = SKILL_CONS_GIANT;
       }
       learn = MAX(learn, ch->skills[SKILL_CONS_GIANT].learned);
-      act("$N seems to be a giantish creature", FALSE, ch, 0, victim, TO_CHAR);
+      act("$N seems to be a giantish creature", false, ch, 0, victim, TO_CHAR);
     }
     if (IsPerson(victim) && ch->skills[SKILL_CONS_PEOPLE].learned) {
       if (!skill) {
         skill = SKILL_CONS_PEOPLE;
       }
       learn = MAX(learn, ch->skills[SKILL_CONS_PEOPLE].learned);
-      act("$N seems to be a human or demi-human", FALSE, ch, 0, victim,
+      act("$N seems to be a human or demi-human", false, ch, 0, victim,
         TO_CHAR);
     }
     if (IsOther(victim) && ch->skills[SKILL_CONS_OTHER].learned) {
@@ -2487,7 +2487,7 @@ void do_consider(struct char_data* ch, char* argument, int cmd) {
         skill = SKILL_CONS_OTHER;
       }
       learn = MAX(learn, ch->skills[SKILL_CONS_OTHER].learned / 2);
-      act("$N seems to be a monster you know about", FALSE, ch, 0, victim,
+      act("$N seems to be a monster you know about", false, ch, 0, victim,
         TO_CHAR);
     }
 
@@ -2750,7 +2750,7 @@ void do_scan(struct char_data* ch, char* argument, int cmd) {
    e=0;
    w=0;
    send_to_char("You peer around you and see:\n\r",ch);
-   act("$n peers around them to see who is around.",FALSE,ch,0,0,TO_ROOM);
+   act("$n peers around them to see who is around.",false,ch,0,0,TO_ROOM);
    if (real_roomp(ch->in_room)->dir_option[0])
       if (real_roomp(ch->in_room)->dir_option[0]->to_room != NOWHERE &&
     !IS_SET(real_roomp(ch->in_room)->dir_option[0]->exit_info, EX_CLOSED) &&

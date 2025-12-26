@@ -29,26 +29,26 @@ char recep_offer(struct char_data* ch, struct char_data* receptionist,
 
   cost->total_cost = 100; /* Minimum cost */
   cost->no_carried = 0;
-  cost->ok = TRUE; /* Use if any "-1" objects */
+  cost->ok = true; /* Use if any "-1" objects */
 
   if (!cost->ok) {
-    return (FALSE);
+    return (false);
   }
 
   if (cost->no_carried > MAX_OBJ_SAVE) {
     if (receptionist) {
       sprintf(buf, "$n tells you 'Sorry, but I can't store more than %d items.",
         MAX_OBJ_SAVE);
-      act(buf, FALSE, receptionist, 0, ch, TO_VICT);
+      act(buf, false, receptionist, 0, ch, TO_VICT);
     }
-    return (FALSE);
+    return (false);
   }
   cost->total_cost = 0;
 
   if (cost->total_cost > GET_GOLD(ch)) {
-    return (FALSE);
+    return (false);
   }
-  return (TRUE);
+  return (true);
 }
 
 /* ************************************************************************
@@ -106,37 +106,37 @@ int read_objs(FILE* fl, struct obj_file_u* st) {
 
   if (feof(fl)) {
     fclose(fl);
-    return (FALSE);
+    return (false);
   }
   fread(&st->owner, sizeof(st->owner), 1, fl);
   if (feof(fl)) {
     fclose(fl);
-    return (FALSE);
+    return (false);
   }
   fread(&st->gold_left, sizeof(st->gold_left), 1, fl);
   if (feof(fl)) {
     fclose(fl);
-    return (FALSE);
+    return (false);
   }
   fread(&st->total_cost, sizeof(st->total_cost), 1, fl);
   if (feof(fl)) {
     fclose(fl);
-    return (FALSE);
+    return (false);
   }
   fread(&st->last_update, sizeof(st->last_update), 1, fl);
   if (feof(fl)) {
     fclose(fl);
-    return (FALSE);
+    return (false);
   }
   fread(&st->minimum_stay, sizeof(st->minimum_stay), 1, fl);
   if (feof(fl)) {
     fclose(fl);
-    return (FALSE);
+    return (false);
   }
   fread(&st->number, sizeof(st->number), 1, fl);
   if (feof(fl)) {
     fclose(fl);
-    return (FALSE);
+    return (false);
   }
 
   for (i = 0; i < st->number; i++) {
@@ -157,7 +157,7 @@ int read_objs(FILE* fl, struct obj_file_u* st) {
 
     */
   }
-  return TRUE;
+  return true;
 }
 
 void zero_rent_by_name(char* n) {
@@ -182,7 +182,7 @@ void zero_rent_by_name(char* n) {
 void put_obj_in_store(struct obj_data* obj, struct obj_file_u* st) {
   int i;
   int j;
-  char found = FALSE;
+  char found = false;
   struct obj_file_elem* oe;
   char buf[256];
 
@@ -310,7 +310,7 @@ void save_obj(struct char_data* ch, struct obj_cost* cost, int delete) {
   int pos;
   int i;
   int j;
-  char found = FALSE;
+  char found = false;
 
   st.number = 0;
   st.gold_left = GET_GOLD(ch);
@@ -479,7 +479,7 @@ int receptionist(struct char_data* ch, int cmd, char* arg) {
   int citizen(struct char_data * ch, int cmd, char* arg);
 
   if (!ch->desc) {
-    return (FALSE); /* You've forgot FALSE - NPC couldn't leave */
+    return (false); /* You've forgot false - NPC couldn't leave */
   }
 
   for (temp_char = real_roomp(ch->in_room)->people; (temp_char) && (!recep);
@@ -497,7 +497,7 @@ int receptionist(struct char_data* ch, int cmd, char* arg) {
   }
 
   if (IS_NPC(ch)) {
-    return (FALSE);
+    return (false);
   }
 
   if ((cmd != 92) && (cmd != 93)) {
@@ -509,32 +509,32 @@ int receptionist(struct char_data* ch, int cmd, char* arg) {
     if (!number(0, 30)) {
       do_action(recep, "", action_tabel[number(0, 8)]);
     }
-    return (FALSE);
+    return (false);
   }
 
   if (!AWAKE(recep)) {
-    act("$e isn't able to talk to you...", FALSE, recep, 0, ch, TO_VICT);
-    return (TRUE);
+    act("$e isn't able to talk to you...", false, recep, 0, ch, TO_VICT);
+    return (true);
   }
 
   if (IS_SET(ch->specials.act, PLR_KILLER) ||
       (IS_SET(ch->specials.act, PLR_OUTLAW))) {
     sprintf(buf, "$n tells you 'Sorry, but we don't harbor criminals.");
-    act(buf, FALSE, recep, 0, ch, TO_VICT);
-    return (TRUE);
+    act(buf, false, recep, 0, ch, TO_VICT);
+    return (true);
   }
 
   if (!CAN_SEE(recep, ch)) {
-    act("$n says, 'I don't deal with people I can't see!'", FALSE, recep, 0, 0,
+    act("$n says, 'I don't deal with people I can't see!'", false, recep, 0, 0,
       TO_ROOM);
-    return (TRUE);
+    return (true);
   }
 
   if (cmd == 92) { /* Rent  */
     if (recep_offer(ch, recep, &cost)) {
       act("$n stores your stuff in the safe, and helps you into your chamber.",
-        FALSE, recep, 0, ch, TO_VICT);
-      act("$n helps $N into $S private chamber.", FALSE, recep, 0, ch,
+        false, recep, 0, ch, TO_VICT);
+      act("$n helps $N into $S private chamber.", false, recep, 0, ch,
         TO_NOTVICT);
 
       save_obj(ch, &cost, 1);
@@ -546,10 +546,10 @@ int receptionist(struct char_data* ch, int cmd, char* arg) {
 
   } else { /* Offer */
     recep_offer(ch, recep, &cost);
-    act("$N gives $n an offer.", FALSE, ch, 0, recep, TO_ROOM);
+    act("$N gives $n an offer.", false, ch, 0, recep, TO_ROOM);
   }
 
-  return (TRUE);
+  return (true);
 }
 
 int receptionist_for_outlaws(struct char_data* ch, int cmd, char* arg) {
@@ -565,7 +565,7 @@ int receptionist_for_outlaws(struct char_data* ch, int cmd, char* arg) {
   int citizen(struct char_data * ch, int cmd, char* arg);
 
   if (!ch->desc) {
-    return (FALSE); /* You've forgot FALSE - NPC couldn't leave */
+    return (false); /* You've forgot false - NPC couldn't leave */
   }
 
   for (temp_char = real_roomp(ch->in_room)->people; (temp_char) && (!recep);
@@ -583,7 +583,7 @@ int receptionist_for_outlaws(struct char_data* ch, int cmd, char* arg) {
   }
 
   if (IS_NPC(ch)) {
-    return (FALSE);
+    return (false);
   }
 
   if ((cmd != 92) && (cmd != 93)) {
@@ -595,20 +595,20 @@ int receptionist_for_outlaws(struct char_data* ch, int cmd, char* arg) {
     if (!number(0, 30)) {
       do_action(recep, "", action_tabel[number(0, 8)]);
     }
-    return (FALSE);
+    return (false);
   }
 
   if (!AWAKE(recep)) {
-    act("$e isn't able to talk to you...", FALSE, recep, 0, ch, TO_VICT);
-    return (TRUE);
+    act("$e isn't able to talk to you...", false, recep, 0, ch, TO_VICT);
+    return (true);
   }
 
   if (!CAN_SEE(recep, ch)) {
-    act("$n says, 'I don't deal with people I can't see!'", FALSE, recep, 0, 0
+    act("$n says, 'I don't deal with people I can't see!'", false, recep, 0, 0
 
       ,
       TO_ROOM);
-    return (TRUE);
+    return (true);
   }
 
   if (cmd == 92) { /* Rent  */
@@ -616,11 +616,11 @@ int receptionist_for_outlaws(struct char_data* ch, int cmd, char* arg) {
       if (IS_SET(ch->specials.act, PLR_KILLER) ||
           (IS_SET(ch->specials.act, PLR_OUTLAW))) {
         sprintf(buf, "$n tells you 'Hurry, before the cops catch you!'");
-        act(buf, FALSE, recep, 0, ch, TO_VICT);
+        act(buf, false, recep, 0, ch, TO_VICT);
       }
       act("$n stores your stuff in the safe, and helps you into your chamber.",
-        FALSE, recep, 0, ch, TO_VICT);
-      act("$n helps $N into $S private chamber.", FALSE, recep, 0, ch,
+        false, recep, 0, ch, TO_VICT);
+      act("$n helps $N into $S private chamber.", false, recep, 0, ch,
         TO_NOTVICT);
 
       save_obj(ch, &cost, 1);
@@ -632,10 +632,10 @@ int receptionist_for_outlaws(struct char_data* ch, int cmd, char* arg) {
 
   } else { /* Offer */
     recep_offer(ch, recep, &cost);
-    act("$N gives $n an offer.", FALSE, ch, 0, recep, TO_ROOM);
+    act("$N gives $n an offer.", false, ch, 0, recep, TO_ROOM);
   }
 
-  return (TRUE);
+  return (true);
 }
 
 /*

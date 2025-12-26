@@ -24,10 +24,6 @@
 
 int CAN_SEE(struct char_data* s, struct char_data* o);
 
-#define TRUE 1
-
-#define FALSE 0
-
 #define LOWER(c) (((c) >= 'A' && (c) <= 'Z') ? ((c) + ('a' - 'A')) : (c))
 
 #define UPPER(c) (((c) >= 'a' && (c) <= 'z') ? ((c) + ('A' - 'a')) : (c))

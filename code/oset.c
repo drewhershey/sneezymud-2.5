@@ -987,21 +987,21 @@ void do_oset(struct char_data* ch, char* argument, int cmd) {
             case 3:
               if (!*arg3) {
                 send_to_char(
-                  "ITEM_DRINKCON: POISONED\n\r\n\rSet this value to TRUE if "
+                  "ITEM_DRINKCON: POISONED\n\r\n\rSet this value to true if "
                   "you want the drink to be poisoned.\n\r",
                   ch);
                 return;
               }
               if (!strncasecmp(arg3, "true", strlen(arg3))) {
-                obj->obj_flags.value[3] = TRUE;
+                obj->obj_flags.value[3] = true;
                 send_to_char("Done.\n\r", ch);
               } else if (!strncasecmp(arg3, "false", strlen(arg3))) {
-                obj->obj_flags.value[3] = FALSE;
+                obj->obj_flags.value[3] = false;
                 send_to_char("Done.\n\r", ch);
               } else {
                 send_to_char(
-                  "The poisoned setting can be set to either TRUE or "
-                  "FALSE.\n\r",
+                  "The poisoned setting can be set to either true or "
+                  "false.\n\r",
                   ch);
               }
               break;
@@ -1033,21 +1033,21 @@ void do_oset(struct char_data* ch, char* argument, int cmd) {
             case 1:
               if (!*arg3) {
                 send_to_char(
-                  "ITEM_FOOD: POISONED\n\r\n\rSet this value to TRUE if you "
+                  "ITEM_FOOD: POISONED\n\r\n\rSet this value to true if you "
                   "want the drink to be poisoned.\n\r",
                   ch);
                 return;
               }
               if (!strncasecmp(arg3, "true", strlen(arg3))) {
-                obj->obj_flags.value[3] = TRUE;
+                obj->obj_flags.value[3] = true;
                 send_to_char("Done.\n\r", ch);
               } else if (!strncasecmp(arg3, "false", strlen(arg3))) {
-                obj->obj_flags.value[3] = FALSE;
+                obj->obj_flags.value[3] = false;
                 send_to_char("Done.\n\r", ch);
               } else {
                 send_to_char(
-                  "The poisoned setting can be set to either TRUE or "
-                  "FALSE.\n\r",
+                  "The poisoned setting can be set to either true or "
+                  "false.\n\r",
                   ch);
               }
               break;

@@ -726,7 +726,7 @@ char* one_word(char* argument, char* first_arg) {
 int start_page_file(struct descriptor_data* d, const char* fpath,
   const char* errormsg) {
   if (!d || !(d->character)) {
-    return FALSE;
+    return false;
   }
 
   if (d->pagedfile) {
@@ -738,31 +738,31 @@ int start_page_file(struct descriptor_data* d, const char* fpath,
   if (!page_file(d, "")) { /* couldn't open file, etc. */
     d->position = -1;
     send_to_char(errormsg, d->character);
-    return FALSE;
+    return false;
   }
-  return TRUE;
+  return true;
 }
 
-/* page_file returns TRUE if something was paged, FALSE if nothing got sent */
+/* page_file returns true if something was paged, false if nothing got sent */
 /* if (d->position) comes back < 0 then EOF was hit when outputing file.    */
 int page_file(struct descriptor_data* d, char* input) {
   FILE* fp;
   static char buffer[256];
   int i;
   int numlines;
-  int sent_something = FALSE;
+  int sent_something = false;
 
   /* see if they have typed a command / abort */
   one_argument(input, buffer);
   if (*buffer) {
     d->position = -1;
     send_to_char("*** INTERUPTED ***\n\r", d->character);
-    return FALSE;
+    return false;
   }
 
   if (d->connected || (!d->pagedfile) || ((d->position) < 0) ||
       (!(fp = fopen(d->pagedfile, "r")))) {
-    return FALSE;
+    return false;
   }
 
   numlines = (d->screen_size) ? d->screen_size - 2 : 24;
@@ -771,7 +771,7 @@ int page_file(struct descriptor_data* d, char* input) {
     if (fgets(buffer, 255, fp) != nullptr) {
       send_to_char(buffer, d->character);
       send_to_char("\r", d->character); /* append carriage return/line */
-      sent_something = TRUE;
+      sent_something = true;
     } else {
       d->position = -1;
       fclose(fp);

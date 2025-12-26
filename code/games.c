@@ -142,9 +142,9 @@ static int check_for_dice_held(struct char_data* ch) {
   dice = get_obj_in_list_vis(ch, "qwert", ch->equipment[HOLD]);
 
   if (dice) {
-    return (TRUE);
+    return (true);
   }
-  return (FALSE);
+  return (false);
 }
 
 static int check_for_dice_in_inv(struct char_data* ch) {
@@ -153,9 +153,9 @@ static int check_for_dice_in_inv(struct char_data* ch) {
   dice = get_obj_in_list_vis(ch, "qwert", ch->carrying);
 
   if (dice) {
-    return (TRUE);
+    return (true);
   }
-  return (FALSE);
+  return (false);
 }
 
 static int check_pointroll(struct char_data* ch) {
@@ -165,17 +165,17 @@ static int check_pointroll(struct char_data* ch) {
   for (tmp_char = character_list; tmp_char; tmp_char = temp) {
     temp = tmp_char->next;
     if (tmp_char->point_roll != 0) {
-      return (TRUE);
+      return (true);
     }
   }
-  return (FALSE);
+  return (false);
 }
 
 int check_slots(struct char_data* ch) {
   if ((ch->in_room < 8414) && (ch->in_room > 8403)) {
-    return (TRUE);
+    return (true);
   }
-  return (FALSE);
+  return (false);
 }
 
 int check_slot_player(struct char_data* ch) {
@@ -186,11 +186,11 @@ int check_slot_player(struct char_data* ch) {
     temp = better->next;
     if (ch->in_room == better->in_room) {
       if (GET_POS(better) == POSITION_SITTING) {
-        return (TRUE);
+        return (true);
       }
     }
   }
-  return (FALSE);
+  return (false);
 }
 
 void do_bet(struct char_data* ch, char* arg, int cmd) {
@@ -381,7 +381,7 @@ static void spin_slot(struct char_data* ch) {
   strcat(buf, "\n\r");
   send_to_char(buf, ch);
   sprintf(buf, "$n spins a [%-10s %-10s %-10s]", fruit1, fruit2, fruit3);
-  act(buf, FALSE, ch, 0, 0, TO_ROOM);
+  act(buf, false, ch, 0, 0, TO_ROOM);
 
   bits = generic_find("slot", FIND_OBJ_ROOM, ch, &tmp_char, &slot);
 
@@ -446,7 +446,7 @@ static int can_bet_craps(struct char_data* ch) {
   crap_man = FindMobInRoomWithFunction(ch->in_room, craps_table_man);
 
   if (!crap_man) {
-    return (FALSE);
+    return (false);
   }
 
   if (!crap_man->act_ptr) {
@@ -455,9 +455,9 @@ static int can_bet_craps(struct char_data* ch) {
   }
 
   if ((*((int*)crap_man->act_ptr)) == 0) {
-    return (TRUE);
+    return (true);
   }
-  return (FALSE);
+  return (false);
 }
 
 static void check_craps(struct char_data* ch, int diceroll) {
@@ -1018,14 +1018,14 @@ int check_for_point(struct char_data* ch) {
       if (i->carried_by) {
         if (i->carried_by->in_room == ch->in_room) {
           if (i->carried_by->point_roll != 0) {
-            return (TRUE);
+            return (true);
           }
-          return (FALSE);
+          return (false);
         }
       }
     }
   }
-  return FALSE;
+  return false;
 }
 
 void check_horn(struct char_data* better, int diceroll) {
@@ -1073,18 +1073,18 @@ int craps_table_man(struct char_data* ch, int cmd, char* arg) {
   if (cmd) {
     if ((cmd != 0) && (cmd != 1) && (cmd != 2) && (cmd != 3) && (cmd != 4) &&
         (cmd != 5) && (cmd != 274) && (cmd != 280)) {
-      return (FALSE);
+      return (false);
     }
 
     crap_man = FindMobInRoomWithFunction(ch->in_room, craps_table_man);
 
     if (!crap_man) {
-      return (FALSE);
+      return (false);
     }
 
     if (cmd == 274) {
       if (!*arg) {
-        return (FALSE);
+        return (false);
       }
       half_chop(arg, options, amount);
       if (check_pointroll(ch)) {
@@ -1093,34 +1093,34 @@ int craps_table_man(struct char_data* ch, int cmd, char* arg) {
             GET_NAME(ch));
           do_say(crap_man, buf, 0);
           do_say(crap_man, "or no-pass after a pointroll has been called.", 0);
-          return (TRUE);
+          return (true);
         }
-        return (FALSE);
+        return (false);
       }
-      return (FALSE);
+      return (false);
     }
 
     if (cmd == 280) {
       if (!*arg) {
-        return (FALSE);
+        return (false);
       }
       one_argument(arg, dice);
       if (is_abbrev(dice, "dice")) {
         roll_dice(ch);
-        return (TRUE);
+        return (true);
       }
     } else {
       if (check_for_dice_held(ch)) {
         send_to_char("You cant leave the table with the dice!\n\r", ch);
-        return (TRUE);
+        return (true);
       }
       clear_bets(ch);
-      return (FALSE);
+      return (false);
     }
   } else if (check_for_dice_in_inv(ch)) {
     if (number(1, 9) == 1) {
       do_say(ch, "Who wants to roll the dice next?", 0);
-      return (TRUE);
+      return (true);
     }
   } else {
     if (!ch->act_ptr) {
@@ -1159,5 +1159,5 @@ int craps_table_man(struct char_data* ch, int cmd, char* arg) {
         break;
     }
   }
-  return FALSE;
+  return false;
 }

@@ -28,23 +28,23 @@ static int remove_trap(struct char_data* ch, struct obj_data* trap) {
 
   if (ITEM_TYPE(trap) != ITEM_TRAP) {
     send_to_char("I don't think thats a trap\n\r", ch);
-    return FALSE;
+    return false;
   }
   if (GET_TRAP_CHARGES(trap) <= 0) {
     send_to_char("That trap is already disarmmed.\n\r", ch);
-    return FALSE;
+    return false;
   }
   num = number(1, 101);
   if (num < ch->skills[SKILL_REMOVE_TRAP].learned) {
     send_to_char("Click.\n\r", ch);
-    act("$n disarms $p", FALSE, ch, trap, 0, TO_ROOM);
+    act("$n disarms $p", false, ch, trap, 0, TO_ROOM);
     GET_TRAP_CHARGES(trap) = 0;
-    return (TRUE);
+    return (true);
   }
   send_to_char("Click. (whoops)\n\r", ch);
-  act("$n tries to disarm $p", FALSE, ch, trap, 0, TO_ROOM);
+  act("$n tries to disarm $p", false, ch, trap, 0, TO_ROOM);
   TriggerTrap(ch, trap);
-  return (TRUE);
+  return (true);
 }
 
 void do_disarm(struct char_data* ch, char* argument, int cmd) {
@@ -104,9 +104,9 @@ void do_disarm(struct char_data* ch, char* argument, int cmd) {
   }
 
   if (GetMaxLevel(victim) > BestFightingClass(ch)) {
-    act("You try to disarm $N, but fail miserably.", TRUE, ch, 0, victim,
+    act("You try to disarm $N, but fail miserably.", true, ch, 0, victim,
       TO_CHAR);
-    act("$n does a nifty fighting move, but then falls on $s butt.", TRUE, ch,
+    act("$n does a nifty fighting move, but then falls on $s butt.", true, ch,
       0, 0, TO_ROOM);
     GET_POS(ch) = POSITION_SITTING;
     if ((IS_NPC(victim)) && (GET_POS(victim) > POSITION_SLEEPING) &&
@@ -155,9 +155,9 @@ void do_disarm(struct char_data* ch, char* argument, int cmd) {
     /*
      *   failure.
      */
-    act("You try to disarm $N, but fail miserably.", TRUE, ch, 0, victim,
+    act("You try to disarm $N, but fail miserably.", true, ch, 0, victim,
       TO_CHAR);
-    act("$n does a nifty fighting move, but then falls on $s butt.", TRUE, ch,
+    act("$n does a nifty fighting move, but then falls on $s butt.", true, ch,
       0, 0, TO_ROOM);
     GET_POS(ch) = POSITION_SITTING;
     if ((IS_NPC(victim)) && (GET_POS(victim) > POSITION_SLEEPING) &&
@@ -172,17 +172,17 @@ void do_disarm(struct char_data* ch, char* argument, int cmd) {
      */
     if (victim->equipment[WIELD]) {
       w = unequip_char(victim, WIELD);
-      act("$n makes an impressive fighting move.", TRUE, ch, 0, 0, TO_ROOM);
-      act("You send $p flying from $N's grasp.", TRUE, ch, w, victim, TO_CHAR);
-      act("$p flies from your grasp.", TRUE, ch, w, victim, TO_VICT);
+      act("$n makes an impressive fighting move.", true, ch, 0, 0, TO_ROOM);
+      act("You send $p flying from $N's grasp.", true, ch, w, victim, TO_CHAR);
+      act("$p flies from your grasp.", true, ch, w, victim, TO_VICT);
       /*
         send the object to a nearby room, instead
       */
       obj_to_room(w, victim->in_room);
     } else {
-      act("You try to disarm $N, but $E doesn't have a weapon.", TRUE, ch, 0,
+      act("You try to disarm $N, but $E doesn't have a weapon.", true, ch, 0,
         victim, TO_CHAR);
-      act("$n makes an impressive fighting move, but does little more.", TRUE,
+      act("$n makes an impressive fighting move, but does little more.", true,
         ch, 0, 0, TO_ROOM);
     }
     if ((IS_NPC(victim)) && (GET_POS(victim) > POSITION_SLEEPING) &&
@@ -213,7 +213,7 @@ static int named_mobile_in_room(int room, struct hunting_data* c_data) {
 void do_track(struct char_data* ch, char* argument, int cmd) {
   char name[256];
   char buf[256];
-  char found = FALSE;
+  char found = false;
   // int dist, code;
 
   struct char_data* scan;
@@ -225,10 +225,10 @@ void do_track(struct char_data* ch, char* argument, int cmd) {
 
   only_argument(argument, name);
 
-  found = FALSE;
+  found = false;
   for (scan = character_list; scan; scan = scan->next) {
     if (isname(name, scan->player.name)) {
-      found = TRUE;
+      found = true;
     }
   }
 
@@ -370,15 +370,15 @@ int track(struct char_data* ch, struct char_data* vict) {
 
   if (ch->in_room == vict->in_room) {
     send_to_char("##You have found your target!\n\r", ch);
-    return (FALSE); /* false to continue the hunt */
+    return (false); /* false to continue the hunt */
   }
   if (code == -1) {
     send_to_char("##You have lost the trail.\n\r", ch);
-    return (FALSE);
+    return (false);
   }
   sprintf(buf, "##You see a faint trail to the %s\n\r", dirs[code]);
   send_to_char(buf, ch);
-  return (TRUE);
+  return (true);
 }
 
 int dir_track(struct char_data* ch, struct char_data* vict) {
@@ -477,10 +477,10 @@ int find_path(int in_room, struct find_path_data* data, int depth,
     return -1;
   }
 
-  char thru_doors = FALSE;
+  char thru_doors = false;
 
   if (depth < 0) {
-    thru_doors = TRUE;
+    thru_doors = true;
     depth = -depth;
   }
 
@@ -716,14 +716,14 @@ void do_swim(struct char_data* ch, char* arg, int cmd) {
 
 int spy_check(struct char_data* ch) {
   if (!ch->skills) {
-    return (FALSE);
+    return (false);
   }
 
   if (number(1, 101) > ch->skills[SKILL_SPY].learned) {
-    return (FALSE);
+    return (false);
   }
 
-  return (TRUE);
+  return (true);
 }
 
 void slam_into_wall(struct char_data* ch, struct room_direction_data* exitp) {
@@ -744,7 +744,7 @@ void slam_into_wall(struct char_data* ch, struct room_direction_data* exitp) {
   send_to_char(buf, ch);
   send_to_char("OUCH!  That REALLY Hurt!\n\r", ch);
   sprintf(buf, "$n crashes against the %s with no effect\n\r", doorname);
-  act(buf, FALSE, ch, 0, 0, TO_ROOM);
+  act(buf, false, ch, 0, 0, TO_ROOM);
   GET_HIT(ch) -= number(1, 10) * 2;
   if (GET_HIT(ch) < 0) {
     GET_HIT(ch) = 0;
@@ -802,9 +802,9 @@ void do_doorbash(struct char_data* ch, char* arg, int cmd) {
   argument_interpreter(arg, type, direction);
 
   if ((dir = find_door(ch, type, direction)) >= 0) {
-    ok = TRUE;
+    ok = true;
   } else {
-    act("$n looks around, bewildered.", FALSE, ch, 0, 0, TO_ROOM);
+    act("$n looks around, bewildered.", false, ch, 0, 0, TO_ROOM);
     return;
   }
 
@@ -828,7 +828,7 @@ void do_doorbash(struct char_data* ch, char* arg, int cmd) {
   }
 
   sprintf(buf, "$n charges %swards", dirs[dir]);
-  act(buf, FALSE, ch, 0, 0, TO_ROOM);
+  act(buf, false, ch, 0, 0, TO_ROOM);
   sprintf(buf, "You charge %swards\n\r", dirs[dir]);
   send_to_char(buf, ch);
 
@@ -867,7 +867,7 @@ void do_doorbash(struct char_data* ch, char* arg, int cmd) {
           */
         sprintf(buf, "$n slams into the %s, and it bursts open!",
           fname(exitp->keyword));
-        act(buf, FALSE, ch, 0, 0, TO_ROOM);
+        act(buf, false, ch, 0, 0, TO_ROOM);
         sprintf(buf, "You slam into the %s, and it bursts open!\n\r",
           fname(exitp->keyword));
         send_to_char(buf, ch);
@@ -990,15 +990,15 @@ void do_throw(struct char_data* ch, char* arg, int cmd) {
       }
 
       if (percent > ch->skills[SKILL_THROW].learned) {
-        act("You try to throw $N to no avail!", TRUE, ch, 0, victim, TO_CHAR);
-        act("$n tries to pick up $N and throw him and has no luck.", TRUE, ch,
+        act("You try to throw $N to no avail!", true, ch, 0, victim, TO_CHAR);
+        act("$n tries to pick up $N and throw him and has no luck.", true, ch,
           0, victim, TO_ROOM);
         set_fighting(victim, ch);
         WAIT_STATE(ch, PULSE_VIOLENCE * 2);
         return;
       }
       if (*obje) {
-        dr = search_block(obje, keyword, FALSE);
+        dr = search_block(obje, keyword, false);
         if (dr == -1) {
           send_to_char("You need to give a direction to throw\n\r", ch);
           return;
@@ -1042,7 +1042,7 @@ void do_feign_death(struct char_data* ch, char* arg, int cmd) {
   send_to_char("You try to fake your own demise\n\r", ch);
 
   death_cry(ch);
-  act("$n is dead! R.I.P.", FALSE, ch, 0, 0, TO_ROOM);
+  act("$n is dead! R.I.P.", false, ch, 0, 0, TO_ROOM);
 
   if (number(1, 101) < ch->skills[SKILL_FEIGN_DEATH].learned) {
     stop_fighting(ch);

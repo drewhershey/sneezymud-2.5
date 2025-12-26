@@ -100,33 +100,33 @@ void do_drink(struct char_data* ch, char* argument, int cmd) {
   only_argument(argument, buf);
 
   if (!(temp = get_obj_in_list_vis(ch, buf, ch->carrying))) {
-    act("You can't find it!", FALSE, ch, 0, 0, TO_CHAR);
+    act("You can't find it!", false, ch, 0, 0, TO_CHAR);
     return;
   }
 
   if (temp->obj_flags.type_flag != ITEM_DRINKCON) {
-    act("You can't drink from that!", FALSE, ch, 0, 0, TO_CHAR);
+    act("You can't drink from that!", false, ch, 0, 0, TO_CHAR);
     return;
   }
 
   if ((GET_COND(ch, DRUNK) > 15) && (GET_COND(ch, THIRST) > 0)) {
     /* The pig is drunk */
-    act("You're just sloshed.", FALSE, ch, 0, 0, TO_CHAR);
-    act("$n looks really drunk.", TRUE, ch, 0, 0, TO_ROOM);
+    act("You're just sloshed.", false, ch, 0, 0, TO_CHAR);
+    act("$n looks really drunk.", true, ch, 0, 0, TO_ROOM);
     return;
   }
 
   if ((GET_COND(ch, FULL) > 20) &&
       (GET_COND(ch, THIRST) > 0)) /* Stomach full */
   {
-    act("Your stomach can't contain anymore!", FALSE, ch, 0, 0, TO_CHAR);
+    act("Your stomach can't contain anymore!", false, ch, 0, 0, TO_CHAR);
     return;
   }
 
   if (temp->obj_flags.type_flag == ITEM_DRINKCON) {
     if (temp->obj_flags.value[1] > 0) /* Not empty */ {
       sprintf(buf, "$n drinks %s from $p", drinks[temp->obj_flags.value[2]]);
-      act(buf, TRUE, ch, temp, 0, TO_ROOM);
+      act(buf, true, ch, temp, 0, TO_ROOM);
       sprintf(buf, "You drink the %s.\n\r", drinks[temp->obj_flags.value[2]]);
       send_to_char(buf, ch);
 
@@ -158,28 +158,28 @@ void do_drink(struct char_data* ch, char* argument, int cmd) {
       }
 
       if (GET_COND(ch, DRUNK) > 10) {
-        act("You feel drunk.", FALSE, ch, 0, 0, TO_CHAR);
+        act("You feel drunk.", false, ch, 0, 0, TO_CHAR);
       }
 
       if (GET_COND(ch, THIRST) > 20) {
-        act("You do not feel thirsty.", FALSE, ch, 0, 0, TO_CHAR);
+        act("You do not feel thirsty.", false, ch, 0, 0, TO_CHAR);
       }
 
       if (GET_COND(ch, FULL) > 20) {
-        act("You are full.", FALSE, ch, 0, 0, TO_CHAR);
+        act("You are full.", false, ch, 0, 0, TO_CHAR);
       }
 
       /* The shit was poisoned ! */
       if (IS_SET(temp->obj_flags.value[3], DRINK_POISON)) {
-        act("Oops, it tasted rather strange ?!!?", FALSE, ch, 0, 0, TO_CHAR);
-        act("$n chokes and utters some strange sounds.", TRUE, ch, 0, 0,
+        act("Oops, it tasted rather strange ?!!?", false, ch, 0, 0, TO_CHAR);
+        act("$n chokes and utters some strange sounds.", true, ch, 0, 0,
           TO_ROOM);
         af.type = SPELL_POISON;
         af.duration = amount * 3;
         af.modifier = 0;
         af.location = APPLY_NONE;
         af.bitvector = AFF_POISON;
-        affect_join(ch, &af, FALSE, FALSE);
+        affect_join(ch, &af, false, false);
       }
 
       /* empty the container, and no longer poison. */
@@ -198,7 +198,7 @@ void do_drink(struct char_data* ch, char* argument, int cmd) {
       }
       return;
     }
-    act("It's empty already.", FALSE, ch, 0, 0, TO_CHAR);
+    act("It's empty already.", false, ch, 0, 0, TO_CHAR);
 
     return;
   }
@@ -214,29 +214,29 @@ void do_eat(struct char_data* ch, char* argument, int cmd) {
   one_argument(argument, buf);
 
   if (!(temp = get_obj_in_list_vis(ch, buf, ch->carrying))) {
-    act("You can't find it!", FALSE, ch, 0, 0, TO_CHAR);
+    act("You can't find it!", false, ch, 0, 0, TO_CHAR);
     return;
   }
 
   if ((temp->obj_flags.type_flag != ITEM_FOOD) && (GetMaxLevel(ch) < DEMIGOD)) {
-    act("Your stomach refuses to eat that!?!", FALSE, ch, 0, 0, TO_CHAR);
+    act("Your stomach refuses to eat that!?!", false, ch, 0, 0, TO_CHAR);
     return;
   }
 
   if (GET_COND(ch, FULL) > 20) /* Stomach full */ {
-    act("You are to full to eat more!", FALSE, ch, 0, 0, TO_CHAR);
+    act("You are to full to eat more!", false, ch, 0, 0, TO_CHAR);
     return;
   }
 
-  act("$n eats $p", TRUE, ch, temp, 0, TO_ROOM);
-  act("You eat the $o.", FALSE, ch, temp, 0, TO_CHAR);
+  act("$n eats $p", true, ch, temp, 0, TO_ROOM);
+  act("You eat the $o.", false, ch, temp, 0, TO_CHAR);
 
   if (GET_COND(ch, FULL) > -1) {
     gain_condition(ch, FULL, temp->obj_flags.value[0]);
   }
 
   if (GET_COND(ch, FULL) > 20) {
-    act("You are full.", FALSE, ch, 0, 0, TO_CHAR);
+    act("You are full.", false, ch, 0, 0, TO_CHAR);
   }
 
   for (j = 0; j < MAX_OBJ_AFFECT; j++) {
@@ -250,15 +250,15 @@ void do_eat(struct char_data* ch, char* argument, int cmd) {
   }
 
   if (temp->obj_flags.value[3] && (GetMaxLevel(ch) < LOW_IMMORTAL)) {
-    act("That tasted rather strange !!", FALSE, ch, 0, 0, TO_CHAR);
-    act("$n coughs and utters some strange sounds.", FALSE, ch, 0, 0, TO_ROOM);
+    act("That tasted rather strange !!", false, ch, 0, 0, TO_CHAR);
+    act("$n coughs and utters some strange sounds.", false, ch, 0, 0, TO_ROOM);
 
     af.type = SPELL_POISON;
     af.duration = temp->obj_flags.value[0] * 2;
     af.modifier = 0;
     af.location = APPLY_NONE;
     af.bitvector = AFF_POISON;
-    affect_join(ch, &af, FALSE, FALSE);
+    affect_join(ch, &af, false, false);
   }
 
   extract_obj(temp);
@@ -275,33 +275,33 @@ void do_pour(struct char_data* ch, char* argument, int cmd) {
   argument_interpreter(argument, arg1, arg2);
 
   if (!*arg1) /* No arguments */ {
-    act("What do you want to pour from?", FALSE, ch, 0, 0, TO_CHAR);
+    act("What do you want to pour from?", false, ch, 0, 0, TO_CHAR);
     return;
   }
 
   if (!(from_obj = get_obj_in_list_vis(ch, arg1, ch->carrying))) {
-    act("You can't find it!", FALSE, ch, 0, 0, TO_CHAR);
+    act("You can't find it!", false, ch, 0, 0, TO_CHAR);
     return;
   }
 
   if (from_obj->obj_flags.type_flag != ITEM_DRINKCON) {
-    act("You can't pour from that!", FALSE, ch, 0, 0, TO_CHAR);
+    act("You can't pour from that!", false, ch, 0, 0, TO_CHAR);
     return;
   }
 
   if (from_obj->obj_flags.value[1] == 0) {
-    act("The $p is empty.", FALSE, ch, from_obj, 0, TO_CHAR);
+    act("The $p is empty.", false, ch, from_obj, 0, TO_CHAR);
     return;
   }
 
   if (!*arg2) {
-    act("Where do you want it? Out or in what?", FALSE, ch, 0, 0, TO_CHAR);
+    act("Where do you want it? Out or in what?", false, ch, 0, 0, TO_CHAR);
     return;
   }
 
   if (!str_cmp(arg2, "out")) {
-    act("$n empties $p", TRUE, ch, from_obj, 0, TO_ROOM);
-    act("You empty the $p.", FALSE, ch, from_obj, 0, TO_CHAR);
+    act("$n empties $p", true, ch, from_obj, 0, TO_ROOM);
+    act("You empty the $p.", false, ch, from_obj, 0, TO_CHAR);
 
     weight_change_object(from_obj, -from_obj->obj_flags.value[1]);
 
@@ -314,23 +314,23 @@ void do_pour(struct char_data* ch, char* argument, int cmd) {
   }
 
   if (!(to_obj = get_obj_in_list_vis(ch, arg2, ch->carrying))) {
-    act("You can't find it!", FALSE, ch, 0, 0, TO_CHAR);
+    act("You can't find it!", false, ch, 0, 0, TO_CHAR);
     return;
   }
 
   if (to_obj->obj_flags.type_flag != ITEM_DRINKCON) {
-    act("You can't pour anything into that.", FALSE, ch, 0, 0, TO_CHAR);
+    act("You can't pour anything into that.", false, ch, 0, 0, TO_CHAR);
     return;
   }
 
   if ((to_obj->obj_flags.value[1] != 0) &&
       (to_obj->obj_flags.value[2] != from_obj->obj_flags.value[2])) {
-    act("There is already another liquid in it!", FALSE, ch, 0, 0, TO_CHAR);
+    act("There is already another liquid in it!", false, ch, 0, 0, TO_CHAR);
     return;
   }
 
   if (!(to_obj->obj_flags.value[1] < to_obj->obj_flags.value[0])) {
-    act("There is no room for more.", FALSE, ch, 0, 0, TO_CHAR);
+    act("There is no room for more.", false, ch, 0, 0, TO_CHAR);
     return;
   }
 
@@ -380,29 +380,29 @@ void do_sip(struct char_data* ch, char* argument, int cmd) {
   one_argument(argument, arg);
 
   if (!(temp = get_obj_in_list_vis(ch, arg, ch->carrying))) {
-    act("You can't find it!", FALSE, ch, 0, 0, TO_CHAR);
+    act("You can't find it!", false, ch, 0, 0, TO_CHAR);
     return;
   }
 
   if (temp->obj_flags.type_flag != ITEM_DRINKCON) {
-    act("You can't sip from that!", FALSE, ch, 0, 0, TO_CHAR);
+    act("You can't sip from that!", false, ch, 0, 0, TO_CHAR);
     return;
   }
 
   if (GET_COND(ch, DRUNK) > 10) /* The pig is drunk ! */
   {
-    act("You simply fail to reach your mouth!", FALSE, ch, 0, 0, TO_CHAR);
-    act("$n tries to sip, but fails!", TRUE, ch, 0, 0, TO_ROOM);
+    act("You simply fail to reach your mouth!", false, ch, 0, 0, TO_CHAR);
+    act("$n tries to sip, but fails!", true, ch, 0, 0, TO_ROOM);
     return;
   }
 
   if (!temp->obj_flags.value[1]) /* Empty */
   {
-    act("But there is nothing in it?", FALSE, ch, 0, 0, TO_CHAR);
+    act("But there is nothing in it?", false, ch, 0, 0, TO_CHAR);
     return;
   }
 
-  act("$n sips from the $o", TRUE, ch, temp, 0, TO_ROOM);
+  act("$n sips from the $o", true, ch, temp, 0, TO_ROOM);
   sprintf(buf, "It tastes like %s.\n\r", drinks[temp->obj_flags.value[2]]);
   send_to_char(buf, ch);
 
@@ -421,21 +421,21 @@ void do_sip(struct char_data* ch, char* argument, int cmd) {
   }
 
   if (GET_COND(ch, DRUNK) > 10) {
-    act("You feel drunk.", FALSE, ch, 0, 0, TO_CHAR);
+    act("You feel drunk.", false, ch, 0, 0, TO_CHAR);
   }
 
   if (GET_COND(ch, THIRST) > 20) {
-    act("You do not feel thirsty.", FALSE, ch, 0, 0, TO_CHAR);
+    act("You do not feel thirsty.", false, ch, 0, 0, TO_CHAR);
   }
 
   if (GET_COND(ch, FULL) > 20) {
-    act("You are full.", FALSE, ch, 0, 0, TO_CHAR);
+    act("You are full.", false, ch, 0, 0, TO_CHAR);
   }
 
   if (IS_SET(temp->obj_flags.value[3], DRINK_POISON) &&
       !IS_AFFECTED(ch, AFF_POISON)) /* The shit was poisoned ! */
   {
-    act("But it also had a strange taste!", FALSE, ch, 0, 0, TO_CHAR);
+    act("But it also had a strange taste!", false, ch, 0, 0, TO_CHAR);
 
     af.type = SPELL_POISON;
     af.duration = 3;
@@ -467,7 +467,7 @@ void do_taste(struct char_data* ch, char* argument, int cmd) {
   one_argument(argument, arg);
 
   if (!(temp = get_obj_in_list_vis(ch, arg, ch->carrying))) {
-    act("You can't find it!", FALSE, ch, 0, 0, TO_CHAR);
+    act("You can't find it!", false, ch, 0, 0, TO_CHAR);
     return;
   }
 
@@ -477,23 +477,23 @@ void do_taste(struct char_data* ch, char* argument, int cmd) {
   }
 
   if (!(temp->obj_flags.type_flag == ITEM_FOOD)) {
-    act("Taste that?!? Your stomach refuses!", FALSE, ch, 0, 0, TO_CHAR);
+    act("Taste that?!? Your stomach refuses!", false, ch, 0, 0, TO_CHAR);
     return;
   }
 
-  act("$n tastes the $o", FALSE, ch, temp, 0, TO_ROOM);
-  act("You taste the $o", FALSE, ch, temp, 0, TO_CHAR);
+  act("$n tastes the $o", false, ch, temp, 0, TO_ROOM);
+  act("You taste the $o", false, ch, temp, 0, TO_CHAR);
 
   gain_condition(ch, FULL, 1);
 
   if (GET_COND(ch, FULL) > 20) {
-    act("You are full.", FALSE, ch, 0, 0, TO_CHAR);
+    act("You are full.", false, ch, 0, 0, TO_CHAR);
   }
 
   if (temp->obj_flags.value[3] &&
       !IS_AFFECTED(ch, AFF_POISON)) /* The shit was poisoned ! */
   {
-    act("Ooups, it did not taste good at all!", FALSE, ch, 0, 0, TO_CHAR);
+    act("Ooups, it did not taste good at all!", false, ch, 0, 0, TO_CHAR);
 
     af.type = SPELL_POISON;
     af.duration = 2;
@@ -506,7 +506,7 @@ void do_taste(struct char_data* ch, char* argument, int cmd) {
   temp->obj_flags.value[0]--;
 
   if (!temp->obj_flags.value[0]) { /* Nothing left */
-    act("There is nothing left now.", FALSE, ch, 0, 0, TO_CHAR);
+    act("There is nothing left now.", false, ch, 0, 0, TO_CHAR);
     extract_obj(temp);
   }
 
@@ -519,58 +519,58 @@ static void perform_wear(struct char_data* ch, struct obj_data* obj_object,
   int keyword) {
   switch (keyword) {
     case 0:
-      act("$n lights $p and holds it.", FALSE, ch, obj_object, 0, TO_ROOM);
+      act("$n lights $p and holds it.", false, ch, obj_object, 0, TO_ROOM);
       break;
     case 1:
-      act("$n wears $p on $s finger.", TRUE, ch, obj_object, 0, TO_ROOM);
+      act("$n wears $p on $s finger.", true, ch, obj_object, 0, TO_ROOM);
       break;
     case 2:
-      act("$n wears $p around $s neck.", TRUE, ch, obj_object, 0, TO_ROOM);
+      act("$n wears $p around $s neck.", true, ch, obj_object, 0, TO_ROOM);
       break;
     case 3:
-      act("$n wears $p on $s body.", TRUE, ch, obj_object, 0, TO_ROOM);
+      act("$n wears $p on $s body.", true, ch, obj_object, 0, TO_ROOM);
       break;
     case 4:
-      act("$n wears $p on $s head.", TRUE, ch, obj_object, 0, TO_ROOM);
+      act("$n wears $p on $s head.", true, ch, obj_object, 0, TO_ROOM);
       break;
     case 5:
-      act("$n wears $p on $s legs.", TRUE, ch, obj_object, 0, TO_ROOM);
+      act("$n wears $p on $s legs.", true, ch, obj_object, 0, TO_ROOM);
       break;
     case 6:
-      act("$n wears $p on $s feet.", TRUE, ch, obj_object, 0, TO_ROOM);
+      act("$n wears $p on $s feet.", true, ch, obj_object, 0, TO_ROOM);
       break;
     case 7:
-      act("$n wears $p on $s hands.", TRUE, ch, obj_object, 0, TO_ROOM);
+      act("$n wears $p on $s hands.", true, ch, obj_object, 0, TO_ROOM);
       break;
     case 8:
-      act("$n wears $p on $s arms.", TRUE, ch, obj_object, 0, TO_ROOM);
+      act("$n wears $p on $s arms.", true, ch, obj_object, 0, TO_ROOM);
       break;
     case 9:
-      act("$n wears $p about $s body.", TRUE, ch, obj_object, 0, TO_ROOM);
+      act("$n wears $p about $s body.", true, ch, obj_object, 0, TO_ROOM);
       break;
     case 10:
-      act("$n wears $p about $s waist.", TRUE, ch, obj_object, 0, TO_ROOM);
+      act("$n wears $p about $s waist.", true, ch, obj_object, 0, TO_ROOM);
       break;
     case 11:
-      act("$n wears $p around $s wrist.", TRUE, ch, obj_object, 0, TO_ROOM);
+      act("$n wears $p around $s wrist.", true, ch, obj_object, 0, TO_ROOM);
       break;
     case 12:
-      act("$n wields $p.", TRUE, ch, obj_object, 0, TO_ROOM);
+      act("$n wields $p.", true, ch, obj_object, 0, TO_ROOM);
       break;
     case 13:
-      act("$n grabs $p.", TRUE, ch, obj_object, 0, TO_ROOM);
+      act("$n grabs $p.", true, ch, obj_object, 0, TO_ROOM);
       break;
     case 14:
-      act("$n starts using $p as shield.", TRUE, ch, obj_object, 0, TO_ROOM);
+      act("$n starts using $p as shield.", true, ch, obj_object, 0, TO_ROOM);
       break;
     case 15:
-      act("$n sticks $p in $s ear.", TRUE, ch, obj_object, 0, TO_ROOM);
+      act("$n sticks $p in $s ear.", true, ch, obj_object, 0, TO_ROOM);
       break;
     case 16:
-      act("$n puts $p on $s face.", TRUE, ch, obj_object, 0, TO_ROOM);
+      act("$n puts $p on $s face.", true, ch, obj_object, 0, TO_ROOM);
       break;
     case 17:
-      act("$n holds the $p.", TRUE, ch, obj_object, 0, TO_ROOM);
+      act("$n holds the $p.", true, ch, obj_object, 0, TO_ROOM);
       break;
     default:
       break;
@@ -582,7 +582,7 @@ int is_restricted(int Mask, int Class) {
 
   if (IS_SET(Class, CLASS_MONK)) {
     if (Mask != 0) {
-      return (TRUE);
+      return (true);
     }
   }
 
@@ -602,10 +602,10 @@ int is_restricted(int Mask, int Class) {
   }
 
   if (Mask == Class) {
-    return (TRUE);
+    return (true);
   }
 
-  return (FALSE);
+  return (false);
 }
 
 static int get_item_class_restrictions(struct obj_data* obj) {
@@ -1052,7 +1052,7 @@ void do_wear(struct char_data* ch, char* argument, int cmd) {
       obj_object = get_obj_in_list_vis(ch, arg1, ch->carrying);
       if (obj_object) {
         if (*arg2) {
-          keyword = search_block(arg2, keywords, FALSE); /* Partial Match */
+          keyword = search_block(arg2, keywords, false); /* Partial Match */
           if (keyword == -1) {
             sprintf(buf, "%s is an unknown body location.\n\r", arg2);
             send_to_char(buf, ch);
@@ -1210,7 +1210,7 @@ void do_remove(struct char_data* ch, char* argument, int cmd) {
                 }
               }
 
-              act("You stop using $p.", FALSE, ch, obj_object, 0, TO_CHAR);
+              act("You stop using $p.", false, ch, obj_object, 0, TO_CHAR);
             }
           }
         } else {
@@ -1218,7 +1218,7 @@ void do_remove(struct char_data* ch, char* argument, int cmd) {
           j = MAX_WEAR;
         }
       }
-      act("$n stops using $s equipment.", TRUE, ch, obj_object, 0, TO_ROOM);
+      act("$n stops using $s equipment.", true, ch, obj_object, 0, TO_ROOM);
       return;
     }
     if (isdigit(arg1[0])) {
@@ -1255,8 +1255,8 @@ void do_remove(struct char_data* ch, char* argument, int cmd) {
                   }
                 }
 
-                act("You stop using $p.", FALSE, ch, obj_object, 0, TO_CHAR);
-                act("$n stops using $p.", TRUE, ch, obj_object, 0, TO_ROOM);
+                act("You stop using $p.", false, ch, obj_object, 0, TO_CHAR);
+                act("$n stops using $p.", true, ch, obj_object, 0, TO_ROOM);
               }
             }
           } else {
@@ -1289,8 +1289,8 @@ void do_remove(struct char_data* ch, char* argument, int cmd) {
             }
           }
 
-          act("You stop using $p.", FALSE, ch, obj_object, 0, TO_CHAR);
-          act("$n stops using $p.", TRUE, ch, obj_object, 0, TO_ROOM);
+          act("You stop using $p.", false, ch, obj_object, 0, TO_CHAR);
+          act("$n stops using $p.", true, ch, obj_object, 0, TO_ROOM);
 
         } else {
           send_to_char("You can't carry that much volume.\n\r", ch);

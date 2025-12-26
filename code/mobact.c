@@ -19,7 +19,7 @@
 static void mobile_guardian(struct char_data* ch) {
   struct char_data* targ;
   int i;
-  int found = FALSE;
+  int found = false;
 
   if (ch->in_room > -1) {
     if ((!ch->master) || (!IS_AFFECTED(ch, AFF_CHARM))) {
@@ -29,7 +29,7 @@ static void mobile_guardian(struct char_data* ch) {
       for (i = 0; i < 10 && !found; i++) {
         targ = FindAnAttacker(ch->master);
         if (targ) {
-          found = TRUE;
+          found = true;
         }
       }
 
@@ -39,10 +39,10 @@ static void mobile_guardian(struct char_data* ch) {
 
       if (!SameRace(targ, ch)) {
         if (IsHumanoid(ch)) {
-          act("$n screams 'I must protect my master!'", FALSE, ch, 0, 0,
+          act("$n screams 'I must protect my master!'", false, ch, 0, 0,
             TO_ROOM);
         } else {
-          act("$n growls angrily!", FALSE, ch, 0, 0, TO_ROOM);
+          act("$n growls angrily!", false, ch, 0, 0, TO_ROOM);
         }
         if (CAN_SEE(ch, targ)) {
           hit(ch, targ, 0);
@@ -96,13 +96,13 @@ void mob_hunt(struct char_data* ch) {
             if (check_peaceful(ch,
                   "You'd love to tear your quarry to bits, but you just "
                   "CAN'T\n\r")) {
-              act("$n fumes at $N", TRUE, ch, 0, ch->specials.hunting, TO_ROOM);
+              act("$n fumes at $N", true, ch, 0, ch->specials.hunting, TO_ROOM);
             } else {
               if (IsHumanoid(ch)) {
-                act("$n screams 'Time to die, $N'", TRUE, ch, 0,
+                act("$n screams 'Time to die, $N'", true, ch, 0,
                   ch->specials.hunting, TO_ROOM);
               } else if (IsAnimal(ch)) {
-                act("$n growls.", TRUE, ch, 0, 0, TO_ROOM);
+                act("$n growls.", true, ch, 0, 0, TO_ROOM);
               }
               hit(ch, ch->specials.hunting, 0);
               return;
@@ -157,7 +157,7 @@ void mob_scavenge(struct char_data* ch) {
 
       obj_from_room(best_obj);
       obj_to_char(best_obj, ch);
-      act("$n gets $p.", FALSE, ch, best_obj, 0, TO_ROOM);
+      act("$n gets $p.", false, ch, best_obj, 0, TO_ROOM);
     }
   }
 }
@@ -167,18 +167,18 @@ static int mob_friend(struct char_data* ch, struct char_data* f) {
   if (SameRace(ch, f)) {
     if (IS_GOOD(ch)) {
       if (IS_GOOD(f)) {
-        return (TRUE);
+        return (true);
       }
-      return (FALSE);
+      return (false);
     }
     if (IS_NPC(f)) {
-      return (TRUE);
+      return (true);
     }
 
   } else {
-    return (FALSE);
+    return (false);
   }
-  return FALSE;
+  return false;
 }
 
 static int assist_friend(struct char_data* ch) {
@@ -222,12 +222,12 @@ static int assist_friend(struct char_data* ch) {
     /*
       check if the people in the room are fighting.
       */
-    found = FALSE;
+    found = false;
     for (t = 1; t <= 8 && !found; t++) {
       targ = FindAnAttacker(damsel);
       if (targ) {
         if (targ->specials.fighting) {
-          found = TRUE;
+          found = true;
         }
       }
     }
@@ -293,12 +293,12 @@ void mobile_activity(struct char_data* ch) {
             act(
               "$n growls '$N, would you care to step outside where we can "
               "settle this?'",
-              TRUE, ch, 0, tmp_ch, TO_ROOM);
+              true, ch, 0, tmp_ch, TO_ROOM);
           } else {
             if (IsHumanoid(ch)) {
-              act("$n screams 'I'm gonna kill you!'", TRUE, ch, 0, 0, TO_ROOM);
+              act("$n screams 'I'm gonna kill you!'", true, ch, 0, 0, TO_ROOM);
             } else if (IsAnimal(ch)) {
-              act("$n growls", TRUE, ch, 0, 0, TO_ROOM);
+              act("$n growls", true, ch, 0, 0, TO_ROOM);
             }
             hit(ch, tmp_ch, 0);
           }
@@ -325,13 +325,13 @@ void mobile_activity(struct char_data* ch) {
                 act(
                   "$n growls '$N, would you care to step outside where we can "
                   "settle this?'",
-                  TRUE, ch, 0, tmp_ch, TO_ROOM);
+                  true, ch, 0, tmp_ch, TO_ROOM);
               } else {
                 if (IsHumanoid(ch)) {
-                  act("$n screams 'I'm gonna get you!'", TRUE, ch, 0, 0,
+                  act("$n screams 'I'm gonna get you!'", true, ch, 0, 0,
                     TO_ROOM);
                 } else if (IsAnimal(ch)) {
-                  act("$n growls", TRUE, ch, 0, 0, TO_ROOM);
+                  act("$n growls", true, ch, 0, 0, TO_ROOM);
                 }
                 hit(ch, tmp_ch, 0);
               }
@@ -346,7 +346,7 @@ void mobile_activity(struct char_data* ch) {
         if (tmp_ch) {
           if (check_peaceful(ch,
                 "You can't seem to exercise your violent tendencies.\n\r")) {
-            act("$n growls impotently", TRUE, ch, 0, 0, TO_ROOM);
+            act("$n growls impotently", true, ch, 0, 0, TO_ROOM);
             return;
           }
           hit(ch, tmp_ch, 0);
@@ -360,7 +360,7 @@ void mobile_activity(struct char_data* ch) {
         if (tmp_ch) {
           if (check_peaceful(ch,
                 "You can't seem to exercise your violent tendencies.\n\r")) {
-            act("$n growls impotently", TRUE, ch, 0, 0, TO_ROOM);
+            act("$n growls impotently", true, ch, 0, 0, TO_ROOM);
             return;
           }
           hit(ch, tmp_ch, 0);
@@ -377,26 +377,26 @@ void mobile_activity(struct char_data* ch) {
 
 int SameRace(struct char_data* ch1, struct char_data* ch2) {
   if ((!ch1) || (!ch2)) {
-    return (FALSE);
+    return (false);
   }
 
   if (ch1 == ch2) {
-    return (TRUE);
+    return (true);
   }
 
   if (IS_NPC(ch1) && (IS_NPC(ch2))) {
     if (mob_index[ch1->nr].virtual == mob_index[ch2->nr].virtual) {
-      return (TRUE);
+      return (true);
     }
   }
 
   if (in_group(ch1, ch2)) {
-    return (TRUE);
+    return (true);
   }
 
   if (GET_RACE(ch1) == GET_RACE(ch2)) {
-    return (TRUE);
+    return (true);
   }
 
-  return (FALSE);
+  return (false);
 }

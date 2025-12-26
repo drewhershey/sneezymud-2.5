@@ -1636,7 +1636,7 @@ void reset_zone(int zone) {
 
 #undef ZCMD
 
-/* for use in reset_zone; return TRUE if zone 'nr' is free of PC's  */
+/* for use in reset_zone; return true if zone 'nr' is free of PC's  */
 int is_empty(int zone_nr) {
   struct descriptor_data* i;
 
@@ -1655,7 +1655,7 @@ int is_empty(int zone_nr) {
  *  stuff related to the save/load player system								  *
  *********************************************************************** */
 
-/* Load a char, TRUE if loaded, FALSE if not */
+/* Load a char, true if loaded, false if not */
 int load_char(char* name, struct char_file_u* char_element) {
   FILE* fl;
   int player_i;
@@ -1674,7 +1674,7 @@ int load_char(char* name, struct char_file_u* char_element) {
     /*
     **  Kludge for ressurection
     */
-    char_element->talks[2] = TRUE;
+    char_element->talks[2] = true;
     return (player_i);
   }
   return (-1);
@@ -1800,7 +1800,7 @@ void char_to_store(struct char_data* ch, struct char_file_u* st) {
       st->affected[i].next = 0;
       /* subtract effect of the spell or the effect will be doubled */
       affect_modify(ch, st->affected[i].location, st->affected[i].modifier,
-        COMPAT_TO_LONG(st->affected[i].bitvector), FALSE);
+        COMPAT_TO_LONG(st->affected[i].bitvector), false);
       af = af->next;
     } else {
       st->affected[i].type = 0; /* Zero signifies not used */
@@ -1882,7 +1882,7 @@ void char_to_store(struct char_data* ch, struct char_file_u* st) {
       /* Add effect of the spell or it will be lost */
       /* When saving without quitting               */
       affect_modify(ch, st->affected[i].location, st->affected[i].modifier,
-        st->affected[i].bitvector, TRUE);
+        st->affected[i].bitvector, true);
       af = af->next;
     }
   }
@@ -2360,7 +2360,7 @@ void reset_char(struct char_data* ch) {
 
   for (af = ch->affected; af; af = af->next) {
     affect_modify(ch, af->location, (unsigned)af->modifier, af->bitvector,
-      TRUE);
+      true);
   }
 
   if (!HasClass(ch, CLASS_MONK)) {
@@ -2512,10 +2512,10 @@ void init_char(struct char_data* ch) {
   for (i = 0; i <= MAX_SKILLS - 1; i++) {
     if (GetMaxLevel(ch) < IMPLEMENTOR) {
       ch->skills[i].learned = 0;
-      ch->skills[i].recognise = FALSE;
+      ch->skills[i].recognise = false;
     } else {
       ch->skills[i].learned = 100;
-      ch->skills[i].recognise = FALSE;
+      ch->skills[i].recognise = false;
     }
   }
 

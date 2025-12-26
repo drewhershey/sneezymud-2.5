@@ -149,7 +149,7 @@ int main(int argc, char** argv) {
     srand((unsigned int)(ts.tv_nsec ^ ts.tv_sec));
   }
 
-  WizLock = FALSE;
+  WizLock = false;
 
 #if SITELOCK
   vlog("Blanking denied hosts.");
@@ -350,7 +350,7 @@ int game_loop(int s) {
               point->character->specials.was_in_room);
           }
           point->character->specials.was_in_room = NOWHERE;
-          act("$n has returned.", TRUE, point->character, 0, 0, TO_ROOM);
+          act("$n has returned.", true, point->character, 0, 0, TO_ROOM);
         }
 
         point->wait = 1;
@@ -1219,7 +1219,7 @@ void close_socket(struct descriptor_data* d) {
   if (d->character) {
     if (d->connected == CON_PLYNG) {
       do_save(d->character, "", 0);
-      act("$n has lost $s link.", TRUE, d->character, 0, 0, TO_ROOM);
+      act("$n has lost $s link.", true, d->character, 0, 0, TO_ROOM);
       sprintf(buf, "Closing link to: %s.", GET_NAME(d->character));
       vlog(buf);
       if (IS_NPC(d->character)) {

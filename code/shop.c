@@ -48,31 +48,31 @@ int number_of_shops;
 static int is_ok(struct char_data* keeper, struct char_data* ch, int shop_nr) {
   if (shop_index[shop_nr].open1 > time_info.hours) {
     do_say(keeper, "Come back later!", 17);
-    return (FALSE);
+    return (false);
   }
   if (shop_index[shop_nr].close1 < time_info.hours) {
     if (shop_index[shop_nr].open2 > time_info.hours) {
       do_say(keeper, "Sorry, we have closed, but come back later.", 17);
-      return (FALSE);
+      return (false);
     }
     if (shop_index[shop_nr].close2 < time_info.hours) {
       do_say(keeper, "Sorry, come back tomorrow.", 17);
-      return (FALSE);
+      return (false);
     }
   };
 
   if (!(CAN_SEE(keeper, ch))) {
     do_say(keeper, "I don't trade with someone I can't see!", 17);
-    return (FALSE);
+    return (false);
   };
 
   switch (shop_index[shop_nr].with_who) {
     case 0:
-      return (TRUE);
+      return (true);
     case 1:
-      return (TRUE);
+      return (true);
     default:
-      return (TRUE);
+      return (true);
   };
 }
 
@@ -80,30 +80,30 @@ static int trade_with(struct obj_data* item, int shop_nr) {
   int counter;
 
   if (item->obj_flags.cost < 1) {
-    return (FALSE);
+    return (false);
   }
 
   for (counter = 0; counter < MAX_TRADE; counter++) {
     if (shop_index[shop_nr].type[counter] == item->obj_flags.type_flag) {
-      return (TRUE);
+      return (true);
     }
   }
-  return (FALSE);
+  return (false);
 }
 
 static int shop_producing(struct obj_data* item, int shop_nr) {
   int counter;
 
   if (item->item_number < 0) {
-    return (FALSE);
+    return (false);
   }
 
   for (counter = 0; counter < MAX_PROD; counter++) {
     if (shop_index[shop_nr].producing[counter] == item->item_number) {
-      return (TRUE);
+      return (true);
     }
   }
-  return (FALSE);
+  return (false);
 }
 
 static void shopping_buy(char* arg, struct char_data* ch,
@@ -178,7 +178,7 @@ static void shopping_buy(char* arg, struct char_data* ch,
     return;
   }
 
-  act("$n buys $p.", FALSE, ch, temp1, 0, TO_ROOM);
+  act("$n buys $p.", false, ch, temp1, 0, TO_ROOM);
 
   sprintf(buf, shop_index[shop_nr].message_buy, GET_NAME(ch),
     (int)(num * (temp1->obj_flags.cost * shop_index[shop_nr].profit_buy)));
@@ -280,7 +280,7 @@ static void shopping_sell(char* arg, struct char_data* ch,
 
   temp1->obj_flags.cost = cost;
 
-  act("$n sells $p.", FALSE, ch, temp1, 0, TO_ROOM);
+  act("$n sells $p.", false, ch, temp1, 0, TO_ROOM);
 
   sprintf(buf, shop_index[shop_nr].message_sell, GET_NAME(ch),
     (int)(temp1->obj_flags.cost * shop_index[shop_nr].profit_sell));
@@ -366,11 +366,11 @@ void shopping_list(char* arg, struct char_data* ch, struct char_data* keeper,
   }
 
   strcpy(buf, "You can buy:\n\r");
-  found_obj = FALSE;
+  found_obj = false;
   if (keeper->carrying) {
     for (temp1 = keeper->carrying; temp1; temp1 = temp1->next_content) {
       if ((CAN_SEE_OBJ(ch, temp1)) && (temp1->obj_flags.cost > 0)) {
-        found_obj = TRUE;
+        found_obj = true;
         if (temp1->obj_flags.type_flag != ITEM_DRINKCON) {
           sprintf(buf2, "%s for %d gold coins.\n\r", (temp1->short_description),
             (int)(temp1->obj_flags.cost * shop_index[shop_nr].profit_buy));
@@ -439,7 +439,7 @@ int shop_keeper(struct char_data* ch, int cmd, char* arg) {
   }
 
   if (!keeper) {
-    return (FALSE);
+    return (false);
   }
 
   for (shop_nr = 0; shop_index[shop_nr].keeper != keeper->nr; shop_nr++) {
@@ -456,28 +456,28 @@ int shop_keeper(struct char_data* ch, int cmd, char* arg) {
   /* Buy */
   {
     shopping_buy(arg, ch, keeper, shop_nr);
-    return (TRUE);
+    return (true);
   }
 
   if ((cmd == 57) && (ch->in_room == shop_index[shop_nr].in_room))
   /* Sell */
   {
     shopping_sell(arg, ch, keeper, shop_nr);
-    return (TRUE);
+    return (true);
   }
 
   if ((cmd == 58) && (ch->in_room == shop_index[shop_nr].in_room))
   /* value */
   {
     shopping_value(arg, ch, keeper, shop_nr);
-    return (TRUE);
+    return (true);
   }
 
   if ((cmd == 59) && (ch->in_room == shop_index[shop_nr].in_room))
   /* List */
   {
     shopping_list(arg, ch, keeper, shop_nr);
-    return (TRUE);
+    return (true);
   }
 
   if ((cmd == 25) || (cmd == 70)) /* Kill or Hit */
@@ -486,18 +486,18 @@ int shop_keeper(struct char_data* ch, int cmd, char* arg) {
 
     if (keeper == get_char_room(argm, ch->in_room)) {
       shopping_kill(arg, ch, keeper, shop_nr);
-      return (TRUE);
+      return (true);
     }
   } else if ((cmd == 84) || (cmd == 207) ||
              (cmd == 172)) { /* Cast, recite, use */
-    act("$N tells you 'No magic here - kid!'.", FALSE, ch, 0, keeper, TO_CHAR);
-    return TRUE;
+    act("$N tells you 'No magic here - kid!'.", false, ch, 0, keeper, TO_CHAR);
+    return true;
   } else if (cmd == 73) { /* Quit added by brutius to make jail better */
-    act("$N tells you 'Sorry you can't quit in a shop.'.", FALSE, ch, 0, keeper,
+    act("$N tells you 'Sorry you can't quit in a shop.'.", false, ch, 0, keeper,
       TO_CHAR);
-    return TRUE;
+    return true;
   }
-  return (FALSE);
+  return (false);
 }
 
 void boot_the_shops(void) {

@@ -28,43 +28,43 @@
 
 int CAN_SEE_FOR_WHO(struct char_data* s, struct char_data* o) {
   if (!o || s->in_room < 0 || o->in_room < 0) {
-    return (FALSE);
+    return (false);
   }
 
   if (IS_IMMORTAL(s)) {
     if (GetMaxLevel(s) < (o->invis_level)) {
-      return (FALSE);
+      return (false);
     }
-    return (TRUE);
+    return (true);
   }
 
   if ((GetMaxLevel(s) < (o->invis_level)) && (IS_IMMORTAL(o))) {
-    return (FALSE);
+    return (false);
   }
 
   if (IS_AFFECTED(s, AFF_TRUE_SIGHT)) {
-    return (TRUE);
+    return (true);
   }
 
   if (IS_AFFECTED(s, AFF_BLIND) || IS_AFFECTED(o, AFF_HIDE)) {
-    return (FALSE);
+    return (false);
   }
 
   if (IS_AFFECTED(o, AFF_INVISIBLE)) {
     if (IS_IMMORTAL(o)) {
-      return (FALSE);
+      return (false);
     }
     if (!IS_AFFECTED(s, AFF_DETECT_INVISIBLE)) {
-      return (FALSE);
+      return (false);
     }
   }
 
   if ((IS_DARK(s->in_room) || IS_DARK(o->in_room)) &&
       (!IS_AFFECTED(s, AFF_INFRAVISION))) {
-    return (FALSE);
+    return (false);
   }
 
-  return (TRUE);
+  return (true);
 
 #if 0
   ((IS_IMMORTAL(sub)) || /* gods can see anything */ \
@@ -80,43 +80,43 @@ int CAN_SEE_FOR_WHO(struct char_data* s, struct char_data* o) {
 
 int CAN_SEE(struct char_data* s, struct char_data* o) {
   if (!o || s->in_room < 0 || o->in_room < 0) {
-    return (FALSE);
+    return (false);
   }
 
   if (IS_IMMORTAL(s)) {
     if (GetMaxLevel(s) < (o->invis_level)) {
-      return (FALSE);
+      return (false);
     }
-    return (TRUE);
+    return (true);
   }
 
   if (GetMaxLevel(s) < (o->invis_level)) {
-    return (FALSE);
+    return (false);
   }
 
   if (IS_AFFECTED(s, AFF_TRUE_SIGHT)) {
-    return (TRUE);
+    return (true);
   }
 
   if (IS_AFFECTED(s, AFF_BLIND) || IS_AFFECTED(o, AFF_HIDE)) {
-    return (FALSE);
+    return (false);
   }
 
   if (IS_AFFECTED(o, AFF_INVISIBLE)) {
     if (IS_IMMORTAL(o)) {
-      return (FALSE);
+      return (false);
     }
     if (!IS_AFFECTED(s, AFF_DETECT_INVISIBLE)) {
-      return (FALSE);
+      return (false);
     }
   }
 
   if ((IS_DARK(s->in_room) || IS_DARK(o->in_room)) &&
       (!IS_AFFECTED(s, AFF_INFRAVISION))) {
-    return (FALSE);
+    return (false);
   }
 
-  return (TRUE);
+  return (true);
 }
 
 void LearnFromMistake(struct char_data* ch, int sknum, int silent, int max) {
@@ -146,7 +146,7 @@ int exit_ok(struct room_direction_data* exit, struct room_data** rpp) {
   }
   if (!exit) {
     *rpp = nullptr;
-    return FALSE;
+    return false;
   }
   *rpp = real_roomp(exit->to_room);
   return (*rpp != nullptr);
@@ -176,9 +176,9 @@ int WeaponImmune(struct char_data* ch) {
   if (IS_SET(IMM_NONMAG, ch->M_immune) || IS_SET(IMM_PLUS1, ch->M_immune) ||
       IS_SET(IMM_PLUS2, ch->M_immune) || IS_SET(IMM_PLUS3, ch->M_immune) ||
       IS_SET(IMM_PLUS4, ch->M_immune)) {
-    return (TRUE);
+    return (true);
   }
-  return (FALSE);
+  return (false);
 }
 
 int IsImmune(struct char_data* ch, int bit) {
@@ -371,7 +371,7 @@ char in_group(struct char_data* ch1, struct char_data* ch2) {
 
   */
   if (ch1 == ch2) {
-    return (TRUE);
+    return (true);
   }
 
   if ((!ch1) || (!ch2)) {
@@ -415,19 +415,19 @@ char getall(char* name, char* newname) {
 
   sscanf(name, "%s ", otname); /* reads up to first space */
   if (strlen(otname) < 5) {
-    return (FALSE);
+    return (false);
   }
 
   sscanf(otname, "%3s%c%s", arg, &prd, tmpname);
 
   if (prd != '.') {
-    return (FALSE);
+    return (false);
   }
   if (tmpname == nullptr) {
-    return (FALSE);
+    return (false);
   }
   if (strcmp(arg, "all") != 0) {
-    return (FALSE);
+    return (false);
   }
 
   while (*name != '.') {
@@ -440,7 +440,7 @@ char getall(char* name, char* newname) {
     ;
   }
 
-  return (TRUE);
+  return (true);
 }
 
 int getabunch(const char* name, char* newname) {
@@ -760,11 +760,11 @@ int IsHumanoid(struct char_data* ch) {
     case RACE_ENFAN:
     case RACE_PATRYN:
     case RACE_SARTAN:
-      return (TRUE);
+      return (true);
       break;
 
     default:
-      return (FALSE);
+      return (false);
       break;
   }
 }
@@ -776,10 +776,10 @@ int IsAnimal(struct char_data* ch) {
     case RACE_BIRD:
     case RACE_HERBIV:
     case RACE_LABRAT:
-      return (TRUE);
+      return (true);
       break;
     default:
-      return (FALSE);
+      return (false);
       break;
   }
 }
@@ -788,10 +788,10 @@ int IsUndead(struct char_data* ch) {
   switch (GET_RACE(ch)) {
     case RACE_UNDEAD:
     case RACE_GHOST:
-      return (TRUE);
+      return (true);
       break;
     default:
-      return (FALSE);
+      return (false);
       break;
   }
 }
@@ -803,10 +803,10 @@ int IsVeggie(struct char_data* ch) {
     case RACE_TREE:
     case RACE_VEGGIE:
     case RACE_VEGMAN:
-      return (TRUE);
+      return (true);
       break;
     default:
-      return (FALSE);
+      return (false);
       break;
   }
 }
@@ -819,9 +819,9 @@ int IsOther(struct char_data* ch) {
     case RACE_ELEMENT:
     case RACE_PLANAR:
     case RACE_LYCANTH:
-      return (TRUE);
+      return (true);
     default:
-      return (FALSE);
+      return (false);
       break;
   }
 }
@@ -834,9 +834,9 @@ int IsGiantish(struct char_data* ch) {
     case RACE_GIANT:
     case RACE_TYTAN:
     case RACE_TROLL:
-      return (TRUE);
+      return (true);
     default:
-      return (FALSE);
+      return (false);
       break;
   }
 }
@@ -844,10 +844,10 @@ int IsGiantish(struct char_data* ch) {
 int IsLycanthrope(struct char_data* ch) {
   switch (GET_RACE(ch)) {
     case RACE_LYCANTH:
-      return (TRUE);
+      return (true);
       break;
     default:
-      return (FALSE);
+      return (false);
       break;
   }
 }
@@ -856,10 +856,10 @@ int IsDiabolic(struct char_data* ch) {
   switch (GET_RACE(ch)) {
     case RACE_DEMON:
     case RACE_DEVIL:
-      return (TRUE);
+      return (true);
       break;
     default:
-      return (FALSE);
+      return (false);
       break;
   }
 }
@@ -869,31 +869,31 @@ int IsReptile(struct char_data* ch) {
     case RACE_DRAGON:
     case RACE_DINOSAUR:
     case RACE_SNAKE:
-      return (TRUE);
+      return (true);
       break;
     default:
-      return (FALSE);
+      return (false);
       break;
   }
 }
 
 int HasHands(struct char_data* ch) {
   if (IsHumanoid(ch)) {
-    return (TRUE);
+    return (true);
   }
   if (IsUndead(ch)) {
-    return (TRUE);
+    return (true);
   }
   if (IsLycanthrope(ch)) {
-    return (TRUE);
+    return (true);
   }
   if (IsDiabolic(ch)) {
-    return (TRUE);
+    return (true);
   }
   if (GET_RACE(ch) == RACE_SPECIAL) {
-    return (TRUE);
+    return (true);
   }
-  return FALSE;
+  return false;
 }
 
 int IsPerson(struct char_data* ch) {
@@ -903,11 +903,11 @@ int IsPerson(struct char_data* ch) {
     case RACE_DWARF:
     case RACE_HOBBIT:
     case RACE_GNOME:
-      return (TRUE);
+      return (true);
       break;
 
     default:
-      return (FALSE);
+      return (false);
       break;
   }
 }
@@ -918,10 +918,10 @@ int IsExtraPlanar(struct char_data* ch) {
     case RACE_DEVIL:
     case RACE_PLANAR:
     case RACE_ELEMENT:
-      return (TRUE);
+      return (true);
       break;
     default:
-      return (FALSE);
+      return (false);
       break;
   }
 }
@@ -1172,9 +1172,9 @@ int ObjLevelCheck(struct obj_data* obj, struct char_data* ch) {
       (IS_OBJ_STAT(obj, ITEM_LEVEL30) && (GetMaxLevel(ch) < 30)) ||
       (IS_OBJ_STAT(obj, ITEM_LEVEL35) && (GetMaxLevel(ch) < 35)) ||
       (IS_OBJ_STAT(obj, ITEM_LEVEL40) && (GetMaxLevel(ch) < 40))) {
-    return (FALSE);
+    return (false);
   }
-  return (TRUE);
+  return (true);
 }
 
 /* static void check_mobile_activity(int pulse) {
@@ -1431,14 +1431,14 @@ int apply_soundproof(struct char_data* ch) {
   rp = real_roomp(ch->in_room);
 
   if (!rp) {
-    return (FALSE);
+    return (false);
   }
 
   if (IS_SET(rp->room_flags, SILENCE)) {
     send_to_char("You are in a silence zone, you can't make a sound!\n\r", ch);
-    return (TRUE); /* for shouts, emotes, etc */
+    return (true); /* for shouts, emotes, etc */
   }
-  return (FALSE);
+  return (false);
 }
 
 /*
@@ -1450,13 +1450,13 @@ int check_soundproof(struct char_data* ch) {
   rp = real_roomp(ch->in_room);
 
   if (!rp) {
-    return (FALSE);
+    return (false);
   }
 
   if (IS_SET(rp->room_flags, SILENCE)) {
-    return (TRUE); /* for shouts, emotes, etc */
+    return (true); /* for shouts, emotes, etc */
   }
-  return (FALSE);
+  return (false);
 }
 
 int MobCountInRoom(struct char_data* list) {

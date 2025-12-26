@@ -10,8 +10,8 @@
 #include "structs.h"
 #include "utils.h"
 
-#define TRUE 1
-#define FALSE 0
+#define true 1
+#define false 0
 
 /* ignore trailing spaces and \n */
 static void smart_str_cpy(char* s1, const char* s2) {
@@ -35,7 +35,7 @@ static void smart_str_cpy(char* s1, const char* s2) {
 }
 
 void StringHeap(char* string, struct StrHeap* Heap) {
-  unsigned char found = FALSE;
+  unsigned char found = false;
   int i;
 
   if (!string || !*string) {
@@ -45,7 +45,7 @@ void StringHeap(char* string, struct StrHeap* Heap) {
   for (i = 0; i < Heap->uniq && !found; i++) {
     if (!strcmp(string, Heap->str[i].string)) {
       Heap->str[i].total++;
-      found = TRUE;
+      found = true;
     }
   }
   if (!found) {
@@ -85,7 +85,7 @@ void DisplayStringHeap(struct StrHeap* Heap, struct char_data* ch, int type,
       send_to_char(buf, ch);
     } else {
       if (ch->in_room > -1) {
-        act(buf, FALSE, ch, 0, 0, TO_ROOM);
+        act(buf, false, ch, 0, 0, TO_ROOM);
       }
     }
 

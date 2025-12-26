@@ -41,26 +41,26 @@ void do_guard(struct char_data* ch, char* argument, int cmd) {
 
   if (!*argument) {
     if (IS_SET(ch->specials.act, ACT_GUARDIAN)) {
-      act("$n relaxes.", FALSE, ch, 0, 0, TO_ROOM);
+      act("$n relaxes.", false, ch, 0, 0, TO_ROOM);
       send_to_char("You relax.\n\r", ch);
       REMOVE_BIT(ch->specials.act, ACT_GUARDIAN);
     } else {
       SET_BIT(ch->specials.act, ACT_GUARDIAN);
-      act("$n alertly watches you.", FALSE, ch, 0, ch->master, TO_VICT);
-      act("$n alertly watches $N.", FALSE, ch, 0, ch->master, TO_NOTVICT);
+      act("$n alertly watches you.", false, ch, 0, ch->master, TO_VICT);
+      act("$n alertly watches $N.", false, ch, 0, ch->master, TO_NOTVICT);
       send_to_char("You snap to attention\n\r", ch);
     }
   } else {
     if (!str_cmp(argument, "on")) {
       if (!IS_SET(ch->specials.act, ACT_GUARDIAN)) {
         SET_BIT(ch->specials.act, ACT_GUARDIAN);
-        act("$n alertly watches you.", FALSE, ch, 0, ch->master, TO_VICT);
-        act("$n alertly watches $N.", FALSE, ch, 0, ch->master, TO_NOTVICT);
+        act("$n alertly watches you.", false, ch, 0, ch->master, TO_VICT);
+        act("$n alertly watches $N.", false, ch, 0, ch->master, TO_NOTVICT);
         send_to_char("You snap to attention\n\r", ch);
       }
     } else if (!str_cmp(argument, "off")) {
       if (IS_SET(ch->specials.act, ACT_GUARDIAN)) {
-        act("$n relaxes.", FALSE, ch, 0, 0, TO_ROOM);
+        act("$n relaxes.", false, ch, 0, 0, TO_ROOM);
         send_to_char("You relax.\n\r", ch);
         REMOVE_BIT(ch->specials.act, ACT_GUARDIAN);
       }
@@ -268,11 +268,11 @@ void do_report(struct char_data* ch, char* argument, int cmd) {
 
   if (!*(argument + i)) {
     sprintf(buf, "$n reports '%s'", info);
-    act(buf, FALSE, ch, 0, 0, TO_ROOM);
+    act(buf, false, ch, 0, 0, TO_ROOM);
     send_to_char("Ok.\n\r", ch);
   } else {
     sprintf(buf, "$n reports '%s. %s'", info, argument + i);
-    act(buf, FALSE, ch, 0, 0, TO_ROOM);
+    act(buf, false, ch, 0, 0, TO_ROOM);
     send_to_char("Ok.\n\r", ch);
   }
 }
@@ -317,8 +317,8 @@ void do_quit(struct char_data* ch, char* argument, int cmd) {
       (IS_SET(ch->specials.act, PLR_VT100))) {
     send_to_char(VT_CLENSEQ, ch);
   }
-  act("Goodbye, friend.. Come back soon!", FALSE, ch, 0, 0, TO_CHAR);
-  act("$n has left the game.", TRUE, ch, 0, 0, TO_ROOM);
+  act("Goodbye, friend.. Come back soon!", false, ch, 0, 0, TO_CHAR);
+  act("$n has left the game.", true, ch, 0, 0, TO_ROOM);
   zero_rent(ch);
   extract_char(ch); /* Char is saved in extract char */
 }
@@ -362,7 +362,7 @@ static void save_obj_for_save(struct char_data* ch, struct obj_cost* cost,
   int pos;
   int i;
   int j;
-  char found = FALSE;
+  char found = false;
 
   st.number = 0;
   st.gold_left = GET_GOLD(ch);
@@ -646,7 +646,7 @@ void do_steal(struct char_data* ch, char* argument, int cmd) {
   int percent;
   int gold;
   int eq_pos;
-  char ohoh = FALSE;
+  char ohoh = false;
 
   if (!ch->skills) {
     return;
@@ -706,15 +706,15 @@ void do_steal(struct char_data* ch, char* argument, int cmd) {
       }
 
       if (!obj) {
-        act("$E has not got that item.", FALSE, ch, 0, victim, TO_CHAR);
+        act("$E has not got that item.", false, ch, 0, victim, TO_CHAR);
         return;
       } /* It is equipment */
       if ((GET_POS(victim) > POSITION_STUNNED)) {
         send_to_char("Steal the equipment now? Impossible!\n\r", ch);
         return;
       }
-      act("You unequip $p and steal it.", FALSE, ch, obj, 0, TO_CHAR);
-      act("$n steals $p from $N.", FALSE, ch, obj, victim, TO_NOTVICT);
+      act("You unequip $p and steal it.", false, ch, obj, 0, TO_CHAR);
+      act("$n steals $p from $N.", false, ch, obj, victim, TO_NOTVICT);
       obj_to_char(unequip_char(victim, eq_pos), ch);
 #if NODUPLICATES
       do_save(ch, "", 0);
@@ -732,11 +732,11 @@ void do_steal(struct char_data* ch, char* argument, int cmd) {
 
       if ((!ObjLevelCheck(obj, ch)) ||
           (AWAKE(victim) && (percent > ch->skills[SKILL_STEAL].learned))) {
-        ohoh = TRUE;
-        act("Oops..", FALSE, ch, 0, 0, TO_CHAR);
-        act("$n tried to steal something from you!", FALSE, ch, 0, victim,
+        ohoh = true;
+        act("Oops..", false, ch, 0, 0, TO_CHAR);
+        act("$n tried to steal something from you!", false, ch, 0, victim,
           TO_VICT);
-        act("$n tries to steal something from $N.", TRUE, ch, 0, victim,
+        act("$n tries to steal something from $N.", true, ch, 0, victim,
           TO_NOTVICT);
         if (IS_PC(victim)) {
           if (!IS_SET(ch->specials.act, PLR_OUTLAW)) {
@@ -763,11 +763,11 @@ void do_steal(struct char_data* ch, char* argument, int cmd) {
   } else { /* Steal some coins */
     if (IS_PC(victim) ||
         (AWAKE(victim) && (percent > ch->skills[SKILL_STEAL].learned))) {
-      ohoh = TRUE;
-      act("Oops..", FALSE, ch, 0, 0, TO_CHAR);
-      act("You discover that $n has $s hands in your wallet.", FALSE, ch, 0,
+      ohoh = true;
+      act("Oops..", false, ch, 0, 0, TO_CHAR);
+      act("You discover that $n has $s hands in your wallet.", false, ch, 0,
         victim, TO_VICT);
-      act("$n tries to steal gold from $N.", TRUE, ch, 0, victim, TO_NOTVICT);
+      act("$n tries to steal gold from $N.", true, ch, 0, victim, TO_NOTVICT);
     } else {
       /* Steal some gold coins */
       gold = ((GET_GOLD(victim) * number(1, 10)) / 100);
@@ -1468,18 +1468,18 @@ void do_group(struct char_data* ch, char* argument, int cmd) {
   } else {
     if (ch->master) {
       act("You can not enroll group members without being head of a group.",
-        FALSE, ch, 0, 0, TO_CHAR);
+        false, ch, 0, 0, TO_CHAR);
       return;
     }
 
-    found = FALSE;
+    found = false;
 
     if (victim == ch) {
-      found = TRUE;
+      found = true;
     } else {
       for (f = ch->followers; f; f = f->next) {
         if (f->follower == victim) {
-          found = TRUE;
+          found = true;
           break;
         }
       }
@@ -1487,28 +1487,28 @@ void do_group(struct char_data* ch, char* argument, int cmd) {
 
     if (found) {
       if (IS_AFFECTED(victim, AFF_GROUP)) {
-        act("$n has been kicked out of $N's group!", FALSE, victim, 0, ch,
+        act("$n has been kicked out of $N's group!", false, victim, 0, ch,
           TO_ROOM);
-        act("You are no longer a member of $N's group!", FALSE, victim, 0, ch,
+        act("You are no longer a member of $N's group!", false, victim, 0, ch,
           TO_CHAR);
         REMOVE_BIT(victim->specials.affected_by, AFF_GROUP);
       } else {
         if (GetMaxLevel(victim) >= LOW_IMMORTAL) {
-          act("You really don't want $n in your group.", FALSE, ch, 0, 0,
+          act("You really don't want $n in your group.", false, ch, 0, 0,
             TO_CHAR);
           return;
         }
         if (GetMaxLevel(ch) >= LOW_IMMORTAL) {
-          act("Now now.  That would be CHEATING!", FALSE, ch, 0, 0, TO_CHAR);
+          act("Now now.  That would be CHEATING!", false, ch, 0, 0, TO_CHAR);
           return;
         }
-        act("$n is now a member of $N's group.", FALSE, victim, 0, ch, TO_ROOM);
-        act("You are now a member of $N's group.", FALSE, victim, 0, ch,
+        act("$n is now a member of $N's group.", false, victim, 0, ch, TO_ROOM);
+        act("You are now a member of $N's group.", false, victim, 0, ch,
           TO_CHAR);
         SET_BIT(victim->specials.affected_by, AFF_GROUP);
       }
     } else {
-      act("$N must follow you, to enter the group", FALSE, ch, 0, victim,
+      act("$N must follow you, to enter the group", false, ch, 0, victim,
         TO_CHAR);
     }
   }
@@ -1520,42 +1520,42 @@ void do_quaff(struct char_data* ch, char* argument, int cmd) {
   int i;
   char equipped;
 
-  equipped = FALSE;
+  equipped = false;
 
   only_argument(argument, buf);
 
   if (!(temp = get_obj_in_list_vis(ch, buf, ch->carrying))) {
     temp = ch->equipment[HOLD];
-    equipped = TRUE;
+    equipped = true;
     if ((temp == 0) || !isname(buf, temp->name)) {
-      act("You do not have that item.", FALSE, ch, 0, 0, TO_CHAR);
+      act("You do not have that item.", false, ch, 0, 0, TO_CHAR);
       return;
     }
   }
 
   if (GET_COND(ch, FULL) > -1) {
     if (GET_COND(ch, FULL) > 20) {
-      act("Your stomach can't contain anymore!", FALSE, ch, 0, 0, TO_CHAR);
+      act("Your stomach can't contain anymore!", false, ch, 0, 0, TO_CHAR);
       return;
     }
     GET_COND(ch, FULL) += 1;
   }
 
   if (temp->obj_flags.type_flag != ITEM_POTION) {
-    act("You can only quaff potions.", FALSE, ch, 0, 0, TO_CHAR);
+    act("You can only quaff potions.", false, ch, 0, 0, TO_CHAR);
     return;
   }
 
-  act("$n quaffs $p.", TRUE, ch, temp, 0, TO_ROOM);
-  act("You quaff $p which dissolves.", FALSE, ch, temp, 0, TO_CHAR);
+  act("$n quaffs $p.", true, ch, temp, 0, TO_ROOM);
+  act("You quaff $p which dissolves.", false, ch, temp, 0, TO_CHAR);
 
   /*  my stuff */
   if (ch->specials.fighting) {
     if (equipped) {
       if (number(1, 20) > ch->abilities.dex) {
-        act("$n is jolted and drops $p!  It shatters!", TRUE, ch, temp, 0,
+        act("$n is jolted and drops $p!  It shatters!", true, ch, temp, 0,
           TO_ROOM);
-        act("You arm is jolted and $p flies from your hand, *SMASH*", TRUE, ch,
+        act("You arm is jolted and $p flies from your hand, *SMASH*", true, ch,
           temp, 0, TO_CHAR);
         if (equipped) {
           temp = unequip_char(ch, HOLD);
@@ -1565,9 +1565,9 @@ void do_quaff(struct char_data* ch, char* argument, int cmd) {
       }
     } else {
       if (number(1, 20) > ch->abilities.dex - 4) {
-        act("$n is jolted and drops $p!  It shatters!", TRUE, ch, temp, 0,
+        act("$n is jolted and drops $p!  It shatters!", true, ch, temp, 0,
           TO_ROOM);
-        act("You arm is jolted and $p flies from your hand, *SMASH*", TRUE, ch,
+        act("You arm is jolted and $p flies from your hand, *SMASH*", true, ch,
           temp, 0, TO_CHAR);
         extract_obj(temp);
         return;
@@ -1601,7 +1601,7 @@ void do_recite(struct char_data* ch, char* argument, int cmd) {
   int bits;
   char equipped;
 
-  equipped = FALSE;
+  equipped = false;
   obj = 0;
   victim = 0;
 
@@ -1609,15 +1609,15 @@ void do_recite(struct char_data* ch, char* argument, int cmd) {
 
   if (!(scroll = get_obj_in_list_vis(ch, buf, ch->carrying))) {
     scroll = ch->equipment[HOLD];
-    equipped = TRUE;
+    equipped = true;
     if ((scroll == 0) || !isname(buf, scroll->name)) {
-      act("You do not have that item.", FALSE, ch, 0, 0, TO_CHAR);
+      act("You do not have that item.", false, ch, 0, 0, TO_CHAR);
       return;
     }
   }
 
   if (scroll->obj_flags.type_flag != ITEM_SCROLL) {
-    act("Recite is normally used for scrolls.", FALSE, ch, 0, 0, TO_CHAR);
+    act("Recite is normally used for scrolls.", false, ch, 0, 0, TO_CHAR);
     return;
   }
 
@@ -1642,8 +1642,8 @@ void do_recite(struct char_data* ch, char* argument, int cmd) {
     }
   }
 
-  act("$n recites $p.", TRUE, ch, scroll, 0, TO_ROOM);
-  act("You recite $p which bursts into flame.", FALSE, ch, scroll, 0, TO_CHAR);
+  act("$n recites $p.", true, ch, scroll, 0, TO_ROOM);
+  act("You recite $p which bursts into flame.", false, ch, scroll, 0, TO_CHAR);
 
   for (i = 1; i < 4; i++) {
     if (scroll->obj_flags.value[i] >= 1) {
@@ -1674,7 +1674,7 @@ void do_use(struct char_data* ch, char* argument, int cmd) {
   argument = one_argument(argument, buf);
 
   if (ch->equipment[HOLD] == 0 || !isname(buf, ch->equipment[HOLD]->name)) {
-    act("You do not hold that item in your hand.", FALSE, ch, 0, 0, TO_CHAR);
+    act("You do not hold that item in your hand.", false, ch, 0, 0, TO_CHAR);
     return;
   }
 
@@ -1688,8 +1688,8 @@ void do_use(struct char_data* ch, char* argument, int cmd) {
   stick = ch->equipment[HOLD];
 
   if (stick->obj_flags.type_flag == ITEM_STAFF) {
-    act("$n taps $p three times on the ground.", TRUE, ch, stick, 0, TO_ROOM);
-    act("You tap $p three times on the ground.", FALSE, ch, stick, 0, TO_CHAR);
+    act("$n taps $p three times on the ground.", true, ch, stick, 0, TO_ROOM);
+    act("You tap $p three times on the ground.", false, ch, stick, 0, TO_CHAR);
     if (stick->obj_flags.value[2] > 0) { /* Is there any charges left? */
       stick->obj_flags.value[2]--;
       ((*spell_info[stick->obj_flags.value[3]].spell_pointer)(
@@ -1709,11 +1709,11 @@ void do_use(struct char_data* ch, char* argument, int cmd) {
       spellp = spell_info + (stick->obj_flags.value[3]);
 
       if (bits == FIND_CHAR_ROOM) {
-        act("$n point $p at $N.", TRUE, ch, stick, tmp_char, TO_ROOM);
-        act("You point $p at $N.", FALSE, ch, stick, tmp_char, TO_CHAR);
+        act("$n point $p at $N.", true, ch, stick, tmp_char, TO_ROOM);
+        act("You point $p at $N.", false, ch, stick, tmp_char, TO_CHAR);
       } else {
-        act("$n point $p at $P.", TRUE, ch, stick, tmp_object, TO_ROOM);
-        act("You point $p at $P.", FALSE, ch, stick, tmp_object, TO_CHAR);
+        act("$n point $p at $P.", true, ch, stick, tmp_object, TO_ROOM);
+        act("You point $p at $P.", false, ch, stick, tmp_object, TO_CHAR);
       }
 
       if (IS_SET(spellp->targets, TAR_VIOLENT) &&
@@ -1723,7 +1723,7 @@ void do_use(struct char_data* ch, char* argument, int cmd) {
 
       if (IS_SET(spellp->targets, TAR_VIOLENT) && (bits == FIND_CHAR_ROOM) &&
           IS_PC(tmp_char)) {
-        act("$N tries to harm you by casting a malicious spell.", FALSE,
+        act("$N tries to harm you by casting a malicious spell.", false,
           tmp_char, 0, ch, TO_CHAR);
         if (!IS_SET(ch->specials.act, PLR_KILLER) &&
             !IS_SET(tmp_char->specials.act, PLR_OUTLAW) &&

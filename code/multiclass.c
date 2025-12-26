@@ -55,25 +55,25 @@ int OnlyClass(struct char_data* ch, int class) {
   for (i = 1; i <= 8; i *= 2) {
     if (GetClassLevel(ch, i) != 0) {
       if (i != class) {
-        return (FALSE);
+        return (false);
       }
     }
   }
-  return (TRUE);
+  return (true);
 }
 
 int HasClass(struct char_data* ch, int class) {
   if (!IS_PC(ch)) {
     if (!IS_SET(class, CLASS_MONK)) {
-      return (TRUE);
+      return (true);
     }
   }
 
   if (IS_SET(ch->player.class, class)) {
-    return (TRUE);
+    return (true);
   }
 
-  return FALSE;
+  return false;
 }
 
 int HowManyClasses(struct char_data* ch) {
