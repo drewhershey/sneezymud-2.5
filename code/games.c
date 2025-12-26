@@ -364,7 +364,7 @@ static void spin_slot(struct char_data* ch) {
 
   fruit1 = choose_first_fruit();
 
-  if (strcmp(fruit1, "Seven")) {
+  if (strcmp(fruit1, "Seven") != 0) {
     if (number(1, 15) == 1) {
       fruit2 = fruit1;
       fruit3 = fruit1;
@@ -386,7 +386,7 @@ static void spin_slot(struct char_data* ch) {
   bits = generic_find("slot", FIND_OBJ_ROOM, ch, &tmp_char, &slot);
 
   if (!strcmp(fruit1, "cherry")) {
-    if (strcmp(fruit1, fruit2)) {
+    if (strcmp(fruit1, fruit2) != 0) {
       send_to_char("You win!\n\r", ch);
       coins = create_money(2 * (ch->bet.slot));
       if (coins && (bits == FIND_OBJ_ROOM)) {
@@ -409,7 +409,7 @@ static void spin_slot(struct char_data* ch) {
     vlog(buf);
     return;
   }
-  if (strcmp(fruit1, "Seven") && (fruit1 == fruit2) && (fruit2 == fruit3)) {
+  if (strcmp(fruit1, "Seven") != 0 && (fruit1 == fruit2) && (fruit2 == fruit3)) {
     send_to_char("You win!\n\r", ch);
     coins = create_money(9 * (ch->bet.slot));
     if (coins && (bits == FIND_OBJ_ROOM)) {

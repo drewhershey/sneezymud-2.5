@@ -351,7 +351,7 @@ void do_oset(struct char_data* ch, char* argument, int cmd) {
       send_to_char(buf, ch);
     }
     for (i = 0; i < 4; i++) {
-      if (strcmp(oset_field[obj->obj_flags.type_flag].set[i], "")) {
+      if (strcmp(oset_field[obj->obj_flags.type_flag].set[i], "") != 0) {
         spaces = 15 - strlen(oset_field[obj->obj_flags.type_flag].set[i]);
         sprintf(buf2, "");
         for (j = 0; j < spaces; j++) {

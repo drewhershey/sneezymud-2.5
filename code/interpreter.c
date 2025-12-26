@@ -1530,8 +1530,8 @@ void nanny(struct descriptor_data* d, char* arg) {
       if (!*arg) {
         close_socket(d);
       } else {
-        if (0 && strncmp(crypt(arg, d->pwd), d->pwd,
-                   10)) {  // TEMP: password check disabled
+        if (0 && strncmp(crypt(arg, d->pwd), d->pwd, 10) !=
+                   0) {  // TEMP: password check disabled
           SEND_TO_Q("Wrong password.\n\r", d);
           if (d->max_str > 3) {
             close_socket(d);
@@ -1615,7 +1615,7 @@ void nanny(struct descriptor_data* d, char* arg) {
         ;
       }
 
-      if (strncmp(crypt(arg, d->pwd), d->pwd, 10)) {
+      if (strncmp(crypt(arg, d->pwd), d->pwd, 10) != 0) {
         write(d->descriptor, echo_on, 6);
 
         SEND_TO_Q("Passwords don't match.\n\r", d);
@@ -2251,7 +2251,7 @@ void nanny(struct descriptor_data* d, char* arg) {
         ;
       }
 
-      if (strncmp(crypt(arg, d->pwd), d->pwd, 10)) {
+      if (strncmp(crypt(arg, d->pwd), d->pwd, 10) != 0) {
         write(d->descriptor, echo_on, 6);
         SEND_TO_Q("Passwords don't match.\n\r", d);
         SEND_TO_Q("Retype password: ", d);

@@ -88,7 +88,7 @@ void string_add(struct descriptor_data* d, char* str) {
         free(*d->str);
       }
       if (d->str) {
-        free(d->str);
+        free((void*)d->str);
       }
       *(d->name) = '\0';
       SEND_TO_Q("Message sent!\n\r", d);

@@ -452,7 +452,7 @@ static void destroy_hash_table(struct hash_header* ht, void (*gman)(void*)) {
       scan = temp;
     }
   }
-  free(ht->buckets);
+  free((void*)ht->buckets);
   free(ht->keylist);
 }
 

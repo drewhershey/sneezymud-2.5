@@ -426,7 +426,7 @@ char getall(char* name, char* newname) {
   if (tmpname == NULL) {
     return (FALSE);
   }
-  if (strcmp(arg, "all")) {
+  if (strcmp(arg, "all") != 0) {
     return (FALSE);
   }
 

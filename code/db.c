@@ -579,7 +579,7 @@ void boot_world(void) {
 #if defined(HASH) && HASH
   init_hash_table(&room_db, sizeof(struct room_data), 2048);
 #else
-  memset(room_db, 0, sizeof(struct room_data*) * WORLD_SIZE);
+  memset((void*)room_db, 0, sizeof(struct room_data*) * WORLD_SIZE);
 #endif
 
   assert(!character_list && !object_list);

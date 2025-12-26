@@ -100,7 +100,7 @@ void do_imptest(struct char_data* ch, char* arg, int cmd) {
   struct StrHeap* h = 0;
   int x = 0;
 
-  if (strcmp(arg, " test test test")) { /* don't use this command on the */
+  if (strcmp(arg, " test test test") != 0) { /* don't use this command on the */
     return;                             /* regular game */
   }
 

@@ -1233,7 +1233,7 @@ void do_look(struct char_data* ch, char* argument, int cmd) {
           }
 
           if (IS_SET(exitp->exit_info, EX_CLOSED) && (exitp->keyword)) {
-            if ((strcmp(fname(exitp->keyword), "secret")) &&
+            if ((strcmp(fname(exitp->keyword), "secret") != 0) &&
                 (!IS_SET(exitp->exit_info, EX_SECRET))) {
               sprintf(buffer, "The %s is closed.\n\r", fname(exitp->keyword));
               send_to_char(buffer, ch);

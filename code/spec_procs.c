@@ -6309,7 +6309,7 @@ int House(struct char_data* ch, int cmd, char* arg) {
   }
 
   if (strncmp(GET_NAME(ch), real_roomp(ch->in_room)->name,
-        strlen(GET_NAME(ch)))) {
+        strlen(GET_NAME(ch))) != 0) {
     send_to_char("Sorry, you'll have to find your own house.\n\r", ch);
     return (FALSE);
   }
@@ -8352,7 +8352,8 @@ static int affect_status(struct mob_act_lattimore* mem, struct char_data* ch,
     mem->names = (char**)calloc(1, sizeof(char*));
     mem->status = (int*)calloc(1, sizeof(int));
   } else {
-    mem->names = (char**)realloc(mem->names, sizeof(char*) * (size_t)(mem->c + 1));
+    mem->names =
+      (char**)realloc((void*)mem->names, sizeof(char*) * (size_t)(mem->c + 1));
     mem->status = (int*)realloc(mem->status, sizeof(int) * (size_t)(mem->c + 1));
   }
   mem->names[mem->c] = (char*)malloc(strlen(GET_NAME(t)) + 1);
@@ -9721,7 +9722,7 @@ int guardian(struct char_data* ch, int cmd, char* arg) {
     struct mob_act_guardian* gstruct = &g->act_ptr->data.guardian;
 
     for (int j = 0; j < gstruct->num_names; ++j) {
-      if (strcmp(gstruct->names[j], GET_NAME(ch))) {
+      if (strcmp(gstruct->names[j], GET_NAME(ch)) != 0) {
         continue;
       }
 
@@ -12400,7 +12401,7 @@ int bounty_hunter(struct char_data* ch, int cmd, char* arg) {
     }
 
     if ((cmd == 17 || cmd == 169) && IS_IMMORTAL(ch)) {
-      if (strncasecmp(arg, HUNTER_ID, strlen(HUNTER_ID))) {
+      if (strncasecmp(arg, HUNTER_ID, strlen(HUNTER_ID)) != 0) {
         return FALSE;
       }
 
@@ -12652,7 +12653,7 @@ int bounty_hunter(struct char_data* ch, int cmd, char* arg) {
       }
 
       if (*(job->hunted_victim) != '\0') {
-        if (strcasecmp(job->hunted_victim, GET_NAME(targ))) {
+        if (strcasecmp(job->hunted_victim, GET_NAME(targ)) != 0) {
           strcpy(job->hunted_victim, GET_NAME(targ));
           if (ch->master) {
             stop_follower(ch);

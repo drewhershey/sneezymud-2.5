@@ -93,7 +93,7 @@ void raw_open_door(struct char_data* ch, int dir) {
   if (exit_ok(exitp, &rp) && (back = rp->dir_option[rev_dir[dir]]) &&
       (back->to_room == ch->in_room)) {
     REMOVE_BIT(back->exit_info, EX_CLOSED);
-    if (back->keyword && (strcmp("secret", fname(back->keyword)))) {
+    if (back->keyword && (strcmp("secret", fname(back->keyword)) != 0)) {
       sprintf(buf, "The %s is opened from the other side.\n\r",
         fname(back->keyword));
       send_to_room(buf, exitp->to_room);
@@ -538,7 +538,7 @@ int find_door(struct char_data* ch, char* type, char* dir) {
       if (!exitp->keyword) {
         return (door);
       }
-      if ((isname(type, exitp->keyword)) && (strcmp(type, "secret"))) {
+      if ((isname(type, exitp->keyword)) && (strcmp(type, "secret") != 0)) {
         return (door);
       }
       sprintf(buf, "I see no %s there.\n\r", type);
