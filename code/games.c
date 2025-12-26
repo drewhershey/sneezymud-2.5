@@ -1123,7 +1123,7 @@ int craps_table_man(struct char_data* ch, int cmd, char* arg) {
     }
   } else {
     if (!ch->act_ptr) {
-      ch->act_ptr = (struct mob_act_data*)calloc(1, sizeof(int));
+      ch->act_ptr = (struct mob_act_data*)calloc(1, sizeof(struct mob_act_data));
     }
 
     switch ((*((int*)ch->act_ptr))) {

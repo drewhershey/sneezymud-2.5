@@ -4606,7 +4606,7 @@ int Tytan(struct char_data* ch, int cmd, char* arg) {
     return (magic_user(ch, cmd, arg));
   }
   if (!ch->act_ptr) { /* no state info */
-    ch->act_ptr = (struct mob_act_data*)calloc(1, (sizeof(int)));
+    ch->act_ptr = (struct mob_act_data*)calloc(1, sizeof(struct mob_act_data));
   }
   switch ((*((int*)ch->act_ptr))) {
     case TYT_NONE:
