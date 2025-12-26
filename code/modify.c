@@ -472,7 +472,7 @@ void do_edit(struct char_data* ch, char* arg, int cmd) {
         }
 
         rp->dir_option[dir]->key = dkey;
-        if (real_roomp(exroom) != NULL) {
+        if (real_roomp(exroom) != nullptr) {
           rp->dir_option[dir]->to_room = exroom;
         } else {
           send_to_char("Deleting exit.\n\r", ch);
@@ -480,7 +480,7 @@ void do_edit(struct char_data* ch, char* arg, int cmd) {
           rp->dir_option[dir] = 0;
           return;
         }
-      } else if (real_roomp(exroom) == NULL) {
+      } else if (real_roomp(exroom) == nullptr) {
         send_to_char("Hey, John Yaya, that's not a valid room.\n\r", ch);
         return;
       } else {
@@ -768,7 +768,7 @@ int page_file(struct descriptor_data* d, char* input) {
   numlines = (d->screen_size) ? d->screen_size - 2 : 24;
   fseek(fp, d->position, 0);
   for (i = 0; i < numlines; i++) {
-    if (fgets(buffer, 255, fp) != NULL) {
+    if (fgets(buffer, 255, fp) != nullptr) {
       send_to_char(buffer, d->character);
       send_to_char("\r", d->character); /* append carriage return/line */
       sent_something = TRUE;

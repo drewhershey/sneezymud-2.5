@@ -51,10 +51,10 @@ void InitABoard(struct obj_data* obj) {
   }
 
   for (i = 0; i < MAX_MSGS; ++i) {
-    new->head[i] = NULL;
+    new->head[i] = nullptr;
   }
   for (i = 0; i < MAX_MSGS; ++i) {
-    new->msgs[i] = NULL;
+    new->msgs[i] = nullptr;
   }
 
   new->msg_num = 0;
@@ -87,7 +87,7 @@ struct Board* FindBoardInRoom(int room) {
   struct Board* nb;
 
   if (!real_roomp(room)) {
-    return (NULL);
+    return (nullptr);
   }
 
   for (o = real_roomp(room)->contents; o; o = o->next_content) {
@@ -97,10 +97,10 @@ struct Board* FindBoardInRoom(int room) {
           return (nb);
         }
       }
-      return (NULL);
+      return (nullptr);
     }
   }
-  return (NULL);
+  return (nullptr);
 }
 
 int board(struct char_data* ch, int cmd, char* arg, Obj* me) {
@@ -180,7 +180,7 @@ void board_write_msg(struct char_data* ch, char* arg, struct Board* b) {
   }
 
   sprintf(b->head[b->msg_num], "[%s] %s (%s)", buf, arg, GET_NAME(ch));
-  b->msgs[b->msg_num] = NULL;
+  b->msgs[b->msg_num] = nullptr;
 
   send_to_char("Write your message. Terminate with an @.\n\r\n\r", ch);
   act("$n starts to write a message.", TRUE, ch, 0, 0, TO_ROOM);
@@ -324,7 +324,7 @@ void board_reset_board(struct Board* b) {
     if (b->msgs[ind]) {
       free(b->msgs[ind]);
     }
-    b->head[ind] = b->msgs[ind] = NULL;
+    b->head[ind] = b->msgs[ind] = nullptr;
   }
   b->msg_num = 0;
   board_fix_long_desc(b);

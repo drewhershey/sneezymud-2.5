@@ -193,7 +193,7 @@ void dsearch(char* string, char* tmp) {
 
   i = 0;
   while (i == 0) {
-    if (strchr(string, '~') == NULL) {
+    if (strchr(string, '~') == nullptr) {
       i = 1;
       strcpy(tmp, string);
     } else {
@@ -327,7 +327,7 @@ static FILE* make_zone_file(struct char_data* c) {
 
   sprintf(buf, "zone/%s.zon", GET_NAME(c));
 
-  if ((fp = fopen(buf, "w")) != NULL) {
+  if ((fp = fopen(buf, "w")) != nullptr) {
     return (fp);
   }
   return (0);
@@ -696,7 +696,7 @@ static void room_load(struct char_data* ch, int start, int end) {
 
   sprintf(buf, "areas/%s", ch->player.name);
 
-  if ((fp = fopen(buf, "r")) == NULL) {
+  if ((fp = fopen(buf, "r")) == nullptr) {
     send_to_char("You don't appear to have an area...\n\r", ch);
     return;
   }
@@ -717,7 +717,7 @@ static void room_load(struct char_data* ch, int start, int end) {
         send_to_char("+", ch);
       } else {
         if (rp->people) {
-          act("$n reaches down and scrambles reality.", FALSE, ch, NULL,
+          act("$n reaches down and scrambles reality.", FALSE, ch, nullptr,
             rp->people, TO_ROOM);
         }
         cleanout_room(rp);
@@ -790,7 +790,7 @@ static void room_save(struct char_data* ch, int start, int end) {
 
   sprintf(buf, "areas/%s", ch->player.name);
 
-  if ((fp = fopen(buf, "w")) == NULL) {
+  if ((fp = fopen(buf, "w")) == nullptr) {
     send_to_char("Can't write to disk now..try later \n\r", ch);
     return;
   }
@@ -811,7 +811,7 @@ static void room_save(struct char_data* ch, int start, int end) {
 
   for (i = rstart; i <= rend; i++) {
     rp = real_roomp(i);
-    if (rp == NULL) {
+    if (rp == nullptr) {
       continue;
     }
 
@@ -992,7 +992,7 @@ void do_flag(struct char_data* ch, char* argument, int cmd) {
   if (!*buf) {
     send_to_char("Flag who?\n\r", ch);
   } else {
-    if (!(victim = get_char_vis_world(ch, buf, NULL))) {
+    if (!(victim = get_char_vis_world(ch, buf, nullptr))) {
       send_to_char("Noone by that name on!\n\r", ch);
     } else if (GetMaxLevel(victim) > GetMaxLevel(ch)) {
       send_to_char("Sorry you can't flag someone higher than you.\n\r", ch);
@@ -1086,7 +1086,7 @@ void do_trans(struct char_data* ch, char* argument, int cmd) {
   if (!*buf) {
     send_to_char("Who do you wich to transfer?\n\r", ch);
   } else if (str_cmp("all", buf)) {
-    if (!(victim = get_char_vis_world(ch, buf, NULL))) {
+    if (!(victim = get_char_vis_world(ch, buf, nullptr))) {
       send_to_char("No-one by that name around.\n\r", ch);
     } else {
       act("$n disappears in a cloud of mushrooms.", FALSE, victim, 0, 0,
@@ -1139,14 +1139,14 @@ void do_at(struct char_data* ch, char* argument, int cmd) {
 
   if (isdigit(*loc_str)) {
     loc_nr = atoi(loc_str);
-    if (NULL == real_roomp(loc_nr)) {
+    if (nullptr == real_roomp(loc_nr)) {
       send_to_char("No room exists with that number.\n\r", ch);
       return;
     }
     location = loc_nr;
   } else if (target_mob = get_char_vis(ch, loc_str)) {
     location = target_mob->in_room;
-  } else if (target_obj = get_obj_vis_world(ch, loc_str, NULL)) {
+  } else if (target_obj = get_obj_vis_world(ch, loc_str, nullptr)) {
     if (target_obj->in_room != NOWHERE) {
       location = target_obj->in_room;
     } else {
@@ -1195,9 +1195,9 @@ void do_goto(struct char_data* ch, char* argument, int cmd) {
     return;
   }
 
-  if (isdigit(*buf) && NULL == strchr(buf, '.')) {
+  if (isdigit(*buf) && nullptr == strchr(buf, '.')) {
     loc_nr = atoi(buf);
-    if (NULL == real_roomp(loc_nr)) {
+    if (nullptr == real_roomp(loc_nr)) {
       if (GetMaxLevel(ch) < 51 || loc_nr < 0) {
         send_to_char("No room exists with that number.\n\r", ch);
         return;
@@ -1211,9 +1211,9 @@ void do_goto(struct char_data* ch, char* argument, int cmd) {
       }
     }
     location = loc_nr;
-  } else if (target_mob = get_char_vis_world(ch, buf, NULL)) {
+  } else if (target_mob = get_char_vis_world(ch, buf, nullptr)) {
     location = target_mob->in_room;
-  } else if (target_obj = get_obj_vis_world(ch, buf, NULL)) {
+  } else if (target_obj = get_obj_vis_world(ch, buf, nullptr)) {
     if (target_obj->in_room != NOWHERE) {
       location = target_obj->in_room;
     } else {
@@ -1930,7 +1930,7 @@ void do_set(struct char_data* ch, char* argument, int cmd) {
   argument = one_argument(argument, name);
   argument = one_argument(argument, parmstr);
 
-  if ((mob = get_char_vis(ch, name)) == NULL) {
+  if ((mob = get_char_vis(ch, name)) == nullptr) {
     send_to_char("I don't see that here \n\r", ch);
     return;
   }
@@ -2470,7 +2470,7 @@ static void completely_cleanout_room(struct room_data* rp) {
     act(
       "The hand of god sweeps across the land and you are swept into the "
       "Void.",
-      FALSE, NULL, NULL, NULL, TO_VICT);
+      FALSE, nullptr, nullptr, nullptr, TO_VICT);
     char_from_room(ch);
     char_to_room(ch, 0); /* send character to the void */
   }
@@ -3287,7 +3287,7 @@ static void show_room_zone(int rnum, struct room_data* rp, void* data) {
     append_to_string_block(srzs->sb, buf);
     srzs->blank = 0;
   }
-  if (rp->name == NULL) {
+  if (rp->name == nullptr) {
     sprintf(buf, "room %d's name is screwed!\n\r", rp->number);
     return;
   }
@@ -3506,7 +3506,7 @@ void do_invis(struct char_data* ch, char* argument, int cmd) {
 /* disallow any bogus characters in automated system requests.
    this is intented to prevent 'hacking' */
 static int safe_to_be_in_system(char* cp) {
-  return (strpbrk(cp, "\"';`") == NULL);
+  return (strpbrk(cp, "\"';`") == nullptr);
 }
 
 void do_loglist(struct char_data* ch, char* arg, int cmd) {

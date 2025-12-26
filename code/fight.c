@@ -67,7 +67,7 @@ void setKillerFlag(Mob* ch, Mob* victim) {
   Mob* master;
   char buf[MAX_STRING_LENGTH];
 
-  /* You can never have enough checks for NULL. */
+  /* You can never have enough checks for nullptr. */
   if (!ch || !victim) {
     return;
   }
@@ -315,8 +315,8 @@ void stop_fighting(struct char_data* ch) {
     fighter->next_fighting = ch->next_fighting;
   }
 
-  ch->next_fighting = NULL;
-  ch->specials.fighting = NULL;
+  ch->next_fighting = nullptr;
+  ch->specials.fighting = nullptr;
   GET_POS(ch) = POSITION_STANDING;
   update_pos(ch);
 }
@@ -896,7 +896,7 @@ static int brittle_check(struct char_data* ch, int dam) {
 
   if (ch->equipment[WIELD]) {
     if (IS_OBJ_STAT(ch->equipment[WIELD], ITEM_BRITTLE)) {
-      if ((obj = unequip_char(ch, WIELD)) != NULL) {
+      if ((obj = unequip_char(ch, WIELD)) != nullptr) {
         sprintf(buf, "%s shatters.\n\r", obj->short_description);
         send_to_char(buf, ch);
         return (TRUE);
@@ -1407,7 +1407,7 @@ int get_weapon_dam(struct char_data* ch, struct char_data* v,
     } else {
       act("$p snaps into peices!", TRUE, ch, wielded, 0, TO_CHAR);
       act("$p snaps into peices!", TRUE, ch, wielded, 0, TO_ROOM);
-      if ((obj = unequip_char(ch, WIELD)) != NULL) {
+      if ((obj = unequip_char(ch, WIELD)) != nullptr) {
         dam += 1;
       }
     }
@@ -1626,7 +1626,7 @@ void root_hit(struct char_data* ch, struct char_data* victim, int type,
   if ((ch->equipment[WIELD]) &&
       (obj_index[ch->equipment[WIELD]->item_number].func.obj_f)) {
     if ((*obj_index[ch->equipment[WIELD]->item_number].func.obj_f)(victim,
-          OBJECT_HITTING, NULL, ch->equipment[WIELD])) {
+          OBJECT_HITTING, nullptr, ch->equipment[WIELD])) {
       return;
     }
   }
@@ -1787,11 +1787,11 @@ void perform_violence(int pulse) {
             if (ch->specials.fighting) {
               hit(ch, ch->specials.fighting, TYPE_UNDEFINED);
             } else {
-              if ((vict = FindAHatee(ch)) != NULL) {
+              if ((vict = FindAHatee(ch)) != nullptr) {
                 if (vict->attackers < 6) {
                   hit(ch, vict, TYPE_UNDEFINED);
                 }
-              } else if ((vict = FindAnAttacker(ch)) != NULL) {
+              } else if ((vict = FindAnAttacker(ch)) != nullptr) {
                 if (vict->attackers < 6) {
                   hit(ch, vict, TYPE_UNDEFINED);
                 }
@@ -1810,11 +1810,11 @@ void perform_violence(int pulse) {
               if (ch->specials.fighting) {
                 hit(ch, ch->specials.fighting, TYPE_UNDEFINED);
               } else {
-                if ((vict = FindAHatee(ch)) != NULL) {
+                if ((vict = FindAHatee(ch)) != nullptr) {
                   if (vict->attackers < 6) {
                     hit(ch, vict, TYPE_UNDEFINED);
                   }
-                } else if ((vict = FindAnAttacker(ch)) != NULL) {
+                } else if ((vict = FindAnAttacker(ch)) != nullptr) {
                   if (vict->attackers < 6) {
                     hit(ch, vict, TYPE_UNDEFINED);
                   }
@@ -2214,7 +2214,7 @@ int break_life_saver_obj(struct char_data* ch) {
     sprintf(buf, "%s shatters with a blinding flash of light!\n\r",
       ch->equipment[found]->name);
     send_to_char(buf, ch);
-    if ((o = unequip_char(ch, found)) != NULL) {}
+    if ((o = unequip_char(ch, found)) != nullptr) {}
   }
   return found;
 }

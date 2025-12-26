@@ -441,7 +441,7 @@ void do_save(struct char_data* ch, char* argument, int cmd) {
     GET_EXP(tmp) = GET_EXP(ch);
     GET_GOLD(tmp) = GET_GOLD(ch);
     GET_ALIGNMENT(tmp) = GET_ALIGNMENT(ch);
-    recep_offer(tmp, NULL, &cost);
+    recep_offer(tmp, nullptr, &cost);
     save_obj_for_save(tmp, &cost, 0);
     save_char(ch, AUTO_RENT);
     tmp->carrying = tl;
@@ -458,7 +458,7 @@ void do_save(struct char_data* ch, char* argument, int cmd) {
 
     return;
   }
-  recep_offer(ch, NULL, &cost);
+  recep_offer(ch, nullptr, &cost);
   save_obj_for_save(ch, &cost, 0);
   save_char(ch, AUTO_RENT);
 }
@@ -1227,7 +1227,7 @@ void do_prompt(struct char_data* ch, char* arg, int cmd) {
     send_to_char(buf, ch);
     ch->desc->prompt = strdup(arg);
   } else {
-    send_to_char("Clearing prompt to NULL", ch);
+    send_to_char("Clearing prompt to nullptr", ch);
     ch->desc->prompt = 0;
   }
 }

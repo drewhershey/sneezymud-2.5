@@ -52,7 +52,7 @@ static int split_string(char* str, char* sep, char** argv)
     return 1;
   }
 
-  while (s = strtok(NULL, sep)) {
+  while (s = strtok(nullptr, sep)) {
     argv[argc++] = s;
   }
   return argc;
@@ -98,7 +98,7 @@ int isname(const char* str, const char* namelist) {
   for (i = 0; i < argc; i++) {
     for (j = 0; j < xargc; j++) {
       if (xargv[j] && is_abbrev(argv[i], xargv[j])) {
-        xargv[j] = NULL;
+        xargv[j] = nullptr;
         break;
       }
     }
@@ -132,7 +132,7 @@ void page_string_block(struct string_block* sb, struct char_data* ch) {
 
 void destroy_string_block(struct string_block* sb) {
   free(sb->data);
-  sb->data = NULL;
+  sb->data = nullptr;
 }
 
 void affect_modify(struct char_data* ch, signed char loc, long mod, long bitv,
@@ -513,7 +513,7 @@ void affect_remove(struct char_data* ch, struct affected_type* af) {
 
 /* Call affect_remove with every spell of spelltype "skill" */
 void affect_from_char(struct char_data* ch, short skill) {
-  struct affected_type* next = NULL;
+  struct affected_type* next = nullptr;
 
   for (struct affected_type* hjp = ch->affected; hjp; hjp = next) {
     next = hjp->next;
@@ -523,7 +523,7 @@ void affect_from_char(struct char_data* ch, short skill) {
   }
 }
 
-/* Return if a char is affected by a spell (SPELL_XXX), NULL indicates
+/* Return if a char is affected by a spell (SPELL_XXX), nullptr indicates
    not affected                                                        */
 char affected_by_spell(struct char_data* ch, short skill) {
   struct affected_type* hjp;
@@ -585,7 +585,7 @@ void char_from_room(struct char_data* ch) {
   }
 
   rp = real_roomp(ch->in_room);
-  if (rp == NULL) {
+  if (rp == nullptr) {
     sprintf(buf, "ERROR: char_from_room: %s was not in a valid room (%d)",
       (!IS_NPC(ch) ? (ch)->player.name : (ch)->player.short_descr),
       ch->in_room);
@@ -1282,7 +1282,7 @@ void extract_obj(struct obj_data* obj) {
   while (obj->contains) {
     struct obj_data* contained = obj->contains;
     obj->contains = contained->next_content;
-    contained->in_obj = NULL; /* Already unlinked from parent */
+    contained->in_obj = nullptr; /* Already unlinked from parent */
     extract_obj(contained);
   }
   /* leaves nothing ! */
@@ -1596,7 +1596,7 @@ struct char_data* get_char_vis(struct char_data* ch, char* name) {
     return (i);
   }
 
-  return get_char_vis_world(ch, name, NULL);
+  return get_char_vis_world(ch, name, nullptr);
 }
 
 struct obj_data* get_obj_in_list_vis(struct char_data* ch, char* name,
@@ -1673,7 +1673,7 @@ struct obj_data* get_obj_vis(struct char_data* ch, char* name) {
     return (i);
   }
 
-  return get_obj_vis_world(ch, name, NULL);
+  return get_obj_vis_world(ch, name, nullptr);
 }
 
 struct obj_data* get_obj_vis_accessible(struct char_data* ch, char* name) {
@@ -1780,8 +1780,8 @@ struct obj_data* create_money(int amount) {
 /*  bitv..   All those bits that you want to "search through".            */
 /*           Bit found will be result of the function                     */
 /*  *ch      This is the person that is trying to "find"                  */
-/*  **tar_ch Will be NULL if no character was found, otherwise points     */
-/* **tar_obj Will be NULL if no object was found, otherwise points        */
+/*  **tar_ch Will be nullptr if no character was found, otherwise points     */
+/* **tar_obj Will be nullptr if no object was found, otherwise points        */
 /*                                                                        */
 /* The routine returns a pointer to the next word in *arg (just like the  */
 /* one_argument routine).                                                 */

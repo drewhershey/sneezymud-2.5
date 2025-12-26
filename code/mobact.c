@@ -306,14 +306,14 @@ void mobile_activity(struct char_data* ch) {
       }
       if (!ch->specials.fighting) {
         if (IS_SET(ch->specials.act, ACT_AFRAID)) {
-          if ((tmp_ch = FindAFearee(ch)) != NULL) {
+          if ((tmp_ch = FindAFearee(ch)) != nullptr) {
             do_flee(ch, "", 0);
           }
         }
       }
     } else {
       if (IS_SET(ch->specials.act, ACT_AFRAID)) {
-        if ((tmp_ch = FindAFearee(ch)) != NULL) {
+        if ((tmp_ch = FindAFearee(ch)) != nullptr) {
           do_flee(ch, "", 0);
         } else {
           if (IS_SET(ch->specials.act, ACT_HATEFUL)) {

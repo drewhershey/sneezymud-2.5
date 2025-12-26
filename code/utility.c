@@ -141,15 +141,15 @@ void LearnFromMistake(struct char_data* ch, int sknum, int silent, int max) {
 
 int exit_ok(struct room_direction_data* exit, struct room_data** rpp) {
   struct room_data* rp;
-  if (rpp == NULL) {
+  if (rpp == nullptr) {
     rpp = &rp;
   }
   if (!exit) {
-    *rpp = NULL;
+    *rpp = nullptr;
     return FALSE;
   }
   *rpp = real_roomp(exit->to_room);
-  return (*rpp != NULL);
+  return (*rpp != nullptr);
 }
 
 int ObjVnum(struct obj_data* o) {
@@ -423,7 +423,7 @@ char getall(char* name, char* newname) {
   if (prd != '.') {
     return (FALSE);
   }
-  if (tmpname == NULL) {
+  if (tmpname == nullptr) {
     return (FALSE);
   }
   if (strcmp(arg, "all") != 0) {
@@ -444,7 +444,7 @@ char getall(char* name, char* newname) {
 }
 
 int getabunch(const char* name, char* newname) {
-  if (name == NULL || newname == NULL) {
+  if (name == nullptr || newname == nullptr) {
     return 0;
   }
 
@@ -452,7 +452,7 @@ int getabunch(const char* name, char* newname) {
   size_t num = strtoul(name, &endptr, 10);
 
   if (endptr == name || *endptr != '*' || *(endptr + 1) == '\0' ||
-      strcpy(newname, endptr + 1) == NULL) {
+      strcpy(newname, endptr + 1) == nullptr) {
     return 0;
   }
 
@@ -1031,7 +1031,7 @@ void Teleport(int pulse) {
   struct obj_data* obj_object;
   struct obj_data* temp_obj;
   char buf[20];
-  char* tmp_desc = NULL;
+  char* tmp_desc = nullptr;
   int or;
   struct room_data* rp;
   struct room_data* dest;
@@ -1069,7 +1069,7 @@ void Teleport(int pulse) {
           }
         }
 
-        if (tmp == NULL) {
+        if (tmp == nullptr) {
           break; /* we've run out of NPCs */
         }
 
@@ -1140,7 +1140,7 @@ int RecCompObjNum(struct obj_data* o, int obj_num) {
 
 struct char_data* char_holding(struct obj_data* obj) {
   if (obj->in_room != NOWHERE) {
-    return NULL;
+    return nullptr;
   }
   if (obj->carried_by) {
     return obj->carried_by;
@@ -1151,7 +1151,7 @@ struct char_data* char_holding(struct obj_data* obj) {
   if (obj->in_obj) {
     return char_holding(obj->in_obj);
   }
-  return NULL;
+  return nullptr;
 }
 
 void RestoreChar(struct char_data* ch) {
@@ -1219,7 +1219,7 @@ void TeleportPulseStuff(int pulse) {
   struct obj_data* temp_obj;
   char* tmp_desc;
 
-  tmp_desc = NULL;
+  tmp_desc = nullptr;
 
   tm = pulse % PULSE_MOBILE; /* this is dependent on P_M = 3*P_T */
 
@@ -1263,7 +1263,7 @@ void TeleportPulseStuff(int pulse) {
             }
           }
 
-          if (tmp == NULL) {
+          if (tmp == nullptr) {
             break; /* we've run out of NPCs */
           }
 
@@ -1526,12 +1526,12 @@ char* strstr(const char* s1, const char* s2) {
   int k = strlen(s2);
 
   if (j < 0) {
-    return NULL;
+    return nullptr;
   }
   for (i = 0; i <= j && strncmp(s1++, s2, k) != 0; i++) {
     ;
   }
-  return (i > j) ? NULL : (char*)(s1 - 1);
+  return (i > j) ? nullptr : (char*)(s1 - 1);
 }
 
 char* strcasestr(const char* s1, const char* s2) {
@@ -1541,12 +1541,12 @@ char* strcasestr(const char* s1, const char* s2) {
   int k = strlen(s2);
 
   if (j < 0) {
-    return NULL;
+    return nullptr;
   }
   for (i = 0; i <= j && strncasecmp(s1++, s2, k) != 0; i++) {
     ;
   }
-  return (i > j) ? NULL : (char*)(s1 - 1);
+  return (i > j) ? nullptr : (char*)(s1 - 1);
 }
 
 int GetApprox(int num, int perc) {

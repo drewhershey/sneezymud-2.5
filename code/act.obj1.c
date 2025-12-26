@@ -526,11 +526,11 @@ void do_put(struct char_data* ch, char* argument, int cmd) {
   char buffer[256];
   char arg1[128];
   char arg2[128];
-  struct obj_data* obj_object = NULL;
-  struct obj_data* sub_object = NULL;
+  struct obj_data* obj_object = nullptr;
+  struct obj_data* sub_object = nullptr;
   struct obj_data* vol_object;
   struct obj_data* next_obj;
-  struct char_data* tmp_char = NULL;
+  struct char_data* tmp_char = nullptr;
   int bits;
   int volume;
   char newarg[100];

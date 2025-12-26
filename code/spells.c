@@ -26,7 +26,7 @@
 #include "structs.h"
 #include "utils.h"
 
-struct room_data* world = NULL; /* dyn alloc'ed array of rooms     */
+struct room_data* world = nullptr; /* dyn alloc'ed array of rooms     */
 
 static void spell_burning_hands(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
@@ -1140,7 +1140,7 @@ static int enforce_verbal(struct char_data* ch) {
   }
 
   if (!can_do_verbal(ch)) {
-    act("$n opens his mouth as if to say something.", TRUE, ch, 0, NULL,
+    act("$n opens his mouth as if to say something.", TRUE, ch, 0, nullptr,
       TO_ROOM);
     send_to_char("You are unable to chant the mantra!\n\r", ch);
     return FALSE;
@@ -1168,7 +1168,7 @@ static int perform_gestural(struct char_data* ch) {
     return FALSE;
   }
 
-  act("$n traces a magical rune in the air with his hands.", TRUE, ch, 0, NULL,
+  act("$n traces a magical rune in the air with his hands.", TRUE, ch, 0, nullptr,
     TO_ROOM);
   send_to_char("You trace a rune in the air with your hands.\n\r", ch);
   return TRUE;
@@ -1183,9 +1183,9 @@ static int use_component(struct char_data* ch, struct obj_data* o) {
 
   strength = (ITEM_TYPE(o) == ITEM_COMPONENT) ? o->obj_flags.value[0] : 1;
   act("$n throws $p into the air... it explodes in a blast of light!", TRUE, ch,
-    o, NULL, TO_ROOM);
+    o, nullptr, TO_ROOM);
   act("You throw $p into the air... it explodes in a blast of light!", TRUE, ch,
-    o, NULL, TO_CHAR);
+    o, nullptr, TO_CHAR);
   extract_obj(o);
 
   return strength;
@@ -1204,7 +1204,7 @@ static struct obj_data* find_component(struct char_data* ch, int vnum) {
   struct obj_data* item;
 
   if ((!ch) || !(item = ch->equipment[HOLD])) {
-    return NULL;
+    return nullptr;
   }
 
   if (((item->item_number >= 0) ? obj_index[item->item_number].virtual : 0) ==
@@ -1221,7 +1221,7 @@ static struct obj_data* find_component(struct char_data* ch, int vnum) {
     }
   }
 
-  return NULL;
+  return nullptr;
 }
 
 static int num_classes(struct char_data* ch) {
@@ -1293,7 +1293,7 @@ static void spell_create_golem(signed char level, struct char_data* ch,
   int modifier = 0;
   int target;
   struct affected_type af;
-  struct char_data* golem = NULL;
+  struct char_data* golem = nullptr;
 
   if (!ch) {
     return;
@@ -2983,7 +2983,7 @@ static void spell_fly_group(signed char level, struct char_data* ch,
 
   assert(ch);
 
-  if (real_roomp(ch->in_room) == NULL) {
+  if (real_roomp(ch->in_room) == nullptr) {
     return;
   }
 
@@ -3029,7 +3029,7 @@ static void spell_heroes_feast(signed char level, struct char_data* ch,
   struct room_data* rp;
   struct char_data* tch;
 
-  if (real_roomp(ch->in_room) == NULL) {
+  if (real_roomp(ch->in_room) == nullptr) {
     return;
   }
 
@@ -3109,7 +3109,7 @@ static void spell_heal_spray(signed char level, struct char_data* ch,
   struct room_data* rp;
   struct char_data* tch;
 
-  if (real_roomp(ch->in_room) == NULL) {
+  if (real_roomp(ch->in_room) == nullptr) {
     return;
   }
 

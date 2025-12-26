@@ -802,7 +802,7 @@ void do_breath(struct char_data* ch, char* argument, int cmd) {
     weapon = scan->breaths[dice(1, count) - 1];
     manacost = scan->cost;
     if (GET_MANA(ch) <= -3 * manacost) {
-      weapon = NULL;
+      weapon = nullptr;
     }
   } else {
     manacost = 0;

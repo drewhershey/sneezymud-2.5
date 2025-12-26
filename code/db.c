@@ -42,8 +42,8 @@ int top_of_world = 0; /* ref to the top element of world */
 
 struct room_data* room_db[WORLD_SIZE];
 
-struct obj_data* object_list = NULL;     /* the global linked list of obj's */
-struct char_data* character_list = NULL; /* global l-list of chars          */
+struct obj_data* object_list = nullptr;     /* the global linked list of obj's */
+struct char_data* character_list = nullptr; /* global l-list of chars          */
 
 struct zone_data* zone_table; /* table of reset data             */
 int top_of_zone_table = 0;
@@ -65,8 +65,8 @@ int mob_tick_count = 0;
 char motd[MAX_STRING_LENGTH];
 char ansi[MAX_STRING_LENGTH];
 
-FILE* mob_f = NULL;  // file containing mob prototypes
-FILE* obj_f = NULL;  // obj prototypes
+FILE* mob_f = nullptr;  // file containing mob prototypes
+FILE* obj_f = nullptr;  // obj prototypes
 
 struct index_data* mob_index; /* index table for mobile file     */
 struct index_data* obj_index; /* index table for object file     */
@@ -386,9 +386,9 @@ struct index_data* generate_indices(FILE* fl, int* top) {
         sscanf(buf, "#%d", &index[i].virtual);
         index[i].pos = ftell(fl);
         index[i].number = 0;
-        index[i].func.mob_f = NULL;
-        index[i].func.obj_f = NULL;
-        index[i].func.room_f = NULL;
+        index[i].func.mob_f = nullptr;
+        index[i].func.obj_f = nullptr;
+        index[i].func.room_f = nullptr;
         index[i].name = (index[i].virtual < 99999) ? fread_string(fl) : "omega";
         i++;
       } else {
@@ -417,7 +417,7 @@ void cleanout_room(struct room_data* rp) {
       free(rp->dir_option[i]->general_description);
       free(rp->dir_option[i]->keyword);
       free(rp->dir_option[i]);
-      rp->dir_option[i] = NULL;
+      rp->dir_option[i] = nullptr;
     }
   }
 
@@ -611,7 +611,7 @@ Room* allocate_room(int room_number) {
   if (room_number < 0 || room_number >= WORLD_SIZE) {
     vlogf("allocate_room: room_number %d out of bounds (0-%d)", room_number,
       WORLD_SIZE - 1);
-    return NULL;
+    return nullptr;
   }
 
   if (room_number > top_of_world) {
@@ -624,7 +624,7 @@ Room* allocate_room(int room_number) {
     return room;
   }
 
-  room = NULL;
+  room = nullptr;
   CREATE(room, struct room_data, 1);
   room->number = (short)room_number;
   room_db[room_number] = room;
@@ -865,13 +865,13 @@ struct char_data* read_mobile(int nr, int type) {
     if (nr < 0) {
       char buf[MAX_STRING_LENGTH];
       sprintf(buf, "Mobile (V) %d does not exist in database.", original_nr);
-      return NULL;
+      return nullptr;
     }
   }
 
   fseek(mob_f, mob_index[nr].pos, 0);
 
-  Mob* mob = NULL;
+  Mob* mob = nullptr;
   CREATE(mob, struct char_data, 1);
   clear_char(mob);
 
@@ -881,7 +881,7 @@ struct char_data* read_mobile(int nr, int type) {
   mob->player.short_descr = fread_string(mob_f);
   mob->player.long_descr = fread_string(mob_f);
   mob->player.description = fread_string(mob_f);
-  mob->player.title = NULL;
+  mob->player.title = nullptr;
 
   /* *** Numeric data *** */
 
@@ -1124,8 +1124,8 @@ struct char_data* read_mobile(int nr, int type) {
       mob->player.sounds = fread_string(mob_f);
       mob->player.distant_snds = fread_string(mob_f);
     } else {
-      mob->player.sounds = NULL;
-      mob->player.distant_snds = NULL;
+      mob->player.sounds = nullptr;
+      mob->player.distant_snds = nullptr;
     }
 
     mob->player.class = 0;
@@ -1234,7 +1234,7 @@ struct char_data* read_mobile(int nr, int type) {
   }
 
   mob->nr = (short)nr;
-  mob->desc = NULL;
+  mob->desc = nullptr;
 
   if (!IS_SET(mob->specials.act, ACT_ISNPC)) {
     SET_BIT(mob->specials.act, ACT_ISNPC);
@@ -1528,8 +1528,8 @@ void reset_zone(int zone) {
 
         case 'O': /* read an object */
           if (obj_index[ZCMD.arg1].number < ZCMD.arg2) {
-            if (ZCMD.arg3 >= 0 && ((rp = real_roomp(ZCMD.arg3)) != NULL)) {
-              if ((obj = read_object(ZCMD.arg1, REAL)) != NULL) {
+            if (ZCMD.arg3 >= 0 && ((rp = real_roomp(ZCMD.arg3)) != nullptr)) {
+              if ((obj = read_object(ZCMD.arg1, REAL)) != nullptr) {
                 obj_to_room(obj, ZCMD.arg3);
                 last_cmd = 1;
               } else {
@@ -1765,7 +1765,7 @@ void store_to_char(struct char_file_u* st, struct char_data* ch) {
       af.modifier = st->affected[i].modifier;
       af.location = st->affected[i].location;
       af.bitvector = COMPAT_TO_LONG(st->affected[i].bitvector);
-      af.next = NULL;
+      af.next = nullptr;
       affect_to_char(ch, &af);
     }
   }
@@ -2055,7 +2055,7 @@ char* fread_string(FILE* fl) {
   } while (!flag);
 
   /* do the allocate boogie  */
-  char* rslt = NULL;
+  char* rslt = nullptr;
   if (strlen(buf) > 0) {
     CREATE(rslt, char, strlen(buf) + 1);
     strcpy(rslt, buf);
@@ -2392,7 +2392,7 @@ void clear_char(struct char_data* ch) {
   ch->specials.position = POSITION_STANDING;
   ch->specials.default_pos = POSITION_STANDING;
   GET_AC(ch) = 100; /* Basic Armor */
-  ch->player.name = NULL;
+  ch->player.name = nullptr;
 }
 
 void clear_object(struct obj_data* obj) {
@@ -2532,7 +2532,7 @@ void init_char(struct char_data* ch) {
 }
 
 struct room_data* real_roomp(int virtual) {
-  return (virtual < WORLD_SIZE) && (virtual > -1) ? room_db[virtual] : NULL;
+  return (virtual < WORLD_SIZE) && (virtual > -1) ? room_db[virtual] : nullptr;
 }
 
 /* returns the real number of the monster with given virtual number */

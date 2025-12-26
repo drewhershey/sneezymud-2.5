@@ -28,7 +28,7 @@ void hash_enter_no_key(struct hash_header* ht, int key, void* data) {
   /* Grow keylist if needed */
   if (ht->klistlen >= ht->klistsize) {
     const int new_size = ht->klistsize * 2;
-    int* new_list = NULL;
+    int* new_list = nullptr;
 
     RECREATE(new_list, int, new_size);
 
@@ -58,7 +58,7 @@ void* hash_find(struct hash_header* ht, int key) {
     scan = scan->next;
   }
 
-  return scan ? scan->data : NULL;
+  return scan ? scan->data : nullptr;
 }
 
 /* Room array functions */

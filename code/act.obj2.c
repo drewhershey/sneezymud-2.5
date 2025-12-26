@@ -1191,7 +1191,7 @@ void do_remove(struct char_data* ch, char* argument, int cmd) {
   char buffer[256];
   int rem_list[20];
   int num_equip;
-  struct obj_data* obj_object = NULL;
+  struct obj_data* obj_object = nullptr;
   int j;
 
   one_argument(argument, arg1);
@@ -1201,7 +1201,7 @@ void do_remove(struct char_data* ch, char* argument, int cmd) {
       for (j = 0; j < MAX_WEAR; j++) {
         if (CAN_CARRY_N(ch) > IS_CARRYING_N(ch)) {
           if (ch->equipment[j]) {
-            if ((obj_object = unequip_char(ch, j)) != NULL) {
+            if ((obj_object = unequip_char(ch, j)) != nullptr) {
               obj_to_char(obj_object, ch);
 
               if (obj_object->obj_flags.type_flag == ITEM_LIGHT) {
@@ -1246,7 +1246,7 @@ void do_remove(struct char_data* ch, char* argument, int cmd) {
           if (CAN_CARRY_N(ch) > IS_CARRYING_N(ch)) {
             j = rem_list[atoi(t) - 1];
             if (ch->equipment[j]) {
-              if ((obj_object = unequip_char(ch, j)) != NULL) {
+              if ((obj_object = unequip_char(ch, j)) != nullptr) {
                 obj_to_char(obj_object, ch);
 
                 if (obj_object->obj_flags.type_flag == ITEM_LIGHT) {

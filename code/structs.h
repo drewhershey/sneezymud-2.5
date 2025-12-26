@@ -412,11 +412,11 @@ struct obj_data {
     char* short_description;  /* when worn/carry/in cont.         */
     char* action_description; /* What to write when used          */
     struct extra_descr_data* ex_description; /* extra descriptions     */
-    struct char_data* carried_by;  /* Carried by :NULL in room/conta   */
+    struct char_data* carried_by;  /* Carried by :nullptr in room/conta   */
     signed char eq_pos;            /* what is the equip. pos?          */
-    struct char_data* equipped_by; /* equipped by :NULL in room/conta  */
+    struct char_data* equipped_by; /* equipped by :nullptr in room/conta  */
 
-    struct obj_data* in_obj;   /* In what object NULL when none    */
+    struct obj_data* in_obj;   /* In what object nullptr when none    */
     struct obj_data* contains; /* Contains objects                 */
 
     struct obj_data* next_content; /* For 'contains' lists             */
@@ -933,7 +933,7 @@ struct char_data {
     struct obj_data* equipment[MAX_WEAR]; /* Equipment array             */
 
     struct obj_data* carrying;    /* Head of list                */
-    struct descriptor_data* desc; /* NULL for mobiles            */
+    struct descriptor_data* desc; /* nullptr for mobiles            */
     struct char_data* orig;       /* Special for polymorph       */
 
     struct char_data* next_in_room;  /* For room->people - list       */

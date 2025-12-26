@@ -393,7 +393,7 @@ void update_obj_file(void) {
   for (i = 0; i <= top_of_p_table; i++) {
     sprintf(buf, "rent/%s", player_table[i].name);
     /* r+b is for Binary Reading/Writing */
-    if ((fl = fopen(buf, "r+b")) != NULL) {
+    if ((fl = fopen(buf, "r+b")) != nullptr) {
       if (read_objs(fl, &st)) {
         if (str_cmp(st.owner, player_table[i].name) != 0) {
           vlog("Ack!  wrong person written into object file!");

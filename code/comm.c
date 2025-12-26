@@ -174,7 +174,7 @@ int run_the_game(int port) {
   PROFILE(extern etext();)
   PROFILE(monstartup((int)2, etext);)
 
-  descriptor_list = NULL;
+  descriptor_list = nullptr;
 
   vlog("Signal trapping.");
   signal_setup();
@@ -286,7 +286,7 @@ int game_loop(int s) {
       last_time.tv_sec++;
     }
 
-    if (sigprocmask(SIG_SETMASK, &mask, NULL) < 0) {
+    if (sigprocmask(SIG_SETMASK, &mask, nullptr) < 0) {
       perror("sigprocmask");
       return (-1);
     }
@@ -303,7 +303,7 @@ int game_loop(int s) {
 
     sigset_t empty_mask;
     sigemptyset(&empty_mask);
-    if (sigprocmask(SIG_SETMASK, &empty_mask, NULL) < 0) {
+    if (sigprocmask(SIG_SETMASK, &empty_mask, nullptr) < 0) {
       perror("sigprocmask");
       return (-1);
     }
@@ -387,7 +387,7 @@ int game_loop(int s) {
             point->position < 0) { /* done with page_file output */
           if (point->pagedfile) {
             free(point->pagedfile);
-            point->pagedfile = NULL;
+            point->pagedfile = nullptr;
           }
           point->position = 0;
         }
@@ -767,7 +767,7 @@ void write_to_q(const char* txt, struct txt_q* queue) {
 
   strcpy(new->text, txt);
 
-  new->next = NULL;
+  new->next = nullptr;
 
   /* Q empty? */
   if (!queue->head) {
@@ -822,7 +822,7 @@ int init_socket(int port) {
   memset(&sa, 0, sizeof(struct sockaddr_in));
   gethostname(hostname, MAX_HOSTNAME);
   hp = gethostbyname(hostname);
-  if (hp == NULL) {
+  if (hp == nullptr) {
     perror("gethostbyname");
     exit(1);
   }
@@ -882,7 +882,7 @@ static void printhost(struct in_addr* addr, char* buf) {
   int n4;
 
   h = gethostbyaddr((const char*)addr, sizeof(*addr), AF_INET);
-  s = (h == NULL) ? NULL : h->h_name;
+  s = (h == nullptr) ? nullptr : h->h_name;
 
   if (s) {
     strcpy(buf, s);
@@ -906,7 +906,7 @@ static void printhostaddr(struct in_addr* addr, char* buf) {
   int n4;
 
   h = gethostbyaddr((const char*)addr, sizeof(*addr), AF_INET);
-  s = (h == NULL) ? NULL : h->h_name;
+  s = (h == nullptr) ? nullptr : h->h_name;
   n1 = addr->s_addr >> 24;
   n2 = (addr->s_addr >> 16) - (n1 * 256);
   n3 = (addr->s_addr >> 8) - (n1 * 65536) - (n2 * 256);
@@ -959,7 +959,7 @@ int new_descriptor(int s) {
       for (a = 0; a <= numberhosts - 1; a++) {
         fprintf(stderr, "*HOST*|%s|%s|\n", temphost, hostlist[a]);
         if (isdigit(hostlist[a][0])) {
-          if (strstr((const char*)temphostaddr, hostlist[a]) != NULL) {
+          if (strstr((const char*)temphostaddr, hostlist[a]) != nullptr) {
             write_to_descriptor(desc, "Sorry, the game is locked.");
             close(desc);
             return (0);
@@ -984,11 +984,11 @@ int new_descriptor(int s) {
   newd->str = 0;
   newd->showstr_head = 0;
   newd->showstr_point = 0;
-  newd->pagedfile = NULL;
+  newd->pagedfile = nullptr;
   newd->position = 0;
   *newd->last_input = '\0';
-  newd->output.head = NULL;
-  newd->input.head = NULL;
+  newd->output.head = nullptr;
+  newd->input.head = nullptr;
   newd->next = descriptor_list;
   newd->character = 0;
   newd->original = 0;
@@ -1339,7 +1339,7 @@ void coma(int s) {
 
         sigset_t empty_mask;
         sigemptyset(&empty_mask);
-        if (sigprocmask(SIG_SETMASK, &empty_mask, NULL) < 0) {
+        if (sigprocmask(SIG_SETMASK, &empty_mask, nullptr) < 0) {
           perror("sigprocmask");
         }
         return;
@@ -1361,7 +1361,7 @@ void coma(int s) {
   vlog("Leaving coma.");
   sigset_t empty_mask;
   sigemptyset(&empty_mask);
-  if (sigprocmask(SIG_SETMASK, &empty_mask, NULL) < 0) {
+  if (sigprocmask(SIG_SETMASK, &empty_mask, nullptr) < 0) {
     perror("sigprocmask");
   }
 }

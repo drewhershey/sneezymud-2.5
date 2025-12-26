@@ -769,7 +769,7 @@ void affect_update(int pulse) {
 
     if (j->item_number >= 0 && j->item_number < top_of_objt &&
         obj_index[j->item_number].func.obj_f) {
-      (*obj_index[j->item_number].func.obj_f)(NULL, 0, NULL, j);
+      (*obj_index[j->item_number].func.obj_f)(nullptr, 0, nullptr, j);
     }
 
     if (j->obj_flags.decay_time > -1) {

@@ -26,15 +26,15 @@ void open_door(struct char_data* ch, int dir) {
   char buf[MAX_INPUT_LENGTH];
 
   rp = real_roomp(ch->in_room);
-  if (rp == NULL) {
-    sprintf(buf, "NULL rp in open_door() for %s.", PERS(ch, ch));
+  if (rp == nullptr) {
+    sprintf(buf, "nullptr rp in open_door() for %s.", PERS(ch, ch));
     vlog(buf);
     return;
   }
 
   exitp = rp->dir_option[dir];
-  if (exitp == NULL) {
-    vlog("NULL exit in open_door()");
+  if (exitp == nullptr) {
+    vlog("nullptr exit in open_door()");
     return;
   }
 
@@ -76,15 +76,15 @@ void raw_open_door(struct char_data* ch, int dir) {
   char buf[MAX_INPUT_LENGTH];
 
   rp = real_roomp(ch->in_room);
-  if (rp == NULL) {
-    sprintf(buf, "NULL rp in raw_open_door() for %s.", PERS(ch, ch));
+  if (rp == nullptr) {
+    sprintf(buf, "nullptr rp in raw_open_door() for %s.", PERS(ch, ch));
     vlog(buf);
     return;
   }
 
   exitp = rp->dir_option[dir];
-  if (exitp == NULL) {
-    vlog("NULL exit in raw_open_door()");
+  if (exitp == nullptr) {
+    vlog("nullptr exit in raw_open_door()");
     return;
   }
 
@@ -114,7 +114,7 @@ int ValidMove(struct char_data* ch, int cmd) {
 
   exitp = EXIT(ch, cmd);
 
-  if (!exit_ok(exitp, NULL)) {
+  if (!exit_ok(exitp, nullptr)) {
     not_legal_move(ch);
     return (FALSE);
   }
@@ -122,7 +122,7 @@ int ValidMove(struct char_data* ch, int cmd) {
     if (IS_IMMORTAL(ch)) {
       if (!IS_SET(ch->specials.act, PLR_STEALTH)) {
         act("$n's body splits into a cloud of atoms before before your eyes!",
-          FALSE, ch, 0, NULL, TO_ROOM);
+          FALSE, ch, 0, nullptr, TO_ROOM);
       }
       send_to_char("You make yourself ethreal to pass through the barrier.\n\r",
         ch);
@@ -193,7 +193,7 @@ static int raw_move(struct char_data* ch, int dir) {
   from_here = real_roomp(ch->in_room);
   to_here = real_roomp(from_here->dir_option[dir]->to_room);
 
-  if (to_here == NULL) {
+  if (to_here == nullptr) {
     char_from_room(ch);
     char_to_room(ch, 0);
 

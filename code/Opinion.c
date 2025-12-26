@@ -22,7 +22,7 @@ void FreeHates(struct char_data* ch) {
     n = k->next;
     free(k);
   }
-  ch->hates.clist = NULL;
+  ch->hates.clist = nullptr;
 }
 
 void FreeFears(struct char_data* ch) {
@@ -33,7 +33,7 @@ void FreeFears(struct char_data* ch) {
     n = k->next;
     free(k);
   }
-  ch->fears.clist = NULL;
+  ch->fears.clist = nullptr;
 }
 
 int RemHated(struct char_data* ch, struct char_data* pud) {

@@ -33,7 +33,7 @@ char* find_ex_description(char* word, struct extra_descr_data* list) {
     }
   }
 
-  return NULL;
+  return nullptr;
 }
 
 void do_whozone(Mob* ch, char* argument, int cmd) {
@@ -121,7 +121,7 @@ void do_who(struct char_data* ch, char* argument, int cmd) {
       return;
     }
     sprintf(buf, "%s %s   ", GET_NAME(k),
-      (k->player.title ? k->player.title : "(NULL)"));
+      (k->player.title ? k->player.title : "(nullptr)"));
     if (!strcmp(k->player.name, "Spawn")) {
       sprintf(tempbuf, "Level:[God O' da Jank] ");
     } else if (!strcmp(k->player.name, "Stargazer")) {
@@ -1598,8 +1598,8 @@ void do_examine(struct char_data* ch, char* argument, int cmd) {
   char name[100];
   char buf[100];
   int bits;
-  struct char_data* tmp_char = NULL;
-  struct obj_data* tmp_object = NULL;
+  struct char_data* tmp_char = nullptr;
+  struct obj_data* tmp_object = nullptr;
 
   sprintf(buf, "at %s", argument);
   do_look(ch, buf, 15);
@@ -2096,10 +2096,10 @@ static void do_where_object(struct char_data* ch, struct obj_data* obj,
   if (obj->in_room != NOWHERE) { /* object in a room */
     sprintf(buf, "%-30s- %s [%d]\n\r", obj->short_description,
       real_roomp(obj->in_room)->name, obj->in_room);
-  } else if (obj->carried_by != NULL) { /* object carried by monster */
+  } else if (obj->carried_by != nullptr) { /* object carried by monster */
     sprintf(buf, "%-30s- carried by %s\n\r", obj->short_description,
       numbered_person(ch, obj->carried_by));
-  } else if (obj->equipped_by != NULL) { /* object equipped by monster */
+  } else if (obj->equipped_by != nullptr) { /* object equipped by monster */
     sprintf(buf, "%-30s- equipped by %s\n\r", obj->short_description,
       numbered_person(ch, obj->equipped_by));
   } else if (obj->in_obj) { /* object in object */
@@ -2117,11 +2117,11 @@ static void do_where_object(struct char_data* ch, struct obj_data* obj,
     if (obj->in_room != NOWHERE) {
       return;
     }
-    if (obj->carried_by != NULL) {
+    if (obj->carried_by != nullptr) {
       do_where_person(ch, obj->carried_by, sb);
-    } else if (obj->equipped_by != NULL) {
+    } else if (obj->equipped_by != nullptr) {
       do_where_person(ch, obj->equipped_by, sb);
-    } else if (obj->in_obj != NULL) {
+    } else if (obj->in_obj != nullptr) {
       do_where_object(ch, obj->in_obj, TRUE, sb);
     }
   }

@@ -25,7 +25,7 @@ struct social_messg {
     char* others_no_arg;
 
     /* An argument was there, and a victim was found */
-    char* char_found; /* if NULL, read no further, ignore args */
+    char* char_found; /* if nullptr, read no further, ignore args */
     char* others_found;
     char* vict_found;
 

@@ -203,7 +203,7 @@ static void shopping_buy(char* arg, struct char_data* ch,
       temp1 = read_object(temp1->item_number, REAL);
     } else {
       obj_from_char(temp1);
-      if (temp1 == NULL) {
+      if (temp1 == nullptr) {
         send_to_char("Sorry, I just ran out of those.\n\r", ch);
         GET_GOLD(ch) +=
           (int)(temp1->obj_flags.cost * shop_index[shop_nr].profit_buy);
@@ -303,7 +303,7 @@ static void shopping_sell(char* arg, struct char_data* ch,
     (int)(temp1->obj_flags.cost * shop_index[shop_nr].profit_sell);
 
   obj_from_char(temp1);
-  if (temp1 == NULL) {
+  if (temp1 == nullptr) {
     send_to_char("As far as I am concerned, you are out..\n\r", ch);
     return;
   }
