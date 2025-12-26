@@ -436,7 +436,6 @@ static void spin_slot(struct char_data* ch) {
   }
   send_to_char("You lose!\n\r", ch);
   ch->bet.slot = 0;
-  return;
 }
 
 static int can_bet_craps(struct char_data* ch) {

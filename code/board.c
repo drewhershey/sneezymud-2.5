@@ -272,7 +272,6 @@ void board_save_board(struct Board* b) {
   }
   fclose(b->file);
   board_fix_long_desc(b);
-  return;
 }
 
 void board_load_board(struct Board* b) {
@@ -311,7 +310,6 @@ void board_load_board(struct Board* b) {
   }
   fclose(b->file);
   board_fix_long_desc(b);
-  return;
 }
 
 void board_reset_board(struct Board* b) {
@@ -328,14 +326,11 @@ void board_reset_board(struct Board* b) {
   }
   b->msg_num = 0;
   board_fix_long_desc(b);
-  return;
 }
 
 void error_log(const char* str) { /* The original error-handling was MUCH */
   fputs("Board : ", stderr);      /* more competent than the current but  */
-  fputs(str, stderr);             /* I got the advice to cut it out..;)   */
-  return;
-}
+  fputs(str, stderr);             }
 
 int board_display_msg(struct char_data* ch, char* arg, struct Board* b) {
   char buf[512];
@@ -370,7 +365,7 @@ int board_display_msg(struct char_data* ch, char* arg, struct Board* b) {
   return (1);
 }
 
-void board_fix_long_desc(struct Board* b) { return; }
+void board_fix_long_desc(struct Board* b) { }
 
 int board_show_board(struct char_data* ch, char* arg, struct Board* b) {
   int i;

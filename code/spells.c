@@ -2666,7 +2666,6 @@ void cast_clone(signed char level, struct char_data* ch, char* arg, int type,
   char buf[MAX_STRING_LENGTH];
 
   send_to_char("Not *YET* implemented.", ch);
-  return;
 
   /* clone both char and obj !!*/
 

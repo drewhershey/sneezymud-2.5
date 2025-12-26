@@ -226,7 +226,6 @@ void do_search(struct char_data* ch, char* arg, int cmd) {
   send_to_char("You are totally exhausted from your searching!\n\r", ch);
   act("$n is totally exhausted from $s search.", 0, ch, 0, 0, TO_ROOM);
   GET_MOVE(ch) = MAX(0, (GET_MOVE(ch) - 75));
-  return;
 }
 
 void do_set_traps(struct char_data* ch, char* arg, int cmd) {

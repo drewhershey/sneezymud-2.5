@@ -366,8 +366,6 @@ void do_pour(struct char_data* ch, char* argument, int cmd) {
   /* Then the poison boogie */
   to_obj->obj_flags.value[3] =
     (to_obj->obj_flags.value[3] || from_obj->obj_flags.value[3]);
-
-  return;
 }
 
 void do_sip(struct char_data* ch, char* argument, int cmd) {
@@ -455,8 +453,7 @@ void do_sip(struct char_data* ch, char* argument, int cmd) {
     name_from_drinkcon(temp);
   }
 
-  return;
-}
+  }
 
 void do_taste(struct char_data* ch, char* argument, int cmd) {
   struct affected_type af;
@@ -509,8 +506,7 @@ void do_taste(struct char_data* ch, char* argument, int cmd) {
     extract_obj(temp);
   }
 
-  return;
-}
+  }
 
 /* functions related to wear */
 

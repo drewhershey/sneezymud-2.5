@@ -66,8 +66,7 @@ void do_guard(struct char_data* ch, char* argument, int cmd) {
     }
   }
 
-  return;
-}
+  }
 
 void do_junk(struct char_data* ch, char* argument, int cmd) {
   char arg[100];
@@ -166,7 +165,6 @@ void do_command(struct char_data* ch, char* arg, int cmd) {
 
 void do_qui(struct char_data* ch, char* argument, int cmd) {
   send_to_char("You have to write quit - no less, to quit!\n\r", ch);
-  return;
 }
 
 void do_split(struct char_data* ch, char* argument, int cmd) {
@@ -582,7 +580,6 @@ void do_bload(struct char_data* ch, char* arg, int cmd) {
 
   obj_from_char(arrow);
   extract_obj(arrow);
-  return;
 }
 
 void do_reload(struct char_data* ch, char* argument, int cmd) {
@@ -633,7 +630,6 @@ void do_reload(struct char_data* ch, char* argument, int cmd) {
   }
   obj_from_char(shells);
   extract_obj(shells);
-  return;
 }
 
 void do_steal(struct char_data* ch, char* argument, int cmd) {

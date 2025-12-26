@@ -213,8 +213,7 @@ static void shopping_buy(char* arg, struct char_data* ch,
 
     obj_to_char(temp1, ch);
   }
-  return;
-}
+  }
 
 static void shopping_sell(char* arg, struct char_data* ch,
   struct char_data* keeper, int shop_nr) {
@@ -313,8 +312,7 @@ static void shopping_sell(char* arg, struct char_data* ch,
   } else {
     obj_to_char(temp1, keeper);
   }
-  return;
-}
+  }
 
 void shopping_value(char* arg, struct char_data* ch, struct char_data* keeper,
   int shop_nr) {
@@ -349,8 +347,6 @@ void shopping_value(char* arg, struct char_data* ch, struct char_data* keeper,
   sprintf(buf, "%s I'll give you %d gold coins for that!", GET_NAME(ch),
     (int)(temp1->obj_flags.cost * shop_index[shop_nr].profit_sell));
   do_tell(keeper, buf, 19);
-
-  return;
 }
 
 void shopping_list(char* arg, struct char_data* ch, struct char_data* keeper,
@@ -394,7 +390,6 @@ void shopping_list(char* arg, struct char_data* ch, struct char_data* keeper,
   }
 
   send_to_char(buf, ch);
-  return;
 }
 
 void shopping_kill(char* arg, struct char_data* ch, struct char_data* keeper,

@@ -307,7 +307,6 @@ void do_who(struct char_data* ch, char* argument, int cmd) {
     sprintf(buf, "\n\rTotal players [%d]\n\r", count);
   }
   send_to_char(buf, ch);
-  return;
 }
 
 /*  A note about "mode" in "show_obj_to_char".
@@ -2300,8 +2299,7 @@ void do_levels(struct char_data* ch, char* argument, int cmd) {
     send_to_char(buf, ch);
   }
 
-  return;
-}
+  }
 
 static const char* desc_ratio(float f) {
   if (f > 1.0f) {

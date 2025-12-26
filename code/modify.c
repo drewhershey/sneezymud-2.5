@@ -141,8 +141,7 @@ void quad_arg(char* arg, int* type, char* name, int* field, char* string) {
     ;
   }
 
-  return;
-}
+  }
 
 /* modification of malloc'ed strings in chars/objects */
 void do_string(struct char_data* ch, char* arg, int cmd) {
@@ -370,8 +369,7 @@ void bisect_arg(char* arg, int* field, char* string) {
     ;
   }
 
-  return;
-}
+  }
 
 void do_edit(struct char_data* ch, char* arg, int cmd) {
   int field;
@@ -676,7 +674,6 @@ void do_edit(struct char_data* ch, char* arg, int cmd) {
 void do_setskill(struct char_data* ch, char* arg, int cmd) {
   send_to_char("This routine is disabled untill it fitts\n\r", ch);
   send_to_char("The new structures (sorry Quinn) ....Bombman\n\r", ch);
-  return;
 }
 
 /* db stuff *********************************************** */

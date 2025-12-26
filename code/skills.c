@@ -750,7 +750,6 @@ void slam_into_wall(struct char_data* ch, struct room_direction_data* exitp) {
     GET_HIT(ch) = 0;
   }
   GET_POS(ch) = POSITION_STUNNED;
-  return;
 }
 
 static void raw_unlock_door(struct char_data* ch,
@@ -947,7 +946,6 @@ void do_spy(struct char_data* ch, char* arg, int cmd) {
   af.location = APPLY_NONE;
   af.bitvector = AFF_SCRYING;
   affect_to_char(ch, &af);
-  return;
 }
 
 void do_throw(struct char_data* ch, char* arg, int cmd) {
@@ -1096,7 +1094,6 @@ void do_first_aid(struct char_data* ch, char* arg, int cmd) {
   af.location = APPLY_NONE;
   af.bitvector = 0;
   affect_to_char(ch, &af);
-  return;
 }
 
 void do_lay_hands(struct char_data* ch, char* arg, int cmd) {
@@ -1127,5 +1124,4 @@ void do_lay_hands(struct char_data* ch, char* arg, int cmd) {
   af.location = APPLY_NONE;
   af.bitvector = 0;
   affect_to_char(ch, &af);
-  return;
 }

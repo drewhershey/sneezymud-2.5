@@ -178,7 +178,6 @@ void do_passwd(struct char_data* ch, char* argument, int cmdnum) {
     return;
   }
   send_to_char("I don't recognize that name\n\r", ch);
-  return;
 }
 
 /* Bamfin and bamfout - courtesy of DM from Epic */
@@ -268,7 +267,6 @@ void do_bamfin(struct char_data* ch, char* arg, int cmd) {
   dsearch(buf, ch->poof.poofin);
   SET_BIT(ch->poof.pmask, BIT_POOF_IN);
   send_to_char("Ok.\n\r", ch);
-  return;
 }
 
 void do_bamfout(struct char_data* ch, char* arg, int cmd) {
@@ -317,7 +315,6 @@ void do_bamfout(struct char_data* ch, char* arg, int cmd) {
   dsearch(buf, ch->poof.poofout);
   SET_BIT(ch->poof.pmask, BIT_POOF_OUT);
   send_to_char("Ok.\n\r", ch);
-  return;
 }
 
 static FILE* make_zone_file(struct char_data* c) {
@@ -665,8 +662,7 @@ void do_wizlock(struct char_data* ch, char* argument, int cmd) {
     WizLock = 1;
   }
 #endif
-  return;
-}
+  }
 
 static int room_enter(struct room_data* rb[], int key, struct room_data* rm) {
   if (key < 0 || key >= WORLD_SIZE) {
@@ -2187,7 +2183,6 @@ void do_snoop(struct char_data* ch, char* argument, int cmd) {
 
   ch->desc->snoop.snooping = victim;
   victim->desc->snoop.snoop_by = ch;
-  return;
 }
 
 void do_switch(struct char_data* ch, char* argument, int cmd) {
