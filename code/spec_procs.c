@@ -4170,8 +4170,7 @@ int cleric(struct char_data* ch, int cmd, char* arg) {
  *  Special procedures for mobiles                                      *
  ******************************************************************** */
 
-static int check_for_blocked_move(struct char_data* ch, int cmd, char* arg,
-  int room, int dir, int class) {
+static int check_for_blocked_move(struct char_data* ch, int cmd, int room, int dir, int class) {
   char buf[256];
   char buf2[256];
 
@@ -4206,26 +4205,26 @@ int guild_guard(struct char_data* ch, int cmd, char* arg) {
     switch (ch->in_room) {
       case 3017:
         return (
-          check_for_blocked_move(ch, cmd, arg, 3017, 2, CLASS_MAGIC_USER));
+          check_for_blocked_move(ch, cmd, 3017, 2, CLASS_MAGIC_USER));
         break;
       case 3004:
-        return (check_for_blocked_move(ch, cmd, arg, 3004, 0, CLASS_CLERIC));
+        return (check_for_blocked_move(ch, cmd, 3004, 0, CLASS_CLERIC));
         break;
       case 3027:
-        return (check_for_blocked_move(ch, cmd, arg, 3027, 1, CLASS_THIEF));
+        return (check_for_blocked_move(ch, cmd, 3027, 1, CLASS_THIEF));
         break;
       case 3021:
-        return (check_for_blocked_move(ch, cmd, arg, 3021, 1, CLASS_WARRIOR));
+        return (check_for_blocked_move(ch, cmd, 3021, 1, CLASS_WARRIOR));
         break;
       case 29901:
         return (
-          check_for_blocked_move(ch, cmd, arg, 29901, 5, CLASS_ANTIPALADIN));
+          check_for_blocked_move(ch, cmd, 29901, 5, CLASS_ANTIPALADIN));
         break;
       case 29904:
-        return (check_for_blocked_move(ch, cmd, arg, 29904, 2, CLASS_PALADIN));
+        return (check_for_blocked_move(ch, cmd, 29904, 2, CLASS_PALADIN));
         break;
       case 29910:
-        return (check_for_blocked_move(ch, cmd, arg, 29910, 0, CLASS_RANGER));
+        return (check_for_blocked_move(ch, cmd, 29910, 0, CLASS_RANGER));
         break;
     }
   }
@@ -7606,18 +7605,18 @@ int NewThalosGuildGuard(struct char_data* ch, int cmd, char* arg) {
     if (cmd >= 1 && cmd <= 6) {
       switch (ch->in_room) {
         case 13532:
-          return (check_for_blocked_move(ch, cmd, arg, 13532, 2, CLASS_THIEF));
+          return (check_for_blocked_move(ch, cmd, 13532, 2, CLASS_THIEF));
           break;
         case 13512:
-          return (check_for_blocked_move(ch, cmd, arg, 13512, 2, CLASS_CLERIC));
+          return (check_for_blocked_move(ch, cmd, 13512, 2, CLASS_CLERIC));
           break;
         case 13526:
           return (
-            check_for_blocked_move(ch, cmd, arg, 13526, 2, CLASS_WARRIOR));
+            check_for_blocked_move(ch, cmd, 13526, 2, CLASS_WARRIOR));
           break;
         case 13525:
           return (
-            check_for_blocked_move(ch, cmd, arg, 13525, 0, CLASS_MAGIC_USER));
+            check_for_blocked_move(ch, cmd, 13525, 0, CLASS_MAGIC_USER));
           break;
       }
     }
@@ -7831,17 +7830,17 @@ int MordGuildGuard(struct char_data* ch, int cmd, char* arg) {
       switch (ch->in_room) {
         case 18266:
           return (
-            check_for_blocked_move(ch, cmd, arg, 18266, 2, CLASS_MAGIC_USER));
+            check_for_blocked_move(ch, cmd, 18266, 2, CLASS_MAGIC_USER));
           break;
         case 18276:
-          return (check_for_blocked_move(ch, cmd, arg, 18276, 2, CLASS_CLERIC));
+          return (check_for_blocked_move(ch, cmd, 18276, 2, CLASS_CLERIC));
           break;
         case 18272:
-          return (check_for_blocked_move(ch, cmd, arg, 18272, 2, CLASS_THIEF));
+          return (check_for_blocked_move(ch, cmd, 18272, 2, CLASS_THIEF));
           break;
         case 18256:
           return (
-            check_for_blocked_move(ch, cmd, arg, 18256, 0, CLASS_WARRIOR));
+            check_for_blocked_move(ch, cmd, 18256, 0, CLASS_WARRIOR));
           break;
       }
     } else {
@@ -7869,17 +7868,17 @@ int CaravanGuildGuard(struct char_data* ch, int cmd, char* arg) {
       switch (ch->in_room) {
         case 16115:
           return (
-            check_for_blocked_move(ch, cmd, arg, 16115, 1, CLASS_MAGIC_USER));
+            check_for_blocked_move(ch, cmd, 16115, 1, CLASS_MAGIC_USER));
           break;
         case 16126:
-          return (check_for_blocked_move(ch, cmd, arg, 16116, 1, CLASS_CLERIC));
+          return (check_for_blocked_move(ch, cmd, 16116, 1, CLASS_CLERIC));
           break;
         case 16117:
-          return (check_for_blocked_move(ch, cmd, arg, 16117, 3, CLASS_THIEF));
+          return (check_for_blocked_move(ch, cmd, 16117, 3, CLASS_THIEF));
           break;
         case 16110:
           return (
-            check_for_blocked_move(ch, cmd, arg, 16110, 3, CLASS_WARRIOR));
+            check_for_blocked_move(ch, cmd, 16110, 3, CLASS_WARRIOR));
           break;
       }
     } else {
@@ -8329,8 +8328,7 @@ static const char* const lattimore_descs[] = {
   "An orc is traveling down the corridor at high speed.\n\r",
 };
 
-static int affect_status(struct mob_act_lattimore* mem, struct char_data* ch,
-  struct char_data* t, int aff_status) {
+static int affect_status(struct mob_act_lattimore* mem, struct char_data* t, int aff_status) {
   int i;
 
   if (mem->c) {
@@ -8426,7 +8424,7 @@ int lattimore(struct char_data* ch, int cmd, char* arg) {
     if (ch->specials.fighting) {
       if (!IS_MOB(ch->specials.fighting) &&
           CAN_SEE(ch, ch->specials.fighting)) {
-        affect_status(mem, ch, ch->specials.fighting, -5);
+        affect_status(mem, ch->specials.fighting, -5);
       }
 
       if (mem->status[mem->index] < 0) {
@@ -8777,7 +8775,7 @@ int lattimore(struct char_data* ch, int cmd, char* arg) {
     // They gave something to him, and the status was affected, now we set the
     // pointer according to the status value
 
-    mem->index = affect_status(mem, latt, ch, status_change);
+    mem->index = affect_status(mem, ch, status_change);
 
     if (mem->status[mem->index] < 0) {
       strcpy(latt->player.long_descr, lattimore_descs[6]);

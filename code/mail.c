@@ -425,7 +425,7 @@ char* read_delete(char* recipient, char* recipient_formatted) {
 ** routines.  Written by Rasmussen (jelson@server.cs.jhu.edu) **
 **************************************************************/
 
-static void postmaster_send_mail(struct char_data* ch, int cmd, char* arg) {
+static void postmaster_send_mail(struct char_data* ch, char* arg) {
   struct char_data* mailman;
   char buf[200];
   char recipient[100] = "";
@@ -583,7 +583,7 @@ int postmaster(struct char_data* ch, int cmd, char* arg) {
 
   switch (cmd) {
     case 303: /* mail */
-      postmaster_send_mail(ch, cmd, arg);
+      postmaster_send_mail(ch, arg);
       return 1;
       break;
     case 304: /* check */

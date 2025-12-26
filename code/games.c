@@ -158,7 +158,7 @@ static int check_for_dice_in_inv(struct char_data* ch) {
   return 0;
 }
 
-static int check_pointroll(struct char_data* ch) {
+static int check_pointroll() {
   struct char_data* tmp_char;
   struct char_data* temp;
 
@@ -1086,7 +1086,7 @@ int craps_table_man(struct char_data* ch, int cmd, char* arg) {
         return 0;
       }
       half_chop(arg, options, amount);
-      if (check_pointroll(ch)) {
+      if (check_pointroll()) {
         if (is_abbrev(options, "come") || is_abbrev(options, "craps")) {
           sprintf(buf, "Sorry %s, no bets can be placed on the come",
             GET_NAME(ch));

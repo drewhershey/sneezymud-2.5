@@ -1236,8 +1236,7 @@ static int get_weapon_type(struct char_data* ch, struct obj_data** wielded) {
   return (w_type);
 }
 
-static int hit_check_deny(struct char_data* ch, struct char_data* victim,
-  int type) {
+static int hit_check_deny(struct char_data* ch, struct char_data* victim) {
   struct room_data* rp;
   char buf[256];
 
@@ -1630,7 +1629,7 @@ void root_hit(struct char_data* ch, struct char_data* victim, int type,
     }
   }
 
-  if (hit_check_deny(ch, victim, type)) {
+  if (hit_check_deny(ch, victim)) {
     return;
   }
 

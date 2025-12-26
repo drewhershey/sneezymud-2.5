@@ -2045,7 +2045,7 @@ void do_wizlist(struct char_data* ch, char* argument, int cmd) {
   }
 }
 
-static int which_number_mobile(struct char_data* ch, struct char_data* mob) {
+static int which_number_mobile(struct char_data* mob) {
   struct char_data* i;
   char* name;
   int number;
@@ -2065,7 +2065,7 @@ static int which_number_mobile(struct char_data* ch, struct char_data* mob) {
 char* numbered_person(struct char_data* ch, struct char_data* person) {
   static char buf[MAX_STRING_LENGTH];
   if (IS_NPC(person) && IS_IMMORTAL(ch)) {
-    sprintf(buf, "%d.%s", which_number_mobile(ch, person),
+    sprintf(buf, "%d.%s", which_number_mobile(person),
       fname(person->player.name));
   } else {
     strcpy(buf, PERS(person, ch));
