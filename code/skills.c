@@ -714,7 +714,7 @@ void do_swim(struct char_data* ch, char* arg, int cmd) {
   affect_to_char(ch, &af);
 }
 
-int spy_check(struct char_data* ch) {
+static int spy_check(struct char_data* ch) {
   if (!ch->skills) {
     return 0;
   }
@@ -726,7 +726,7 @@ int spy_check(struct char_data* ch) {
   return 1;
 }
 
-void slam_into_wall(struct char_data* ch, struct room_direction_data* exitp) {
+static void slam_into_wall(struct char_data* ch, struct room_direction_data* exitp) {
   char doorname[128];
   char buf[256];
 

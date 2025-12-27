@@ -309,25 +309,6 @@ void sprinttype(int type, const char* const* names, char* result) {
   }
 }
 
-/* Calculate the REAL time passed over the last t2-t1 centuries (secs) */
-struct time_info_data real_time_passed(time_t t2, time_t t1) {
-  long secs;
-  struct time_info_data now;
-
-  secs = (long)(t2 - t1);
-
-  now.hours = (secs / SECS_PER_REAL_HOUR) % 24; /* 0..23 hours */
-  secs -= SECS_PER_REAL_HOUR * now.hours;
-
-  now.day = (secs / SECS_PER_REAL_DAY); /* 0..34 days  */
-  secs -= SECS_PER_REAL_DAY * now.day;
-
-  now.month = -1;
-  now.year = -1;
-
-  return now;
-}
-
 /* Calculate the MUD time passed over the last t2-t1 centuries (secs) */
 struct time_info_data mud_time_passed(time_t t2, time_t t1) {
   long secs;
@@ -1485,7 +1466,7 @@ void SpaceForSkills(struct char_data* ch) {
   }
 }
 
-int count_lims(struct obj_data* obj) {
+static int count_lims(struct obj_data* obj) {
   int total = 0;
 
   if (!obj) {

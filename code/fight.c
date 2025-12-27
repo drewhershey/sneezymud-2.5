@@ -132,7 +132,7 @@ void setKillerFlag(Mob* ch, Mob* victim) {
   }
 }
 
-void appear(struct char_data* ch) {
+static void appear(struct char_data* ch) {
   act("$n slowly fade into existence.", 0, ch, 0, 0, TO_ROOM);
 
   if (affected_by_spell(ch, SPELL_INVISIBLE)) {
@@ -645,7 +645,7 @@ void group_gain(struct char_data* ch, struct char_data* victim) {
   }
 }
 
-char* replace_string(const char* str, const char* weapon,
+static char* replace_string(const char* str, const char* weapon,
   const char* weapon_s) {
   static char buf[256];
   char* cp;
@@ -679,7 +679,7 @@ char* replace_string(const char* str, const char* weapon,
   return (buf);
 }
 
-void dam_message(int dam, struct char_data* ch, struct char_data* victim,
+static void dam_message(int dam, struct char_data* ch, struct char_data* victim,
   int w_type) {
   struct obj_data* wield;
   struct char_data* tmp_victim;
@@ -783,7 +783,7 @@ void dam_message(int dam, struct char_data* ch, struct char_data* victim,
   act(buf, 0, ch, wield, victim, TO_VICT);
 }
 
-int dam_check_deny(struct char_data* ch, struct char_data* victim, int type) {
+static int dam_check_deny(struct char_data* ch, struct char_data* victim, int type) {
   struct room_data* rp;
   char buf[MAX_INPUT_LENGTH];
 
@@ -1377,7 +1377,7 @@ int HitOrMiss(struct char_data* ch, struct char_data* victim, int calc_thaco) {
   return 1;
 }
 
-int miss_victim(struct char_data* ch, struct char_data* v, int type, int w_type,
+static int miss_victim(struct char_data* ch, struct char_data* v, int type, int w_type,
   int (*dam_func)(struct char_data*, struct char_data*, int, int)) {
   if (type <= 0) {
     type = w_type;
@@ -1385,7 +1385,7 @@ int miss_victim(struct char_data* ch, struct char_data* v, int type, int w_type,
   return (*dam_func)(ch, v, 0, w_type);
 }
 
-int get_weapon_dam(struct char_data* ch, struct char_data* v,
+static int get_weapon_dam(struct char_data* ch, struct char_data* v,
   struct obj_data* wielded) {
   int dam;
   struct obj_data* obj;
@@ -1495,7 +1495,7 @@ static const signed char backstab_mult[ABS_MAX_LVL] = {
   5, 5, 5, 5, 5, 5, 5, 5, 5, 5  /* 70 */
 };
 
-int hit_victim(struct char_data* ch, struct char_data* v, int dam, int type,
+static int hit_victim(struct char_data* ch, struct char_data* v, int dam, int type,
   int w_type, int (*dam_func)(struct char_data*, struct char_data*, int, int)) {
   int dead;
 
@@ -1535,7 +1535,7 @@ int hit_victim(struct char_data* ch, struct char_data* v, int dam, int type,
   return dead;
 }
 
-int get_form_type(struct char_data* ch) {
+static int get_form_type(struct char_data* ch) {
   int num;
 
   num = number(1, 100);
@@ -2182,7 +2182,7 @@ struct char_data* FindAnyVictim(struct char_data* ch) {
   return (0);
 }
 
-int break_life_saver_obj(struct char_data* ch) {
+static int break_life_saver_obj(struct char_data* ch) {
   int found = 0;
   int i;
   int j;
@@ -2356,7 +2356,7 @@ int WeaponCheck(struct char_data* ch, struct char_data* v, int type, int dam) {
   return (0);
 }
 
-int get_item_damage_type(int type) {
+static int get_item_damage_type(int type) {
   switch (type) {
     case SPELL_FIREBALL:
     case SPELL_FLAMESTRIKE:

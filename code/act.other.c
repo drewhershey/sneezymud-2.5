@@ -1339,8 +1339,6 @@ void do_brief(struct char_data* ch, char* argument, int cmd) {
   }
 }
 
-void do_mess(struct char_data* ch, char* argument, int cmd) {}
-
 void do_log(struct char_data* ch, char* argument, int cmd) {
   struct char_data* vict;
   char name[100];

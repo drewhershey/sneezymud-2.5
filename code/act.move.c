@@ -445,7 +445,7 @@ static int display_group_move(struct char_data* ch, int dir, int was_in,
   return DisplayMove(ch, dir, was_in, total);
 }
 
-void move_group(struct char_data* ch, int dir) {
+static void move_group(struct char_data* ch, int dir) {
   struct char_data* heap_ptr[50];
   int was_in;
   int i;
@@ -670,7 +670,7 @@ void do_close(struct char_data* ch, char* argument, int cmd) {
   }
 }
 
-int has_key(struct char_data* ch, int key) {
+static int has_key(struct char_data* ch, int key) {
   struct obj_data* o;
 
   for (o = ch->carrying; o; o = o->next_content) {

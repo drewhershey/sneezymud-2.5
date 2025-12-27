@@ -321,7 +321,7 @@ void do_who(struct char_data* ch, char* argument, int cmd) {
 #define HEADER_TXT_NOTE "There is something written upon it:\n\r\n\r"
 #define DRINKCON_TXT_NOTE "It looks like a drink container."
 
-void show_obj_to_char(Obj* object, Mob* ch, int mode) {
+static void show_obj_to_char(Obj* object, Mob* ch, int mode) {
   char buffer[MAX_STRING_LENGTH];
 
   if (!mode && object->description) { /* mode = 0 */
@@ -369,7 +369,7 @@ void show_obj_to_char(Obj* object, Mob* ch, int mode) {
   send_to_char(buffer, ch);
 }
 
-void show_mult_obj_to_char(struct obj_data* object, struct char_data* ch,
+static void show_mult_obj_to_char(struct obj_data* object, struct char_data* ch,
   int mode, int num) {
   char buffer[MAX_STRING_LENGTH];
   char tmp[10];
@@ -426,7 +426,7 @@ void show_mult_obj_to_char(struct obj_data* object, struct char_data* ch,
   page_string(ch->desc, buffer, 1);
 }
 
-void list_obj_in_room(struct obj_data* list, struct char_data* ch) {
+static void list_obj_in_room(struct obj_data* list, struct char_data* ch) {
   struct obj_data* i;
   struct obj_data* cond_ptr[50];
   int inventory_num = 1;
@@ -498,7 +498,7 @@ void list_obj_in_room(struct obj_data* list, struct char_data* ch) {
   }
 }
 
-void list_obj_in_heap(struct obj_data* list, struct char_data* ch) {
+static void list_obj_in_heap(struct obj_data* list, struct char_data* ch) {
   struct obj_data* i;
   struct obj_data* cond_ptr[50];
   int k;
@@ -595,7 +595,8 @@ static const char* const where[] = {
   "<held as radio>      ",
 };
 
-void show_char_to_char(struct char_data* i, struct char_data* ch, int mode) {
+static void show_char_to_char(struct char_data* i, struct char_data* ch,
+  int mode) {
   char buffer[MAX_STRING_LENGTH];
   int j;
   int found;
@@ -813,8 +814,8 @@ void show_char_to_char(struct char_data* i, struct char_data* ch, int mode) {
   }
 }
 
-void show_mult_char_to_char(struct char_data* i, struct char_data* ch, int mode,
-  int num) {
+static void show_mult_char_to_char(struct char_data* i, struct char_data* ch,
+  int mode, int num) {
   char buffer[MAX_STRING_LENGTH];
   char tmp[10];
   int j;
@@ -1038,7 +1039,7 @@ void show_mult_char_to_char(struct char_data* i, struct char_data* ch, int mode,
   }
 }
 
-void list_char_in_room(struct char_data* list, struct char_data* ch) {
+static void list_char_in_room(struct char_data* list, struct char_data* ch) {
   struct char_data* i;
   struct char_data* cond_ptr[50];
   int k;
@@ -1092,7 +1093,8 @@ void list_char_in_room(struct char_data* list, struct char_data* ch) {
   }
 }
 
-void list_char_to_char(struct char_data* list, struct char_data* ch, int mode) {
+static void list_char_to_char(struct char_data* list, struct char_data* ch,
+  int mode) {
   struct char_data* i;
 
   for (i = list; i; i = i->next_in_room) {
@@ -1669,11 +1671,28 @@ void do_exits(struct char_data* ch, char* argument, int cmd) {
   }
 }
 
+/* Calculate the REAL time passed over the last t2-t1 centuries (secs) */
+static struct time_info_data real_time_passed(time_t t2, time_t t1) {
+  long secs;
+  struct time_info_data now;
+
+  secs = (long)(t2 - t1);
+
+  now.hours = (secs / SECS_PER_REAL_HOUR) % 24; /* 0..23 hours */
+  secs -= SECS_PER_REAL_HOUR * now.hours;
+
+  now.day = (secs / SECS_PER_REAL_DAY); /* 0..34 days  */
+  secs -= SECS_PER_REAL_DAY * now.day;
+
+  now.month = -1;
+  now.year = -1;
+
+  return now;
+}
+
 void do_score(struct char_data* ch, char* argument, int cmd) {
   struct time_info_data playing_time;
   static char buf[100];
-
-  struct time_info_data real_time_passed(time_t t2, time_t t1);
 
   sprintf(buf, "You are %d years old.", GET_AGE(ch));
 
@@ -2062,7 +2081,7 @@ static int which_number_mobile(struct char_data* mob) {
   return 0;
 }
 
-char* numbered_person(struct char_data* ch, struct char_data* person) {
+static char* numbered_person(struct char_data* ch, struct char_data* person) {
   static char buf[MAX_STRING_LENGTH];
   if (IS_NPC(person) && IS_IMMORTAL(ch)) {
     sprintf(buf, "%d.%s", which_number_mobile(person),
@@ -2298,8 +2317,7 @@ void do_levels(struct char_data* ch, char* argument, int cmd) {
                                  : titles[class][i].title_m));
     send_to_char(buf, ch);
   }
-
-  }
+}
 
 static const char* desc_ratio(float f) {
   if (f > 1.0F) {
@@ -2440,8 +2458,7 @@ void do_consider(struct char_data* ch, char* argument, int cmd) {
         skill = SKILL_CONS_VEGGIE;
       }
       learn = MAX(learn, ch->skills[SKILL_CONS_VEGGIE].learned);
-      act("$N seems to be an ambulatory vegetable", 0, ch, 0, victim,
-        TO_CHAR);
+      act("$N seems to be an ambulatory vegetable", 0, ch, 0, victim, TO_CHAR);
     }
     if (IsDiabolic(victim) && ch->skills[SKILL_CONS_DEMON].learned) {
       if (!skill) {
@@ -2477,16 +2494,14 @@ void do_consider(struct char_data* ch, char* argument, int cmd) {
         skill = SKILL_CONS_PEOPLE;
       }
       learn = MAX(learn, ch->skills[SKILL_CONS_PEOPLE].learned);
-      act("$N seems to be a human or demi-human", 0, ch, 0, victim,
-        TO_CHAR);
+      act("$N seems to be a human or demi-human", 0, ch, 0, victim, TO_CHAR);
     }
     if (IsOther(victim) && ch->skills[SKILL_CONS_OTHER].learned) {
       if (!skill) {
         skill = SKILL_CONS_OTHER;
       }
       learn = MAX(learn, ch->skills[SKILL_CONS_OTHER].learned / 2);
-      act("$N seems to be a monster you know about", 0, ch, 0, victim,
-        TO_CHAR);
+      act("$N seems to be a monster you know about", 0, ch, 0, victim, TO_CHAR);
     }
 
     if (learn > 95) {
@@ -2731,7 +2746,7 @@ void do_attribute(struct char_data* ch, char* argument, int cmd) {
   }
 }
 
-void do_scan(struct char_data* ch, char* argument, int cmd) {
+static void do_scan(struct char_data* ch, char* argument, int cmd) {
   send_to_char("Sorry, scan has again been temporarily disabled.\n\r", ch);
 }
 

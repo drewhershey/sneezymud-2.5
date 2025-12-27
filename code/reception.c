@@ -12,9 +12,11 @@
 #include "comm.h"
 #include "db.h"
 #include "handler.h"
+#include "interpreter.h"
 #include "structs.h"
 #include "utils.h"
 #include "compat_types.h"
+#include "spec_procs.h"
 
 const char* const obj_save_file = "pcobjs.obj";
 const char* const obj_file_free = "\0\0\0";
@@ -161,7 +163,7 @@ int read_objs(FILE* fl, struct obj_file_u* st) {
   return 1;
 }
 
-void zero_rent_by_name(char* n) {
+static void zero_rent_by_name(char* n) {
   FILE* fl;
   char buf[200];
 
@@ -180,7 +182,7 @@ void zero_rent_by_name(char* n) {
  ************************************************************************* */
 
 /* Puts object in store, at first item which has no -1 */
-void put_obj_in_store(struct obj_data* obj, struct obj_file_u* st) {
+static void put_obj_in_store(struct obj_data* obj, struct obj_file_u* st) {
   int i;
   int j;
   char found = 0;
@@ -475,10 +477,6 @@ int receptionist(struct char_data* ch, int cmd, char* arg) {
   short int save_room;
   short int action_tabel[9] = {23, 24, 36, 105, 106, 109, 111, 142, 147};
 
-  void do_action(struct char_data * ch, char* argument, int cmd);
-  int number(int from, int to);
-  int citizen(struct char_data * ch, int cmd, char* arg);
-
   if (!ch->desc) {
     return 0; /* You've forgot false - NPC couldn't leave */
   }
@@ -560,10 +558,6 @@ int receptionist_for_outlaws(struct char_data* ch, int cmd, char* arg) {
   struct char_data* temp_char;
   short int save_room;
   short int action_tabel[9] = {23, 24, 36, 105, 106, 109, 111, 142, 147};
-
-  void do_action(struct char_data * ch, char* argument, int cmd);
-  int number(int from, int to);
-  int citizen(struct char_data * ch, int cmd, char* arg);
 
   if (!ch->desc) {
     return 0; /* You've forgot false - NPC couldn't leave */

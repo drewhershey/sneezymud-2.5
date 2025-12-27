@@ -109,7 +109,7 @@ void string_add(struct descriptor_data* d, char* str) {
 #undef MAX_STR
 
 /* interpret an argument for do_string */
-void quad_arg(char* arg, int* type, char* name, int* field, char* string) {
+static void quad_arg(char* arg, int* type, char* name, int* field, char* string) {
   char buf[MAX_STRING_LENGTH];
   int i;
 
@@ -351,7 +351,7 @@ void do_string(struct char_data* ch, char* arg, int cmd) {
   }
 }
 
-void bisect_arg(char* arg, int* field, char* string) {
+static void bisect_arg(char* arg, int* field, char* string) {
   char buf[MAX_INPUT_LENGTH];
   int i;
 
@@ -671,7 +671,7 @@ void do_edit(struct char_data* ch, char* arg, int cmd) {
  *  Modification of character skills                                     *
  ********************************************************************** */
 
-void do_setskill(struct char_data* ch, char* arg, int cmd) {
+static void do_setskill(struct char_data* ch, char* arg, int cmd) {
   send_to_char("This routine is disabled untill it fitts\n\r", ch);
   send_to_char("The new structures (sorry Quinn) ....Bombman\n\r", ch);
 }
@@ -681,7 +681,7 @@ void do_setskill(struct char_data* ch, char* arg, int cmd) {
 /* One_Word is like one_argument, execpt that words in quotes "" are */
 /* regarded as ONE word                                              */
 
-char* one_word(char* argument, char* first_arg) {
+static char* one_word(char* argument, char* first_arg) {
   int found;
   int begin;
   int look_at;
@@ -979,7 +979,7 @@ int load(void) {
   return (sum / 5);
 }
 
-char* nogames(void) {
+static char* nogames(void) {
   static char text[200];
   FILE* fl;
 

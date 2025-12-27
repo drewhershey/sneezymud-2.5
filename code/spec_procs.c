@@ -2794,7 +2794,7 @@ int snake(struct char_data* ch, int cmd, char* arg) {
   return 0;
 }
 
-int ninja_master(struct char_data* ch, int cmd, char* arg) {
+static int ninja_master(struct char_data* ch, int cmd, char* arg) {
   char buf[256];
   static const char* const n_skills[] = {
     "track",  /* No. 180 */
@@ -3220,7 +3220,7 @@ struct breath_victim {
     struct breath_victim* next;
 };
 
-struct breath_victim* choose_victims(struct char_data* ch,
+static struct breath_victim* choose_victims(struct char_data* ch,
   struct char_data* first_victim) {
   /* this is goofy, dopey extraordinaire */
   struct char_data* cons;
@@ -3251,7 +3251,7 @@ struct breath_victim* choose_victims(struct char_data* ch,
   return head;
 }
 
-void free_victims(struct breath_victim* head) {
+static void free_victims(struct breath_victim* head) {
   struct breath_victim* temp;
 
   while (head) {
@@ -3303,7 +3303,7 @@ int breath_weapon(struct char_data* ch, struct char_data* target, int mana_cost,
   return 0;
 }
 
-int use_breath_weapon(struct char_data* ch, struct char_data* target, int cost,
+static int use_breath_weapon(struct char_data* ch, struct char_data* target, int cost,
   funcp func) {
   if (GET_MANA(ch) >= 0) {
     breath_weapon(ch, target, cost, func);
@@ -3419,7 +3419,7 @@ int thief(struct char_data* ch, int cmd, char* arg) {
   return 1;
 }
 
-int astraller(struct char_data* ch, int cmd, char* arg) {
+static int astraller(struct char_data* ch, int cmd, char* arg) {
   struct descriptor_data* d;
   struct char_data* targ = 0;
   struct char_list* i;
@@ -3467,7 +3467,7 @@ int astraller(struct char_data* ch, int cmd, char* arg) {
   return 0;
 }
 
-int summoner(struct char_data* ch, int cmd, char* arg) {
+static int summoner(struct char_data* ch, int cmd, char* arg) {
   struct descriptor_data* d;
   struct char_data* targ = 0;
   struct char_list* i;
@@ -5008,7 +5008,7 @@ int temple_labrynth_sentry(struct char_data* ch, int cmd, char* arg) {
 #define WW_LOOSE 0
 #define WW_FOLLOW 1
 
-int whirlwind(struct char_data* ch, int cmd, char* arg) {
+static int whirlwind(struct char_data* ch, int cmd, char* arg) {
   struct char_data* tmp;
   const char* names[] = {"Loki", "Belgarath", 0};
   int i = 0;
@@ -5490,7 +5490,7 @@ int Ringwraith(struct char_data* ch, int cmd, char* arg) {
   return 1;
 }
 
-int warren_guard(struct char_data* ch, int cmd, char* arg) {
+static int warren_guard(struct char_data* ch, int cmd, char* arg) {
   struct char_data* tch;
   struct char_data* good;
   struct char_data* i;
@@ -5534,11 +5534,11 @@ int warren_guard(struct char_data* ch, int cmd, char* arg) {
   return 0;
 }
 
-int zm_tired(struct char_data* zmaster) {
+static int zm_tired(struct char_data* zmaster) {
   return GET_HIT(zmaster) < GET_MAX_HIT(zmaster) / 2 || GET_MANA(zmaster) < 40;
 }
 
-int zm_stunned_followers(struct char_data* zmaster) {
+static int zm_stunned_followers(struct char_data* zmaster) {
   struct follow_type* fwr;
   for (fwr = zmaster->followers; fwr; fwr = fwr->next) {
     if (GET_POS(fwr->follower) == POSITION_STUNNED) {
@@ -5548,7 +5548,7 @@ int zm_stunned_followers(struct char_data* zmaster) {
   return 0;
 }
 
-void zm_init_combat(struct char_data* zmaster, struct char_data* target) {
+static void zm_init_combat(struct char_data* zmaster, struct char_data* target) {
   struct follow_type* fwr;
   for (fwr = zmaster->followers; fwr; fwr = fwr->next) {
     if (IS_AFFECTED(fwr->follower, AFF_CHARM) &&
@@ -5564,7 +5564,7 @@ void zm_init_combat(struct char_data* zmaster, struct char_data* target) {
   }
 }
 
-int zm_kill_fidos(struct char_data* zmaster) {
+static int zm_kill_fidos(struct char_data* zmaster) {
   struct char_data* fido_b;
   fido_b = FindMobInRoomWithFunction(zmaster->in_room, fido);
   if (fido_b) {
@@ -5578,7 +5578,7 @@ int zm_kill_fidos(struct char_data* zmaster) {
   return 0;
 }
 
-int zm_kill_aggressor(struct char_data* zmaster) {
+static int zm_kill_aggressor(struct char_data* zmaster) {
   struct follow_type* fwr;
   if (zmaster->specials.fighting) {
     if (!check_soundproof(zmaster)) {
@@ -5934,7 +5934,7 @@ int bank(struct char_data* ch, int cmd, char* arg) {
 /* The (keys) must all be stored in a room which is (virtually)  */
 /* adjacent to the room of the lock smith.                       */
 
-int pray_for_items(struct char_data* ch, int cmd, char* arg) {
+static int pray_for_items(struct char_data* ch, int cmd, char* arg) {
   char buf[256];
   int key_room;
   int gold;
@@ -6052,7 +6052,7 @@ int vorpal(Mob* victim, int cmd, char* arg, Obj* me) {
   return 0;
 }
 
-int chalice(struct char_data* ch, int cmd, char* arg) {
+static int chalice(struct char_data* ch, int cmd, char* arg) {
   struct obj_data* chalice;
   char buf1[MAX_INPUT_LENGTH];
   char buf2[MAX_INPUT_LENGTH];
@@ -6119,7 +6119,7 @@ int chalice(struct char_data* ch, int cmd, char* arg) {
   }
 }
 
-int kings_hall(struct char_data* ch, int cmd, char* arg) {
+static int kings_hall(struct char_data* ch, int cmd, char* arg) {
   if (cmd != 176) {
     return (0);
   }
@@ -6960,7 +6960,7 @@ int juggernaut(struct char_data* ch, int cmd, char* arg) {
   return 0;
 }
 
-void blow_char(struct char_data* ch) {
+static void blow_char(struct char_data* ch) {
   struct room_data* rp;
   int or;
   int num;
@@ -6973,7 +6973,7 @@ void blow_char(struct char_data* ch) {
   do_look(ch, "\0", 15);
 }
 
-void bouncer_throw(struct char_data* ch) {
+static void bouncer_throw(struct char_data* ch) {
   struct room_data* rp;
   struct room_data* rp2;
   int or;
@@ -7166,7 +7166,7 @@ int iceman(struct char_data* ch, int cmd, char* arg) {
   return 0;
 }
 
-int cyclops(struct char_data* ch, int cmd, char* arg) {
+static int cyclops(struct char_data* ch, int cmd, char* arg) {
   struct char_data* victim;
   struct char_data* tmp_victim;
   struct char_data* temp;
@@ -7793,7 +7793,7 @@ int MordGuard(struct char_data* ch, int cmd, char* arg) {
   return 0;
 }
 
-int mord_citizen(struct char_data* ch, int cmd, char* arg) {
+static int mord_citizen(struct char_data* ch, int cmd, char* arg) {
   if (cmd || !AWAKE(ch)) {
     return 0;
   }
@@ -9242,7 +9242,7 @@ char* quest_intro[] = {
 
 static const int quest_necklace = 21122;
 
-int valik(struct char_data* ch, int cmd, char* arg) {
+static int valik(struct char_data* ch, int cmd, char* arg) {
 #define VALIK_WANDERING 0
 #define VALIK_MEDITATING 1
 #define VALIK_QONE 2
@@ -10399,7 +10399,7 @@ int monk_challenge_prep_room(struct char_data* ch, int cmd, char* arg) {
 #define FOUNTAIN_LEVEL 20
 #define DEMON 29000
 
-int ghost(struct char_data* ch, int cmd, char* arg) {
+static int ghost(struct char_data* ch, int cmd, char* arg) {
   if (cmd || !AWAKE(ch)) {
     return 0;
   }
@@ -10677,7 +10677,7 @@ int Magic_Fountain(struct char_data* ch, int cmd, char* arg) {
   return 0;
 }
 
-void invert(char* arg1, char* arg2) {
+static void invert(char* arg1, char* arg2) {
   register int i = 0;
   register int len = strlen(arg1) - 1;
 
@@ -11049,7 +11049,7 @@ int RepairGuy(struct char_data* ch, int cmd, char* arg) {
   return (fighter(ch, cmd, arg));
 }
 
-int samah(struct char_data* ch, int cmd, char* arg) {
+static int samah(struct char_data* ch, int cmd, char* arg) {
   char* p;
   char buf[256];
   struct char_data* sammy; /* Samah's own referent pointer */
@@ -11433,7 +11433,7 @@ int BitterBlade(struct char_data* ch, int cmd, char* arg, struct obj_data* tobj,
 #define GIVE 72
 #define GAIN 243
 
-int make_quest(struct char_data* ch, struct char_data* gm, int Class, char* arg,
+static int make_quest(struct char_data* ch, struct char_data* gm, int Class, char* arg,
   int cmd) {
   char obj_name[50];
   char vict_name[50];
@@ -11504,7 +11504,7 @@ int make_quest(struct char_data* ch, struct char_data* gm, int Class, char* arg,
   }
 }
 
-int creeping_death(struct char_data* ch, int cmd, char* arg) {
+static int creeping_death(struct char_data* ch, int cmd, char* arg) {
   struct char_data* t;
   struct char_data* next;
   struct room_data* rp;
@@ -11622,7 +11622,7 @@ int creeping_death(struct char_data* ch, int cmd, char* arg) {
   return 0;
 }
 
-int generic_cityguard_hate_undead(struct char_data* ch, int cmd, char* arg,
+static int generic_cityguard_hate_undead(struct char_data* ch, int cmd, char* arg,
   int type) {
   struct char_data* tch;
   struct char_data* evil;
@@ -11709,7 +11709,7 @@ int generic_cityguard_hate_undead(struct char_data* ch, int cmd, char* arg,
   return 0;
 }
 
-int generic_cityguard(struct char_data* ch, int cmd, char* arg, int type) {
+static int generic_cityguard(struct char_data* ch, int cmd, char* arg, int type) {
   struct char_data* tch;
   struct char_data* evil;
   struct char_data* i;
@@ -12193,7 +12193,7 @@ int hunter(struct char_data* ch, int cmd, char* arg) {
   return 0;
 }
 
-int scraps(struct char_data* ch, int cmd, char* arg, struct obj_data* obj,
+static int scraps(struct char_data* ch, int cmd, char* arg, struct obj_data* obj,
   int type) {
   if (type == PULSE_COMMAND) {
     return 0;
@@ -12215,7 +12215,7 @@ int scraps(struct char_data* ch, int cmd, char* arg, struct obj_data* obj,
 
 /* START:  Stargazer Work: */
 
-struct char_data* char_with_name(char* name) {
+static struct char_data* char_with_name(char* name) {
   struct descriptor_data* d;
 
   for (d = descriptor_list; d; d = d->next) {
@@ -12228,7 +12228,7 @@ struct char_data* char_with_name(char* name) {
   return nullptr;
 }
 
-int adjacent_room(int room) {
+static int adjacent_room(int room) {
   struct room_data* rp;
   int dir;
 
@@ -12939,7 +12939,7 @@ int bounty_hunter(struct char_data* ch, int cmd, char* arg) {
   return 0;
 }
 
-int potentially_annoying(int cmd) {
+static int potentially_annoying(int cmd) {
   return ((cmd == 27) ||  /* laugh  */
           (cmd == 30) ||  /* puke   */
           (cmd == 31) ||  /* growl  */
@@ -13004,11 +13004,11 @@ int utility_irritable(struct char_data* ch, int cmd, char* arg,
 }
 
 /* use this for mobs whose _ONLY_ spec_proc function is to be irritable */
-int i_am_irritable(struct char_data* ch, int cmd, char* arg) {
+static int i_am_irritable(struct char_data* ch, int cmd, char* arg) {
   utility_irritable(ch, cmd, arg, i_am_irritable);
 }
 
-void police_hunt(struct char_data* ch, struct char_data* tch) {
+static void police_hunt(struct char_data* ch, struct char_data* tch) {
 #if NOTRACK
   return;
 #endif
@@ -13022,7 +13022,7 @@ void police_hunt(struct char_data* ch, struct char_data* tch) {
 /* like utility_irritable, this function is to be called by OTHER spec_procs.
    If you want a mob to JUST be a police person, call the i_am_police function
    below.  - SG */
-int utility_police(struct char_data* ch, int cmd, char* arg,
+static int utility_police(struct char_data* ch, int cmd, char* arg,
   int (*func)(struct char_data*, int, char*)) {
   struct char_data* targ;
   struct char_data* me;
@@ -13074,7 +13074,7 @@ int i_am_police(Mob* ch, int cmd, char* arg) {
   return utility_police(ch, cmd, arg, i_am_police);
 }
 
-void obj_act(char* message, Mob* ch, Obj* o, Mob* vict) {
+static void obj_act(char* message, Mob* ch, Obj* o, Mob* vict) {
   char buffer[256];
 
   sprintf(buffer, "$n's $p %s", message);

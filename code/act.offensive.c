@@ -756,7 +756,7 @@ void do_wimpy(struct char_data* ch, char* arg, int cmd) {
 const funcp bweapons[] = {cast_geyser, cast_fire_breath, cast_gas_breath,
   cast_frost_breath, cast_acid_breath, cast_lightning_breath};
 
-void do_breath(struct char_data* ch, char* argument, int cmd) {
+static void do_breath(struct char_data* ch, char* argument, int cmd) {
   struct char_data* victim;
   char buf[MAX_STRING_LENGTH];
   char name[MAX_STRING_LENGTH];
@@ -916,7 +916,7 @@ void do_fire(struct char_data* ch, char* argument, int cmd) {
   }
 }
 
-int gun_missile_damage(struct char_data* ch, struct char_data* victim,
+static int gun_missile_damage(struct char_data* ch, struct char_data* victim,
   int olddam, int attacktype) {
   int dam = 0;
   struct obj_data* gun;

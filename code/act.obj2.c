@@ -572,7 +572,7 @@ static void perform_wear(struct char_data* ch, struct obj_data* obj_object,
   }
 }
 
-int is_restricted(int Mask, int Class) {
+static int is_restricted(int Mask, int Class) {
   int i;
 
   if (IS_SET(Class, CLASS_MONK)) {
@@ -634,7 +634,7 @@ static int get_item_class_restrictions(struct obj_data* obj) {
   return (total);
 }
 
-void wear(struct char_data* ch, struct obj_data* obj_object, int keyword) {
+static void wear(struct char_data* ch, struct obj_data* obj_object, int keyword) {
   char buffer[MAX_STRING_LENGTH];
   int bit_mask;
 

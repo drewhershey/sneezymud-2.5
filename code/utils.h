@@ -478,6 +478,7 @@ int DamageMessages(struct char_data* ch, struct char_data* v, int dam,
 int DamageEpilog(struct char_data* ch, struct char_data* victim);
 int HitOrMiss(struct char_data* ch, struct char_data* victim, int calc_thaco);
 void sprinttype(int type, const char* const* names, char* result);
+struct time_info_data mud_time_passed(time_t t2, time_t t1);
 
 struct hunting_data {
     char* name;

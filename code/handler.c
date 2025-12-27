@@ -712,7 +712,7 @@ void obj_from_char(struct obj_data* object) {
 }
 
 /* Return the effect of a piece of armor in position eq_pos */
-int apply_ac(struct char_data* ch, int eq_pos) {
+static int apply_ac(struct char_data* ch, int eq_pos) {
   assert(ch->equipment[eq_pos]);
 
   if (!(GET_ITEM_TYPE(ch->equipment[eq_pos]) == ITEM_ARMOR)) {

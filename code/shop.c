@@ -16,6 +16,7 @@
 #include "multiclass.h"
 #include "structs.h"
 #include "utils.h"
+#include "spec_procs.h"
 
 #define SHOP_FILE "tinyworld.shp"
 #define MAX_TRADE 5
@@ -314,7 +315,7 @@ static void shopping_sell(char* arg, struct char_data* ch,
   }
   }
 
-void shopping_value(char* arg, struct char_data* ch, struct char_data* keeper,
+static void shopping_value(char* arg, struct char_data* ch, struct char_data* keeper,
   int shop_nr) {
   char argm[100];
   char buf[MAX_STRING_LENGTH];
@@ -349,7 +350,7 @@ void shopping_value(char* arg, struct char_data* ch, struct char_data* keeper,
   do_tell(keeper, buf, 19);
 }
 
-void shopping_list(char* arg, struct char_data* ch, struct char_data* keeper,
+static void shopping_list(char* arg, struct char_data* ch, struct char_data* keeper,
   int shop_nr) {
   char buf[MAX_STRING_LENGTH];
   char buf2[100];
@@ -392,7 +393,7 @@ void shopping_list(char* arg, struct char_data* ch, struct char_data* keeper,
   send_to_char(buf, ch);
 }
 
-void shopping_kill(char* arg, struct char_data* ch, struct char_data* keeper,
+static void shopping_kill(char* arg, struct char_data* ch, struct char_data* keeper,
   int shop_nr) {
   char buf[100];
 
@@ -412,15 +413,13 @@ void shopping_kill(char* arg, struct char_data* ch, struct char_data* keeper,
   }
 }
 
-int shop_keeper(struct char_data* ch, int cmd, char* arg) {
+static int shop_keeper(struct char_data* ch, int cmd, char* arg) {
   char argm[100];
   char buf[MAX_STRING_LENGTH];
   struct obj_data* temp1;
   struct char_data* temp_char;
   struct char_data* keeper;
   int shop_nr;
-
-  int citizen(struct char_data * ch, int cmd, char* arg);
 
   keeper = 0;
 

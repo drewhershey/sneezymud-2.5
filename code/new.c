@@ -228,7 +228,7 @@ void do_search(struct char_data* ch, char* arg, int cmd) {
   GET_MOVE(ch) = MAX(0, (GET_MOVE(ch) - 75));
 }
 
-void do_set_traps(struct char_data* ch, char* arg, int cmd) {
+static void do_set_traps(struct char_data* ch, char* arg, int cmd) {
   char buf[80];
   struct obj_data* trap;
 }

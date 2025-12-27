@@ -44,7 +44,7 @@ int check_blackjack(struct char_data* ch) {
   return 0;
 }
 
-void bj_shuffle(int inx, struct char_data* ch) {
+static void bj_shuffle(int inx, struct char_data* ch) {
   char log_msg[256];
   int l1;
   int l2;

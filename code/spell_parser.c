@@ -418,7 +418,7 @@ static const char* const spell_wear_off_soon_room_msg[] = {"", "", "", "", "",
   "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",
   "\n"};
 
-void spell_wear_off_soon(int s, struct char_data* ch) {
+static void spell_wear_off_soon(int s, struct char_data* ch) {
   if (s > MAX_SKILLS + 10) {
     return;
   }
@@ -857,11 +857,11 @@ void affect_update(int pulse) {
   }
 }
 
-void clone_char(struct char_data* ch) {
+static void clone_char(struct char_data* ch) {
   send_to_char("Nosir, i don't like it\n\r", ch);
 }
 
-void clone_obj(struct obj_data* obj) {}
+static void clone_obj(struct obj_data* obj) {}
 
 /* Check if making CH follow VICTIM will create an illegal */
 /* Follow "Loop/circle"                                    */

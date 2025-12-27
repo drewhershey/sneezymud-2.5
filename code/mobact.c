@@ -75,7 +75,7 @@ void mobile_wander(struct char_data* ch) {
   }
 }
 
-void mob_hunt(struct char_data* ch) {
+static void mob_hunt(struct char_data* ch) {
   int res, k;
 
 #if NOTRACK
@@ -132,7 +132,7 @@ void mob_hunt(struct char_data* ch) {
   }
 }
 
-void mob_scavenge(struct char_data* ch) {
+static void mob_scavenge(struct char_data* ch) {
   struct obj_data* best_obj = 0;
   struct obj_data* obj = 0;
   int max;

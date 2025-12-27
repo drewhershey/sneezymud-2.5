@@ -181,7 +181,7 @@ void do_passwd(struct char_data* ch, char* argument, int cmdnum) {
 }
 
 /* Bamfin and bamfout - courtesy of DM from Epic */
-void dsearch(char* string, char* tmp) {
+static void dsearch(char* string, char* tmp) {
   char* c;
   char buf[255];
   char buf2[255];
@@ -2675,7 +2675,7 @@ void do_purge(struct char_data* ch, char* argument, int cmd) {
 }
 
 /* Give pointers to the five abilities */
-void roll_abilities(struct char_data* ch) {
+static void roll_abilities(struct char_data* ch) {
   int i;
   int j;
   int k;
@@ -3438,27 +3438,6 @@ void do_show(struct char_data* ch, char* argument, int cmd) {
   }
   page_string_block(&sb, ch);
   destroy_string_block(&sb);
-}
-
-void do_debug(struct char_data* ch, char* argument, int cmd) {
-  char arg[MAX_INPUT_LENGTH];
-  int i;
-
-  i = 0;
-  one_argument(argument, arg);
-  i = atoi(arg);
-
-  if (i < 0 || i > 2) {
-    send_to_char("valid values are 0, 1 and 2\n\r", ch);
-  } else {
-#if DEBUG
-    malloc_debug(i);
-    sprintf(arg, "malloc debug level set to %d\n\r", i);
-#else
-    sprintf(arg, "Debug level set to %d. May not be implemented\n\r", i);
-#endif
-    send_to_char(arg, ch);
-  }
 }
 
 static int scan_number(char* text, int* rval) {

@@ -545,7 +545,7 @@ static void check_seven(struct char_data* ch, int diceroll) {
   ch->point_roll = 0;
 }
 
-void check_eleven(struct char_data* ch, int diceroll) {
+static void check_eleven(struct char_data* ch, int diceroll) {
   struct char_data* better;
   struct char_data* temp;
   char buf[255];
@@ -991,7 +991,7 @@ void do_play(struct char_data* ch, char* arg, int cmd) {
   }
 }
 
-void clear_bets(struct char_data* ch) {
+static void clear_bets(struct char_data* ch) {
   ch->bet.come = 0;
   ch->bet.crap = 0;
   ch->bet.eleven = 0;
@@ -1009,7 +1009,7 @@ void clear_bets(struct char_data* ch) {
   ch->bet.one_craps = 0;
 }
 
-int check_for_point(struct char_data* ch) {
+static int check_for_point(struct char_data* ch) {
   struct obj_data* i;
 
   for (i = object_list; i; i = i->next) {
@@ -1027,7 +1027,7 @@ int check_for_point(struct char_data* ch) {
   return 0;
 }
 
-void check_horn(struct char_data* better, int diceroll) {
+static void check_horn(struct char_data* better, int diceroll) {
   char buf[255];
 
   if ((diceroll > 3) || (diceroll < 11)) {
@@ -1045,19 +1045,19 @@ void check_horn(struct char_data* better, int diceroll) {
   better->bet.horn_bet = 0;
 }
 
-void check_hard_four(struct char_data* better, int diceroll) {
+static void check_hard_four(struct char_data* better, int diceroll) {
   struct char_data* tmp_better;
   struct char_data* temp;
   char buf[255];
 }
 
-void check_hard_six(struct char_data* better, int diceroll) {}
+static void check_hard_six(struct char_data* better, int diceroll) {}
 
-void check_hard_eight(struct char_data* better, int diceroll) {}
+static void check_hard_eight(struct char_data* better, int diceroll) {}
 
-void check_hard_ten(struct char_data* better, int diceroll) {}
+static void check_hard_ten(struct char_data* better, int diceroll) {}
 
-void check_hardrolls(struct char_data* better, int diceroll) {}
+static void check_hardrolls(struct char_data* better, int diceroll) {}
 
 #define DICE 9002
 

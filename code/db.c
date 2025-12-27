@@ -197,8 +197,6 @@ void reset_time(void) {
   char buf[80];
   long beginning_of_time = 650336715;
 
-  struct time_info_data mud_time_passed(time_t t2, time_t t1);
-
   time_info = mud_time_passed(time(0), beginning_of_time);
 
   moontype = time_info.day;
@@ -1983,7 +1981,7 @@ void save_char(struct char_data* ch, short int load_room) {
 }
 
 /* for possible later use with qsort */
-int compare(struct player_index_element* arg1,
+static int compare(struct player_index_element* arg1,
   struct player_index_element* arg2) {
   return (str_cmp(arg1->name, arg2->name));
 }
@@ -2171,7 +2169,7 @@ int file_to_string(char* name, char* buf) {
   return (0);
 }
 
-void clear_dead_bit(struct char_data* ch) {
+static void clear_dead_bit(struct char_data* ch) {
   FILE* fl;
   struct char_file_u st;
 
