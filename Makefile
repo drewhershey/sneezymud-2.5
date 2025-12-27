@@ -2,7 +2,7 @@
 # This is a convenience wrapper around CMake commands
 
 .PHONY: help build release clean clean-all format run test reconfigure report all
-.PHONY: iwyu-check iwyu-fix
+.PHONY: iwyu-check iwyu-fix dead-code
 .PHONY: analyze analyze-export analyze-ci
 .PHONY: check-python3
 
@@ -29,6 +29,7 @@ help:
 	@echo "  make reconfigure - Reconfigure CMake (dev preset)"
 	@echo "  make iwyu-check  - Run include-what-you-use analysis (dry run)"
 	@echo "  make iwyu-fix    - Run include-what-you-use and apply fixes"
+	@echo "  make dead-code   - Find unused functions via link-time analysis"
 	@echo ""
 	@echo "Static Analysis (CodeChecker + clang-tidy + clangsa):"
 	@echo "  make analyze        - Run comprehensive static analysis"
@@ -121,6 +122,21 @@ iwyu-check: build
 iwyu-fix: build
 	@echo "Running include-what-you-use and applying fixes..."
 	@cmake --build build --target iwyu-fix
+
+# Find unused functions via link-time dead code detection
+dead-code:
+	@echo "Configuring with dead code detection..."
+	@cmake --preset $(PRESET) -DENABLE_DEAD_CODE_DETECTION=ON >/dev/null
+	@echo "Building and detecting unused functions..."
+	@cmake --build build --clean-first 2>&1 | \
+		grep "removing unused" | \
+		grep "sneezy.dir/code" | \
+		grep "\.text\." | \
+		sed 's/.*code\/\([^/]*\.c\)\.o:(\.text\.\(.*\))/\1: \2/' | \
+		sort -t: -k1,1 -k2,2
+	@echo ""
+	@echo "Reconfiguring without dead code detection..."
+	@cmake --preset $(PRESET) -DENABLE_DEAD_CODE_DETECTION=OFF >/dev/null
 
 # =============================================================================
 # Static Analysis via CodeChecker (Python script)

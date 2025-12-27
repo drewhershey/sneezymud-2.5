@@ -91,6 +91,21 @@ target_link_options(compiler_options INTERFACE
     $<$<CONFIG:Release>:-flto=auto>
 )
 
+# Dead code detection - prints unused functions at link time
+# Usage: cmake --preset dev -DENABLE_DEAD_CODE_DETECTION=ON
+option(ENABLE_DEAD_CODE_DETECTION "Print unused functions during linking" OFF)
+if(ENABLE_DEAD_CODE_DETECTION)
+    target_compile_options(compiler_options INTERFACE
+        -ffunction-sections             # Put each function in its own section
+        -fdata-sections                 # Put each data item in its own section
+    )
+    target_link_options(compiler_options INTERFACE
+        -Wl,--gc-sections               # Remove unused sections
+        -Wl,--print-gc-sections         # Print what was removed
+    )
+    message(STATUS "Dead code detection enabled - unused functions will be printed at link time")
+endif()
+
 # Include-What-You-Use (IWYU) - optional analysis tool for header cleanup
 # Usage: cmake --preset dev -DENABLE_IWYU=ON
 option(ENABLE_IWYU "Run include-what-you-use during build (for header analysis)" OFF)
