@@ -919,6 +919,7 @@ void do_oset(struct char_data* ch, char* argument, int cmd) {
                 ch);
               break;
           }
+          [[fallthrough]];
         case ITEM_DRINKCON:
           switch (i) {
             case 0: /* capacity */

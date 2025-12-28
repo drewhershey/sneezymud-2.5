@@ -260,7 +260,7 @@ void board_save_board(struct Board* b) {
     fwrite(&len, sizeof(int), 1, b->file);
     fwrite(b->head[ind], sizeof(char), len, b->file);
     if (!b->msgs[ind]) {
-      if (b->msgs[ind] = (char*)Mymalloc(50)) {
+      if ((b->msgs[ind] = (char*)Mymalloc(50))) {
         strcpy(b->msgs[ind], "Generic Message");
       } else {
         exit(1);
@@ -330,7 +330,8 @@ void board_reset_board(struct Board* b) {
 
 void error_log(const char* str) { /* The original error-handling was MUCH */
   fputs("Board : ", stderr);      /* more competent than the current but  */
-  fputs(str, stderr);             }
+  fputs(str, stderr);
+}
 
 int board_display_msg(struct char_data* ch, char* arg, struct Board* b) {
   char buf[512];
@@ -365,7 +366,7 @@ int board_display_msg(struct char_data* ch, char* arg, struct Board* b) {
   return (1);
 }
 
-void board_fix_long_desc(struct Board* b) { }
+void board_fix_long_desc(struct Board* b) {}
 
 int board_show_board(struct char_data* ch, char* arg, struct Board* b) {
   int i;

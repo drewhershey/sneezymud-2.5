@@ -4,6 +4,8 @@
  *  copyright (c) 1990, 1991 - see 'license.doc' for complete information. *
  ************************************************************************* */
 
+#include <stddef.h>
+
 #include "comm.h"
 #include "db.h"
 #include "handler.h"
@@ -15,7 +17,7 @@
 #include "utils.h"
 
 static void mobile_guardian(struct char_data* ch) {
-  struct char_data* targ;
+  struct char_data* targ = nullptr;
   int i;
   int found = 0;
 
@@ -37,8 +39,7 @@ static void mobile_guardian(struct char_data* ch) {
 
       if (!SameRace(targ, ch)) {
         if (IsHumanoid(ch)) {
-          act("$n screams 'I must protect my master!'", 0, ch, 0, 0,
-            TO_ROOM);
+          act("$n screams 'I must protect my master!'", 0, ch, 0, 0, TO_ROOM);
         } else {
           act("$n growls angrily!", 0, ch, 0, 0, TO_ROOM);
         }
@@ -51,9 +52,9 @@ static void mobile_guardian(struct char_data* ch) {
 }
 
 void mobile_wander(struct char_data* ch) {
-  int door;
+  int door = 0;
   struct room_direction_data* exitp;
-  struct room_data* rp;
+  struct room_data* rp = nullptr;
 
   if (!((GET_POS(ch) == POSITION_STANDING) && ((door = number(0, 15)) <= 5) &&
         exit_ok(exitp = EXIT(ch, door), &rp) &&
@@ -326,8 +327,7 @@ void mobile_activity(struct char_data* ch) {
                   1, ch, 0, tmp_ch, TO_ROOM);
               } else {
                 if (IsHumanoid(ch)) {
-                  act("$n screams 'I'm gonna get you!'", 1, ch, 0, 0,
-                    TO_ROOM);
+                  act("$n screams 'I'm gonna get you!'", 1, ch, 0, 0, TO_ROOM);
                 } else if (IsAnimal(ch)) {
                   act("$n growls", 1, ch, 0, 0, TO_ROOM);
                 }

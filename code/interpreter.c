@@ -398,7 +398,7 @@ int search_block(char* arg, const char* const* list, char exact) {
   return (-1);
 }
 
-int old_search_block(char* argument, int begin, int length,
+int old_search_block(const char* argument, int begin, int length,
   const char* const* list, int mode) {
   int guess;
   int found;
@@ -480,7 +480,7 @@ void command_interpreter(struct char_data* ch, char* argument) {
   }
 
   /* Find first non blank */
-  for (begin = 0; (*(argument + begin) == ' '); begin++) {
+  for (begin = 0; *(argument + begin) == ' '; begin++) {
     ;
   }
 
@@ -574,7 +574,8 @@ void command_interpreter(struct char_data* ch, char* argument) {
   }
 }
 
-void argument_interpreter(char* argument, char* first_arg, char* second_arg) {
+void argument_interpreter(const char* argument, char* first_arg,
+  char* second_arg) {
   int look_at;
   int found;
   int begin;
@@ -618,7 +619,7 @@ void argument_interpreter(char* argument, char* first_arg, char* second_arg) {
   } while (fill_word(second_arg));
 }
 
-int is_number(char* str) {
+int is_number(const char* str) {
   int look_at;
 
   if (*str == '\0') {
@@ -707,7 +708,7 @@ void half_chop(char* string, char* arg1, char* arg2) {
     ;
   }
 
-  for (; *arg2 = *string; string++, arg2++) {
+  for (; (*arg2 = *string); string++, arg2++) {
     ;
   }
 }
@@ -1129,7 +1130,7 @@ int parse_name(char* arg, char* name) {
     ;
   }
 
-  for (i = 0; *name = *arg; arg++, i++, name++) {
+  for (i = 0; (*name = *arg); arg++, i++, name++) {
     if ((*arg < 0) || !isalpha(*arg) || i > 15) {
       return (1);
     }
@@ -2005,8 +2006,7 @@ void nanny(struct descriptor_data* d, char* arg) {
                 plr_tick_count = 0;
               }
 
-              act("$n has entered the game.", 1, d->character, 0, 0,
-                TO_ROOM);
+              act("$n has entered the game.", 1, d->character, 0, 0, TO_ROOM);
               STATE(d) = CON_PLYNG;
               if (!GetMaxLevel(d->character)) {
                 do_start(d->character);
@@ -2044,8 +2044,7 @@ void nanny(struct descriptor_data* d, char* arg) {
                 plr_tick_count = 0;
               }
 
-              act("$n has entered the game.", 1, d->character, 0, 0,
-                TO_ROOM);
+              act("$n has entered the game.", 1, d->character, 0, 0, TO_ROOM);
               STATE(d) = CON_PLYNG;
               if (!GetMaxLevel(d->character)) {
                 do_start(d->character);
@@ -2083,8 +2082,7 @@ void nanny(struct descriptor_data* d, char* arg) {
                 plr_tick_count = 0;
               }
 
-              act("$n has entered the game.", 1, d->character, 0, 0,
-                TO_ROOM);
+              act("$n has entered the game.", 1, d->character, 0, 0, TO_ROOM);
               STATE(d) = CON_PLYNG;
               if (!GetMaxLevel(d->character)) {
                 do_start(d->character);

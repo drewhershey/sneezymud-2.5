@@ -791,7 +791,7 @@ static void roll_dice(struct char_data* ch) {
 
   table_man = FindMobInRoomWithFunction(ch->in_room, craps_table_man);
   if (table_man) {
-    if (!can_bet_craps) {
+    if (!can_bet_craps(ch)) {
       sprintf(buf, "%s You can't roll until I say so!", GET_NAME(ch));
       do_tell(table_man, buf, 0);
       return;
@@ -876,7 +876,7 @@ void do_play(struct char_data* ch, char* arg, int cmd) {
       return;
     }
 
-    if (!check_slots) {
+    if (!check_slots(ch)) {
       send_to_char("No slot machine in this room!\n\r", ch);
       return;
     }

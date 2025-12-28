@@ -115,7 +115,7 @@ void do_who(struct char_data* ch, char* argument, int cmd) {
     return;
   }
   argument = one_argument(argument, arg); /*  'who playername' command */
-  if (k = get_char_vis(ch, arg)) {
+  if ((k = get_char_vis(ch, arg))) {
     if (IS_NPC(k)) {
       send_to_char("\n\rTotal Players : [0]\n\r", ch);
       return;
@@ -1093,8 +1093,7 @@ static void list_char_in_room(struct char_data* list, struct char_data* ch) {
   }
 }
 
-static void list_char_to_char(struct char_data* list, struct char_data* ch,
-  int mode) {
+static void list_char_to_char(struct char_data* list, struct char_data* ch) {
   struct char_data* i;
 
   for (i = list; i; i = i->next_in_room) {
@@ -2626,7 +2625,7 @@ void do_world(struct char_data* ch, char* argument, int cmd) {
     top_of_p_table + 1);
   send_to_char(buf, ch);
 
-  sprintf(buf, "Total number of monsters in game: %d\n\r", mob_count);
+  sprintf(buf, "Total number of monsters in game: %ld\n\r", mob_count);
   send_to_char(buf, ch);
 
   sprintf(buf, "Total number of objects in game: %d\n\r", obj_count);

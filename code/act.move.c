@@ -928,8 +928,7 @@ void do_enter(struct char_data* ch, char* argument, int cmd) {
     if (obj_object) {
       send_to_char(
         "You step into the portal and are thrown into another room.\n\r", ch);
-      act("$n disappears as $e step into the portal.", 0, ch, 0, 0,
-        TO_ROOM);
+      act("$n disappears as $e step into the portal.", 0, ch, 0, 0, TO_ROOM);
       location = obj_object->obj_flags.value[0];
       char_from_room(ch);
       char_to_room(ch, location);
@@ -995,22 +994,20 @@ void do_stand(struct char_data* ch, char* argument, int cmd) {
     } break;
     case POSITION_RESTING: {
       act("You stop resting, and stand up.", 0, ch, 0, 0, TO_CHAR);
-      act("$n stops resting, and clambers on $s feet.", 1, ch, 0, 0,
-        TO_ROOM);
+      act("$n stops resting, and clambers on $s feet.", 1, ch, 0, 0, TO_ROOM);
       GET_POS(ch) = POSITION_STANDING;
     } break;
     case POSITION_SLEEPING: {
       act("You have to wake up first!", 0, ch, 0, 0, TO_CHAR);
     } break;
     case POSITION_FIGHTING: {
-      act("Do you not consider fighting as standing?", 0, ch, 0, 0,
-        TO_CHAR);
+      act("Do you not consider fighting as standing?", 0, ch, 0, 0, TO_CHAR);
     } break;
     default: {
-      act("You stop floating around, and put your feet on the ground.", 0,
-        ch, 0, 0, TO_CHAR);
-      act("$n stops floating around, and puts $s feet on the ground.", 1, ch,
-        0, 0, TO_ROOM);
+      act("You stop floating around, and put your feet on the ground.", 0, ch,
+        0, 0, TO_CHAR);
+      act("$n stops floating around, and puts $s feet on the ground.", 1, ch, 0,
+        0, TO_ROOM);
     } break;
   }
 }
@@ -1080,8 +1077,8 @@ void do_rest(struct char_data* ch, char* argument, int cmd) {
       act("Rest while fighting? are you MAD?", 0, ch, 0, 0, TO_CHAR);
     } break;
     default: {
-      act("You stop floating around, and stop to rest your tired bones.", 0,
-        ch, 0, 0, TO_CHAR);
+      act("You stop floating around, and stop to rest your tired bones.", 0, ch,
+        0, 0, TO_CHAR);
       act("$n stops floating around, and rests.", 0, ch, 0, 0, TO_ROOM);
       GET_POS(ch) = POSITION_SITTING;
     } break;
@@ -1127,14 +1124,14 @@ void do_wake(struct char_data* ch, char* argument, int cmd) {
   one_argument(argument, arg);
   if (*arg) {
     if (GET_POS(ch) == POSITION_SLEEPING) {
-      act("You can't wake people up if you are asleep yourself!", 0, ch, 0,
-        0, TO_CHAR);
+      act("You can't wake people up if you are asleep yourself!", 0, ch, 0, 0,
+        TO_CHAR);
     } else {
       tmp_char = get_char_room_vis(ch, arg);
       if (tmp_char) {
         if (tmp_char == ch) {
-          act("If you want to wake yourself up, just type 'wake'", 0, ch, 0,
-            0, TO_CHAR);
+          act("If you want to wake yourself up, just type 'wake'", 0, ch, 0, 0,
+            TO_CHAR);
         } else {
           if (GET_POS(tmp_char) == POSITION_SLEEPING) {
             if (IS_AFFECTED(tmp_char, AFF_SLEEP)) {
@@ -1144,8 +1141,8 @@ void do_wake(struct char_data* ch, char* argument, int cmd) {
                 act("You wake $M up and drag $m to $M feet.", 0, ch, 0,
                   tmp_char, TO_CHAR);
                 GET_POS(tmp_char) = POSITION_STANDING;
-                act("You are awakened and drug to your feet by $n.", 0, ch,
-                  0, tmp_char, TO_VICT);
+                act("You are awakened and drug to your feet by $n.", 0, ch, 0,
+                  tmp_char, TO_VICT);
               } else {
                 act("You wake $M up.", 0, ch, 0, tmp_char, TO_CHAR);
                 GET_POS(tmp_char) = POSITION_SITTING;
@@ -1199,8 +1196,7 @@ void do_follow(struct char_data* ch, char* argument, int cmd) {
   }
 
   if (IS_AFFECTED(ch, AFF_CHARM) && (ch->master)) {
-    act("But you only feel like following $N!", 0, ch, 0, ch->master,
-      TO_CHAR);
+    act("But you only feel like following $N!", 0, ch, 0, ch->master, TO_CHAR);
 
   } else { /* Not Charmed follow person */
 

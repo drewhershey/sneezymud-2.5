@@ -197,11 +197,9 @@ void do_search(struct char_data* ch, char* arg, int cmd) {
         sprintf(buf, "$n searches the %s wall for secret doors.", exits[j]);
         act(buf, 0, ch, 0, 0, TO_ROOM);
       } else if (j < 5) {
-        act("$n searches the ceiling for secret doors.", 0, ch, 0, 0,
-          TO_ROOM);
+        act("$n searches the ceiling for secret doors.", 0, ch, 0, 0, TO_ROOM);
       } else {
-        act("$n searches the floor for secret doors.", 0, ch, 0, 0,
-          TO_ROOM);
+        act("$n searches the floor for secret doors.", 0, ch, 0, 0, TO_ROOM);
       }
 
       learned = ((GET_DEX(ch) + GET_INT(ch) + GET_LEVEL(ch, THIEF_LEVEL_IND) +
@@ -215,8 +213,7 @@ void do_search(struct char_data* ch, char* arg, int cmd) {
           exits[j], fname(fdd->keyword));
         act(buf, 0, ch, 0, 0, TO_ROOM);
         send_to_char("You are totally exhausted from your searching!\n\r", ch);
-        act("$n is totally exhausted from $s search.", 0, ch, 0, 0,
-          TO_ROOM);
+        act("$n is totally exhausted from $s search.", 0, ch, 0, 0, TO_ROOM);
         GET_MOVE(ch) = MAX(0, (GET_MOVE(ch) - 75));
         return;
       }
@@ -228,7 +225,7 @@ void do_search(struct char_data* ch, char* arg, int cmd) {
   GET_MOVE(ch) = MAX(0, (GET_MOVE(ch) - 75));
 }
 
-static void do_set_traps(struct char_data* ch, char* arg, int cmd) {
+static void do_set_traps(char* arg, int cmd) {
   char buf[80];
   struct obj_data* trap;
 }
@@ -302,8 +299,8 @@ void do_grapple(struct char_data* ch, char* arg, int cmd) {
     WAIT_STATE(ch, 3 * PULSE_VIOLENCE);
     act("You try to wrestle $N to the ground, but end up falling on your butt.",
       1, ch, 0, victim, TO_CHAR);
-    act("$n makes a nice wrestling move, but falls on his butt.", 1, ch, 0,
-      0, TO_ROOM);
+    act("$n makes a nice wrestling move, but falls on his butt.", 1, ch, 0, 0,
+      TO_ROOM);
 
     if (ch->specials.fighting) {
       stop_fighting(ch);
@@ -557,13 +554,13 @@ void do_deathstroke(struct char_data* ch, char* argument, int cmd) {
     if (percent > ch->skills[SKILL_DEATHSTROKE].learned) {
       /* monster hits player vitals while player is exposed */
       damage(victim, ch,
-        (3 * GET_STR(victim) + 3 * (GetMaxLevel(victim) + GET_ADD(victim))),
+        ((3 * GET_STR(victim)) + (3 * (GetMaxLevel(victim) + GET_ADD(victim)))),
         SKILL_DEATHSTROKE);
     }
   } else {
     if (GET_POS(victim) > POSITION_DEAD) {
       damage(ch, victim,
-        (3 * GET_STR(ch) + 3 * (GET_LEVEL(ch, WARRIOR_LEVEL_IND)) +
+        ((3 * GET_STR(ch)) + (3 * (GET_LEVEL(ch, WARRIOR_LEVEL_IND))) +
           GET_ADD(ch)),
         SKILL_DEATHSTROKE);
     }

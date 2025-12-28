@@ -533,8 +533,7 @@ int receptionist(struct char_data* ch, int cmd, char* arg) {
     if (recep_offer(ch, recep, &cost)) {
       act("$n stores your stuff in the safe, and helps you into your chamber.",
         0, recep, 0, ch, TO_VICT);
-      act("$n helps $N into $S private chamber.", 0, recep, 0, ch,
-        TO_NOTVICT);
+      act("$n helps $N into $S private chamber.", 0, recep, 0, ch, TO_NOTVICT);
 
       save_obj(ch, &cost, 1);
       save_room = ch->in_room;
@@ -615,8 +614,7 @@ int receptionist_for_outlaws(struct char_data* ch, int cmd, char* arg) {
       }
       act("$n stores your stuff in the safe, and helps you into your chamber.",
         0, recep, 0, ch, TO_VICT);
-      act("$n helps $N into $S private chamber.", 0, recep, 0, ch,
-        TO_NOTVICT);
+      act("$n helps $N into $S private chamber.", 0, recep, 0, ch, TO_NOTVICT);
 
       save_obj(ch, &cost, 1);
       save_room = ch->in_room;

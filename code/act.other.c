@@ -65,8 +65,7 @@ void do_guard(struct char_data* ch, char* argument, int cmd) {
       }
     }
   }
-
-  }
+}
 
 void do_junk(struct char_data* ch, char* argument, int cmd) {
   char arg[100];
@@ -729,8 +728,7 @@ void do_steal(struct char_data* ch, char* argument, int cmd) {
           (AWAKE(victim) && (percent > ch->skills[SKILL_STEAL].learned))) {
         ohoh = 1;
         act("Oops..", 0, ch, 0, 0, TO_CHAR);
-        act("$n tried to steal something from you!", 0, ch, 0, victim,
-          TO_VICT);
+        act("$n tried to steal something from you!", 0, ch, 0, victim, TO_VICT);
         act("$n tries to steal something from $N.", 1, ch, 0, victim,
           TO_NOTVICT);
         if (IS_PC(victim)) {
@@ -760,8 +758,8 @@ void do_steal(struct char_data* ch, char* argument, int cmd) {
         (AWAKE(victim) && (percent > ch->skills[SKILL_STEAL].learned))) {
       ohoh = 1;
       act("Oops..", 0, ch, 0, 0, TO_CHAR);
-      act("You discover that $n has $s hands in your wallet.", 0, ch, 0,
-        victim, TO_VICT);
+      act("You discover that $n has $s hands in your wallet.", 0, ch, 0, victim,
+        TO_VICT);
       act("$n tries to steal gold from $N.", 1, ch, 0, victim, TO_NOTVICT);
     } else {
       /* Steal some gold coins */
@@ -1460,8 +1458,8 @@ void do_group(struct char_data* ch, char* argument, int cmd) {
     send_to_char("No one here by that name.\n\r", ch);
   } else {
     if (ch->master) {
-      act("You can not enroll group members without being head of a group.",
-        0, ch, 0, 0, TO_CHAR);
+      act("You can not enroll group members without being head of a group.", 0,
+        ch, 0, 0, TO_CHAR);
       return;
     }
 
@@ -1480,15 +1478,13 @@ void do_group(struct char_data* ch, char* argument, int cmd) {
 
     if (found) {
       if (IS_AFFECTED(victim, AFF_GROUP)) {
-        act("$n has been kicked out of $N's group!", 0, victim, 0, ch,
-          TO_ROOM);
+        act("$n has been kicked out of $N's group!", 0, victim, 0, ch, TO_ROOM);
         act("You are no longer a member of $N's group!", 0, victim, 0, ch,
           TO_CHAR);
         REMOVE_BIT(victim->specials.affected_by, AFF_GROUP);
       } else {
         if (GetMaxLevel(victim) >= LOW_IMMORTAL) {
-          act("You really don't want $n in your group.", 0, ch, 0, 0,
-            TO_CHAR);
+          act("You really don't want $n in your group.", 0, ch, 0, 0, TO_CHAR);
           return;
         }
         if (GetMaxLevel(ch) >= LOW_IMMORTAL) {
@@ -1496,13 +1492,11 @@ void do_group(struct char_data* ch, char* argument, int cmd) {
           return;
         }
         act("$n is now a member of $N's group.", 0, victim, 0, ch, TO_ROOM);
-        act("You are now a member of $N's group.", 0, victim, 0, ch,
-          TO_CHAR);
+        act("You are now a member of $N's group.", 0, victim, 0, ch, TO_CHAR);
         SET_BIT(victim->specials.affected_by, AFF_GROUP);
       }
     } else {
-      act("$N must follow you, to enter the group", 0, ch, 0, victim,
-        TO_CHAR);
+      act("$N must follow you, to enter the group", 0, ch, 0, victim, TO_CHAR);
     }
   }
 }
@@ -1550,9 +1544,9 @@ void do_quaff(struct char_data* ch, char* argument, int cmd) {
           TO_ROOM);
         act("You arm is jolted and $p flies from your hand, *SMASH*", 1, ch,
           temp, 0, TO_CHAR);
-        if (equipped) {
-          temp = unequip_char(ch, HOLD);
-        }
+
+        temp = unequip_char(ch, HOLD);
+
         extract_obj(temp);
         return;
       }
@@ -1716,8 +1710,8 @@ void do_use(struct char_data* ch, char* argument, int cmd) {
 
       if (IS_SET(spellp->targets, TAR_VIOLENT) && (bits == FIND_CHAR_ROOM) &&
           IS_PC(tmp_char)) {
-        act("$N tries to harm you by casting a malicious spell.", 0,
-          tmp_char, 0, ch, TO_CHAR);
+        act("$N tries to harm you by casting a malicious spell.", 0, tmp_char,
+          0, ch, TO_CHAR);
         if (!IS_SET(ch->specials.act, PLR_KILLER) &&
             !IS_SET(tmp_char->specials.act, PLR_OUTLAW) &&
             !IS_SET(tmp_char->specials.act, PLR_KILLER)) {

@@ -214,7 +214,7 @@ static void shopping_buy(char* arg, struct char_data* ch,
 
     obj_to_char(temp1, ch);
   }
-  }
+}
 
 static void shopping_sell(char* arg, struct char_data* ch,
   struct char_data* keeper, int shop_nr) {
@@ -313,10 +313,10 @@ static void shopping_sell(char* arg, struct char_data* ch,
   } else {
     obj_to_char(temp1, keeper);
   }
-  }
+}
 
-static void shopping_value(char* arg, struct char_data* ch, struct char_data* keeper,
-  int shop_nr) {
+static void shopping_value(char* arg, struct char_data* ch,
+  struct char_data* keeper, int shop_nr) {
   char argm[100];
   char buf[MAX_STRING_LENGTH];
   struct obj_data* temp1;
@@ -350,7 +350,7 @@ static void shopping_value(char* arg, struct char_data* ch, struct char_data* ke
   do_tell(keeper, buf, 19);
 }
 
-static void shopping_list(char* arg, struct char_data* ch, struct char_data* keeper,
+static void shopping_list(struct char_data* ch, struct char_data* keeper,
   int shop_nr) {
   char buf[MAX_STRING_LENGTH];
   char buf2[100];
@@ -393,7 +393,7 @@ static void shopping_list(char* arg, struct char_data* ch, struct char_data* kee
   send_to_char(buf, ch);
 }
 
-static void shopping_kill(char* arg, struct char_data* ch, struct char_data* keeper,
+static void shopping_kill(struct char_data* ch, struct char_data* keeper,
   int shop_nr) {
   char buf[100];
 
@@ -470,7 +470,7 @@ static int shop_keeper(struct char_data* ch, int cmd, char* arg) {
   if ((cmd == 59) && (ch->in_room == shop_index[shop_nr].in_room))
   /* List */
   {
-    shopping_list(arg, ch, keeper, shop_nr);
+    shopping_list(ch, keeper, shop_nr);
     return 1;
   }
 
@@ -479,7 +479,7 @@ static int shop_keeper(struct char_data* ch, int cmd, char* arg) {
     only_argument(arg, argm);
 
     if (keeper == get_char_room(argm, ch->in_room)) {
-      shopping_kill(arg, ch, keeper, shop_nr);
+      shopping_kill(ch, keeper, shop_nr);
       return 1;
     }
   } else if ((cmd == 84) || (cmd == 207) ||

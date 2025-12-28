@@ -212,7 +212,7 @@ static void dsearch(char* string, char* tmp) {
       buf[j] = '\0';
       strcpy(buf3, (string + j + 2));
       sprintf(tmp, "%s%s%s", buf, buf2, buf3);
-      sprintf(string, tmp);
+      sprintf(string, "%s", tmp);
     }
   }
 }
@@ -662,7 +662,7 @@ void do_wizlock(struct char_data* ch, char* argument, int cmd) {
     WizLock = 1;
   }
 #endif
-  }
+}
 
 static int room_enter(struct room_data* rb[], int key, struct room_data* rm) {
   if (key < 0 || key >= WORLD_SIZE) {
@@ -831,9 +831,9 @@ static void room_save(struct char_data* ch, int start, int end) {
 
     fprintf(fp, "#%d\n%s~\n%s~\n", rp->number, rp->name, temp);
     if (!rp->tele_targ) {
-      fprintf(fp, "%d %d %d", rp->zone, rp->room_flags, rp->sector_type);
+      fprintf(fp, "%d %ld %d", rp->zone, rp->room_flags, rp->sector_type);
     } else {
-      fprintf(fp, "%d %d -1 %d %d %d %d", rp->zone, rp->room_flags,
+      fprintf(fp, "%d %ld -1 %d %d %d %d", rp->zone, rp->room_flags,
         rp->tele_time, rp->tele_targ, rp->tele_look, rp->sector_type);
     }
     if (rp->sector_type == SECT_WATER_NOSWIM) {
@@ -1014,8 +1014,7 @@ void do_flag(struct char_data* ch, char* argument, int cmd) {
     } else if (is_abbrev(buf2, "banished")) {
       if (IS_SET(victim->specials.act, PLR_BANISHED)) {
         REMOVE_BIT(victim->specials.act, PLR_BANISHED);
-        act("You just removed $N's banished flag", 0, ch, 0, victim,
-          TO_CHAR);
+        act("You just removed $N's banished flag", 0, ch, 0, victim, TO_CHAR);
       } else {
         SET_BIT(victim->specials.act, PLR_BANISHED);
         act("You just set $N's banished flag.", 0, ch, 0, victim, TO_CHAR);
@@ -1084,8 +1083,7 @@ void do_trans(struct char_data* ch, char* argument, int cmd) {
     if (!(victim = get_char_vis_world(ch, buf, nullptr))) {
       send_to_char("No-one by that name around.\n\r", ch);
     } else {
-      act("$n disappears in a cloud of mushrooms.", 0, victim, 0, 0,
-        TO_ROOM);
+      act("$n disappears in a cloud of mushrooms.", 0, victim, 0, 0, TO_ROOM);
       target = ch->in_room;
       char_from_room(victim);
       char_to_room(victim, target);
@@ -1098,8 +1096,7 @@ void do_trans(struct char_data* ch, char* argument, int cmd) {
     for (i = descriptor_list; i; i = i->next) {
       if (i->character != ch && !i->connected) {
         victim = i->character;
-        act("$n disappears in a cloud of mushrooms.", 0, victim, 0, 0,
-          TO_ROOM);
+        act("$n disappears in a cloud of mushrooms.", 0, victim, 0, 0, TO_ROOM);
         target = ch->in_room;
         char_from_room(victim);
         char_to_room(victim, target);
@@ -1139,9 +1136,9 @@ void do_at(struct char_data* ch, char* argument, int cmd) {
       return;
     }
     location = loc_nr;
-  } else if (target_mob = get_char_vis(ch, loc_str)) {
+  } else if ((target_mob = get_char_vis(ch, loc_str))) {
     location = target_mob->in_room;
-  } else if (target_obj = get_obj_vis_world(ch, loc_str, nullptr)) {
+  } else if ((target_obj = get_obj_vis_world(ch, loc_str, nullptr))) {
     if (target_obj->in_room != NOWHERE) {
       location = target_obj->in_room;
     } else {
@@ -1206,9 +1203,9 @@ void do_goto(struct char_data* ch, char* argument, int cmd) {
       }
     }
     location = loc_nr;
-  } else if (target_mob = get_char_vis_world(ch, buf, nullptr)) {
+  } else if ((target_mob = get_char_vis_world(ch, buf, nullptr))) {
     location = target_mob->in_room;
-  } else if (target_obj = get_obj_vis_world(ch, buf, nullptr)) {
+  } else if ((target_obj = get_obj_vis_world(ch, buf, nullptr))) {
     if (target_obj->in_room != NOWHERE) {
       location = target_obj->in_room;
     } else {
@@ -1244,8 +1241,7 @@ void do_goto(struct char_data* ch, char* argument, int cmd) {
     for (v = real_roomp(ch->in_room)->people; v; v = v->next_in_room) {
       if ((ch != v) && (GetMaxLevel(v) >= LOW_IMMORTAL)) {
         if (!IS_SET(ch->poof.pmask, BIT_POOF_OUT) || !ch->poof.poofout) {
-          act("$n disappears in a cloud of mushrooms.", 0, ch, 0, v,
-            TO_VICT);
+          act("$n disappears in a cloud of mushrooms.", 0, ch, 0, v, TO_VICT);
         } else {
           act(ch->poof.poofout, 0, ch, 0, v, TO_VICT);
         }
@@ -1280,8 +1276,7 @@ void do_goto(struct char_data* ch, char* argument, int cmd) {
     }
   } else {
     if (!IS_SET(ch->poof.pmask, BIT_POOF_IN) || !ch->poof.poofin) {
-      act("$n appears with an explosion of rose-petals.", 0, ch, 0, 0,
-        TO_ROOM);
+      act("$n appears with an explosion of rose-petals.", 0, ch, 0, 0, TO_ROOM);
     } else if (*ch->poof.poofin != '!') {
       act(ch->poof.poofin, 0, ch, 0, 0, TO_ROOM);
     } else {
@@ -1410,7 +1405,7 @@ void do_stat(struct char_data* ch, char* argument, int cmd) {
   count = 1;
 
   /* mobile in world */
-  if (k = get_char_vis_world(ch, arg1, &count)) {
+  if ((k = get_char_vis_world(ch, arg1, &count))) {
     switch (k->player.sex) {
       case SEX_NEUTRAL:
         strcpy(buf, "NEUTRAL-SEX");
@@ -1488,7 +1483,7 @@ void do_stat(struct char_data* ch, char* argument, int cmd) {
     strcat(buf, buf2);
     send_to_char(buf, ch);
 
-    sprintf(buf, "Birth : [%ld]secs, Logon[%ld]secs, Played[%ld]secs\n\r",
+    sprintf(buf, "Birth : [%ld]secs, Logon[%ld]secs, Played[%d]secs\n\r",
       k->player.time.birth, k->player.time.logon, k->player.time.played);
 
     send_to_char(buf, ch);
@@ -1684,7 +1679,7 @@ void do_stat(struct char_data* ch, char* argument, int cmd) {
     return;
   }
   /* stat on object */
-  if (j = get_obj_vis_world(ch, arg1, &count)) {
+  if ((j = get_obj_vis_world(ch, arg1, &count))) {
     virtual = (j->item_number >= 0) ? obj_index[j->item_number].virtual : 0;
     sprintf(buf,
       "Object name: [%s], R-number: [%d], V-number: [%d] Item type: ", j->name,
@@ -1900,7 +1895,8 @@ send_to_char(buf, ch);
     send_to_char("Can affect char :\n\r", ch);
     for (i = 0; i < MAX_OBJ_AFFECT; i++) {
       sprinttype(j->affected[i].location, apply_types, buf2);
-      sprintf(buf, "    Affects : %s By %d\n\r", buf2, j->affected[i].modifier);
+      sprintf(buf, "    Affects : %s By %lu\n\r", buf2,
+        j->affected[i].modifier);
       send_to_char(buf, ch);
     }
     return;
@@ -2227,7 +2223,7 @@ void do_switch(struct char_data* ch, char* argument, int cmd) {
 }
 
 void do_return(struct char_data* ch, char* argument, int cmd) {
-  struct char_data* mob;
+  struct char_data* mob = nullptr;
   struct char_data* per;
 
   if (!ch->desc) {
@@ -2478,7 +2474,7 @@ static void completely_cleanout_room(struct room_data* rp) {
   cleanout_room(rp);
 }
 
-static void purge_one_room(int rnum, struct room_data* rp, int* range) {
+static void purge_one_room(int rnum, struct room_data* rp, const int* range) {
   struct char_data* ch;
   struct obj_data* obj;
 
@@ -2578,7 +2574,7 @@ void do_purge(struct char_data* ch, char* argument, int cmd) {
       return;
     }
 
-    if (vict = get_char_room_vis(ch, name)) {
+    if ((vict = get_char_room_vis(ch, name))) {
       if ((!IS_NPC(vict) || IS_SET(vict->specials.act, ACT_POLYSELF)) &&
           (GetMaxLevel(ch) < 53)) {
         send_to_char("I can't let you do that.\n\r", ch);
@@ -2598,8 +2594,8 @@ void do_purge(struct char_data* ch, char* argument, int cmd) {
           extract_char(vict);
         }
       }
-    } else if (obj = get_obj_in_list_vis(ch, name,
-                 real_roomp(ch->in_room)->contents)) {
+    } else if ((obj = get_obj_in_list_vis(ch, name,
+                  real_roomp(ch->in_room)->contents))) {
       act("$n destroys $p.", 0, ch, obj, 0, TO_ROOM);
       extract_obj(obj);
     } else {
@@ -3321,8 +3317,8 @@ void do_show(struct char_data* ch, char* argument, int cmd) {
   char buf[MAX_STRING_LENGTH];
   char zonenum[MAX_INPUT_LENGTH];
   struct index_data* which_i;
-  int bottom;
-  int top;
+  int bottom = 0;
+  int top = 0;
   int topi;
   struct string_block sb;
 

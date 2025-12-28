@@ -149,8 +149,8 @@ void do_get(struct char_data* ch, char* argument, int cmd) {
                   get(ch, obj_object, sub_object);
                   found = 1;
                 } else {
-                  act("You wouldnt know how to use the $o if you took it!",
-                    0, ch, obj_object, 0, TO_CHAR);
+                  act("You wouldnt know how to use the $o if you took it!", 0,
+                    ch, obj_object, 0, TO_CHAR);
                   fail = 1;
                 }
               } else {
@@ -207,8 +207,8 @@ void do_get(struct char_data* ch, char* argument, int cmd) {
                   get(ch, obj_object, sub_object);
                   found = 1;
                 } else {
-                  act("You wouldn't know how to use the $o if you took it!",
-                    0, ch, obj_object, 0, TO_CHAR);
+                  act("You wouldn't know how to use the $o if you took it!", 0,
+                    ch, obj_object, 0, TO_CHAR);
                   fail = 1;
                   num = 0;
                 }
@@ -674,7 +674,7 @@ void do_give(struct char_data* ch, char* argument, int cmd) {
   int amount;
   int num;
   int p;
-  struct char_data* vict;
+  struct char_data* vict = nullptr;
   struct obj_data* obj;
 
   argument = one_argument(argument, obj_name);

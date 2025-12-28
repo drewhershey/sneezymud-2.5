@@ -781,10 +781,10 @@ void affect_update(int pulse) {
       if (j->obj_flags.decay_time == 0) {
         if (j->name && !strncmp(j->name, "portal", 6)) { /* PORTALS */
           if ((j->in_room != NOWHERE) && (real_roomp(j->in_room)->people)) {
-            act("$p flickers out of view.", 1,
-              real_roomp(j->in_room)->people, j, 0, TO_ROOM);
-            act("$p flickers out of view.", 1,
-              real_roomp(j->in_room)->people, j, 0, TO_CHAR);
+            act("$p flickers out of view.", 1, real_roomp(j->in_room)->people,
+              j, 0, TO_ROOM);
+            act("$p flickers out of view.", 1, real_roomp(j->in_room)->people,
+              j, 0, TO_CHAR);
           }
         } else if (j->name && !strncmp(j->name, "corpse", 6)) { /* CORPSES */
           if (j->carried_by) {
@@ -819,8 +819,7 @@ void affect_update(int pulse) {
         } else {
           if (j->equipped_by) { /* Worn in equipment */ /* EVERYTHING ELSE that
                                                          DECAYS */
-            act("$p decays into nothing.", 0, j->equipped_by, j, 0,
-              TO_CHAR);
+            act("$p decays into nothing.", 0, j->equipped_by, j, 0, TO_CHAR);
           }
           if (j->carried_by &&
               !j->in_obj) { /*  In inverntory but not in a bag */
@@ -1213,7 +1212,7 @@ void do_cast(struct char_data* ch, char* argument, int cmd) {
 
         if (*name) {
           if (IS_SET(spell_info[spl].targets, TAR_CHAR_ROOM)) {
-            if (tar_char = get_char_room_vis(ch, name)) {
+            if ((tar_char = get_char_room_vis(ch, name))) {
               if (tar_char == ch || tar_char == ch->specials.fighting ||
                   tar_char->attackers < 6 ||
                   tar_char->specials.fighting == ch) {
@@ -1228,26 +1227,26 @@ void do_cast(struct char_data* ch, char* argument, int cmd) {
             }
           }
           if (!target_ok && IS_SET(spell_info[spl].targets, TAR_CHAR_WORLD)) {
-            if (tar_char = get_char_vis(ch, name)) {
+            if ((tar_char = get_char_vis(ch, name))) {
               target_ok = 1;
             }
           }
 
           if (!target_ok && IS_SET(spell_info[spl].targets, TAR_OBJ_INV)) {
-            if (tar_obj = get_obj_in_list_vis(ch, name, ch->carrying)) {
+            if ((tar_obj = get_obj_in_list_vis(ch, name, ch->carrying))) {
               target_ok = 1;
             }
           }
 
           if (!target_ok && IS_SET(spell_info[spl].targets, TAR_OBJ_ROOM)) {
-            if (tar_obj = get_obj_in_list_vis(ch, name,
-                  real_roomp(ch->in_room)->contents)) {
+            if ((tar_obj = get_obj_in_list_vis(ch, name,
+                   real_roomp(ch->in_room)->contents))) {
               target_ok = 1;
             }
           }
 
           if (!target_ok && IS_SET(spell_info[spl].targets, TAR_OBJ_WORLD)) {
-            if (tar_obj = get_obj_vis(ch, name)) {
+            if ((tar_obj = get_obj_vis(ch, name))) {
               target_ok = 1;
             }
           }

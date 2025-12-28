@@ -161,7 +161,7 @@ int scan_file(void) {
   FILE* mail_file;
   header_block_type next_block;
   int total_messages = 0;
-  int block_num = 0;
+  long block_num = 0;
   char buf[100];
 
   if (!(mail_file = fopen(MAIL_FILE, "r"))) {
@@ -445,8 +445,8 @@ static void postmaster_send_mail(struct char_data* ch, char* arg) {
   }
 
   if (!*arg) { /* you'll get no argument from me! */
-    act("$n tells you, 'You need to specify an addressee!'", 0, mailman, 0,
-      ch, TO_VICT);
+    act("$n tells you, 'You need to specify an addressee!'", 0, mailman, 0, ch,
+      TO_VICT);
     return;
   }
 
@@ -462,8 +462,8 @@ static void postmaster_send_mail(struct char_data* ch, char* arg) {
   parse_name(arg, recipient);
 
   if (find_name(recipient) < 0) {
-    act("$n tells you, 'No one by that name is registered here!'", 0,
-      mailman, 0, ch, TO_VICT);
+    act("$n tells you, 'No one by that name is registered here!'", 0, mailman,
+      0, ch, TO_VICT);
     return;
   }
 

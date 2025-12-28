@@ -30,8 +30,8 @@ void do_say(struct char_data* ch, char* argument, int cmd) {
 
   if (IS_AFFECTED(ch, AFF_SILENT)) {
     send_to_char("You can't make a sound!\n\r", ch);
-    act("$n waves $s hands and points silently toward his $s mouth.", 0, ch,
-      0, 0, TO_ROOM);
+    act("$n waves $s hands and points silently toward his $s mouth.", 0, ch, 0,
+      0, TO_ROOM);
     return;
   }
 
@@ -51,8 +51,8 @@ void do_shout(struct char_data* ch, char* argument, int cmd) {
 
   if (IS_AFFECTED(ch, AFF_SILENT)) {
     send_to_char("You can't make a sound!\n\r", ch);
-    act("$n waves $s hands and points silently toward his $s mouth.", 0, ch,
-      0, 0, TO_ROOM);
+    act("$n waves $s hands and points silently toward his $s mouth.", 0, ch, 0,
+      0, TO_ROOM);
     return;
   }
 
@@ -105,8 +105,8 @@ void do_grouptell(struct char_data* ch, char* argument, int cmd) {
 
   if (IS_AFFECTED(ch, AFF_SILENT)) {
     send_to_char("You can't make a sound!\n\r", ch);
-    act("$n waves $s hands and points silently toward his $s mouth.", 0, ch,
-      0, 0, TO_ROOM);
+    act("$n waves $s hands and points silently toward his $s mouth.", 0, ch, 0,
+      0, TO_ROOM);
     return;
   }
 
@@ -317,8 +317,8 @@ void do_tell(struct char_data* ch, char* argument, int cmd) {
 
   if (IS_AFFECTED(ch, AFF_SILENT)) {
     send_to_char("You can't make a sound!\n\r", ch);
-    act("$n waves $s hands and points silently toward his $s mouth.", 0, ch,
-      0, 0, TO_ROOM);
+    act("$n waves $s hands and points silently toward his $s mouth.", 0, ch, 0,
+      0, TO_ROOM);
     return;
   }
 
@@ -388,8 +388,8 @@ void do_whisper(struct char_data* ch, char* argument, int cmd) {
 
   if (IS_AFFECTED(ch, AFF_SILENT)) {
     send_to_char("You can't make a sound!\n\r", ch);
-    act("$n waves $s hands and points silently toward his $s mouth.", 0, ch,
-      0, 0, TO_ROOM);
+    act("$n waves $s hands and points silently toward his $s mouth.", 0, ch, 0,
+      0, TO_ROOM);
     return;
   }
 
@@ -429,8 +429,8 @@ void do_ask(struct char_data* ch, char* argument, int cmd) {
 
   if (IS_AFFECTED(ch, AFF_SILENT)) {
     send_to_char("You can't make a sound!\n\r", ch);
-    act("$n waves $s hands and points silently toward his $s mouth.", 0, ch,
-      0, 0, TO_ROOM);
+    act("$n waves $s hands and points silently toward his $s mouth.", 0, ch, 0,
+      0, TO_ROOM);
     return;
   }
 

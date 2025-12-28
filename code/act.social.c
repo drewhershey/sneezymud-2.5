@@ -188,8 +188,7 @@ void do_action(struct char_data* ch, char* argument, int cmd) {
     act(action->others_auto, action->hide, ch, 0, 0, TO_ROOM);
   } else {
     if (GET_POS(vict) < action->min_victim_position) {
-      act("$N is not in a proper position for that.", 0, ch, 0, vict,
-        TO_CHAR);
+      act("$N is not in a proper position for that.", 0, ch, 0, vict, TO_CHAR);
     } else {
       act(action->char_found, 0, ch, 0, vict, TO_CHAR);
 
@@ -227,8 +226,8 @@ void do_insult(struct char_data* ch, char* argument, int cmd) {
               }
             } else { /* Ch == Woman */
               if (GET_SEX(victim) == SEX_MALE) {
-                act("$n accuses you of having the smallest.... (brain?)", 0,
-                  ch, 0, victim, TO_VICT);
+                act("$n accuses you of having the smallest.... (brain?)", 0, ch,
+                  0, victim, TO_VICT);
               } else {
                 act(
                   "$n tells you that you'd loose a beautycontest against a "

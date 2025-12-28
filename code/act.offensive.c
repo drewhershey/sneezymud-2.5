@@ -51,8 +51,8 @@ void do_hit(struct char_data* ch, char* argument, int cmd) {
         act("$n hits $mself, and says OUCH!", 0, ch, 0, victim, TO_ROOM);
       } else {
         if (IS_AFFECTED(ch, AFF_CHARM) && (ch->master == victim)) {
-          act("$N is just such a good friend, you simply can't hit $M.", 0,
-            ch, 0, victim, TO_CHAR);
+          act("$N is just such a good friend, you simply can't hit $M.", 0, ch,
+            0, victim, TO_CHAR);
           return;
         }
 
@@ -121,8 +121,7 @@ void do_kill(struct char_data* ch, char* argument, int cmd) {
     } else if (ch == victim) {
       send_to_char("Your mother would be so sad.. :(\n\r", ch);
     } else {
-      act("You chop $M to pieces! Ah! The blood!", 0, ch, 0, victim,
-        TO_CHAR);
+      act("You chop $M to pieces! Ah! The blood!", 0, ch, 0, victim, TO_CHAR);
       act("$N chops you to pieces!", 0, victim, 0, ch, TO_CHAR);
       act("$n brutally slays $N", 0, ch, 0, victim, TO_NOTVICT);
       raw_kill(victim);
@@ -318,8 +317,7 @@ void do_flee(struct char_data* ch, char* argument, int cmd) {
     if (!saves_spell(ch, SAVING_PARA)) {
       WAIT_STATE(ch, PULSE_VIOLENCE);
       send_to_char("You are ensared in webs, you cannot move!\n\r", ch);
-      act("$n struggles against the webs that hold $m", 0, ch, 0, 0,
-        TO_ROOM);
+      act("$n struggles against the webs that hold $m", 0, ch, 0, 0, TO_ROOM);
       return;
     }
     send_to_char("You pull free from the sticky webbing!\n\r", ch);
@@ -332,8 +330,8 @@ void do_flee(struct char_data* ch, char* argument, int cmd) {
     lev_check = (GetMaxLevel(ch->specials.fighting) - GetMaxLevel(ch));
     if (number(1, 100) < lev_check) {
       WAIT_STATE(ch, PULSE_VIOLENCE);
-      act("$N grabs you by the collar and stops you from fleeing!", 0, ch,
-        0, ch->specials.fighting, TO_CHAR);
+      act("$N grabs you by the collar and stops you from fleeing!", 0, ch, 0,
+        ch->specials.fighting, TO_CHAR);
       act("You grab $N by the collar and stop them from fleeing!", 0,
         ch->specials.fighting, 0, ch, TO_CHAR);
       act("$N grabs $n by the collar and stops $m from fleeing!", 0, ch, 0,
@@ -363,8 +361,7 @@ void do_flee(struct char_data* ch, char* argument, int cmd) {
           return;
         }
         if (!die) {
-          act("$n tries to flee, but is too exhausted!", 1, ch, 0, 0,
-            TO_ROOM);
+          act("$n tries to flee, but is too exhausted!", 1, ch, 0, 0, TO_ROOM);
         }
         return;
       }
@@ -596,8 +593,7 @@ void do_rescue(struct char_data* ch, char* argument, int cmd) {
     }
 
     send_to_char("Banzai! To the rescue...\n\r", ch);
-    act("You are rescued by $N, you are confused!", 0, victim, 0, ch,
-      TO_CHAR);
+    act("You are rescued by $N, you are confused!", 0, victim, 0, ch, TO_CHAR);
     act("$n heroically rescues $N.", 0, ch, 0, victim, TO_NOTVICT);
 
     if (victim->specials.fighting == tmp_ch) {
@@ -756,7 +752,7 @@ void do_wimpy(struct char_data* ch, char* arg, int cmd) {
 const funcp bweapons[] = {cast_geyser, cast_fire_breath, cast_gas_breath,
   cast_frost_breath, cast_acid_breath, cast_lightning_breath};
 
-static void do_breath(struct char_data* ch, char* argument, int cmd) {
+static void do_breath(struct char_data* ch, char* argument) {
   struct char_data* victim;
   char buf[MAX_STRING_LENGTH];
   char name[MAX_STRING_LENGTH];
@@ -901,8 +897,8 @@ void do_fire(struct char_data* ch, char* argument, int cmd) {
         return;
       }
       if (IS_AFFECTED(ch, AFF_CHARM) && (ch->master == victim)) {
-        act("$N is just such a good friends, you simply can't fire at $M.",
-          0, ch, 0, victim, TO_CHAR);
+        act("$N is just such a good friends, you simply can't fire at $M.", 0,
+          ch, 0, victim, TO_CHAR);
         return;
       }
       fire(ch, victim);
@@ -1014,8 +1010,8 @@ void do_shoot(struct char_data* ch, char* argument, int cmd) {
         return;
       }
       if (IS_AFFECTED(ch, AFF_CHARM) && (ch->master == victim)) {
-        act("$N is just such a good friend, you simply can't shoot at $M.",
-          0, ch, 0, victim, TO_CHAR);
+        act("$N is just such a good friend, you simply can't shoot at $M.", 0,
+          ch, 0, victim, TO_CHAR);
         return;
       }
 

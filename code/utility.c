@@ -227,7 +227,7 @@ int str_cmp(const char* arg1, const char* arg2) {
   }
 
   for (i = 0; *(arg1 + i) || *(arg2 + i); i++) {
-    if (chk = LOWER(*(arg1 + i)) - LOWER(*(arg2 + i))) {
+    if ((chk = LOWER(*(arg1 + i)) - LOWER(*(arg2 + i)))) {
       if (chk < 0) {
         return (-1);
       }
@@ -417,7 +417,7 @@ char getall(char* name, char* newname) {
 
   name++;
 
-  for (; *newname = *name; name++, newname++) {
+  for (; (*newname = *name); name++, newname++) {
     ;
   }
 
@@ -968,6 +968,7 @@ void CallForGuard(struct char_data* ch, struct char_data* vict, int lev,
     case BEE:
       type1 = 29899;
       type2 = 3069;
+      [[fallthrough]];
     default:
       type1 = 3060;
       type2 = 3069;

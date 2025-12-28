@@ -32,11 +32,11 @@ void weight_change_object(struct obj_data* obj, int weight) {
 
   if (obj->in_room != NOWHERE) {
     GET_OBJ_WEIGHT(obj) += weight;
-  } else if (tmp_ch = obj->carried_by) {
+  } else if ((tmp_ch = obj->carried_by)) {
     obj_from_char(obj);
     GET_OBJ_WEIGHT(obj) += weight;
     obj_to_char(obj, tmp_ch);
-  } else if (tmp_obj = obj->in_obj) {
+  } else if ((tmp_obj = obj->in_obj)) {
     obj_from_obj(obj);
     GET_OBJ_WEIGHT(obj) += weight;
     obj_to_obj(obj, tmp_obj);
@@ -171,8 +171,7 @@ void do_drink(struct char_data* ch, char* argument, int cmd) {
       /* The shit was poisoned ! */
       if (IS_SET(temp->obj_flags.value[3], DRINK_POISON)) {
         act("Oops, it tasted rather strange ?!!?", 0, ch, 0, 0, TO_CHAR);
-        act("$n chokes and utters some strange sounds.", 1, ch, 0, 0,
-          TO_ROOM);
+        act("$n chokes and utters some strange sounds.", 1, ch, 0, 0, TO_ROOM);
         af.type = SPELL_POISON;
         af.duration = amount * 3;
         af.modifier = 0;
@@ -452,8 +451,7 @@ void do_sip(struct char_data* ch, char* argument, int cmd) {
     temp->obj_flags.value[3] = 0;
     name_from_drinkcon(temp);
   }
-
-  }
+}
 
 void do_taste(struct char_data* ch, char* argument, int cmd) {
   struct affected_type af;
@@ -505,8 +503,7 @@ void do_taste(struct char_data* ch, char* argument, int cmd) {
     act("There is nothing left now.", 0, ch, 0, 0, TO_CHAR);
     extract_obj(temp);
   }
-
-  }
+}
 
 /* functions related to wear */
 
@@ -634,7 +631,8 @@ static int get_item_class_restrictions(struct obj_data* obj) {
   return (total);
 }
 
-static void wear(struct char_data* ch, struct obj_data* obj_object, int keyword) {
+static void wear(struct char_data* ch, struct obj_data* obj_object,
+  int keyword) {
   char buffer[MAX_STRING_LENGTH];
   int bit_mask;
 

@@ -11,7 +11,7 @@ char* how_good(int percent);
 extern int board(Mob* ch, int cmd, char* arg, Obj* me);
 extern int nodrop(Mob* ch, int cmd, char* arg, Obj* me);
 extern int soap(Mob* ch, int cmd, char* arg, Obj* me);
-extern int vorpal(Mob* ch, int cmd, char* arg, Obj* me);
+extern int vorpal(Mob* victim, int cmd, char* arg, Obj* me);
 extern int jive_box(Mob* ch, int cmd, char* arg, Obj* me);
 extern int warMaker(Mob* ch, int cmd, char* arg, Obj* o);
 extern int orbOfDestruction(Mob* ch, int cmd, char* arg, Obj* o);

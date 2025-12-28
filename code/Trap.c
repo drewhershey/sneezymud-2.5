@@ -254,22 +254,22 @@ void TrapSleep(struct char_data* v) {
 void InformMess(struct char_data* v) {
   switch (GET_POS(v)) {
     case POSITION_MORTALLYW:
-      act("$n is mortally wounded, and will die soon, if not aided.", 1, v,
-        0, 0, TO_ROOM);
-      act("You are mortally wounded, and will die soon, if not aided.", 0,
-        v, 0, 0, TO_CHAR);
+      act("$n is mortally wounded, and will die soon, if not aided.", 1, v, 0,
+        0, TO_ROOM);
+      act("You are mortally wounded, and will die soon, if not aided.", 0, v, 0,
+        0, TO_CHAR);
       break;
     case POSITION_INCAP:
-      act("$n is incapacitated and will slowly die, if not aided.", 1, v, 0,
-        0, TO_ROOM);
-      act("You are incapacitated and you will slowly die, if not aided.", 0,
-        v, 0, 0, TO_CHAR);
+      act("$n is incapacitated and will slowly die, if not aided.", 1, v, 0, 0,
+        TO_ROOM);
+      act("You are incapacitated and you will slowly die, if not aided.", 0, v,
+        0, 0, TO_CHAR);
       break;
     case POSITION_STUNNED:
-      act("$n is stunned, but will probably regain consciousness.", 1, v, 0,
-        0, TO_ROOM);
-      act("You're stunned, but you will probably regain consciousness.", 0,
-        v, 0, 0, TO_CHAR);
+      act("$n is stunned, but will probably regain consciousness.", 1, v, 0, 0,
+        TO_ROOM);
+      act("You're stunned, but you will probably regain consciousness.", 0, v,
+        0, 0, TO_CHAR);
       break;
     case POSITION_DEAD:
       act("$n is dead! R.I.P.", 1, v, 0, 0, TO_ROOM);

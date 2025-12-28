@@ -53,7 +53,7 @@ void string_add(struct descriptor_data* d, char* str) {
 
   /* determine if this is the terminal string, and truncate if so */
   for (scan = str; *scan; scan++) {
-    if (terminator = (*scan == '@')) {
+    if ((terminator = (*scan == '@'))) {
       *scan = '\0';
       break;
     }
@@ -109,7 +109,8 @@ void string_add(struct descriptor_data* d, char* str) {
 #undef MAX_STR
 
 /* interpret an argument for do_string */
-static void quad_arg(char* arg, int* type, char* name, int* field, char* string) {
+static void quad_arg(char* arg, int* type, char* name, int* field,
+  char* string) {
   char buf[MAX_STRING_LENGTH];
   int i;
 
@@ -137,11 +138,10 @@ static void quad_arg(char* arg, int* type, char* name, int* field, char* string)
   for (; isspace(*arg); arg++) {
     ;
   }
-  for (; *string = *arg; arg++, string++) {
+  for (; (*string = *arg); arg++, string++) {
     ;
   }
-
-  }
+}
 
 /* modification of malloc'ed strings in chars/objects */
 void do_string(struct char_data* ch, char* arg, int cmd) {
@@ -365,11 +365,10 @@ static void bisect_arg(char* arg, int* field, char* string) {
   for (; isspace(*arg); arg++) {
     ;
   }
-  for (; *string = *arg; arg++, string++) {
+  for (; (*string = *arg); arg++, string++) {
     ;
   }
-
-  }
+}
 
 void do_edit(struct char_data* ch, char* arg, int cmd) {
   int field;
@@ -878,7 +877,7 @@ void check_reboot(void) {
   t_info = localtime(&tc);
 
   if ((t_info->tm_hour + 1) == REBOOT_AT && t_info->tm_min > 30) {
-    if (boot = fopen("./reboot", "r")) {
+    if ((boot = fopen("./reboot", "r"))) {
       if (t_info->tm_min > 50) {
         vlog("Reboot exists.");
         fread(&dummy, sizeof(dummy), 1, boot);

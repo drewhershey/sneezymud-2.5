@@ -42,8 +42,8 @@ int top_of_world = 0; /* ref to the top element of world */
 
 struct room_data* room_db[WORLD_SIZE];
 
-struct obj_data* object_list = nullptr;     /* the global linked list of obj's */
-struct char_data* character_list = nullptr; /* global l-list of chars          */
+struct obj_data* object_list = nullptr; /* the global linked list of obj's */
+struct char_data* character_list = nullptr; /* global l-list of chars */
 
 struct zone_data* zone_table; /* table of reset data             */
 int top_of_zone_table = 0;
@@ -293,7 +293,7 @@ void update_time(void) {
 
   fprintf(f1, "#\n");
 
-  fprintf(f1, "%d\n", current_time);
+  fprintf(f1, "%ld\n", current_time);
   fprintf(f1, "%d\n", time_info.hours);
   fprintf(f1, "%d\n", time_info.day);
   fprintf(f1, "%d\n", time_info.month);
@@ -363,7 +363,7 @@ void build_player_index(void) {
 struct index_data* generate_indices(FILE* fl, int* top) {
   int i = 0;
   long bc = 1500;
-  struct index_data* index;
+  struct index_data* index = nullptr;
   char buf[82];
 
   rewind(fl);
@@ -1533,7 +1533,7 @@ void reset_zone(int zone) {
               } else {
                 last_cmd = 0;
               }
-            } else if (obj = read_object(ZCMD.arg1, REAL)) {
+            } else if ((obj = read_object(ZCMD.arg1, REAL))) {
               sprintf(buf, "Error finding room #%d", ZCMD.arg3);
               vlog(buf);
               extract_obj(obj);
@@ -1911,7 +1911,7 @@ int create_entry(char* name) {
   CREATE(player_table[top_of_p_table].name, char, strlen(name) + 1);
 
   /* copy lowercase equivalent of name to table field */
-  for (i = 0; *(player_table[top_of_p_table].name + i) = LOWER(*(name + i));
+  for (i = 0; (*(player_table[top_of_p_table].name + i) = LOWER(*(name + i)));
     i++) {
     ;
   }
@@ -1949,7 +1949,7 @@ void save_char(struct char_data* ch, short int load_room) {
     tmp = 0;
   }
 
-  if (expand = (ch->desc->pos > top_of_p_file)) {
+  if ((expand = (ch->desc->pos > top_of_p_file))) {
     strcpy(mode, "a");
     top_of_p_file++;
   } else {
@@ -2357,8 +2357,7 @@ void reset_char(struct char_data* ch) {
   */
 
   for (af = ch->affected; af; af = af->next) {
-    affect_modify(ch, af->location, (unsigned)af->modifier, af->bitvector,
-      1);
+    affect_modify(ch, af->location, (unsigned)af->modifier, af->bitvector, 1);
   }
 
   if (!HasClass(ch, CLASS_MONK)) {

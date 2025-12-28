@@ -1,16 +1,7 @@
 
-/* ************************************************************************
- *  file: comm.c , Communication module.                   Part of DIKUMUD *
- *  Usage: Communication, central game loop.                               *
- *  Copyright (C) 1990, 1991 - see 'license.doc' for complete information. *
- *  All Rights Reserved                                                    *
- *  Using *any* part of DikuMud without having read license.doc is         *
- *  violating our copyright.                                               *
- ************************************************************************* */
 #define POSIX_C_SOURCE 200809L
 #define GNU_SOURCE
 
-#include <arpa/inet.h>
 #include <ctype.h>
 #include <errno.h>
 #include <fcntl.h>
@@ -26,6 +17,7 @@
 #include <sys/time.h>
 #include <time.h>
 #include <unistd.h>
+#include <arpa/inet.h>
 
 #include "comm.h"
 #include "db.h"
@@ -515,7 +507,7 @@ int game_loop(int s) {
             SEND_TO_Q(VT_NORMALT, point);
             SEND_TO_Q(VT_CURREST, point);
             if (point->prompt) {
-              sprintf(buf, point->prompt);
+              sprintf(buf, "%s", point->prompt);
               strcat(buf, " > ");
             } else {
               sprintf(buf, "> ");
@@ -1560,7 +1552,7 @@ void act(const char* str, int hide_invisible, struct char_data* ch,
               break;
           }
 
-          while (*point = *(i++)) {
+          while ((*point = *(i++))) {
             ++point;
           }
 

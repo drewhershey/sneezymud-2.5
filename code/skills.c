@@ -104,10 +104,9 @@ void do_disarm(struct char_data* ch, char* argument, int cmd) {
   }
 
   if (GetMaxLevel(victim) > BestFightingClass(ch)) {
-    act("You try to disarm $N, but fail miserably.", 1, ch, 0, victim,
-      TO_CHAR);
-    act("$n does a nifty fighting move, but then falls on $s butt.", 1, ch,
-      0, 0, TO_ROOM);
+    act("You try to disarm $N, but fail miserably.", 1, ch, 0, victim, TO_CHAR);
+    act("$n does a nifty fighting move, but then falls on $s butt.", 1, ch, 0,
+      0, TO_ROOM);
     GET_POS(ch) = POSITION_SITTING;
     if ((IS_NPC(victim)) && (GET_POS(victim) > POSITION_SLEEPING) &&
         (!victim->specials.fighting)) {
@@ -155,10 +154,9 @@ void do_disarm(struct char_data* ch, char* argument, int cmd) {
     /*
      *   failure.
      */
-    act("You try to disarm $N, but fail miserably.", 1, ch, 0, victim,
-      TO_CHAR);
-    act("$n does a nifty fighting move, but then falls on $s butt.", 1, ch,
-      0, 0, TO_ROOM);
+    act("You try to disarm $N, but fail miserably.", 1, ch, 0, victim, TO_CHAR);
+    act("$n does a nifty fighting move, but then falls on $s butt.", 1, ch, 0,
+      0, TO_ROOM);
     GET_POS(ch) = POSITION_SITTING;
     if ((IS_NPC(victim)) && (GET_POS(victim) > POSITION_SLEEPING) &&
         (!victim->specials.fighting)) {
@@ -182,8 +180,8 @@ void do_disarm(struct char_data* ch, char* argument, int cmd) {
     } else {
       act("You try to disarm $N, but $E doesn't have a weapon.", 1, ch, 0,
         victim, TO_CHAR);
-      act("$n makes an impressive fighting move, but does little more.", 1,
-        ch, 0, 0, TO_ROOM);
+      act("$n makes an impressive fighting move, but does little more.", 1, ch,
+        0, 0, TO_ROOM);
     }
     if ((IS_NPC(victim)) && (GET_POS(victim) > POSITION_SLEEPING) &&
         (!victim->specials.fighting)) {
@@ -726,7 +724,8 @@ static int spy_check(struct char_data* ch) {
   return 1;
 }
 
-static void slam_into_wall(struct char_data* ch, struct room_direction_data* exitp) {
+static void slam_into_wall(struct char_data* ch,
+  struct room_direction_data* exitp) {
   char doorname[128];
   char buf[256];
 
@@ -989,8 +988,8 @@ void do_throw(struct char_data* ch, char* arg, int cmd) {
 
       if (percent > ch->skills[SKILL_THROW].learned) {
         act("You try to throw $N to no avail!", 1, ch, 0, victim, TO_CHAR);
-        act("$n tries to pick up $N and throw him and has no luck.", 1, ch,
-          0, victim, TO_ROOM);
+        act("$n tries to pick up $N and throw him and has no luck.", 1, ch, 0,
+          victim, TO_ROOM);
         set_fighting(victim, ch);
         WAIT_STATE(ch, PULSE_VIOLENCE * 2);
         return;

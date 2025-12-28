@@ -63,7 +63,7 @@ static const struct attack_hit_type attack_hit_text[] = {
 ** nonkiller, nonthief PC.
 */
 void setKillerFlag(Mob* ch, Mob* victim) {
-  Mob* master;
+  Mob* master = nullptr;
   char buf[MAX_STRING_LENGTH];
 
   /* You can never have enough checks for nullptr. */
@@ -341,8 +341,6 @@ void make_corpse(struct char_data* ch) {
   int i;
   int a_dead_body = 0;
 
-  struct obj_data* create_money(int amount);
-
   CREATE(corpse, struct obj_data, 1);
   clear_object(corpse);
 
@@ -467,8 +465,7 @@ void death_cry(struct char_data* ch) {
     return;
   }
 
-  act("Your blood freezes as you hear $n's death cry.", 0, ch, 0, 0,
-    TO_ROOM);
+  act("Your blood freezes as you hear $n's death cry.", 0, ch, 0, 0, TO_ROOM);
   was_in = ch->in_room;
 
   for (door = 0; door <= 5; door++) {
@@ -533,7 +530,7 @@ static void delete_fears(struct char_data* ch) {
       RemFeared(i, ch);
     }
   }
-};
+}
 
 void die(struct char_data* ch) {
   struct char_data* pers;
@@ -783,7 +780,7 @@ static void dam_message(int dam, struct char_data* ch, struct char_data* victim,
   act(buf, 0, ch, wield, victim, TO_VICT);
 }
 
-static int dam_check_deny(struct char_data* ch, struct char_data* victim, int type) {
+static int dam_check_deny(struct char_data* ch, int type) {
   struct room_data* rp;
   char buf[MAX_INPUT_LENGTH];
 
@@ -935,31 +932,31 @@ int DamageMessages(struct char_data* ch, struct char_data* v, int dam,
         }
 
         if (!IS_NPC(v) && (GetMaxLevel(v) > MAX_MORT)) {
-          act(messages->god_msg.attacker_msg, 0, ch, ch->equipment[WIELD],
-            v, TO_CHAR);
+          act(messages->god_msg.attacker_msg, 0, ch, ch->equipment[WIELD], v,
+            TO_CHAR);
           act(messages->god_msg.victim_msg, 0, ch, ch->equipment[WIELD], v,
             TO_VICT);
           act(messages->god_msg.room_msg, 0, ch, ch->equipment[WIELD], v,
             TO_NOTVICT);
         } else if (dam != 0) {
           if (GET_POS(v) == POSITION_DEAD) {
-            act(messages->die_msg.attacker_msg, 0, ch, ch->equipment[WIELD],
-              v, TO_CHAR);
-            act(messages->die_msg.victim_msg, 0, ch, ch->equipment[WIELD],
-              v, TO_VICT);
+            act(messages->die_msg.attacker_msg, 0, ch, ch->equipment[WIELD], v,
+              TO_CHAR);
+            act(messages->die_msg.victim_msg, 0, ch, ch->equipment[WIELD], v,
+              TO_VICT);
             act(messages->die_msg.room_msg, 0, ch, ch->equipment[WIELD], v,
               TO_NOTVICT);
           } else {
-            act(messages->hit_msg.attacker_msg, 0, ch, ch->equipment[WIELD],
-              v, TO_CHAR);
-            act(messages->hit_msg.victim_msg, 0, ch, ch->equipment[WIELD],
-              v, TO_VICT);
+            act(messages->hit_msg.attacker_msg, 0, ch, ch->equipment[WIELD], v,
+              TO_CHAR);
+            act(messages->hit_msg.victim_msg, 0, ch, ch->equipment[WIELD], v,
+              TO_VICT);
             act(messages->hit_msg.room_msg, 0, ch, ch->equipment[WIELD], v,
               TO_NOTVICT);
           }
         } else { /* Dam == 0 */
-          act(messages->miss_msg.attacker_msg, 0, ch, ch->equipment[WIELD],
-            v, TO_CHAR);
+          act(messages->miss_msg.attacker_msg, 0, ch, ch->equipment[WIELD], v,
+            TO_CHAR);
           act(messages->miss_msg.victim_msg, 0, ch, ch->equipment[WIELD], v,
             TO_VICT);
           act(messages->miss_msg.room_msg, 0, ch, ch->equipment[WIELD], v,
@@ -970,20 +967,20 @@ int DamageMessages(struct char_data* ch, struct char_data* v, int dam,
   }
   switch (GET_POS(v)) {
     case POSITION_MORTALLYW:
-      act("$n is mortally wounded, and will die soon, if not aided.", 1, v,
-        0, 0, TO_ROOM);
-      act("You are mortally wounded, and will die soon, if not aided.", 0,
-        v, 0, 0, TO_CHAR);
+      act("$n is mortally wounded, and will die soon, if not aided.", 1, v, 0,
+        0, TO_ROOM);
+      act("You are mortally wounded, and will die soon, if not aided.", 0, v, 0,
+        0, TO_CHAR);
       break;
     case POSITION_INCAP:
-      act("$n is incapacitated and will slowly die, if not aided.", 1, v, 0,
-        0, TO_ROOM);
-      act("You are incapacitated and you will slowly die, if not aided.", 0,
-        v, 0, 0, TO_CHAR);
+      act("$n is incapacitated and will slowly die, if not aided.", 1, v, 0, 0,
+        TO_ROOM);
+      act("You are incapacitated and you will slowly die, if not aided.", 0, v,
+        0, 0, TO_CHAR);
       break;
     case POSITION_STUNNED:
-      act("$n is stunned, but will probably regain consciousness again.", 1,
-        v, 0, 0, TO_ROOM);
+      act("$n is stunned, but will probably regain consciousness again.", 1, v,
+        0, 0, TO_ROOM);
       act("You're stunned, but you will probably regain consciousness again.",
         0, v, 0, 0, TO_CHAR);
       break;
@@ -1017,8 +1014,8 @@ int DamageMessages(struct char_data* ch, struct char_data* v, int dam,
           }
         } else {
           if (dam > 0) {
-            act("You wish that your wounds would stop BLEEDING that much!",
-              0, v, 0, 0, TO_CHAR);
+            act("You wish that your wounds would stop BLEEDING that much!", 0,
+              v, 0, 0, TO_CHAR);
           }
         }
         if (IS_NPC(v) && (IS_SET(v->specials.act, ACT_WIMPY))) {
@@ -1111,7 +1108,7 @@ int DamageEpilog(struct char_data* ch, struct char_data* victim) {
 
 int MissileDamage(struct char_data* ch, struct char_data* victim, int dam,
   int attacktype) {
-  if (dam_check_deny(ch, victim, attacktype)) {
+  if (dam_check_deny(ch, attacktype)) {
     return 0;
   }
 
@@ -1140,7 +1137,7 @@ int MissileDamage(struct char_data* ch, struct char_data* victim, int dam,
 
 int damage(struct char_data* ch, struct char_data* victim, int damage,
   int weaponType) {
-  if (dam_check_deny(ch, victim, weaponType)) {
+  if (dam_check_deny(ch, weaponType)) {
     return 0;
   }
 
@@ -1377,8 +1374,8 @@ int HitOrMiss(struct char_data* ch, struct char_data* victim, int calc_thaco) {
   return 1;
 }
 
-static int miss_victim(struct char_data* ch, struct char_data* v, int type, int w_type,
-  int (*dam_func)(struct char_data*, struct char_data*, int, int)) {
+static int miss_victim(struct char_data* ch, struct char_data* v, int type,
+  int w_type, int (*dam_func)(struct char_data*, struct char_data*, int, int)) {
   if (type <= 0) {
     type = w_type;
   }
@@ -1495,8 +1492,9 @@ static const signed char backstab_mult[ABS_MAX_LVL] = {
   5, 5, 5, 5, 5, 5, 5, 5, 5, 5  /* 70 */
 };
 
-static int hit_victim(struct char_data* ch, struct char_data* v, int dam, int type,
-  int w_type, int (*dam_func)(struct char_data*, struct char_data*, int, int)) {
+static int hit_victim(struct char_data* ch, struct char_data* v, int dam,
+  int type, int w_type,
+  int (*dam_func)(struct char_data*, struct char_data*, int, int)) {
   int dead;
 
   if (type == SKILL_BACKSTAB) {
