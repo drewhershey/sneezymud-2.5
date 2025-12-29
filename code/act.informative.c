@@ -1959,7 +1959,7 @@ void do_users(struct char_data* ch, const char* argument, int cmd) {
     } else {
       strcpy(line, "UNDEFINED       : ");
     }
-    sprintf(line + strlen(line), "[%s]\n\r", (d->host ? d->host : "????"));
+    sprintf(line + strlen(line), "[%s]\n\r", (d->host[0] ? d->host : "????"));
     strcat(buf, line);
   }
   send_to_char(buf, ch);

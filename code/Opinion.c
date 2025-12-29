@@ -246,7 +246,7 @@ int Fears(struct char_data* ch, struct char_data* v) {
       for (i = ch->fears.clist; i; i = i->next) {
         if (i) {
           if (i->op_ch) {
-            if (i->name) {
+            if (i->name[0]) {
               if ((i->op_ch == v) && (!strcmp(i->name, GET_NAME(v)))) {
                 return 1;
               }
@@ -255,7 +255,7 @@ int Fears(struct char_data* ch, struct char_data* v) {
               RemFeared(ch, i->op_ch);
             }
           } else {
-            if (i->name) {
+            if (i->name[0]) {
               if (!strcmp(i->name, GET_NAME(v))) {
                 return 1;
               }

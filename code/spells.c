@@ -6087,7 +6087,7 @@ void cast_knock(signed char level, struct char_data* ch, const char* arg, int ty
     case SPELL_TYPE_WAND: {
       argument_interpreter(arg, otype, dir);
 
-      if (!otype) {
+      if (!otype[0]) {
         send_to_char("Knock on what?\n\r", ch);
         return;
       }
