@@ -151,24 +151,25 @@ struct char_bet_data {
 #define BRUTIUS 60
 #define MAX_IMMORT 60
 
-#define IMM_FIRE 1
-#define IMM_COLD 2
-#define IMM_ELEC 4
-#define IMM_ENERGY 8
-#define IMM_BLUNT 16
-#define IMM_PIERCE 32
-#define IMM_SLASH 64
-#define IMM_ACID 128
-#define IMM_POISON 256
-#define IMM_DRAIN 512
-#define IMM_SLEEP 1024
-#define IMM_CHARM 2048
-#define IMM_HOLD 4096
-#define IMM_NONMAG 8192
-#define IMM_PLUS1 16384
-#define IMM_PLUS2 32768
-#define IMM_PLUS3 65536
-#define IMM_PLUS4 131072
+/* Immunity flags */
+#define IMM_FIRE (1 << 0)
+#define IMM_COLD (1 << 1)
+#define IMM_ELEC (1 << 2)
+#define IMM_ENERGY (1 << 3)
+#define IMM_BLUNT (1 << 4)
+#define IMM_PIERCE (1 << 5)
+#define IMM_SLASH (1 << 6)
+#define IMM_ACID (1 << 7)
+#define IMM_POISON (1 << 8)
+#define IMM_DRAIN (1 << 9)
+#define IMM_SLEEP (1 << 10)
+#define IMM_CHARM (1 << 11)
+#define IMM_HOLD (1 << 12)
+#define IMM_NONMAG (1 << 13)
+#define IMM_PLUS1 (1 << 14)
+#define IMM_PLUS2 (1 << 15)
+#define IMM_PLUS3 (1 << 16)
+#define IMM_PLUS4 (1 << 17)
 
 #define PULSE_RIVER 15
 #define PULSE_TELEPORT 10
@@ -277,56 +278,55 @@ typedef struct {
 
 /* Bitvector For 'wear_flags' */
 
-#define ITEM_TAKE 1
-#define ITEM_WEAR_FINGER 2
-#define ITEM_WEAR_NECK 4
-#define ITEM_WEAR_BODY 8
-#define ITEM_WEAR_HEAD 16
-#define ITEM_WEAR_LEGS 32
-#define ITEM_WEAR_FEET 64
-#define ITEM_WEAR_HANDS 128
-#define ITEM_WEAR_ARMS 256
-#define ITEM_WEAR_SHIELD 512
-#define ITEM_WEAR_ABOUT 1024
-#define ITEM_WEAR_WAISTE 2048
-#define ITEM_WEAR_WRIST 4096
-#define ITEM_WIELD 8192
-#define ITEM_HOLD 16384
-#define ITEM_THROW 32768
-/* UNUSED, CHECKS ONLY FOR ITEM_LIGHT #define ITEM_LIGHT_SOURCE  65536 */
-#define ITEM_WEAR_EAR 131072
-#define ITEM_WEAR_FACE 262144
-#define ITEM_WORN_AS_RADIO 524288
+#define ITEM_TAKE (1 << 0)
+#define ITEM_WEAR_FINGER (1 << 1)
+#define ITEM_WEAR_NECK (1 << 2)
+#define ITEM_WEAR_BODY (1 << 3)
+#define ITEM_WEAR_HEAD (1 << 4)
+#define ITEM_WEAR_LEGS (1 << 5)
+#define ITEM_WEAR_FEET (1 << 6)
+#define ITEM_WEAR_HANDS (1 << 7)
+#define ITEM_WEAR_ARMS (1 << 8)
+#define ITEM_WEAR_SHIELD (1 << 9)
+#define ITEM_WEAR_ABOUT (1 << 10)
+#define ITEM_WEAR_WAISTE (1 << 11)
+#define ITEM_WEAR_WRIST (1 << 12)
+#define ITEM_WIELD (1 << 13)
+#define ITEM_HOLD (1 << 14)
+#define ITEM_THROW (1 << 15)
+/* bit 16 unused - was ITEM_LIGHT_SOURCE */
+#define ITEM_WEAR_EAR (1 << 17)
+#define ITEM_WEAR_FACE (1 << 18)
+#define ITEM_WORN_AS_RADIO (1 << 19)
 
 /* Bitvector for 'extra_flags' */
 
-#define ITEM_GLOW 1
-#define ITEM_HUM 2
-#define ITEM_LEVEL15 4  /* undefined...  */
-#define ITEM_LEVEL25 8  /* undefined?    */
-#define ITEM_LEVEL35 16 /* undefined?    */
-#define ITEM_INVISIBLE 32
-#define ITEM_MAGIC 64
-#define ITEM_NODROP 128
-#define ITEM_BLESS 256
-#define ITEM_ANTI_GOOD 512     /* not usable by good people    */
-#define ITEM_ANTI_EVIL 1024    /* not usable by evil people    */
-#define ITEM_ANTI_NEUTRAL 2048 /* not usable by neutral people */
-#define ITEM_ANTI_CLERIC 4096
-#define ITEM_ANTI_MAGE 8192
-#define ITEM_ANTI_THIEF 16384
-#define ITEM_ANTI_FIGHTER 32768
-#define ITEM_BRITTLE 65536 /* weapons that break after 1 hit */
-/* armor that breaks when hit?    */
-#define ITEM_LEVEL10 131072 /*cant be worn by levels < 10 */
-#define ITEM_LEVEL20 262144 /*cant be worn by levels < 20 */
-#define ITEM_LEVEL30 524288 /*Cant be worn by levels < 30 */
-#define ITEM_ANTI_ANTI 1048576
-#define ITEM_ANTI_PALA 2097152
-#define ITEM_ANTI_RANGER 4194304
-#define ITEM_ANTI_MONK 8388608
-#define ITEM_LEVEL40 16777216
-#define ITEM_HOLDING 33554432
+#define ITEM_GLOW (1 << 0)
+#define ITEM_HUM (1 << 1)
+#define ITEM_LEVEL15 (1 << 2)
+#define ITEM_LEVEL25 (1 << 3)
+#define ITEM_LEVEL35 (1 << 4)
+#define ITEM_INVISIBLE (1 << 5)
+#define ITEM_MAGIC (1 << 6)
+#define ITEM_NODROP (1 << 7)
+#define ITEM_BLESS (1 << 8)
+#define ITEM_ANTI_GOOD (1 << 9)     /* not usable by good people */
+#define ITEM_ANTI_EVIL (1 << 10)    /* not usable by evil people */
+#define ITEM_ANTI_NEUTRAL (1 << 11) /* not usable by neutral people */
+#define ITEM_ANTI_CLERIC (1 << 12)
+#define ITEM_ANTI_MAGE (1 << 13)
+#define ITEM_ANTI_THIEF (1 << 14)
+#define ITEM_ANTI_FIGHTER (1 << 15)
+#define ITEM_BRITTLE (1 << 16) /* weapons/armor that break after 1 hit */
+#define ITEM_LEVEL10 (1 << 17) /* cant be worn by levels < 10 */
+#define ITEM_LEVEL20 (1 << 18) /* cant be worn by levels < 20 */
+#define ITEM_LEVEL30 (1 << 19) /* cant be worn by levels < 30 */
+#define ITEM_ANTI_ANTI (1 << 20)
+#define ITEM_ANTI_PALA (1 << 21)
+#define ITEM_ANTI_RANGER (1 << 22)
+#define ITEM_ANTI_MONK (1 << 23)
+#define ITEM_LEVEL40 (1 << 24)
+#define ITEM_HOLDING (1 << 25)
 
 /* Some different kind of liquids */
 #define LIQ_WATER 0
@@ -350,12 +350,12 @@ typedef struct {
 #define DRINK_POISON (1 << 0)
 #define DRINK_PERM (1 << 1)
 
-/* for containers  - value[1] */
+/* for containers - value[1] */
 
-#define CONT_CLOSEABLE 1
-#define CONT_PICKPROOF 2
-#define CONT_CLOSED 4
-#define CONT_LOCKED 8
+#define CONT_CLOSEABLE (1 << 0)
+#define CONT_PICKPROOF (1 << 1)
+#define CONT_CLOSED (1 << 2)
+#define CONT_LOCKED (1 << 3)
 
 struct extra_descr_data {
     char* keyword;                 /* Keyword in look/examine          */
@@ -364,6 +364,8 @@ struct extra_descr_data {
 };
 
 #define MAX_OBJ_AFFECT 5 /* Used in OBJ_FILE_ELEM *DO*NOT*CHANGE* */
+static_assert(MAX_OBJ_AFFECT == 5,
+  "MAX_OBJ_AFFECT must be 5 for save file compat");
 #define OBJ_NOTIMER (-7000000)
 
 struct obj_flag_data {
@@ -433,23 +435,23 @@ struct obj_data {
 
 /* Bitvector For 'room_flags' */
 
-#define DARK 1
-#define DEATH 2
-#define NO_MOB 4
-#define INDOORS 8
-#define PEACEFUL 16 /* No fighting */
-#define NOSTEAL 32  /* No Thieving */
-#define NO_SUM 64   /* no summoning */
-#define NO_MAGIC 128
-#define TUNNEL 256 /* ? */
-#define PRIVATE 512
-#define SILENCE 1024
-#define NO_ORDER 2048
-#define ANARCHY 4096
-#define HAVE_TO_WALK 8192
-#define ARENA 16384
-#define NO_HEAL 32768
-#define HOSPITAL 65536
+#define DARK (1 << 0)
+#define DEATH (1 << 1)
+#define NO_MOB (1 << 2)
+#define INDOORS (1 << 3)
+#define PEACEFUL (1 << 4) /* no fighting */
+#define NOSTEAL (1 << 5)  /* no thieving */
+#define NO_SUM (1 << 6)   /* no summoning */
+#define NO_MAGIC (1 << 7)
+#define TUNNEL (1 << 8)
+#define PRIVATE (1 << 9)
+#define SILENCE (1 << 10)
+#define NO_ORDER (1 << 11)
+#define ANARCHY (1 << 12)
+#define HAVE_TO_WALK (1 << 13)
+#define ARENA (1 << 14)
+#define NO_HEAL (1 << 15)
+#define HOSPITAL (1 << 16)
 
 /* For 'dir_option' */
 
@@ -460,12 +462,13 @@ struct obj_data {
 #define UP 4
 #define DOWN 5
 
-#define EX_ISDOOR 1
-#define EX_CLOSED 2
-#define EX_LOCKED 4
-#define EX_SECRET 8
-#define EX_RSLOCKED 16
-#define EX_PICKPROOF 32
+/* Exit flags */
+#define EX_ISDOOR (1 << 0)
+#define EX_CLOSED (1 << 1)
+#define EX_LOCKED (1 << 2)
+#define EX_SECRET (1 << 3)
+#define EX_RSLOCKED (1 << 4)
+#define EX_PICKPROOF (1 << 5)
 
 /* For 'Sector types' */
 
@@ -560,45 +563,51 @@ extern struct room_data* world;
 #define MAX_WEAR 25
 #define MAX_AFFECT 25 /* Used in CHAR_FILE_U *DO*NOT*CHANGE* */
 
+/* C11 static_assert: Compile-time validation of critical constants */
+static_assert(WEAR_RADIO < MAX_WEAR, "WEAR_RADIO must be less than MAX_WEAR");
+static_assert(MAX_TOUNGE >= 3,
+  "MAX_TOUNGE must be at least 3 for save file compat");
+static_assert(MAX_SKILLS == 200, "MAX_SKILLS must be 200 for save file compat");
+static_assert(MAX_AFFECT == 25, "MAX_AFFECT must be 25 for save file compat");
+
 /* Predifined  conditions */
 #define DRUNK 0
 #define FULL 1
 #define THIRST 2
 
 /* Bitvector for 'affected_by' */
-#define AFF_BLIND 0x000000001
-#define AFF_INVISIBLE 0x000000002
-#define AFF_DETECT_EVIL 0x000000004
-#define AFF_DETECT_INVISIBLE 0x000000008
-#define AFF_DETECT_MAGIC 0x000000010
-#define AFF_SENSE_LIFE 0x000000020
-#define AFF_LIFE_PROT 0x000000040
-#define AFF_SANCTUARY 0x000000080
-#define AFF_GROUP 0x000000100
-
-/* there is one missing here....... */
-#define AFF_CURSE 0x000000400
-#define AFF_FLYING 0x000000800
-#define AFF_POISON 0x000001000
-#define AFF_PROTECT_EVIL 0x000002000
-#define AFF_PARALYSIS 0x000004000
-#define AFF_INFRAVISION 0x000008000
-#define AFF_WATERBREATH 0x000010000
-#define AFF_SLEEP 0x000020000
-#define AFF_KILLABLE 0x000040000
-#define AFF_SNEAK 0x000080000
-#define AFF_HIDE 0x000100000
-#define AFF_PROTECT_FROM_GOOD 0x000200000
-#define AFF_CHARM 0x000400000
-#define AFF_FOLLOW 0x000800000
-#define AFF_UNDEF_1 0x001000000 /* saved objects?? */
-#define AFF_TRUE_SIGHT 0x002000000
-#define AFF_BREWING 0x004000000
-#define AFF_FIRESHIELD 0x008000000
-#define AFF_SILENT 0x010000000
-#define AFF_GRAPPLE 0x020000000
-#define AFF_GRAPPLE2 0x040000000
-#define AFF_SCRYING 0x080000000
+#define AFF_BLIND (1UL << 0)
+#define AFF_INVISIBLE (1UL << 1)
+#define AFF_DETECT_EVIL (1UL << 2)
+#define AFF_DETECT_INVISIBLE (1UL << 3)
+#define AFF_DETECT_MAGIC (1UL << 4)
+#define AFF_SENSE_LIFE (1UL << 5)
+#define AFF_LIFE_PROT (1UL << 6)
+#define AFF_SANCTUARY (1UL << 7)
+#define AFF_GROUP (1UL << 8)
+/* bit 9 is unused */
+#define AFF_CURSE (1UL << 10)
+#define AFF_FLYING (1UL << 11)
+#define AFF_POISON (1UL << 12)
+#define AFF_PROTECT_EVIL (1UL << 13)
+#define AFF_PARALYSIS (1UL << 14)
+#define AFF_INFRAVISION (1UL << 15)
+#define AFF_WATERBREATH (1UL << 16)
+#define AFF_SLEEP (1UL << 17)
+#define AFF_KILLABLE (1UL << 18)
+#define AFF_SNEAK (1UL << 19)
+#define AFF_HIDE (1UL << 20)
+#define AFF_PROTECT_FROM_GOOD (1UL << 21)
+#define AFF_CHARM (1UL << 22)
+#define AFF_FOLLOW (1UL << 23)
+#define AFF_UNDEF_1 (1UL << 24)
+#define AFF_TRUE_SIGHT (1UL << 25)
+#define AFF_BREWING (1UL << 26)
+#define AFF_FIRESHIELD (1UL << 27)
+#define AFF_SILENT (1UL << 28)
+#define AFF_GRAPPLE (1UL << 29)
+#define AFF_GRAPPLE2 (1UL << 30)
+#define AFF_SCRYING (1UL << 31)
 
 /* modifiers to char's abilities */
 
@@ -1042,6 +1051,8 @@ struct obj_cost { /* used in act.other.c:do_save as
 };
 
 #define MAX_OBJ_SAVE 200 /* Used in OBJ_FILE_U *DO*NOT*CHANGE* */
+static_assert(MAX_OBJ_SAVE == 200,
+  "MAX_OBJ_SAVE must be 200 for save file compat");
 
 struct obj_file_elem {
     short int item_number;

@@ -7,6 +7,7 @@
 #define GNU_SOURCE
 #include <assert.h>
 #include <ctype.h>
+#include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -4526,7 +4527,7 @@ int puff(struct char_data* ch, int cmd, const char* arg) {
     default:
       return (0);
   }
-  return 0; /* unreachable, but silences warning */
+  unreachable();
 }
 
 int regenerator(struct char_data* ch, int cmd, const char* arg) {

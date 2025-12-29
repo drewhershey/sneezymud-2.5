@@ -327,7 +327,7 @@ int number(int from, int to);
 
 #define NUMBER(from, to)                                   \
   ({                                                       \
-    __typeof__(from) _result;                              \
+    typeof(from) _result;                                  \
     if ((to) - (from) + 1)                                 \
       _result = ((rand() % ((to) - (from) + 1)) + (from)); \
     else                                                   \
@@ -371,8 +371,8 @@ int dice(int number, int size);
 
 #define DICE(number, size)               \
   ({                                     \
-    __typeof__(number) _sum = 0;         \
-    __typeof__(number) _r;               \
+    typeof(number) _sum = 0;             \
+    typeof(number) _r;                   \
     assert((size) >= 0);                 \
     if ((size) == 0)                     \
       _sum;                              \
@@ -522,7 +522,8 @@ typedef struct {
     size_t size;
 } alloc_result;
 
-static inline alloc_result alloc_or_die(size_t count, size_t size) {
+[[nodiscard]] static inline alloc_result alloc_or_die(size_t count,
+  size_t size) {
   void* ptr = calloc(count, size);
   if (!ptr) {
     perror("allocation failure");

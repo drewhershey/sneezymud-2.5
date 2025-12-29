@@ -49,17 +49,17 @@ void save_char(struct char_data* ch, short int load_room);
 int create_entry(char* name);
 void zone_update(void);
 void init_char(struct char_data* ch);
-int load_char(char* name, struct char_file_u* char_element);
+[[nodiscard]] int load_char(char* name, struct char_file_u* char_element);
 void clear_char(struct char_data* ch);
 void clear_object(struct obj_data* obj);
 void reset_char(struct char_data* ch);
 void free_char(struct char_data* ch);
-struct room_data* real_roomp(int virtual);
-char* fread_string(FILE* fl);
-int real_object(int virtual);
-int real_mobile(int virtual);
+[[nodiscard]] struct room_data* real_roomp(int virtual);
+[[nodiscard]] char* fread_string(FILE* fl);
+[[nodiscard]] int real_object(int virtual);
+[[nodiscard]] int real_mobile(int virtual);
 void boot_zones(void);
-Room* allocate_room(int room_number);
+[[nodiscard]] Room* allocate_room(int room_number);
 void boot_world(void);
 struct index_data* generate_indices(FILE* fl, int* top);
 void build_player_index(void);
@@ -83,8 +83,9 @@ int DetermineExp(struct char_data* mob, int exp_flags);
 #define REAL 0
 #define VIRTUAL 1
 
-struct obj_data* read_object(int nr, int type);
-struct char_data* read_mobile(int nr, int type);
+/* Memory allocation functions - [[nodiscard]] to catch ignored returns */
+[[nodiscard]] struct obj_data* read_object(int nr, int type);
+[[nodiscard]] struct char_data* read_mobile(int nr, int type);
 
 /* structure for the reset commands */
 struct reset_com {

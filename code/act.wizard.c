@@ -685,7 +685,7 @@ static void room_load(struct char_data* ch, int start, int end) {
   char chk[50];
   char buf[80];
   struct room_data* rp;
-  struct room_data dummy = {0};
+  struct room_data dummy = {};
 
   sprintf(buf, "areas/%s", ch->player.name);
 
