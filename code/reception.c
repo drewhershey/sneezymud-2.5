@@ -235,7 +235,7 @@ static void put_obj_in_store(struct obj_data* obj, struct obj_file_u* st) {
 
   for (j = 0; j < MAX_OBJ_AFFECT; j++) {
     oe->affected[j].location = obj->affected[j].location;
-    oe->affected[j].modifier = ULONG_TO_COMPAT(obj->affected[j].modifier);
+    oe->affected[j].modifier = LONG_TO_COMPAT(obj->affected[j].modifier);
   }
 
   st->number++;

@@ -385,15 +385,15 @@ struct obj_flag_data {
 
 /* Runtime version for in-memory objects */
 struct obj_affected_type {
-    short location;         /* Which ability to change (APPLY_XXX) */
-    unsigned long modifier; /* How much it changes by              */
+    short location; /* Which ability to change (APPLY_XXX) */
+    long modifier;  /* How much it changes by (signed for penalties) */
 };
 
 /* File format version - 32-bit compatible for binary file I/O */
-/* Used in OBJ_FILE_ELEM *DO*NOT*CHANGE* (maintains original 32-bit layout) */
+/* Used in OBJ_FILE_ELEM - DO NOT CHANGE SIZE/LAYOUT (maintains original 32-bit layout) */
 struct obj_affected_type_file {
     short location;
-    compat_ulong modifier; /* 32-bit for file compat */
+    compat_long modifier; /* 32-bit signed for file compat */
 };
 
 /* ======================== Structure for object ========================= */

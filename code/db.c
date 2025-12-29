@@ -1366,7 +1366,7 @@ struct obj_data* read_object(int nr, int type) {
     fscanf(obj_f, " %d ", &tmp);
     obj->affected[i].location = (short)tmp;
     fscanf(obj_f, " %d \n", &tmp);
-    obj->affected[i].modifier = (unsigned long)tmp;
+    obj->affected[i].modifier = (long)tmp;
     fscanf(obj_f, " %s \n", chk);
   }
 
@@ -2357,7 +2357,7 @@ void reset_char(struct char_data* ch) {
   */
 
   for (af = ch->affected; af; af = af->next) {
-    affect_modify(ch, af->location, (unsigned)af->modifier, af->bitvector, 1);
+    affect_modify(ch, af->location, af->modifier, af->bitvector, 1);
   }
 
   if (!HasClass(ch, CLASS_MONK)) {
