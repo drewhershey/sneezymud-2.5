@@ -6484,9 +6484,9 @@ int paramedics(struct char_data* ch, int cmd, const char* arg) {
   return 0;
 }
 
-static const char* elf_comm[] = {"wake", "yawn", "stand", "say Well, back to work.",
-  "get all", "eat bread", "wink", "w", "w", "s", "s", "s", "d", "open gate",
-  "e",                                             /* home to gate*/
+static const char* elf_comm[] = {"wake", "yawn", "stand",
+  "say Well, back to work.", "get all", "eat bread", "wink", "w", "w", "s", "s",
+  "s", "d", "open gate", "e",                      /* home to gate*/
   "close gate", "e", "e", "e", "e", "n", "w", "n", /* gate to baker */
   "give all.bread baker",                          /* pretend to give a bread */
   "give all.pastry baker", /* pretend to give a pastry */
@@ -9161,7 +9161,8 @@ int ghostsoldier(struct char_data* ch, int cmd, const char* arg) {
   return 0;
 }
 
-static const char* quest_one[] = {"The second artifact you must find is the ring of Tlanic.",
+static const char* quest_one[] = {
+  "The second artifact you must find is the ring of Tlanic.",
   "Tlanic was an elven warrior who left Rhyodin five years after",
   "Lorces; he also was given an artifact to aid him.",
   "He went to find out what happened to Lorces, his friend, and to",

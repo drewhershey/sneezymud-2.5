@@ -513,7 +513,8 @@ struct find_path_data {
     union find_path_fn_data fn_data;
 };
 
-int find_path(int in_room, const struct find_path_data* data, int depth, int in_zone);
+int find_path(int in_room, const struct find_path_data* data, int depth,
+  int in_zone);
 
 typedef struct {
     void* ptr;

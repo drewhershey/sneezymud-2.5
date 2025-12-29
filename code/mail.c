@@ -488,7 +488,8 @@ static void postmaster_send_mail(struct char_data* ch, const char* arg) {
   ch->desc->max_str = MAX_MAIL_SIZE;
 }
 
-static void postmaster_check_mail(struct char_data* ch, int cmd, const char* arg) {
+static void postmaster_check_mail(struct char_data* ch, int cmd,
+  const char* arg) {
   struct char_data* mailman;
   char buf[200];
   char recipient[100] = "";
@@ -516,7 +517,8 @@ static void postmaster_check_mail(struct char_data* ch, int cmd, const char* arg
   act(buf, 0, mailman, 0, ch, TO_VICT);
 }
 
-static void postmaster_receive_mail(struct char_data* ch, int cmd, const char* arg) {
+static void postmaster_receive_mail(struct char_data* ch, int cmd,
+  const char* arg) {
   struct char_data* mailman;
   char buf[200];
   char recipient[100] = "";

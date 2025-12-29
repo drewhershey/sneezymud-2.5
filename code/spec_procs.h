@@ -57,13 +57,15 @@ extern int Inquisitor(struct char_data* ch, int cmd, const char* arg);
 extern int temple_labrynth_liar(struct char_data* ch, int cmd, const char* arg);
 extern int AbyssGateKeeper(struct char_data* ch, int cmd, const char* arg);
 extern int postmaster(struct char_data* ch, int cmd, const char* arg);
-extern int temple_labrynth_sentry(struct char_data* ch, int cmd, const char* arg);
+extern int temple_labrynth_sentry(struct char_data* ch, int cmd,
+  const char* arg);
 extern int NudgeNudge(struct char_data* ch, int cmd, const char* arg);
 extern int RustMonster(struct char_data* ch, int cmd, const char* arg);
 extern int PaladinGuildGuard(struct char_data* ch, int cmd, const char* arg);
 extern int tormentor(struct char_data* ch, int cmd, const char* arg);
 extern int receptionist(struct char_data* ch, int cmd, const char* arg);
-extern int receptionist_for_outlaws(struct char_data* ch, int cmd, const char* arg);
+extern int receptionist_for_outlaws(struct char_data* ch, int cmd,
+  const char* arg);
 extern int MageGuildMaster(struct char_data* ch, int cmd, const char* arg);
 extern int ThiefGuildMaster(struct char_data* ch, int cmd, const char* arg);
 extern int ClericGuildMaster(struct char_data* ch, int cmd, const char* arg);

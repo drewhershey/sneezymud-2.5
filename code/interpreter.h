@@ -22,7 +22,8 @@ extern int WizLock;
 extern int Silence;
 
 struct command_info {
-    void (*command_pointer)(struct char_data* ch, const char* argument, int cmd);
+    void (
+      *command_pointer)(struct char_data* ch, const char* argument, int cmd);
     signed char minimum_position;
     signed char minimum_level;
 };
@@ -77,7 +78,7 @@ void do_force(struct char_data* ch, const char* argument, int cmd);
 void do_get(struct char_data* ch, const char* argument, int cmd);
 void do_drop(struct char_data* ch, const char* argument, int cmd);
 void do_news(struct char_data* ch, const char* argument, int cmd);
-void do_wiznews(struct char_data* ch, const char* argument, int cmd); /* SG */
+void do_wiznews(struct char_data* ch, const char* argument, int cmd);
 void do_atlas(struct char_data* ch, const char* argument, int cmd);
 void do_monitor(struct char_data* ch, const char* argument, int cmd);
 void do_score(struct char_data* ch, const char* argument, int cmd);
@@ -170,87 +171,71 @@ void do_plr_noshout(struct char_data* ch, const char* argument, int cmd);
 void do_wizhelp(struct char_data* ch, const char* argument, int cmd);
 void do_credits(struct char_data* ch, const char* argument, int cmd);
 void do_compact(struct char_data* ch, const char* argument, int cmd);
-void do_wimpy(struct char_data* ch, const char* argument, int cmd);    /* jdb -8-16 */
-void do_commune(struct char_data* ch, const char* argument, int cmd);  /* jdb - 9-1 */
-void do_nohassle(struct char_data* ch, const char* argument, int cmd); /* jdb 9-6 */
-void do_system(struct char_data* ch, const char* argument, int cmd);   /* jdb 9-16 */
-void do_pull(struct char_data* ch, const char* argument, int cmd);     /* jdb 9-16 */
-void do_stealth(struct char_data* ch, const char* argument, int cmd);  /* jdb 9-17 */
-void do_edit(struct char_data* ch, const char* arg, int cmd);          /* jdb 9-29 */
-void do_set(struct char_data* ch, const char* arg, int cmd);           /* jdb 9-29 */
-void do_rsave(struct char_data* ch, const char* arg, int cmd);         /* jdb 10-5 */
-void do_rload(struct char_data* ch, const char* arg, int cmd);         /* jdb 10-5 */
-void do_wizlock(struct char_data* ch, const char* arg, int cmd);       /* jdb 10-15 */
-void do_highfive(struct char_data* ch, const char* arg, int cmd);      /* jdb 10-30 */
-void do_title(struct char_data* ch, const char* arg, int cmd);         /* jdb 11-3 */
-void do_uptime(struct char_data* ch, const char* arg, int cmd);        /* jdb 12-3 */
-void do_instazone(struct char_data* ch, const char* arg, int cmd);     /* jdb 12-3 */
-void do_disarm(struct char_data* ch, const char* arg, int cmd);        /* jdb 12-3 */
-void do_junk(struct char_data* ch, const char* arg, int cmd);          /* jdb 12-17 */
-void do_gain(struct char_data* ch, const char* arg, int cmd);          /* jdb 1-19 */
-void do_passwd(struct char_data* ch, const char* arg, int cmd);        /* jdb 2-6 */
-void do_fill(struct char_data* ch, const char* arg, int cmd);          /* jdb 2-9 */
-void do_imptest(struct char_data* ch, const char* arg, int cmd);       /* jdb 2-13 */
-void do_silence(struct char_data* ch, const char* arg, int cmd);       /* smg 4-26 */
-void do_teams(struct char_data* ch, const char* arg, int cmd);         /* smg 5-26 */
-void do_auth(struct char_data* ch, const char* arg, int cmd);          /* jdb 3-1 */
-void do_shoot(struct char_data* ch, const char* arg, int cmd);         /* jdb 3-8 */
-void do_swim(struct char_data* ch, const char* arg, int cmd);          /* jdb 8-4 */
-void do_reload(struct char_data* ch, const char* arg, int cmd);        /* jhh 7-24 */
-void do_oset(struct char_data* ch, const char* arg, int cmd);          /* jfr2 10-15*/
-void do_bet(struct char_data* ch, const char* arg, int cmd);           /* jhh 8-22 */
-void do_stay(struct char_data* ch, const char* arg, int cmd);          /* jhh 8-22 */
-void do_peek(struct char_data* ch, const char* arg, int cmd);          /* jhh 8-22 */
-void do_color(struct char_data* ch, const char* arg, int cmd);         /*jfr 8-28 */
-void do_search(struct char_data* ch, const char* arg, int cmd); /* jfr2 1-16-93*/
-void do_send(struct char_data* ch, const char* arg, int cmd);   /* jfr2 12-30 */
-void do_spy(struct char_data* ch, const char* arg, int cmd);    /*jfr2 1-23-93*/
+void do_wimpy(struct char_data* ch, const char* argument, int cmd);
+void do_commune(struct char_data* ch, const char* argument, int cmd);
+void do_nohassle(struct char_data* ch, const char* argument, int cmd);
+void do_system(struct char_data* ch, const char* argument, int cmd);
+void do_pull(struct char_data* ch, const char* argument, int cmd);
+void do_stealth(struct char_data* ch, const char* argument, int cmd);
+void do_edit(struct char_data* ch, const char* arg, int cmd);
+void do_set(struct char_data* ch, const char* arg, int cmd);
+void do_rsave(struct char_data* ch, const char* arg, int cmd);
+void do_rload(struct char_data* ch, const char* arg, int cmd);
+void do_wizlock(struct char_data* ch, const char* arg, int cmd);
+void do_highfive(struct char_data* ch, const char* arg, int cmd);
+void do_title(struct char_data* ch, const char* arg, int cmd);
+void do_uptime(struct char_data* ch, const char* arg, int cmd);
+void do_instazone(struct char_data* ch, const char* arg, int cmd);
+void do_disarm(struct char_data* ch, const char* arg, int cmd);
+void do_junk(struct char_data* ch, const char* arg, int cmd);
+void do_gain(struct char_data* ch, const char* arg, int cmd);
+void do_passwd(struct char_data* ch, const char* arg, int cmd);
+void do_fill(struct char_data* ch, const char* arg, int cmd);
+void do_imptest(struct char_data* ch, const char* arg, int cmd);
+void do_silence(struct char_data* ch, const char* arg, int cmd);
+void do_teams(struct char_data* ch, const char* arg, int cmd);
+void do_auth(struct char_data* ch, const char* arg, int cmd);
+void do_shoot(struct char_data* ch, const char* arg, int cmd);
+void do_swim(struct char_data* ch, const char* arg, int cmd);
+void do_reload(struct char_data* ch, const char* arg, int cmd);
+void do_oset(struct char_data* ch, const char* arg, int cmd);
+void do_bet(struct char_data* ch, const char* arg, int cmd);
+void do_stay(struct char_data* ch, const char* arg, int cmd);
+void do_peek(struct char_data* ch, const char* arg, int cmd);
+void do_color(struct char_data* ch, const char* arg, int cmd);
+void do_search(struct char_data* ch, const char* arg, int cmd);
+void do_send(struct char_data* ch, const char* arg, int cmd);
+void do_spy(struct char_data* ch, const char* arg, int cmd);
 void do_sign(struct char_data* ch, const char* arg, int cmd);
-void do_play(struct char_data* ch, const char* arg, int cmd); /*jfr2 2-11-93 */
-void do_flag(struct char_data* ch, const char* arg, int cmd); /*jfr2 1-30-93 */
-void do_link(struct char_data* ch, const char* arg, int cmd); /* jfr2 1-24-93 */
+void do_play(struct char_data* ch, const char* arg, int cmd);
+void do_flag(struct char_data* ch, const char* arg, int cmd);
+void do_link(struct char_data* ch, const char* arg, int cmd);
 void do_doorbash(struct char_data* ch, const char* arg, int cmd);
 void do_springleap(struct char_data* ch, const char* arg, int cmd);
 void do_lay_hands(struct char_data* ch, const char* arg, int cmd);
 void do_quivering_palm(struct char_data* ch, const char* arg, int cmd);
 void do_feign_death(struct char_data* ch, const char* arg, int cmd);
 void do_first_aid(struct char_data* ch, const char* arg, int cmd);
-void do_channel(struct char_data* ch, const char* arg, int cmd);    /*jfr2 12-30 */
-void do_headbutt(struct char_data* ch, const char* arg, int cmd);   /*jfr2 9-21 */
-void do_log(struct char_data* ch, const char* arg, int cmd);        /*jfr2 12/29/92 */
-void do_subterfuge(struct char_data* ch, const char* arg, int cmd); /* jfr2 10-3 */
-void do_throw(struct char_data* ch, const char* arg, int cmd);      /* jfr2 10-4 */
-void do_scribe(struct char_data* ch, const char* arg, int cmd);     /* jfr2 10-4 */
-void do_brew(struct char_data* ch, const char* arg, int cmd);       /* jfr2 10-15*/
-void do_grapple(struct char_data* ch, const char* arg, int cmd);    /*jfr2 10-16*/
-
-/*
-  depth first seach procedure donated by WhiteGold
-  */
-
-void do_track(struct char_data* ch, const char* arg, int cmd); /* jdb 10-9 */
-
-/*
-  These 3 were donated by sequent
-  */
-
-void do_attribute(struct char_data* ch, const char* arg, int cmd); /* jdb 11-6 */
-void do_world(struct char_data* ch, const char* arg, int cmd);     /* jdb 11-6 */
-void do_spells(struct char_data* ch, const char* arg, int cmd);    /* jdb 11-6 */
-
+void do_channel(struct char_data* ch, const char* arg, int cmd);
+void do_headbutt(struct char_data* ch, const char* arg, int cmd);
+void do_log(struct char_data* ch, const char* arg, int cmd);
+void do_subterfuge(struct char_data* ch, const char* arg, int cmd);
+void do_throw(struct char_data* ch, const char* arg, int cmd);
+void do_scribe(struct char_data* ch, const char* arg, int cmd);
+void do_brew(struct char_data* ch, const char* arg, int cmd);
+void do_grapple(struct char_data* ch, const char* arg, int cmd);
+void do_track(struct char_data* ch, const char* arg, int cmd);
+void do_attribute(struct char_data* ch, const char* arg, int cmd);
+void do_world(struct char_data* ch, const char* arg, int cmd);
+void do_spells(struct char_data* ch, const char* arg, int cmd);
 void do_action(struct char_data* ch, const char* arg, int cmd);
 void do_practice(struct char_data* ch, const char* arg, int cmd);
-
-/* Hammor commands */
 void do_assist(struct char_data* ch, const char* arg, int cmd);
 void do_fire(struct char_data* ch, const char* arg, int cmd);
 void do_show(struct char_data* ch, const char* arg, int cmd);
 void do_bodyslam(struct char_data* ch, const char* arg, int cmd);
 void do_invis(struct char_data* ch, const char* arg, int cmd);
 void do_grouptell(struct char_data* ch, const char* arg, int cmd);
-
-/* Brutius commands */
-
 void do_report(struct char_data* ch, const char* arg, int cmd);
 void do_demote(struct char_data* ch, const char* arg, int cmd);
 void do_split(struct char_data* ch, const char* arg, int cmd);

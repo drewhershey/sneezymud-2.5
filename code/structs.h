@@ -390,7 +390,8 @@ struct obj_affected_type {
 };
 
 /* File format version - 32-bit compatible for binary file I/O */
-/* Used in OBJ_FILE_ELEM - DO NOT CHANGE SIZE/LAYOUT (maintains original 32-bit layout) */
+/* Used in OBJ_FILE_ELEM - DO NOT CHANGE SIZE/LAYOUT (maintains original 32-bit
+ * layout) */
 struct obj_affected_type_file {
     short location;
     compat_long modifier; /* 32-bit signed for file compat */
@@ -951,7 +952,8 @@ struct char_data {
 };
 
 typedef int (*mob_proc_t)(struct char_data*, int, const char*);
-typedef int (*obj_proc_t)(struct char_data*, int, const char*, struct obj_data*);
+typedef int (
+  *obj_proc_t)(struct char_data*, int, const char*, struct obj_data*);
 
 typedef union {
     mob_proc_t mob_f;
