@@ -1028,7 +1028,7 @@ char saves_spell(struct char_data* ch, short int save_type) {
   return (MAX(1, save) < number(1, 20));
 }
 
-static char* skip_spaces(char* string) {
+static const char* skip_spaces(const char* string) {
   for (; *string && (*string) == ' '; string++) {
     ;
   }
@@ -1062,10 +1062,11 @@ static int spell_level(struct char_data* ch, int sn) {
 }
 
 /* Assumes that *argument does start with first letter of chopped string */
-void do_cast(struct char_data* ch, char* argument, int cmd) {
+void do_cast(struct char_data* ch, const char* argument, int cmd) {
   struct obj_data* tar_obj;
   struct char_data* tar_char;
   char name[MAX_INPUT_LENGTH];
+  char spell_name[MAX_INPUT_LENGTH];
   int qend;
   int spl;
   int i;
@@ -1129,8 +1130,9 @@ void do_cast(struct char_data* ch, char* argument, int cmd) {
   /* Locate the last quote && lowercase the magic words (if any) */
 
   for (qend = 1; *(argument + qend) && (*(argument + qend) != '\''); qend++) {
-    *(argument + qend) = LOWER(*(argument + qend));
+    spell_name[qend - 1] = LOWER(*(argument + qend));
   }
+  spell_name[qend - 1] = '\0';
 
   if (*(argument + qend) != '\'') {
     send_to_char(
@@ -1138,7 +1140,7 @@ void do_cast(struct char_data* ch, char* argument, int cmd) {
     return;
   }
 
-  spl = old_search_block(argument, 1, qend - 1, spells, 0);
+  spl = old_search_block(spell_name, 0, qend - 1, spells, 0);
 
   if (!spl) {
     send_to_char("Your lips do not move, no magic appears.\n\r", ch);

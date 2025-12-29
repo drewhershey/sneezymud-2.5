@@ -24,9 +24,9 @@
 #include "structs.h"
 #include "utils.h"
 
-void do_gain(struct char_data* ch, char* argument, int cmd) {}
+void do_gain(struct char_data* ch, const char* argument, int cmd) {}
 
-void do_guard(struct char_data* ch, char* argument, int cmd) {
+void do_guard(struct char_data* ch, const char* argument, int cmd) {
   char comm[100];
 
   if (!IS_NPC(ch) || IS_SET(ch->specials.act, ACT_POLYSELF)) {
@@ -67,7 +67,7 @@ void do_guard(struct char_data* ch, char* argument, int cmd) {
   }
 }
 
-void do_junk(struct char_data* ch, char* argument, int cmd) {
+void do_junk(struct char_data* ch, const char* argument, int cmd) {
   char arg[100];
   char buf[100];
   char newarg[100];
@@ -136,7 +136,7 @@ void do_junk(struct char_data* ch, char* argument, int cmd) {
   }
 }
 
-void do_command(struct char_data* ch, char* arg, int cmd) {
+void do_command(struct char_data* ch, const char* arg, int cmd) {
   char buf[16384];
   int no;
   int i;
@@ -162,11 +162,11 @@ void do_command(struct char_data* ch, char* arg, int cmd) {
   page_string(ch->desc, buf, 1);
 }
 
-void do_qui(struct char_data* ch, char* argument, int cmd) {
+void do_qui(struct char_data* ch, const char* argument, int cmd) {
   send_to_char("You have to write quit - no less, to quit!\n\r", ch);
 }
 
-void do_split(struct char_data* ch, char* argument, int cmd) {
+void do_split(struct char_data* ch, const char* argument, int cmd) {
   char buf[256];
   int no_members;
   int share;
@@ -250,7 +250,7 @@ void do_split(struct char_data* ch, char* argument, int cmd) {
   }
 }
 
-void do_report(struct char_data* ch, char* argument, int cmd) {
+void do_report(struct char_data* ch, const char* argument, int cmd) {
   int i;
   char info[160];
   char buf[MAX_STRING_LENGTH];
@@ -273,7 +273,7 @@ void do_report(struct char_data* ch, char* argument, int cmd) {
   }
 }
 
-void do_title(struct char_data* ch, char* argument, int cmd) {
+void do_title(struct char_data* ch, const char* argument, int cmd) {
   char buf[200];
 
   if (IS_NPC(ch) || !ch->desc) {
@@ -291,9 +291,9 @@ void do_title(struct char_data* ch, char* argument, int cmd) {
   }
 }
 
-void do_pray(struct char_data* ch, char* argument, int cmd) {}
+void do_pray(struct char_data* ch, const char* argument, int cmd) {}
 
-void do_quit(struct char_data* ch, char* argument, int cmd) {
+void do_quit(struct char_data* ch, const char* argument, int cmd) {
   if (IS_NPC(ch) || !ch->desc || IS_AFFECTED(ch, AFF_CHARM)) {
     return;
   }
@@ -384,7 +384,7 @@ static void save_obj_for_save(struct char_data* ch, struct obj_cost* cost,
   update_file(ch, &st, 0);
 }
 
-void do_save(struct char_data* ch, char* argument, int cmd) {
+void do_save(struct char_data* ch, const char* argument, int cmd) {
   struct obj_cost cost;
   struct char_data* tmp;
   struct obj_data* tmp_obj;
@@ -459,11 +459,11 @@ void do_save(struct char_data* ch, char* argument, int cmd) {
   save_char(ch, AUTO_RENT);
 }
 
-void do_not_here(struct char_data* ch, char* argument, int cmd) {
+void do_not_here(struct char_data* ch, const char* argument, int cmd) {
   send_to_char("Sorry, but you cannot do that here!\n\r", ch);
 }
 
-void do_sneak(struct char_data* ch, char* argument, int cmd) {
+void do_sneak(struct char_data* ch, const char* argument, int cmd) {
   struct affected_type af;
   signed char percent;
 
@@ -506,7 +506,7 @@ void do_sneak(struct char_data* ch, char* argument, int cmd) {
   affect_to_char(ch, &af);
 }
 
-void do_hide(struct char_data* ch, char* argument, int cmd) {
+void do_hide(struct char_data* ch, const char* argument, int cmd) {
   signed char percent;
 
   send_to_char("you attempt to hide yourself.\n\r", ch);
@@ -538,7 +538,7 @@ void do_hide(struct char_data* ch, char* argument, int cmd) {
   WAIT_STATE(ch, PULSE_VIOLENCE * 1);
 }
 
-void do_bload(struct char_data* ch, char* arg, int cmd) {
+void do_bload(struct char_data* ch, const char* arg, int cmd) {
   struct obj_data* obj;
   struct obj_data* arrow;
   char arrow_name[240];
@@ -581,7 +581,7 @@ void do_bload(struct char_data* ch, char* arg, int cmd) {
   extract_obj(arrow);
 }
 
-void do_reload(struct char_data* ch, char* argument, int cmd) {
+void do_reload(struct char_data* ch, const char* argument, int cmd) {
   struct obj_data* obj;
   struct obj_data* shells;
   char shells_name[240];
@@ -631,7 +631,7 @@ void do_reload(struct char_data* ch, char* argument, int cmd) {
   extract_obj(shells);
 }
 
-void do_steal(struct char_data* ch, char* argument, int cmd) {
+void do_steal(struct char_data* ch, const char* argument, int cmd) {
   struct char_data* victim;
   struct obj_data* obj;
   char victim_name[240];
@@ -787,7 +787,7 @@ void do_steal(struct char_data* ch, char* argument, int cmd) {
   }
 }
 
-void do_practice(struct char_data* ch, char* arg, int cmd) {
+void do_practice(struct char_data* ch, const char* arg, int cmd) {
   char buf[MAX_STRING_LENGTH * 2];
   char buffer[MAX_STRING_LENGTH * 2];
   int i;
@@ -1001,7 +1001,7 @@ void do_practice(struct char_data* ch, char* arg, int cmd) {
     ch);
 }
 
-void do_idea(struct char_data* ch, char* argument, int cmd) {
+void do_idea(struct char_data* ch, const char* argument, int cmd) {
   FILE* fl;
   char str[MAX_INPUT_LENGTH + 20];
 
@@ -1037,7 +1037,7 @@ void do_idea(struct char_data* ch, char* argument, int cmd) {
   send_to_char("Ok. Thanks.\n\r", ch);
 }
 
-void do_typo(struct char_data* ch, char* argument, int cmd) {
+void do_typo(struct char_data* ch, const char* argument, int cmd) {
   FILE* fl;
   char str[MAX_INPUT_LENGTH + 20];
 
@@ -1074,7 +1074,7 @@ void do_typo(struct char_data* ch, char* argument, int cmd) {
   send_to_char("Ok. thanks.\n\r", ch);
 }
 
-void do_bug(struct char_data* ch, char* argument, int cmd) {
+void do_bug(struct char_data* ch, const char* argument, int cmd) {
   FILE* fl;
   char str[MAX_INPUT_LENGTH + 20];
 
@@ -1110,7 +1110,7 @@ void do_bug(struct char_data* ch, char* argument, int cmd) {
   send_to_char("Ok.\n\r", ch);
 }
 
-void do_monitor(struct char_data* ch, char* argument, int cmd) {
+void do_monitor(struct char_data* ch, const char* argument, int cmd) {
   struct obj_data* radio;
   char buf[200];
   char num[200];
@@ -1148,7 +1148,7 @@ void do_monitor(struct char_data* ch, char* argument, int cmd) {
   }
 }
 
-void do_channel(struct char_data* ch, char* argument, int cmd) {
+void do_channel(struct char_data* ch, const char* argument, int cmd) {
   struct obj_data* radio;
   struct obj_data* radio2;
   struct descriptor_data* i;
@@ -1201,7 +1201,7 @@ void do_channel(struct char_data* ch, char* argument, int cmd) {
   }
 }
 
-void do_prompt(struct char_data* ch, char* arg, int cmd) {
+void do_prompt(struct char_data* ch, const char* arg, int cmd) {
   char tmp_name[20];
   char buf[80];
 
@@ -1225,7 +1225,7 @@ void do_prompt(struct char_data* ch, char* arg, int cmd) {
   }
 }
 
-void do_terminal(struct char_data* ch, char* argument, int cmd) {
+void do_terminal(struct char_data* ch, const char* argument, int cmd) {
   char buf[80];
   char term[80];
   char screen[80];
@@ -1306,7 +1306,7 @@ void do_terminal(struct char_data* ch, char* argument, int cmd) {
   }
 }
 
-void do_cls(struct char_data* ch, char* argument, int cmd) {
+void do_cls(struct char_data* ch, const char* argument, int cmd) {
   char buf[80];
 
   if (IS_NPC(ch)) {
@@ -1323,7 +1323,7 @@ void do_cls(struct char_data* ch, char* argument, int cmd) {
   }
 }
 
-void do_brief(struct char_data* ch, char* argument, int cmd) {
+void do_brief(struct char_data* ch, const char* argument, int cmd) {
   if (IS_NPC(ch)) {
     return;
   }
@@ -1337,7 +1337,7 @@ void do_brief(struct char_data* ch, char* argument, int cmd) {
   }
 }
 
-void do_log(struct char_data* ch, char* argument, int cmd) {
+void do_log(struct char_data* ch, const char* argument, int cmd) {
   struct char_data* vict;
   char name[100];
   char buf[200];
@@ -1371,7 +1371,7 @@ void do_log(struct char_data* ch, char* argument, int cmd) {
   }
 }
 
-void do_color(struct char_data* ch, char* argument, int cmd) {
+void do_color(struct char_data* ch, const char* argument, int cmd) {
   char buf[MAX_INPUT_LENGTH];
 
   if (IS_NPC(ch)) {
@@ -1389,7 +1389,7 @@ void do_color(struct char_data* ch, char* argument, int cmd) {
   }
 }
 
-void do_compact(struct char_data* ch, char* argument, int cmd) {
+void do_compact(struct char_data* ch, const char* argument, int cmd) {
   if (IS_NPC(ch)) {
     return;
   }
@@ -1403,7 +1403,7 @@ void do_compact(struct char_data* ch, char* argument, int cmd) {
   }
 }
 
-void do_group(struct char_data* ch, char* argument, int cmd) {
+void do_group(struct char_data* ch, const char* argument, int cmd) {
   char name[256];
   char buf[256];
   struct char_data* victim;
@@ -1501,7 +1501,7 @@ void do_group(struct char_data* ch, char* argument, int cmd) {
   }
 }
 
-void do_quaff(struct char_data* ch, char* argument, int cmd) {
+void do_quaff(struct char_data* ch, const char* argument, int cmd) {
   char buf[100];
   struct obj_data* temp;
   int i;
@@ -1579,7 +1579,7 @@ void do_quaff(struct char_data* ch, char* argument, int cmd) {
   WAIT_STATE(ch, PULSE_VIOLENCE);
 }
 
-void do_recite(struct char_data* ch, char* argument, int cmd) {
+void do_recite(struct char_data* ch, const char* argument, int cmd) {
   char buf[100];
   struct obj_data* scroll;
   struct obj_data* obj;
@@ -1650,7 +1650,7 @@ void do_recite(struct char_data* ch, char* argument, int cmd) {
   extract_obj(scroll);
 }
 
-void do_use(struct char_data* ch, char* argument, int cmd) {
+void do_use(struct char_data* ch, const char* argument, int cmd) {
   char buf[100];
   struct char_data* tmp_char;
   struct obj_data* tmp_object;
@@ -1736,7 +1736,7 @@ void do_use(struct char_data* ch, char* argument, int cmd) {
   }
 }
 
-void do_plr_noshout(struct char_data* ch, char* argument, int cmd) {
+void do_plr_noshout(struct char_data* ch, const char* argument, int cmd) {
   char buf[128];
 
   if (IS_NPC(ch)) {
@@ -1758,7 +1758,7 @@ void do_plr_noshout(struct char_data* ch, char* argument, int cmd) {
   }
 }
 
-void do_teams(struct char_data* ch, char* argument, int cmd) {
+void do_teams(struct char_data* ch, const char* argument, int cmd) {
   char buf[255];
   struct descriptor_data* d;
   int count;

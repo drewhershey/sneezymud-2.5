@@ -67,7 +67,7 @@ void char_to_store(struct char_data* ch, struct char_file_u* st);
 void store_to_char(struct char_file_u* st, struct char_data* ch);
 int is_empty(int zone_nr);
 void reset_zone(int zone);
-int file_to_string(char* name, char* buf);
+int file_to_string(const char* name, char* buf);
 void renum_zone_table(void);
 void reset_time(void);
 struct obj_data* unequip_char_for_save(struct char_data* ch, int pos);
@@ -130,7 +130,7 @@ struct index_data {
     long pos;    /* file position of this field              */
     int number;  /* number of existing units of this mob/obj	*/
     ProcFn func; /* special procedure for this mob/obj       */
-    char* name;
+    const char* name;
 };
 
 /* for queueing zones for update   */

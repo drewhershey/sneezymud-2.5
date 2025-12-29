@@ -369,18 +369,20 @@ const char* const command[] = {
   "\n",
 };
 
-int search_block(char* arg, const char* const* list, char exact) {
+int search_block(const char* arg, const char* const* list, char exact) {
   register int i;
   register int l;
+  char lower_arg[MAX_INPUT_LENGTH];
 
   /* Make into lower case, and get length of string */
-  for (l = 0; *(arg + l); l++) {
-    *(arg + l) = LOWER(*(arg + l));
+  for (l = 0; *(arg + l) && l < MAX_INPUT_LENGTH - 1; l++) {
+    lower_arg[l] = LOWER(*(arg + l));
   }
+  lower_arg[l] = '\0';
 
   if (exact) {
     for (i = 0; **(list + i) != '\n'; i++) {
-      if (!strcmp(arg, *(list + i))) {
+      if (!strcmp(lower_arg, *(list + i))) {
         return (i);
       }
     }
@@ -389,7 +391,7 @@ int search_block(char* arg, const char* const* list, char exact) {
       l = 1; /* Avoid "" to match the first available string */
     }
     for (i = 0; **(list + i) != '\n'; i++) {
-      if (!strncmp(arg, *(list + i), l)) {
+      if (!strncmp(lower_arg, *(list + i), (size_t)l)) {
         return (i);
       }
     }
@@ -636,7 +638,7 @@ int is_number(const char* str) {
 
 /* find the first sub-argument of a string, return pointer to first char in
    primary argument, following the sub-arg			            */
-char* one_argument(char* argument, char* first_arg) {
+const char* one_argument(const char* argument, char* first_arg) {
   int found;
   int begin;
   int look_at;
@@ -663,7 +665,7 @@ char* one_argument(char* argument, char* first_arg) {
   return (argument + begin);
 }
 
-void only_argument(char* argument, char* dest) {
+void only_argument(const char* argument, char* dest) {
   while (*argument && isspace(*argument)) {
     argument++;
   }
@@ -693,7 +695,7 @@ int is_abbrev(const char* arg1, const char* arg2) {
 }
 
 /* return first 'word' plus trailing substring of input string */
-void half_chop(char* string, char* arg1, char* arg2) {
+void half_chop(const char* string, char* arg1, char* arg2) {
   for (; isspace(*string); string++) {
     ;
   }
@@ -713,7 +715,7 @@ void half_chop(char* string, char* arg1, char* arg2) {
   }
 }
 
-int special(struct char_data* ch, int cmd, char* arg) {
+int special(struct char_data* ch, int cmd, const char* arg) {
   register struct obj_data* i;
   register struct char_data* k;
   int j;
@@ -1122,7 +1124,7 @@ int find_name(char* name) {
   return (-1);
 }
 
-int parse_name(char* arg, char* name) {
+int parse_name(const char* arg, char* name) {
   int i;
 
   /* skip whitespaces */

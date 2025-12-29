@@ -2135,7 +2135,7 @@ void free_obj(struct obj_data* obj) {
 }
 
 /* read contents of a text file, and place in buf */
-int file_to_string(char* name, char* buf) {
+int file_to_string(const char* name, char* buf) {
   FILE* fl;
   char tmp[100];
 

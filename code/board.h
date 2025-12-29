@@ -23,13 +23,13 @@ extern struct Board* board_list;
 
 struct Board* FindBoardInRoom(int room);
 void board_save_board(struct Board* b);
-int board_show_board(struct char_data* ch, char* arg, struct Board* b);
+int board_show_board(struct char_data* ch, const char* arg, struct Board* b);
 void board_fix_long_desc(struct Board* b);
-int board_display_msg(struct char_data* ch, char* arg, struct Board* b);
+int board_display_msg(struct char_data* ch, const char* arg, struct Board* b);
 void board_reset_board(struct Board* b);
 void board_load_board(struct Board* b);
-int board_remove_msg(struct char_data* ch, char* arg, struct Board* b);
-void board_write_msg(struct char_data* ch, char* arg, struct Board* b);
+int board_remove_msg(struct char_data* ch, const char* arg, struct Board* b);
+void board_write_msg(struct char_data* ch, const char* arg, struct Board* b);
 void OpenBoardFile(struct Board* b);
 void InitABoard(struct obj_data* obj);
 void InitBoards(void);

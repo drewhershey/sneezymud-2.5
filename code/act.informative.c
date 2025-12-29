@@ -24,7 +24,7 @@
 #include "trap.h"
 #include "utils.h"
 
-char* find_ex_description(char* word, struct extra_descr_data* list) {
+char* find_ex_description(const char* word, struct extra_descr_data* list) {
   struct extra_descr_data* i;
 
   for (i = list; i; i = i->next) {
@@ -36,7 +36,7 @@ char* find_ex_description(char* word, struct extra_descr_data* list) {
   return nullptr;
 }
 
-void do_whozone(Mob* ch, char* argument, int cmd) {
+void do_whozone(Mob* ch, const char* argument, int cmd) {
   Descriptor* d;
   Room* rp;
   char buf[256];
@@ -63,7 +63,7 @@ void do_whozone(Mob* ch, char* argument, int cmd) {
   send_to_char(buf, ch);
 }
 
-void do_who(struct char_data* ch, char* argument, int cmd) {
+void do_who(struct char_data* ch, const char* argument, int cmd) {
   struct char_data* k;
   struct descriptor_data* d;
   char buf[256];
@@ -1158,7 +1158,7 @@ static void read_book(Mob* ch, Obj* o, char* arg) {
   }
 }
 
-void do_look(struct char_data* ch, char* argument, int cmd) {
+void do_look(struct char_data* ch, const char* argument, int cmd) {
   char buffer[MAX_STRING_LENGTH];
   char arg1[MAX_INPUT_LENGTH] = "";
   char arg2[MAX_INPUT_LENGTH] = "";
@@ -1586,7 +1586,7 @@ void do_look(struct char_data* ch, char* argument, int cmd) {
 
 /* end of look */
 
-void do_read(struct char_data* ch, char* argument, int cmd) {
+void do_read(struct char_data* ch, const char* argument, int cmd) {
   char buf[100];
 
   /* This is just for now - To be changed later.! */
@@ -1594,7 +1594,7 @@ void do_read(struct char_data* ch, char* argument, int cmd) {
   do_look(ch, buf, 15);
 }
 
-void do_examine(struct char_data* ch, char* argument, int cmd) {
+void do_examine(struct char_data* ch, const char* argument, int cmd) {
   char name[100];
   char buf[100];
   int bits;
@@ -1629,7 +1629,7 @@ void do_examine(struct char_data* ch, char* argument, int cmd) {
   }
 }
 
-void do_exits(struct char_data* ch, char* argument, int cmd) {
+void do_exits(struct char_data* ch, const char* argument, int cmd) {
   int door;
   char buf[256];
   struct room_direction_data* exitdata;
@@ -1689,7 +1689,7 @@ static struct time_info_data real_time_passed(time_t t2, time_t t1) {
   return now;
 }
 
-void do_score(struct char_data* ch, char* argument, int cmd) {
+void do_score(struct char_data* ch, const char* argument, int cmd) {
   struct time_info_data playing_time;
   static char buf[100];
 
@@ -1810,9 +1810,9 @@ static const char* const month_name[17] = {"Month of Winter", /* 0 */
   "Month of the Long Shadows", "Month of the Ancient Darkness",
   "Month of the Great Evil"};
 
-void do_time(struct char_data* ch, char* argument, int cmd) {
+void do_time(struct char_data* ch, const char* argument, int cmd) {
   char buf[100];
-  char* suf;
+  const char* suf;
   int weekday;
   int day;
 
@@ -1853,9 +1853,9 @@ void do_time(struct char_data* ch, char* argument, int cmd) {
   send_to_char(buf, ch);
 }
 
-void do_weather(struct char_data* ch, char* argument, int cmd) {
+void do_weather(struct char_data* ch, const char* argument, int cmd) {
   static char buf[100];
-  static char* sky_look[4] = {"cloudless", "cloudy", "rainy",
+  static const char* sky_look[4] = {"cloudless", "cloudy", "rainy",
     "lit by flashes of lightning"};
 
   if (OUTSIDE(ch)) {
@@ -1868,7 +1868,7 @@ void do_weather(struct char_data* ch, char* argument, int cmd) {
   }
 }
 
-void do_help(struct char_data* ch, char* argument, int cmd) {
+void do_help(struct char_data* ch, const char* argument, int cmd) {
   static char helppath[200];
   static char topic[MAX_INPUT_LENGTH];
   char* cp;
@@ -1914,7 +1914,7 @@ void do_help(struct char_data* ch, char* argument, int cmd) {
   }
 }
 
-void do_wizhelp(struct char_data* ch, char* argument, int cmd) {
+void do_wizhelp(struct char_data* ch, const char* argument, int cmd) {
   char buf[MAX_STRING_LENGTH];
   int no;
   int i;
@@ -1941,7 +1941,7 @@ void do_wizhelp(struct char_data* ch, char* argument, int cmd) {
   page_string(ch->desc, buf, 1);
 }
 
-void do_users(struct char_data* ch, char* argument, int cmd) {
+void do_users(struct char_data* ch, const char* argument, int cmd) {
   char buf[MAX_STRING_LENGTH];
   char line[200];
 
@@ -1965,12 +1965,12 @@ void do_users(struct char_data* ch, char* argument, int cmd) {
   send_to_char(buf, ch);
 }
 
-void do_inventory(struct char_data* ch, char* argument, int cmd) {
+void do_inventory(struct char_data* ch, const char* argument, int cmd) {
   send_to_char("You are carrying:\n\r", ch);
   list_obj_in_heap(ch->carrying, ch);
 }
 
-void do_equipment(struct char_data* ch, char* argument, int cmd) {
+void do_equipment(struct char_data* ch, const char* argument, int cmd) {
   int j;
   int worn_index;
   char found;
@@ -1997,13 +1997,13 @@ void do_equipment(struct char_data* ch, char* argument, int cmd) {
   }
 }
 
-void do_credits(struct char_data* ch, char* argument, int cmd) {
+void do_credits(struct char_data* ch, const char* argument, int cmd) {
   if (ch) {
     start_page_file(ch->desc, CREDITS_FILE, "Credits file being revised!\n\r");
   }
 }
 
-void do_atlas(struct char_data* ch, char* argument, int cmd) {
+void do_atlas(struct char_data* ch, const char* argument, int cmd) {
   char name[200];
   int volume;
 
@@ -2044,19 +2044,19 @@ void do_atlas(struct char_data* ch, char* argument, int cmd) {
   }
 }
 
-void do_news(struct char_data* ch, char* argument, int cmd) {
+void do_news(struct char_data* ch, const char* argument, int cmd) {
   if (ch) {
     start_page_file(ch->desc, NEWS_FILE, "No news is good news!\n\r");
   }
 }
 
-void do_info(struct char_data* ch, char* argument, int cmd) {
+void do_info(struct char_data* ch, const char* argument, int cmd) {
   if (ch) {
     start_page_file(ch->desc, INFO_FILE, "No info available!\n\r");
   }
 }
 
-void do_wizlist(struct char_data* ch, char* argument, int cmd) {
+void do_wizlist(struct char_data* ch, const char* argument, int cmd) {
   if (ch) {
     start_page_file(ch->desc, WIZLIST_FILE,
       "Sorry, wizlist under construction!\n\r");
@@ -2144,7 +2144,7 @@ static void do_where_object(struct char_data* ch, struct obj_data* obj,
   }
 }
 
-void do_where(struct char_data* ch, char* argument, int cmd) {
+void do_where(struct char_data* ch, const char* argument, int cmd) {
   char name[MAX_INPUT_LENGTH];
   char buf[MAX_STRING_LENGTH];
   char* nameonly;
@@ -2247,7 +2247,7 @@ void do_where(struct char_data* ch, char* argument, int cmd) {
   destroy_string_block(&sb);
 }
 
-void do_levels(struct char_data* ch, char* argument, int cmd) {
+void do_levels(struct char_data* ch, const char* argument, int cmd) {
   int i;
   int class;
   char buf[MAX_STRING_LENGTH];
@@ -2384,7 +2384,7 @@ static const char* desc_damage(float dam) {
   return ("A TON of damage");
 }
 
-void do_consider(struct char_data* ch, char* argument, int cmd) {
+void do_consider(struct char_data* ch, const char* argument, int cmd) {
   struct char_data* victim;
   char name[256];
   char buf[256];
@@ -2564,7 +2564,7 @@ void do_consider(struct char_data* ch, char* argument, int cmd) {
   }
 }
 
-void do_spells(struct char_data* ch, char* argument, int cmd) {
+void do_spells(struct char_data* ch, const char* argument, int cmd) {
   int spl;
   int i;
   char buf[16384];
@@ -2590,7 +2590,7 @@ void do_spells(struct char_data* ch, char* argument, int cmd) {
   page_string(ch->desc, buf, 1);
 }
 
-void do_world(struct char_data* ch, char* argument, int cmd) {
+void do_world(struct char_data* ch, const char* argument, int cmd) {
   static char buf[100];
   long ct;
   long ot;
@@ -2639,7 +2639,7 @@ static const char* const attr_player_bits[] = {"Brief", "Compact", "Wimpy",
   "", /* Ghost, theyll never be able to att while a ghost anyway.*/
   "\n"};
 
-void do_attribute(struct char_data* ch, char* argument, int cmd) {
+void do_attribute(struct char_data* ch, const char* argument, int cmd) {
   char buf[MAX_STRING_LENGTH];
   char buf2[MAX_STRING_LENGTH];
   struct affected_type* aff;
@@ -2745,7 +2745,7 @@ void do_attribute(struct char_data* ch, char* argument, int cmd) {
   }
 }
 
-static void do_scan(struct char_data* ch, char* argument, int cmd) {
+static void do_scan(struct char_data* ch, const char* argument, int cmd) {
   send_to_char("Sorry, scan has again been temporarily disabled.\n\r", ch);
 }
 

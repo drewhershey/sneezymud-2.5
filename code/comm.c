@@ -64,7 +64,7 @@ int main(int argc, char** argv) {
   int a;
   int pos = 1;
   char buf[512];
-  char* dir;
+  const char* dir;
 
   struct rlimit rl;
   int res;

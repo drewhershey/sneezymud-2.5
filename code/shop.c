@@ -107,7 +107,7 @@ static int shop_producing(struct obj_data* item, int shop_nr) {
   return 0;
 }
 
-static void shopping_buy(char* arg, struct char_data* ch,
+static void shopping_buy(const char* arg, struct char_data* ch,
   struct char_data* keeper, int shop_nr) {
   char argm[100];
   char buf[MAX_STRING_LENGTH];
@@ -216,7 +216,7 @@ static void shopping_buy(char* arg, struct char_data* ch,
   }
 }
 
-static void shopping_sell(char* arg, struct char_data* ch,
+static void shopping_sell(const char* arg, struct char_data* ch,
   struct char_data* keeper, int shop_nr) {
   char argm[100];
   char buf[MAX_STRING_LENGTH];
@@ -315,7 +315,7 @@ static void shopping_sell(char* arg, struct char_data* ch,
   }
 }
 
-static void shopping_value(char* arg, struct char_data* ch,
+static void shopping_value(const char* arg, struct char_data* ch,
   struct char_data* keeper, int shop_nr) {
   char argm[100];
   char buf[MAX_STRING_LENGTH];
@@ -413,7 +413,7 @@ static void shopping_kill(struct char_data* ch, struct char_data* keeper,
   }
 }
 
-static int shop_keeper(struct char_data* ch, int cmd, char* arg) {
+static int shop_keeper(struct char_data* ch, int cmd, const char* arg) {
   char argm[100];
   char buf[MAX_STRING_LENGTH];
   struct obj_data* temp1;

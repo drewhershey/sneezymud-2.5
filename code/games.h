@@ -132,7 +132,7 @@ Field : Bet on a one roll field bet. Type help field for help on this bet.\n\r"
 
 int check_slots(struct char_data* ch);
 int check_blackjack(struct char_data* ch);
-void do_bj_bet(struct char_data* ch, char* arg, int cmd);
+void do_bj_bet(struct char_data* ch, const char* arg, int cmd);
 void do_bj_hit(struct char_data* ch);
 void do_blackjack_exit(struct char_data* ch);
 int do_blackjack_enter(struct char_data* ch);

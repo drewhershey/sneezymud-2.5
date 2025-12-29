@@ -488,7 +488,7 @@ struct room_direction_data {
     int to_room;               /* Where direction leeds (NOWHERE) */
 };
 
-typedef int (*room_proc_t)(struct char_data*, int, char*);
+typedef int (*room_proc_t)(struct char_data*, int, const char*);
 
 /* ========================= Structure for room ========================== */
 struct room_data {
@@ -950,8 +950,8 @@ struct char_data {
     struct char_poofin_data poof;
 };
 
-typedef int (*mob_proc_t)(struct char_data*, int, char*);
-typedef int (*obj_proc_t)(struct char_data*, int, char*, struct obj_data*);
+typedef int (*mob_proc_t)(struct char_data*, int, const char*);
+typedef int (*obj_proc_t)(struct char_data*, int, const char*, struct obj_data*);
 
 typedef union {
     mob_proc_t mob_f;
@@ -1241,7 +1241,7 @@ struct con_app_type {
 
 /************************************************************/
 
-typedef void (*funcp)(signed char, struct char_data*, char*, int,
+typedef void (*funcp)(signed char, struct char_data*, const char*, int,
   struct char_data*, struct obj_data*);
 
 struct breather {

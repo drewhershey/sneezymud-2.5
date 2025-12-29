@@ -39,9 +39,9 @@ void obj_from_char(struct obj_data* object);
 void equip_char(struct char_data* ch, struct obj_data* obj, int pos);
 struct obj_data* unequip_char(struct char_data* ch, int pos);
 
-struct obj_data* get_obj_in_list(char* name, struct obj_data* list);
+struct obj_data* get_obj_in_list(const char* name, struct obj_data* list);
 struct obj_data* get_obj_in_list_num(int num, struct obj_data* list);
-struct obj_data* get_obj(char* name);
+struct obj_data* get_obj(const char* name);
 struct obj_data* get_obj_num(int nr);
 struct obj_data* get_obj_vis_accessible(struct char_data* ch, char* name);
 
@@ -63,21 +63,21 @@ void char_from_room(struct char_data* ch);
 void char_to_room(struct char_data* ch, int room);
 
 /* find if character can see */
-struct char_data* get_char_room_vis(struct char_data* ch, char* name);
-struct char_data* get_char_vis_world(struct char_data* ch, char* name,
+struct char_data* get_char_room_vis(struct char_data* ch, const char* name);
+struct char_data* get_char_vis_world(struct char_data* ch, const char* name,
   int* count);
-struct char_data* get_char_vis(struct char_data* ch, char* name);
-struct obj_data* get_obj_in_list_vis(struct char_data* ch, char* name,
+struct char_data* get_char_vis(struct char_data* ch, const char* name);
+struct obj_data* get_obj_in_list_vis(struct char_data* ch, const char* name,
   struct obj_data* list);
-struct obj_data* get_obj_vis(struct char_data* ch, char* name);
-struct obj_data* get_obj_vis_world(struct char_data* ch, char* name,
+struct obj_data* get_obj_vis(struct char_data* ch, const char* name);
+struct obj_data* get_obj_vis_world(struct char_data* ch, const char* name,
   int* count);
 
 void extract_char(struct char_data* ch);
 
 /* Generic Find */
 
-int generic_find(char* arg, int bitvector, struct char_data* ch,
+int generic_find(const char* arg, int bitvector, struct char_data* ch,
   struct char_data** tar_ch, struct obj_data** tar_obj);
 
 #define FIND_CHAR_ROOM 1
@@ -87,11 +87,11 @@ int generic_find(char* arg, int bitvector, struct char_data* ch,
 #define FIND_OBJ_WORLD 16
 #define FIND_OBJ_EQUIP 32
 
-void append_to_string_block(struct string_block* sb, char* str);
+void append_to_string_block(struct string_block* sb, const char* str);
 void init_string_block(struct string_block* sb);
 void page_string_block(struct string_block* sb, struct char_data* ch);
 void destroy_string_block(struct string_block* sb);
-int page_file(struct descriptor_data* d, char* input);
+int page_file(struct descriptor_data* d, const char* input);
 void page_string(struct descriptor_data* d, char* str, int keep_internal);
 int get_number(char** name);
 void update_object(struct obj_data* obj, int use);

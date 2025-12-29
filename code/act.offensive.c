@@ -21,7 +21,7 @@
 #include "structs.h"
 #include "utils.h"
 
-void do_hit(struct char_data* ch, char* argument, int cmd) {
+void do_hit(struct char_data* ch, const char* argument, int cmd) {
   char arg[80];
   struct char_data* victim;
   int ch_level;
@@ -98,7 +98,7 @@ void do_hit(struct char_data* ch, char* argument, int cmd) {
   }
 }
 
-void do_kill(struct char_data* ch, char* argument, int cmd) {
+void do_kill(struct char_data* ch, const char* argument, int cmd) {
   static char arg[MAX_INPUT_LENGTH];
   struct char_data* victim;
 
@@ -129,7 +129,7 @@ void do_kill(struct char_data* ch, char* argument, int cmd) {
   }
 }
 
-void do_backstab(struct char_data* ch, char* argument, int cmd) {
+void do_backstab(struct char_data* ch, const char* argument, int cmd) {
   struct char_data* victim;
   char name[256];
   signed char percent;
@@ -216,7 +216,7 @@ void do_backstab(struct char_data* ch, char* argument, int cmd) {
   WAIT_STATE(ch, 2 * PULSE_VIOLENCE);
 }
 
-static int check_no_order(struct char_data* ch, char* msg) {
+static int check_no_order(struct char_data* ch, const char* msg) {
   struct room_data* rp;
 
   rp = real_roomp(ch->in_room);
@@ -227,7 +227,7 @@ static int check_no_order(struct char_data* ch, char* msg) {
   return 0;
 }
 
-void do_order(struct char_data* ch, char* argument, int cmd) {
+void do_order(struct char_data* ch, const char* argument, int cmd) {
   char name[100];
   char message[256];
   char buf[256];
@@ -299,7 +299,7 @@ void do_order(struct char_data* ch, char* argument, int cmd) {
   }
 }
 
-void do_flee(struct char_data* ch, char* argument, int cmd) {
+void do_flee(struct char_data* ch, const char* argument, int cmd) {
   struct obj_data* weapon;
   int i;
   int lev_check;
@@ -457,7 +457,7 @@ void do_flee(struct char_data* ch, char* argument, int cmd) {
   send_to_char("PANIC! You couldn't escape!\n\r", ch);
 }
 
-void do_bash(struct char_data* ch, char* argument, int cmd) {
+void do_bash(struct char_data* ch, const char* argument, int cmd) {
   struct char_data* victim;
   char name[256];
   signed char percent;
@@ -529,7 +529,7 @@ void do_bash(struct char_data* ch, char* argument, int cmd) {
   WAIT_STATE(ch, PULSE_VIOLENCE * 2);
 }
 
-void do_rescue(struct char_data* ch, char* argument, int cmd) {
+void do_rescue(struct char_data* ch, const char* argument, int cmd) {
   struct char_data* victim;
   struct char_data* tmp_ch;
   int percent;
@@ -613,7 +613,7 @@ void do_rescue(struct char_data* ch, char* argument, int cmd) {
   }
 }
 
-void do_assist(struct char_data* ch, char* argument, int cmd) {
+void do_assist(struct char_data* ch, const char* argument, int cmd) {
   struct char_data* victim;
   struct char_data* tmp_ch;
   char victim_name[240];
@@ -668,7 +668,7 @@ void do_assist(struct char_data* ch, char* argument, int cmd) {
   WAIT_STATE(victim, PULSE_VIOLENCE + 2); /* same as hit */
 }
 
-void do_kick(struct char_data* ch, char* argument, int cmd) {
+void do_kick(struct char_data* ch, const char* argument, int cmd) {
   struct char_data* victim;
   char name[256];
   signed char percent;
@@ -728,7 +728,7 @@ void do_kick(struct char_data* ch, char* argument, int cmd) {
   WAIT_STATE(ch, PULSE_VIOLENCE * 3);
 }
 
-void do_wimpy(struct char_data* ch, char* arg, int cmd) {
+void do_wimpy(struct char_data* ch, const char* arg, int cmd) {
   char buff[MAX_STRING_LENGTH];
 
   if (IS_NPC(ch)) {
@@ -752,7 +752,7 @@ void do_wimpy(struct char_data* ch, char* arg, int cmd) {
 const funcp bweapons[] = {cast_geyser, cast_fire_breath, cast_gas_breath,
   cast_frost_breath, cast_acid_breath, cast_lightning_breath};
 
-static void do_breath(struct char_data* ch, char* argument) {
+static void do_breath(struct char_data* ch, const char* argument) {
   struct char_data* victim;
   char buf[MAX_STRING_LENGTH];
   char name[MAX_STRING_LENGTH];
@@ -772,7 +772,7 @@ static void do_breath(struct char_data* ch, char* argument) {
   }
 
   if (count > LAST_BREATH_WEAPON) {
-    struct breather* scan;
+    const struct breather* scan;
 
     for (scan = breath_monsters;
       scan->vnum >= 0 && scan->vnum != mob_index[ch->nr].virtual; scan++) {
@@ -878,7 +878,7 @@ static void fire(struct char_data* ch, struct char_data* victim) {
   }
 }
 
-void do_fire(struct char_data* ch, char* argument, int cmd) {
+void do_fire(struct char_data* ch, const char* argument, int cmd) {
   char arg[80];
   struct char_data* victim;
 
@@ -991,7 +991,7 @@ static void shoot(struct char_data* ch, struct char_data* victim) {
   }
 }
 
-void do_shoot(struct char_data* ch, char* argument, int cmd) {
+void do_shoot(struct char_data* ch, const char* argument, int cmd) {
   char arg[80];
   struct char_data* victim;
 
@@ -1032,7 +1032,7 @@ void do_shoot(struct char_data* ch, char* argument, int cmd) {
   }
 }
 
-void do_springleap(struct char_data* ch, char* argument, int cmd) {
+void do_springleap(struct char_data* ch, const char* argument, int cmd) {
   struct char_data* victim;
   char name[256];
   signed char percent;
@@ -1113,7 +1113,7 @@ void do_springleap(struct char_data* ch, char* argument, int cmd) {
   update_pos(ch);
 }
 
-void do_quivering_palm(struct char_data* ch, char* arg, int cmd) {
+void do_quivering_palm(struct char_data* ch, const char* arg, int cmd) {
   struct char_data* victim;
   struct affected_type af;
   signed char percent;

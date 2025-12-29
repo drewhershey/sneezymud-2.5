@@ -14,7 +14,7 @@
 
 struct special_proc_entry {
     int vnum;
-    int (*proc)(struct char_data*, int, char*);
+    int (*proc)(struct char_data*, int, const char*);
 };
 
 /* ********************************************************************
@@ -832,7 +832,7 @@ void assign_mobiles(void) {
 
 struct obj_proc_entry {
     int vnum;
-    int (*proc)(struct char_data*, int, char*, struct obj_data*);
+    int (*proc)(struct char_data*, int, const char*, struct obj_data*);
 };
 
 static const struct obj_proc_entry obj_specials[] = {

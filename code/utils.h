@@ -340,7 +340,7 @@ int PreProcDam(struct char_data* ch, int type, int dam);
 int IsUndead(struct char_data* ch);
 void update_pos(struct char_data* victim);
 void die(struct char_data* ch);
-void do_look(struct char_data* ch, char* argument, int cmd);
+void do_look(struct char_data* ch, const char* argument, int cmd);
 void death_cry(struct char_data* ch);
 void zero_rent(struct char_data* ch);
 int apply_soundproof(struct char_data* ch);
@@ -350,7 +350,7 @@ void RestoreChar(struct char_data* ch);
 void RemAllAffects(struct char_data* ch);
 void sprintbit(unsigned long vektor, const char* const* names, char* result);
 int CAN_SEE_FOR_WHO(struct char_data* s, struct char_data* o);
-void do_at(struct char_data* ch, char* argument, int cmd);
+void do_at(struct char_data* ch, const char* argument, int cmd);
 int start_page_file(struct descriptor_data* d, const char* fpath,
   const char* errormsg);
 int str_cmp(const char* arg1, const char* arg2);
@@ -427,11 +427,11 @@ int MissileDamage(struct char_data* ch, struct char_data* victim, int dam,
   int attacktype);
 void stop_follower(struct char_data* ch);
 void do_start(struct char_data* ch);
-int AntiGuildMaster(struct char_data* ch, int cmd, char* arg);
+int AntiGuildMaster(struct char_data* ch, int cmd, const char* arg);
 int getabunch(const char* name, char* newname);
 int choose_exit_global(int in_room, int tgt_room, int depth);
 void LearnFromMistake(struct char_data* ch, int sknum, int silent, int max);
-int fighter(struct char_data* ch, int cmd, char* arg);
+int fighter(struct char_data* ch, int cmd, const char* arg);
 int RecCompObjNum(struct obj_data* o, int obj_num);
 int find_door(struct char_data* ch, char* type, char* dir);
 void ThrowChar(struct char_data* ch, struct char_data* v, int dir);
@@ -441,7 +441,7 @@ void CallForGuard(struct char_data* ch, struct char_data* vict, int lev,
   int area);
 void SetHunting(struct char_data* ch, struct char_data* tch);
 void make_corpse(struct char_data* ch);
-int utility_irritable(struct char_data* ch, int cmd, char* arg,
+int utility_irritable(struct char_data* ch, int cmd, const char* arg,
   mob_proc_t func);
 void mobile_wander(struct char_data* ch);
 int is_target_room_p(int room, int tgt_room);
@@ -503,7 +503,7 @@ union find_path_fn {
 
 union find_path_fn_data {
     struct hunting_data* data;
-    char* obj_name;
+    const char* obj_name;
     int target_room;
 };
 
@@ -513,7 +513,7 @@ struct find_path_data {
     union find_path_fn_data fn_data;
 };
 
-int find_path(int in_room, struct find_path_data* data, int depth, int in_zone);
+int find_path(int in_room, const struct find_path_data* data, int depth, int in_zone);
 
 typedef struct {
     void* ptr;

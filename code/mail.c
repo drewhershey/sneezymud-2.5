@@ -425,7 +425,7 @@ char* read_delete(char* recipient, char* recipient_formatted) {
 ** routines.  Written by Rasmussen (jelson@server.cs.jhu.edu) **
 **************************************************************/
 
-static void postmaster_send_mail(struct char_data* ch, char* arg) {
+static void postmaster_send_mail(struct char_data* ch, const char* arg) {
   struct char_data* mailman;
   char buf[200];
   char recipient[100] = "";
@@ -488,7 +488,7 @@ static void postmaster_send_mail(struct char_data* ch, char* arg) {
   ch->desc->max_str = MAX_MAIL_SIZE;
 }
 
-static void postmaster_check_mail(struct char_data* ch, int cmd, char* arg) {
+static void postmaster_check_mail(struct char_data* ch, int cmd, const char* arg) {
   struct char_data* mailman;
   char buf[200];
   char recipient[100] = "";
@@ -516,7 +516,7 @@ static void postmaster_check_mail(struct char_data* ch, int cmd, char* arg) {
   act(buf, 0, mailman, 0, ch, TO_VICT);
 }
 
-static void postmaster_receive_mail(struct char_data* ch, int cmd, char* arg) {
+static void postmaster_receive_mail(struct char_data* ch, int cmd, const char* arg) {
   struct char_data* mailman;
   char buf[200];
   char recipient[100] = "";
@@ -576,7 +576,7 @@ static void postmaster_receive_mail(struct char_data* ch, int cmd, char* arg) {
   }
 }
 
-int postmaster(struct char_data* ch, int cmd, char* arg) {
+int postmaster(struct char_data* ch, int cmd, const char* arg) {
   if (!ch->desc) {
     return 0; /* so mobs don't get caught here */
   }

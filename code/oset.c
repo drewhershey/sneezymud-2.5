@@ -243,8 +243,8 @@ static void set_otype(struct char_data* ch, struct obj_data* obj, char* arg) {
   send_to_char("Done.\n\r", ch);
 }
 
-static void set_oaffect(struct char_data* ch, struct obj_data* obj, char* arg,
-  int a) {
+static void set_oaffect(struct char_data* ch, struct obj_data* obj,
+  const char* arg, int a) {
   char buf1[256];
   char buf2[256];
   int type;
@@ -300,7 +300,7 @@ static void set_oaffect(struct char_data* ch, struct obj_data* obj, char* arg,
   send_to_char("Done.\n\r", ch);
 }
 
-void do_oset(struct char_data* ch, char* argument, int cmd) {
+void do_oset(struct char_data* ch, const char* argument, int cmd) {
   char arg1[256];
   char arg2[256];
   char arg3[256];

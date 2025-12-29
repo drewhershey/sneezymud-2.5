@@ -103,7 +103,7 @@ struct Board* FindBoardInRoom(int room) {
   return (nullptr);
 }
 
-int board(struct char_data* ch, int cmd, char* arg, Obj* me) {
+int board(struct char_data* ch, int cmd, const char* arg, Obj* me) {
   struct Board* nb;
 
   if (!ch) {
@@ -135,7 +135,7 @@ int board(struct char_data* ch, int cmd, char* arg, Obj* me) {
   }
 }
 
-void board_write_msg(struct char_data* ch, char* arg, struct Board* b) {
+void board_write_msg(struct char_data* ch, const char* arg, struct Board* b) {
   static char buf[100];
   long ot;
   char* otmstr;
@@ -191,7 +191,7 @@ void board_write_msg(struct char_data* ch, char* arg, struct Board* b) {
   b->msg_num++;
 }
 
-int board_remove_msg(struct char_data* ch, char* arg, struct Board* b) {
+int board_remove_msg(struct char_data* ch, const char* arg, struct Board* b) {
   int ind;
   int msg;
   char buf[256];
@@ -333,7 +333,7 @@ void error_log(const char* str) { /* The original error-handling was MUCH */
   fputs(str, stderr);
 }
 
-int board_display_msg(struct char_data* ch, char* arg, struct Board* b) {
+int board_display_msg(struct char_data* ch, const char* arg, struct Board* b) {
   char buf[512];
   char number[MAX_INPUT_LENGTH];
   char buffer[MAX_STRING_LENGTH];
@@ -368,7 +368,7 @@ int board_display_msg(struct char_data* ch, char* arg, struct Board* b) {
 
 void board_fix_long_desc(struct Board* b) {}
 
-int board_show_board(struct char_data* ch, char* arg, struct Board* b) {
+int board_show_board(struct char_data* ch, const char* arg, struct Board* b) {
   int i;
   char buf[MAX_STRING_LENGTH];
   char tmp[MAX_INPUT_LENGTH];

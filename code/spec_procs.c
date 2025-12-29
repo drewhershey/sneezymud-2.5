@@ -150,7 +150,7 @@ struct char_data* FindMobInRoomWithFunction(int room, mob_proc_t func) {
   return nullptr;
 }
 
-int AntiGuildMaster(struct char_data* ch, int cmd, char* arg) {
+int AntiGuildMaster(struct char_data* ch, int cmd, const char* arg) {
   int number;
   int i;
   int percent;
@@ -379,7 +379,7 @@ int AntiGuildMaster(struct char_data* ch, int cmd, char* arg) {
   return 0;
 }
 
-int MageGuildMaster(struct char_data* ch, int cmd, char* arg) {
+int MageGuildMaster(struct char_data* ch, int cmd, const char* arg) {
   int number;
   int i;
   int percent;
@@ -526,7 +526,7 @@ int MageGuildMaster(struct char_data* ch, int cmd, char* arg) {
   return 0;
 }
 
-int PaladinGuildMaster(struct char_data* ch, int cmd, char* arg) {
+int PaladinGuildMaster(struct char_data* ch, int cmd, const char* arg) {
   int number;
   int i;
   int percent;
@@ -750,7 +750,7 @@ int PaladinGuildMaster(struct char_data* ch, int cmd, char* arg) {
   return 0;
 }
 
-int RangerGuildMaster(struct char_data* ch, int cmd, char* arg) {
+int RangerGuildMaster(struct char_data* ch, int cmd, const char* arg) {
   int number;
   int i;
   int percent;
@@ -1009,7 +1009,7 @@ int RangerGuildMaster(struct char_data* ch, int cmd, char* arg) {
   return 0;
 }
 
-int ClericGuildMaster(struct char_data* ch, int cmd, char* arg) {
+int ClericGuildMaster(struct char_data* ch, int cmd, const char* arg) {
   int number;
   int i;
   int percent;
@@ -1148,7 +1148,7 @@ int ClericGuildMaster(struct char_data* ch, int cmd, char* arg) {
   return 0;
 }
 
-int ThiefGuildMaster(struct char_data* ch, int cmd, char* arg) {
+int ThiefGuildMaster(struct char_data* ch, int cmd, const char* arg) {
   int number;
   int i;
   int percent;
@@ -1314,7 +1314,7 @@ int ThiefGuildMaster(struct char_data* ch, int cmd, char* arg) {
   return 0;
 }
 
-int WarriorGuildMaster(struct char_data* ch, int cmd, char* arg) {
+int WarriorGuildMaster(struct char_data* ch, int cmd, const char* arg) {
   int number;
   int i;
   int percent;
@@ -1528,7 +1528,7 @@ int WarriorGuildMaster(struct char_data* ch, int cmd, char* arg) {
   return 0;
 }
 
-int no_order(struct char_data* ch, int cmd, char* arg) {
+int no_order(struct char_data* ch, int cmd, const char* arg) {
   if ((cmd == 87) || (IS_MOB(ch))) {
     return 1;
   }
@@ -1536,7 +1536,7 @@ int no_order(struct char_data* ch, int cmd, char* arg) {
   return 0;
 }
 
-int mag_room(struct char_data* ch, int cmd, char* arg) {
+int mag_room(struct char_data* ch, int cmd, const char* arg) {
   if ((cmd == 1) || (cmd == 2) || (cmd == 3) || (cmd == 4) || (cmd == 5) ||
       (cmd == 6) || (cmd == 151) || (cmd == 207)) {
     send_to_char("You are unable to escape the power of magneto!\n\r", ch);
@@ -1550,7 +1550,7 @@ int mag_room(struct char_data* ch, int cmd, char* arg) {
 #define COST_FOR_HIGHER_STATS 20000000
 #define COST_FOR_HUNGER 5000000
 
-int metahospital(struct char_data* ch, int cmd, char* arg) {
+int metahospital(struct char_data* ch, int cmd, const char* arg) {
   char buf[MAX_STRING_LENGTH];
   int i;
   int k;
@@ -1758,7 +1758,7 @@ int metahospital(struct char_data* ch, int cmd, char* arg) {
   return 0;
 }
 
-int dump(struct char_data* ch, int cmd, char* arg) {
+int dump(struct char_data* ch, int cmd, const char* arg) {
   struct obj_data* k;
   char buf[100];
   struct char_data* tmp_char;
@@ -1813,7 +1813,7 @@ value += MAX(1, MIN(50, k->obj_flags.cost/10));
   return 0;
 }
 
-int mayor(struct char_data* ch, int cmd, char* arg) {
+int mayor(struct char_data* ch, int cmd, const char* arg) {
   static char open_path[] =
     "W3a3003b33000c111d0d111Oe333333Oe22c222112212111a1S.";
 
@@ -1924,7 +1924,7 @@ int mayor(struct char_data* ch, int cmd, char* arg) {
   return 0;
 }
 
-int andy_wilcox(struct char_data* ch, int cmd, char* arg) {
+int andy_wilcox(struct char_data* ch, int cmd, const char* arg) {
 #define THE_PUB 3940
 #define ACT_OVER_21 1
 #define ACT_SNICKER 2
@@ -2178,7 +2178,7 @@ int andy_wilcox(struct char_data* ch, int cmd, char* arg) {
   return 0;
 }
 
-int eric_johnson(struct char_data* ch, int cmd, char* arg) {
+int eric_johnson(struct char_data* ch, int cmd, const char* arg) {
   /* if more than one eric johnson exists in a game, it will
      get confused because of the state variables */
 #define E_HACKING 0
@@ -2281,7 +2281,7 @@ int eric_johnson(struct char_data* ch, int cmd, char* arg) {
         break;
     }
 
-    char* s = nullptr;
+    const char* s = nullptr;
     switch (state) {
       case E_SLEEPING:
         if (time_info.hours > 9 && time_info.hours < 12) {
@@ -2417,9 +2417,9 @@ int eric_johnson(struct char_data* ch, int cmd, char* arg) {
       case E_LONG_BEER_RUN: {
         static struct char_data* andy = 0;
         int dir;
-        static char** scan;
-        static char* shopping_list[] = {"guinness", "harp", "sierra", "2.harp",
-          nullptr};
+        static const char** scan;
+        static const char* shopping_list[] = {"guinness", "harp", "sierra",
+          "2.harp", nullptr};
 
         for (temp_char = character_list; temp_char;
           temp_char = temp_char->next) {
@@ -2453,7 +2453,7 @@ int eric_johnson(struct char_data* ch, int cmd, char* arg) {
         } else {
           for (scan = shopping_list; *scan; scan++) {
             if (nullptr == get_obj_in_list_vis(eric, *scan, eric->carrying)) {
-              char* s;
+              const char* s;
               s = (scan[0][1] == '.') ? scan[0] + 2 : scan[0];
               sprintf(buf, "buy %s", s);
               command_interpreter(eric, buf);
@@ -2690,7 +2690,7 @@ static void npc_steal(struct char_data* ch, struct char_data* victim) {
   }
 }
 
-int sheriff(struct char_data* ch, int cmd, char* arg) {
+int sheriff(struct char_data* ch, int cmd, const char* arg) {
   struct obj_data* gun;
   char buf[MAX_STRING_LENGTH];
   char buf2[MAX_STRING_LENGTH];
@@ -2728,7 +2728,7 @@ int sheriff(struct char_data* ch, int cmd, char* arg) {
   return 0;
 }
 
-int bow_shooter(struct char_data* ch, int cmd, char* arg) {
+int bow_shooter(struct char_data* ch, int cmd, const char* arg) {
   struct obj_data* bow;
   char buf[MAX_STRING_LENGTH];
   char buff[MAX_STRING_LENGTH];
@@ -2766,7 +2766,7 @@ int bow_shooter(struct char_data* ch, int cmd, char* arg) {
   return 0;
 }
 
-int snake(struct char_data* ch, int cmd, char* arg) {
+int snake(struct char_data* ch, int cmd, const char* arg) {
   if (cmd || !AWAKE(ch)) {
     return 0;
   }
@@ -2786,7 +2786,7 @@ int snake(struct char_data* ch, int cmd, char* arg) {
   return 0;
 }
 
-static int ninja_master(struct char_data* ch, int cmd, char* arg) {
+static int ninja_master(struct char_data* ch, int cmd, const char* arg) {
   char buf[256];
   static const char* const n_skills[] = {
     "track",  /* No. 180 */
@@ -2930,7 +2930,7 @@ static int has_object(struct char_data* ch, int ob_num) {
 
 #define PG_SHIELD 25100
 
-int PaladinGuildGuard(struct char_data* ch, int cmd, char* arg) {
+int PaladinGuildGuard(struct char_data* ch, int cmd, const char* arg) {
   if (cmd || !AWAKE(ch)) {
     return 0;
   }
@@ -2953,7 +2953,7 @@ int PaladinGuildGuard(struct char_data* ch, int cmd, char* arg) {
   return 0;
 }
 
-int AbyssGateKeeper(struct char_data* ch, int cmd, char* arg) {
+int AbyssGateKeeper(struct char_data* ch, int cmd, const char* arg) {
   if (cmd || !AWAKE(ch)) {
     return 0;
   }
@@ -2974,7 +2974,7 @@ int AbyssGateKeeper(struct char_data* ch, int cmd, char* arg) {
   return 0;
 }
 
-int blink(struct char_data* ch, int cmd, char* arg) {
+int blink(struct char_data* ch, int cmd, const char* arg) {
   if (cmd || !AWAKE(ch)) {
     return 0;
   }
@@ -2987,7 +2987,7 @@ int blink(struct char_data* ch, int cmd, char* arg) {
   return 0;
 }
 
-int MidgaardCitizen(struct char_data* ch, int cmd, char* arg) {
+int MidgaardCitizen(struct char_data* ch, int cmd, const char* arg) {
   if (cmd || !AWAKE(ch)) {
     return 0;
   }
@@ -3014,7 +3014,7 @@ int MidgaardCitizen(struct char_data* ch, int cmd, char* arg) {
   return 0;
 }
 
-int ghoul(struct char_data* ch, int cmd, char* arg) {
+int ghoul(struct char_data* ch, int cmd, const char* arg) {
   struct char_data* tar;
 
   if (cmd || !AWAKE(ch)) {
@@ -3037,7 +3037,7 @@ int ghoul(struct char_data* ch, int cmd, char* arg) {
   return 0;
 }
 
-int CarrionCrawler(struct char_data* ch, int cmd, char* arg) {
+int CarrionCrawler(struct char_data* ch, int cmd, const char* arg) {
   struct char_data* tar;
   int i;
 
@@ -3062,7 +3062,7 @@ int CarrionCrawler(struct char_data* ch, int cmd, char* arg) {
   return 0;
 }
 
-int WizardGuard(struct char_data* ch, int cmd, char* arg) {
+int WizardGuard(struct char_data* ch, int cmd, const char* arg) {
   struct char_data* tch;
   struct char_data* evil;
   int max_evil;
@@ -3099,7 +3099,7 @@ int WizardGuard(struct char_data* ch, int cmd, char* arg) {
   return 0;
 }
 
-int vampire(struct char_data* ch, int cmd, char* arg) {
+int vampire(struct char_data* ch, int cmd, const char* arg) {
   if (cmd || !AWAKE(ch)) {
     return 0;
   }
@@ -3120,7 +3120,7 @@ int vampire(struct char_data* ch, int cmd, char* arg) {
   return 0;
 }
 
-int arch_vampire(struct char_data* ch, int cmd, char* arg) {
+int arch_vampire(struct char_data* ch, int cmd, const char* arg) {
   if (cmd || !AWAKE(ch)) {
     return 0;
   }
@@ -3141,7 +3141,7 @@ int arch_vampire(struct char_data* ch, int cmd, char* arg) {
   return 0;
 }
 
-int wraith(struct char_data* ch, int cmd, char* arg) {
+int wraith(struct char_data* ch, int cmd, const char* arg) {
   if (cmd || !AWAKE(ch)) {
     return 0;
   }
@@ -3157,7 +3157,7 @@ int wraith(struct char_data* ch, int cmd, char* arg) {
   return 0;
 }
 
-int shadow(struct char_data* ch, int cmd, char* arg) {
+int shadow(struct char_data* ch, int cmd, const char* arg) {
   if (cmd || !AWAKE(ch)) {
     return 0;
   }
@@ -3177,7 +3177,7 @@ int shadow(struct char_data* ch, int cmd, char* arg) {
   return 0;
 }
 
-int geyser(struct char_data* ch, int cmd, char* arg) {
+int geyser(struct char_data* ch, int cmd, const char* arg) {
   if (cmd || !AWAKE(ch)) {
     return 0;
   }
@@ -3190,7 +3190,7 @@ int geyser(struct char_data* ch, int cmd, char* arg) {
   return 0;
 }
 
-int green_slime(struct char_data* ch, int cmd, char* arg) {
+int green_slime(struct char_data* ch, int cmd, const char* arg) {
   struct char_data* cons;
 
   if (cmd || !AWAKE(ch)) {
@@ -3343,9 +3343,9 @@ const struct breather breath_monsters[] = {
   {-1},
 };
 
-int BreathWeapon(struct char_data* ch, int cmd, char* arg) {
+int BreathWeapon(struct char_data* ch, int cmd, const char* arg) {
   char buf[MAX_STRING_LENGTH];
-  struct breather* scan;
+  const struct breather* scan;
   int count;
 
   if (cmd) {
@@ -3383,13 +3383,13 @@ int BreathWeapon(struct char_data* ch, int cmd, char* arg) {
   return 1;
 }
 
-int DracoLich(struct char_data* ch, int cmd, char* arg) { return 0; }
+int DracoLich(struct char_data* ch, int cmd, const char* arg) { return 0; }
 
-int Drow(struct char_data* ch, int cmd, char* arg) { return 0; }
+int Drow(struct char_data* ch, int cmd, const char* arg) { return 0; }
 
-int Leader(struct char_data* ch, int cmd, char* arg) { return 0; }
+int Leader(struct char_data* ch, int cmd, const char* arg) { return 0; }
 
-int thief(struct char_data* ch, int cmd, char* arg) {
+int thief(struct char_data* ch, int cmd, const char* arg) {
   struct char_data* cons;
 
   if (cmd || !AWAKE(ch)) {
@@ -3514,7 +3514,7 @@ static int summoner(struct char_data* ch, int cmd) {
   return 0;
 }
 
-int nightcrawler(struct char_data* ch, int cmd, char* arg) {
+int nightcrawler(struct char_data* ch, int cmd, const char* arg) {
   struct char_data* vict;
   char buf[200];
 
@@ -3606,7 +3606,7 @@ static struct char_data* find_mob_diff_zone_same_race(struct char_data* ch) {
   return (0);
 }
 
-int magic_user(struct char_data* ch, int cmd, char* arg) {
+int magic_user(struct char_data* ch, int cmd, const char* arg) {
   struct char_data* vict = nullptr;
   struct room_data* rp;
   signed char lspell;
@@ -3965,7 +3965,7 @@ int magic_user(struct char_data* ch, int cmd, char* arg) {
   return 1;
 }
 
-int cleric(struct char_data* ch, int cmd, char* arg) {
+int cleric(struct char_data* ch, int cmd, const char* arg) {
   struct char_data* vict;
   signed char lspell;
   signed char healperc = 0;
@@ -4189,7 +4189,7 @@ static int check_for_blocked_move(struct char_data* ch, int cmd, int room,
   return 0;
 }
 
-int guild_guard(struct char_data* ch, int cmd, char* arg) {
+int guild_guard(struct char_data* ch, int cmd, const char* arg) {
   if (!cmd) {
     if (ch->specials.fighting) {
       return (fighter(ch, cmd, arg));
@@ -4223,7 +4223,7 @@ int guild_guard(struct char_data* ch, int cmd, char* arg) {
   return 0;
 }
 
-int Inquisitor(struct char_data* ch, int cmd, char* arg) {
+int Inquisitor(struct char_data* ch, int cmd, const char* arg) {
   if (cmd || !AWAKE(ch)) {
     return 0;
   }
@@ -4234,7 +4234,7 @@ int Inquisitor(struct char_data* ch, int cmd, char* arg) {
   return 0;
 }
 
-int puff(struct char_data* ch, int cmd, char* arg) {
+int puff(struct char_data* ch, int cmd, const char* arg) {
   struct char_data* i;
   struct char_data* tmp;
   struct char_data* tmp_ch;
@@ -4529,7 +4529,7 @@ int puff(struct char_data* ch, int cmd, char* arg) {
   return 0; /* unreachable, but silences warning */
 }
 
-int regenerator(struct char_data* ch, int cmd, char* arg) {
+int regenerator(struct char_data* ch, int cmd, const char* arg) {
   if (cmd) {
     return 0;
   }
@@ -4544,7 +4544,7 @@ int regenerator(struct char_data* ch, int cmd, char* arg) {
   return 0;
 }
 
-int mega_regenerator(struct char_data* ch, int cmd, char* arg) {
+int mega_regenerator(struct char_data* ch, int cmd, const char* arg) {
   if (cmd) {
     return 0;
   }
@@ -4559,7 +4559,7 @@ int mega_regenerator(struct char_data* ch, int cmd, char* arg) {
   return 0;
 }
 
-int replicant(struct char_data* ch, int cmd, char* arg) {
+int replicant(struct char_data* ch, int cmd, const char* arg) {
   struct char_data* mob;
 
   if (cmd) {
@@ -4584,7 +4584,7 @@ int replicant(struct char_data* ch, int cmd, char* arg) {
 #define TYT_TELL 3
 #define TYT_HIT 4
 
-int Tytan(struct char_data* ch, int cmd, char* arg) {
+int Tytan(struct char_data* ch, int cmd, const char* arg) {
   struct char_data* vict;
 
   if (cmd || !AWAKE(ch)) {
@@ -4661,7 +4661,7 @@ int Tytan(struct char_data* ch, int cmd, char* arg) {
   return 0;
 }
 
-int AbbarachDragon(struct char_data* ch, int cmd, char* arg) {
+int AbbarachDragon(struct char_data* ch, int cmd, const char* arg) {
   struct char_data* targ;
 
   if (cmd || !AWAKE(ch)) {
@@ -4681,7 +4681,7 @@ int AbbarachDragon(struct char_data* ch, int cmd, char* arg) {
   return 0;
 }
 
-int fido(struct char_data* ch, int cmd, char* arg) {
+int fido(struct char_data* ch, int cmd, const char* arg) {
   register struct obj_data* i;
   register struct obj_data* temp;
   register struct obj_data* next_obj;
@@ -4728,7 +4728,7 @@ int fido(struct char_data* ch, int cmd, char* arg) {
   return 0;
 }
 
-int janitor(struct char_data* ch, int cmd, char* arg) {
+int janitor(struct char_data* ch, int cmd, const char* arg) {
   struct obj_data* i;
   struct obj_data* temp;
   struct obj_data* next_obj;
@@ -4751,7 +4751,7 @@ int janitor(struct char_data* ch, int cmd, char* arg) {
   return 0;
 }
 
-int tormentor(struct char_data* ch, int cmd, char* arg) {
+int tormentor(struct char_data* ch, int cmd, const char* arg) {
   if (!cmd) {
     return 0;
   }
@@ -4767,7 +4767,7 @@ int tormentor(struct char_data* ch, int cmd, char* arg) {
   return 1;
 }
 
-int magneto(struct char_data* ch, int cmd, char* arg) {
+int magneto(struct char_data* ch, int cmd, const char* arg) {
   struct char_data* victim;
   struct obj_data* finger;
   struct obj_data* neck;
@@ -4856,7 +4856,7 @@ int magneto(struct char_data* ch, int cmd, char* arg) {
   return 0;
 }
 
-int RustMonster(struct char_data* ch, int cmd, char* arg) {
+int RustMonster(struct char_data* ch, int cmd, const char* arg) {
   struct char_data* vict;
   struct obj_data* t_item;
   int t_pos;
@@ -4909,7 +4909,7 @@ int RustMonster(struct char_data* ch, int cmd, char* arg) {
   }
 }
 
-int temple_labrynth_liar(struct char_data* ch, int cmd, char* arg) {
+int temple_labrynth_liar(struct char_data* ch, int cmd, const char* arg) {
   if (cmd || !AWAKE(ch)) {
     return (0);
   }
@@ -4954,7 +4954,7 @@ int temple_labrynth_liar(struct char_data* ch, int cmd, char* arg) {
   }
 }
 
-int temple_labrynth_sentry(struct char_data* ch, int cmd, char* arg) {
+int temple_labrynth_sentry(struct char_data* ch, int cmd, const char* arg) {
   struct char_data* tch;
   int counter;
 
@@ -5041,7 +5041,7 @@ static int whirlwind(struct char_data* ch, int cmd) {
 #define NN_FOLLOW 1
 #define NN_STOP 2
 
-int NudgeNudge(struct char_data* ch, int cmd, char* arg) {
+int NudgeNudge(struct char_data* ch, int cmd, const char* arg) {
   struct char_data* vict;
 
   if (cmd || !AWAKE(ch)) {
@@ -5164,7 +5164,7 @@ int NudgeNudge(struct char_data* ch, int cmd, char* arg) {
   return 0;
 }
 
-int AGGRESSIVE(struct char_data* ch, int cmd, char* arg) {
+int AGGRESSIVE(struct char_data* ch, int cmd, const char* arg) {
   struct char_data* i;
   struct char_data* next;
 
@@ -5185,7 +5185,7 @@ int AGGRESSIVE(struct char_data* ch, int cmd, char* arg) {
   return 0;
 }
 
-int citizen(struct char_data* ch, int cmd, char* arg) {
+int citizen(struct char_data* ch, int cmd, const char* arg) {
   if (cmd || !AWAKE(ch)) {
     return 0;
   }
@@ -5206,7 +5206,7 @@ int citizen(struct char_data* ch, int cmd, char* arg) {
   return 0;
 }
 
-int aunt_bee(struct char_data* ch, int cmd, char* arg) {
+int aunt_bee(struct char_data* ch, int cmd, const char* arg) {
   struct char_data* tch;
   struct char_data* evil;
   struct char_data* i;
@@ -5228,7 +5228,7 @@ int aunt_bee(struct char_data* ch, int cmd, char* arg) {
   return 0;
 }
 
-int cityguard(struct char_data* ch, int cmd, char* arg) {
+int cityguard(struct char_data* ch, int cmd, const char* arg) {
   struct char_data* tch;
   struct char_data* evil;
   struct char_data* i;
@@ -5326,7 +5326,7 @@ static int room_of_object(struct obj_data* obj) {
 
 int is_target_room_p(int room, int tgt_room) { return room == tgt_room; }
 
-int Ringwraith(struct char_data* ch, int cmd, char* arg) {
+int Ringwraith(struct char_data* ch, int cmd, const char* arg) {
   static char buf[256];
   struct char_data* victim;
   static int quantrings = -1;
@@ -5481,7 +5481,7 @@ int Ringwraith(struct char_data* ch, int cmd, char* arg) {
   return 1;
 }
 
-static int warren_guard(struct char_data* ch, int cmd, char* arg) {
+static int warren_guard(struct char_data* ch, int cmd, const char* arg) {
   struct char_data* tch;
   struct char_data* good;
   struct char_data* i;
@@ -5607,7 +5607,7 @@ static const struct find_path_data find_corpse_on_ground = {
 #define ZM_MANA 10
 #define ZM_NEMESIS 3060
 
-int zombie_master(struct char_data* ch, int cmd, char* arg) {
+int zombie_master(struct char_data* ch, int cmd, const char* arg) {
   struct obj_data* temp1;
   struct char_data* zmaster;
   char buf[240];
@@ -5701,7 +5701,7 @@ int zombie_master(struct char_data* ch, int cmd, char* arg) {
   return 0;
 }
 
-int pet_shops(struct char_data* ch, int cmd, char* arg) {
+int pet_shops(struct char_data* ch, int cmd, const char* arg) {
   char buf[MAX_STRING_LENGTH];
   char pet_name[256];
   int pet_room;
@@ -5767,7 +5767,7 @@ int pet_shops(struct char_data* ch, int cmd, char* arg) {
   return 0;
 }
 
-int Fountain(struct char_data* ch, int cmd, char* arg) {
+int Fountain(struct char_data* ch, int cmd, const char* arg) {
   int bits;
   int water;
   int level;
@@ -5840,7 +5840,7 @@ int Fountain(struct char_data* ch, int cmd, char* arg) {
   return 0;
 }
 
-int bank(struct char_data* ch, int cmd, char* arg) {
+int bank(struct char_data* ch, int cmd, const char* arg) {
   static char buf[256];
   int money;
 
@@ -5986,7 +5986,7 @@ You roll and tumble through endless voids for what seems like eternity...\n\r\
 \n\r\
 After a time, a new reality comes into focus... you are elsewhere.\n\r"
 
-int vorpal(Mob* victim, int cmd, char* arg, Obj* me) {
+int vorpal(Mob* victim, int cmd, const char* arg, Obj* me) {
   struct char_data* ch;
   int exp;
   int vhit;
@@ -6043,7 +6043,7 @@ int vorpal(Mob* victim, int cmd, char* arg, Obj* me) {
   return 0;
 }
 
-static int chalice(struct char_data* ch, int cmd, char* arg) {
+static int chalice(struct char_data* ch, int cmd, const char* arg) {
   struct obj_data* chalice;
   char buf1[MAX_INPUT_LENGTH];
   char buf2[MAX_INPUT_LENGTH];
@@ -6110,7 +6110,7 @@ static int chalice(struct char_data* ch, int cmd, char* arg) {
   }
 }
 
-static int kings_hall(struct char_data* ch, int cmd, char* arg) {
+static int kings_hall(struct char_data* ch, int cmd, const char* arg) {
   if (cmd != 176) {
     return (0);
   }
@@ -6130,9 +6130,9 @@ static int kings_hall(struct char_data* ch, int cmd, char* arg) {
 /*
 **  donation room
 */
-int Donation(struct char_data* ch, int cmd, char* arg) {
+int Donation(struct char_data* ch, int cmd, const char* arg) {
   char check[40];
-  char* tmp;
+  const char* tmp;
 
   if ((cmd != 10) && (cmd != 167)) {
     return 0;
@@ -6149,7 +6149,7 @@ int Donation(struct char_data* ch, int cmd, char* arg) {
   return 0;
 }
 
-int hospital(struct char_data* ch, int cmd, char* arg) {
+int hospital(struct char_data* ch, int cmd, const char* arg) {
   char buf[MAX_STRING_LENGTH];
   int k;
   int opt;
@@ -6199,7 +6199,7 @@ int hospital(struct char_data* ch, int cmd, char* arg) {
   return 0;
 }
 
-int hospital_entrance(struct char_data* ch, int cmd, char* arg) {
+int hospital_entrance(struct char_data* ch, int cmd, const char* arg) {
   char buf[100];
   struct room_data* rm = 0;
   struct room_data* rp = 0;
@@ -6217,7 +6217,7 @@ int hospital_entrance(struct char_data* ch, int cmd, char* arg) {
   return 0;
 }
 
-int board_room_entrance(struct char_data* ch, int cmd, char* arg) {
+int board_room_entrance(struct char_data* ch, int cmd, const char* arg) {
   char buf[100];
   struct room_data* rm = 0;
   struct room_data* rp = 0;
@@ -6239,7 +6239,7 @@ int board_room_entrance(struct char_data* ch, int cmd, char* arg) {
   return 0;
 }
 
-int mirror_room(struct char_data* ch, int cmd, char* arg) {
+int mirror_room(struct char_data* ch, int cmd, const char* arg) {
   char buf[100];
   char name[100];
   int to_room;
@@ -6280,7 +6280,7 @@ int mirror_room(struct char_data* ch, int cmd, char* arg) {
   house routine for saved items.
 */
 
-int House(struct char_data* ch, int cmd, char* arg) {
+int House(struct char_data* ch, int cmd, const char* arg) {
   char buf[100];
   struct char_data* mob;
   struct obj_cost cost;
@@ -6352,7 +6352,7 @@ static void fighter_move(struct char_data* ch) {
    monster currently in the section is 14th.  It should require a fairly
    large party to sweep the section. */
 
-int sisyphus(struct char_data* ch, int cmd, char* arg) {
+int sisyphus(struct char_data* ch, int cmd, const char* arg) {
   if (cmd) {
     if (cmd <= 6 && cmd >= 1 && !IS_NPC(ch)) {
       send_to_char("Sisyphus looks at you\n\r", ch);
@@ -6383,7 +6383,7 @@ int sisyphus(struct char_data* ch, int cmd, char* arg) {
   return 0;
 } /* end sisyphus */
 
-int jabberwocky(struct char_data* ch, int cmd, char* arg) {
+int jabberwocky(struct char_data* ch, int cmd, const char* arg) {
   if (cmd) {
     return 0;
   }
@@ -6399,7 +6399,7 @@ int jabberwocky(struct char_data* ch, int cmd, char* arg) {
   return 0;
 }
 
-int flame(struct char_data* ch, int cmd, char* arg) {
+int flame(struct char_data* ch, int cmd, const char* arg) {
   if (cmd) {
     return 0;
   }
@@ -6414,7 +6414,7 @@ int flame(struct char_data* ch, int cmd, char* arg) {
   return 0;
 }
 
-int banana(struct char_data* ch, int cmd, char* arg) {
+int banana(struct char_data* ch, int cmd, const char* arg) {
   if (!cmd) {
     return 0;
   }
@@ -6433,7 +6433,7 @@ int banana(struct char_data* ch, int cmd, char* arg) {
   return 0;
 }
 
-int paramedics(struct char_data* ch, int cmd, char* arg) {
+int paramedics(struct char_data* ch, int cmd, const char* arg) {
   struct char_data* vict;
   struct char_data* most_hurt;
 
@@ -6484,7 +6484,7 @@ int paramedics(struct char_data* ch, int cmd, char* arg) {
   return 0;
 }
 
-static char* elf_comm[] = {"wake", "yawn", "stand", "say Well, back to work.",
+static const char* elf_comm[] = {"wake", "yawn", "stand", "say Well, back to work.",
   "get all", "eat bread", "wink", "w", "w", "s", "s", "s", "d", "open gate",
   "e",                                             /* home to gate*/
   "close gate", "e", "e", "e", "e", "n", "w", "n", /* gate to baker */
@@ -6498,7 +6498,7 @@ static char* elf_comm[] = {"wake", "yawn", "stand", "say Well, back to work.",
   "e", /* to home */
   "say Whew, I'm exhausted.", "rest", "$"};
 
-int delivery_elf(struct char_data* ch, int cmd, char* arg) {
+int delivery_elf(struct char_data* ch, int cmd, const char* arg) {
 #define ELF_INIT 0
 #define ELF_RESTING 1
 #define ELF_GETTING 2
@@ -6633,7 +6633,7 @@ int delivery_elf(struct char_data* ch, int cmd, char* arg) {
   }
 }
 
-int delivery_beast(struct char_data* ch, int cmd, char* arg) {
+int delivery_beast(struct char_data* ch, int cmd, const char* arg) {
   struct obj_data* o;
 
   if (cmd) {
@@ -6659,7 +6659,7 @@ int delivery_beast(struct char_data* ch, int cmd, char* arg) {
   return 0;
 }
 
-int Keftab(struct char_data* ch, int cmd, char* arg) {
+int Keftab(struct char_data* ch, int cmd, const char* arg) {
   int found;
   int targ_item;
   struct char_data* i;
@@ -6708,7 +6708,7 @@ int Keftab(struct char_data* ch, int cmd, char* arg) {
   return 0;
 }
 
-int StormGiant(struct char_data* ch, int cmd, char* arg) {
+int StormGiant(struct char_data* ch, int cmd, const char* arg) {
   struct char_data* vict;
 
   if (cmd) {
@@ -6739,9 +6739,9 @@ int StormGiant(struct char_data* ch, int cmd, char* arg) {
   return 0;
 }
 
-int Manticore(struct char_data* ch, int cmd, char* arg) { return 0; }
+int Manticore(struct char_data* ch, int cmd, const char* arg) { return 0; }
 
-int Kraken(struct char_data* ch, int cmd, char* arg) { return 0; }
+int Kraken(struct char_data* ch, int cmd, const char* arg) { return 0; }
 
 static int get_dam_bonus(struct obj_data* w) {
   int j;
@@ -6899,7 +6899,7 @@ out with the old, in with the new
   return 0;
 }
 
-int fighter(struct char_data* ch, int cmd, char* arg) {
+int fighter(struct char_data* ch, int cmd, const char* arg) {
   if (cmd || !AWAKE(ch)) {
     return 0;
   }
@@ -6915,7 +6915,7 @@ int fighter(struct char_data* ch, int cmd, char* arg) {
   return 0;
 }
 
-int web_slinger(struct char_data* ch, int cmd, char* arg) {
+int web_slinger(struct char_data* ch, int cmd, const char* arg) {
   struct char_data* victim;
 
   if (cmd || !AWAKE(ch)) {
@@ -6931,7 +6931,7 @@ int web_slinger(struct char_data* ch, int cmd, char* arg) {
   return 0;
 }
 
-int juggernaut(struct char_data* ch, int cmd, char* arg) {
+int juggernaut(struct char_data* ch, int cmd, const char* arg) {
   struct char_data* victim;
   int dam;
 
@@ -6983,7 +6983,7 @@ static void bouncer_throw(struct char_data* ch) {
   }
 }
 
-int prof_x(struct char_data* ch, int cmd, char* arg) {
+int prof_x(struct char_data* ch, int cmd, const char* arg) {
   struct char_data* victim;
   struct affected_type af;
   int num;
@@ -7101,7 +7101,7 @@ int prof_x(struct char_data* ch, int cmd, char* arg) {
   return 0;
 }
 
-int elektro(struct char_data* ch, int cmd, char* arg) {
+int elektro(struct char_data* ch, int cmd, const char* arg) {
   struct char_data* victim;
   struct char_data* tmp_victim;
   struct char_data* temp;
@@ -7127,7 +7127,7 @@ int elektro(struct char_data* ch, int cmd, char* arg) {
   return 0;
 }
 
-int iceman(struct char_data* ch, int cmd, char* arg) {
+int iceman(struct char_data* ch, int cmd, const char* arg) {
   struct char_data* victim;
   int dam;
   char buf[200];
@@ -7174,7 +7174,7 @@ static int cyclops(struct char_data* ch, int cmd, const char* arg) {
   return 0;
 }
 
-int storm(struct char_data* ch, int cmd, char* arg) {
+int storm(struct char_data* ch, int cmd, const char* arg) {
   struct char_data* victim;
   struct char_data* tmp_victim;
   struct char_data* temp;
@@ -7266,7 +7266,7 @@ int storm(struct char_data* ch, int cmd, char* arg) {
 #define NTMSUSP 14
 #define NTM_FIX 15
 
-int NewThalosMayor(struct char_data* ch, int cmd, char* arg) {
+int NewThalosMayor(struct char_data* ch, int cmd, const char* arg) {
   if (cmd || !AWAKE(ch)) {
     return 0;
   }
@@ -7500,7 +7500,7 @@ int NewThalosMayor(struct char_data* ch, int cmd, char* arg) {
   return 0;
 }
 
-int SultanGuard(struct char_data* ch, int cmd, char* arg) {
+int SultanGuard(struct char_data* ch, int cmd, const char* arg) {
   struct char_data* tch;
   struct char_data* evil;
   struct char_data* i;
@@ -7559,7 +7559,7 @@ int SultanGuard(struct char_data* ch, int cmd, char* arg) {
   return 0;
 }
 
-int NewThalosCitizen(struct char_data* ch, int cmd, char* arg) {
+int NewThalosCitizen(struct char_data* ch, int cmd, const char* arg) {
   if (cmd || !AWAKE(ch)) {
     return 0;
   }
@@ -7586,7 +7586,7 @@ int NewThalosCitizen(struct char_data* ch, int cmd, char* arg) {
   return 0;
 }
 
-int NewThalosGuildGuard(struct char_data* ch, int cmd, char* arg) {
+int NewThalosGuildGuard(struct char_data* ch, int cmd, const char* arg) {
   if (!cmd) {
     if (ch->specials.fighting) {
       return (fighter(ch, cmd, arg));
@@ -7616,7 +7616,7 @@ int NewThalosGuildGuard(struct char_data* ch, int cmd, char* arg) {
 New improved magic_user
 */
 
-int magic_user2(struct char_data* ch, int cmd, char* arg) {
+int magic_user2(struct char_data* ch, int cmd, const char* arg) {
   struct char_data* vict;
   signed char lspell;
 
@@ -7722,7 +7722,7 @@ int magic_user2(struct char_data* ch, int cmd, char* arg) {
 
 /******************Mordilnia citizens************************************/
 
-int MordGuard(struct char_data* ch, int cmd, char* arg) {
+int MordGuard(struct char_data* ch, int cmd, const char* arg) {
   struct char_data* tch;
   struct char_data* evil;
   struct char_data* i;
@@ -7781,7 +7781,7 @@ int MordGuard(struct char_data* ch, int cmd, char* arg) {
   return 0;
 }
 
-static int mord_citizen(struct char_data* ch, int cmd, char* arg) {
+static int mord_citizen(struct char_data* ch, int cmd, const char* arg) {
   if (cmd || !AWAKE(ch)) {
     return 0;
   }
@@ -7808,7 +7808,7 @@ static int mord_citizen(struct char_data* ch, int cmd, char* arg) {
   return 0;
 }
 
-int MordGuildGuard(struct char_data* ch, int cmd, char* arg) {
+int MordGuildGuard(struct char_data* ch, int cmd, const char* arg) {
   if (!cmd) {
     if (ch->specials.fighting) {
       return (fighter(ch, cmd, arg));
@@ -7836,15 +7836,15 @@ int MordGuildGuard(struct char_data* ch, int cmd, char* arg) {
   return 0;
 }
 
-int Devil(struct char_data* ch, int cmd, char* arg) {
+int Devil(struct char_data* ch, int cmd, const char* arg) {
   return (magic_user(ch, cmd, arg));
 }
 
-int Demon(struct char_data* ch, int cmd, char* arg) {
+int Demon(struct char_data* ch, int cmd, const char* arg) {
   return (magic_user(ch, cmd, arg));
 }
 
-int CaravanGuildGuard(struct char_data* ch, int cmd, char* arg) {
+int CaravanGuildGuard(struct char_data* ch, int cmd, const char* arg) {
   if (!cmd) {
     if (ch->specials.fighting) {
       return (fighter(ch, cmd, arg));
@@ -7872,7 +7872,7 @@ int CaravanGuildGuard(struct char_data* ch, int cmd, char* arg) {
   return 0;
 }
 
-int StatTeller(struct char_data* ch, int cmd, char* arg) {
+int StatTeller(struct char_data* ch, int cmd, const char* arg) {
   int choice;
   char buf[200];
 
@@ -7967,7 +7967,7 @@ void ThrowChar(struct char_data* ch, struct char_data* v, int dir) {
   }
 }
 
-int ThrowerMob(struct char_data* ch, int cmd, char* arg) {
+int ThrowerMob(struct char_data* ch, int cmd, const char* arg) {
   struct char_data* vict;
 
   /*
@@ -8075,12 +8075,12 @@ Tyrannosaurus_swallower(struct char_data *ch, char *arg, ind cmd)
 }
 #endif
 
-int soap(Mob* ch, int cmd, char* arg, Obj* me) {
+int soap(Mob* ch, int cmd, const char* arg, Obj* me) {
   struct char_data* t;
   struct obj_data* obj;
   char dummy[80];
   char name[80];
-  int (*wash)(Mob*, int, char*, Obj*);
+  int (*wash)(Mob*, int, const char*, Obj*);
 
   wash = soap;
 
@@ -8125,7 +8125,7 @@ int soap(Mob* ch, int cmd, char* arg, Obj* me) {
   return 0;
 }
 
-int nodrop(Mob* ch, int cmd, char* arg, Obj* me) {
+int nodrop(Mob* ch, int cmd, const char* arg, Obj* me) {
   struct char_data* t = nullptr;
   struct obj_data* obj;
   struct obj_data* i;
@@ -8136,7 +8136,7 @@ int nodrop(Mob* ch, int cmd, char* arg, Obj* me) {
   char do_all;
   int j;
   int num;
-  int (*knowdrop)(Mob*, int, char*, Obj*);
+  int (*knowdrop)(Mob*, int, const char*, Obj*);
 
   switch (cmd) {
     case 10:  /* Get */
@@ -8383,7 +8383,7 @@ static struct mob_act_lattimore* get_lattimore_mem(struct char_data* ch) {
   return &ch->act_ptr->data.lattimore;
 }
 
-int lattimore(struct char_data* ch, int cmd, char* arg) {
+int lattimore(struct char_data* ch, int cmd, const char* arg) {
   assert(ch && "ch cannot be nullptr");
   assert((!ch->act_ptr || ch->act_ptr->type == MOB_ACT_LATTIMORE) &&
          "ch->act_ptr should be nullptr or of type MOB_ACT_LATTIMORE");
@@ -8773,7 +8773,7 @@ int lattimore(struct char_data* ch, int cmd, char* arg) {
 
 /* Returns the index to the dude who did it */
 
-int coldcaster(struct char_data* ch, int cmd, char* arg) {
+int coldcaster(struct char_data* ch, int cmd, const char* arg) {
   struct char_data* vict;
   signed char lspell;
 
@@ -8818,7 +8818,7 @@ int coldcaster(struct char_data* ch, int cmd, char* arg) {
   return 1;
 }
 
-int trapper(struct char_data* ch, int cmd, char* arg) {
+int trapper(struct char_data* ch, int cmd, const char* arg) {
   struct char_data* tch;
 
   if (cmd || !AWAKE(ch)) {
@@ -8864,7 +8864,7 @@ int trapper(struct char_data* ch, int cmd, char* arg) {
   return 1;
 }
 
-int trogcook(struct char_data* ch, int cmd, char* arg) {
+int trogcook(struct char_data* ch, int cmd, const char* arg) {
   struct char_data* tch;
   struct obj_data* corpse;
   char buf[MAX_INPUT_LENGTH];
@@ -8903,7 +8903,7 @@ int trogcook(struct char_data* ch, int cmd, char* arg) {
   return 0;
 }
 
-int shaman(struct char_data* ch, int cmd, char* arg) {
+int shaman(struct char_data* ch, int cmd, const char* arg) {
 #define DEITY 21124
 #define DEITY_NAME "golgar"
   struct char_data* god;
@@ -8938,7 +8938,7 @@ int shaman(struct char_data* ch, int cmd, char* arg) {
   return 0;
 }
 
-int golgar(struct char_data* ch, int cmd, char* arg) {
+int golgar(struct char_data* ch, int cmd, const char* arg) {
 #define SHAMAN_NAME "shaman"
   struct char_data* shaman;
   struct char_data* tch;
@@ -8981,7 +8981,7 @@ int golgar(struct char_data* ch, int cmd, char* arg) {
   return 0;
 }
 
-int troguard(struct char_data* ch, int cmd, char* arg) {
+int troguard(struct char_data* ch, int cmd, const char* arg) {
   struct char_data* tch;
   struct char_data* good;
   struct char_data* i;
@@ -9036,7 +9036,7 @@ int troguard(struct char_data* ch, int cmd, char* arg) {
   return 0;
 }
 
-int keystone(struct char_data* ch, int cmd, char* arg) {
+int keystone(struct char_data* ch, int cmd, const char* arg) {
 #define START_ROOM 21276
 #define END_ROOM 21333
 #define GHOST_SOLDIER 21138
@@ -9095,13 +9095,13 @@ int keystone(struct char_data* ch, int cmd, char* arg) {
   return 0;
 }
 
-int ghostsoldier(struct char_data* ch, int cmd, char* arg) {
+int ghostsoldier(struct char_data* ch, int cmd, const char* arg) {
   struct char_data* tch;
   struct char_data* good;
   struct char_data* master;
   int max_good;
-  int (*gs)(struct char_data*, int, char*);
-  int (*gc)(struct char_data*, int, char*);
+  int (*gs)(struct char_data*, int, const char*);
+  int (*gc)(struct char_data*, int, const char*);
 
   gs = ghostsoldier;
   gc = keystone;
@@ -9161,14 +9161,14 @@ int ghostsoldier(struct char_data* ch, int cmd, char* arg) {
   return 0;
 }
 
-char* quest_one[] = {"The second artifact you must find is the ring of Tlanic.",
+static const char* quest_one[] = {"The second artifact you must find is the ring of Tlanic.",
   "Tlanic was an elven warrior who left Rhyodin five years after",
   "Lorces; he also was given an artifact to aid him.",
   "He went to find out what happened to Lorces, his friend, and to",
   "find a way to the north if he could.",
   "He also failed. Return the ring to me for further instructions."};
 
-char* quest_two[] = {
+static const char* quest_two[] = {
   "When Tlanic had been gone for many moons; his brother Evistar",
   "went to find him.",
   "Evistar, unlike his brother, was not a great warrior, but he was",
@@ -9177,14 +9177,14 @@ char* quest_two[] = {
   "Bring this magical cup to me, if you wish to enter the kingdom",
   "of the Rhyodin."};
 
-char* quest_three[] = {
+static const char* quest_three[] = {
   "When Evistar did not return, ages passed before another left.",
   "A mighty wizard was the next to try. His name was C*zarnak.",
   "It is feared that he was lost in the deep caves, like the others.",
   "He wore an enchanted circlet on his brow.",
   "Find it and bring it to me, and I will tell you more."};
 
-char* necklace[] = {
+static const char* necklace[] = {
   "You have brought me all the items lost by those who sought the",
   "path from the kingdom to the outside world.",
   "Furthermore, you have found the way through the mountains",
@@ -9194,7 +9194,7 @@ char* necklace[] = {
   "Give it to the gatekeeper, and he will let you pass.",
 };
 
-char* nonecklace[] = {
+static const char* nonecklace[] = {
   "You have brought me all the items lost by those who sought the",
   "path from the kingdom to the outside world.",
   "Furthermore, you have found the way through the mountains",
@@ -9204,7 +9204,7 @@ char* nonecklace[] = {
   "The gatekeeper will recognize it, and let you pass.",
 };
 
-char* quest_intro[] = {
+static const char* quest_intro[] = {
   "My name is Valik, and I am the Lorekeeper of the Rhyodin.",
   "Rhyodin is kingdom southeast of the Great Eastern Desert.",
   "To enter the kingdom of Rhyodin, you must first pass this test.",
@@ -9218,7 +9218,7 @@ char* quest_intro[] = {
 
 static const int quest_necklace = 21122;
 
-static int valik(struct char_data* ch, int cmd, char* arg) {
+static int valik(struct char_data* ch, int cmd, const char* arg) {
 #define VALIK_WANDERING 0
 #define VALIK_MEDITATING 1
 #define VALIK_QONE 2
@@ -9496,7 +9496,7 @@ static int valik(struct char_data* ch, int cmd, char* arg) {
   }
 }
 
-int guardian(struct char_data* ch, int cmd, char* arg) {
+int guardian(struct char_data* ch, int cmd, const char* arg) {
   assert(ch && "guardian proc: ch should not be nullptr");
 
   static const char* const rhyodin_file = "rhyodin";
@@ -9737,7 +9737,7 @@ int guardian(struct char_data* ch, int cmd, char* arg) {
   return 0;
 }
 
-int bouncer(struct char_data* ch, int cmd, char* arg) {
+int bouncer(struct char_data* ch, int cmd, const char* arg) {
   struct char_data* tmp_victim;
   struct char_data* temp;
   int dir;
@@ -9761,7 +9761,7 @@ int bouncer(struct char_data* ch, int cmd, char* arg) {
   return 0;
 }
 
-int gilbert(struct char_data* ch, int cmd, char* arg) {
+int gilbert(struct char_data* ch, int cmd, const char* arg) {
   struct char_data* victim;
   struct obj_data* o;
   int num;
@@ -9812,7 +9812,7 @@ int gilbert(struct char_data* ch, int cmd, char* arg) {
   return 0;
 }
 
-int toilet_thing(struct char_data* ch, int cmd, char* arg) {
+int toilet_thing(struct char_data* ch, int cmd, const char* arg) {
   struct char_data* tmp_victim;
   struct char_data* temp;
   int dam;
@@ -9849,7 +9849,7 @@ int toilet_thing(struct char_data* ch, int cmd, char* arg) {
   return 0;
 }
 
-int zombie_hater(struct char_data* ch, int cmd, char* arg) {
+int zombie_hater(struct char_data* ch, int cmd, const char* arg) {
   struct char_data* vict;
   struct char_data* next_v;
 
@@ -9870,7 +9870,7 @@ int zombie_hater(struct char_data* ch, int cmd, char* arg) {
   return 0;
 }
 
-int dishboy(struct char_data* ch, int cmd, char* arg) {
+int dishboy(struct char_data* ch, int cmd, const char* arg) {
   struct char_data* tmp_victim;
   struct char_data* temp;
   int dam;
@@ -9897,7 +9897,7 @@ int dishboy(struct char_data* ch, int cmd, char* arg) {
   return 0;
 }
 
-int game_wizard(struct char_data* ch, int cmd, char* arg) {
+int game_wizard(struct char_data* ch, int cmd, const char* arg) {
   struct char_data* tmp_victim;
   struct char_data* temp;
   int dam;
@@ -9976,7 +9976,7 @@ static void monk_move(struct char_data* ch) {
   }
 }
 
-int monk(struct char_data* ch, int cmd, char* arg) {
+int monk(struct char_data* ch, int cmd, const char* arg) {
   if (cmd || !AWAKE(ch)) {
     return 0;
   }
@@ -9987,7 +9987,7 @@ int monk(struct char_data* ch, int cmd, char* arg) {
   return 0;
 }
 
-int monk_master(struct char_data* ch, int cmd, char* arg) {
+int monk_master(struct char_data* ch, int cmd, const char* arg) {
   char buf[256];
   static const char* const n_skills[] = {
     "quivering palm", /* No. 245 */
@@ -10228,7 +10228,7 @@ int monk_master(struct char_data* ch, int cmd, char* arg) {
 #define MONK_MOB 650
 #define FLEE 151
 
-int monk_challenge_room(struct char_data* ch, int cmd, char* arg) {
+int monk_challenge_room(struct char_data* ch, int cmd, const char* arg) {
   struct char_data* i;
   struct room_data* me;
   int rm;
@@ -10292,7 +10292,7 @@ int monk_challenge_room(struct char_data* ch, int cmd, char* arg) {
   return 0;
 }
 
-int monk_challenge_prep_room(struct char_data* ch, int cmd, char* arg) {
+int monk_challenge_prep_room(struct char_data* ch, int cmd, const char* arg) {
   struct room_data* me;
   struct room_data* chal;
   int i;
@@ -10388,7 +10388,7 @@ static int ghost(struct char_data* ch, int cmd) {
   return 0;
 }
 
-int Magic_Fountain(struct char_data* ch, int cmd, char* arg) {
+int Magic_Fountain(struct char_data* ch, int cmd, const char* arg) {
   int bits;
   int water;
   int level;
@@ -10644,7 +10644,7 @@ int Magic_Fountain(struct char_data* ch, int cmd, char* arg) {
   return 0;
 }
 
-static void invert(char* arg1, char* arg2) {
+static void invert(const char* arg1, char* arg2) {
   register int i = 0;
   register int len = strlen(arg1) - 1;
 
@@ -10655,7 +10655,7 @@ static void invert(char* arg1, char* arg2) {
   *(arg2 + i) = '\0';
 }
 
-int jive_box(Mob* ch, int cmd, char* arg, Obj* me) {
+int jive_box(Mob* ch, int cmd, const char* arg, Obj* me) {
   char buf[255];
   char buf2[255];
   char buf3[255];
@@ -10685,7 +10685,7 @@ int jive_box(Mob* ch, int cmd, char* arg, Obj* me) {
   }
 }
 
-int new_ninja_master(struct char_data* ch, int cmd, char* arg) {
+int new_ninja_master(struct char_data* ch, int cmd, const char* arg) {
   char buf[256];
   static const char* const n_skills[] = {
     "disarm",   /* No. 245 */
@@ -10827,7 +10827,7 @@ int new_ninja_master(struct char_data* ch, int cmd, char* arg) {
   return 0;
 }
 
-int RepairGuy(struct char_data* ch, int cmd, char* arg) {
+int RepairGuy(struct char_data* ch, int cmd, const char* arg) {
   char obj_name[80];
   char vict_name[80];
   char buf[MAX_INPUT_LENGTH];
@@ -10836,7 +10836,7 @@ int RepairGuy(struct char_data* ch, int cmd, char* arg) {
   struct char_data* vict;
   struct obj_data* obj;
   int (*rep_guy)(struct char_data*, int,
-    char*); /* special procedure for this mob/obj       */
+    const char*); /* special procedure for this mob/obj       */
 
   if (!AWAKE(ch)) {
     return 0;
@@ -11016,7 +11016,7 @@ int RepairGuy(struct char_data* ch, int cmd, char* arg) {
   return (fighter(ch, cmd, arg));
 }
 
-static int samah(struct char_data* ch, int cmd, char* arg) {
+static int samah(struct char_data* ch, int cmd, const char* arg) {
   char* p;
   char buf[256];
   struct char_data* sammy; /* Samah's own referent pointer */
@@ -11401,7 +11401,7 @@ int BitterBlade(struct char_data* ch, int cmd, char* arg, struct obj_data* tobj,
 #define GAIN 243
 
 static int make_quest(struct char_data* ch, struct char_data* gm, int Class,
-  char* arg, int cmd) {
+  const char* arg, int cmd) {
   char obj_name[50];
   char vict_name[50];
   struct char_data* vict;
@@ -11733,7 +11733,7 @@ static int generic_cityguard(struct char_data* ch, int cmd, char* arg,
   return 0;
 }
 
-int loremaster(struct char_data* ch, int cmd, char* arg) {
+int loremaster(struct char_data* ch, int cmd, const char* arg) {
   char buf[256];
   static const char* const n_skills[] = {
     "necromancy",
@@ -11964,7 +11964,7 @@ void station(void) {
   }
 }
 
-int train_station(struct char_data* ch, int cmd, char* arg) {
+int train_station(struct char_data* ch, int cmd, const char* arg) {
   int t;
   if (cmd != 312) {
     return 0;
@@ -12000,7 +12000,7 @@ int train_station(struct char_data* ch, int cmd, char* arg) {
   return 1;
 }
 
-int dragon(struct char_data* ch, int cmd, char* arg) {
+int dragon(struct char_data* ch, int cmd, const char* arg) {
   struct char_data* t1;
   struct char_data* t2;
   int damage;
@@ -12045,7 +12045,7 @@ int dragon(struct char_data* ch, int cmd, char* arg) {
   return 0;
 }
 
-int hunter(struct char_data* ch, int cmd, char* arg) {
+int hunter(struct char_data* ch, int cmd, const char* arg) {
   char buf[256];
   static const char* const n_skills[] = {
     "track",
@@ -12209,7 +12209,7 @@ static int adjacent_room(int room) {
 
 #define HUNTER_ID "Hunter,"
 
-int bounty_hunter(struct char_data* ch, int cmd, char* arg) {
+int bounty_hunter(struct char_data* ch, int cmd, const char* arg) {
   assert(ch);
 
   if (cmd) {
@@ -12331,16 +12331,18 @@ int bounty_hunter(struct char_data* ch, int cmd, char* arg) {
       }
 
       int offset = 1;
+      char spell_buf[MAX_INPUT_LENGTH];
 
       for (; *(arg + offset) && (*(arg + offset) != '\''); ++offset) {
-        *(arg + offset) = LOWER(*(arg + offset));
+        spell_buf[offset - 1] = LOWER(*(arg + offset));
       }
+      spell_buf[offset - 1] = '\0';
 
       if (*(arg + offset) != '\'') {
         return 0;
       }
 
-      int spell = old_search_block(arg, 1, offset - 1, spells, 0);
+      int spell = old_search_block(spell_buf, 0, offset - 1, spells, 0);
 
       if (spell == 101 || spell == 2 || spell == 111 || spell == 42) {
         struct char_data* me =
@@ -12936,8 +12938,8 @@ static int potentially_annoying(int cmd) {
 
 /* DO NOT use the following as a stand-alone spec_proc... it is meant to be  */
 /* called by other spec_procs.  Use the more general i_am_irritable instead  */
-int utility_irritable(struct char_data* ch, int cmd, char* arg,
-  int (*func)(struct char_data*, int, char*)) {
+int utility_irritable(struct char_data* ch, int cmd, const char* arg,
+  int (*func)(struct char_data*, int, const char*)) {
   struct char_data* me;
   struct char_data* targ;
 
@@ -12969,7 +12971,7 @@ int utility_irritable(struct char_data* ch, int cmd, char* arg,
 }
 
 /* use this for mobs whose _ONLY_ spec_proc function is to be irritable */
-static int i_am_irritable(struct char_data* ch, int cmd, char* arg) {
+static int i_am_irritable(struct char_data* ch, int cmd, const char* arg) {
   utility_irritable(ch, cmd, arg, i_am_irritable);
 }
 
@@ -12988,7 +12990,7 @@ static void police_hunt(struct char_data* ch, struct char_data* tch) {
    If you want a mob to JUST be a police person, call the i_am_police function
    below.  - SG */
 static int utility_police(struct char_data* ch, int cmd,
-  int (*func)(struct char_data*, int, char*)) {
+  int (*func)(struct char_data*, int, const char*)) {
   struct char_data* targ;
   struct char_data* me;
 
@@ -13035,11 +13037,11 @@ static int utility_police(struct char_data* ch, int cmd,
 }
 
 /* use this for mobs whose _ONLY_ spec_proc function is to be police */
-int i_am_police(Mob* ch, int cmd, char* arg) {
+int i_am_police(Mob* ch, int cmd, const char* arg) {
   return utility_police(ch, cmd, i_am_police);
 }
 
-static void obj_act(char* message, Mob* ch, Obj* o, Mob* vict) {
+static void obj_act(const char* message, Mob* ch, Obj* o, Mob* vict) {
   char buffer[256];
 
   sprintf(buffer, "$n's $p %s", message);
@@ -13048,7 +13050,7 @@ static void obj_act(char* message, Mob* ch, Obj* o, Mob* vict) {
   act(buffer, 1, ch, o, vict, TO_CHAR);
 }
 
-int warMaker(Mob* ch, int cmd, char* arg, Obj* o) {
+int warMaker(Mob* ch, int cmd, const char* arg, Obj* o) {
   char buf[256];
 
   if ((cmd > 83) && (o->in_room == -1)) {
@@ -13332,7 +13334,7 @@ int warMaker(Mob* ch, int cmd, char* arg, Obj* o) {
   return 0;
 }
 
-int orbOfDestruction(Mob* ch, int cmd, char* arg, Obj* o) {
+int orbOfDestruction(Mob* ch, int cmd, const char* arg, Obj* o) {
   char buffer[256];
   Mob* v;
   Mob* n;

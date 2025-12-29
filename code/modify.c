@@ -109,7 +109,7 @@ void string_add(struct descriptor_data* d, char* str) {
 #undef MAX_STR
 
 /* interpret an argument for do_string */
-static void quad_arg(char* arg, int* type, char* name, int* field,
+static void quad_arg(const char* arg, int* type, char* name, int* field,
   char* string) {
   char buf[MAX_STRING_LENGTH];
   int i;
@@ -144,7 +144,7 @@ static void quad_arg(char* arg, int* type, char* name, int* field,
 }
 
 /* modification of malloc'ed strings in chars/objects */
-void do_string(struct char_data* ch, char* arg, int cmd) {
+void do_string(struct char_data* ch, const char* arg, int cmd) {
   char name[MAX_STRING_LENGTH];
   char string[MAX_STRING_LENGTH];
   struct extra_descr_data* ed;
@@ -351,7 +351,7 @@ void do_string(struct char_data* ch, char* arg, int cmd) {
   }
 }
 
-static void bisect_arg(char* arg, int* field, char* string) {
+static void bisect_arg(const char* arg, int* field, char* string) {
   char buf[MAX_INPUT_LENGTH];
   int i;
 
@@ -370,7 +370,7 @@ static void bisect_arg(char* arg, int* field, char* string) {
   }
 }
 
-void do_edit(struct char_data* ch, char* arg, int cmd) {
+void do_edit(struct char_data* ch, const char* arg, int cmd) {
   int field;
   int dflags;
   int dir;
@@ -670,7 +670,7 @@ void do_edit(struct char_data* ch, char* arg, int cmd) {
  *  Modification of character skills                                     *
  ********************************************************************** */
 
-static void do_setskill(struct char_data* ch, char* arg, int cmd) {
+static void do_setskill(struct char_data* ch, const char* arg, int cmd) {
   send_to_char("This routine is disabled untill it fitts\n\r", ch);
   send_to_char("The new structures (sorry Quinn) ....Bombman\n\r", ch);
 }
@@ -741,7 +741,7 @@ int start_page_file(struct descriptor_data* d, const char* fpath,
 
 /* page_file returns true if something was paged, false if nothing got sent */
 /* if (d->position) comes back < 0 then EOF was hit when outputing file.    */
-int page_file(struct descriptor_data* d, char* input) {
+int page_file(struct descriptor_data* d, const char* input) {
   FILE* fp;
   static char buffer[256];
   int i;
@@ -802,7 +802,7 @@ void page_string(struct descriptor_data* d, char* str, int keep_internal) {
   show_string(d, "");
 }
 
-void show_string(struct descriptor_data* d, char* input) {
+void show_string(struct descriptor_data* d, const char* input) {
   char buffer[MAX_STRING_LENGTH];
   char buf[MAX_INPUT_LENGTH];
   register char* scan;

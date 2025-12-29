@@ -193,7 +193,7 @@ int check_slot_player(struct char_data* ch) {
   return 0;
 }
 
-void do_bet(struct char_data* ch, char* arg, int cmd) {
+void do_bet(struct char_data* ch, const char* arg, int cmd) {
   char buf[255];
   char amount[15];
   char craps[255];
@@ -852,7 +852,7 @@ static void roll_dice(struct char_data* ch) {
   }
 }
 
-void do_play(struct char_data* ch, char* arg, int cmd) {
+void do_play(struct char_data* ch, const char* arg, int cmd) {
   char bet[255];
   char buf[255];
   char game[255];
@@ -1061,7 +1061,7 @@ static void check_hardrolls(struct char_data* better, int diceroll) {}
 
 #define DICE 9002
 
-int craps_table_man(struct char_data* ch, int cmd, char* arg) {
+int craps_table_man(struct char_data* ch, int cmd, const char* arg) {
   struct char_data* crap_man;
   char buf[255];
   char amount[255];

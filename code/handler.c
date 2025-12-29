@@ -36,7 +36,7 @@ char* fname(char* namelist) {
   return (holder);
 }
 
-static int split_string(char* str, char* sep, char** argv)
+static int split_string(char* str, const char* sep, char** argv)
 /* str must be writable */
 {
   char* s;
@@ -112,7 +112,7 @@ void init_string_block(struct string_block* sb) {
   *sb->data = '\0';
 }
 
-void append_to_string_block(struct string_block* sb, char* str) {
+void append_to_string_block(struct string_block* sb, const char* str) {
   int len;
   len = strlen(sb->data) + strlen(str) + 1;
   if (len > sb->size) {
@@ -917,7 +917,7 @@ int get_number(char** name) {
 }
 
 /* Search a given list for an object, and return a pointer to that object */
-struct obj_data* get_obj_in_list(char* name, struct obj_data* list) {
+struct obj_data* get_obj_in_list(const char* name, struct obj_data* list) {
   struct obj_data* i;
   int j;
   int number;
@@ -957,7 +957,7 @@ struct obj_data* get_obj_in_list_num(int num, struct obj_data* list) {
 }
 
 /*search the entire world for an object, and return a pointer  */
-struct obj_data* get_obj(char* name) {
+struct obj_data* get_obj(const char* name) {
   struct obj_data* i;
   int j;
   int number;
@@ -1521,7 +1521,7 @@ void extract_char(struct char_data* ch) {
    which incorporate the actual player-data.
    *********************************************************************** */
 
-struct char_data* get_char_room_vis(struct char_data* ch, char* name) {
+struct char_data* get_char_room_vis(struct char_data* ch, const char* name) {
   struct char_data* i;
   int j;
   int number;
@@ -1551,7 +1551,7 @@ struct char_data* get_char_room_vis(struct char_data* ch, char* name) {
 
 /* get a character from anywhere in the world, doesn't care much about
    being in the same room... */
-struct char_data* get_char_vis_world(struct char_data* ch, char* name,
+struct char_data* get_char_vis_world(struct char_data* ch, const char* name,
   int* count)
 
 {
@@ -1584,7 +1584,7 @@ struct char_data* get_char_vis_world(struct char_data* ch, char* name,
   return 0;
 }
 
-struct char_data* get_char_vis(struct char_data* ch, char* name) {
+struct char_data* get_char_vis(struct char_data* ch, const char* name) {
   struct char_data* i;
 
   /* check location */
@@ -1595,7 +1595,7 @@ struct char_data* get_char_vis(struct char_data* ch, char* name) {
   return get_char_vis_world(ch, name, nullptr);
 }
 
-struct obj_data* get_obj_in_list_vis(struct char_data* ch, char* name,
+struct obj_data* get_obj_in_list_vis(struct char_data* ch, const char* name,
   struct obj_data* list) {
   struct obj_data* i;
   int j;
@@ -1622,7 +1622,7 @@ struct obj_data* get_obj_in_list_vis(struct char_data* ch, char* name,
   return (0);
 }
 
-struct obj_data* get_obj_vis_world(struct char_data* ch, char* name,
+struct obj_data* get_obj_vis_world(struct char_data* ch, const char* name,
   int* count) {
   struct obj_data* i;
   int j;
@@ -1656,7 +1656,7 @@ struct obj_data* get_obj_vis_world(struct char_data* ch, char* name,
 }
 
 /*search the entire world for an object, and return a pointer  */
-struct obj_data* get_obj_vis(struct char_data* ch, char* name) {
+struct obj_data* get_obj_vis(struct char_data* ch, const char* name) {
   struct obj_data* i;
 
   /* scan items carried */
@@ -1782,7 +1782,7 @@ struct obj_data* create_money(int amount) {
 /* The routine returns a pointer to the next word in *arg (just like the  */
 /* one_argument routine).                                                 */
 
-int generic_find(char* arg, int bitvector, struct char_data* ch,
+int generic_find(const char* arg, int bitvector, struct char_data* ch,
   struct char_data** tar_ch, struct obj_data** tar_obj) {
   static const char* const ignore[] = {"the", "in", "on", "at", "\n"};
 
