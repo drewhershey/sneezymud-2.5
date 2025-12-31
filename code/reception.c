@@ -1,18 +1,19 @@
-/* ************************************************************************
- *  file: reception.c, Special module for Inn's.           Part of DIKUMUD *
- *  Usage: Procedures handling saving/loading of player objects            *
- *  Copyright (C) 1990, 1991 - see 'license.doc' for complete information. *
- ************************************************************************* */
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
 
+#include "accessors.h"
+#include "bit_ops.h"
+#include "character_flags.h"
 #include "comm.h"
+#include "commands.h"
 #include "db.h"
+#include "game_constants.h"
 #include "handler.h"
 #include "interpreter.h"
+#include "object_flags.h"
+#include "room_flags.h"
 #include "structs.h"
 #include "utils.h"
 #include "compat_types.h"

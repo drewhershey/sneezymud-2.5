@@ -1,7 +1,4 @@
-
-#define POSIX_C_SOURCE 200809L
-#define GNU_SOURCE
-
+#include <arpa/inet.h>
 #include <ctype.h>
 #include <errno.h>
 #include <fcntl.h>
@@ -17,15 +14,23 @@
 #include <sys/time.h>
 #include <time.h>
 #include <unistd.h>
-#include <arpa/inet.h>
 
+#include "accessors.h"
+#include "bit_ops.h"
+#include "character_flags.h"
 #include "comm.h"
+#include "commands.h"
 #include "db.h"
+#include "game_constants.h"
 #include "handler.h"
 #include "interpreter.h"
 #include "limits.h"
+#include "memory_macros.h"
 #include "multiclass.h"
+#include "room_flags.h"
 #include "structs.h"
+#include "text_macros.h"
+#include "ui_strings.h"
 #include "utils.h"
 
 struct timeval;
@@ -1424,7 +1429,7 @@ void send_to_room(const char* messg, int room) {
     return;
   }
 
-  for (Mob* i = real_roomp(room)->people; i; i = i->next_in_room) {
+  for (struct char_data* i = real_roomp(room)->people; i; i = i->next_in_room) {
     if (i->desc) {
       write_to_q(messg, &i->desc->output);
     }

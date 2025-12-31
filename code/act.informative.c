@@ -1,9 +1,3 @@
-/* ************************************************************************
- *  file: act.informative.c , Implementation of commands.  Part of DIKUMUD *
- *  Usage : Informative commands.                                          *
- *  Copyright (C) 1990, 1991 - see 'license.doc' for complete information. *
- ************************************************************************* */
-
 #include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -12,15 +6,23 @@
 #include <sys/param.h>
 #include <time.h>
 
+#include "accessors.h"
+#include "bit_ops.h"
+#include "character_flags.h"
 #include "comm.h"
 #include "constants.h"
 #include "db.h"
+#include "game_constants.h"
 #include "games.h"
 #include "handler.h"
 #include "interpreter.h"
 #include "multiclass.h"
-#include "spells.h"
+#include "object_flags.h"
+#include "room_flags.h"
+#include "spell_ids.h"
+#include "spell_info.h"
 #include "structs.h"
+#include "text_macros.h"
 #include "trap.h"
 #include "utils.h"
 
@@ -36,11 +38,11 @@ char* find_ex_description(const char* word, struct extra_descr_data* list) {
   return nullptr;
 }
 
-void do_whozone(Mob* ch, const char* argument, int cmd) {
-  Descriptor* d;
-  Room* rp;
+void do_whozone(struct char_data* ch, const char* argument, int cmd) {
+  struct descriptor_data* d;
+  struct room_data* rp;
   char buf[256];
-  Mob* person;
+  struct char_data* person;
   int count = 0;
 
   send_to_char("Players:\n\r--------\n\r", ch);
@@ -321,7 +323,8 @@ void do_who(struct char_data* ch, const char* argument, int cmd) {
 #define HEADER_TXT_NOTE "There is something written upon it:\n\r\n\r"
 #define DRINKCON_TXT_NOTE "It looks like a drink container."
 
-static void show_obj_to_char(Obj* object, Mob* ch, int mode) {
+static void show_obj_to_char(struct obj_data* object, struct char_data* ch,
+  int mode) {
   char buffer[MAX_STRING_LENGTH];
 
   if (!mode && object->description) { /* mode = 0 */
@@ -1131,7 +1134,7 @@ static const char* const color_liquid[] = {
   "\n",
 };
 
-static void read_book(Mob* ch, Obj* o, char* arg) {
+static void read_book(struct char_data* ch, struct obj_data* o, char* arg) {
   char buf[256];
   int vnum;
   int section = 0;

@@ -1,33 +1,37 @@
-/* ************************************************************************
- *  file: spec_procs.c , Special module.                   Part of DIKUMUD *
- *  Usage: Procedures handling special procedures for object/room/mobile   *
- *  Copyright (C) 1990, 1991 - see 'license.doc' for complete information. *
- ************************************************************************* */
-#define POSIX_C_SOURCE 200809L
-#define GNU_SOURCE
 #include <assert.h>
 #include <ctype.h>
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/param.h>
 #include <strings.h>
+#include <sys/param.h>
 
+#include "accessors.h"
 #include "area.h"
 #include "comm.h"
+#include "commands.h"
 #include "constants.h"
 #include "db.h"
 #include "handler.h"
 #include "interpreter.h"
 #include "limits.h"
+#include "memory_macros.h"
 #include "multiclass.h"
 #include "opinion.h"
 #include "race.h"
+#include "room_flags.h"
 #include "spec_procs.h"
+#include "spell_ids.h"
+#include "spell_info.h"
 #include "spells.h"
 #include "structs.h"
+#include "text_macros.h"
 #include "utils.h"
+#include "bit_ops.h"
+#include "character_flags.h"
+#include "game_constants.h"
+#include "object_flags.h"
 
 #define INQ_SHOUT 1
 #define INQ_LOOSE 0
@@ -135,7 +139,8 @@ static int gain_level(struct char_data* ch, int class) {
   return 0;
 }
 
-struct char_data* FindMobInRoomWithFunction(int room, mob_proc_t func) {
+struct char_data* FindMobInRoomWithFunction(int room,
+  int (*func)(struct char_data*, int, const char*)) {
   struct room_data* rp = real_roomp(room);
 
   if (room <= NOWHERE || !rp) {
@@ -1965,14 +1970,14 @@ int andy_wilcox(struct char_data* ch, int cmd, const char* arg) {
     return 0;
   }
 
-  Room* room = real_roomp(ch->in_room);
+  struct room_data* room = real_roomp(ch->in_room);
 
   if (!room) {
     return 0;
   }
 
-  Mob* andy = nullptr;
-  for (Mob* m = room->people; !andy && m; m = m->next_in_room) {
+  struct char_data* andy = nullptr;
+  for (struct char_data* m = room->people; !andy && m; m = m->next_in_room) {
     if (IS_MOB(m) && mob_index[m->nr].func.mob_f == andy_wilcox) {
       andy = m;
     }
@@ -3254,8 +3259,11 @@ static void free_victims(struct breath_victim* head) {
   }
 }
 
+typedef void (*breath_fn)(signed char level, struct char_data* caster, int type,
+  struct char_data* tar_ch);
+
 int breath_weapon(struct char_data* ch, struct char_data* target, int mana_cost,
-  funcp func) {
+  breath_fn func) {
   struct breath_victim* hitlist;
   struct breath_victim* scan;
   int victim;
@@ -3266,8 +3274,7 @@ int breath_weapon(struct char_data* ch, struct char_data* target, int mana_cost,
   victim = 0;
   for (scan = hitlist; scan; scan = scan->next) {
     if (!scan->yesno || IS_IMMORTAL(scan->ch) ||
-        scan->ch->in_room != ch->in_room /* this should not happen */
-    ) {
+        scan->ch->in_room != ch->in_room) {
       continue;
     }
     victim = 1;
@@ -3279,12 +3286,10 @@ int breath_weapon(struct char_data* ch, struct char_data* target, int mana_cost,
 
     for (scan = hitlist; scan; scan = scan->next) {
       if (!scan->yesno || IS_IMMORTAL(scan->ch) ||
-          scan->ch->in_room != ch->in_room /* this could happen if
-                      someone fled, I guess */
-      ) {
+          scan->ch->in_room != ch->in_room) {
         continue;
       }
-      func(GetMaxLevel(ch), ch, "", SPELL_TYPE_SPELL, scan->ch, 0);
+      func(GetMaxLevel(ch), ch, SPELL_TYPE_SPELL, scan->ch);
     }
   } else {
     act("$n Breathes...coughs and sputters...", 1, ch, 0, ch->specials.fighting,
@@ -3296,92 +3301,316 @@ int breath_weapon(struct char_data* ch, struct char_data* target, int mana_cost,
   return 0;
 }
 
-static int use_breath_weapon(struct char_data* ch, struct char_data* target,
-  int cost, funcp func) {
-  if (GET_MANA(ch) >= 0) {
-    breath_weapon(ch, target, cost, func);
-  } else if (GET_HIT(ch) < GET_MAX_HIT(ch) / 2) {
-    breath_weapon(ch, target, cost, func);
-  } else if (GET_HIT(ch) < GET_MAX_HIT(ch) / 4) {
-    breath_weapon(ch, target, cost, func);
+static void cast_breath(struct char_data* ch, struct char_data* victim,
+  signed char level, int type, int min_dice, int max_dice, int spell_num) {
+  assert(type == SPELL_TYPE_SPELL);
+  assert(victim && ch);
+  assert(level >= 1 && level <= ABS_MAX_LVL);
+
+  int dam = dice(min_dice, max_dice) + level;
+
+  if (saves_spell(victim, SAVING_BREATH)) {
+    dam >>= 1;
   }
-  return 0;
+
+  MissileDamage(ch, victim, dam, spell_num);
 }
 
-static funcp breaths[] = {cast_acid_breath, 0, cast_frost_breath, 0,
-  cast_lightning_breath, 0, cast_fire_breath, 0, cast_acid_breath,
-  cast_fire_breath, cast_lightning_breath, 0};
+static void cast_fire_breath(signed char level, struct char_data* ch, int type,
+  struct char_data* tar_ch) {
+  cast_breath(ch, tar_ch, level, type, 1, 100, SPELL_FIRE_BREATH);
 
-const struct breather breath_monsters[] = {
-  {230, 55, breaths + 0},
-  {233, 55, breaths + 0},
-  {243, 55, breaths + 0},
-  {3670, 30, breaths + 0},
-  {3674, 45, breaths + 0},
-  {3675, 45, breaths + 0},
-  {3676, 30, breaths + 0},
-  {3952, 20, breaths + 8},
-  {5005, 55, breaths + 4},
-  {6112, 55, breaths + 2},
-  {6801, 55, breaths + 0},
-  {6802, 55, breaths + 0},
-  {6824, 55, breaths + 0},
-  {7040, 55, breaths + 6},
-  {9217, 45, breaths + 4},
-  {15858, 45, breaths + 0},
-  {16620, 45, breaths + 2},
-  {16700, 45, breaths + 4},
-  {16738, 75, breaths + 0},
-  {18003, 20, breaths + 8},
-  {20002, 55, breaths + 0},
-  {20017, 55, breaths + 0},
-  {20016, 55, breaths + 0},
-  {25009, 30, breaths + 6},
-  {25504, 30, breaths + 4},
-  {27016, 30, breaths + 6},
-  {28449, 30, breaths + 6},
-  {29954, 45, breaths + 2},
-  {-1},
+  struct obj_data* next_obj;
+  for (struct obj_data* burn = tar_ch->carrying; burn; burn = next_obj) {
+    next_obj = burn->next_content;
+    /* Only paper and wood items are vulnerable to fire */
+    if (burn->obj_flags.type_flag != ITEM_SCROLL &&
+        burn->obj_flags.type_flag != ITEM_WAND &&
+        burn->obj_flags.type_flag != ITEM_STAFF &&
+        burn->obj_flags.type_flag != ITEM_BOAT) {
+      continue;
+    }
+    if (!saves_spell(tar_ch, SAVING_BREATH)) {
+      act("$o burns", 0, tar_ch, burn, 0, TO_CHAR);
+      extract_obj(burn);
+    }
+  }
+}
+
+static void cast_frost_breath(signed char level, struct char_data* ch, int type,
+  struct char_data* tar_ch) {
+  cast_breath(ch, tar_ch, level, type, 10, 100, SPELL_FROST_BREATH);
+
+  struct obj_data* next_obj;
+  for (struct obj_data* frozen = tar_ch->carrying; frozen; frozen = next_obj) {
+    next_obj = frozen->next_content;
+    /* Only liquid containers are vulnerable to frost */
+    if (frozen->obj_flags.type_flag != ITEM_DRINKCON &&
+        frozen->obj_flags.type_flag != ITEM_POTION) {
+      continue;
+    }
+    if (!saves_spell(tar_ch, SAVING_BREATH)) {
+      act("$o shatters.", 0, tar_ch, frozen, 0, TO_CHAR);
+      extract_obj(frozen);
+    }
+  }
+}
+
+static void cast_acid_breath(signed char level, struct char_data* ch, int type,
+  struct char_data* tar_ch) {
+  cast_breath(ch, tar_ch, level, type, 1, 30, SPELL_ACID_BREATH);
+}
+
+static void cast_gas_breath(signed char level, struct char_data* ch, int type,
+  struct char_data* tar_ch) {
+  cast_breath(ch, tar_ch, level, type, 1, 100, SPELL_GAS_BREATH);
+}
+
+static void cast_lightning_breath(signed char level, struct char_data* ch,
+  int type, struct char_data* tar_ch) {
+  cast_breath(ch, tar_ch, level, type, 1, 100, SPELL_LIGHTNING_BREATH);
+}
+
+#define MAX_BREATHS 4
+
+struct breather {
+    int vnum;
+    int cost;
+    breath_fn breaths[MAX_BREATHS];
+};
+
+static const struct breather breath_monsters[] = {
+  {230, 55, {cast_acid_breath}},
+  {233, 55, {cast_acid_breath}},
+  {243, 55, {cast_acid_breath}},
+  {3670, 30, {cast_acid_breath}},
+  {3674, 45, {cast_acid_breath}},
+  {3675, 45, {cast_acid_breath}},
+  {3676, 30, {cast_acid_breath}},
+  {3952, 20, {cast_acid_breath, cast_fire_breath, cast_lightning_breath}},
+  {5005, 55, {cast_lightning_breath}},
+  {6112, 55, {cast_frost_breath}},
+  {6801, 55, {cast_acid_breath}},
+  {6802, 55, {cast_acid_breath}},
+  {6824, 55, {cast_acid_breath}},
+  {7040, 55, {cast_fire_breath}},
+  {9217, 45, {cast_lightning_breath}},
+  {15858, 45, {cast_acid_breath}},
+  {16620, 45, {cast_frost_breath}},
+  {16700, 45, {cast_lightning_breath}},
+  {16738, 75, {cast_acid_breath}},
+  {18003, 20, {cast_acid_breath, cast_fire_breath, cast_lightning_breath}},
+  {20002, 55, {cast_acid_breath}},
+  {20017, 55, {cast_acid_breath}},
+  {20016, 55, {cast_acid_breath}},
+  {25009, 30, {cast_fire_breath}},
+  {25504, 30, {cast_lightning_breath}},
+  {27016, 30, {cast_fire_breath}},
+  {28449, 30, {cast_fire_breath}},
+  {29954, 45, {cast_frost_breath}},
+  {-1, 0, {nullptr}},
 };
 
 int BreathWeapon(struct char_data* ch, int cmd, const char* arg) {
-  char buf[MAX_STRING_LENGTH];
-  const struct breather* scan;
-  int count;
-
-  if (cmd) {
+  if (cmd || !ch->specials.fighting ||
+      (ch->specials.fighting->in_room != ch->in_room)) {
     return 0;
   }
 
-  if (ch->specials.fighting &&
-      (ch->specials.fighting->in_room == ch->in_room)) {
-    for (scan = breath_monsters;
-      scan->vnum >= 0 && scan->vnum != mob_index[ch->nr].virtual; scan++) {
-      ;
+  const struct breather* mob = nullptr;
+  const struct breather* scan = breath_monsters;
+  while (scan->vnum >= 0) {
+    if (scan->vnum == mob_index[ch->nr].virtual) {
+      mob = scan;
+      break;
     }
-
-    if (scan->vnum < 0) {
-      sprintf(buf, "monster %s tries to breath, but isn't listed.",
-        ch->player.short_descr);
-      vlog(buf);
-      return 0;
-    }
-
-    for (count = 0; scan->breaths[count]; count++) {
-      ;
-    }
-
-    if (count < 1) {
-      sprintf(buf, "monster %s has no breath weapons", ch->player.short_descr);
-      vlog(buf);
-      return 0;
-    }
-
-    use_breath_weapon(ch, ch->specials.fighting, scan->cost,
-      scan->breaths[dice(1, count) - 1]);
+    scan++;
   }
 
+  char buf[MAX_STRING_LENGTH];
+  if (!mob) {
+    sprintf(buf, "monster %s tries to breath, but isn't listed.",
+      ch->player.short_descr);
+    vlog(buf);
+    return 0;
+  }
+
+  int count = 0;
+  while (count < MAX_BREATHS && mob->breaths[count]) {
+    count++;
+  }
+
+  if (count < 1) {
+    sprintf(buf, "monster %s has no breath weapons", ch->player.short_descr);
+    vlog(buf);
+    return 0;
+  }
+
+  breath_fn selected = mob->breaths[dice(1, count) - 1];
+  breath_weapon(ch, ch->specials.fighting, mob->cost, selected);
+
   return 1;
+}
+
+/* Used by spell_parser.c affect_update() for breath weapon effect ticks */
+typedef void (*bweapon_fn)(signed char, struct char_data*, const char*, int,
+  struct char_data*, struct obj_data*);
+
+// Wrapper functions for bweapons[] array. These adapt the 4-arg internal breath
+// functions to the 6-arg signature expected by spell_parser.c for breath weapon
+// spell effect ticks.
+static void bweapon_geyser(signed char level, struct char_data* ch,
+  const char* arg, int type, struct char_data* tar_ch,
+  struct obj_data* tar_obj) {
+  // Geyser has unique mechanics (no saving throw, room AOE) so it stays in
+  // spells.c
+  cast_geyser(level, ch, arg, type, tar_ch, tar_obj);
+}
+
+static void bweapon_fire(signed char level, struct char_data* ch,
+  const char* arg, int type, struct char_data* tar_ch,
+  struct obj_data* tar_obj) {
+  (void)arg;
+  (void)tar_obj;
+  cast_fire_breath(level, ch, type, tar_ch);
+}
+
+static void bweapon_gas(signed char level, struct char_data* ch,
+  const char* arg, int type, struct char_data* tar_ch,
+  struct obj_data* tar_obj) {
+  (void)arg;
+  (void)tar_obj;
+  cast_gas_breath(level, ch, type, tar_ch);
+}
+
+static void bweapon_frost(signed char level, struct char_data* ch,
+  const char* arg, int type, struct char_data* tar_ch,
+  struct obj_data* tar_obj) {
+  (void)arg;
+  (void)tar_obj;
+  cast_frost_breath(level, ch, type, tar_ch);
+}
+
+static void bweapon_acid(signed char level, struct char_data* ch,
+  const char* arg, int type, struct char_data* tar_ch,
+  struct obj_data* tar_obj) {
+  (void)arg;
+  (void)tar_obj;
+  cast_acid_breath(level, ch, type, tar_ch);
+}
+
+static void bweapon_lightning(signed char level, struct char_data* ch,
+  const char* arg, int type, struct char_data* tar_ch,
+  struct obj_data* tar_obj) {
+  (void)arg;
+  (void)tar_obj;
+  cast_lightning_breath(level, ch, type, tar_ch);
+}
+
+/*
+ * Array of breath weapon cast functions for spell_parser.c.
+ * Indexed by (spell_id - FIRST_BREATH_WEAPON).
+ * Used when breath weapon effects tick/expire on a character.
+ */
+/* clang-format off */
+const bweapon_fn bweapons[] = {
+  bweapon_geyser,    /* SPELL_GEYSER = 200 */
+  bweapon_fire,      /* SPELL_FIRE_BREATH = 201 */
+  bweapon_gas,       /* SPELL_GAS_BREATH = 202 */
+  bweapon_frost,     /* SPELL_FROST_BREATH = 203 */
+  bweapon_acid,      /* SPELL_ACID_BREATH = 204 */
+  bweapon_lightning, /* SPELL_LIGHTNING_BREATH = 205 */
+};
+/* clang-format on */
+
+/*
+ * Player command to use breath weapon.
+ * Works for:
+ * 1. Characters with breath weapon spell effects (e.g., from potions)
+ * 2. Polymorphed characters whose form is in breath_monsters table
+ */
+void do_breath(struct char_data* ch, const char* argument, int cmd) {
+  struct char_data* victim;
+  char name[MAX_INPUT_LENGTH];
+  int spell_type;
+  bweapon_fn weapon = nullptr;
+  int manacost = 0;
+
+  (void)cmd;
+
+  if (check_peaceful(ch, "That wouldn't be nice at all.\n\r")) {
+    return;
+  }
+
+  only_argument(argument, name);
+
+  for (spell_type = FIRST_BREATH_WEAPON; spell_type <= LAST_BREATH_WEAPON;
+    spell_type++) {
+    if (affected_by_spell(ch, spell_type)) {
+      weapon = bweapons[spell_type - FIRST_BREATH_WEAPON];
+      affect_from_char(ch, spell_type);
+      break;
+    }
+  }
+
+  if (!weapon && IS_NPC(ch)) {
+    const struct breather* scan = breath_monsters;
+    while (scan->vnum >= 0) {
+      if (scan->vnum == mob_index[ch->nr].virtual) {
+        int count = 0;
+        while (count < MAX_BREATHS && scan->breaths[count]) {
+          count++;
+        }
+        if (count > 0) {
+          breath_fn selected = scan->breaths[dice(1, count) - 1];
+          /* breath_fn and bweapon_fn are incompatible types */
+          if (selected == cast_fire_breath) {
+            weapon = bweapon_fire;
+          } else if (selected == cast_frost_breath) {
+            weapon = bweapon_frost;
+          } else if (selected == cast_acid_breath) {
+            weapon = bweapon_acid;
+          } else if (selected == cast_gas_breath) {
+            weapon = bweapon_gas;
+          } else if (selected == cast_lightning_breath) {
+            weapon = bweapon_lightning;
+          }
+          manacost = scan->cost;
+        }
+        break;
+      }
+      scan++;
+    }
+  }
+
+  if (!weapon) {
+    send_to_char("You don't have a breath weapon.\n\r", ch);
+    return;
+  }
+
+  if (manacost > 0 && GET_MANA(ch) <= -3 * manacost) {
+    send_to_char("You're too exhausted to breathe.\n\r", ch);
+    return;
+  }
+
+  if (!(victim = get_char_room_vis(ch, name))) {
+    if (ch->specials.fighting) {
+      victim = ch->specials.fighting;
+    } else {
+      send_to_char("Breathe on whom?\n\r", ch);
+      return;
+    }
+  }
+
+  /* Call wrapper directly since breath_weapon() expects breath_fn, not
+   * bweapon_fn */
+  weapon(GetMaxLevel(ch), ch, "", SPELL_TYPE_SPELL, victim, nullptr);
+
+  if (manacost > 0) {
+    GET_MANA(ch) -= manacost;
+  }
+
+  WAIT_STATE(ch, PULSE_VIOLENCE * 2);
 }
 
 int DracoLich(struct char_data* ch, int cmd, const char* arg) { return 0; }
@@ -5987,7 +6216,8 @@ You roll and tumble through endless voids for what seems like eternity...\n\r\
 \n\r\
 After a time, a new reality comes into focus... you are elsewhere.\n\r"
 
-int vorpal(Mob* victim, int cmd, const char* arg, Obj* me) {
+int vorpal(struct char_data* victim, int cmd, const char* arg,
+  struct obj_data* me) {
   struct char_data* ch;
   int exp;
   int vhit;
@@ -8076,12 +8306,12 @@ Tyrannosaurus_swallower(struct char_data *ch, char *arg, ind cmd)
 }
 #endif
 
-int soap(Mob* ch, int cmd, const char* arg, Obj* me) {
+int soap(struct char_data* ch, int cmd, const char* arg, struct obj_data* me) {
   struct char_data* t;
   struct obj_data* obj;
   char dummy[80];
   char name[80];
-  int (*wash)(Mob*, int, const char*, Obj*);
+  int (*wash)(struct char_data*, int, const char*, struct obj_data*);
 
   wash = soap;
 
@@ -8126,7 +8356,8 @@ int soap(Mob* ch, int cmd, const char* arg, Obj* me) {
   return 0;
 }
 
-int nodrop(Mob* ch, int cmd, const char* arg, Obj* me) {
+int nodrop(struct char_data* ch, int cmd, const char* arg,
+  struct obj_data* me) {
   struct char_data* t = nullptr;
   struct obj_data* obj;
   struct obj_data* i;
@@ -8137,7 +8368,7 @@ int nodrop(Mob* ch, int cmd, const char* arg, Obj* me) {
   char do_all;
   int j;
   int num;
-  int (*knowdrop)(Mob*, int, const char*, Obj*);
+  int (*knowdrop)(struct char_data*, int, const char*, struct obj_data*);
 
   switch (cmd) {
     case 10:  /* Get */
@@ -10657,7 +10888,8 @@ static void invert(const char* arg1, char* arg2) {
   *(arg2 + i) = '\0';
 }
 
-int jive_box(Mob* ch, int cmd, const char* arg, Obj* me) {
+int jive_box(struct char_data* ch, int cmd, const char* arg,
+  struct obj_data* me) {
   char buf[255];
   char buf2[255];
   char buf3[255];
@@ -13039,11 +13271,12 @@ static int utility_police(struct char_data* ch, int cmd,
 }
 
 /* use this for mobs whose _ONLY_ spec_proc function is to be police */
-int i_am_police(Mob* ch, int cmd, const char* arg) {
+int i_am_police(struct char_data* ch, int cmd, const char* arg) {
   return utility_police(ch, cmd, i_am_police);
 }
 
-static void obj_act(const char* message, Mob* ch, Obj* o, Mob* vict) {
+static void obj_act(const char* message, struct char_data* ch,
+  struct obj_data* o, struct char_data* vict) {
   char buffer[256];
 
   sprintf(buffer, "$n's $p %s", message);
@@ -13052,7 +13285,8 @@ static void obj_act(const char* message, Mob* ch, Obj* o, Mob* vict) {
   act(buffer, 1, ch, o, vict, TO_CHAR);
 }
 
-int warMaker(Mob* ch, int cmd, const char* arg, Obj* o) {
+int warMaker(struct char_data* ch, int cmd, const char* arg,
+  struct obj_data* o) {
   char buf[256];
 
   if ((cmd > 83) && (o->in_room == -1)) {
@@ -13336,11 +13570,12 @@ int warMaker(Mob* ch, int cmd, const char* arg, Obj* o) {
   return 0;
 }
 
-int orbOfDestruction(Mob* ch, int cmd, const char* arg, Obj* o) {
+int orbOfDestruction(struct char_data* ch, int cmd, const char* arg,
+  struct obj_data* o) {
   char buffer[256];
-  Mob* v;
-  Mob* n;
-  Room* r;
+  struct char_data* v;
+  struct char_data* n;
+  struct room_data* r;
 
   if (cmd == 172) { /* use */
     arg = one_argument(arg, buffer);

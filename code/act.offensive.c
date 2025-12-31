@@ -1,22 +1,23 @@
-/* ************************************************************************
- *  file: act.offensive.c , Implementation of commands.    Part of DIKUMUD *
- *  Usage : Offensive commands.                                            *
- *  Copyright (C) 1990, 1991 - see 'license.doc' for complete information. *
- ************************************************************************* */
-
 #include <stdio.h>
 #include <sys/param.h>
 
+#include "accessors.h"
+#include "bit_ops.h"
+#include "character_flags.h"
 #include "comm.h"
 #include "constants.h"
 #include "db.h"
+#include "game_constants.h"
 #include "games.h"
 #include "handler.h"
 #include "interpreter.h"
 #include "limits.h"
 #include "multiclass.h"
+#include "object_flags.h"
 #include "opinion.h"
-#include "spec_procs.h"
+#include "room_flags.h"
+#include "spell_ids.h"
+#include "spell_info.h"
 #include "spells.h"
 #include "structs.h"
 #include "utils.h"
@@ -747,77 +748,6 @@ void do_wimpy(struct char_data* ch, const char* arg, int cmd) {
 
   send_to_char("You are now a wimp!!\n\r", ch);
   send_to_char(buff, ch);
-}
-
-const funcp bweapons[] = {cast_geyser, cast_fire_breath, cast_gas_breath,
-  cast_frost_breath, cast_acid_breath, cast_lightning_breath};
-
-static void do_breath(struct char_data* ch, const char* argument) {
-  struct char_data* victim;
-  char buf[MAX_STRING_LENGTH];
-  char name[MAX_STRING_LENGTH];
-  int count;
-  int manacost;
-  funcp weapon;
-
-  if (check_peaceful(ch, "That wouldn't be nice at all.\n\r")) {
-    return;
-  }
-
-  only_argument(argument, name);
-
-  for (count = FIRST_BREATH_WEAPON;
-    count <= LAST_BREATH_WEAPON && !affected_by_spell(ch, count); count++) {
-    ;
-  }
-
-  if (count > LAST_BREATH_WEAPON) {
-    const struct breather* scan;
-
-    for (scan = breath_monsters;
-      scan->vnum >= 0 && scan->vnum != mob_index[ch->nr].virtual; scan++) {
-      ;
-    }
-
-    if (scan->vnum < 0) {
-      send_to_char("You don't have a breath weapon, potatohead.\n\r", ch);
-      return;
-    }
-
-    for (count = 0; scan->breaths[count]; count++) {
-      ;
-    }
-
-    if (count < 1) {
-      sprintf(buf, "monster %s has no breath weapons", ch->player.short_descr);
-      vlog(buf);
-      send_to_char("Hey, why don't you have any breath weapons!?\n\r", ch);
-      return;
-    }
-
-    weapon = scan->breaths[dice(1, count) - 1];
-    manacost = scan->cost;
-    if (GET_MANA(ch) <= -3 * manacost) {
-      weapon = nullptr;
-    }
-  } else {
-    manacost = 0;
-    weapon = bweapons[count - FIRST_BREATH_WEAPON];
-    affect_from_char(ch, count);
-  }
-
-  if (!(victim = get_char_room_vis(ch, name))) {
-    if (ch->specials.fighting) {
-      victim = ch->specials.fighting;
-    } else {
-      send_to_char("Breath on who?\n\r", ch);
-      return;
-    }
-  }
-
-  breath_weapon(ch, victim, manacost, weapon);
-
-  WAIT_STATE(ch, PULSE_VIOLENCE * 2);
 }
 
 static int bow_missile_damage(struct char_data* ch, struct char_data* victim,

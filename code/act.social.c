@@ -1,19 +1,19 @@
-/* ************************************************************************
- *  file: act.social.c , Implementation of commands.       Part of DIKUMUD *
- *  Usage : Social commands.                                               *
- *  Copyright (C) 1990, 1991 - see 'license.doc' for complete information. *
- ************************************************************************* */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
+#include "accessors.h"
+#include "character_flags.h"
 #include "comm.h"
 #include "db.h"
+#include "game_constants.h"
 #include "handler.h"
 #include "interpreter.h"
+#include "memory_macros.h"
 #include "multiclass.h"
-#include "structs.h"
 #include "utils.h"
+
+struct char_data;
 
 struct social_messg {
     int act_nr;

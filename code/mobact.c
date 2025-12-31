@@ -1,17 +1,15 @@
-/* ************************************************************************
- *  file: mobact.c , mobile action module.                 part of dikumud *
- *  usage: procedures generating 'intelligent' behavior in the mobiles.    *
- *  copyright (c) 1990, 1991 - see 'license.doc' for complete information. *
- ************************************************************************* */
-
-#include <stddef.h>
-
+#include "accessors.h"
+#include "bit_ops.h"
+#include "character_flags.h"
 #include "comm.h"
+#include "commands.h"
+#include "constants.h"
 #include "db.h"
 #include "handler.h"
 #include "hash.h"
-#include "interpreter.h"
+#include "multiclass.h"
 #include "opinion.h"
+#include "room_flags.h"
 #include "structs.h"
 #include "trap.h"
 #include "utils.h"

@@ -1,18 +1,17 @@
-/*
-  Opinions about things
-*/
-
 #include "opinion.h"
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
+#include "accessors.h"
+#include "bit_ops.h"
+#include "character_flags.h"
 #include "comm.h"
 #include "db.h"
+#include "memory_macros.h"
 #include "multiclass.h"
 #include "structs.h"
-#include "utils.h"
 
 void FreeHates(struct char_data* ch) {
   struct char_list* k;

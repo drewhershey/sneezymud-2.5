@@ -1,7 +1,3 @@
-/*  Module for playing casino type games on DikuMUD, made for SneezyMUD
-
-     by Russ Russell.                                                  */
-
 #include "games.h"
 
 #include <ctype.h>
@@ -9,7 +5,11 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "accessors.h"
+#include "bit_ops.h"
+#include "character_flags.h"
 #include "comm.h"
+#include "commands.h"
 #include "db.h"
 #include "handler.h"
 #include "interpreter.h"

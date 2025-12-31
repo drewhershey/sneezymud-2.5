@@ -1,10 +1,6 @@
-/*
-**  Heap data structs
-*/
-
 #pragma once
 
-#include "structs.h"
+struct char_data;
 
 struct StrHeapList {
     char* string; /* the matching string */

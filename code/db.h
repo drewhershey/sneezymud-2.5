@@ -1,14 +1,10 @@
-/* ************************************************************************
- *  file: db.h , Database module.                          Part of DIKUMUD *
- *  Usage: Loading/Saving chars booting world.                             *
- ************************************************************************* */
-
 #pragma once
 
+#include <stdio.h>
+
+#include "game_constants.h"
 #include "hash.h"
 #include "structs.h"
-
-#include <stdio.h>
 
 /* data files used by the game system */
 
@@ -59,7 +55,7 @@ void free_char(struct char_data* ch);
 [[nodiscard]] int real_object(int virtual);
 [[nodiscard]] int real_mobile(int virtual);
 void boot_zones(void);
-[[nodiscard]] Room* allocate_room(int room_number);
+[[nodiscard]] struct room_data* allocate_room(int room_number);
 void boot_world(void);
 struct index_data* generate_indices(FILE* fl, int* top);
 void build_player_index(void);
@@ -101,8 +97,8 @@ struct reset_com {
      *  'O': Read an object    *
      *  'G': Give obj to mob   *
      *  'P': Put obj in obj    *
-     *  'G': Obj to char       *
-     *  'E': Obj to char equip *
+     *  'G': obj_data to char       *
+     *  'E': obj_data to char equip *
      *  'D': Set state of door *
      */
 };

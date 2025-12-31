@@ -2,7 +2,7 @@
 
 #include <stdlib.h>
 
-#include "utils.h"
+#include "memory_macros.h"
 
 #define HASH_KEY(ht, key) ((((unsigned int)(key)) * 17) % (ht)->table_size)
 
@@ -61,7 +61,7 @@ void* hash_find(struct hash_header* ht, int key) {
   return scan ? scan->data : nullptr;
 }
 
-/* Room array functions */
+/* room_data array functions */
 
 struct room_data* room_find(struct room_data* room_db[], int key) {
   return ((key < WORLD_SIZE && key > -1) ? room_db[key] : 0);

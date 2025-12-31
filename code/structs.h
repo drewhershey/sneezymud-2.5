@@ -1,71 +1,13 @@
-/* ************************************************************************
- *  file: structs.h , Structures        .                  Part of DIKUMUD *
- *  Usage: Declarations of central data structures                         *
- ************************************************************************* */
-
 #pragma once
 
 #include <sys/time.h>
 #include <sys/types.h>
 #include <time.h>
 
+#include "character_flags.h"
 #include "compat_types.h"
-
-/*
-   my new stuff
-*/
-
-#define PULSE_COMMAND 0
-#define PULSE_TICK 1
-
-#define MAX_STAT 5
-
-#define BIT_POOF_IN 1
-#define BIT_POOF_OUT 2
-
-/*
-  tailoring stuff
-*/
-#define LIMITED_ITEMS 1
-#define SITELOCK 0
-
-/*
- efficiency stuff
-*/
-#define MIN_GLOB_TRACK_LEV 31 /* mininum level for global track */
-/*
-**  Site locking stuff.. written by Scot Gardner
-*/
-#define MAX_BAN_HOSTS 15
-
-/*
-**  Newbie authorization stuff
-*/
-
-#define NEWBIE_REQUEST 1
-#define NEWBIE_START 100
-#define NEWBIE_AXE 0
-#define NEWBIE_CHANCES 3
-
-/*
-**  Limited item Stuff
-*/
-
-#define LIM_ITEM_COST_MIN 199999 /* mininum rent cost of a lim. item */
-
-/*
-**  distributed monster stuff
-*/
-
-#define TICK_WRAP_COUNT 3 /*  PULSE_MOBILE / PULSE_TELEPORT */
-/*
-Note:  This stuff is all code dependent,
-Don't change it unless you know what you
-are doing.  comm.c and mobact.c hold the
-stuff that you will HAVE to rewrite if you
-change either of those constants.
-*/
-#define PLR_TICK_WRAP 24 /*  this should be a divisor of 24 (hours) */
+#include "game_constants.h"
+#include "object_flags.h"
 
 /* casino stuff */
 
@@ -92,89 +34,6 @@ struct char_bet_data {
     long one_roll;
     int roul_options;
 };
-
-/*
-**  multiclassing stuff
-*/
-
-#define MAGE_LEVEL_IND 0
-#define CLERIC_LEVEL_IND 1
-#define WARRIOR_LEVEL_IND 2
-#define THIEF_LEVEL_IND 3
-#define ANTIPALADIN_LEVEL_IND 4
-#define PALADIN_LEVEL_IND 5
-#define MONK_LEVEL_IND 6
-#define RANGER_LEVEL_IND 7
-
-#define FIRE_DAMAGE 1
-#define COLD_DAMAGE 2
-#define ELEC_DAMAGE 3
-#define BLOW_DAMAGE 4
-#define ACID_DAMAGE 5
-
-#define HATE_SEX 1
-#define HATE_RACE 2
-#define HATE_CHAR 4
-#define HATE_CLASS 8
-#define HATE_EVIL 16
-#define HATE_GOOD 32
-#define HATE_VNUM 64
-
-#define FEAR_SEX 1
-#define FEAR_RACE 2
-#define FEAR_CHAR 4
-#define FEAR_CLASS 8
-#define FEAR_EVIL 16
-#define FEAR_GOOD 32
-#define FEAR_VNUM 64
-
-#define OP_SEX 1
-#define OP_RACE 2
-#define OP_CHAR 3
-#define OP_CLASS 4
-#define OP_EVIL 5
-#define OP_GOOD 6
-#define OP_VNUM 7
-
-#define ABS_MAX_LVL 70
-#define MAX_MORT 50
-#define LOW_IMMORTAL 51
-#define IMMORTAL 51
-#define CREATOR 52
-#define SAINT 53
-#define DEMIGOD 54
-#define LESSER_GOD 55
-#define GOD 56
-#define GREATER_GOD 57
-#define SILLYLORD 58
-#define IMPLEMENTOR 59
-#define BRUTIUS 60
-#define MAX_IMMORT 60
-
-/* Immunity flags */
-#define IMM_FIRE (1 << 0)
-#define IMM_COLD (1 << 1)
-#define IMM_ELEC (1 << 2)
-#define IMM_ENERGY (1 << 3)
-#define IMM_BLUNT (1 << 4)
-#define IMM_PIERCE (1 << 5)
-#define IMM_SLASH (1 << 6)
-#define IMM_ACID (1 << 7)
-#define IMM_POISON (1 << 8)
-#define IMM_DRAIN (1 << 9)
-#define IMM_SLEEP (1 << 10)
-#define IMM_CHARM (1 << 11)
-#define IMM_HOLD (1 << 12)
-#define IMM_NONMAG (1 << 13)
-#define IMM_PLUS1 (1 << 14)
-#define IMM_PLUS2 (1 << 15)
-#define IMM_PLUS3 (1 << 16)
-#define IMM_PLUS4 (1 << 17)
-
-#define PULSE_RIVER 15
-#define PULSE_TELEPORT 10
-
-#define MAX_ROOMS 5000
 
 struct nodes {
     int visited;
@@ -211,162 +70,16 @@ typedef struct {
     int good;  /* align > good = attack */
 } Opinion;
 
-/*
-   old stuff.
-*/
-
-#define PULSE_ZONE 240
-#define PULSE_MOBILE 60
-#define PULSE_VIOLENCE 12
-#define WAIT_SEC 4
-#define WAIT_ROUND 4
-
-#define MAX_STRING_LENGTH 4096
-#define MAX_INPUT_LENGTH 160
-#define MAX_MESSAGES 60
-#define MAX_ITEMS 153
-
-#define MESS_ATTACKER 1
-#define MESS_VICTIM 2
-#define MESS_ROOM 3
-
-#define SECS_PER_REAL_MIN 60
-#define SECS_PER_REAL_HOUR (60 * SECS_PER_REAL_MIN)
-#define SECS_PER_REAL_DAY (24 * SECS_PER_REAL_HOUR)
-#define SECS_PER_REAL_YEAR (365 * SECS_PER_REAL_DAY)
-
-#define SECS_PER_MUD_HOUR 75
-#define SECS_PER_MUD_DAY (24 * SECS_PER_MUD_HOUR)
-#define SECS_PER_MUD_MONTH (35 * SECS_PER_MUD_DAY)
-#define SECS_PER_MUD_YEAR (17 * SECS_PER_MUD_MONTH)
-
-/* The following defs are for obj_data  */
-
-/* For 'type_flag' */
-
-#define ITEM_LIGHT 1
-#define ITEM_SCROLL 2
-#define ITEM_WAND 3
-#define ITEM_STAFF 4
-#define ITEM_WEAPON 5
-#define ITEM_FIREWEAPON 6
-#define ITEM_MISSILE 7
-#define ITEM_TREASURE 8
-#define ITEM_ARMOR 9
-#define ITEM_POTION 10
-#define ITEM_WORN 11
-#define ITEM_OTHER 12
-#define ITEM_TRASH 13
-#define ITEM_TRAP 14
-#define ITEM_CONTAINER 15
-#define ITEM_NOTE 16
-#define ITEM_DRINKCON 17
-#define ITEM_KEY 18
-#define ITEM_FOOD 19
-#define ITEM_MONEY 20
-#define ITEM_PEN 21
-#define ITEM_BOAT 22
-#define ITEM_AUDIO 23
-#define ITEM_BOARD 24
-#define ITEM_BOW 25
-#define ITEM_ARROW 26
-#define ITEM_RADIO 27
-#define ITEM_CORPSE 28
-#define ITEM_SPELLBAG 29
-#define ITEM_COMPONENT 30
-#define ITEM_BOOK 31
-
-/* Bitvector For 'wear_flags' */
-
-#define ITEM_TAKE (1 << 0)
-#define ITEM_WEAR_FINGER (1 << 1)
-#define ITEM_WEAR_NECK (1 << 2)
-#define ITEM_WEAR_BODY (1 << 3)
-#define ITEM_WEAR_HEAD (1 << 4)
-#define ITEM_WEAR_LEGS (1 << 5)
-#define ITEM_WEAR_FEET (1 << 6)
-#define ITEM_WEAR_HANDS (1 << 7)
-#define ITEM_WEAR_ARMS (1 << 8)
-#define ITEM_WEAR_SHIELD (1 << 9)
-#define ITEM_WEAR_ABOUT (1 << 10)
-#define ITEM_WEAR_WAISTE (1 << 11)
-#define ITEM_WEAR_WRIST (1 << 12)
-#define ITEM_WIELD (1 << 13)
-#define ITEM_HOLD (1 << 14)
-#define ITEM_THROW (1 << 15)
-/* bit 16 unused - was ITEM_LIGHT_SOURCE */
-#define ITEM_WEAR_EAR (1 << 17)
-#define ITEM_WEAR_FACE (1 << 18)
-#define ITEM_WORN_AS_RADIO (1 << 19)
-
-/* Bitvector for 'extra_flags' */
-
-#define ITEM_GLOW (1 << 0)
-#define ITEM_HUM (1 << 1)
-#define ITEM_LEVEL15 (1 << 2)
-#define ITEM_LEVEL25 (1 << 3)
-#define ITEM_LEVEL35 (1 << 4)
-#define ITEM_INVISIBLE (1 << 5)
-#define ITEM_MAGIC (1 << 6)
-#define ITEM_NODROP (1 << 7)
-#define ITEM_BLESS (1 << 8)
-#define ITEM_ANTI_GOOD (1 << 9)     /* not usable by good people */
-#define ITEM_ANTI_EVIL (1 << 10)    /* not usable by evil people */
-#define ITEM_ANTI_NEUTRAL (1 << 11) /* not usable by neutral people */
-#define ITEM_ANTI_CLERIC (1 << 12)
-#define ITEM_ANTI_MAGE (1 << 13)
-#define ITEM_ANTI_THIEF (1 << 14)
-#define ITEM_ANTI_FIGHTER (1 << 15)
-#define ITEM_BRITTLE (1 << 16) /* weapons/armor that break after 1 hit */
-#define ITEM_LEVEL10 (1 << 17) /* cant be worn by levels < 10 */
-#define ITEM_LEVEL20 (1 << 18) /* cant be worn by levels < 20 */
-#define ITEM_LEVEL30 (1 << 19) /* cant be worn by levels < 30 */
-#define ITEM_ANTI_ANTI (1 << 20)
-#define ITEM_ANTI_PALA (1 << 21)
-#define ITEM_ANTI_RANGER (1 << 22)
-#define ITEM_ANTI_MONK (1 << 23)
-#define ITEM_LEVEL40 (1 << 24)
-#define ITEM_HOLDING (1 << 25)
-
-/* Some different kind of liquids */
-#define LIQ_WATER 0
-#define LIQ_BEER 1
-#define LIQ_WINE 2
-#define LIQ_ALE 3
-#define LIQ_DARKALE 4
-#define LIQ_WHISKY 5
-#define LIQ_LEMONADE 6
-#define LIQ_FIREBRT 7
-#define LIQ_LOCALSPC 8
-#define LIQ_SLIME 9
-#define LIQ_MILK 10
-#define LIQ_TEA 11
-#define LIQ_COFFE 12
-#define LIQ_BLOOD 13
-#define LIQ_SALTWATER 14
-#define LIQ_COKE 15
-
-/* special addition for drinks */
-#define DRINK_POISON (1 << 0)
-#define DRINK_PERM (1 << 1)
-
-/* for containers - value[1] */
-
-#define CONT_CLOSEABLE (1 << 0)
-#define CONT_PICKPROOF (1 << 1)
-#define CONT_CLOSED (1 << 2)
-#define CONT_LOCKED (1 << 3)
-
 struct extra_descr_data {
     char* keyword;                 /* Keyword in look/examine          */
     char* description;             /* What to see                      */
     struct extra_descr_data* next; /* Next in list                     */
 };
 
-#define MAX_OBJ_AFFECT 5 /* Used in OBJ_FILE_ELEM *DO*NOT*CHANGE* */
+// NOLINTBEGIN(misc-redundant-expression) - intentional macro value validation
 static_assert(MAX_OBJ_AFFECT == 5,
   "MAX_OBJ_AFFECT must be 5 for save file compat");
-#define OBJ_NOTIMER (-7000000)
+// NOLINTEND(misc-redundant-expression)
 
 struct obj_flag_data {
     int value[4];          /* Values of the item (see list)    */
@@ -428,62 +141,6 @@ struct obj_data {
 
 /* ======================================================================= */
 
-/* The following defs are for room_data  */
-
-#define NOWHERE (-1)   /* nil reference for room-database      */
-#define AUTO_RENT (-2) /* other special room, for auto-renting */
-
-/* Bitvector For 'room_flags' */
-
-#define DARK (1 << 0)
-#define DEATH (1 << 1)
-#define NO_MOB (1 << 2)
-#define INDOORS (1 << 3)
-#define PEACEFUL (1 << 4) /* no fighting */
-#define NOSTEAL (1 << 5)  /* no thieving */
-#define NO_SUM (1 << 6)   /* no summoning */
-#define NO_MAGIC (1 << 7)
-#define TUNNEL (1 << 8)
-#define PRIVATE (1 << 9)
-#define SILENCE (1 << 10)
-#define NO_ORDER (1 << 11)
-#define ANARCHY (1 << 12)
-#define HAVE_TO_WALK (1 << 13)
-#define ARENA (1 << 14)
-#define NO_HEAL (1 << 15)
-#define HOSPITAL (1 << 16)
-
-/* For 'dir_option' */
-
-#define NORTH 0
-#define EAST 1
-#define SOUTH 2
-#define WEST 3
-#define UP 4
-#define DOWN 5
-
-/* Exit flags */
-#define EX_ISDOOR (1 << 0)
-#define EX_CLOSED (1 << 1)
-#define EX_LOCKED (1 << 2)
-#define EX_SECRET (1 << 3)
-#define EX_RSLOCKED (1 << 4)
-#define EX_PICKPROOF (1 << 5)
-
-/* For 'Sector types' */
-
-#define SECT_INSIDE 0
-#define SECT_CITY 1
-#define SECT_FIELD 2
-#define SECT_FOREST 3
-#define SECT_HILLS 4
-#define SECT_MOUNTAIN 5
-#define SECT_WATER_SWIM 6
-#define SECT_WATER_NOSWIM 7
-#define SECT_AIR 8
-#define SECT_UNDERWATER 9
-#define SECT_DESERT 10
-
 struct room_direction_data {
     char* general_description; /* When look DIR.                  */
     char* keyword;             /* for open/close                  */
@@ -492,12 +149,10 @@ struct room_direction_data {
     int to_room;               /* Where direction leeds (NOWHERE) */
 };
 
-typedef int (*room_proc_t)(struct char_data*, int, const char*);
-
 /* ========================= Structure for room ========================== */
 struct room_data {
     short int number; /* Rooms number                       */
-    short int zone;   /* Room zone (for resetting)          */
+    short int zone;   /* room_data zone (for resetting)          */
     int sector_type;  /* sector type (move/hide)            */
 
     int river_dir;   /* dir of flow on river               */
@@ -515,7 +170,7 @@ struct room_data {
     struct room_direction_data* dir_option[6]; /* Directions           */
     long room_flags;   /* DEATH,DARK ... etc                 */
     signed char light; /* Number of lightsources in room     */
-    room_proc_t funct; /* special procedure                  */
+    int (*funct)(struct char_data*, int, const char*); /* special procedure */
 
     struct obj_data* contents; /* List of items in room              */
     struct char_data* people;  /* List of NPC / PC in room           */
@@ -525,207 +180,13 @@ extern struct room_data* world;
 
 /* ======================================================================== */
 
-/* The following defs and structures are related to char_data   */
-
-/* For 'equipment' */
-
-#define WEAR_LIGHT 0
-#define WEAR_FINGER_R 1
-#define WEAR_FINGER_L 2
-#define WEAR_NECK_1 3
-#define WEAR_NECK_2 4
-#define WEAR_BODY 5
-#define WEAR_HEAD 6
-#define WEAR_LEGS 7
-#define WEAR_FEET 8
-#define WEAR_HANDS 9
-#define WEAR_ARMS 10
-#define WEAR_SHIELD 11
-#define WEAR_ABOUT 12
-#define WEAR_WAISTE 13
-#define WEAR_WRIST_R 14
-#define WEAR_WRIST_L 15
-#define WIELD 16
-#define HOLD 17
-#define WEAR_EAR 18
-#define WEAR_FACE 19
-#define WEAR_RADIO 20
-
-/* For 'char_payer_data' */
-
-/*
-**  #2 has been used!!!!  Don't try using the last of the 3, because it is
-**  the keeper of active/inactive status for dead characters for ressurection!
-*/
-#define MAX_TOUNGE 3 /* Used in CHAR_FILE_U *DO*NOT*CHANGE* */
-
-#define MAX_SKILLS 200 /* Used in CHAR_FILE_U *DO*NOT*CHANGE* */
-#define MAX_WEAR 25
-#define MAX_AFFECT 25 /* Used in CHAR_FILE_U *DO*NOT*CHANGE* */
-
-/* C11 static_assert: Compile-time validation of critical constants */
+// NOLINTBEGIN(misc-redundant-expression) - intentional macro value validation
 static_assert(WEAR_RADIO < MAX_WEAR, "WEAR_RADIO must be less than MAX_WEAR");
 static_assert(MAX_TOUNGE >= 3,
   "MAX_TOUNGE must be at least 3 for save file compat");
 static_assert(MAX_SKILLS == 200, "MAX_SKILLS must be 200 for save file compat");
 static_assert(MAX_AFFECT == 25, "MAX_AFFECT must be 25 for save file compat");
-
-/* Predifined  conditions */
-#define DRUNK 0
-#define FULL 1
-#define THIRST 2
-
-/* Bitvector for 'affected_by' */
-#define AFF_BLIND (1UL << 0)
-#define AFF_INVISIBLE (1UL << 1)
-#define AFF_DETECT_EVIL (1UL << 2)
-#define AFF_DETECT_INVISIBLE (1UL << 3)
-#define AFF_DETECT_MAGIC (1UL << 4)
-#define AFF_SENSE_LIFE (1UL << 5)
-#define AFF_LIFE_PROT (1UL << 6)
-#define AFF_SANCTUARY (1UL << 7)
-#define AFF_GROUP (1UL << 8)
-/* bit 9 is unused */
-#define AFF_CURSE (1UL << 10)
-#define AFF_FLYING (1UL << 11)
-#define AFF_POISON (1UL << 12)
-#define AFF_PROTECT_EVIL (1UL << 13)
-#define AFF_PARALYSIS (1UL << 14)
-#define AFF_INFRAVISION (1UL << 15)
-#define AFF_WATERBREATH (1UL << 16)
-#define AFF_SLEEP (1UL << 17)
-#define AFF_KILLABLE (1UL << 18)
-#define AFF_SNEAK (1UL << 19)
-#define AFF_HIDE (1UL << 20)
-#define AFF_PROTECT_FROM_GOOD (1UL << 21)
-#define AFF_CHARM (1UL << 22)
-#define AFF_FOLLOW (1UL << 23)
-#define AFF_UNDEF_1 (1UL << 24)
-#define AFF_TRUE_SIGHT (1UL << 25)
-#define AFF_BREWING (1UL << 26)
-#define AFF_FIRESHIELD (1UL << 27)
-#define AFF_SILENT (1UL << 28)
-#define AFF_GRAPPLE (1UL << 29)
-#define AFF_GRAPPLE2 (1UL << 30)
-#define AFF_SCRYING (1UL << 31)
-
-/* modifiers to char's abilities */
-
-#define APPLY_NONE 0
-#define APPLY_STR 1
-#define APPLY_DEX 2
-#define APPLY_INT 3
-#define APPLY_WIS 4
-#define APPLY_CON 5
-#define APPLY_SEX 6
-#define APPLY_CLASS 7
-#define APPLY_LEVEL 8
-#define APPLY_AGE 9
-#define APPLY_CHAR_WEIGHT 10
-#define APPLY_CHAR_HEIGHT 11
-#define APPLY_MANA 12
-#define APPLY_HIT 13
-#define APPLY_MOVE 14
-#define APPLY_GOLD 15
-#define APPLY_EXP 16
-#define APPLY_AC 17
-#define APPLY_ARMOR 17
-#define APPLY_HITROLL 18
-#define APPLY_DAMROLL 19
-#define APPLY_SAVING_PARA 20
-#define APPLY_SAVING_ROD 21
-#define APPLY_SAVING_PETRI 22
-#define APPLY_SAVING_BREATH 23
-#define APPLY_SAVING_SPELL 24
-#define APPLY_SAVE_ALL 25
-#define APPLY_IMMUNE 26
-#define APPLY_SUSC 27
-#define APPLY_M_IMMUNE 28
-#define APPLY_SPELL 29
-#define APPLY_WEAPON_SPELL 30
-#define APPLY_EAT_SPELL 31
-#define APPLY_BACKSTAB 32
-#define APPLY_KICK 33
-#define APPLY_SNEAK 34
-#define APPLY_HIDE 35
-#define APPLY_BASH 36
-#define APPLY_PICK 37
-#define APPLY_STEAL 38
-#define APPLY_TRACK 39
-#define APPLY_HITNDAM 40
-#define APPLY_DOUBLE_ATTACK 41
-#define APPLY_DEATHSTROKE 42
-#define APPLY_PARRY 43
-#define APPLY_THROW 44
-#define APPLY_GRAPPLE 45
-
-/* 'class' for PC's */
-#define CLASS_MAGIC_USER 1
-#define CLASS_CLERIC 2
-#define CLASS_WARRIOR 4
-#define CLASS_THIEF 8
-#define CLASS_ANTIPALADIN 16
-#define CLASS_PALADIN 32
-#define CLASS_MONK 64
-#define CLASS_RANGER 128
-/* sex */
-#define SEX_NEUTRAL 0
-#define SEX_MALE 1
-#define SEX_FEMALE 2
-
-/* positions */
-#define POSITION_DEAD 0
-#define POSITION_MORTALLYW 1
-#define POSITION_INCAP 2
-#define POSITION_STUNNED 3
-#define POSITION_SLEEPING 4
-#define POSITION_RESTING 5
-#define POSITION_SITTING 6
-#define POSITION_FIGHTING 7
-#define POSITION_STANDING 8
-
-/* for mobile actions: specials.act */
-#define ACT_SPEC (1 << 0)       /* special routine to be called if exist   */
-#define ACT_SENTINEL (1 << 1)   /* this mobile not to be moved             */
-#define ACT_SCAVENGER (1 << 2)  /* pick up stuff lying around              */
-#define ACT_ISNPC (1 << 3)      /* This bit is set for use with IS_NPC()   */
-#define ACT_NICE_THIEF (1 << 4) /* Set if a thief should NOT be killed     */
-#define ACT_AGGRESSIVE (1 << 5) /* Set if automatic attack on NPC's        */
-#define ACT_STAY_ZONE (1 << 6)  /* MOB Must stay inside its own zone       */
-#define ACT_WIMPY (1 << 7)      /* MOB Will flee when injured, and if      */
-/* aggressive only attack sleeping players */
-#define ACT_ANNOYING (1 << 8) /* MOB is so utterly irritating that other */
-/* monsters will attack it...              */
-#define ACT_HATEFUL (1 << 9) /* MOB will attack a PC or NPC matching a  */
-/* specified name                          */
-#define ACT_AFRAID (1 << 10) /* MOB is afraid of a certain PC or NPC,   */
-/* and will always run away ....           */
-#define ACT_IMMORTAL (1 << 11) /* MOB is a natural event, can't be kiled  */
-#define ACT_HUNTING (1 << 12)  /* MOB is hunting someone                  */
-#define ACT_DEADLY (1 << 13)   /* MOB has deadly poison                   */
-#define ACT_POLYSELF (1 << 14) /* MOB is a polymorphed person             */
-#define ACT_META_AGG (1 << 15) /* MOB is _very_ aggressive                */
-#define ACT_GUARDIAN (1 << 16) /* MOB will guard master                   */
-
-/* For players : specials.act */
-#define PLR_BRIEF (1 << 0)
-#define PLR_COMPACT (1 << 1)
-#define PLR_WIMPY (1 << 2) /* character will flee when seriously injured */
-#define PLR_DONTSET (1 << 3)
-#define PLR_NOHASSLE (1 << 4) /* char won't be attacked by aggressives. */
-#define PLR_STEALTH \
-  (1 << 5) /* char won't be announced in a variety of situations */
-#define PLR_HUNTING \
-  (1 << 6) /* the player is hunting someone, do a track each look */
-#define PLR_MAILING (1 << 7)
-#define PLR_LOGGED (1 << 8)
-#define PLR_KILLER (1 << 9)
-#define PLR_VT100 (1 << 10) /* VT100 capable */
-#define PLR_COLOR (1 << 11)
-#define PLR_OUTLAW (1 << 12)
-#define PLR_ANSI (1 << 13)
-#define PLR_NOSHOUT (1 << 14)  /* the player is not allowed to shout */
-#define PLR_BANISHED (1 << 15) /*The players goes to hell on login*/
+// NOLINTEND(misc-redundant-expression)
 
 /* This structure is purely intended to be an easy way to transfer */
 /* and return information about time (real or mudwise).            */
@@ -960,31 +421,13 @@ struct char_data {
     struct char_poofin_data poof;
 };
 
-typedef int (*mob_proc_t)(struct char_data*, int, const char*);
-typedef int (
-  *obj_proc_t)(struct char_data*, int, const char*, struct obj_data*);
-
 typedef union {
-    mob_proc_t mob_f;
-    obj_proc_t obj_f;
-    room_proc_t room_f;
+    int (*mob_f)(struct char_data*, int, const char*);
+    int (*obj_f)(struct char_data*, int, const char*, struct obj_data*);
+    int (*room_f)(struct char_data*, int, const char*);
 } ProcFn;
 
 /* ======================================================================== */
-
-/* How much light is in the land ? */
-
-#define SUN_DARK 0
-#define SUN_RISE 1
-#define SUN_LIGHT 2
-#define SUN_SET 3
-
-/* And how is the sky ? */
-
-#define SKY_CLOUDLESS 0
-#define SKY_CLOUDY 1
-#define SKY_RAINING 2
-#define SKY_LIGHTNING 3
 
 struct weather_data {
     int pressure; /* How is the pressure ( Mb ) */
@@ -1051,6 +494,8 @@ struct obj_cost { /* used in act.other.c:do_save as
 };
 
 #define MAX_OBJ_SAVE 200 /* Used in OBJ_FILE_U *DO*NOT*CHANGE* */
+// NOLINTNEXTLINE(misc-redundant-expression) - intentional macro value
+// validation
 static_assert(MAX_OBJ_SAVE == 200,
   "MAX_OBJ_SAVE must be 200 for save file compat");
 
@@ -1083,42 +528,6 @@ struct obj_file_u {
     struct obj_file_elem objects[MAX_OBJ_SAVE];
 };
 
-#if 0
-
-#define MAX_OBJ_SAVE 200 /* Used in OBJ_FILE_U *DO*NOT*CHANGE* */
-
-struct rental_header {
-  char	inuse;
-  int	length;
-  char owner[20];    /* Name of player                     */
-};
-
-struct obj_file_elem {
-	short int item_number;
-
-	int value[4];
-	int extra_flags;
-	int weight;
-	int timer;
-	long bitvector;
-	struct obj_affected_type affected[MAX_OBJ_AFFECT];
-};
-
-struct obj_file_u
-{
-	int gold_left;     /* Number of goldcoins left at owner  */
-	int total_cost;    /* The cost for all items, per day    */
-	long last_update;  /* Time in seconds, when last updated */
-	long minimum_stay; /* For stasis */
-	int nobjects;	   /* how many objects below */
-	struct obj_file_elem objects[MAX_OBJ_SAVE];
-			   /* We don't always allocate this much space
-			      but it is handy for the times when you
-			      need a fast one lying around.  */
-};
-
-#endif
-
 /* ***********************************************************
  *  The following structures are related to descriptor_data   *
  *********************************************************** */
@@ -1132,33 +541,6 @@ struct txt_q {
     struct txt_block* head;
     struct txt_block* tail;
 };
-
-/* modes of connectedness */
-
-#define CON_PLYNG 0
-#define CON_NME 1
-#define CON_NMECNF 2
-#define CON_PWDNRM 3
-#define CON_PWDGET 4
-#define CON_PWDCNF 5
-#define CON_QSEX 6
-#define CON_RMOTD 7
-#define CON_SLCT 8
-#define CON_EXDSCR 9
-#define CON_QCLASS 10
-#define CON_LDEAD 11
-#define CON_PWDNEW 12
-#define CON_PWDNCNF 13
-#define CON_WIZLOCK 14
-#define CON_QRACE 15
-#define CON_RACPAR 16
-#define CON_UNUSED 17
-#define CON_CITY_CHOICE 18
-#define CON_STAT_LIST 19
-#define CON_VT_ANSI 20
-#define CON_ANSI_NME 21
-#define CON_VT_NME 22
-#define CON_SCREEN_SIZE 23
 
 struct snoop_data {
     struct char_data* snooping;
@@ -1251,21 +633,3 @@ struct con_app_type {
     short int hitp;
     short int shock;
 };
-
-/************************************************************/
-
-typedef void (*funcp)(signed char, struct char_data*, const char*, int,
-  struct char_data*, struct obj_data*);
-
-struct breather {
-    int vnum;
-    int cost;
-    funcp* breaths;
-};
-
-typedef struct char_data Mob;
-typedef struct obj_data Obj;
-typedef struct room_data Room;
-typedef struct descriptor_data Descriptor;
-
-#define OBJECT_HITTING (-1)

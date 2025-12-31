@@ -1,10 +1,3 @@
-/* ************************************************************************
- *  file: act.other.c , Implementation of commands.        Part of DIKUMUD *
- *  Usage : Other commands.                                                *
- *  Copyright (C) 1990, 1991 - see 'license.doc' for complete information. *
- ************************************************************************* */
-#define POSIX_C_SOURCE 200809L
-
 #include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -13,14 +6,22 @@
 #include <time.h>
 #include <unistd.h>
 
+#include "accessors.h"
+#include "bit_ops.h"
+#include "character_flags.h"
 #include "comm.h"
+#include "commands.h"
 #include "constants.h"
 #include "db.h"
+#include "game_constants.h"
 #include "handler.h"
 #include "interpreter.h"
 #include "multiclass.h"
+#include "object_flags.h"
+#include "room_flags.h"
 #include "spec_procs.h"
-#include "spells.h"
+#include "spell_ids.h"
+#include "spell_info.h"
 #include "structs.h"
 #include "utils.h"
 

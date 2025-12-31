@@ -1,5 +1,6 @@
 #pragma once
 
+#include "game_constants.h"
 #include "structs.h"
 
 struct QuestItem {

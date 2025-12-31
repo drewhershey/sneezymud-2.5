@@ -1,9 +1,3 @@
-/* ************************************************************************
- *  file: handler.c , Handler module.                      Part of DIKUMUD *
- *  Usage: Various routines for moving about objects/players               *
- *  Copyright (C) 1990, 1991 - see 'license.doc' for complete information. *
- ************************************************************************* */
-#define POSIX_C_SOURCE 200809L
 #include <assert.h>
 #include <ctype.h>
 #include <stdio.h>
@@ -11,16 +5,25 @@
 #include <string.h>
 #include <sys/param.h>
 
+#include "accessors.h"
+#include "bit_ops.h"
+#include "character_flags.h"
 #include "comm.h"
+#include "commands.h"
 #include "constants.h"
 #include "db.h"
+#include "game_constants.h"
 #include "handler.h"
 #include "interpreter.h"
 #include "limits.h"
+#include "memory_macros.h"
 #include "multiclass.h"
+#include "object_flags.h"
 #include "opinion.h"
-#include "spells.h"
+#include "room_flags.h"
+#include "spell_ids.h"
 #include "structs.h"
+#include "ui_strings.h"
 #include "utils.h"
 
 char* fname(char* namelist) {
@@ -677,12 +680,12 @@ void obj_from_char(struct obj_data* object) {
   }
 
   if (object->in_obj) {
-    vlog("Obj in more than one place.");
+    vlog("obj_data in more than one place.");
     abort();
   }
 
   if (object->equipped_by) {
-    vlog("Obj in more than one place.");
+    vlog("obj_data in more than one place.");
     abort();
   }
 
@@ -760,12 +763,12 @@ void equip_char(struct char_data* ch, struct obj_data* obj, int pos) {
   assert(!(ch->equipment[pos]));
 
   if (obj->carried_by) {
-    vlog("EQUIP: Obj is carried_by when equip.");
+    vlog("EQUIP: obj_data is carried_by when equip.");
     abort();
   }
 
   if (obj->in_room != NOWHERE) {
-    vlog("EQUIP: Obj is in_room when equip.");
+    vlog("EQUIP: obj_data is in_room when equip.");
     abort();
     return;
   }
@@ -1067,7 +1070,7 @@ void obj_to_room(struct obj_data* object, int room) {
     room = 4;
   }
 
-  Room* rp = real_roomp(room);
+  struct room_data* rp = real_roomp(room);
   assert(rp);
   if (!rp) {
     vlog("obj_to_room: bad room");

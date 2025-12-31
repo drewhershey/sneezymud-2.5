@@ -1,17 +1,11 @@
-/*
-**  Generic text heaping code -- all purpose
-*/
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
 #include "comm.h"
 #include "heap.h"
+#include "memory_macros.h"
 #include "structs.h"
-#include "utils.h"
-
-#define true 1
-#define false 0
 
 /* ignore trailing spaces and \n */
 static void smart_str_cpy(char* s1, const char* s2) {

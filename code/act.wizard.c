@@ -1,10 +1,3 @@
-/* ***********************************************************************
- *  file: actwiz.c , Implementation of commands.           Part of DIKUMUD *
- *  Usage : Wizard Commands.                                               *
- *  Copyright (C) 1990, 1991 - see 'license.doc' for complete information. *
- ************************************************************************* */
-#define POSIX_C_SOURCE 200809L
-
 #include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -12,23 +5,31 @@
 #include <sys/param.h>
 #include <time.h>
 
+#include "accessors.h"
+#include "bit_ops.h"
 #include "board.h"
+#include "character_flags.h"
 #include "comm.h"
 #include "constants.h"
 #include "db.h"
+#include "game_constants.h"
 #include "handler.h"
 #include "hash.h"
 #include "heap.h"
 #include "interpreter.h"
 #include "limits.h"
+#include "memory_macros.h"
 #include "multiclass.h"
+#include "object_flags.h"
 #include "race.h"
-#include "spells.h"
+#include "room_flags.h"
+#include "spell_ids.h"
+#include "spell_info.h"
 #include "structs.h"
 #include "utils.h"
 
 static void create_one_room(int loc_nr) {
-  Room* rp = allocate_room(loc_nr);
+  struct room_data* rp = allocate_room(loc_nr);
   if (!rp) {
     return;
   }
@@ -43,7 +44,7 @@ static void create_one_room(int loc_nr) {
     }
 
     if (zone > top_of_zone_table) {
-      fprintf(stderr, "Room %d is outside of any zone.\n", rp->number);
+      fprintf(stderr, "room_data %d is outside of any zone.\n", rp->number);
       --zone;
     }
 
@@ -1323,8 +1324,8 @@ void do_stat(struct char_data* ch, const char* argument, int cmd) {
   if (!str_cmp("room", arg1)) {
     rm = real_roomp(ch->in_room);
     sprintf(buf,
-      "Room name: %s, Of zone : %d. V-Number : %d, R-number : %d\n\r", rm->name,
-      rm->zone, rm->number, ch->in_room);
+      "room_data name: %s, Of zone : %d. V-Number : %d, R-number : %d\n\r",
+      rm->name, rm->zone, rm->number, ch->in_room);
     send_to_char(buf, ch);
 
     sprinttype(rm->sector_type, sector_types, buf2);
@@ -1335,7 +1336,7 @@ void do_stat(struct char_data* ch, const char* argument, int cmd) {
     strcat(buf, (rm->funct) ? "Exists\n\r" : "No\n\r");
     send_to_char(buf, ch);
 
-    send_to_char("Room flags: ", ch);
+    send_to_char("room_data flags: ", ch);
     sprintbit(rm->room_flags, room_bits, buf);
     strcat(buf, "\n\r");
     send_to_char(buf, ch);

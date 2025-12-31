@@ -1,9 +1,7 @@
-/*
-**  magicutils -- stuff that makes the magic files easier to read.
-*/
-
 #include <sys/param.h>
 
+#include "accessors.h"
+#include "character_flags.h"
 #include "handler.h"
 #include "structs.h"
 #include "utils.h"

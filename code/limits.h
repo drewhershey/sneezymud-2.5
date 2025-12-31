@@ -1,11 +1,6 @@
-/* ************************************************************************
- *  file: limits.h , Limit/Gain control module             Part of DIKUMUD *
- *  Usage: declaration of title type                                       *
- ************************************************************************* */
-
 #pragma once
 
-#include "structs.h"
+struct char_data;
 
 int mana_limit(struct char_data* ch);
 int mana_gain(struct char_data* ch);

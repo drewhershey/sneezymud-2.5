@@ -1,17 +1,19 @@
-/* These are new functions added by Russ Russell, after the code was stolen.
-** These are mainly skills and spells for the new classes.                 */
-
 #include <stdio.h>
 #include <string.h>
 #include <sys/param.h>
 
+#include "accessors.h"
+#include "bit_ops.h"
+#include "character_flags.h"
 #include "comm.h"
 #include "constants.h"
 #include "db.h"
+#include "game_constants.h"
 #include "handler.h"
 #include "interpreter.h"
 #include "multiclass.h"
-#include "spells.h"
+#include "room_flags.h"
+#include "spell_ids.h"
 #include "structs.h"
 #include "utils.h"
 

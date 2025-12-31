@@ -1,15 +1,8 @@
-/*******************************************************************
-
-This module will hold all the special routines for handling the
-casino.
-J. Hendrickson
-
-******************************************************************/
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
+#include "accessors.h"
 #include "comm.h"
 #include "db.h"
 #include "games.h"
@@ -17,7 +10,7 @@ J. Hendrickson
 #include "structs.h"
 #include "utils.h"
 
-#define BLACKJACK 8401  /* Room to play black jack in. */
+#define BLACKJACK 8401  /* room_data to play black jack in. */
 #define MAX_BLACKJACK 1 /* Max number of Blackjack players */
 #define HEARTS 128
 #define DIAMONDS 64

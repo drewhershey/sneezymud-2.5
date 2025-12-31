@@ -1,19 +1,18 @@
-/* ************************************************************************
- *  file: limits.c , Limit and gain control module.        Part of DIKUMUD *
- *  Usage: Procedures controling gain and limit.                           *
- *  Copyright (C) 1990, 1991 - see 'license.doc' for complete information. *
- ************************************************************************* */
-#define POSIX_C_SOURCE 200809L
 #include <stdio.h>
 #include <string.h>
 #include <sys/param.h>
 
+#include "accessors.h"
+#include "bit_ops.h"
+#include "character_flags.h"
 #include "comm.h"
 #include "constants.h"
 #include "db.h"
+#include "game_constants.h"
 #include "limits.h"
 #include "multiclass.h"
 #include "race.h"
+#include "room_flags.h"
 #include "structs.h"
 #include "utils.h"
 

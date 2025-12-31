@@ -1,7 +1,5 @@
 #include <stdio.h>
 
-#include "structs.h"
-
 struct char_data;
 struct obj_data;
 

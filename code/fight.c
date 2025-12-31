@@ -1,25 +1,28 @@
-/* ************************************************************************
- *  File: fight.c , Combat module.                         Part of DIKUMUD *
- *  Usage: Combat system and messages.                                     *
- *  Copyright (C) 1990, 1991 - see 'license.doc' for complete information. *
- ************************************************************************* */
-#define POSIX_C_SOURCE 200809L
-
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/param.h>
 
+#include "accessors.h"
+#include "bit_ops.h"
+#include "character_flags.h"
 #include "comm.h"
+#include "commands.h"
 #include "constants.h"
 #include "db.h"
+#include "game_constants.h"
 #include "handler.h"
 #include "interpreter.h"
 #include "limits.h"
+#include "memory_macros.h"
 #include "multiclass.h"
+#include "object_flags.h"
 #include "opinion.h"
 #include "race.h"
+#include "room_flags.h"
+#include "spell_ids.h"
+#include "spell_info.h"
 #include "spells.h"
 #include "structs.h"
 #include "utils.h"
@@ -62,8 +65,8 @@ static const struct attack_hit_type attack_hit_text[] = {
 ** ordered by someone else, or attacker is attacking another
 ** nonkiller, nonthief PC.
 */
-void setKillerFlag(Mob* ch, Mob* victim) {
-  Mob* master = nullptr;
+void setKillerFlag(struct char_data* ch, struct char_data* victim) {
+  struct char_data* master = nullptr;
   char buf[MAX_STRING_LENGTH];
 
   /* You can never have enough checks for nullptr. */
@@ -298,7 +301,7 @@ void stop_fighting(struct char_data* ch) {
   if (combat_list == ch) {
     combat_list = ch->next_fighting;
   } else {
-    Mob* fighter = combat_list;
+    struct char_data* fighter = combat_list;
 
     for (; fighter; fighter = fighter->next_fighting) {
       if (fighter->next_fighting == ch) {

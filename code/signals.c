@@ -1,9 +1,3 @@
-/* ************************************************************************
- *  file: signals.c , trapping of signals from Unix.       Part of DIKUMUD *
- *  Usage : Signal Trapping.                                               *
- *  Copyright (C) 1990, 1991 - see 'license.doc' for complete information. *
- ************************************************************************* */
-
 #include <signal.h>
 #include <stdlib.h>
 #include <sys/time.h>

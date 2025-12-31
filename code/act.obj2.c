@@ -1,24 +1,25 @@
-/* ************************************************************************
- *  file: act.obj2.c , Implementation of commands.         Part of DIKUMUD *
- *  Usage : Commands mainly using objects.                                 *
- *  Copyright (C) 1990, 1991 - see 'license.doc' for complete information. *
- ************************************************************************* */
-#define POSIX_C_SOURCE 200809L
-
 #include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/param.h>
 
+#include "accessors.h"
+#include "bit_ops.h"
+#include "character_flags.h"
 #include "comm.h"
 #include "constants.h"
 #include "db.h"
+#include "game_constants.h"
 #include "handler.h"
 #include "interpreter.h"
 #include "limits.h"
+#include "memory_macros.h"
 #include "multiclass.h"
-#include "spells.h"
+#include "object_flags.h"
+#include "room_flags.h"
+#include "spell_ids.h"
+#include "spell_info.h"
 #include "structs.h"
 #include "utils.h"
 

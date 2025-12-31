@@ -1,23 +1,25 @@
-/*
-  holds all of the new skills that i have designed....
-
-  Much thanks to Whitegold of  epic Dikumud for the hunt code.
-*/
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/param.h>
 
+#include "accessors.h"
+#include "bit_ops.h"
+#include "character_flags.h"
 #include "comm.h"
+#include "commands.h"
 #include "constants.h"
 #include "db.h"
+#include "game_constants.h"
 #include "handler.h"
 #include "hash.h"
 #include "interpreter.h"
 #include "multiclass.h"
+#include "object_flags.h"
 #include "race.h"
-#include "spells.h"
+#include "room_flags.h"
+#include "spell_ids.h"
 #include "structs.h"
 #include "trap.h"
 #include "utils.h"

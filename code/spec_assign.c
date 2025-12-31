@@ -1,13 +1,8 @@
-/*********************************************************************
- *  file: spec_assign.c , Special module.                  Part of DIKUMUD *
- *  Usage: Procedures assigning function pointers.                         *
- *  Copyright (C) 1990, 1991 - see 'license.doc' for complete information. *
- ************************************************************************* */
-
 #include <stdio.h>
 
 #include "board.h"
 #include "db.h"
+#include "game_constants.h"
 #include "spec_procs.h"
 #include "structs.h"
 #include "utils.h"

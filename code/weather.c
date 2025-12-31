@@ -1,8 +1,4 @@
-/* ************************************************************************
- *  file: weather.c , Weather and time module              Part of DIKUMUD *
- *  Usage: Performing the clock and the weather                            *
- *  Copyright (C) 1990, 1991 - see 'license.doc' for complete information. *
- ************************************************************************* */
+#include "weather.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -10,8 +6,9 @@
 
 #include "comm.h"
 #include "db.h"
-#include "structs.h"
+#include "game_constants.h"
 #include "utils.h"
+#include "structs.h"
 
 /* what stage is moon in?  (1 - 32) */
 unsigned char moontype;

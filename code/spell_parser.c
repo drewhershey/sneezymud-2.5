@@ -1,24 +1,30 @@
-/* ************************************************************************
- *  file: spell_parser.c , Basic routines and parsing      Part of DIKUMUD *
- *  Usage : Interpreter of spells                                          *
- *  Copyright (C) 1990, 1991 - see 'license.doc' for complete information. *
- ************************************************************************* */
-
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/param.h>
 
+#include "accessors.h"
+#include "bit_ops.h"
+#include "character_flags.h"
 #include "comm.h"
+#include "commands.h"
 #include "db.h"
+#include "game_constants.h"
 #include "handler.h"
 #include "interpreter.h"
 #include "limits.h"
+#include "memory_macros.h"
 #include "multiclass.h"
+#include "object_flags.h"
 #include "opinion.h"
+#include "room_flags.h"
+#include "spec_procs.h"
+#include "spell_ids.h"
+#include "spell_info.h"
 #include "spells.h"
 #include "structs.h"
+#include "text_macros.h"
 #include "utils.h"
 
 #define SPELLO(nr, beat, pos, mlev, clev, mana, alev, plev, rlev, tar, func) \

@@ -1,9 +1,3 @@
-/*
- *  file: Interpreter.c , Command interpreter module.      Part of DIKUMUD *
- *  Usage: Procedures interpreting user command                            *
- *  Copyright (C) 1990, 1991 - see 'license.doc' for complete information. *
- ************************************************************************* */
-
 #include <arpa/telnet.h>
 #include <ctype.h>
 #include <stdio.h>
@@ -12,17 +6,27 @@
 #include <time.h>
 #include <unistd.h>
 
-#include "interpreter.h"
+#include "accessors.h"
+#include "bit_ops.h"
 #include "board.h"
+#include "character_flags.h"
 #include "comm.h"
-#include "db.h"
-#include "handler.h"
-#include "limits.h"
-#include "multiclass.h"
-#include "race.h"
-#include "structs.h"
-#include "utils.h"
+#include "commands.h"
 #include "compat_types.h"
+#include "db.h"
+#include "game_constants.h"
+#include "handler.h"
+#include "interpreter.h"
+#include "memory_macros.h"
+#include "multiclass.h"
+#include "object_flags.h"
+#include "race.h"
+#include "room_flags.h"
+#include "spec_procs.h"
+#include "structs.h"
+#include "text_macros.h"
+#include "ui_strings.h"
+#include "utils.h"
 
 #define COMMANDO(number, min_pos, pointer, min_level) \
   {                                                   \
@@ -366,6 +370,7 @@ const char* const command[] = {
   "whap",       /* 316 Batopr */
   "beam",       /* 317 Bat */
   "chortle",    /* 318 Bat */
+  "breath",     /* 319 */
   "\n",
 };
 
@@ -1105,6 +1110,7 @@ void assign_command_pointers(void) {
   COMMANDO(316, POSITION_RESTING, do_action, 1);
   COMMANDO(317, POSITION_RESTING, do_action, 1);
   COMMANDO(318, POSITION_RESTING, do_action, 1);
+  COMMANDO(319, POSITION_FIGHTING, do_breath, 1);
 }
 
 /* *************************************************************************

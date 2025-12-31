@@ -1,14 +1,14 @@
-/* ************************************************************************
- *  file: comm.h , Communication module.                   Part of DIKUMUD *
- *  Usage: Prototypes for the common functions in comm.c                   *
- ************************************************************************* */
-
 #pragma once
 
 #include <sys/time.h>
 
+#include "game_constants.h"
 #include "structs.h"
 
+struct char_data;
+struct obj_data;
+struct extra_descr_data;
+struct txt_q;
 struct timeval;
 
 #if SITELOCK

@@ -9,6 +9,7 @@
 
 #include <time.h>
 
+#include "character_flags.h"
 #include "structs.h"
 
 struct char_file_u_new {

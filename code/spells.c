@@ -1,26 +1,29 @@
-/* ************************************************************************
- *  file: spells1.c , handling of magic.                   Part of DIKUMUD *
- *  Usage : Procedures handling all offensive magic.                       *
- *  Copyright (C) 1990, 1991 - see 'license.doc' for complete information. *
- ************************************************************************* */
-#define POSIX_C_SOURCE 200809L
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/param.h>
 
+#include "accessors.h"
+#include "bit_ops.h"
+#include "character_flags.h"
 #include "comm.h"
+#include "commands.h"
 #include "constants.h"
 #include "db.h"
+#include "game_constants.h"
 #include "handler.h"
 #include "interpreter.h"
 #include "limits.h"
+#include "memory_macros.h"
 #include "multiclass.h"
+#include "object_flags.h"
 #include "opinion.h"
-#include "poly.h"
-#include "spells.h"
 #include "race.h"
+#include "room_flags.h"
+#include "spell_ids.h"
+#include "spell_info.h"
+#include "spells.h"
 #include "structs.h"
 #include "utils.h"
 
@@ -1396,6 +1399,12 @@ void cast_create_golem(signed char level, struct char_data* ch, const char* arg,
   }
 }
 
+struct PolyType {
+    char name[20];
+    int level;
+    int number;
+};
+
 const struct PolyType poly_list[40] = {{"goblin", 4, 201}, {"parrot", 4, 9001},
   {"frog", 4, 215}, {"gnoll", 6, 211}, {"parrot", 6, 9010}, {"lizard", 6, 224},
   {"ogre", 8, 4113}, {"parrot", 8, 9011}, {"wolf", 8, 3094}, {"spider", 9, 227},
@@ -1417,7 +1426,8 @@ const struct PolyType poly_list[40] = {{"goblin", 4, 201}, {"parrot", 4, 9001},
  **   time (if a pc)
  */
 
-static void spell_resurrection(Mob* ch, Mob* victim, Obj* obj) {
+static void spell_resurrection(struct char_data* ch, struct char_data* victim,
+  struct obj_data* obj) {
   struct char_file_u st;
   struct affected_type af;
   struct obj_data* obj_object;
@@ -5845,8 +5855,9 @@ void cast_identify(signed char level, struct char_data* ch, const char* arg,
 
 #define MAX_BREATHS 3
 
-struct pbreath {
-    int vnum, spell[MAX_BREATHS];
+struct breath_potion {
+    int vnum;
+    int spell[MAX_BREATHS];
 } breath_potions[] = {
   {3970, {201, 0}},
   {3971, {202, 0}},
@@ -5859,7 +5870,7 @@ struct pbreath {
 void cast_dragon_breath(signed char level, struct char_data* ch,
   const char* arg, int type, struct char_data* tar_ch,
   struct obj_data* potion) {
-  struct pbreath* scan;
+  struct breath_potion* scan;
   int i;
   struct affected_type af;
 
@@ -5908,190 +5919,7 @@ void cast_dragon_breath(signed char level, struct char_data* ch,
   }
 }
 
-static void spell_fire_breath(signed char level, struct char_data* ch,
-  struct char_data* victim) {
-  int dam;
-  int hpch;
-  struct obj_data* burn;
 
-  assert(victim && ch);
-  assert((level >= 1) && (level <= ABS_MAX_LVL));
-
-  dam = dice(1, 100) + level;
-
-  if (saves_spell(victim, SAVING_BREATH)) {
-    dam >>= 1;
-  }
-
-  MissileDamage(ch, victim, dam, SPELL_FIRE_BREATH);
-
-  /* And now for the damage on inventory - flammable items burn */
-
-  struct obj_data* next_obj;
-  for (burn = victim->carrying; burn; burn = next_obj) {
-    next_obj = burn->next_content;
-    /* Only paper and wood items are vulnerable to fire */
-    if (burn->obj_flags.type_flag != ITEM_SCROLL &&
-        burn->obj_flags.type_flag != ITEM_WAND &&
-        burn->obj_flags.type_flag != ITEM_STAFF &&
-        burn->obj_flags.type_flag != ITEM_BOAT) {
-      continue;
-    }
-    if (!saves_spell(victim, SAVING_BREATH)) {
-      act("$o burns", 0, victim, burn, 0, TO_CHAR);
-      extract_obj(burn);
-    }
-  }
-}
-
-void cast_fire_breath(signed char level, struct char_data* ch, const char* arg,
-  int type, struct char_data* tar_ch, struct obj_data* tar_obj) {
-  switch (type) {
-    case SPELL_TYPE_SPELL:
-      spell_fire_breath(level, ch, tar_ch);
-      break; /* It's a spell.. But people can'c cast it! */
-    default:
-      vlog("Serious screw-up in firebreath!");
-      break;
-  }
-}
-
-static void spell_frost_breath(signed char level, struct char_data* ch,
-  struct char_data* victim) {
-  int dam;
-  int hpch;
-  struct obj_data* frozen;
-
-  assert(victim && ch);
-  assert((level >= 1) && (level <= ABS_MAX_LVL));
-
-  dam = dice(10, 100) + level;
-
-  if (saves_spell(victim, SAVING_BREATH)) {
-    dam >>= 1;
-  }
-
-  MissileDamage(ch, victim, dam, SPELL_FROST_BREATH);
-
-  /* And now for the damage on inventory - liquid containers freeze and shatter
-   */
-
-  struct obj_data* next_obj;
-  for (frozen = victim->carrying; frozen; frozen = next_obj) {
-    next_obj = frozen->next_content;
-    /* Only liquid containers are vulnerable to frost */
-    if (frozen->obj_flags.type_flag != ITEM_DRINKCON &&
-        frozen->obj_flags.type_flag != ITEM_POTION) {
-      continue;
-    }
-    if (!saves_spell(victim, SAVING_BREATH)) {
-      act("$o shatters.", 0, victim, frozen, 0, TO_CHAR);
-      extract_obj(frozen);
-    }
-  }
-}
-
-void cast_frost_breath(signed char level, struct char_data* ch, const char* arg,
-  int type, struct char_data* tar_ch, struct obj_data* tar_obj) {
-  switch (type) {
-    case SPELL_TYPE_SPELL:
-      spell_frost_breath(level, ch, tar_ch);
-      break; /* It's a spell.. But people can'c cast it! */
-    default:
-      vlog("Serious screw-up in frostbreath!");
-      break;
-  }
-}
-
-static void spell_acid_breath(signed char level, struct char_data* ch,
-  struct char_data* victim) {
-  int dam;
-  int hpch;
-  int damaged;
-
-  assert(victim && ch);
-  assert((level >= 1) && (level <= ABS_MAX_LVL));
-
-  dam = dice(1, 30) + level;
-
-  if (saves_spell(victim, SAVING_BREATH)) {
-    dam >>= 1;
-  }
-
-  MissileDamage(ch, victim, dam, SPELL_ACID_BREATH);
-}
-
-void cast_acid_breath(signed char level, struct char_data* ch, const char* arg,
-  int type, struct char_data* tar_ch, struct obj_data* tar_obj) {
-  switch (type) {
-    case SPELL_TYPE_SPELL:
-      spell_acid_breath(level, ch, tar_ch);
-      break; /* It's a spell.. But people can'c cast it! */
-    default:
-      vlog("Serious screw-up in acidbreath!");
-      break;
-  }
-}
-
-static void spell_gas_breath(signed char level, struct char_data* ch,
-  struct char_data* victim) {
-  int dam;
-  int hpch;
-
-  assert(victim && ch);
-  assert((level >= 1) && (level <= ABS_MAX_LVL));
-
-  dam = dice(1, 100) + level;
-
-  if (saves_spell(victim, SAVING_BREATH)) {
-    dam >>= 1;
-  }
-
-  MissileDamage(ch, victim, dam, SPELL_GAS_BREATH);
-}
-
-void cast_gas_breath(signed char level, struct char_data* ch, const char* arg,
-  int type, struct char_data* tar_ch, struct obj_data* tar_obj) {
-  switch (type) {
-    case SPELL_TYPE_SPELL:
-      spell_gas_breath(level, ch, tar_ch);
-      break;
-    /* THIS ONE HURTS!! */
-    default:
-      vlog("Serious screw-up in gasbreath!");
-      break;
-  }
-}
-
-static void spell_lightning_breath(signed char level, struct char_data* ch,
-  struct char_data* victim) {
-  int dam;
-  int hpch;
-
-  assert(victim && ch);
-  assert((level >= 1) && (level <= ABS_MAX_LVL));
-
-  dam = dice(1, 100) + level;
-
-  if (saves_spell(victim, SAVING_BREATH)) {
-    dam >>= 1;
-  }
-
-  MissileDamage(ch, victim, dam, SPELL_LIGHTNING_BREATH);
-}
-
-void cast_lightning_breath(signed char level, struct char_data* ch,
-  const char* arg, int type, struct char_data* tar_ch,
-  struct obj_data* tar_obj) {
-  switch (type) {
-    case SPELL_TYPE_SPELL:
-      spell_lightning_breath(level, ch, tar_ch);
-      break; /* It's a spell.. But people can'c cast it! */
-    default:
-      vlog("Serious screw-up in lightningbreath!");
-      break;
-  }
-}
 
 void cast_knock(signed char level, struct char_data* ch, const char* arg,
   int type, struct char_data* tar_ch, struct obj_data* tar_obj) {

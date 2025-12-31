@@ -4,9 +4,11 @@
 #include <string.h>
 #include <time.h>
 
+#include "accessors.h"
 #include "board.h"
 #include "comm.h"
 #include "db.h"
+#include "game_constants.h"
 #include "handler.h"
 #include "interpreter.h"
 #include "multiclass.h"
@@ -103,7 +105,7 @@ struct Board* FindBoardInRoom(int room) {
   return (nullptr);
 }
 
-int board(struct char_data* ch, int cmd, const char* arg, Obj* me) {
+int board(struct char_data* ch, int cmd, const char* arg, struct obj_data* me) {
   struct Board* nb;
 
   if (!ch) {

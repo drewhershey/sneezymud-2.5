@@ -1,18 +1,22 @@
-/*
-  Various utilities for handling traps
-*/
-
 #include "trap.h"
 #include <stdio.h>
 #include <string.h>
 #include <sys/param.h>
 
+#include "accessors.h"
+#include "bit_ops.h"
+#include "character_flags.h"
 #include "comm.h"
 #include "constants.h"
 #include "db.h"
+#include "game_constants.h"
 #include "handler.h"
 #include "multiclass.h"
+#include "object_flags.h"
 #include "opinion.h"
+#include "room_flags.h"
+#include "spell_ids.h"
+#include "spell_info.h"
 #include "spells.h"
 #include "structs.h"
 #include "utils.h"

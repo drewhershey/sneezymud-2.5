@@ -1,11 +1,4 @@
-/* ************************************************************************
- *  file: handler.h , Handler module.                      Part of DIKUMUD *
- *  Usage: Various routines for moving about objects/players               *
- ************************************************************************* */
-
 #pragma once
-
-#include "structs.h"
 
 struct affected_type;
 struct char_data;
@@ -27,9 +20,9 @@ void affect_join(struct char_data* ch, struct affected_type* af, char avg_dur,
   char avg_mod);
 
 /* utility */
-struct obj_data* create_money(int amount);
+[[nodiscard]] struct obj_data* create_money(int amount);
 int isname(const char* str, const char* namelist);
-char* fname(char* namelist);
+[[nodiscard]] char* fname(char* namelist);
 
 /* ******** objects *********** */
 
@@ -37,13 +30,16 @@ void obj_to_char(struct obj_data* object, struct char_data* ch);
 void obj_from_char(struct obj_data* object);
 
 void equip_char(struct char_data* ch, struct obj_data* obj, int pos);
-struct obj_data* unequip_char(struct char_data* ch, int pos);
+[[nodiscard]] struct obj_data* unequip_char(struct char_data* ch, int pos);
 
-struct obj_data* get_obj_in_list(const char* name, struct obj_data* list);
-struct obj_data* get_obj_in_list_num(int num, struct obj_data* list);
-struct obj_data* get_obj(const char* name);
-struct obj_data* get_obj_num(int nr);
-struct obj_data* get_obj_vis_accessible(struct char_data* ch, char* name);
+[[nodiscard]] struct obj_data* get_obj_in_list(const char* name,
+  struct obj_data* list);
+[[nodiscard]] struct obj_data* get_obj_in_list_num(int num,
+  struct obj_data* list);
+[[nodiscard]] struct obj_data* get_obj(const char* name);
+[[nodiscard]] struct obj_data* get_obj_num(int nr);
+[[nodiscard]] struct obj_data* get_obj_vis_accessible(struct char_data* ch,
+  char* name);
 
 void obj_to_room(struct obj_data* object, int room);
 void obj_from_room(struct obj_data* object);
@@ -55,23 +51,26 @@ void extract_obj(struct obj_data* obj);
 
 /* ******* characters ********* */
 
-struct char_data* get_char_room(char* name, int room);
-struct char_data* get_char_num(int nr);
-struct char_data* get_char(char* name);
+[[nodiscard]] struct char_data* get_char_room(char* name, int room);
+[[nodiscard]] struct char_data* get_char_num(int nr);
+[[nodiscard]] struct char_data* get_char(char* name);
 
 void char_from_room(struct char_data* ch);
 void char_to_room(struct char_data* ch, int room);
 
 /* find if character can see */
-struct char_data* get_char_room_vis(struct char_data* ch, const char* name);
-struct char_data* get_char_vis_world(struct char_data* ch, const char* name,
-  int* count);
-struct char_data* get_char_vis(struct char_data* ch, const char* name);
-struct obj_data* get_obj_in_list_vis(struct char_data* ch, const char* name,
-  struct obj_data* list);
-struct obj_data* get_obj_vis(struct char_data* ch, const char* name);
-struct obj_data* get_obj_vis_world(struct char_data* ch, const char* name,
-  int* count);
+[[nodiscard]] struct char_data* get_char_room_vis(struct char_data* ch,
+  const char* name);
+[[nodiscard]] struct char_data* get_char_vis_world(struct char_data* ch,
+  const char* name, int* count);
+[[nodiscard]] struct char_data* get_char_vis(struct char_data* ch,
+  const char* name);
+[[nodiscard]] struct obj_data* get_obj_in_list_vis(struct char_data* ch,
+  const char* name, struct obj_data* list);
+[[nodiscard]] struct obj_data* get_obj_vis(struct char_data* ch,
+  const char* name);
+[[nodiscard]] struct obj_data* get_obj_vis_world(struct char_data* ch,
+  const char* name, int* count);
 
 void extract_char(struct char_data* ch);
 

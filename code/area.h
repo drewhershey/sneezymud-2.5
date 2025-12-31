@@ -1,9 +1,5 @@
 #pragma once
 
-/*
- *  these defines are to make differentiation easier
- */
-
 #define MIDGAARD 0
 #define NEWTHALOS 1
 

@@ -1,19 +1,19 @@
-/************************************************************************
- *  file: act.obj1.c , Implementation of commands.         Part of DIKUMUD *
- *  Usage : Commands mainly moving around objects.                         *
- *  Copyright (C) 1990, 1991 - see 'license.doc' for complete information. *
- ************************************************************************* */
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
+#include "accessors.h"
+#include "bit_ops.h"
 #include "comm.h"
+#include "commands.h"
 #include "constants.h"
 #include "db.h"
+#include "game_constants.h"
 #include "handler.h"
 #include "interpreter.h"
 #include "multiclass.h"
+#include "object_flags.h"
+#include "room_flags.h"
 #include "structs.h"
 #include "trap.h"
 #include "utils.h"

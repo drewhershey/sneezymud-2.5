@@ -1,22 +1,22 @@
-/* ************************************************************************
- *  file: shop.c , Shop module.                            Part of DIKUMUD *
- *  Usage: Procedures handling shops and shopkeepers.                      *
- *  Copyright (C) 1990, 1991 - see 'license.doc' for complete information. *
- ************************************************************************* */
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
+#include "accessors.h"
 #include "comm.h"
+#include "commands.h"
 #include "constants.h"
 #include "db.h"
+#include "game_constants.h"
 #include "handler.h"
 #include "interpreter.h"
+#include "memory_macros.h"
 #include "multiclass.h"
-#include "structs.h"
-#include "utils.h"
+#include "object_flags.h"
 #include "spec_procs.h"
+#include "structs.h"
+#include "text_macros.h"
+#include "utils.h"
 
 #define SHOP_FILE "tinyworld.shp"
 #define MAX_TRADE 5

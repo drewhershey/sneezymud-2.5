@@ -1,12 +1,12 @@
-
-/*
- **  create sounds on objects
- */
-
 #include <stdio.h>
 
+#include "accessors.h"
+#include "bit_ops.h"
+#include "character_flags.h"
 #include "comm.h"
 #include "db.h"
+#include "object_flags.h"
+#include "room_flags.h"
 #include "structs.h"
 #include "utils.h"
 

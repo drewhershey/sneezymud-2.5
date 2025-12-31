@@ -1,6 +1,7 @@
 #pragma once
 
-#include "structs.h"
+struct char_data;
+struct obj_data;
 
 #define TRAP_EFFECT_TYPE 0
 #define TRAP_DAM_TYPE 1

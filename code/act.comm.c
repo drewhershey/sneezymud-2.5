@@ -1,18 +1,18 @@
-/* ************************************************************************
- *  file: act.comm.c , Implementation of commands.         Part of DIKUMUD *
- *  Usage : Communication.                                                 *
- *  Copyright (C) 1990, 1991 - see 'license.doc' for complete information. *
- ************************************************************************* */
-
 #include <stdio.h>
 #include <string.h>
 
+#include "accessors.h"
+#include "bit_ops.h"
+#include "character_flags.h"
 #include "comm.h"
 #include "db.h"
+#include "game_constants.h"
 #include "handler.h"
 #include "interpreter.h"
 #include "multiclass.h"
-#include "spells.h"
+#include "object_flags.h"
+#include "room_flags.h"
+#include "spell_ids.h"
 #include "structs.h"
 #include "utils.h"
 

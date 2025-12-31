@@ -1,9 +1,3 @@
-/**************************************************************************
- *  file: db.c , Database module.                          Part of DIKUMUD *
- *  Usage: Loading/Saving chars, booting world, resetting etc.             *
- *  Copyright (C) 1990, 1991 - see 'license.doc' for complete information. *
- ***************************************************************************/
-
 #include "db.h"
 
 #include <assert.h>
@@ -14,23 +8,31 @@
 #include <sys/param.h>
 #include <time.h>
 
+#include "accessors.h"
+#include "bit_ops.h"
 #include "board.h"
+#include "character_flags.h"
 #include "comm.h"
 #include "compat_types.h"
 #include "constants.h"
+#include "game_constants.h"
 #include "handler.h"
 #include "hash.h"
 #include "interpreter.h"
 #include "limits.h"
 #include "mail.h"
+#include "memory_macros.h"
 #include "multiclass.h"
+#include "object_flags.h"
 #include "opinion.h"
 #include "race.h"
+#include "room_flags.h"
+#include "spell_ids.h"
 #include "spells.h"
 #include "structs.h"
+#include "text_macros.h"
 #include "utils.h"
-
-#define NEW_ZONE_SYSTEM
+#include "weather.h"
 
 /**************************************************************************
  *  declarations of most of the 'global' variables                         *
@@ -148,7 +150,7 @@ void boot_db(void) {
     assign_mobiles();
     vlog("   Objects.");
     assign_objects();
-    vlog("   Room.");
+    vlog("   room_data.");
     assign_rooms();
   }
 
@@ -429,7 +431,7 @@ void cleanout_room(struct room_data* rp) {
 
 // Allocates space for a single direction data entry for a room, then reads in
 // the data from the .wld file
-static void setup_dir(FILE* fl, Room* rp, int dir) {
+static void setup_dir(FILE* fl, struct room_data* rp, int dir) {
   assert(rp);
 
   CREATE(rp->dir_option[dir], struct room_direction_data, 1);
@@ -466,9 +468,9 @@ static void setup_dir(FILE* fl, Room* rp, int dir) {
 // Reads in the data for a single, already-allocated room from the .wld file.
 // Expects the file to already be positioned at the start of the room data,
 // right after the room number.
-void load_one_room(FILE* fl, Room* rp) {
+void load_one_room(FILE* fl, struct room_data* rp) {
   assert(rp && rp->number >= 0 &&
-         "Room must already be allocated before calling load_one_room");
+         "room_data must already be allocated before calling load_one_room");
 
   rp->name = fread_string(fl);
   rp->description = fread_string(fl);
@@ -487,7 +489,7 @@ void load_one_room(FILE* fl, Room* rp) {
     }
 
     if (zone > top_of_zone_table) {
-      fprintf(stderr, "Room %d is outside of any zone.\n", rp->number);
+      fprintf(stderr, "room_data %d is outside of any zone.\n", rp->number);
       exit(0);
     }
     rp->zone = (short)zone;
@@ -590,7 +592,7 @@ void boot_world(void) {
       exit(0);
     }
 
-    Room* room = allocate_room(virtual_nr);
+    struct room_data* room = allocate_room(virtual_nr);
     if (!room) {
       vlogf("Failed to allocate room %d", virtual_nr);
       (void)fclose(fl);
@@ -605,7 +607,7 @@ void boot_world(void) {
 // Find an already-existing room from the in-memory database with the given
 // room_number and return a pointer. If one doesn't exist, allocate a new room
 // and add it to the database, then return a pointer.
-Room* allocate_room(int room_number) {
+struct room_data* allocate_room(int room_number) {
   if (room_number < 0 || room_number >= WORLD_SIZE) {
     vlogf("allocate_room: room_number %d out of bounds (0-%d)", room_number,
       WORLD_SIZE - 1);
@@ -616,7 +618,7 @@ Room* allocate_room(int room_number) {
     top_of_world = room_number;
   }
 
-  Room* room = room_find(room_db, room_number);
+  struct room_data* room = room_find(room_db, room_number);
 
   if (room) {
     return room;
@@ -869,7 +871,7 @@ struct char_data* read_mobile(int nr, int type) {
 
   fseek(mob_f, mob_index[nr].pos, 0);
 
-  Mob* mob = nullptr;
+  struct char_data* mob = nullptr;
   CREATE(mob, struct char_data, 1);
   clear_char(mob);
 

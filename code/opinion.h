@@ -1,6 +1,6 @@
 #pragma once
 
-#include "structs.h"
+struct char_data;
 
 void FreeFears(struct char_data* ch);
 void FreeHates(struct char_data* ch);

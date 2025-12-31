@@ -1,22 +1,24 @@
-/* ************************************************************************
- *  file: modify.c                                         Part of DIKUMUD *
- *  Usage: Run-time modification (by users) of game variables              *
- *  Copyright (C) 1990, 1991 - see 'license.doc' for complete information. *
- ************************************************************************ */
-
 #include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
 
+#include "accessors.h"
+#include "bit_ops.h"
+#include "character_flags.h"
 #include "comm.h"
 #include "db.h"
+#include "game_constants.h"
 #include "handler.h"
 #include "interpreter.h"
 #include "mail.h"
+#include "memory_macros.h"
 #include "multiclass.h"
+#include "room_flags.h"
 #include "structs.h"
+#include "text_macros.h"
+#include "ui_strings.h"
 #include "utils.h"
 
 #define REBOOT_AT 10 /* 0-23, time of optional reboot if -e lib/reboot */

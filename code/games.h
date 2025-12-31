@@ -1,8 +1,4 @@
-/* Games.h  :  Stuff to include for the casino. Russ Russell  02/18/93 */
-
 #pragma once
-
-#include "structs.h"
 
 struct char_data;
 

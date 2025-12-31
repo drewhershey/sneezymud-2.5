@@ -1,11 +1,6 @@
-/* ************************************************************************
- *  file: constants.c                                      Part of DIKUMUD *
- *  Usage: For constants used by the game.                                 *
- *  Copyright (C) 1990, 1991 - see 'license.doc' for complete information. *
- ************************************************************************* */
-
 #include "constants.h"
 
+#include "game_constants.h"
 #include "structs.h"
 
 const struct QuestItem QuestList[4][IMMORTAL] = {
@@ -69,7 +64,7 @@ const struct QuestItem QuestList[4][IMMORTAL] = {
     {13840, "What kind of conditioner does one use for asps?"}, /* Medusa, GQ */
     {7406,
       "If you don't bring a scroll of recall, you might "
-      "die a fiery death"},                   /* Room 7284, SM */
+      "die a fiery death"},                   /* room_data 7284, SM */
     {120, "Dock down anchor"},                /* Ixitxachitl, NT */
     {21008, "Very useful, behind a hearth."}, /* Dog, OR */
     {10002,
@@ -440,7 +435,7 @@ const struct QuestItem QuestList[4][IMMORTAL] = {
       "advancement."}, /* Young Wormkin, AR */
     {6810,
       "You are everywhere you look in this frozen "
-      "northern maze of ice."},                       /* Room 6854, ART */
+      "northern maze of ice."},                       /* room_data 6854, ART */
     {255, "Get the happy stick from a desert worm."}, /* Young
                                                          Worm,
                                                          GED

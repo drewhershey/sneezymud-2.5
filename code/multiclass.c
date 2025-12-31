@@ -1,15 +1,6 @@
-/*
-**  Levels:  int levels[4]
-*/
-
-/*
-**  0 = Mage, 1 = cleric, 3 = thief, 2 = fighter
-*/
-
-/*
-**
-*/
-
+#include "accessors.h"
+#include "bit_ops.h"
+#include "character_flags.h"
 #include "multiclass.h"
 #include "structs.h"
 #include "utils.h"

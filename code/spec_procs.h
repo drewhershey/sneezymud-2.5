@@ -1,39 +1,56 @@
-#include "structs.h"
+struct char_data;
+struct obj_data;
 
-extern const struct breather breath_monsters[];
-
-struct char_data* FindMobInRoomWithFunction(int room, mob_proc_t func);
+struct char_data* FindMobInRoomWithFunction(int room,
+  int (*func)(struct char_data*, int, const char*));
 int breath_weapon(struct char_data* ch, struct char_data* target, int mana_cost,
-  funcp func);
+  void (*func)(signed char, struct char_data*, int, struct char_data*));
 char* how_good(int percent);
 
-// Object Procs
-extern int board(Mob* ch, int cmd, const char* arg, Obj* me);
-extern int nodrop(Mob* ch, int cmd, const char* arg, Obj* me);
-extern int soap(Mob* ch, int cmd, const char* arg, Obj* me);
-extern int vorpal(Mob* victim, int cmd, const char* arg, Obj* me);
-extern int jive_box(Mob* ch, int cmd, const char* arg, Obj* me);
-extern int warMaker(Mob* ch, int cmd, const char* arg, Obj* o);
-extern int orbOfDestruction(Mob* ch, int cmd, const char* arg, Obj* o);
+/* Used by spell_parser.c affect_update() for breath weapon effect ticks */
+typedef void (*bweapon_fn)(signed char, struct char_data*, const char*, int,
+  struct char_data*, struct obj_data*);
 
-// Room Procs
-extern int dump(Mob* ch, int cmd, const char* arg);
-extern int train_station(Mob* ch, int cmd, const char* arg);
-extern int pet_shops(Mob* ch, int cmd, const char* arg);
-extern int bank(Mob* ch, int cmd, const char* arg);
-extern int House(Mob* ch, int cmd, const char* arg);
-extern int mirror_room(Mob* ch, int cmd, const char* arg);
-extern int Magic_Fountain(Mob* ch, int cmd, const char* arg);
-extern int board_room_entrance(Mob* ch, int cmd, const char* arg);
-extern int hospital_entrance(Mob* ch, int cmd, const char* arg);
-extern int hospital(Mob* ch, int cmd, const char* arg);
-extern int Fountain(Mob* ch, int cmd, const char* arg);
-extern int Donation(Mob* ch, int cmd, const char* arg);
-extern int monk_challenge_prep_room(Mob* ch, int cmd, const char* arg);
-extern int monk_challenge_room(Mob* ch, int cmd, const char* arg);
-extern int metahospital(Mob* ch, int cmd, const char* arg);
-extern int no_order(Mob* ch, int cmd, const char* arg);
-extern int mag_room(Mob* ch, int cmd, const char* arg);
+/* Indexed by (spell_id - FIRST_BREATH_WEAPON) */
+extern const bweapon_fn bweapons[];
+
+void do_breath(struct char_data* ch, const char* argument, int cmd);
+
+// Object Procs
+extern int board(struct char_data* ch, int cmd, const char* arg,
+  struct obj_data* me);
+extern int nodrop(struct char_data* ch, int cmd, const char* arg,
+  struct obj_data* me);
+extern int soap(struct char_data* ch, int cmd, const char* arg,
+  struct obj_data* me);
+extern int vorpal(struct char_data* victim, int cmd, const char* arg,
+  struct obj_data* me);
+extern int jive_box(struct char_data* ch, int cmd, const char* arg,
+  struct obj_data* me);
+extern int warMaker(struct char_data* ch, int cmd, const char* arg,
+  struct obj_data* o);
+extern int orbOfDestruction(struct char_data* ch, int cmd, const char* arg,
+  struct obj_data* o);
+
+// room_data Procs
+extern int dump(struct char_data* ch, int cmd, const char* arg);
+extern int train_station(struct char_data* ch, int cmd, const char* arg);
+extern int pet_shops(struct char_data* ch, int cmd, const char* arg);
+extern int bank(struct char_data* ch, int cmd, const char* arg);
+extern int House(struct char_data* ch, int cmd, const char* arg);
+extern int mirror_room(struct char_data* ch, int cmd, const char* arg);
+extern int Magic_Fountain(struct char_data* ch, int cmd, const char* arg);
+extern int board_room_entrance(struct char_data* ch, int cmd, const char* arg);
+extern int hospital_entrance(struct char_data* ch, int cmd, const char* arg);
+extern int hospital(struct char_data* ch, int cmd, const char* arg);
+extern int Fountain(struct char_data* ch, int cmd, const char* arg);
+extern int Donation(struct char_data* ch, int cmd, const char* arg);
+extern int monk_challenge_prep_room(struct char_data* ch, int cmd,
+  const char* arg);
+extern int monk_challenge_room(struct char_data* ch, int cmd, const char* arg);
+extern int metahospital(struct char_data* ch, int cmd, const char* arg);
+extern int no_order(struct char_data* ch, int cmd, const char* arg);
+extern int mag_room(struct char_data* ch, int cmd, const char* arg);
 
 // Mob Procs
 extern int cityguard(struct char_data* ch, int cmd, const char* arg);

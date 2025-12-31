@@ -1,9 +1,3 @@
-/* ************************************************************************
- *  file: utility.c, Utility module.                       Part of DIKUMUD *
- *  Usage: Utility procedures                                              *
- *  Copyright (C) 1990, 1991 - see 'license.doc' for complete information. *
- ************************************************************************* */
-
 #include <assert.h>
 #include <ctype.h>
 #include <stdarg.h>
@@ -14,16 +8,23 @@
 #include <sys/param.h>
 #include <time.h>
 
+#include "accessors.h"
 #include "area.h"
+#include "bit_ops.h"
+#include "character_flags.h"
 #include "comm.h"
 #include "constants.h"
 #include "db.h"
+#include "game_constants.h"
 #include "handler.h"
 #include "multiclass.h"
+#include "object_flags.h"
 #include "opinion.h"
 #include "race.h"
+#include "room_flags.h"
 #include "spells.h"
 #include "structs.h"
+#include "text_macros.h"
 #include "utils.h"
 
 int CAN_SEE_FOR_WHO(struct char_data* s, struct char_data* o) {

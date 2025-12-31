@@ -1,8 +1,3 @@
-/******* MUD MAIL SYSTEM MAIN FILE ***************************
- ***     written by Rasmussen (jelson@server.cs.jhu.edu)   ***
- ****   compliments of CircleMUD (circle.cs.jhu.edu 4000) ****
- ************************************************************/
-#define POSIX_C_SOURCE 200809L
 #include <assert.h>
 #include <ctype.h>
 #include <stdio.h>
@@ -10,12 +5,17 @@
 #include <string.h>
 #include <time.h>
 
+#include "accessors.h"
+#include "bit_ops.h"
+#include "character_flags.h"
 #include "comm.h"
 #include "db.h"
 #include "handler.h"
 #include "interpreter.h"
 #include "mail.h"
+#include "memory_macros.h"
 #include "multiclass.h"
+#include "object_flags.h"
 #include "spec_procs.h"
 #include "structs.h"
 #include "utils.h"
