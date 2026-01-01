@@ -19,7 +19,7 @@ static void hupsig(int tmp) {
 static void logsig(int tmp) { vlog("Signal received. Ignoring."); }
 
 static void checkpointing(int tmp) {
-  if (!tics) {
+  if (tics == 0) {
     vlog("CHECKPOINT shutdown: tics not updated");
     abort();
   } else {

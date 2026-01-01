@@ -56,16 +56,16 @@ void do_disarm(struct char_data* ch, const char* argument, int cmd) {
   struct obj_data* w = nullptr;
   struct obj_data* trap = nullptr;
 
-  if (!ch->skills) {
+  if (ch->skills == nullptr) {
     return;
   }
 
   if (check_peaceful(ch,
-        "You feel too peaceful to contemplate violence.\n\r")) {
+        "You feel too peaceful to contemplate violence.\n\r") != 0) {
     return;
   }
 
-  if (!IS_PC(ch) && cmd) {
+  if (!IS_PC(ch) && (cmd != 0)) {
     return;
   }
 
@@ -73,22 +73,22 @@ void do_disarm(struct char_data* ch, const char* argument, int cmd) {
    *   get victim
    */
   only_argument(argument, name);
-  if (!(victim = get_char_room_vis(ch, name))) {
-    if (ch->specials.fighting) {
+  if ((victim = get_char_room_vis(ch, name)) == nullptr) {
+    if (ch->specials.fighting != nullptr) {
       victim = ch->specials.fighting;
     } else {
-      if (!ch->skills[SKILL_REMOVE_TRAP].learned) {
+      if (ch->skills[SKILL_REMOVE_TRAP].learned == 0) {
         send_to_char("Disarm who?\n\r", ch);
         return;
       }
-      if (!(trap = get_obj_in_list_vis(ch, name,
-              real_roomp(ch->in_room)->contents))) {
-        if (!(trap = get_obj_in_list_vis(ch, name, ch->carrying))) {
+      if ((trap = get_obj_in_list_vis(ch, name,
+             real_roomp(ch->in_room)->contents)) == nullptr) {
+        if ((trap = get_obj_in_list_vis(ch, name, ch->carrying)) == nullptr) {
           send_to_char("Disarm what?\n\r", ch);
           return;
         }
       }
-      if (trap) {
+      if (trap != nullptr) {
         remove_trap(ch, trap);
         return;
       }
@@ -112,7 +112,7 @@ void do_disarm(struct char_data* ch, const char* argument, int cmd) {
       nullptr, nullptr, TO_ROOM);
     GET_POS(ch) = POSITION_SITTING;
     if ((IS_NPC(victim)) && (GET_POS(victim) > POSITION_SLEEPING) &&
-        (!victim->specials.fighting)) {
+        (victim->specials.fighting == nullptr)) {
       set_fighting(victim, ch);
     }
     WAIT_STATE(ch, PULSE_VIOLENCE * 3);
@@ -124,9 +124,9 @@ void do_disarm(struct char_data* ch, const char* argument, int cmd) {
     return;
   }
 
-  if (!HasClass(ch, CLASS_WARRIOR) && !HasClass(ch, CLASS_MONK) &&
-      (!HasClass(ch, CLASS_ANTIPALADIN)) && (!HasClass(ch, CLASS_PALADIN)) &&
-      (!IS_IMMORTAL(ch))) {
+  if ((HasClass(ch, CLASS_WARRIOR) == 0) && (HasClass(ch, CLASS_MONK) == 0) &&
+      (HasClass(ch, CLASS_ANTIPALADIN) == 0) &&
+      (HasClass(ch, CLASS_PALADIN) == 0) && (!IS_IMMORTAL(ch))) {
     send_to_char("You're no warrior!\n\r", ch);
     return;
   }
@@ -138,16 +138,16 @@ void do_disarm(struct char_data* ch, const char* argument, int cmd) {
 
   percent -= dex_app[GET_DEX(ch)].reaction * 10;
   percent += dex_app[GET_DEX(victim)].reaction * 10;
-  if (!ch->equipment[WIELD] && !HasClass(ch, CLASS_MONK)) {
+  if ((ch->equipment[WIELD] == nullptr) && (HasClass(ch, CLASS_MONK) == 0)) {
     percent += 50;
   }
 
   percent += GetMaxLevel(victim);
-  if (HasClass(victim, CLASS_MONK)) {
+  if (HasClass(victim, CLASS_MONK) != 0) {
     percent += GetMaxLevel(victim);
   }
 
-  if (HasClass(ch, CLASS_MONK)) {
+  if (HasClass(ch, CLASS_MONK) != 0) {
     percent -= GetMaxLevel(ch);
   } else {
     percent -= GetMaxLevel(ch) >> 1;
@@ -163,7 +163,7 @@ void do_disarm(struct char_data* ch, const char* argument, int cmd) {
       nullptr, nullptr, TO_ROOM);
     GET_POS(ch) = POSITION_SITTING;
     if ((IS_NPC(victim)) && (GET_POS(victim) > POSITION_SLEEPING) &&
-        (!victim->specials.fighting)) {
+        (victim->specials.fighting == nullptr)) {
       set_fighting(victim, ch);
     }
     LearnFromMistake(ch, SKILL_DISARM, 0, 95);
@@ -172,7 +172,7 @@ void do_disarm(struct char_data* ch, const char* argument, int cmd) {
     /*
      *  success
      */
-    if (victim->equipment[WIELD]) {
+    if (victim->equipment[WIELD] != nullptr) {
       w = unequip_char(victim, WIELD);
       act("$n makes an impressive fighting move.", 1, ch, nullptr, nullptr,
         TO_ROOM);
@@ -189,7 +189,7 @@ void do_disarm(struct char_data* ch, const char* argument, int cmd) {
         nullptr, nullptr, TO_ROOM);
     }
     if ((IS_NPC(victim)) && (GET_POS(victim) > POSITION_SLEEPING) &&
-        (!victim->specials.fighting)) {
+        (victim->specials.fighting == nullptr)) {
       set_fighting(victim, ch);
     }
     WAIT_STATE(victim, PULSE_VIOLENCE * 2);
@@ -204,8 +204,9 @@ void do_disarm(struct char_data* ch, const char* argument, int cmd) {
 static int named_mobile_in_room(int room, struct hunting_data* c_data) {
   struct char_data* scan = nullptr;
 
-  for (scan = real_roomp(room)->people; scan; scan = scan->next_in_room) {
-    if (isname(c_data->name, scan->player.name)) {
+  for (scan = real_roomp(room)->people; scan != nullptr;
+    scan = scan->next_in_room) {
+    if (isname(c_data->name, scan->player.name) != 0) {
       *(c_data->victim) = scan;
       return 1;
     }
@@ -229,20 +230,20 @@ void do_track(struct char_data* ch, const char* argument, int cmd) {
   only_argument(argument, name);
 
   found = 0;
-  for (scan = character_list; scan; scan = scan->next) {
-    if (isname(name, scan->player.name)) {
+  for (scan = character_list; scan != nullptr; scan = scan->next) {
+    if (isname(name, scan->player.name) != 0) {
       found = 1;
     }
   }
 
-  if (!found) {
+  if (found == 0) {
     send_to_char("You are unable to find traces of one.\n\r", ch);
     return;
   }
 
   int dist = 10;
 
-  if (ch->skills) {
+  if (ch->skills != nullptr) {
     dist = (unsigned char)(ch->skills[SKILL_HUNT].learned);
   }
 
@@ -270,9 +271,9 @@ void do_track(struct char_data* ch, const char* argument, int cmd) {
     dist = MAX_ROOMS;
   }
 
-  if (affected_by_spell(ch, SPELL_MINOR_TRACK)) {
+  if (affected_by_spell(ch, SPELL_MINOR_TRACK) != 0) {
     dist = GetMaxLevel(ch) * 50;
-  } else if (affected_by_spell(ch, SPELL_MAJOR_TRACK)) {
+  } else if (affected_by_spell(ch, SPELL_MAJOR_TRACK) != 0) {
     dist = GetMaxLevel(ch) * 100;
   }
 
@@ -290,9 +291,10 @@ void do_track(struct char_data* ch, const char* argument, int cmd) {
     .fn.mob_in_room_fn = named_mobile_in_room,
   };
 
-  const int in_zone = GetMaxLevel(ch) < MIN_GLOB_TRACK_LEV ||
-                      affected_by_spell(ch, SPELL_MINOR_TRACK) ||
-                      affected_by_spell(ch, SPELL_MAJOR_TRACK);
+  const int in_zone =
+    static_cast<const int>(GetMaxLevel(ch) < MIN_GLOB_TRACK_LEV ||
+                           (affected_by_spell(ch, SPELL_MINOR_TRACK) != 0) ||
+                           (affected_by_spell(ch, SPELL_MAJOR_TRACK) != 0));
 
   const int code = find_path(ch->in_room, &hunt_mob_data, -dist, in_zone);
 
@@ -336,7 +338,7 @@ int choose_exit_global(int in_room, int tgt_room, int depth) {
 }
 
 int go_direction(struct char_data* ch, int dir) {
-  if (ch->specials.fighting) {
+  if (ch->specials.fighting != nullptr) {
     return 0;
   }
 
@@ -345,7 +347,7 @@ int go_direction(struct char_data* ch, int dir) {
     return 0;
   }
 
-  if (IsHumanoid(ch) && !IS_SET(EXIT(ch, dir)->exit_info, EX_LOCKED)) {
+  if ((IsHumanoid(ch) != 0) && !IS_SET(EXIT(ch, dir)->exit_info, EX_LOCKED)) {
     open_door(ch, dir);
     return 0;
   }
@@ -356,18 +358,18 @@ int track(struct char_data* ch, struct char_data* vict) {
   char buf[256];
   int code = 0;
 
-  if ((!ch) || (!vict)) {
+  if ((ch == nullptr) || (vict == nullptr)) {
     return (-1);
   }
 
   if ((GetMaxLevel(ch) < MIN_GLOB_TRACK_LEV) ||
-      (affected_by_spell(ch, SPELL_MINOR_TRACK)) ||
-      (affected_by_spell(ch, SPELL_MAJOR_TRACK))) {
+      ((affected_by_spell(ch, SPELL_MINOR_TRACK)) != 0) ||
+      ((affected_by_spell(ch, SPELL_MAJOR_TRACK)) != 0)) {
     code = choose_exit_in_zone(ch->in_room, vict->in_room, ch->hunt_dist);
   } else {
     code = choose_exit_global(ch->in_room, vict->in_room, ch->hunt_dist);
   }
-  if ((!ch) || (!vict)) {
+  if ((ch == nullptr) || (vict == nullptr)) {
     return (-1);
   }
 
@@ -388,18 +390,18 @@ int dir_track(struct char_data* ch, struct char_data* vict) {
   char buf[256];
   int code = 0;
 
-  if ((!ch) || (!vict)) {
+  if ((ch == nullptr) || (vict == nullptr)) {
     return (-1);
   }
 
   if ((GetMaxLevel(ch) >= MIN_GLOB_TRACK_LEV) ||
-      (affected_by_spell(ch, SPELL_MINOR_TRACK)) ||
-      (affected_by_spell(ch, SPELL_MAJOR_TRACK))) {
+      ((affected_by_spell(ch, SPELL_MINOR_TRACK)) != 0) ||
+      ((affected_by_spell(ch, SPELL_MAJOR_TRACK)) != 0)) {
     code = choose_exit_global(ch->in_room, vict->in_room, ch->hunt_dist);
   } else {
     code = choose_exit_in_zone(ch->in_room, vict->in_room, ch->hunt_dist);
   }
-  if ((!ch) || (!vict)) {
+  if ((ch == nullptr) || (vict == nullptr)) {
     return (-1);
   }
 
@@ -434,7 +436,7 @@ int dir_track(struct char_data* ch, struct char_data* vict) {
 static void donothing(void* data) { (void)data; /* Unused */ }
 
 static int hash_enter(struct hash_header* ht, int key, void* data) {
-  if (hash_find(ht, key)) {
+  if (hash_find(ht, key) != nullptr) {
     return 0;
   }
 
@@ -448,7 +450,7 @@ static void destroy_hash_table(struct hash_header* ht, void (*gman)(void*)) {
   struct hash_link* temp = nullptr;
 
   for (i = 0; i < ht->table_size; i++) {
-    for (scan = ht->buckets[i]; scan;) {
+    for (scan = ht->buckets[i]; scan != nullptr;) {
       temp = scan->next;
       (*gman)(scan->data);
       free(scan);
@@ -498,21 +500,22 @@ int find_path(int in_room, const struct find_path_data* data, int depth,
   q_tail->room_nr = in_room;
   q_tail->next_q = nullptr;
 
-  while (q_head) {
+  while (q_head != nullptr) {
     herep = real_roomp(q_head->room_nr);
     /* for each room test all directions */
-    if (herep->zone == startp->zone || !in_zone) {
+    if (herep->zone == startp->zone || (in_zone == 0)) {
       // only look in this zone.. saves cpu time.  makes world safer for players
       for (i = 0; i <= 5; i++) {
         exitp = herep->dir_option[i];
-        if (exit_ok(exitp, &therep) && (thru_doors ? GO_OK_SMARTER : GO_OK)) {
+        if ((exit_ok(exitp, &therep) != 0) &&
+            ((thru_doors != 0) ? GO_OK_SMARTER : GO_OK)) {
           /* next room */
           tmp_room = herep->dir_option[i]->to_room;
-          if (!((data->fn.is_target_room_fn)(tmp_room,
-                data->fn_data.target_room))) {
+          if (((data->fn.is_target_room_fn)(tmp_room,
+                data->fn_data.target_room)) == 0) {
             /* shall we add room to queue ? */
             /* count determines total breadth and depth */
-            if (!hash_find(&x_room, tmp_room) && (count < depth) &&
+            if ((hash_find(&x_room, tmp_room) == nullptr) && (count < depth) &&
                 !IS_SET(RM_FLAGS(tmp_room), DEATH)) {
               count++;
               /* mark room as visted and put on queue */
@@ -532,13 +535,14 @@ int find_path(int in_room, const struct find_path_data* data, int depth,
           } else {
             /* have reached our goal so free queue */
             tmp_room = q_head->room_nr;
-            for (; q_head; q_head = tmp_q) {
+            for (; q_head != nullptr; q_head = tmp_q) {
               tmp_q = q_head->next_q;
               free(q_head);
             }
             /* return direction if first layer */
             if ((intptr_t)hash_find(&x_room, tmp_room) == -1) {
-              if (x_room.buckets) { /* junk left over from a previous track */
+              if (x_room.buckets !=
+                  nullptr) { /* junk left over from a previous track */
                 destroy_hash_table(&x_room, donothing);
               }
               return (i);
@@ -546,7 +550,8 @@ int find_path(int in_room, const struct find_path_data* data, int depth,
             int i = 0;
 
             i = (intptr_t)hash_find(&x_room, tmp_room);
-            if (x_room.buckets) { /* junk left over from a previous track */
+            if (x_room.buckets !=
+                nullptr) { /* junk left over from a previous track */
               destroy_hash_table(&x_room, donothing);
             }
             return (-1 + i);
@@ -561,7 +566,7 @@ int find_path(int in_room, const struct find_path_data* data, int depth,
     q_head = tmp_q;
   }
   /* couldn't find path */
-  if (x_room.buckets) { /* junk left over from a previous track */
+  if (x_room.buckets != nullptr) { /* junk left over from a previous track */
     destroy_hash_table(&x_room, donothing);
   }
   return (-1);
@@ -572,19 +577,19 @@ void do_headbutt(struct char_data* ch, const char* argument, int cmd) {
   char name[256];
   signed char percent = 0;
 
-  if (!ch->skills) {
+  if (ch->skills == nullptr) {
     return;
   }
 
   if (check_peaceful(ch,
-        "You feel too peaceful to contemplate violence.\n\r")) {
+        "You feel too peaceful to contemplate violence.\n\r") != 0) {
     return;
   }
 
   only_argument(argument, name);
 
-  if (!(victim = get_char_room_vis(ch, name))) {
-    if (ch->specials.fighting) {
+  if ((victim = get_char_room_vis(ch, name)) == nullptr) {
+    if (ch->specials.fighting != nullptr) {
       victim = ch->specials.fighting;
     } else {
       send_to_char("Butt who's head?\n\r", ch);
@@ -642,7 +647,7 @@ void do_subterfuge(struct char_data* ch, const char* arg, int cmd) {
   }
 
   one_argument(arg, name);
-  if (!(npc = get_char_room_vis(ch, name))) {
+  if ((npc = get_char_room_vis(ch, name)) == nullptr) {
     send_to_char("Noone here by that name.\n\r", ch);
     return;
   }
@@ -679,14 +684,14 @@ void do_swim(struct char_data* ch, const char* arg, int cmd) {
     return;
   }
 
-  if (affected_by_spell(ch, SKILL_SWIM)) {
+  if (affected_by_spell(ch, SKILL_SWIM) != 0) {
     send_to_char("You're too exhausted to swim right now\n", ch);
     return;
   }
 
   percent = number(1, 101); /* 101% is a complete failure */
 
-  if (!ch->skills) {
+  if (ch->skills == nullptr) {
     return;
   }
 
@@ -718,7 +723,7 @@ void do_swim(struct char_data* ch, const char* arg, int cmd) {
 }
 
 static int spy_check(struct char_data* ch) {
-  if (!ch->skills) {
+  if (ch->skills == nullptr) {
     return 0;
   }
 
@@ -734,7 +739,7 @@ static void slam_into_wall(struct char_data* ch,
   char doorname[128];
   char buf[256];
 
-  if (exitp->keyword && *exitp->keyword) {
+  if ((exitp->keyword != nullptr) && (*exitp->keyword != 0)) {
     if ((strcmp(fname(exitp->keyword), "secret") == 0) ||
         (IS_SET(exitp->exit_info, EX_SECRET))) {
       strcpy(doorname, "wall");
@@ -765,7 +770,7 @@ static void raw_unlock_door(struct char_data* ch,
   REMOVE_BIT(exitp->exit_info, EX_LOCKED);
   /* now for unlocking the other side, too */
   rp = real_roomp(exitp->to_room);
-  if (rp && (back = rp->dir_option[rev_dir[door]]) &&
+  if ((rp != nullptr) && ((back = rp->dir_option[rev_dir[door]]) != nullptr) &&
       back->to_room == ch->in_room) {
     REMOVE_BIT(back->exit_info, EX_LOCKED);
   } else {
@@ -811,13 +816,13 @@ void do_doorbash(struct char_data* ch, const char* arg, int cmd) {
     return;
   }
 
-  if (!ok) {
+  if (ok == 0) {
     send_to_char("Hmm, you shouldn't have gotten this far\n\r", ch);
     return;
   }
 
   exitp = EXIT(ch, dir);
-  if (!exitp) {
+  if (exitp == nullptr) {
     send_to_char("you shouldn't have gotten here.\n\r", ch);
     return;
   }
@@ -858,8 +863,8 @@ void do_doorbash(struct char_data* ch, const char* arg, int cmd) {
   /*
     now we've checked for failures, time to check for success;
     */
-  if (ch->skills) {
-    if (ch->skills[SKILL_DOORBASH].learned) {
+  if (ch->skills != nullptr) {
+    if (ch->skills[SKILL_DOORBASH].learned != 0) {
       roll = number(1, 100);
       if (roll > ch->skills[SKILL_DOORBASH].learned) {
         slam_into_wall(ch, exitp);
@@ -917,14 +922,14 @@ void do_spy(struct char_data* ch, const char* arg, int cmd) {
     return;
   }
 
-  if (affected_by_spell(ch, SKILL_SPY)) {
+  if (affected_by_spell(ch, SKILL_SPY) != 0) {
     send_to_char("You are already doing your best spy imitation.\n\r", ch);
     return;
   }
 
   percent = number(1, 101);
 
-  if (!ch->skills) {
+  if (ch->skills == nullptr) {
     return;
   }
 
@@ -962,18 +967,18 @@ void do_throw(struct char_data* ch, const char* arg, int cmd) {
   const char* const keyword[] = {"north", "east", "south", "west", "up", "down",
     "\n"};
 
-  if (!ch->skills) {
+  if (ch->skills == nullptr) {
     return;
   }
 
-  if (check_peaceful(ch, "You can't throw people from this room!\n\r")) {
+  if (check_peaceful(ch, "You can't throw people from this room!\n\r") != 0) {
     return;
   }
 
   half_chop(arg, name, obje);
-  if (*name) {
+  if (*name != 0) {
     victim = get_char_room_vis(ch, name);
-    if (victim) {
+    if (victim != nullptr) {
       if (victim == ch) {
         send_to_char("aren't we funny today...\n\r", ch);
         return;
@@ -1000,7 +1005,7 @@ void do_throw(struct char_data* ch, const char* arg, int cmd) {
         WAIT_STATE(ch, PULSE_VIOLENCE * 2);
         return;
       }
-      if (*obje) {
+      if (*obje != 0) {
         dr = search_block(obje, keyword, 0);
         if (dr == -1) {
           send_to_char("You need to give a direction to throw\n\r", ch);
@@ -1023,22 +1028,22 @@ void do_feign_death(struct char_data* ch, const char* arg, int cmd) {
   struct room_data* rp = nullptr;
   struct char_data* t = nullptr;
 
-  if (!ch->skills) {
+  if (ch->skills == nullptr) {
     return;
   }
 
-  if (!ch->specials.fighting) {
+  if (ch->specials.fighting == nullptr) {
     send_to_char("But you are not fighting anything...\n\r", ch);
     return;
   }
 
-  if (!HasClass(ch, CLASS_MONK) && (!IS_IMMORTAL(ch))) {
+  if ((HasClass(ch, CLASS_MONK) == 0) && (!IS_IMMORTAL(ch))) {
     send_to_char("You're no monk!\n\r", ch);
     return;
   }
 
   rp = real_roomp(ch->in_room);
-  if (!rp) {
+  if (rp == nullptr) {
     return;
   }
 
@@ -1049,7 +1054,7 @@ void do_feign_death(struct char_data* ch, const char* arg, int cmd) {
 
   if (number(1, 101) < ch->skills[SKILL_FEIGN_DEATH].learned) {
     stop_fighting(ch);
-    for (t = rp->people; t; t = t->next_in_room) {
+    for (t = rp->people; t != nullptr; t = t->next_in_room) {
       if (t->specials.fighting == ch) {
         stop_fighting(t);
         if (number(1, 101) < ch->skills[SKILL_FEIGN_DEATH].learned / 2) {
@@ -1076,7 +1081,7 @@ void do_first_aid(struct char_data* ch, const char* arg, int cmd) {
 
   send_to_char("You attempt to render first aid unto yourself\n\r", ch);
 
-  if (affected_by_spell(ch, SKILL_FIRST_AID)) {
+  if (affected_by_spell(ch, SKILL_FIRST_AID) != 0) {
     send_to_char("You can only do this once per day\n\r", ch);
     return;
   }
@@ -1106,7 +1111,7 @@ void do_lay_hands(struct char_data* ch, const char* arg, int cmd) {
 
   send_to_char("You attempt to render first aid unto yourself\n\r", ch);
 
-  if (affected_by_spell(ch, SKILL_LAY_HANDS)) {
+  if (affected_by_spell(ch, SKILL_LAY_HANDS) != 0) {
     send_to_char("You can only do this once per day\n\r", ch);
     return;
   }

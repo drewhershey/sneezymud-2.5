@@ -92,7 +92,7 @@ int main(int argc, char** argv) {
         vlog("Lawful mode selected.");
         break;
       case 'd':
-        if (*(argv[pos] + 2)) {
+        if (*(argv[pos] + 2) != 0) {
           dir = argv[pos] + 2;
         } else if (++pos < argc) {
           dir = argv[pos];
@@ -114,7 +114,7 @@ int main(int argc, char** argv) {
   }
 
   if (pos < argc) {
-    if (!isdigit(*argv[pos])) {
+    if (isdigit(*argv[pos]) == 0) {
       fprintf(stderr, "Usage: %s [-l] [-s] [-d pathname] [ port # ]\n",
         argv[0]);
       exit(0);
@@ -178,7 +178,7 @@ int run_the_game(int port) {
   vlog("Opening mother connection.");
   s = init_socket(port);
 
-  if (lawful && load() >= 6) {
+  if ((lawful != 0) && load() >= 6) {
     vlog("System load too high at startup.");
     coma(s);
   }
@@ -193,7 +193,7 @@ int run_the_game(int port) {
 
   PROFILE(monitor(0);)
 
-  if (rebootmud) {
+  if (rebootmud != 0) {
     vlog("Rebooting.");
     exit(52); /* what's so great about HHGTTG, anyhow? */
   }
@@ -259,13 +259,13 @@ int game_loop(int s) {
   sigaddset(&mask, SIGHUP);
 
   /* Main loop */
-  while (!Shutdown) {
+  while (Shutdown == 0) {
     /* Check what's happening out there */
     FD_ZERO(&input_set);
     FD_ZERO(&output_set);
     FD_ZERO(&exc_set);
     FD_SET(s, &input_set);
-    for (point = descriptor_list; point; point = point->next) {
+    for (point = descriptor_list; point != nullptr; point = point->next) {
       FD_SET(point->descriptor, &input_set);
       FD_SET(point->descriptor, &exc_set);
       FD_SET(point->descriptor, &output_set);
@@ -315,7 +315,7 @@ int game_loop(int s) {
     }
 
     /* kick out the freaky folks */
-    for (point = descriptor_list; point; point = next_point) {
+    for (point = descriptor_list; point != nullptr; point = next_point) {
       next_point = point->next;
       if (FD_ISSET(point->descriptor, &exc_set)) {
         FD_CLR(point->descriptor, &input_set);
@@ -324,7 +324,7 @@ int game_loop(int s) {
       }
     }
 
-    for (point = descriptor_list; point; point = next_point) {
+    for (point = descriptor_list; point != nullptr; point = next_point) {
       next_point = point->next;
       if (FD_ISSET(point->descriptor, &input_set)) {
         if (process_input(point) < 0) {
@@ -334,10 +334,10 @@ int game_loop(int s) {
     }
 
     /* process_commands; */
-    for (point = descriptor_list; point; point = next_to_process) {
+    for (point = descriptor_list; point != nullptr; point = next_to_process) {
       next_to_process = point->next;
-      if ((--(point->wait) <= 0) && get_from_q(&point->input, comm)) {
-        if (point->character && point->connected == CON_PLYNG &&
+      if ((--(point->wait) <= 0) && (get_from_q(&point->input, comm) != 0)) {
+        if ((point->character != nullptr) && point->connected == CON_PLYNG &&
             point->character->specials.was_in_room != NOWHERE) {
           char_from_room(point->character);
           if (point->character->specials.was_in_room == 3) {
@@ -352,17 +352,17 @@ int game_loop(int s) {
         }
 
         point->wait = 1;
-        if (point->character) {
+        if (point->character != nullptr) {
           point->character->specials.timer = 0;
         }
         point->prompt_mode = 1;
 
-        if (point->str) {
+        if (point->str != nullptr) {
           string_add(point, comm);
-        } else if (!point->connected) {
-          if (point->showstr_point) {
+        } else if (point->connected == 0) {
+          if (point->showstr_point != nullptr) {
             show_string(point, comm);
-          } else if (point->pagedfile) {
+          } else if (point->pagedfile != nullptr) {
             page_file(point, comm);
           } else {
             command_interpreter(point->character, comm);
@@ -374,16 +374,16 @@ int game_loop(int s) {
         /* Check if descriptor still valid (not freed by nanny/etc) */
         struct descriptor_data* check = nullptr;
         int still_valid = 0;
-        for (check = descriptor_list; check; check = check->next) {
+        for (check = descriptor_list; check != nullptr; check = check->next) {
           if (check == point) {
             still_valid = 1;
             break;
           }
         }
 
-        if (still_valid &&
+        if ((still_valid != 0) &&
             point->position < 0) { /* done with page_file output */
-          if (point->pagedfile) {
+          if (point->pagedfile != nullptr) {
             free(point->pagedfile);
             point->pagedfile = nullptr;
           }
@@ -393,18 +393,20 @@ int game_loop(int s) {
     }
 
     /* give the people some prompts  */
-    for (point = descriptor_list; point; point = point->next) {
-      if ((FD_ISSET(point->descriptor, &output_set) && point->output.head) ||
-          (point->prompt_mode)) {
-        if (!point->connected && point->character &&
+    for (point = descriptor_list; point != nullptr; point = point->next) {
+      if ((FD_ISSET(point->descriptor, &output_set) &&
+            (point->output.head != nullptr)) ||
+          ((point->prompt_mode) != 0)) {
+        if ((point->connected == 0) && (point->character != nullptr) &&
             !(IS_NPC(point->character)) &&
             !(IS_SET(point->character->specials.act, PLR_COMPACT))) {
           write_to_q("\n\r", &point->output);
         }
-        if (point->str) {
+        if (point->str != nullptr) {
           write_to_q("] ", &point->output);
-        } else if (!point->connected) {
-          if (point->showstr_point || point->pagedfile) {
+        } else if (point->connected == 0) {
+          if ((point->showstr_point != nullptr) ||
+              (point->pagedfile != nullptr)) {
             write_to_q("*** Press return ***", &point->output);
           } else if ((IS_SET(point->character->specials.act, PLR_VT100)) ||
                      (IS_SET(point->character->specials.act, PLR_ANSI))) {
@@ -513,7 +515,7 @@ int game_loop(int s) {
             }
             SEND_TO_Q(VT_NORMALT, point);
             SEND_TO_Q(VT_CURREST, point);
-            if (point->prompt) {
+            if (point->prompt != nullptr) {
               sprintf(buf, "%s", point->prompt);
               strcat(buf, " > ");
             } else {
@@ -536,11 +538,11 @@ int game_loop(int s) {
                   strcat(promptbuf, wait_buf);
                 }
                 write_to_q(promptbuf, &point->output);
-              } else if (HasClass(point->character, CLASS_MAGIC_USER) ||
-                         HasClass(point->character, CLASS_ANTIPALADIN) ||
-                         HasClass(point->character, CLASS_PALADIN) ||
-                         HasClass(point->character, CLASS_RANGER) ||
-                         HasClass(point->character, CLASS_CLERIC)) {
+              } else if ((HasClass(point->character, CLASS_MAGIC_USER) != 0) ||
+                         (HasClass(point->character, CLASS_ANTIPALADIN) != 0) ||
+                         (HasClass(point->character, CLASS_PALADIN) != 0) ||
+                         (HasClass(point->character, CLASS_RANGER) != 0) ||
+                         (HasClass(point->character, CLASS_CLERIC) != 0)) {
                 prompt_per = point->character->points.hit * 100 /
                              point->character->points.max_hit;
                 if (prompt_per < 20) {
@@ -576,9 +578,9 @@ int game_loop(int s) {
                   strcat(promptbuf, wait_buf);
                 }
                 write_to_q(promptbuf, &point->output);
-              } else if (HasClass(point->character, CLASS_THIEF) ||
-                         HasClass(point->character, CLASS_WARRIOR) ||
-                         HasClass(point->character, CLASS_MONK)) {
+              } else if ((HasClass(point->character, CLASS_THIEF) != 0) ||
+                         (HasClass(point->character, CLASS_WARRIOR) != 0) ||
+                         (HasClass(point->character, CLASS_MONK) != 0)) {
                 prompt_per = point->character->points.hit * 100 /
                              point->character->points.max_hit;
                 if (prompt_per < 20) {
@@ -641,18 +643,18 @@ int game_loop(int s) {
                 sprintf(promptbuf, "H:%d R:%d> ", point->character->points.hit,
                   rm->number);
                 write_to_q(promptbuf, &point->output);
-              } else if (HasClass(point->character, CLASS_MAGIC_USER) ||
-                         HasClass(point->character, CLASS_ANTIPALADIN) ||
-                         HasClass(point->character, CLASS_PALADIN) ||
-                         HasClass(point->character, CLASS_RANGER) ||
-                         HasClass(point->character, CLASS_CLERIC)) {
+              } else if ((HasClass(point->character, CLASS_MAGIC_USER) != 0) ||
+                         (HasClass(point->character, CLASS_ANTIPALADIN) != 0) ||
+                         (HasClass(point->character, CLASS_PALADIN) != 0) ||
+                         (HasClass(point->character, CLASS_RANGER) != 0) ||
+                         (HasClass(point->character, CLASS_CLERIC) != 0)) {
                 sprintf(promptbuf, "H:%d M:%d V:%d> ",
                   point->character->points.hit, point->character->points.mana,
                   point->character->points.move);
                 write_to_q(promptbuf, &point->output);
-              } else if (HasClass(point->character, CLASS_THIEF) ||
-                         HasClass(point->character, CLASS_WARRIOR) ||
-                         HasClass(point->character, CLASS_MONK)) {
+              } else if ((HasClass(point->character, CLASS_THIEF) != 0) ||
+                         (HasClass(point->character, CLASS_WARRIOR) != 0) ||
+                         (HasClass(point->character, CLASS_MONK) != 0)) {
                 sprintf(promptbuf, "H:%d V:%d> ", point->character->points.hit,
                   point->character->points.move);
                 write_to_q(promptbuf, &point->output);
@@ -666,9 +668,10 @@ int game_loop(int s) {
         }
       }
     }
-    for (point = descriptor_list; point; point = next_point) {
+    for (point = descriptor_list; point != nullptr; point = next_point) {
       next_point = point->next;
-      if (FD_ISSET(point->descriptor, &output_set) && point->output.head) {
+      if (FD_ISSET(point->descriptor, &output_set) &&
+          (point->output.head != nullptr)) {
         if (process_output(point) < 0) {
           close_socket(point);
         }
@@ -681,22 +684,22 @@ int game_loop(int s) {
 
     pulse++;
 
-    if (!(pulse % PULSE_ZONE)) {
+    if ((pulse % PULSE_ZONE) == 0) {
       zone_update();
-      if (lawful) {
+      if (lawful != 0) {
         gr(s);
       }
     }
 
-    if (!(pulse % PULSE_RIVER)) {
+    if ((pulse % PULSE_RIVER) == 0) {
       RiverPulseStuff(pulse);
     }
 
-    if (!(pulse % PULSE_TELEPORT)) {
+    if ((pulse % PULSE_TELEPORT) == 0) {
       TeleportPulseStuff(pulse);
     }
 
-    if (!(pulse % PULSE_VIOLENCE)) {
+    if ((pulse % PULSE_VIOLENCE) == 0) {
       perform_violence(pulse);
     }
 
@@ -708,7 +711,7 @@ int game_loop(int s) {
       glug_glug_glug();
     */
 
-    if (!(pulse % (SECS_PER_MUD_HOUR * 4))) {
+    if ((pulse % (SECS_PER_MUD_HOUR * 4)) == 0) {
       weather_and_time(1);
       affect_update(pulse); /* things have been sped up by combining */
       if (time_info.hours == 1) {
@@ -719,7 +722,7 @@ int game_loop(int s) {
 
     if (pulse >= 2400) {
       pulse = 0;
-      if (lawful) {
+      if (lawful != 0) {
         night_watchman();
       }
       check_reboot();
@@ -738,7 +741,7 @@ int get_from_q(struct txt_q* queue, char* dest) {
   struct txt_block* tmp = nullptr;
 
   /* Q empty? */
-  if (!queue->head) {
+  if (queue->head == nullptr) {
     return (0);
   }
 
@@ -755,7 +758,7 @@ int get_from_q(struct txt_q* queue, char* dest) {
 void write_to_q(const char* txt, struct txt_q* queue) {
   struct txt_block* new_block = nullptr;
 
-  if (!queue) {
+  if (queue == nullptr) {
     vlog("Output message to non-existant queue");
     return;
   }
@@ -768,7 +771,7 @@ void write_to_q(const char* txt, struct txt_q* queue) {
   new_block->next = nullptr;
 
   /* Q empty? */
-  if (!queue->head) {
+  if (queue->head == nullptr) {
     queue->head = queue->tail = new_block;
   } else {
     queue->tail->next = new_block;
@@ -797,10 +800,10 @@ struct timeval timediff(struct timeval* a, struct timeval* b) {
 void flush_queues(struct descriptor_data* d) {
   char dummy[MAX_STRING_LENGTH];
 
-  while (get_from_q(&d->output, dummy)) {
+  while (get_from_q(&d->output, dummy) != 0) {
     ;
   }
-  while (get_from_q(&d->input, dummy)) {
+  while (get_from_q(&d->input, dummy) != 0) {
     ;
   }
 }
@@ -882,7 +885,7 @@ static void printhost(struct in_addr* addr, char* buf) {
   h = gethostbyaddr((const char*)addr, sizeof(*addr), AF_INET);
   s = (h == nullptr) ? nullptr : h->h_name;
 
-  if (s) {
+  if (s != nullptr) {
     strcpy(buf, s);
   } else {
     n1 = addr->s_addr >> 24;
@@ -1011,20 +1014,21 @@ int process_output(struct descriptor_data* t) {
 
   end_buf = buffer;
 
-  if (!(t->prompt_mode) && !(t->connected)) {
+  if (((t->prompt_mode) == 0) && ((t->connected) == 0)) {
     memcpy(end_buf, "\n\r", strlen("\n\r"));
     end_buf += strlen("\n\r");
   }
 
-  while (get_from_q(&t->output, i)) {
-    if ((t->snoop.snoop_by) && (t->snoop.snoop_by->desc)) {
+  while (get_from_q(&t->output, i) != 0) {
+    if (((t->snoop.snoop_by) != nullptr) &&
+        ((t->snoop.snoop_by->desc) != nullptr)) {
       write_to_q("% ", &t->snoop.snoop_by->desc->output);
       write_to_q(i, &t->snoop.snoop_by->desc->output);
     }
     length = strlen(i);
     if ((length + end_buf + 1) > (buffer + PACKET_BUFFER_SIZE)) {
       *end_buf = '\0';
-      if (write_to_descriptor(t->descriptor, buffer)) {
+      if (write_to_descriptor(t->descriptor, buffer) != 0) {
         return (-1);
       }
       end_buf = buffer;
@@ -1103,16 +1107,17 @@ int process_input(struct descriptor_data* t) {
 
   /* if no newline is contained in input, return without proc'ing */
   for (i = begin; !ISNEWL(*(t->buf + i)); i++) {
-    if (!*(t->buf + i)) {
+    if (*(t->buf + i) == 0) {
       return (0);
     }
   }
 
   /* input contains 1 or more newlines; process the stuff */
-  for (i = 0, k = 0; *(t->buf + i);) {
-    if (!ISNEWL(*(t->buf + i)) && !(flag = (k >= (MAX_INPUT_LENGTH - 2)))) {
+  for (i = 0, k = 0; *(t->buf + i) != 0;) {
+    if (!ISNEWL(*(t->buf + i)) &&
+        ((flag = static_cast<int>(k >= (MAX_INPUT_LENGTH - 2))) == 0)) {
       if (*(t->buf + i) == '\b') { /* backspace */
-        if (k) {                   /* more than one char ? */
+        if (k != 0) {              /* more than one char ? */
           if (*(tmp + --k) == '$') {
             k--;
           }
@@ -1121,7 +1126,7 @@ int process_input(struct descriptor_data* t) {
           i++; /* no or just one char.. Skip backsp */
         }
       } else {
-        if (isascii(*(t->buf + i)) && isprint(*(t->buf + i))) {
+        if (isascii(*(t->buf + i)) && (isprint(*(t->buf + i)) != 0)) {
           /*
             trans char, double for '$' (printf)
             */
@@ -1144,13 +1149,14 @@ int process_input(struct descriptor_data* t) {
 
       write_to_q(tmp, &t->input);
 
-      if ((t->snoop.snoop_by) && (t->snoop.snoop_by->desc)) {
+      if (((t->snoop.snoop_by) != nullptr) &&
+          ((t->snoop.snoop_by->desc) != nullptr)) {
         write_to_q("% ", &t->snoop.snoop_by->desc->output);
         write_to_q(tmp, &t->snoop.snoop_by->desc->output);
         write_to_q("\n\r", &t->snoop.snoop_by->desc->output);
       }
 
-      if (flag) {
+      if (flag != 0) {
         sprintf(buffer, "Line too long. Truncated to:\n\r%s\n\r", tmp);
         if (write_to_descriptor(t->descriptor, buffer) < 0) {
           return (-1);
@@ -1183,7 +1189,7 @@ int process_input(struct descriptor_data* t) {
 void close_sockets(int s) {
   vlog("Closing all sockets.");
 
-  while (descriptor_list) {
+  while (descriptor_list != nullptr) {
     close_socket(descriptor_list);
   }
 
@@ -1194,7 +1200,7 @@ void close_socket(struct descriptor_data* d) {
   struct descriptor_data* tmp = nullptr;
   char buf[100];
 
-  if (!d) {
+  if (d == nullptr) {
     return;
   }
 
@@ -1205,23 +1211,23 @@ void close_socket(struct descriptor_data* d) {
   }
 
   /* Forget snooping */
-  if (d->snoop.snooping) {
+  if (d->snoop.snooping != nullptr) {
     d->snoop.snooping->desc->snoop.snoop_by = nullptr;
   }
 
-  if (d->snoop.snoop_by) {
+  if (d->snoop.snoop_by != nullptr) {
     send_to_char("Your victim is no longer among us.\n\r", d->snoop.snoop_by);
     d->snoop.snoop_by->desc->snoop.snooping = nullptr;
   }
 
-  if (d->character) {
+  if (d->character != nullptr) {
     if (d->connected == CON_PLYNG) {
       do_save(d->character, "", 0);
       act("$n has lost $s link.", 1, d->character, nullptr, nullptr, TO_ROOM);
       sprintf(buf, "Closing link to: %s.", GET_NAME(d->character));
       vlog(buf);
       if (IS_NPC(d->character)) {
-        if (d->character->desc) {
+        if (d->character->desc != nullptr) {
           d->character->orig = d->character->desc->original;
         }
       }
@@ -1246,16 +1252,17 @@ void close_socket(struct descriptor_data* d) {
   } else /* This is somewhere inside the list */
   {
     /* Locate the previous element */
-    for (tmp = descriptor_list; (tmp->next != d) && tmp; tmp = tmp->next) {
+    for (tmp = descriptor_list; (tmp->next != d) && (tmp != nullptr);
+      tmp = tmp->next) {
       ;
     }
 
     tmp->next = d->next;
   }
-  if (d->showstr_head) {
+  if (d->showstr_head != nullptr) {
     free(d->showstr_head);
   }
-  if (d->pagedfile) {
+  if (d->pagedfile != nullptr) {
     free(d->pagedfile);
   }
   free(d);
@@ -1319,7 +1326,7 @@ void coma(int s) {
   sigaddset(&mask, SIGXCPU);
   sigaddset(&mask, SIGHUP);
 
-  while (descriptor_list) {
+  while (descriptor_list != nullptr) {
     close_socket(descriptor_list);
   }
 
@@ -1350,7 +1357,7 @@ void coma(int s) {
     }
 
     tics = 1;
-    if (workhours()) {
+    if (workhours() != 0) {
       vlog("Working hours collision during coma. Exit.");
       exit(0);
     }
@@ -1371,8 +1378,8 @@ void coma(int s) {
  **************************************************************** */
 
 void send_to_char(const char* messg, struct char_data* ch) {
-  if (ch) {
-    if (ch->desc && messg) {
+  if (ch != nullptr) {
+    if ((ch->desc != nullptr) && (messg != nullptr)) {
       write_to_q(messg, &ch->desc->output);
     }
   }
@@ -1381,8 +1388,8 @@ void send_to_char(const char* messg, struct char_data* ch) {
 void save_all(void) {
   struct descriptor_data* i = nullptr;
 
-  for (i = descriptor_list; i; i = i->next) {
-    if (i->character) {
+  for (i = descriptor_list; i != nullptr; i = i->next) {
+    if (i->character != nullptr) {
       save_char(i->character, AUTO_RENT);
     }
   }
@@ -1391,9 +1398,9 @@ void save_all(void) {
 void send_to_all(const char* messg) {
   struct descriptor_data* i = nullptr;
 
-  if (messg) {
-    for (i = descriptor_list; i; i = i->next) {
-      if (!i->connected) {
+  if (messg != nullptr) {
+    for (i = descriptor_list; i != nullptr; i = i->next) {
+      if (i->connected == 0) {
         write_to_q(messg, &i->output);
       }
     }
@@ -1403,9 +1410,9 @@ void send_to_all(const char* messg) {
 void send_to_outdoor(const char* messg) {
   struct descriptor_data* i = nullptr;
 
-  if (messg) {
-    for (i = descriptor_list; i; i = i->next) {
-      if (!i->connected) {
+  if (messg != nullptr) {
+    for (i = descriptor_list; i != nullptr; i = i->next) {
+      if (i->connected == 0) {
         if (OUTSIDE(i->character)) {
           write_to_q(messg, &i->output);
         }
@@ -1417,9 +1424,9 @@ void send_to_outdoor(const char* messg) {
 void send_to_except(const char* messg, struct char_data* ch) {
   struct descriptor_data* i = nullptr;
 
-  if (messg) {
-    for (i = descriptor_list; i; i = i->next) {
-      if (ch->desc != i && !i->connected) {
+  if (messg != nullptr) {
+    for (i = descriptor_list; i != nullptr; i = i->next) {
+      if (ch->desc != i && (i->connected == 0)) {
         write_to_q(messg, &i->output);
       }
     }
@@ -1427,12 +1434,13 @@ void send_to_except(const char* messg, struct char_data* ch) {
 }
 
 void send_to_room(const char* messg, int room) {
-  if (!messg || !real_roomp(room)) {
+  if ((messg == nullptr) || (real_roomp(room) == nullptr)) {
     return;
   }
 
-  for (struct char_data* i = real_roomp(room)->people; i; i = i->next_in_room) {
-    if (i->desc) {
+  for (struct char_data* i = real_roomp(room)->people; i != nullptr;
+    i = i->next_in_room) {
+    if (i->desc != nullptr) {
       write_to_q(messg, &i->desc->output);
     }
   }
@@ -1441,9 +1449,9 @@ void send_to_room(const char* messg, int room) {
 void send_to_room_except(const char* messg, int room, struct char_data* ch) {
   struct char_data* i = nullptr;
 
-  if (messg) {
-    for (i = real_roomp(room)->people; i; i = i->next_in_room) {
-      if (i != ch && i->desc) {
+  if (messg != nullptr) {
+    for (i = real_roomp(room)->people; i != nullptr; i = i->next_in_room) {
+      if (i != ch && (i->desc != nullptr)) {
         write_to_q(messg, &i->desc->output);
       }
     }
@@ -1454,9 +1462,9 @@ void send_to_room_except_two(const char* messg, int room, struct char_data* ch1,
   struct char_data* ch2) {
   struct char_data* i = nullptr;
 
-  if (messg) {
-    for (i = real_roomp(room)->people; i; i = i->next_in_room) {
-      if (i != ch1 && i != ch2 && i->desc) {
+  if (messg != nullptr) {
+    for (i = real_roomp(room)->people; i != nullptr; i = i->next_in_room) {
+      if (i != ch1 && i != ch2 && (i->desc != nullptr)) {
         write_to_q(messg, &i->desc->output);
       }
     }
@@ -1475,10 +1483,10 @@ void act(const char* str, int hide_invisible, struct char_data* ch,
   struct char_data* temp = nullptr;
   char buf[MAX_STRING_LENGTH];
 
-  if (!str) {
+  if (str == nullptr) {
     return;
   }
-  if (!*str) {
+  if (*str == 0) {
     return;
   }
 
@@ -1494,9 +1502,9 @@ void act(const char* str, int hide_invisible, struct char_data* ch,
     to = real_roomp(ch->in_room)->people;
   }
 
-  for (; to; to = to->next_in_room) {
-    if (to->desc && ((to != ch) || (type == TO_CHAR)) &&
-        (CAN_SEE(to, ch) || !hide_invisible) &&
+  for (; to != nullptr; to = to->next_in_room) {
+    if ((to->desc != nullptr) && ((to != ch) || (type == TO_CHAR)) &&
+        ((CAN_SEE(to, ch) != 0) || (hide_invisible == 0)) &&
         !((type == TO_NOTVICT) && (to == (struct char_data*)vict_obj))) {
       for (strp = str, point = buf;;) {
         if (*strp == '$') {
@@ -1559,13 +1567,13 @@ void act(const char* str, int hide_invisible, struct char_data* ch,
               break;
           }
 
-          while ((*point = *(i++))) {
+          while ((*point = *(i++)) != 0) {
             ++point;
           }
 
           ++strp;
 
-        } else if (!(*(point++) = *(strp++))) {
+        } else if ((*(point++) = *(strp++)) == 0) {
           break;
         }
       }

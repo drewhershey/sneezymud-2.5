@@ -62,43 +62,43 @@ void do_brew(struct char_data* ch, const char* arg, int cmd) {
   struct obj_data* next_obj = nullptr;
   struct affected_type af;
 
-  if (!ch->skills) {
+  if (ch->skills == nullptr) {
     return;
   }
 
   one_argument(arg, buf);
 
-  if (!str_cmp(buf, "sanctuary")) {
+  if (str_cmp(buf, "sanctuary") == 0) {
     obj = SANC_POTION;
     sacr = SAC1_FOR_SANC;
     sacr1 = SAC2_FOR_SANC;
     sacr2 = SAC3_FOR_SANC;
-  } else if (!str_cmp(buf, "fireshield")) {
+  } else if (str_cmp(buf, "fireshield") == 0) {
     obj = FIRE_POTION;
     sacr = SAC1_FOR_FIRE;
     sacr1 = SAC2_FOR_FIRE;
     sacr2 = SAC3_FOR_FIRE;
-  } else if (!str_cmp(buf, "fly")) {
+  } else if (str_cmp(buf, "fly") == 0) {
     obj = FLY_POTION;
     sacr = SAC1_FOR_FLY;
     sacr1 = SAC2_FOR_FLY;
     sacr2 = SAC3_FOR_FLY;
-  } else if (!str_cmp(buf, "true")) {
+  } else if (str_cmp(buf, "true") == 0) {
     obj = TRUE_POTION;
     sacr = SAC1_FOR_TRUE;
     sacr1 = SAC2_FOR_TRUE;
     sacr2 = SAC3_FOR_TRUE;
-  } else if (!str_cmp(buf, "heal")) {
+  } else if (str_cmp(buf, "heal") == 0) {
     obj = HEAL_POTION;
     sacr = SAC1_FOR_HEAL;
     sacr1 = SAC2_FOR_HEAL;
     sacr2 = SAC3_FOR_HEAL;
-  } else if (!str_cmp(buf, "full")) {
+  } else if (str_cmp(buf, "full") == 0) {
     obj = FULL_POTION;
     sacr = SAC1_FOR_FULL;
     sacr1 = SAC2_FOR_FULL;
     sacr2 = SAC3_FOR_FULL;
-  } else if (!str_cmp(buf, "wind")) {
+  } else if (str_cmp(buf, "wind") == 0) {
     obj = WIND_POTION;
     sacr = SAC1_FOR_WIND;
     sacr1 = SAC2_FOR_WIND;
@@ -117,12 +117,12 @@ void do_brew(struct char_data* ch, const char* arg, int cmd) {
   sac = get_obj_in_list_vis(ch, obj_index[sacr].name, ch->carrying);
   sac1 = get_obj_in_list_vis(ch, obj_index[sacr1].name, ch->carrying);
   sac2 = get_obj_in_list_vis(ch, obj_index[sacr2].name, ch->carrying);
-  if (sac) {
-    if (sac1) {
-      if (sac2) {
+  if (sac != nullptr) {
+    if (sac1 != nullptr) {
+      if (sac2 != nullptr) {
         if (percent < ch->skills[SKILL_BREW].learned) {
           obje = read_object(obj, VIRTUAL);
-          if (!obje) {
+          if (obje == nullptr) {
             send_to_char("There are no potions of that type available\n\r", ch);
             return;
           }
@@ -183,7 +183,7 @@ void do_search(struct char_data* ch, const char* arg, int cmd) {
   struct room_direction_data* fdd = nullptr;
   *buf = '\0';
 
-  if (!HasClass(ch, CLASS_THIEF)) {
+  if (HasClass(ch, CLASS_THIEF) == 0) {
     send_to_char("Only thieves have the ability to search!\n\r", ch);
     return;
   }
@@ -192,7 +192,7 @@ void do_search(struct char_data* ch, const char* arg, int cmd) {
 
   for (j = 0; j < 6; j++) {
     fdd = rp->dir_option[j];
-    if (fdd) {
+    if (fdd != nullptr) {
       num = number(1, 100);
 
       if (j < 4) {
@@ -243,19 +243,19 @@ void do_grapple(struct char_data* ch, const char* arg, int cmd) {
   struct affected_type af;
   int i = 0;
 
-  if (!ch->skills) {
+  if (ch->skills == nullptr) {
     return;
   }
 
   if (check_peaceful(ch,
-        "You feel too peaceful to contemplate violence.\n\r")) {
+        "You feel too peaceful to contemplate violence.\n\r") != 0) {
     return;
   }
 
   only_argument(arg, name);
 
-  if (!(victim = get_char_room_vis(ch, name))) {
-    if (ch->specials.fighting) {
+  if ((victim = get_char_room_vis(ch, name)) == nullptr) {
+    if (ch->specials.fighting != nullptr) {
       victim = ch->specials.fighting;
     } else {
       send_to_char("Grapple with whom?\n\r", ch);
@@ -290,10 +290,10 @@ void do_grapple(struct char_data* ch, const char* arg, int cmd) {
     GET_POS(victim) = POSITION_SITTING;
     WAIT_STATE(ch, 5 * PULSE_VIOLENCE);
 
-    if (ch->specials.fighting) {
+    if (ch->specials.fighting != nullptr) {
       stop_fighting(ch);
     }
-    if (victim->specials.fighting) {
+    if (victim->specials.fighting != nullptr) {
       stop_fighting(victim);
     }
     act("$N now turns $S attention to $n!", 1, ch, nullptr, victim, TO_ROOM);
@@ -308,10 +308,10 @@ void do_grapple(struct char_data* ch, const char* arg, int cmd) {
     act("$n makes a nice wrestling move, but falls on his butt.", 1, ch,
       nullptr, nullptr, TO_ROOM);
 
-    if (ch->specials.fighting) {
+    if (ch->specials.fighting != nullptr) {
       stop_fighting(ch);
     }
-    if (victim->specials.fighting) {
+    if (victim->specials.fighting != nullptr) {
       stop_fighting(victim);
     }
     act("$N turns $S attention to $n", 1, ch, nullptr, victim, TO_ROOM);
@@ -346,25 +346,25 @@ void do_scribe(struct char_data* ch, const char* arg, int cmd) {
   struct obj_data* next_obj = nullptr;
   struct affected_type af;
 
-  if (!ch->skills) {
+  if (ch->skills == nullptr) {
     return;
   }
 
   one_argument(arg, buf);
 
-  if (!str_cmp(buf, "heal")) {
+  if (str_cmp(buf, "heal") == 0) {
     obj = HEAL_SCROLL;
     sacr = SAC_FOR_HEAL;
-  } else if (!str_cmp(buf, "fly")) {
+  } else if (str_cmp(buf, "fly") == 0) {
     obj = FLY_SCROLL;
     sacr = SAC_FOR_FLY;
-  } else if (!str_cmp(buf, "true")) {
+  } else if (str_cmp(buf, "true") == 0) {
     obj = TRUE_SCROLL;
     sacr = SAC_FOR_TRUE;
-  } else if (!str_cmp(buf, "wind")) {
+  } else if (str_cmp(buf, "wind") == 0) {
     obj = WIND_SCROLL;
     sacr = SAC_FOR_WIND;
-  } else if (!str_cmp(buf, "sanc")) {
+  } else if (str_cmp(buf, "sanc") == 0) {
     obj = SANC_SCROLL;
     sacr = SAC_FOR_SANC;
   } else {
@@ -385,12 +385,12 @@ void do_scribe(struct char_data* ch, const char* arg, int cmd) {
   penw = get_obj_in_list_vis(ch, obj_index[pen].name, ch->carrying);
   paperw = get_obj_in_list_vis(ch, obj_index[paper].name, ch->carrying);
 
-  if (sac) {
-    if (penw) {
-      if (paperw) {
+  if (sac != nullptr) {
+    if (penw != nullptr) {
+      if (paperw != nullptr) {
         if (percent < ch->skills[SKILL_SCRIBE].learned) {
           obje = read_object(obj, VIRTUAL);
-          if (!obje) {
+          if (obje == nullptr) {
             send_to_char("There are no scrolls of that type available.\n\r",
               ch);
             return;
@@ -444,11 +444,11 @@ void do_glance(struct char_data* ch, const char* argument, int cmd) {
 
   tmp_char = nullptr;
   found_object = nullptr;
-  if (*argument) {
+  if (*argument != 0) {
     bits = generic_find(argument,
       FIND_OBJ_INV | FIND_OBJ_ROOM | FIND_OBJ_EQUIP | FIND_CHAR_ROOM, ch,
       &tmp_char, &found_object);
-    if (tmp_char) {
+    if (tmp_char != nullptr) {
       if (GET_MAX_HIT(tmp_char) > 0) {
         percent = (100 * GET_HIT(tmp_char)) / GET_MAX_HIT(tmp_char);
       } else {
@@ -478,7 +478,7 @@ void do_glance(struct char_data* ch, const char* argument, int cmd) {
       } else {
         strcat(buffer, " is bleeding awfully from big wounds.\n\r");
       }
-      if (CAN_SEE(ch, tmp_char)) {
+      if (CAN_SEE(ch, tmp_char) != 0) {
         send_to_char(buffer, ch);
       }
     }
@@ -493,12 +493,12 @@ void do_deathstroke(struct char_data* ch, const char* argument, int cmd) {
   char name[256];
   signed char percent = 0;
 
-  if (!ch->skills) {
+  if (ch->skills == nullptr) {
     return;
   }
 
   if (check_peaceful(ch,
-        "You feel too peaceful to contemplate violence.\n\r")) {
+        "You feel too peaceful to contemplate violence.\n\r") != 0) {
     return;
   }
 
@@ -509,8 +509,8 @@ void do_deathstroke(struct char_data* ch, const char* argument, int cmd) {
 
   only_argument(argument, name);
 
-  if (!(victim = get_char_room_vis(ch, name))) {
-    if (ch->specials.fighting) {
+  if ((victim = get_char_room_vis(ch, name)) == nullptr) {
+    if (ch->specials.fighting != nullptr) {
       victim = ch->specials.fighting;
     } else {
       send_to_char("Death-stroke who?\n\r", ch);
@@ -578,10 +578,10 @@ void do_deathstroke(struct char_data* ch, const char* argument, int cmd) {
 
   /* success OR failure make monster attack this player as player is now */
   /* perceived as a greatest threat to the monster's livelyhood */
-  if (ch->specials.fighting) {
+  if (ch->specials.fighting != nullptr) {
     stop_fighting(ch);
   }
-  if (victim->specials.fighting) {
+  if (victim->specials.fighting != nullptr) {
     stop_fighting(victim);
   }
   act("$N turns $S attention to $n.", 1, ch, nullptr, victim, TO_ROOM);
@@ -593,19 +593,19 @@ void do_bodyslam(struct char_data* ch, const char* argument, int cmd) {
   char name[256];
   signed char percent = 0;
 
-  if (!ch->skills) {
+  if (ch->skills == nullptr) {
     return;
   }
 
   if (check_peaceful(ch,
-        "You feel too peaceful to contemplate violence.\n\r")) {
+        "You feel too peaceful to contemplate violence.\n\r") != 0) {
     return;
   }
 
   only_argument(argument, name);
 
-  if (!(victim = get_char_room_vis(ch, name))) {
-    if (ch->specials.fighting) {
+  if ((victim = get_char_room_vis(ch, name)) == nullptr) {
+    if (ch->specials.fighting != nullptr) {
       victim = ch->specials.fighting;
     } else {
       send_to_char("Bodyslam who?\n\r", ch);

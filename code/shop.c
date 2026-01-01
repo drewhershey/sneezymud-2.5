@@ -62,7 +62,7 @@ static int is_ok(struct char_data* keeper, struct char_data* ch, int shop_nr) {
     }
   };
 
-  if (!(CAN_SEE(keeper, ch))) {
+  if ((CAN_SEE(keeper, ch)) == 0) {
     do_say(keeper, "I don't trade with someone I can't see!", 17);
     return 0;
   };
@@ -116,25 +116,25 @@ static void shopping_buy(const char* arg, struct char_data* ch,
   struct obj_data* temp1 = nullptr;
   struct char_data* temp_char = nullptr;
 
-  if (!(is_ok(keeper, ch, shop_nr))) {
+  if ((is_ok(keeper, ch, shop_nr)) == 0) {
     return;
   }
 
   only_argument(arg, argm);
-  if (!(*argm)) {
+  if ((*argm) == 0) {
     sprintf(buf, "%s what do you want to buy??", GET_NAME(ch));
     do_tell(keeper, buf, 19);
     return;
   };
 
-  if ((num = getabunch(argm, newarg))) {
+  if ((num = getabunch(argm, newarg)) != 0) {
     strcpy(argm, newarg);
   }
   if (num == 0) {
     num = 1;
   }
 
-  if (!(temp1 = get_obj_in_list_vis(ch, argm, keeper->carrying))) {
+  if ((temp1 = get_obj_in_list_vis(ch, argm, keeper->carrying)) == nullptr) {
     sprintf(buf, shop_index[shop_nr].no_such_item1, GET_NAME(ch));
     do_tell(keeper, buf, 19);
     return;
@@ -200,7 +200,7 @@ static void shopping_buy(const char* arg, struct char_data* ch,
       (int)(temp1->obj_flags.cost * shop_index[shop_nr].profit_buy);
 
     /* Test if producing shop ! */
-    if (shop_producing(temp1, shop_nr)) {
+    if (shop_producing(temp1, shop_nr) != 0) {
       temp1 = read_object(temp1->item_number, REAL);
     } else {
       obj_from_char(temp1);
@@ -224,19 +224,19 @@ static void shopping_sell(const char* arg, struct char_data* ch,
   struct obj_data* temp1 = nullptr;
   struct char_data* temp_char = nullptr;
 
-  if (!(is_ok(keeper, ch, shop_nr))) {
+  if ((is_ok(keeper, ch, shop_nr)) == 0) {
     return;
   }
 
   only_argument(arg, argm);
 
-  if (!(*argm)) {
+  if ((*argm) == 0) {
     sprintf(buf, "%s What do you want to sell??", GET_NAME(ch));
     do_tell(keeper, buf, 19);
     return;
   }
 
-  if (!(temp1 = get_obj_in_list_vis(ch, argm, ch->carrying))) {
+  if ((temp1 = get_obj_in_list_vis(ch, argm, ch->carrying)) == nullptr) {
     sprintf(buf, shop_index[shop_nr].no_such_item2, GET_NAME(ch));
     do_tell(keeper, buf, 19);
     return;
@@ -247,7 +247,7 @@ static void shopping_sell(const char* arg, struct char_data* ch,
     return;
   }
 
-  if (!(trade_with(temp1, shop_nr)) || (temp1->obj_flags.cost < 1)) {
+  if (((trade_with(temp1, shop_nr)) == 0) || (temp1->obj_flags.cost < 1)) {
     sprintf(buf, shop_index[shop_nr].do_not_buy, GET_NAME(ch));
     do_tell(keeper, buf, 19);
     return;
@@ -263,14 +263,14 @@ static void shopping_sell(const char* arg, struct char_data* ch,
   cost = temp1->obj_flags.cost;
 
   if ((ITEM_TYPE(temp1) == ITEM_WAND) || (ITEM_TYPE(temp1) == ITEM_STAFF)) {
-    if (temp1->obj_flags.value[1]) {
+    if (temp1->obj_flags.value[1] != 0) {
       cost = cost * (float)(temp1->obj_flags.value[2] /
                             (float)temp1->obj_flags.value[1]);
     } else {
       cost = 0;
     }
   } else if (ITEM_TYPE(temp1) == ITEM_ARMOR) {
-    if (temp1->obj_flags.value[1]) {
+    if (temp1->obj_flags.value[1] != 0) {
       cost = cost * (float)(temp1->obj_flags.value[0] /
                             (float)(temp1->obj_flags.value[1]));
     } else {
@@ -307,7 +307,7 @@ static void shopping_sell(const char* arg, struct char_data* ch,
     send_to_char("As far as I am concerned, you are out..\n\r", ch);
     return;
   }
-  if ((get_obj_in_list(argm, keeper->carrying)) ||
+  if (((get_obj_in_list(argm, keeper->carrying)) != nullptr) ||
       (GET_ITEM_TYPE(temp1) == ITEM_TRASH)) {
     extract_obj(temp1);
   } else {
@@ -321,25 +321,25 @@ static void shopping_value(const char* arg, struct char_data* ch,
   char buf[MAX_STRING_LENGTH];
   struct obj_data* temp1 = nullptr;
 
-  if (!(is_ok(keeper, ch, shop_nr))) {
+  if ((is_ok(keeper, ch, shop_nr)) == 0) {
     return;
   }
 
   only_argument(arg, argm);
 
-  if (!(*argm)) {
+  if ((*argm) == 0) {
     sprintf(buf, "%s What do you want me to valuate??", GET_NAME(ch));
     do_tell(keeper, buf, 19);
     return;
   }
 
-  if (!(temp1 = get_obj_in_list_vis(ch, argm, ch->carrying))) {
+  if ((temp1 = get_obj_in_list_vis(ch, argm, ch->carrying)) == nullptr) {
     sprintf(buf, shop_index[shop_nr].no_such_item2, GET_NAME(ch));
     do_tell(keeper, buf, 19);
     return;
   }
 
-  if (!(trade_with(temp1, shop_nr))) {
+  if ((trade_with(temp1, shop_nr)) == 0) {
     sprintf(buf, shop_index[shop_nr].do_not_buy, GET_NAME(ch));
     do_tell(keeper, buf, 19);
     return;
@@ -358,21 +358,22 @@ static void shopping_list(struct char_data* ch, struct char_data* keeper,
   struct obj_data* temp1 = nullptr;
   int found_obj = 0;
 
-  if (!(is_ok(keeper, ch, shop_nr))) {
+  if ((is_ok(keeper, ch, shop_nr)) == 0) {
     return;
   }
 
   strcpy(buf, "You can buy:\n\r");
   found_obj = 0;
-  if (keeper->carrying) {
-    for (temp1 = keeper->carrying; temp1; temp1 = temp1->next_content) {
+  if (keeper->carrying != nullptr) {
+    for (temp1 = keeper->carrying; temp1 != nullptr;
+      temp1 = temp1->next_content) {
       if ((CAN_SEE_OBJ(ch, temp1)) && (temp1->obj_flags.cost > 0)) {
         found_obj = 1;
         if (temp1->obj_flags.type_flag != ITEM_DRINKCON) {
           sprintf(buf2, "%s for %d gold coins.\n\r", (temp1->short_description),
             (int)(temp1->obj_flags.cost * shop_index[shop_nr].profit_buy));
         } else {
-          if (temp1->obj_flags.value[1]) {
+          if (temp1->obj_flags.value[1] != 0) {
             sprintf(buf3, "%s of %s", (temp1->short_description),
               drinks[temp1->obj_flags.value[2]]);
           } else {
@@ -386,7 +387,7 @@ static void shopping_list(struct char_data* ch, struct char_data* keeper,
     }
   };
 
-  if (!found_obj) {
+  if (found_obj == 0) {
     strcat(buf, "Nothing!\n\r");
   }
 
@@ -423,7 +424,8 @@ static int shop_keeper(struct char_data* ch, int cmd, const char* arg) {
 
   keeper = nullptr;
 
-  for (temp_char = real_roomp(ch->in_room)->people; (!keeper) && (temp_char);
+  for (temp_char = real_roomp(ch->in_room)->people;
+    (keeper == nullptr) && ((temp_char) != nullptr);
     temp_char = temp_char->next_in_room) {
     if (IS_MOB(temp_char)) {
       if (mob_index[temp_char->nr].func.mob_f == shop_keeper) {
@@ -432,7 +434,7 @@ static int shop_keeper(struct char_data* ch, int cmd, const char* arg) {
     }
   }
 
-  if (!keeper) {
+  if (keeper == nullptr) {
     return 0;
   }
 
@@ -440,8 +442,8 @@ static int shop_keeper(struct char_data* ch, int cmd, const char* arg) {
     ;
   }
 
-  if (!cmd) {
-    if (keeper->specials.fighting) {
+  if (cmd == 0) {
+    if (keeper->specials.fighting != nullptr) {
       return (citizen(keeper, 0, ""));
     }
   }
@@ -501,7 +503,7 @@ void boot_the_shops(void) {
   int count = 0;
   FILE* shop_f = nullptr;
 
-  if (!(shop_f = fopen(SHOP_FILE, "r"))) {
+  if ((shop_f = fopen(SHOP_FILE, "r")) == nullptr) {
     perror("Error in boot shop\n");
     exit(0);
   }
@@ -510,14 +512,15 @@ void boot_the_shops(void) {
 
   for (;;) {
     buf = fread_string(shop_f);
-    if (buf && *buf == '#') /* a new shop */
+    if ((buf != nullptr) && *buf == '#') /* a new shop */
     {
       free(buf); /* Free the marker string */
 
-      if (!number_of_shops) { /* first shop */
+      if (number_of_shops == 0) { /* first shop */
         CREATE(shop_index, struct shop_data, 1);
-      } else if (!(shop_index = (struct shop_data*)realloc(shop_index,
-                     (number_of_shops + 1) * sizeof(struct shop_data)))) {
+      } else if ((shop_index = (struct shop_data*)realloc(shop_index,
+                    (number_of_shops + 1) * sizeof(struct shop_data))) ==
+                 nullptr) {
         perror("Error in boot shop\n");
         exit(0);
       }
@@ -558,12 +561,12 @@ void boot_the_shops(void) {
       fscanf(shop_f, "%d \n", &shop_index[number_of_shops].close2);
 
       number_of_shops++;
-    } else if (buf && *buf == '$') /* EOF */ {
+    } else if ((buf != nullptr) && *buf == '$') /* EOF */ {
       free(buf); /* Free the EOF marker string */
       break;
     } else {
       /* Unexpected format - free buf if allocated and break */
-      if (buf) {
+      if (buf != nullptr) {
         free(buf);
       }
       break;

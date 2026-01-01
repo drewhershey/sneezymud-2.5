@@ -29,21 +29,21 @@ static void smart_str_cpy(char* s1, const char* s2) {
 }
 
 void StringHeap(char* string, struct StrHeap* Heap) {
-  unsigned char found = false;
+  unsigned char found = 0u;
   int i = 0;
 
-  if (!string || !*string) {
+  if ((string == nullptr) || (*string == 0)) {
     return; /* don't bother adding if null string */
   }
 
-  for (i = 0; i < Heap->uniq && !found; i++) {
-    if (!strcmp(string, Heap->str[i].string)) {
+  for (i = 0; i < Heap->uniq && (found == 0u); i++) {
+    if (strcmp(string, Heap->str[i].string) == 0) {
       Heap->str[i].total++;
-      found = true;
+      found = 1u;
     }
   }
-  if (!found) {
-    if (Heap->str) {
+  if (found == 0u) {
+    if (Heap->str != nullptr) {
       /* increase size by 1 */
       RECREATE(Heap->str, struct StrHeapList, (size_t)(Heap->uniq + 1));
     } else {
@@ -79,16 +79,16 @@ void DisplayStringHeap(struct StrHeap* Heap, struct char_data* ch, int type,
       send_to_char(buf, ch);
     } else {
       if (ch->in_room > -1) {
-        act(buf, false, ch, nullptr, nullptr, TO_ROOM);
+        act(buf, 0, ch, nullptr, nullptr, TO_ROOM);
       }
     }
 
-    if (destroy) {
+    if (destroy != 0) {
       /* free everything */
       free(Heap->str[i].string);
     }
   }
-  if (destroy) {
+  if (destroy != 0) {
     free(Heap->str);
     free(Heap);
   }

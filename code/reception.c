@@ -35,12 +35,12 @@ char recep_offer(struct char_data* ch, struct char_data* receptionist,
   cost->no_carried = 0;
   cost->ok = 1; /* Use if any "-1" objects */
 
-  if (!cost->ok) {
+  if (cost->ok == 0) {
     return 0;
   }
 
   if (cost->no_carried > MAX_OBJ_SAVE) {
-    if (receptionist) {
+    if (receptionist != nullptr) {
       sprintf(buf, "$n tells you 'Sorry, but I can't store more than %d items.",
         MAX_OBJ_SAVE);
       act(buf, 0, receptionist, nullptr, ch, TO_VICT);
@@ -87,7 +87,7 @@ void update_file(struct char_data* ch, struct obj_file_u* st, int save) {
 
   sprintf(buf, "rent/%s", lower(ch->player.name));
 
-  if (!(fl = fopen(buf, "w"))) {
+  if ((fl = fopen(buf, "w")) == nullptr) {
     perror("saving PC's objects");
     exit(1);
   }
@@ -108,37 +108,37 @@ void update_file(struct char_data* ch, struct obj_file_u* st, int save) {
 int read_objs(FILE* fl, struct obj_file_u* st) {
   int i = 0;
 
-  if (feof(fl)) {
+  if (feof(fl) != 0) {
     fclose(fl);
     return 0;
   }
   fread(&st->owner, sizeof(st->owner), 1, fl);
-  if (feof(fl)) {
+  if (feof(fl) != 0) {
     fclose(fl);
     return 0;
   }
   fread(&st->gold_left, sizeof(st->gold_left), 1, fl);
-  if (feof(fl)) {
+  if (feof(fl) != 0) {
     fclose(fl);
     return 0;
   }
   fread(&st->total_cost, sizeof(st->total_cost), 1, fl);
-  if (feof(fl)) {
+  if (feof(fl) != 0) {
     fclose(fl);
     return 0;
   }
   fread(&st->last_update, sizeof(st->last_update), 1, fl);
-  if (feof(fl)) {
+  if (feof(fl) != 0) {
     fclose(fl);
     return 0;
   }
   fread(&st->minimum_stay, sizeof(st->minimum_stay), 1, fl);
-  if (feof(fl)) {
+  if (feof(fl) != 0) {
     fclose(fl);
     return 0;
   }
   fread(&st->number, sizeof(st->number), 1, fl);
-  if (feof(fl)) {
+  if (feof(fl) != 0) {
     fclose(fl);
     return 0;
   }
@@ -170,7 +170,7 @@ static void zero_rent_by_name(char* n) {
 
   sprintf(buf, "rent/%s", lower(n));
 
-  if (!(fl = fopen(buf, "w"))) {
+  if ((fl = fopen(buf, "w")) == nullptr) {
     perror("saving PC's objects");
     exit(1);
   }
@@ -214,19 +214,19 @@ static void put_obj_in_store(struct obj_data* obj, struct obj_file_u* st) {
   oe->material_points = obj->obj_flags.material_points;
 
   /*  new, saving names and descrips stuff */
-  if (obj->name) {
+  if (obj->name != nullptr) {
     strcpy(oe->name, obj->name);
   } else {
     sprintf(buf, "object %d has no name!", obj_index[obj->item_number].vnum);
     vlog(buf);
   }
 
-  if (obj->short_description) {
+  if (obj->short_description != nullptr) {
     strcpy(oe->sd, obj->short_description);
   } else {
     *oe->sd = '\0';
   }
-  if (obj->description) {
+  if (obj->description != nullptr) {
     strcpy(oe->desc, obj->description);
   } else {
     *oe->desc = '\0';
@@ -246,7 +246,7 @@ static int contained_weight(struct obj_data* container) {
   struct obj_data* tmp = nullptr;
   int rval = 0;
 
-  for (tmp = container->contains; tmp; tmp = tmp->next_content) {
+  for (tmp = container->contains; tmp != nullptr; tmp = tmp->next_content) {
     rval += GET_OBJ_WEIGHT(tmp);
   }
   return rval;
@@ -257,7 +257,7 @@ void obj_to_store(struct obj_data* obj, struct obj_file_u* st,
   struct char_data* ch, int do_delete) {
   static char buf[240];
 
-  if (!obj) {
+  if (obj == nullptr) {
     return;
   }
 
@@ -280,15 +280,15 @@ void obj_to_store(struct obj_data* obj, struct obj_file_u* st,
       obj->short_description);
     send_to_char(buf, ch);
 #endif
-    if (do_delete) {
-      if (obj->in_obj) {
+    if (do_delete != 0) {
+      if (obj->in_obj != nullptr) {
         obj_from_obj(obj);
       }
       extract_obj(obj);
     }
   } else if (obj->item_number == -1) {
-    if (do_delete) {
-      if (obj->in_obj) {
+    if (do_delete != 0) {
+      if (obj->in_obj != nullptr) {
         obj_from_obj(obj);
       }
       extract_obj(obj);
@@ -298,8 +298,8 @@ void obj_to_store(struct obj_data* obj, struct obj_file_u* st,
     GET_OBJ_WEIGHT(obj) -= weight;
     put_obj_in_store(obj, st);
     GET_OBJ_WEIGHT(obj) += weight;
-    if (do_delete) {
-      if (obj->in_obj) {
+    if (do_delete != 0) {
+      if (obj->in_obj != nullptr) {
         obj_from_obj(obj);
       }
       extract_obj(obj);
@@ -323,8 +323,8 @@ void save_obj(struct char_data* ch, struct obj_cost* cost, int do_delete) {
   st.minimum_stay = 0; /* XXX where does this belong? */
 
   for (i = 0; i < MAX_WEAR; i++) {
-    if (ch->equipment[i]) {
-      if (do_delete) {
+    if (ch->equipment[i] != nullptr) {
+      if (do_delete != 0) {
         obj_to_store(unequip_char(ch, i), &st, ch, do_delete);
       } else {
         obj_to_store(ch->equipment[i], &st, ch, do_delete);
@@ -333,7 +333,7 @@ void save_obj(struct char_data* ch, struct obj_cost* cost, int do_delete) {
   }
 
   obj_to_store(ch->carrying, &st, ch, do_delete);
-  if (do_delete) {
+  if (do_delete != 0) {
     ch->carrying = nullptr;
   }
 
@@ -349,7 +349,7 @@ static void count_limited_items(struct obj_file_u* st) {
   int cost_per_day = 0;
   struct obj_data* obj = nullptr;
 
-  if (!st->owner[0]) {
+  if (st->owner[0] == 0) {
     return; /* don't count empty rent units */
   }
 
@@ -389,7 +389,7 @@ void update_obj_file(void) {
   struct obj_file_u* lim = nullptr;
   struct obj_data* obj = nullptr;
 
-  if (!(char_file = fopen(PLAYER_FILE, "r+"))) {
+  if ((char_file = fopen(PLAYER_FILE, "r+")) == nullptr) {
     perror("Opening player file for reading. (reception.c, update_obj_file)");
     exit(1);
   }
@@ -398,7 +398,7 @@ void update_obj_file(void) {
     sprintf(buf, "rent/%s", player_table[i].name);
     /* r+b is for Binary Reading/Writing */
     if ((fl = fopen(buf, "r+b")) != nullptr) {
-      if (read_objs(fl, &st)) {
+      if (read_objs(fl, &st) != 0) {
         if (str_cmp(st.owner, player_table[i].name) != 0) {
           vlog("Ack!  wrong person written into object file!");
           abort();
@@ -478,11 +478,12 @@ int receptionist(struct char_data* ch, int cmd, const char* arg) {
   short int save_room = 0;
   short int action_tabel[9] = {23, 24, 36, 105, 106, 109, 111, 142, 147};
 
-  if (!ch->desc) {
+  if (ch->desc == nullptr) {
     return 0; /* You've forgot false - NPC couldn't leave */
   }
 
-  for (temp_char = real_roomp(ch->in_room)->people; (temp_char) && (!recep);
+  for (temp_char = real_roomp(ch->in_room)->people;
+    ((temp_char) != nullptr) && (recep == nullptr);
     temp_char = temp_char->next_in_room) {
     if (IS_MOB(temp_char)) {
       if (mob_index[temp_char->nr].func.mob_f == receptionist) {
@@ -491,7 +492,7 @@ int receptionist(struct char_data* ch, int cmd, const char* arg) {
     }
   }
 
-  if (!recep) {
+  if (recep == nullptr) {
     vlog("No receptionist.\n\r");
     exit(1);
   }
@@ -501,12 +502,12 @@ int receptionist(struct char_data* ch, int cmd, const char* arg) {
   }
 
   if ((cmd != 92) && (cmd != 93)) {
-    if (!cmd) {
-      if (recep->specials.fighting) {
+    if (cmd == 0) {
+      if (recep->specials.fighting != nullptr) {
         return (citizen(recep, 0, ""));
       }
     }
-    if (!number(0, 30)) {
+    if (number(0, 30) == 0) {
       do_action(recep, "", action_tabel[number(0, 8)]);
     }
     return 0;
@@ -524,14 +525,14 @@ int receptionist(struct char_data* ch, int cmd, const char* arg) {
     return 1;
   }
 
-  if (!CAN_SEE(recep, ch)) {
+  if (CAN_SEE(recep, ch) == 0) {
     act("$n says, 'I don't deal with people I can't see!'", 0, recep, nullptr,
       nullptr, TO_ROOM);
     return 1;
   }
 
   if (cmd == 92) { /* Rent  */
-    if (recep_offer(ch, recep, &cost)) {
+    if (recep_offer(ch, recep, &cost) != 0) {
       act("$n stores your stuff in the safe, and helps you into your chamber.",
         0, recep, nullptr, ch, TO_VICT);
       act("$n helps $N into $S private chamber.", 0, recep, nullptr, ch,
@@ -560,11 +561,12 @@ int receptionist_for_outlaws(struct char_data* ch, int cmd, const char* arg) {
   short int save_room = 0;
   short int action_tabel[9] = {23, 24, 36, 105, 106, 109, 111, 142, 147};
 
-  if (!ch->desc) {
+  if (ch->desc == nullptr) {
     return 0; /* You've forgot false - NPC couldn't leave */
   }
 
-  for (temp_char = real_roomp(ch->in_room)->people; (temp_char) && (!recep);
+  for (temp_char = real_roomp(ch->in_room)->people;
+    ((temp_char) != nullptr) && (recep == nullptr);
     temp_char = temp_char->next_in_room) {
     if (IS_MOB(temp_char)) {
       if (mob_index[temp_char->nr].func.mob_f == receptionist_for_outlaws) {
@@ -573,7 +575,7 @@ int receptionist_for_outlaws(struct char_data* ch, int cmd, const char* arg) {
     }
   }
 
-  if (!recep) {
+  if (recep == nullptr) {
     vlog("No receptionist.\n\r");
     exit(1);
   }
@@ -583,12 +585,12 @@ int receptionist_for_outlaws(struct char_data* ch, int cmd, const char* arg) {
   }
 
   if ((cmd != 92) && (cmd != 93)) {
-    if (!cmd) {
-      if (recep->specials.fighting) {
+    if (cmd == 0) {
+      if (recep->specials.fighting != nullptr) {
         return (citizen(recep, 0, ""));
       }
     }
-    if (!number(0, 30)) {
+    if (number(0, 30) == 0) {
       do_action(recep, "", action_tabel[number(0, 8)]);
     }
     return 0;
@@ -599,7 +601,7 @@ int receptionist_for_outlaws(struct char_data* ch, int cmd, const char* arg) {
     return 1;
   }
 
-  if (!CAN_SEE(recep, ch)) {
+  if (CAN_SEE(recep, ch) == 0) {
     act("$n says, 'I don't deal with people I can't see!'", 0, recep, nullptr,
       nullptr
 
@@ -609,7 +611,7 @@ int receptionist_for_outlaws(struct char_data* ch, int cmd, const char* arg) {
   }
 
   if (cmd == 92) { /* Rent  */
-    if (recep_offer(ch, recep, &cost)) {
+    if (recep_offer(ch, recep, &cost) != 0) {
       if (IS_SET(ch->specials.act, PLR_KILLER) ||
           (IS_SET(ch->specials.act, PLR_OUTLAW))) {
         sprintf(buf, "$n tells you 'Hurry, before the cops catch you!'");

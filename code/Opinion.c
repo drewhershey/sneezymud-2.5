@@ -17,7 +17,7 @@ void FreeHates(struct char_data* ch) {
   struct char_list* k = nullptr;
   struct char_list* n = nullptr;
 
-  for (k = ch->hates.clist; k; k = n) {
+  for (k = ch->hates.clist; k != nullptr; k = n) {
     n = k->next;
     free(k);
   }
@@ -28,7 +28,7 @@ void FreeFears(struct char_data* ch) {
   struct char_list* k = nullptr;
   struct char_list* n = nullptr;
 
-  for (k = ch->fears.clist; k; k = n) {
+  for (k = ch->fears.clist; k != nullptr; k = n) {
     n = k->next;
     free(k);
   }
@@ -39,12 +39,12 @@ int RemHated(struct char_data* ch, struct char_data* pud) {
   struct char_list* oldpud = nullptr;
   struct char_list* t = nullptr;
 
-  if (pud) {
-    for (oldpud = ch->hates.clist; oldpud; oldpud = oldpud->next) {
-      if (!oldpud) {
+  if (pud != nullptr) {
+    for (oldpud = ch->hates.clist; oldpud != nullptr; oldpud = oldpud->next) {
+      if (oldpud == nullptr) {
         return 0;
       }
-      if (oldpud->op_ch) {
+      if (oldpud->op_ch != nullptr) {
         if (oldpud->op_ch == pud) {
           t = oldpud;
           if (ch->hates.clist == t) {
@@ -61,7 +61,7 @@ int RemHated(struct char_data* ch, struct char_data* pud) {
           break;
         }
       } else {
-        if (!strcmp(oldpud->name, GET_NAME(pud))) {
+        if (strcmp(oldpud->name, GET_NAME(pud)) == 0) {
           t = oldpud;
           if (ch->hates.clist == t) {
             ch->hates.clist = nullptr;
@@ -80,16 +80,16 @@ int RemHated(struct char_data* ch, struct char_data* pud) {
     }
   }
 
-  if (!ch->hates.clist) {
+  if (ch->hates.clist == nullptr) {
     REMOVE_BIT(ch->hatefield, HATE_CHAR);
   }
-  if (!ch->hatefield) {
+  if (ch->hatefield == 0u) {
     if (!IS_PC(ch)) {
       REMOVE_BIT(ch->specials.act, ACT_HATEFUL);
     }
   }
 
-  return ((pud) ? 1 : 0);
+  return (((pud) != nullptr) ? 1 : 0);
 }
 
 int AddHated(struct char_data* ch, struct char_data* pud) {
@@ -99,7 +99,7 @@ int AddHated(struct char_data* ch, struct char_data* pud) {
     return 0;
   }
 
-  if (pud) {
+  if (pud != nullptr) {
     CREATE(newpud, struct char_list, 1);
     newpud->op_ch = pud;
     strcpy(newpud->name, GET_NAME(pud));
@@ -116,7 +116,7 @@ int AddHated(struct char_data* ch, struct char_data* pud) {
     }
   }
 
-  return ((pud) ? 1 : 0);
+  return (((pud) != nullptr) ? 1 : 0);
 }
 
 int AddHatred(struct char_data* ch, int parm_type, int parm) {
@@ -178,14 +178,14 @@ int Hates(struct char_data* ch, struct char_data* v) {
   }
 
   if (IS_SET(ch->hatefield, HATE_CHAR)) {
-    if (ch->hates.clist) {
-      for (i = ch->hates.clist; i; i = i->next) {
-        if (i->op_ch) {
-          if ((i->op_ch == v) && (!strcmp(i->name, GET_NAME(v)))) {
+    if (ch->hates.clist != nullptr) {
+      for (i = ch->hates.clist; i != nullptr; i = i->next) {
+        if (i->op_ch != nullptr) {
+          if ((i->op_ch == v) && (strcmp(i->name, GET_NAME(v)) == 0)) {
             return 1;
           }
         } else {
-          if (!strcmp(i->name, GET_NAME(v))) {
+          if (strcmp(i->name, GET_NAME(v)) == 0) {
             return 1;
           }
         }
@@ -216,7 +216,7 @@ int Hates(struct char_data* ch, struct char_data* v) {
     }
   }
   if (IS_SET(ch->hatefield, HATE_CLASS)) {
-    if (HasClass(v, ch->hates.char_class)) {
+    if (HasClass(v, ch->hates.char_class) != 0) {
       return 1;
     }
   }
@@ -241,12 +241,12 @@ int Fears(struct char_data* ch, struct char_data* v) {
   }
 
   if (IS_SET(ch->fearfield, FEAR_CHAR)) {
-    if (ch->fears.clist) {
-      for (i = ch->fears.clist; i; i = i->next) {
-        if (i) {
-          if (i->op_ch) {
-            if (i->name[0]) {
-              if ((i->op_ch == v) && (!strcmp(i->name, GET_NAME(v)))) {
+    if (ch->fears.clist != nullptr) {
+      for (i = ch->fears.clist; i != nullptr; i = i->next) {
+        if (i != nullptr) {
+          if (i->op_ch != nullptr) {
+            if (i->name[0] != 0) {
+              if ((i->op_ch == v) && (strcmp(i->name, GET_NAME(v)) == 0)) {
                 return 1;
               }
             } else {
@@ -254,8 +254,8 @@ int Fears(struct char_data* ch, struct char_data* v) {
               RemFeared(ch, i->op_ch);
             }
           } else {
-            if (i->name[0]) {
-              if (!strcmp(i->name, GET_NAME(v))) {
+            if (i->name[0] != 0) {
+              if (strcmp(i->name, GET_NAME(v)) == 0) {
                 return 1;
               }
             }
@@ -287,7 +287,7 @@ int Fears(struct char_data* ch, struct char_data* v) {
     }
   }
   if (IS_SET(ch->fearfield, FEAR_CLASS)) {
-    if (HasClass(v, ch->hates.char_class)) {
+    if (HasClass(v, ch->hates.char_class) != 0) {
       return 1;
     }
   }
@@ -310,14 +310,14 @@ int RemFeared(struct char_data* ch, struct char_data* pud) {
     return 0;
   }
 
-  if (pud && (ch->fears.clist != nullptr)) {
+  if ((pud != nullptr) && (ch->fears.clist != nullptr)) {
     tmp = ch->fears.clist;
     for (oldpud = ch->fears.clist; (oldpud != nullptr); oldpud = tmp) {
       if (oldpud == nullptr) {
         return 0;
       }
       tmp = oldpud->next;
-      if (oldpud->op_ch) {
+      if (oldpud->op_ch != nullptr) {
         if (oldpud->op_ch == pud) {
           t = oldpud;
           if (ch->fears.clist == t) {
@@ -334,7 +334,7 @@ int RemFeared(struct char_data* ch, struct char_data* pud) {
           break;
         }
       } else {
-        if (!strcmp(oldpud->name, GET_NAME(pud))) {
+        if (strcmp(oldpud->name, GET_NAME(pud)) == 0) {
           t = oldpud;
           if (ch->fears.clist == t) {
             ch->fears.clist = nullptr;
@@ -352,19 +352,19 @@ int RemFeared(struct char_data* ch, struct char_data* pud) {
       }
     }
   }
-  if (!ch->fears.clist) {
+  if (ch->fears.clist == nullptr) {
     REMOVE_BIT(ch->fearfield, FEAR_CHAR);
   }
-  if (!ch->fearfield) {
+  if (ch->fearfield == 0u) {
     REMOVE_BIT(ch->specials.act, ACT_AFRAID);
   }
-  return ((pud) ? 1 : 0);
+  return (((pud) != nullptr) ? 1 : 0);
 }
 
 int AddFeared(struct char_data* ch, struct char_data* pud) {
   struct char_list* newpud = nullptr;
 
-  if (pud) {
+  if (pud != nullptr) {
     CREATE(newpud, struct char_list, 1);
     newpud->op_ch = pud;
     strcpy(newpud->name, GET_NAME(pud));
@@ -382,7 +382,7 @@ int AddFeared(struct char_data* ch, struct char_data* pud) {
     }
   }
 
-  return ((pud) ? 1 : 0);
+  return (((pud) != nullptr) ? 1 : 0);
 }
 
 int AddFears(struct char_data* ch, int parm_type, int parm) {
@@ -437,9 +437,9 @@ struct char_data* FindAHatee(struct char_data* ch) {
     return (nullptr);
   }
 
-  for (tmp_ch = real_roomp(ch->in_room)->people; tmp_ch;
+  for (tmp_ch = real_roomp(ch->in_room)->people; tmp_ch != nullptr;
     tmp_ch = tmp_ch->next_in_room) {
-    if (Hates(ch, tmp_ch) && (CAN_SEE(ch, tmp_ch))) {
+    if ((Hates(ch, tmp_ch) != 0) && ((CAN_SEE(ch, tmp_ch)) != 0)) {
       if (ch->in_room == tmp_ch->in_room) {
         if (ch != tmp_ch) {
           return (tmp_ch);
@@ -459,9 +459,9 @@ struct char_data* FindAFearee(struct char_data* ch) {
     return (nullptr);
   }
 
-  for (tmp_ch = real_roomp(ch->in_room)->people; tmp_ch;
+  for (tmp_ch = real_roomp(ch->in_room)->people; tmp_ch != nullptr;
     tmp_ch = tmp_ch->next_in_room) {
-    if (Fears(ch, tmp_ch) && (CAN_SEE(ch, tmp_ch))) {
+    if ((Fears(ch, tmp_ch) != 0) && ((CAN_SEE(ch, tmp_ch)) != 0)) {
       if ((ch->in_room == tmp_ch->in_room) && (ch != tmp_ch)) {
         return (tmp_ch);
       }
@@ -479,9 +479,9 @@ struct char_data* FindAFearee(struct char_data* ch) {
 void ZeroHatred(struct char_data* ch, struct char_data* v) {
   struct char_list* oldpud = nullptr;
 
-  for (oldpud = ch->hates.clist; oldpud; oldpud = oldpud->next) {
-    if (oldpud) {
-      if (oldpud->op_ch) {
+  for (oldpud = ch->hates.clist; oldpud != nullptr; oldpud = oldpud->next) {
+    if (oldpud != nullptr) {
+      if (oldpud->op_ch != nullptr) {
         if (oldpud->op_ch == v) {
           oldpud->op_ch = nullptr;
         }
@@ -493,9 +493,9 @@ void ZeroHatred(struct char_data* ch, struct char_data* v) {
 void ZeroFeared(struct char_data* ch, struct char_data* v) {
   struct char_list* oldpud = nullptr;
 
-  for (oldpud = ch->fears.clist; oldpud; oldpud = oldpud->next) {
-    if (oldpud) {
-      if (oldpud->op_ch) {
+  for (oldpud = ch->fears.clist; oldpud != nullptr; oldpud = oldpud->next) {
+    if (oldpud != nullptr) {
+      if (oldpud->op_ch != nullptr) {
         if (oldpud->op_ch == v) {
           oldpud->op_ch = nullptr;
         }

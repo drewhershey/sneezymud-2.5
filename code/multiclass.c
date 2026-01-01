@@ -76,7 +76,7 @@ int HowManyClasses(struct char_data* ch) {
       tot++;
     }
   }
-  if (tot) {
+  if (tot != 0) {
     return (tot);
   }
   if (IS_SET(ch->player.char_class, CLASS_MAGIC_USER)) {

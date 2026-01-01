@@ -109,12 +109,12 @@ void boot_db(void) {
   file_to_string(MOTD_FILE, motd);
 
   vlog("Opening mobile, object and help files.");
-  if (!(mob_f = fopen(MOB_FILE, "r"))) {
+  if ((mob_f = fopen(MOB_FILE, "r")) == nullptr) {
     perror("boot");
     exit(0);
   }
 
-  if (!(obj_f = fopen(OBJ_FILE, "r"))) {
+  if ((obj_f = fopen(OBJ_FILE, "r")) == nullptr) {
     perror("boot");
     exit(0);
   }
@@ -145,7 +145,7 @@ void boot_db(void) {
   boot_pose_messages();
 
   vlog("Assigning function pointers:");
-  if (!no_specials) {
+  if (no_specials == 0) {
     vlog("   Mobiles.");
     assign_mobiles();
     vlog("   Objects.");
@@ -163,7 +163,7 @@ void boot_db(void) {
   update_obj_file();
 
   vlog(" Booting mail system.");
-  if (!scan_file()) {
+  if (scan_file() == 0) {
     vlog("   Mail system error -- mail system disabled!");
     no_mail = 1;
   }
@@ -177,7 +177,7 @@ void boot_db(void) {
     int d = 0;
     int e = 0;
     s = zone_table[i].name;
-    d = (i ? (zone_table[i - 1].top + 1) : 0);
+    d = ((i != 0) ? (zone_table[i - 1].top + 1) : 0);
     e = zone_table[i].top;
     fprintf(stderr, "Performing boot-time reset of %s (rooms %d-%d).\n",
 #if 1
@@ -285,7 +285,7 @@ void update_time(void) {
 
   return;
 
-  if (!(f1 = fopen(TIME_FILE, "w"))) {
+  if ((f1 = fopen(TIME_FILE, "w")) == nullptr) {
     perror("update time");
     exit(0);
   }
@@ -312,23 +312,24 @@ void build_player_index(void) {
   struct char_file_u dummy;
   FILE* fl = nullptr;
 
-  if (!(fl = fopen(PLAYER_FILE, "rb+"))) {
+  if ((fl = fopen(PLAYER_FILE, "rb+")) == nullptr) {
     perror("build player index");
     exit(0);
   }
 
-  for (; !feof(fl);) {
+  for (; feof(fl) == 0;) {
     fread(&dummy, sizeof(struct char_file_u), 1, fl);
-    if (!feof(fl)) /* new record */ {
+    if (feof(fl) == 0) /* new record */ {
       /* Create new entry in the list */
       if (nr == -1) {
         CREATE(player_table, struct player_index_element, 3000);
         nr = 0;
       } else {
         if (nr >= pc) {
-          if (!(player_table =
+          if ((player_table =
                   (struct player_index_element*)realloc(player_table,
-                    (++nr + 50) * sizeof(struct player_index_element)))) {
+                    (++nr + 50) * sizeof(struct player_index_element))) ==
+              nullptr) {
             perror("generate index");
             exit(0);
           }
@@ -371,13 +372,13 @@ struct index_data* generate_indices(FILE* fl, int* top) {
   rewind(fl);
 
   for (;;) {
-    if (fgets(buf, sizeof(buf), fl)) {
+    if (fgets(buf, sizeof(buf), fl) != nullptr) {
       if (*buf == '#') {
-        if (!i) { /* first cell */
+        if (i == 0) { /* first cell */
           CREATE(index, struct index_data, bc);
         } else if (i >= bc) {
-          if (!(index = (struct index_data*)realloc(index,
-                  (i + 50) * sizeof(struct index_data)))) {
+          if ((index = (struct index_data*)realloc(index,
+                 (i + 50) * sizeof(struct index_data))) == nullptr) {
             perror("load indices");
             exit(0);
           }
@@ -413,7 +414,7 @@ void cleanout_room(struct room_data* rp) {
   free(rp->name);
   free(rp->description);
   for (i = 0; i < 6; i++) {
-    if (rp->dir_option[i]) {
+    if (rp->dir_option[i] != nullptr) {
       free(rp->dir_option[i]->general_description);
       free(rp->dir_option[i]->keyword);
       free(rp->dir_option[i]);
@@ -421,7 +422,7 @@ void cleanout_room(struct room_data* rp) {
     }
   }
 
-  for (exptr = rp->ex_description; exptr; exptr = nptr) {
+  for (exptr = rp->ex_description; exptr != nullptr; exptr = nptr) {
     nptr = exptr->next;
     free(exptr->keyword);
     free(exptr->description);
@@ -541,13 +542,14 @@ void load_one_room(FILE* fl, struct room_data* rp) {
 
         new_descr->keyword = fread_string(fl);
 
-        if (!new_descr->keyword || !*new_descr->keyword) {
+        if ((new_descr->keyword == nullptr) || (*new_descr->keyword == 0)) {
           fprintf(stderr, "No keyword in room %d\n", rp->number);
         }
 
         new_descr->description = fread_string(fl);
 
-        if (!new_descr->description || !*new_descr->description) {
+        if ((new_descr->description == nullptr) ||
+            (*new_descr->description == 0)) {
           fprintf(stderr, "No desc in room %d\n", rp->number);
         }
 
@@ -577,7 +579,7 @@ void boot_world(void) {
   assert(!character_list && !object_list);
 
   FILE* fl = fopen(WORLD_FILE, "r");
-  if (!fl) {
+  if (fl == nullptr) {
     perror("fopen");
     vlog("World file not found");
     exit(0);
@@ -593,7 +595,7 @@ void boot_world(void) {
     }
 
     struct room_data* room = allocate_room(virtual_nr);
-    if (!room) {
+    if (room == nullptr) {
       vlogf("Failed to allocate room %d", virtual_nr);
       (void)fclose(fl);
       exit(1);
@@ -620,7 +622,7 @@ struct room_data* allocate_room(int room_number) {
 
   struct room_data* room = room_find(room_db, room_number);
 
-  if (room) {
+  if (room != nullptr) {
     return room;
   }
 
@@ -713,7 +715,7 @@ void boot_zones(void) {
   char* check = nullptr;
   char buf[81];
 
-  if (!(fl = fopen(ZONE_FILE, "r"))) {
+  if ((fl = fopen(ZONE_FILE, "r")) == nullptr) {
     perror("boot_zones");
     exit(0);
   }
@@ -728,11 +730,11 @@ void boot_zones(void) {
 
     /* alloc a new zone */
 
-    if (!zon) {
+    if (zon == 0) {
       CREATE(zone_table, struct zone_data, bc);
     } else if (zon >= bc) {
-      if (!(zone_table = (struct zone_data*)realloc(zone_table,
-              (zon + 10) * sizeof(struct zone_data)))) {
+      if ((zone_table = (struct zone_data*)realloc(zone_table,
+             (zon + 10) * sizeof(struct zone_data))) == nullptr) {
         perror("boot_zones realloc");
         exit(0);
       }
@@ -748,13 +750,13 @@ void boot_zones(void) {
     cmd_no = 0;
 
     for (expand = 1;;) {
-      if (expand) {
-        if (!cmd_no) {
+      if (expand != 0) {
+        if (cmd_no == 0) {
           CREATE(zone_table[zon].cmd, struct reset_com, cc);
         } else if (cmd_no >= cc) {
-          if (!(zone_table[zon].cmd =
+          if ((zone_table[zon].cmd =
                   (struct reset_com*)realloc(zone_table[zon].cmd,
-                    (cmd_no + 5) * sizeof(struct reset_com)))) {
+                    (cmd_no + 5) * sizeof(struct reset_com))) == nullptr) {
             perror("reset command load");
             exit(0);
           }
@@ -841,7 +843,7 @@ static void set_racial_stuff(struct char_data* mob) {
       SET_BIT(mob->M_immune, IMM_NONMAG);
       break;
     case RACE_PREDATOR:
-      if (mob->skills) {
+      if (mob->skills != nullptr) {
         mob->skills[SKILL_HUNT].learned = 100;
       }
       break;
@@ -852,7 +854,7 @@ static void set_racial_stuff(struct char_data* mob) {
 }
 
 static char is_valid_position(signed char pos) {
-  return pos >= POSITION_DEAD && pos <= POSITION_STANDING;
+  return static_cast<char>(pos >= POSITION_DEAD && pos <= POSITION_STANDING);
 }
 
 /* read a mobile from MOB_FILE */
@@ -969,7 +971,8 @@ struct char_data* read_mobile(int nr, int type) {
       default_pos = POSITION_STANDING;
     }
 
-    if (!is_valid_position(position) || !is_valid_position(default_pos)) {
+    if ((is_valid_position(position) == 0) ||
+        (is_valid_position(default_pos) == 0)) {
       vlogf("Invalid positions %d/%d for mob %d - correcting to STANDING",
         position, default_pos, mob_index[nr].vnum);
       position = POSITION_STANDING;
@@ -1099,7 +1102,8 @@ struct char_data* read_mobile(int nr, int type) {
       default_pos = POSITION_STANDING;
     }
 
-    if (!is_valid_position(position) || !is_valid_position(default_pos)) {
+    if ((is_valid_position(position) == 0) ||
+        (is_valid_position(default_pos) == 0)) {
       vlogf("Invalid positions %d/%d for mob %d - correcting to STANDING",
         position, default_pos, mob_index[nr].vnum);
       position = POSITION_STANDING;
@@ -1183,7 +1187,8 @@ struct char_data* read_mobile(int nr, int type) {
       default_pos = POSITION_STANDING;
     }
 
-    if (!is_valid_position(position) || !is_valid_position(default_pos)) {
+    if ((is_valid_position(position) == 0) ||
+        (is_valid_position(default_pos) == 0)) {
       vlogf("Invalid positions %d/%d for mob %d - correcting to STANDING",
         position, default_pos, mob_index[nr].vnum);
       position = POSITION_STANDING;
@@ -1295,19 +1300,19 @@ struct obj_data* read_object(int nr, int type) {
   /* *** string data *** */
 
   obj->name = fread_string(obj_f);
-  if (obj->name && *obj->name) {
+  if ((obj->name != nullptr) && (*obj->name != 0)) {
     bc += strlen(obj->name);
   }
   obj->short_description = fread_string(obj_f);
-  if (obj->short_description && *obj->short_description) {
+  if ((obj->short_description != nullptr) && (*obj->short_description != 0)) {
     bc += strlen(obj->short_description);
   }
   obj->description = fread_string(obj_f);
-  if (obj->description && *obj->description) {
+  if ((obj->description != nullptr) && (*obj->description != 0)) {
     bc += strlen(obj->description);
   }
   obj->action_description = fread_string(obj_f);
-  if (obj->action_description && *obj->action_description) {
+  if ((obj->action_description != nullptr) && (*obj->action_description != 0)) {
     bc += strlen(obj->action_description);
   }
 
@@ -1352,11 +1357,11 @@ struct obj_data* read_object(int nr, int type) {
     CREATE(new_descr, struct extra_descr_data, 1);
     bc += sizeof(struct extra_descr_data);
     new_descr->keyword = fread_string(obj_f);
-    if (new_descr->keyword && *new_descr->keyword) {
+    if ((new_descr->keyword != nullptr) && (*new_descr->keyword != 0)) {
       bc += strlen(new_descr->keyword);
     }
     new_descr->description = fread_string(obj_f);
-    if (new_descr->description && *new_descr->description) {
+    if ((new_descr->description != nullptr) && (*new_descr->description != 0)) {
       bc += strlen(new_descr->description);
     }
 
@@ -1416,9 +1421,9 @@ void zone_update(void) {
 
   for (i = 0; i <= top_of_zone_table; i++) {
     if (zone_table[i].age < zone_table[i].lifespan &&
-        zone_table[i].reset_mode) {
+        (zone_table[i].reset_mode != 0)) {
       (zone_table[i].age)++;
-    } else if (zone_table[i].age < ZO_DEAD && zone_table[i].reset_mode) {
+    } else if (zone_table[i].age < ZO_DEAD && (zone_table[i].reset_mode != 0)) {
       /* enqueue zone */
 
       CREATE(update_u, struct reset_q_element, 1);
@@ -1426,7 +1431,7 @@ void zone_update(void) {
       update_u->zone_to_reset = i;
       update_u->next = nullptr;
 
-      if (!reset_q.head) {
+      if (reset_q.head == nullptr) {
         reset_q.head = reset_q.tail = update_u;
       } else {
         reset_q.tail->next = update_u;
@@ -1439,7 +1444,7 @@ void zone_update(void) {
 
   /* dequeue zones (if possible) and reset */
 
-  for (update_u = reset_q.head; update_u; update_u = tmp2) {
+  for (update_u = reset_q.head; update_u != nullptr; update_u = tmp2) {
     if (update_u->zone_to_reset > top_of_zone_table) {
       /*  this may or may not work */
       /*  may result in some lost memory, but the loss is not signifigant
@@ -1451,7 +1456,7 @@ void zone_update(void) {
     tmp2 = update_u->next;
 
     if (zone_table[update_u->zone_to_reset].reset_mode == 2 ||
-        is_empty(update_u->zone_to_reset)) {
+        (is_empty(update_u->zone_to_reset) != 0)) {
       reset_zone(update_u->zone_to_reset);
       /* dequeue */
 
@@ -1462,7 +1467,7 @@ void zone_update(void) {
           ;
         }
 
-        if (!update_u->next) {
+        if (update_u->next == nullptr) {
           reset_q.tail = temp;
         }
 
@@ -1494,7 +1499,7 @@ void reset_zone(int zone) {
       break;
     }
 
-    if (last_cmd || !ZCMD.if_flag) {
+    if ((last_cmd != 0) || !ZCMD.if_flag) {
       switch (ZCMD.command) {
         case 'M': /* read a mobile */
           if (mob_index[ZCMD.arg1].number < ZCMD.arg2) {
@@ -1513,7 +1518,7 @@ void reset_zone(int zone) {
             mob = read_mobile(ZCMD.arg1, REAL);
             mob->specials.zone = zone;
             char_to_room(mob, ZCMD.arg3);
-            if (master) {
+            if (master != nullptr) {
               /*
               add the charm bit to the dude.
               */
@@ -1535,7 +1540,7 @@ void reset_zone(int zone) {
               } else {
                 last_cmd = 0;
               }
-            } else if ((obj = read_object(ZCMD.arg1, REAL))) {
+            } else if ((obj = read_object(ZCMD.arg1, REAL)) != nullptr) {
               sprintf(buf, "Error finding room #%d", ZCMD.arg3);
               vlog(buf);
               extract_obj(obj);
@@ -1550,7 +1555,7 @@ void reset_zone(int zone) {
           if (obj_index[ZCMD.arg1].number < ZCMD.arg2) {
             obj = read_object(ZCMD.arg1, REAL);
             obj_to = get_obj_num(ZCMD.arg3);
-            if (obj_to && obj) {
+            if ((obj_to != nullptr) && (obj != nullptr)) {
               obj_to_obj(obj, obj_to);
               last_cmd = 1;
             } else {
@@ -1562,8 +1567,8 @@ void reset_zone(int zone) {
           break;
 
         case 'G': /* obj_to_char */
-          if (mob && obj_index[ZCMD.arg1].number < ZCMD.arg2 &&
-              (obj = read_object(ZCMD.arg1, REAL))) {
+          if ((mob != nullptr) && obj_index[ZCMD.arg1].number < ZCMD.arg2 &&
+              ((obj = read_object(ZCMD.arg1, REAL)) != nullptr)) {
             obj_to_char(obj, mob);
             last_cmd = 1;
           } else {
@@ -1572,7 +1577,7 @@ void reset_zone(int zone) {
           break;
 
         case 'H': /* hatred to char */
-          if (mob && AddHatred(mob, ZCMD.arg1, ZCMD.arg2)) {
+          if ((mob != nullptr) && (AddHatred(mob, ZCMD.arg1, ZCMD.arg2) != 0)) {
             last_cmd = 1;
           } else {
             last_cmd = 0;
@@ -1580,7 +1585,7 @@ void reset_zone(int zone) {
           break;
 
         case 'F': /* fear to char */
-          if (mob && AddFears(mob, ZCMD.arg1, ZCMD.arg2)) {
+          if ((mob != nullptr) && (AddFears(mob, ZCMD.arg1, ZCMD.arg2) != 0)) {
             last_cmd = 1;
           } else {
             last_cmd = 0;
@@ -1588,8 +1593,8 @@ void reset_zone(int zone) {
           break;
 
         case 'E': /* object to equipment list */
-          if (mob && obj_index[ZCMD.arg1].number < ZCMD.arg2 &&
-              (obj = read_object(ZCMD.arg1, REAL))) {
+          if ((mob != nullptr) && obj_index[ZCMD.arg1].number < ZCMD.arg2 &&
+              ((obj = read_object(ZCMD.arg1, REAL)) != nullptr)) {
             equip_char(mob, obj, ZCMD.arg3);
             last_cmd = 1;
           } else {
@@ -1599,7 +1604,7 @@ void reset_zone(int zone) {
 
         case 'D': /* set state of door */
           rp = real_roomp(ZCMD.arg1);
-          if (rp && rp->dir_option[ZCMD.arg2]) {
+          if ((rp != nullptr) && (rp->dir_option[ZCMD.arg2] != nullptr)) {
             switch (ZCMD.arg3) {
               case 0:
                 REMOVE_BIT(rp->dir_option[ZCMD.arg2]->exit_info, EX_LOCKED);
@@ -1640,8 +1645,8 @@ void reset_zone(int zone) {
 int is_empty(int zone_nr) {
   struct descriptor_data* i = nullptr;
 
-  for (i = descriptor_list; i; i = i->next) {
-    if (!i->connected) {
+  for (i = descriptor_list; i != nullptr; i = i->next) {
+    if (i->connected == 0) {
       if (real_roomp(i->character->in_room)->zone == zone_nr) {
         return (0);
       }
@@ -1661,7 +1666,7 @@ int load_char(char* name, struct char_file_u* char_element) {
   int player_i = 0;
 
   if ((player_i = find_name(name)) >= 0) {
-    if (!(fl = fopen(PLAYER_FILE, "r"))) {
+    if ((fl = fopen(PLAYER_FILE, "r")) == nullptr) {
       perror("Opening player file for reading. (db.c, load_char)");
       exit(0);
     }
@@ -1696,14 +1701,14 @@ void store_to_char(struct char_file_u* st, struct char_data* ch) {
   ch->player.short_descr = nullptr;
   ch->player.long_descr = nullptr;
 
-  if (*st->title) {
+  if (*st->title != 0) {
     CREATE(ch->player.title, char, strlen(st->title) + 1);
     strcpy(ch->player.title, st->title);
   } else {
     GET_TITLE(ch) = nullptr;
   }
 
-  if (*st->description) {
+  if (*st->description != 0) {
     CREATE(ch->player.description, char, strlen(st->description) + 1);
     strcpy(ch->player.description, st->description);
   } else {
@@ -1757,7 +1762,7 @@ void store_to_char(struct char_file_u* st, struct char_data* ch) {
 
   /* Add all spell effects */
   for (i = 0; i < MAX_AFFECT; i++) {
-    if (st->affected[i].type) {
+    if (st->affected[i].type != 0) {
       /* Convert from file format to runtime format */
       struct affected_type af;
       af.type = st->affected[i].type;
@@ -1782,7 +1787,7 @@ void char_to_store(struct char_data* ch, struct char_file_u* st) {
   /* Unaffect everything a character can be affected by */
 
   for (i = 0; i < MAX_WEAR; i++) {
-    if (ch->equipment[i]) {
+    if (ch->equipment[i] != nullptr) {
       char_eq[i] = unequip_char_for_save(ch, i);
     } else {
       char_eq[i] = nullptr;
@@ -1790,7 +1795,7 @@ void char_to_store(struct char_data* ch, struct char_file_u* st) {
   }
 
   for (af = ch->affected, i = 0; i < MAX_AFFECT; i++) {
-    if (af) {
+    if (af != nullptr) {
       /* Copy affected_type to affected_type_file with compat conversion */
       st->affected[i].type = af->type;
       st->affected[i].duration = af->duration;
@@ -1812,7 +1817,7 @@ void char_to_store(struct char_data* ch, struct char_file_u* st) {
     }
   }
 
-  if ((i >= MAX_AFFECT) && af && af->next) {
+  if ((i >= MAX_AFFECT) && (af != nullptr) && (af->next != nullptr)) {
     vlog("WARNING: OUT OF STORE ROOM FOR AFFECTED TYPES!!!");
   }
 
@@ -1852,7 +1857,7 @@ void char_to_store(struct char_data* ch, struct char_file_u* st) {
     *st->title = '\0';
   }
 
-  if (ch->player.description) {
+  if (ch->player.description != nullptr) {
     strcpy(st->description, ch->player.description);
   } else {
     *st->description = '\0';
@@ -1878,7 +1883,7 @@ void char_to_store(struct char_data* ch, struct char_file_u* st) {
   }
 
   for (af = ch->affected, i = 0; i < MAX_AFFECT; i++) {
-    if (af) {
+    if (af != nullptr) {
       /* Add effect of the spell or it will be lost */
       /* When saving without quitting               */
       affect_modify(ch, st->affected[i].location, st->affected[i].modifier,
@@ -1888,7 +1893,7 @@ void char_to_store(struct char_data* ch, struct char_file_u* st) {
   }
 
   for (i = 0; i < MAX_WEAR; i++) {
-    if (char_eq[i]) {
+    if (char_eq[i] != nullptr) {
       equip_char(ch, char_eq[i], i);
     }
   }
@@ -1903,9 +1908,9 @@ int create_entry(char* name) {
   if (top_of_p_table == -1) {
     CREATE(player_table, struct player_index_element, 1);
     top_of_p_table = 0;
-  } else if (!(player_table = (struct player_index_element*)realloc(
-                 player_table, sizeof(struct player_index_element) *
-                                 (++top_of_p_table + 1)))) {
+  } else if ((player_table = (struct player_index_element*)realloc(player_table,
+                sizeof(struct player_index_element) *
+                  (++top_of_p_table + 1))) == nullptr) {
     perror("create entry");
     exit(1);
   }
@@ -1913,8 +1918,8 @@ int create_entry(char* name) {
   CREATE(player_table[top_of_p_table].name, char, strlen(name) + 1);
 
   /* copy lowercase equivalent of name to table field */
-  for (i = 0; (*(player_table[top_of_p_table].name + i) = LOWER(*(name + i)));
-    i++) {
+  for (i = 0;
+    (*(player_table[top_of_p_table].name + i) = LOWER(*(name + i))) != 0; i++) {
     ;
   }
 
@@ -1936,29 +1941,29 @@ void save_char(struct char_data* ch, short int load_room) {
   }
 
   if (IS_NPC(ch)) {
-    if (!ch->desc) {
+    if (ch->desc == nullptr) {
       return;
     }
     tmp = ch->desc->original;
-    if (!tmp) {
+    if (tmp == nullptr) {
       return;
     }
 
   } else {
-    if (!ch->desc) {
+    if (ch->desc == nullptr) {
       return;
     }
     tmp = nullptr;
   }
 
-  if ((expand = (ch->desc->pos > top_of_p_file))) {
+  if ((expand = static_cast<int>(ch->desc->pos > top_of_p_file)) != 0) {
     strcpy(mode, "a");
     top_of_p_file++;
   } else {
     strcpy(mode, "r+");
   }
 
-  if (!tmp) {
+  if (tmp == nullptr) {
     char_to_store(ch, &st);
   } else {
     char_to_store(tmp, &st);
@@ -1968,12 +1973,12 @@ void save_char(struct char_data* ch, short int load_room) {
 
   strcpy(st.pwd, ch->desc->pwd);
 
-  if (!(fl = fopen(PLAYER_FILE, mode))) {
+  if ((fl = fopen(PLAYER_FILE, mode)) == nullptr) {
     perror("save char");
     exit(1);
   }
 
-  if (!expand) {
+  if (expand == 0) {
     fseek(fl, ch->desc->pos * sizeof(struct char_file_u), 0);
   }
 
@@ -2001,7 +2006,7 @@ char* fread_string(FILE* fl) {
   int flag = 0;
 
   do {
-    if (!fgets(tmp, MAX_STRING_LENGTH, fl)) {
+    if (fgets(tmp, MAX_STRING_LENGTH, fl) == nullptr) {
       perror("fread_str");
       vlog("File read error.");
       return strdup("Empty");
@@ -2027,13 +2032,13 @@ char* fread_string(FILE* fl) {
     }
 
     // Skip whitespace, ensuring we don't go before start of buffer
-    while (point >= buf && isspace(*point)) {
+    while (point >= buf && (isspace(*point) != 0)) {
       point--;
     }
 
-    flag = point >= buf && *point == '~';
+    flag = static_cast<int>(point >= buf && *point == '~');
 
-    if (flag) {
+    if (flag != 0) {
       if (strlen(buf) >= 3 && *(buf + strlen(buf) - 3) == '\n') {
         *(buf + strlen(buf) - 2) = '\r';
         *(buf + strlen(buf) - 1) = '\0';
@@ -2052,7 +2057,7 @@ char* fread_string(FILE* fl) {
         *(buf + strlen(buf)) = '\r';
       }
     }
-  } while (!flag);
+  } while (flag == 0);
 
   /* do the allocate boogie  */
   char* rslt = nullptr;
@@ -2069,34 +2074,34 @@ void free_char(struct char_data* ch) {
 
   free(GET_NAME(ch));
 
-  if (ch->player.title) {
+  if (ch->player.title != nullptr) {
     free(ch->player.title);
   }
-  if (ch->act_ptr) {
+  if (ch->act_ptr != nullptr) {
     free(ch->act_ptr);
   }
-  if (ch->player.short_descr) {
+  if (ch->player.short_descr != nullptr) {
     free(ch->player.short_descr);
   }
-  if (ch->player.long_descr) {
+  if (ch->player.long_descr != nullptr) {
     free(ch->player.long_descr);
   }
-  if (ch->player.description) {
+  if (ch->player.description != nullptr) {
     free(ch->player.description);
   }
-  if (ch->player.sounds) {
+  if (ch->player.sounds != nullptr) {
     free(ch->player.sounds);
   }
-  if (ch->player.distant_snds) {
+  if (ch->player.distant_snds != nullptr) {
     free(ch->player.distant_snds);
   }
 
   struct affected_type* next_af = nullptr;
-  for (af = ch->affected; af; af = next_af) {
+  for (af = ch->affected; af != nullptr; af = next_af) {
     next_af = af->next;
     affect_remove(ch, af);
   }
-  if (ch->skills) {
+  if (ch->skills != nullptr) {
     free(ch->skills);
   }
 
@@ -2112,22 +2117,22 @@ void free_obj(struct obj_data* obj) {
   struct extra_descr_data* next_one = nullptr;
 
   free(obj->name);
-  if (obj->description && *obj->description) {
+  if ((obj->description != nullptr) && (*obj->description != 0)) {
     free(obj->description);
   }
-  if (obj->short_description && *obj->short_description) {
+  if ((obj->short_description != nullptr) && (*obj->short_description != 0)) {
     free(obj->short_description);
   }
-  if (obj->action_description && *obj->action_description) {
+  if ((obj->action_description != nullptr) && (*obj->action_description != 0)) {
     free(obj->action_description);
   }
 
   for (curr = obj->ex_description; (curr != nullptr); curr = next_one) {
     next_one = curr->next;
-    if (curr->keyword) {
+    if (curr->keyword != nullptr) {
       free(curr->keyword);
     }
-    if (curr->description) {
+    if (curr->description != nullptr) {
       free(curr->description);
     }
     free(curr);
@@ -2143,7 +2148,7 @@ int file_to_string(const char* name, char* buf) {
 
   *buf = '\0';
 
-  if (!(fl = fopen(name, "r"))) {
+  if ((fl = fopen(name, "r")) == nullptr) {
     perror("file-to-string");
     *buf = '\0';
     return (-1);
@@ -2152,7 +2157,7 @@ int file_to_string(const char* name, char* buf) {
   do {
     fgets(tmp, 99, fl);
 
-    if (!feof(fl)) {
+    if (feof(fl) == 0) {
       if (strlen(buf) + strlen(tmp) + 2 > MAX_STRING_LENGTH) {
         vlog("fl->strng: string too big (db.c, file_to_string)");
         *buf = '\0';
@@ -2164,7 +2169,7 @@ int file_to_string(const char* name, char* buf) {
       *(buf + strlen(buf) + 1) = '\0';
       *(buf + strlen(buf)) = '\r';
     }
-  } while (!feof(fl));
+  } while (feof(fl) == 0);
 
   fclose(fl);
 
@@ -2176,7 +2181,7 @@ static void clear_dead_bit(struct char_data* ch) {
   struct char_file_u st;
 
   fl = fopen(PLAYER_FILE, "r+");
-  if (!fl) {
+  if (fl == nullptr) {
     perror("player file");
     exit(0);
   }
@@ -2187,7 +2192,7 @@ static void clear_dead_bit(struct char_data* ch) {
    **   this is a serious kludge, and must be changed before multiple
    **   languages can be implemented
    */
-  if (st.talks[2]) {
+  if (st.talks[2] != 0) {
     st.talks[2] = 0; /* fix the 'resurrectable' bit */
     fseek(fl, ch->desc->pos * sizeof(struct char_file_u), 0);
     fwrite(&st, sizeof(struct char_file_u), 1, fl);
@@ -2224,9 +2229,11 @@ void reset_char(struct char_data* ch) {
 
   ch->desc->screen_size = 24;
 
-  if (!strcmp(ch->player.name, "Brutius") || !strcmp(ch->player.name, "Peel") ||
-      !strcmp(ch->player.name, "Damescena") ||
-      !strcmp(ch->player.name, "Dash") || !strcmp(ch->player.name, "Jesus")) {
+  if ((strcmp(ch->player.name, "Brutius") == 0) ||
+      (strcmp(ch->player.name, "Peel") == 0) ||
+      (strcmp(ch->player.name, "Damescena") == 0) ||
+      (strcmp(ch->player.name, "Dash") == 0) ||
+      (strcmp(ch->player.name, "Jesus") == 0)) {
     GET_LEVEL(ch, 0) = BRUTIUS;
     GET_LEVEL(ch, 1) = BRUTIUS;
     GET_LEVEL(ch, 2) = BRUTIUS;
@@ -2257,13 +2264,13 @@ void reset_char(struct char_data* ch) {
     }
   }
 
-  if (HasClass(ch, CLASS_PALADIN)) {
+  if (HasClass(ch, CLASS_PALADIN) != 0) {
     if (!IS_AFFECTED(ch, AFF_PROTECT_EVIL)) {
       SET_BIT(ch->specials.affected_by, AFF_PROTECT_EVIL);
     }
   }
 
-  if ((ch->player.char_class == 3) && (GET_LEVEL(ch, THIEF_LEVEL_IND))) {
+  if ((ch->player.char_class == 3) && ((GET_LEVEL(ch, THIEF_LEVEL_IND)) != 0)) {
     ch->player.char_class = 8;
     send_to_char("Setting your class to THIEF only.\n\r", ch);
   }
@@ -2332,18 +2339,18 @@ void reset_char(struct char_data* ch) {
 
   parse_name(GET_NAME(ch), recipient);
 
-  for (tmp = recipient; *tmp; tmp++) {
-    if (isupper(*tmp)) {
+  for (tmp = recipient; *tmp != 0; tmp++) {
+    if (isupper(*tmp) != 0) {
       *tmp = tolower(*tmp);
     }
   }
 
-  if (has_mail(recipient)) {
+  if (has_mail(recipient) != 0) {
     sprintf(buf, "You have %sMAIL%s.\n\r", VT_BOLDTEX, VT_NORMALT);
     send_to_char(buf, ch);
   }
 
-  if (HasClass(ch, CLASS_MONK)) {
+  if (HasClass(ch, CLASS_MONK) != 0) {
     GET_AC(ch) -= MIN(200, (GET_LEVEL(ch, MONK_LEVEL_IND) * 5));
     GET_HITROLL(ch) += GET_LEVEL(ch, MONK_LEVEL_IND) / 10;
     ch->points.max_move += GET_LEVEL(ch, MONK_LEVEL_IND);
@@ -2358,11 +2365,11 @@ void reset_char(struct char_data* ch) {
     update the affects on the character.
   */
 
-  for (af = ch->affected; af; af = af->next) {
+  for (af = ch->affected; af != nullptr; af = af->next) {
     affect_modify(ch, af->location, af->modifier, af->bitvector, 1);
   }
 
-  if (!HasClass(ch, CLASS_MONK)) {
+  if (HasClass(ch, CLASS_MONK) == 0) {
     GET_AC(ch) += dex_app[GET_DEX(ch)].defensive;
   }
   if (GET_AC(ch) > 100) {
@@ -2376,7 +2383,7 @@ void reset_char(struct char_data* ch) {
   /*
     clear out the 'dead' bit on characters
   */
-  if (ch->desc) {
+  if (ch->desc != nullptr) {
     clear_dead_bit(ch);
   }
 }
@@ -2408,7 +2415,7 @@ void init_char(struct char_data* ch) {
 
   /* *** if this is our first player --- he be God *** */
 
-  if (!strcmp(ch->player.name, "Brutius")) {
+  if (strcmp(ch->player.name, "Brutius") == 0) {
     GET_EXP(ch) = 200000000;
     GET_LEVEL(ch, 0) = BRUTIUS;
     GET_LEVEL(ch, 1) = BRUTIUS;
@@ -2504,7 +2511,7 @@ void init_char(struct char_data* ch) {
 
   ch->points.armor = 100;
 
-  if (!ch->skills) {
+  if (ch->skills == nullptr) {
     SpaceForSkills(ch);
   }
 

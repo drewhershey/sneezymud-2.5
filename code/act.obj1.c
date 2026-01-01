@@ -23,7 +23,7 @@ static void get(struct char_data* ch, struct obj_data* obj_object,
   struct obj_data* sub_object) {
   char buffer[256];
 
-  if (sub_object) {
+  if (sub_object != nullptr) {
     if (!IS_SET(sub_object->obj_flags.value[1], CONT_CLOSED)) {
       obj_from_obj(obj_object);
       obj_to_char(obj_object, ch);
@@ -63,7 +63,7 @@ static void get(struct char_data* ch, struct obj_data* obj_object,
 static int check_for_inside_trap(struct char_data* ch, struct obj_data* i) {
   struct obj_data* t = nullptr;
 
-  for (t = i->contains; t; t = t->next_content) {
+  for (t = i->contains; t != nullptr; t = t->next_content) {
     if ((ITEM_TYPE(t) == ITEM_TRAP) &&
         (IS_SET(GET_TRAP_EFF(t), TRAP_EFF_OBJECT)) &&
         (GET_TRAP_CHARGES(t) > 0)) {
@@ -94,25 +94,25 @@ void do_get(struct char_data* ch, const char* argument, int cmd) {
   argument_interpreter(argument, arg1, arg2);
 
   /* get type */
-  if (!*arg1) {
+  if (*arg1 == 0) {
     type = 0;
   }
-  if (*arg1 && !*arg2) {
-    if (!str_cmp(arg1, "all")) {
+  if ((*arg1 != 0) && (*arg2 == 0)) {
+    if (str_cmp(arg1, "all") == 0) {
       type = 1;
     } else {
       type = 2;
     }
   }
-  if (*arg1 && *arg2) {
-    if (!str_cmp(arg1, "all")) {
-      if (!str_cmp(arg2, "all")) {
+  if ((*arg1 != 0) && (*arg2 != 0)) {
+    if (str_cmp(arg1, "all") == 0) {
+      if (str_cmp(arg2, "all") == 0) {
         type = 3;
       } else {
         type = 4;
       }
     } else {
-      if (!str_cmp(arg2, "all")) {
+      if (str_cmp(arg2, "all") == 0) {
         type = 5;
       } else {
         type = 6;
@@ -130,13 +130,13 @@ void do_get(struct char_data* ch, const char* argument, int cmd) {
       sub_object = nullptr;
       found = 0;
       fail = 0;
-      for (obj_object = real_roomp(ch->in_room)->contents; obj_object;
-        obj_object = next_obj) {
+      for (obj_object = real_roomp(ch->in_room)->contents;
+        obj_object != nullptr; obj_object = next_obj) {
         next_obj = obj_object->next_content;
         /*
     check for a trap (traps fire often)
     */
-        if (CheckForAnyTrap(ch, obj_object)) {
+        if (CheckForAnyTrap(ch, obj_object) != 0) {
           return;
         }
         if (CAN_SEE_OBJ(ch, obj_object)) {
@@ -145,7 +145,7 @@ void do_get(struct char_data* ch, const char* argument, int cmd) {
             if ((IS_CARRYING_W(ch) + obj_object->obj_flags.weight) <=
                 CAN_CARRY_W(ch)) {
               if (CAN_WEAR(obj_object, ITEM_TAKE)) {
-                if (ObjLevelCheck(obj_object, ch)) {
+                if (ObjLevelCheck(obj_object, ch) != 0) {
                   get(ch, obj_object, sub_object);
                   found = 1;
                 } else {
@@ -171,10 +171,10 @@ void do_get(struct char_data* ch, const char* argument, int cmd) {
           }
         }
       }
-      if (found) {
+      if (found != 0) {
         send_to_char("OK.\n\r", ch);
       } else {
-        if (!fail) {
+        if (fail == 0) {
           send_to_char("You see nothing here.\n\r", ch);
         }
       }
@@ -184,10 +184,10 @@ void do_get(struct char_data* ch, const char* argument, int cmd) {
       sub_object = nullptr;
       found = 0;
       fail = 0;
-      if (getall(arg1, newarg)) {
+      if (getall(arg1, newarg) != 0) {
         strcpy(arg1, newarg);
         num = -1;
-      } else if ((p = getabunch(arg1, newarg))) {
+      } else if ((p = getabunch(arg1, newarg)) != 0) {
         strcpy(arg1, newarg);
         num = p;
       } else {
@@ -197,13 +197,13 @@ void do_get(struct char_data* ch, const char* argument, int cmd) {
       while (num != 0) {
         obj_object =
           get_obj_in_list_vis(ch, arg1, real_roomp(ch->in_room)->contents);
-        if (obj_object) {
+        if (obj_object != nullptr) {
           if ((IS_CARRYING_N(ch) + obj_object->obj_flags.volume) <
               CAN_CARRY_N(ch)) {
             if ((IS_CARRYING_W(ch) + obj_object->obj_flags.weight) <
                 CAN_CARRY_W(ch)) {
               if (CAN_WEAR(obj_object, ITEM_TAKE)) {
-                if (ObjLevelCheck(obj_object, ch)) {
+                if (ObjLevelCheck(obj_object, ch) != 0) {
                   get(ch, obj_object, sub_object);
                   found = 1;
                 } else {
@@ -253,12 +253,12 @@ void do_get(struct char_data* ch, const char* argument, int cmd) {
       found = 0;
       fail = 0;
       sub_object = get_obj_vis_accessible(ch, arg2);
-      if (sub_object) {
+      if (sub_object != nullptr) {
         if (GET_ITEM_TYPE(sub_object) == ITEM_CONTAINER) {
-          for (obj_object = sub_object->contains; obj_object;
+          for (obj_object = sub_object->contains; obj_object != nullptr;
             obj_object = next_obj) {
             /* check for trap (jdb - 11/9) */
-            if (CheckForGetTrap(ch, obj_object)) {
+            if (CheckForGetTrap(ch, obj_object) != 0) {
               return;
             }
             next_obj = obj_object->next_content;
@@ -268,7 +268,7 @@ void do_get(struct char_data* ch, const char* argument, int cmd) {
                 if ((IS_CARRYING_W(ch) + obj_object->obj_flags.weight) <
                     CAN_CARRY_W(ch)) {
                   if (CAN_WEAR(obj_object, ITEM_TAKE)) {
-                    if (ObjLevelCheck(obj_object, ch)) {
+                    if (ObjLevelCheck(obj_object, ch) != 0) {
                       get(ch, obj_object, sub_object);
                       found = 1;
                     } else {
@@ -294,7 +294,7 @@ void do_get(struct char_data* ch, const char* argument, int cmd) {
               }
             }
           }
-          if (!found && !fail) {
+          if ((found == 0) && (fail == 0)) {
             sprintf(buffer, "You do not see anything in %s.\n\r",
               sub_object->short_description);
             send_to_char(buffer, ch);
@@ -324,12 +324,12 @@ void do_get(struct char_data* ch, const char* argument, int cmd) {
       found = 0;
       fail = 0;
       sub_object = get_obj_vis_accessible(ch, arg2);
-      if (sub_object) {
+      if (sub_object != nullptr) {
         if (GET_ITEM_TYPE(sub_object) == ITEM_CONTAINER) {
-          if (getall(arg1, newarg)) {
+          if (getall(arg1, newarg) != 0) {
             num = -1;
             strcpy(arg1, newarg);
-          } else if ((p = getabunch(arg1, newarg))) {
+          } else if ((p = getabunch(arg1, newarg)) != 0) {
             num = p;
             strcpy(arg1, newarg);
           } else {
@@ -338,9 +338,9 @@ void do_get(struct char_data* ch, const char* argument, int cmd) {
 
           while (num != 0) {
             obj_object = get_obj_in_list_vis(ch, arg1, sub_object->contains);
-            if (obj_object) {
+            if (obj_object != nullptr) {
               /* check for trap (jdb - 11/9) */
-              if (check_for_inside_trap(ch, sub_object)) {
+              if (check_for_inside_trap(ch, sub_object) != 0) {
                 return;
               }
               if ((IS_CARRYING_N(ch) + obj_object->obj_flags.volume) <
@@ -348,7 +348,7 @@ void do_get(struct char_data* ch, const char* argument, int cmd) {
                 if ((IS_CARRYING_W(ch) + obj_object->obj_flags.weight) <
                     CAN_CARRY_W(ch)) {
                   if (CAN_WEAR(obj_object, ITEM_TAKE)) {
-                    if (ObjLevelCheck(obj_object, ch)) {
+                    if (ObjLevelCheck(obj_object, ch) != 0) {
                       get(ch, obj_object, sub_object);
                       found = 1;
                     } else {
@@ -418,7 +418,7 @@ void do_drop(struct char_data* ch, const char* argument, int cmd) {
   int p = 0;
 
   s = one_argument(argument, arg);
-  if (is_number(arg)) {
+  if (is_number(arg) != 0) {
     amount = atoi(arg);
     strcpy(arg, s);
 
@@ -447,9 +447,10 @@ void do_drop(struct char_data* ch, const char* argument, int cmd) {
   }
   only_argument(argument, arg);
 
-  if (*arg) {
-    if (!str_cmp(arg, "all")) {
-      for (tmp_object = ch->carrying; tmp_object; tmp_object = next_obj) {
+  if (*arg != 0) {
+    if (str_cmp(arg, "all") == 0) {
+      for (tmp_object = ch->carrying; tmp_object != nullptr;
+        tmp_object = next_obj) {
         next_obj = tmp_object->next_content;
         if (!IS_SET(tmp_object->obj_flags.extra_flags, ITEM_NODROP)) {
           if (CAN_SEE_OBJ(ch, tmp_object)) {
@@ -471,7 +472,7 @@ void do_drop(struct char_data* ch, const char* argument, int cmd) {
           }
         }
       }
-      if (!test) {
+      if (test == 0) {
         send_to_char("You do not seem to have anything.\n\r", ch);
       }
 #if NODUPLICATES
@@ -479,10 +480,10 @@ void do_drop(struct char_data* ch, const char* argument, int cmd) {
 #endif
     } else {
       /* &&&&&& */
-      if (getall(arg, newarg)) {
+      if (getall(arg, newarg) != 0) {
         num = -1;
         strcpy(arg, newarg);
-      } else if ((p = getabunch(arg, newarg))) {
+      } else if ((p = getabunch(arg, newarg)) != 0) {
         num = p;
         strcpy(arg, newarg);
       } else {
@@ -491,7 +492,7 @@ void do_drop(struct char_data* ch, const char* argument, int cmd) {
 
       while (num != 0) {
         tmp_object = get_obj_in_list_vis(ch, arg, ch->carrying);
-        if (tmp_object) {
+        if (tmp_object != nullptr) {
           if (!IS_SET(tmp_object->obj_flags.extra_flags, ITEM_NODROP)) {
             sprintf(buffer, "You drop %s.\n\r", tmp_object->short_description);
             send_to_char(buffer, ch);
@@ -539,19 +540,19 @@ void do_put(struct char_data* ch, const char* argument, int cmd) {
 
   argument_interpreter(argument, arg1, arg2);
 
-  if (*arg1) {
-    if (*arg2) {
-      if (getall(arg1, newarg)) {
+  if (*arg1 != 0) {
+    if (*arg2 != 0) {
+      if (getall(arg1, newarg) != 0) {
         num = -1;
         strcpy(arg1, newarg);
-      } else if ((p = getabunch(arg1, newarg))) {
+      } else if ((p = getabunch(arg1, newarg)) != 0) {
         num = p;
         strcpy(arg1, newarg);
       } else {
         num = 1;
       }
 
-      if (!strcmp(arg1, "all")) {
+      if (strcmp(arg1, "all") == 0) {
         send_to_char("sorry, you can't do that (yet)\n\r", ch);
         return;
       }
@@ -562,7 +563,7 @@ void do_put(struct char_data* ch, const char* argument, int cmd) {
         obj_object = get_obj_in_list_vis(ch, arg1, ch->carrying);
 #endif
 
-        if (obj_object) {
+        if (obj_object != nullptr) {
           if (IS_OBJ_STAT(obj_object, ITEM_NODROP)) {
             send_to_char("You can't let go of it, it must be CURSED!\n\r", ch);
             return;
@@ -575,7 +576,7 @@ void do_put(struct char_data* ch, const char* argument, int cmd) {
           }
           bits = generic_find(arg2, FIND_OBJ_INV | FIND_OBJ_ROOM, ch, &tmp_char,
             &sub_object);
-          if (sub_object) {
+          if (sub_object != nullptr) {
             if (GET_ITEM_TYPE(sub_object) == ITEM_CONTAINER) {
               if (!IS_SET(sub_object->obj_flags.value[1], CONT_CLOSED)) {
                 if (obj_object == sub_object) {
@@ -678,10 +679,10 @@ void do_give(struct char_data* ch, const char* argument, int cmd) {
   struct obj_data* obj = nullptr;
 
   argument = one_argument(argument, obj_name);
-  if (is_number(obj_name)) {
+  if (is_number(obj_name) != 0) {
     amount = atoi(obj_name);
     argument = one_argument(argument, arg);
-    if (str_cmp("coins", arg) && str_cmp("coin", arg)) {
+    if ((str_cmp("coins", arg) != 0) && (str_cmp("coin", arg) != 0)) {
       send_to_char("Sorry, you can't do that (yet)...\n\r", ch);
       return;
     }
@@ -697,12 +698,12 @@ void do_give(struct char_data* ch, const char* argument, int cmd) {
 
     argument = one_argument(argument, vict_name);
 
-    if (!*vict_name) {
+    if (*vict_name == 0) {
       send_to_char("To who?\n\r", ch);
       return;
     }
 
-    if (!(vict = get_char_room_vis(ch, vict_name))) {
+    if ((vict = get_char_room_vis(ch, vict_name)) == nullptr) {
       send_to_char("To who?\n\r", ch);
       return;
     }
@@ -726,15 +727,15 @@ void do_give(struct char_data* ch, const char* argument, int cmd) {
   }
   argument = one_argument(argument, vict_name);
 
-  if (!*obj_name || !*vict_name) {
+  if ((*obj_name == 0) || (*vict_name == 0)) {
     send_to_char("Give what to who?\n\r", ch);
     return;
   }
   /* &&&& */
-  if (getall(obj_name, newarg)) {
+  if (getall(obj_name, newarg) != 0) {
     num = -1;
     strcpy(obj_name, newarg);
-  } else if ((p = getabunch(obj_name, newarg))) {
+  } else if ((p = getabunch(obj_name, newarg)) != 0) {
     num = p;
     strcpy(obj_name, newarg);
   } else {
@@ -742,7 +743,7 @@ void do_give(struct char_data* ch, const char* argument, int cmd) {
   }
 
   while (num != 0) {
-    if (!(obj = get_obj_in_list_vis(ch, obj_name, ch->carrying))) {
+    if ((obj = get_obj_in_list_vis(ch, obj_name, ch->carrying)) == nullptr) {
       if (num >= -1) {
         send_to_char("You do not seem to have anything like that.\n\r", ch);
       }
@@ -752,7 +753,7 @@ void do_give(struct char_data* ch, const char* argument, int cmd) {
       send_to_char("You can't let go of it, it must be CURSED!\n\r", ch);
       return;
     }
-    if (!(vict = get_char_room_vis(ch, vict_name))) {
+    if ((vict = get_char_room_vis(ch, vict_name)) == nullptr) {
       send_to_char("No one by that name around here.\n\r", ch);
       return;
     }
@@ -760,7 +761,7 @@ void do_give(struct char_data* ch, const char* argument, int cmd) {
       send_to_char("Ok.\n\r", ch);
       return;
     }
-    if (!ObjLevelCheck(obj, vict)) {
+    if (ObjLevelCheck(obj, vict) == 0) {
       act("$N wouldn't know how to use the $o if you gave it to $M!", 0, ch,
         obj, vict, TO_CHAR);
       return;

@@ -51,13 +51,13 @@ static long pop_free_list(void) {
 static mail_index_type* find_char_in_index(char* searchee) {
   mail_index_type* temp_rec = nullptr;
 
-  if (!*searchee) {
+  if (*searchee == 0) {
     vlog("Mail system -- non fatal error #1.");
     return nullptr;
   }
 
   for (temp_rec = mail_index;
-    (temp_rec && str_cmp(temp_rec->recipient, searchee));
+    ((temp_rec != nullptr) && (str_cmp(temp_rec->recipient, searchee) != 0));
     temp_rec = temp_rec->next) {
     ;
   }
@@ -69,13 +69,13 @@ static void write_to_file(void* buf, int size, long filepos) {
   FILE* mail_file = nullptr;
 
   mail_file = fopen(MAIL_FILE, "r+b");
-  if (!mail_file) {
+  if (mail_file == nullptr) {
     vlog("Mail system -- fatal error: cannot open mail file for writing!");
     no_mail = 1;
     return;
   }
 
-  if (filepos % BLOCK_SIZE) {
+  if ((filepos % BLOCK_SIZE) != 0) {
     vlog("Mail system -- fatal error #2!!!");
     no_mail = 1;
     fclose(mail_file);
@@ -95,13 +95,13 @@ static void read_from_file(void* buf, int size, long filepos) {
   FILE* mail_file = nullptr;
 
   mail_file = fopen(MAIL_FILE, "r+b");
-  if (!mail_file) {
+  if (mail_file == nullptr) {
     vlog("Mail system -- fatal error: cannot open mail file for reading!");
     no_mail = 1;
     return;
   }
 
-  if (filepos % BLOCK_SIZE) {
+  if ((filepos % BLOCK_SIZE) != 0) {
     vlog("Mail system -- fatal error #3!!!");
     no_mail = 1;
     fclose(mail_file);
@@ -120,14 +120,14 @@ static void index_mail(char* raw_name_to_index, long pos) {
   char* src = nullptr;
   int i = 0;
 
-  if (!raw_name_to_index || !*raw_name_to_index) {
+  if ((raw_name_to_index == nullptr) || (*raw_name_to_index == 0)) {
     vlog("Mail system -- non-fatal error #4.");
     return;
   }
 
   for (src = raw_name_to_index, i = 0;
-    *src && i < (int)sizeof(name_to_index) - 1;) {
-    if (isupper(*src)) {
+    (*src != 0) && i < (int)sizeof(name_to_index) - 1;) {
+    if (isupper(*src) != 0) {
       name_to_index[i++] = tolower(*src++);
     } else {
       name_to_index[i++] = *src++;
@@ -135,7 +135,7 @@ static void index_mail(char* raw_name_to_index, long pos) {
   }
   name_to_index[i] = 0;
 
-  if (!(new_index = find_char_in_index(name_to_index))) {
+  if ((new_index = find_char_in_index(name_to_index)) == nullptr) {
     /* name not already in index.. add it */
     new_index = (mail_index_type*)malloc(sizeof(mail_index_type));
     strncpy(new_index->recipient, name_to_index, NAME_SIZE);
@@ -164,10 +164,10 @@ int scan_file(void) {
   long block_num = 0;
   char buf[100];
 
-  if (!(mail_file = fopen(MAIL_FILE, "r"))) {
+  if ((mail_file = fopen(MAIL_FILE, "r")) == nullptr) {
     vlog("Mail file non-existant... creating new file.");
     mail_file = fopen(MAIL_FILE, "w");
-    if (mail_file) {
+    if (mail_file != nullptr) {
       (void)fclose(mail_file);
     } else {
       vlog("Mail system -- fatal error: cannot create mail file!");
@@ -176,7 +176,7 @@ int scan_file(void) {
     return 1;
   }
 
-  while (fread(&next_block, sizeof(header_block_type), 1, mail_file)) {
+  while (fread(&next_block, sizeof(header_block_type), 1, mail_file) != 0u) {
     if (next_block.block_type == HEADER_BLOCK) {
       index_mail(next_block.to, block_num * BLOCK_SIZE);
       total_messages++;
@@ -190,7 +190,7 @@ int scan_file(void) {
   (void)fclose(mail_file);
   sprintf(buf, "   %ld bytes read.", file_end_pos);
   vlog(buf);
-  if (file_end_pos % BLOCK_SIZE) {
+  if ((file_end_pos % BLOCK_SIZE) != 0) {
     vlog("Error booting mail system -- Mail file corrupt!");
     vlog("Mail disabled!");
     return 0;
@@ -203,7 +203,7 @@ int scan_file(void) {
 /* HAS_MAIL */
 /* a simple little function which tells you if the guy has mail or not */
 int has_mail(char* recipient) {
-  if (find_char_in_index(recipient)) {
+  if (find_char_in_index(recipient) != nullptr) {
     return 1;
   }
   return 0;
@@ -227,7 +227,7 @@ void store_mail(char* to, char* from, char* message_pointer) {
   static_assert(sizeof(header_block_type) == sizeof(data_block_type), "");
   static_assert(sizeof(header_block_type) == BLOCK_SIZE, "");
 
-  if (!*from || !*to || !*message_pointer) {
+  if ((*from == 0) || (*to == 0) || (*message_pointer == 0)) {
     vlog("Mail system -- non-fatal error #5.");
     return;
   }
@@ -237,8 +237,8 @@ void store_mail(char* to, char* from, char* message_pointer) {
   strncpy(header.txt, msg_txt, HEADER_BLOCK_DATASIZE);
   strncpy(header.from, from, NAME_SIZE);
   strncpy(header.to, to, NAME_SIZE);
-  for (tmp = header.to; *tmp; tmp++) {
-    if (isupper(*tmp)) {
+  for (tmp = header.to; *tmp != 0; tmp++) {
+    if (isupper(*tmp) != 0) {
       *tmp = tolower(*tmp);
     }
   }
@@ -329,20 +329,20 @@ char* read_delete(char* recipient, char* recipient_formatted) {
   char buf[200];
   size_t string_size = 0;
 
-  if (!*recipient || !*recipient_formatted) {
+  if ((*recipient == 0) || (*recipient_formatted == 0)) {
     vlog("Mail system -- non-fatal error #6.");
     return nullptr;
   }
-  if (!(mail_pointer = find_char_in_index(recipient))) {
+  if ((mail_pointer = find_char_in_index(recipient)) == nullptr) {
     vlog("Stupid post-office-spec_proc-error");
     return nullptr;
   }
-  if (!(position_pointer = mail_pointer->list_start)) {
+  if ((position_pointer = mail_pointer->list_start) == nullptr) {
     vlog("Stupid Rasmussen error!");
     return nullptr;
   }
 
-  if (!(position_pointer->next)) /* just 1 entry in list. */
+  if ((position_pointer->next) == nullptr) /* just 1 entry in list. */
   {
     mail_address = position_pointer->position;
     free(position_pointer);
@@ -362,7 +362,7 @@ char* read_delete(char* recipient, char* recipient_formatted) {
     }
   } else {
     /* move to next-to-last record */
-    while (position_pointer->next->next) {
+    while (position_pointer->next->next != nullptr) {
       position_pointer = position_pointer->next;
     }
     mail_address = position_pointer->next->position;
@@ -434,7 +434,7 @@ static void postmaster_send_mail(struct char_data* ch, const char* arg) {
 
   mailman = FindMobInRoomWithFunction(ch->in_room, postmaster);
 
-  if (!mailman) {
+  if (mailman == nullptr) {
     return;
   }
 
@@ -445,7 +445,7 @@ static void postmaster_send_mail(struct char_data* ch, const char* arg) {
     return;
   }
 
-  if (!*arg) { /* you'll get no argument from me! */
+  if (*arg == 0) { /* you'll get no argument from me! */
     act("$n tells you, 'You need to specify an addressee!'", 0, mailman,
       nullptr, ch, TO_VICT);
     return;
@@ -468,8 +468,8 @@ static void postmaster_send_mail(struct char_data* ch, const char* arg) {
     return;
   }
 
-  for (tmp = recipient; *tmp; tmp++) {
-    if (isupper(*tmp)) {
+  for (tmp = recipient; *tmp != 0; tmp++) {
+    if (isupper(*tmp) != 0) {
       *tmp = tolower(*tmp);
     }
   }
@@ -498,19 +498,19 @@ static void postmaster_check_mail(struct char_data* ch, int cmd,
 
   mailman = FindMobInRoomWithFunction(ch->in_room, postmaster);
 
-  if (!mailman) {
+  if (mailman == nullptr) {
     return;
   }
 
   parse_name(GET_NAME(ch), recipient);
 
-  for (tmp = recipient; *tmp; tmp++) {
-    if (isupper(*tmp)) {
+  for (tmp = recipient; *tmp != 0; tmp++) {
+    if (isupper(*tmp) != 0) {
       *tmp = tolower(*tmp);
     }
   }
 
-  if (has_mail(recipient)) {
+  if (has_mail(recipient) != 0) {
     sprintf(buf, "$n tells you, 'You have mail waiting.'");
   } else {
     sprintf(buf, "$n tells you, 'Sorry, you don't have any mail waiting.'");
@@ -528,25 +528,25 @@ static void postmaster_receive_mail(struct char_data* ch, int cmd,
 
   mailman = FindMobInRoomWithFunction(ch->in_room, postmaster);
 
-  if (!mailman) {
+  if (mailman == nullptr) {
     return;
   }
 
   parse_name(GET_NAME(ch), recipient);
 
-  for (tmp = recipient; *tmp; tmp++) {
-    if (isupper(*tmp)) {
+  for (tmp = recipient; *tmp != 0; tmp++) {
+    if (isupper(*tmp) != 0) {
       *tmp = tolower(*tmp);
     }
   }
 
-  if (!has_mail(recipient)) {
+  if (has_mail(recipient) == 0) {
     sprintf(buf, "$n tells you, 'Sorry, you don't have any mail waiting.'");
     act(buf, 0, mailman, nullptr, ch, TO_VICT);
     return;
   }
 
-  while (has_mail(recipient)) {
+  while (has_mail(recipient) != 0) {
     CREATE(tmp_obj, struct obj_data, 1);
     clear_object(tmp_obj);
 
@@ -562,7 +562,7 @@ static void postmaster_receive_mail(struct char_data* ch, int cmd,
     tmp_obj->obj_flags.cost_per_day = 10;
     tmp_obj->action_description = read_delete(recipient, GET_NAME(ch));
 
-    if (!tmp_obj->action_description) {
+    if (tmp_obj->action_description == nullptr) {
       tmp_obj->action_description =
         strdup("Mail system buggy, please report!!  Error #8.\n\r");
     }
@@ -580,7 +580,7 @@ static void postmaster_receive_mail(struct char_data* ch, int cmd,
 }
 
 int postmaster(struct char_data* ch, int cmd, const char* arg) {
-  if (!ch->desc) {
+  if (ch->desc == nullptr) {
     return 0; /* so mobs don't get caught here */
   }
 

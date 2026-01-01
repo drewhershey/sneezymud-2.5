@@ -72,12 +72,13 @@ int mana_limit(struct char_data* ch) {
     return (max);
   }
 
-  if (HasClass(ch, CLASS_MAGIC_USER)) {
+  if (HasClass(ch, CLASS_MAGIC_USER) != 0) {
     max += GET_LEVEL(ch, MAGE_LEVEL_IND) * 6;
-  } else if (HasClass(ch, CLASS_CLERIC)) {
+  } else if (HasClass(ch, CLASS_CLERIC) != 0) {
     max += GET_LEVEL(ch, CLERIC_LEVEL_IND) * 5;
-  } else if ((HasClass(ch, CLASS_ANTIPALADIN)) ||
-             (HasClass(ch, CLASS_PALADIN)) || (HasClass(ch, CLASS_RANGER))) {
+  } else if (((HasClass(ch, CLASS_ANTIPALADIN)) != 0) ||
+             ((HasClass(ch, CLASS_PALADIN)) != 0) ||
+             ((HasClass(ch, CLASS_RANGER)) != 0)) {
     max += GetMaxLevel(ch) * 3;
   } else {
     max = 100;
@@ -157,7 +158,8 @@ int mana_gain(struct char_data* ch) {
         break;
     }
 
-    if (HasClass(ch, CLASS_MAGIC_USER) || HasClass(ch, CLASS_CLERIC)) {
+    if ((HasClass(ch, CLASS_MAGIC_USER) != 0) ||
+        (HasClass(ch, CLASS_CLERIC) != 0)) {
       gain += gain;
     }
   }
@@ -285,7 +287,8 @@ void advance_level(struct char_data* ch, int char_class) {
 
   GET_LEVEL(ch, char_class) += 1;
 
-  if ((OnlyClass(ch, CLASS_WARRIOR)) || (con_app[GET_CON(ch)].hitp < 0)) {
+  if (((OnlyClass(ch, CLASS_WARRIOR)) != 0) ||
+      (con_app[GET_CON(ch)].hitp < 0)) {
     add_hp = con_app[GET_CON(ch)].hitp;
   } else {
     add_hp = (con_app[GET_CON(ch)].hitp / HowManyClasses(ch));
@@ -317,8 +320,9 @@ void advance_level(struct char_data* ch, int char_class) {
     } break;
 
     case WARRIOR_LEVEL_IND: {
-      if ((!HasClass(ch, CLASS_THIEF)) && (!HasClass(ch, CLASS_MAGIC_USER)) &&
-          (!HasClass(ch, CLASS_CLERIC))) {
+      if ((HasClass(ch, CLASS_THIEF) == 0) &&
+          (HasClass(ch, CLASS_MAGIC_USER) == 0) &&
+          (HasClass(ch, CLASS_CLERIC) == 0)) {
         add_hp += number(1, 12);
       } else if (GET_LEVEL(ch, WARRIOR_LEVEL_IND) < 10) {
         add_hp += number(6, 10);
@@ -356,7 +360,7 @@ void advance_level(struct char_data* ch, int char_class) {
       break;
   }
 
-  if (!HasClass(ch, CLASS_MONK)) {
+  if (HasClass(ch, CLASS_MONK) == 0) {
     ch->points.max_hit += MAX(1, (MIN(10, add_hp)));
   } else {
     ch->points.max_hit += MAX(1, add_hp);
@@ -554,7 +558,7 @@ void gain_condition(struct char_data* ch, int condition, int value) {
     return;
   }
 
-  intoxicated = (GET_COND(ch, DRUNK) > 0);
+  intoxicated = static_cast<char>(GET_COND(ch, DRUNK) > 0);
 
   GET_COND(ch, condition) += value;
 
@@ -575,7 +579,7 @@ void gain_condition(struct char_data* ch, int condition, int value) {
       return;
     }
     case DRUNK: {
-      if (intoxicated) {
+      if (intoxicated != 0) {
         send_to_char("You are now sober.\n\r", ch);
       }
       return;
@@ -586,9 +590,9 @@ void gain_condition(struct char_data* ch, int condition, int value) {
 }
 
 void ClassSpecificStuff(struct char_data* ch) {
-  if (HasClass(ch, CLASS_WARRIOR) || HasClass(ch, CLASS_MONK)) {
+  if ((HasClass(ch, CLASS_WARRIOR) != 0) || (HasClass(ch, CLASS_MONK) != 0)) {
     ch->mult_att = 1.0;
-    if (HasClass(ch, CLASS_MONK)) {
+    if (HasClass(ch, CLASS_MONK) != 0) {
       ch->mult_att += (GET_LEVEL(ch, MONK_LEVEL_IND) / 16.0);
     }
     /* fix up damage stuff */
@@ -692,7 +696,7 @@ void ClassSpecificStuff(struct char_data* ch) {
     }
   }
 
-  if (HasClass(ch, CLASS_MONK)) {
+  if (HasClass(ch, CLASS_MONK) != 0) {
     if (GET_LEVEL(ch, MONK_LEVEL_IND) > 10) {
       SET_BIT(ch->M_immune, IMM_HOLD);
     }

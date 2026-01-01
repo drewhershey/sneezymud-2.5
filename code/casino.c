@@ -83,11 +83,11 @@ int do_blackjack_enter(struct char_data* ch) {
   int inx = 0;
 
   for (l1 = 0, inx = -1; l1 < MAX_BLACKJACK; l1++) {
-    if (!strcmp(ch->player.name, bj_data[l1].name)) {
+    if (strcmp(ch->player.name, bj_data[l1].name) == 0) {
       inx = l1;
       send_to_char("The dealer says, 'Ah, you have returned.'\n\r", ch);
     }
-    if (inx < 0 && !bj_data[l1].inuse) {
+    if (inx < 0 && (bj_data[l1].inuse == 0)) {
       inx = l1;
     }
   }
@@ -111,7 +111,7 @@ static int bj_index(struct char_data* ch) {
   int inx = 0;
 
   for (l1 = 0, inx = -1; inx < 0 && l1 < MAX_BLACKJACK; l1++) {
-    if (!strcmp(ch->player.name, bj_data[l1].name)) {
+    if (strcmp(ch->player.name, bj_data[l1].name) == 0) {
       inx = l1;
     }
   }
@@ -136,16 +136,16 @@ void do_blackjack_exit(struct char_data* ch) {
 }
 
 static void add_suit(char* cat_msg, int card) {
-  if (card & HEARTS) {
+  if ((card & HEARTS) != 0) {
     strcat(cat_msg, " of Hearts");
   }
-  if (card & DIAMONDS) {
+  if ((card & DIAMONDS) != 0) {
     strcat(cat_msg, " of Diamonds");
   }
-  if (card & CLUBS) {
+  if ((card & CLUBS) != 0) {
     strcat(cat_msg, " of Clubs");
   }
-  if (card & SPADES) {
+  if ((card & SPADES) != 0) {
     strcat(cat_msg, " of Spades");
   }
 }
@@ -158,7 +158,7 @@ void do_bj_bet(struct char_data* ch, const char* arg, int cmd) {
   char coin_str[20];
   char log_msg[2048];
 
-  if (check_blackjack(ch)) {
+  if (check_blackjack(ch) != 0) {
     inx = bj_index(ch);
     if (inx < 0) {
       send_to_char("You are not sitting at the table yet.\n\r", ch);
@@ -169,7 +169,7 @@ void do_bj_bet(struct char_data* ch, const char* arg, int cmd) {
       return;
     }
     only_argument(arg, coin_str);
-    if (!*coin_str) {
+    if (*coin_str == 0) {
       send_to_char("Bet how much?\n\r", ch);
       return;
     }
@@ -300,7 +300,7 @@ void do_stay(struct char_data* ch, const char* arg, int cmd) {
   int l1 = 0;
   char log_msg[2048];
 
-  if (check_blackjack(ch)) {
+  if (check_blackjack(ch) != 0) {
     inx = bj_index(ch);
     if (inx < 0) {
       send_to_char("You are not sitting at the table yet.\n\r", ch);
@@ -374,7 +374,7 @@ void do_peek(struct char_data* ch, const char* arg, int cmd) {
   int l1 = 0;
   int inx = 0;
 
-  if (check_blackjack(ch)) {
+  if (check_blackjack(ch) != 0) {
     inx = bj_index(ch);
     if (inx < 0) {
       send_to_char("You are not sitting at the table yet.\n\r", ch);

@@ -27,7 +27,8 @@ static const int trap_dir[] = {TRAP_EFF_NORTH, TRAP_EFF_EAST, TRAP_EFF_SOUTH,
 int CheckForMoveTrap(struct char_data* ch, int dir) {
   struct obj_data* i = nullptr;
 
-  for (i = real_roomp(ch->in_room)->contents; i; i = i->next_content) {
+  for (i = real_roomp(ch->in_room)->contents; i != nullptr;
+    i = i->next_content) {
     if ((ITEM_TYPE(i) == ITEM_TRAP) &&
         (IS_SET(GET_TRAP_EFF(i), TRAP_EFF_MOVE)) && (GET_TRAP_CHARGES(i) > 0)) {
       if (IS_SET(GET_TRAP_EFF(i), trap_dir[dir])) {
@@ -61,7 +62,7 @@ int TriggerTrap(struct char_data* ch, struct obj_data* i) {
   struct char_data* v = nullptr;
 
   if (ITEM_TYPE(i) == ITEM_TRAP) {
-    if (i->obj_flags.value[TRAP_CHARGES]) {
+    if (i->obj_flags.value[TRAP_CHARGES] != 0) {
       adj = GET_TRAP_LEV(i) - GetMaxLevel(ch);
       adj -= dex_app[GET_DEX(ch)].reaction * 5;
       fireperc = 95 + adj;
@@ -73,7 +74,8 @@ int TriggerTrap(struct char_data* ch, struct obj_data* i) {
           act("You hear a strange noise...", 1, ch, nullptr, nullptr, TO_CHAR);
           GET_TRAP_CHARGES(i) -= 1;
           if (IS_SET(GET_TRAP_EFF(i), TRAP_EFF_ROOM)) {
-            for (v = real_roomp(ch->in_room)->people; v; v = v->next_in_room) {
+            for (v = real_roomp(ch->in_room)->people; v != nullptr;
+              v = v->next_in_room) {
               FindTrapDamage(v, i);
             }
           } else {
@@ -115,7 +117,7 @@ void TrapDamage(struct char_data* v, int damtype, int amnt,
 
   amnt = PreProcDam(v, damtype, amnt);
 
-  if (saves_spell(v, SAVING_PETRI)) {
+  if (saves_spell(v, SAVING_PETRI) != 0) {
     amnt = MAX((int)(amnt / 2), 0);
   }
 
@@ -130,7 +132,7 @@ void TrapDamage(struct char_data* v, int damtype, int amnt,
   InformMess(v);
   if (GET_POS(v) == POSITION_DEAD) {
     if (!IS_NPC(v)) {
-      if (real_roomp(v->in_room)->name) {
+      if (real_roomp(v->in_room)->name != nullptr) {
         sprintf(buf, "%s killed by a trap at %s", GET_NAME(v),
           real_roomp(v->in_room)->name);
       }
@@ -138,8 +140,8 @@ void TrapDamage(struct char_data* v, int damtype, int amnt,
 
       /* remove the hatreds of this character */
     }
-    for (tmp_ch = character_list; tmp_ch; tmp_ch = tmp_ch->next) {
-      if (Hates(tmp_ch, v)) {
+    for (tmp_ch = character_list; tmp_ch != nullptr; tmp_ch = tmp_ch->next) {
+      if (Hates(tmp_ch, v) != 0) {
         RemHated(tmp_ch, v);
       }
     }
@@ -210,7 +212,7 @@ void TrapDam(struct char_data* v, int damtype, int amnt, struct obj_data* t) {
 void TrapTeleport(struct char_data* v) {
   int to_room = 0;
 
-  if (saves_spell(v, SAVING_SPELL)) {
+  if (saves_spell(v, SAVING_SPELL) != 0) {
     send_to_char("You feel strange, but the effect fades.\n\r", v);
     return;
   }
@@ -237,7 +239,7 @@ void TrapTeleport(struct char_data* v) {
 void TrapSleep(struct char_data* v) {
   struct affected_type af;
 
-  if (!saves_spell(v, SAVING_SPELL)) {
+  if (saves_spell(v, SAVING_SPELL) == 0) {
     af.type = SPELL_SLEEP;
     af.duration = 12;
     af.modifier = 0;

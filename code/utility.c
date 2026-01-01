@@ -29,7 +29,7 @@
 #include "utils.h"
 
 int CAN_SEE_FOR_WHO(struct char_data* s, struct char_data* o) {
-  if (!o || s->in_room < 0 || o->in_room < 0) {
+  if ((o == nullptr) || s->in_room < 0 || o->in_room < 0) {
     return 0;
   }
 
@@ -81,7 +81,7 @@ int CAN_SEE_FOR_WHO(struct char_data* s, struct char_data* o) {
 }
 
 int CAN_SEE(struct char_data* s, struct char_data* o) {
-  if (!o || s->in_room < 0 || o->in_room < 0) {
+  if ((o == nullptr) || s->in_room < 0 || o->in_room < 0) {
     return 0;
   }
 
@@ -122,18 +122,18 @@ int CAN_SEE(struct char_data* s, struct char_data* o) {
 }
 
 void LearnFromMistake(struct char_data* ch, int sknum, int silent, int max) {
-  if (!ch || !ch->skills) {
+  if ((ch == nullptr) || (ch->skills == nullptr)) {
     return;
   }
 
   if ((ch->skills[sknum].learned < max) && (ch->skills[sknum].learned > 0)) {
     if (number(1, 101) > (ch->skills[sknum].learned / 2)) {
-      if (!silent) {
+      if (silent == 0) {
         send_to_char("You learn from your mistake!\n\r", ch);
       }
       ch->skills[sknum].learned += 1;
       if (ch->skills[sknum].learned >= max) {
-        if (!silent) {
+        if (silent == 0) {
           send_to_char("You are now learned in this skill!\n\r", ch);
         }
       }
@@ -146,12 +146,12 @@ int exit_ok(struct room_direction_data* exit, struct room_data** rpp) {
   if (rpp == nullptr) {
     rpp = &rp;
   }
-  if (!exit) {
+  if (exit == nullptr) {
     *rpp = nullptr;
     return 0;
   }
   *rpp = real_roomp(exit->to_room);
-  return (*rpp != nullptr);
+  return static_cast<int>(*rpp != nullptr);
 }
 
 int ObjVnum(struct obj_data* o) {
@@ -165,7 +165,7 @@ void Zwrite(FILE* fp, char cmd, int tf, int arg1, int arg2, int arg3,
   char* desc) {
   char buf[100];
 
-  if (*desc) {
+  if (*desc != 0) {
     sprintf(buf, "%c %d %d %d %d   ; %s\n", cmd, tf, arg1, arg2, arg3, desc);
     fputs(buf, fp);
   } else {
@@ -184,18 +184,20 @@ int WeaponImmune(struct char_data* ch) {
 }
 
 int IsImmune(struct char_data* ch, int bit) {
-  return (IS_SET(bit, ch->M_immune));
+  return static_cast<int>(IS_SET(bit, ch->M_immune));
 }
 
 int IsResist(struct char_data* ch, int bit) {
-  return (IS_SET(bit, ch->immune));
+  return static_cast<int>(IS_SET(bit, ch->immune));
 }
 
-int IsSusc(struct char_data* ch, int bit) { return (IS_SET(bit, ch->susc)); }
+int IsSusc(struct char_data* ch, int bit) {
+  return static_cast<int>(IS_SET(bit, ch->susc));
+}
 
 /* creates a random number in interval [from;to] */
 int number(int from, int to) {
-  if (to - from + 1) {
+  if ((to - from + 1) != 0) {
     return ((rand() % (to - from + 1)) + from);
   }
   return (from);
@@ -224,12 +226,12 @@ int str_cmp(const char* arg1, const char* arg2) {
   int chk = 0;
   int i = 0;
 
-  if ((!arg2) || (!arg1)) {
+  if ((arg2 == nullptr) || (arg1 == nullptr)) {
     return (1);
   }
 
-  for (i = 0; *(arg1 + i) || *(arg2 + i); i++) {
-    if ((chk = LOWER(*(arg1 + i)) - LOWER(*(arg2 + i)))) {
+  for (i = 0; (*(arg1 + i) != 0) || (*(arg2 + i) != 0); i++) {
+    if ((chk = LOWER(*(arg1 + i)) - LOWER(*(arg2 + i))) != 0) {
       if (chk < 0) {
         return (-1);
       }
@@ -251,11 +253,11 @@ void vlog(const char* str) {
   *(tmstr + strlen(tmstr) - 1) = '\0';
   fprintf(stderr, "%s :: %s\n", tmstr, str);
 
-  if (str) {
+  if (str != nullptr) {
     sprintf(buf, "/* %s */\n\r", str);
   }
-  for (i = descriptor_list; i; i = i->next) {
-    if ((!i->connected) && (GetMaxLevel(i->character) >= LOW_IMMORTAL) &&
+  for (i = descriptor_list; i != nullptr; i = i->next) {
+    if ((i->connected == 0) && (GetMaxLevel(i->character) >= LOW_IMMORTAL) &&
         (!IS_SET(i->character->specials.act, PLR_NOSHOUT))) {
       write_to_q(buf, &i->output);
     }
@@ -277,12 +279,12 @@ void sprintbit(unsigned long vektor, const char* const* names, char* result) {
 
   *result = '\0';
 
-  for (nr = 0; vektor; vektor >>= 1) {
+  for (nr = 0; vektor != 0u; vektor >>= 1) {
     if (IS_SET(1, vektor)) {
       if (*names[nr] == '\n') {
         strcat(result, "UNDEFINED");
         strcat(result, " ");
-      } else if (*names[nr]) {
+      } else if (*names[nr] != 0) {
         strcat(result, names[nr]);
         strcat(result, " ");
       }
@@ -293,7 +295,7 @@ void sprintbit(unsigned long vektor, const char* const* names, char* result) {
     }
   }
 
-  if (!*result) {
+  if (*result == 0) {
     strcat(result, "NOBITS");
   }
 }
@@ -357,28 +359,28 @@ char in_group(struct char_data* ch1, struct char_data* ch2) {
     return 1;
   }
 
-  if ((!ch1) || (!ch2)) {
+  if ((ch1 == nullptr) || (ch2 == nullptr)) {
     return (0);
   }
 
-  if ((!ch1->master) && (!ch2->master)) {
+  if ((ch1->master == nullptr) && (ch2->master == nullptr)) {
     return (0);
   }
 
-  if (ch2->master) {
-    if (!strcmp(GET_NAME(ch1), GET_NAME(ch2->master))) {
+  if (ch2->master != nullptr) {
+    if (strcmp(GET_NAME(ch1), GET_NAME(ch2->master)) == 0) {
       return (1);
     }
   }
 
-  if (ch1->master) {
-    if (!strcmp(GET_NAME(ch1->master), GET_NAME(ch2))) {
+  if (ch1->master != nullptr) {
+    if (strcmp(GET_NAME(ch1->master), GET_NAME(ch2)) == 0) {
       return (1);
     }
   }
 
-  if ((ch2->master) && (ch1->master)) {
-    if (!strcmp(GET_NAME(ch1->master), GET_NAME(ch2->master))) {
+  if (((ch2->master) != nullptr) && ((ch1->master) != nullptr)) {
+    if (strcmp(GET_NAME(ch1->master), GET_NAME(ch2->master)) == 0) {
       return (1);
     }
   }
@@ -419,7 +421,7 @@ char getall(char* name, char* newname) {
 
   name++;
 
-  for (; (*newname = *name); name++, newname++) {
+  for (; (*newname = *name) != 0; name++, newname++) {
     ;
   }
 
@@ -668,7 +670,7 @@ void down_river(int pulse) {
     return;
   }
 
-  for (ch = character_list; ch; ch = tmp) {
+  for (ch = character_list; ch != nullptr; ch = tmp) {
     tmp = ch->next;
     if (!IS_NPC(ch)) {
       if (ch->in_room != NOWHERE) {
@@ -679,9 +681,9 @@ void down_river(int pulse) {
                   ((real_roomp(ch->in_room))->river_dir >= 0)) {
                 rd = (real_roomp(ch->in_room))->river_dir;
                 for (obj_object = (real_roomp(ch->in_room))->contents;
-                  obj_object; obj_object = next_obj) {
+                  obj_object != nullptr; obj_object = next_obj) {
                   next_obj = obj_object->next_content;
-                  if ((real_roomp(ch->in_room))->dir_option[rd]) {
+                  if ((real_roomp(ch->in_room))->dir_option[rd] != nullptr) {
                     obj_from_room(obj_object);
                     obj_to_room(obj_object,
                       (real_roomp(ch->in_room))->dir_option[rd]->to_room);
@@ -692,9 +694,10 @@ void down_river(int pulse) {
                 */
                 if (!IS_AFFECTED(ch, AFF_FLYING)) {
                   rp = real_roomp(ch->in_room);
-                  if (rp && rp->dir_option[rd] && rp->dir_option[rd]->to_room &&
+                  if ((rp != nullptr) && (rp->dir_option[rd] != nullptr) &&
+                      (rp->dir_option[rd]->to_room != 0) &&
                       (EXIT(ch, rd)->to_room != NOWHERE)) {
-                    if (ch->specials.fighting) {
+                    if (ch->specials.fighting != nullptr) {
                       stop_fighting(ch);
                     }
                     sprintf(buf, "You drift %s...\n\r", dirs[rd]);
@@ -862,16 +865,16 @@ int IsReptile(struct char_data* ch) {
 }
 
 int HasHands(struct char_data* ch) {
-  if (IsHumanoid(ch)) {
+  if (IsHumanoid(ch) != 0) {
     return 1;
   }
-  if (IsUndead(ch)) {
+  if (IsUndead(ch) != 0) {
     return 1;
   }
-  if (IsLycanthrope(ch)) {
+  if (IsLycanthrope(ch) != 0) {
     return 1;
   }
-  if (IsDiabolic(ch)) {
+  if (IsDiabolic(ch) != 0) {
     return 1;
   }
   if (GET_RACE(ch) == RACE_SPECIAL) {
@@ -928,7 +931,7 @@ void SetHunting(struct char_data* ch, struct char_data* tch) {
 
   dist = GET_ALIGNMENT(tch) - GET_ALIGNMENT(ch);
   dist = (dist > 0) ? dist : -dist;
-  if (Hates(ch, tch)) {
+  if (Hates(ch, tch) != 0) {
     dist *= 2;
   }
 
@@ -982,13 +985,13 @@ void CallForGuard(struct char_data* ch, struct char_data* vict, int lev,
     lev = 3;
   }
 
-  for (i = character_list; i && lev > 0; i = i->next) {
+  for (i = character_list; (i != nullptr) && lev > 0; i = i->next) {
     if (IS_NPC(i) && (i != ch)) {
-      if (!i->specials.fighting) {
+      if (i->specials.fighting == nullptr) {
         if (mob_index[i->nr].vnum == type1) {
           if (number(1, 6) == 1) {
             if (!IS_SET(i->specials.act, ACT_HUNTING)) {
-              if (vict) {
+              if (vict != nullptr) {
                 SetHunting(i, vict);
                 lev--;
               }
@@ -997,7 +1000,7 @@ void CallForGuard(struct char_data* ch, struct char_data* vict, int lev,
         } else if (mob_index[i->nr].vnum == type2) {
           if (number(1, 6) == 1) {
             if (!IS_SET(i->specials.act, ACT_HUNTING)) {
-              if (vict) {
+              if (vict != nullptr) {
                 SetHunting(i, vict);
                 lev -= 2;
               }
@@ -1025,30 +1028,30 @@ void Teleport(int pulse) {
     return;
   }
 
-  for (ch = character_list; ch; ch = ch->next) {
+  for (ch = character_list; ch != nullptr; ch = ch->next) {
     if (IS_NPC(ch)) {
       continue;
     }
     rp = real_roomp(ch->in_room);
-    if (rp && (rp)->tele_targ > 0 && rp->tele_targ != rp->number &&
+    if ((rp != nullptr) && (rp)->tele_targ > 0 && rp->tele_targ != rp->number &&
         (rp)->tele_time > 0 && (pulse % (rp)->tele_time) == 0) {
       dest = real_roomp(rp->tele_targ);
-      if (!dest) {
+      if (dest == nullptr) {
         vlog("invalid tele_targ");
         continue;
       }
 
       obj_object = (rp)->contents;
-      while (obj_object) {
+      while (obj_object != nullptr) {
         temp_obj = obj_object->next_content;
         obj_from_room(obj_object);
         obj_to_room(obj_object, (rp)->tele_targ);
         obj_object = temp_obj;
       }
 
-      while (rp->people /* should never fail */) {
+      while (rp->people != nullptr /* should never fail */) {
         /* find an NPC in the room */
-        for (tmp = rp->people; tmp; tmp = tmp->next_in_room) {
+        for (tmp = rp->people; tmp != nullptr; tmp = tmp->next_in_room) {
           if (IS_NPC(tmp)) {
             break;
           }
@@ -1082,7 +1085,7 @@ void Teleport(int pulse) {
       orig_room = ch->in_room;
       char_from_room(ch);
       char_to_room(ch, rp->tele_targ);
-      if (rp->tele_look) {
+      if (rp->tele_look != 0) {
         do_look(ch, "\0", 15);
       }
       if (IS_SET(dest->room_flags, DEATH) && GetMaxLevel(ch) < LOW_IMMORTAL) {
@@ -1116,7 +1119,7 @@ int RecCompObjNum(struct obj_data* o, int obj_num) {
   }
 
   if (ITEM_TYPE(o) == ITEM_CONTAINER) {
-    for (i = o->contains; i; i = i->next_content) {
+    for (i = o->contains; i != nullptr; i = i->next_content) {
       total += RecCompObjNum(i, obj_num);
     }
   }
@@ -1127,13 +1130,13 @@ struct char_data* char_holding(struct obj_data* obj) {
   if (obj->in_room != NOWHERE) {
     return nullptr;
   }
-  if (obj->carried_by) {
+  if (obj->carried_by != nullptr) {
     return obj->carried_by;
   }
-  if (obj->equipped_by) {
+  if (obj->equipped_by != nullptr) {
     return obj->equipped_by;
   }
-  if (obj->in_obj) {
+  if (obj->in_obj != nullptr) {
     return char_holding(obj->in_obj);
   }
   return nullptr;
@@ -1216,7 +1219,7 @@ void TeleportPulseStuff(int pulse) {
     tick = 2;
   }
 
-  for (ch = character_list; ch; ch = next) {
+  for (ch = character_list; ch != nullptr; ch = next) {
     next = ch->next;
     if (IS_MOB(ch)) {
       if (ch->specials.tick == tick) {
@@ -1224,25 +1227,26 @@ void TeleportPulseStuff(int pulse) {
       }
     } else {
       rp = real_roomp(ch->in_room);
-      if (rp && (rp)->tele_targ > 0 && rp->tele_targ != rp->number &&
-          (rp)->tele_time > 0 && (pulse % (rp)->tele_time) == 0) {
+      if ((rp != nullptr) && (rp)->tele_targ > 0 &&
+          rp->tele_targ != rp->number && (rp)->tele_time > 0 &&
+          (pulse % (rp)->tele_time) == 0) {
         dest = real_roomp(rp->tele_targ);
-        if (!dest) {
+        if (dest == nullptr) {
           vlog("invalid tele_targ");
           continue;
         }
 
         obj_object = (rp)->contents;
-        while (obj_object) {
+        while (obj_object != nullptr) {
           temp_obj = obj_object->next_content;
           obj_from_room(obj_object);
           obj_to_room(obj_object, (rp)->tele_targ);
           obj_object = temp_obj;
         }
 
-        while (rp->people /* should never fail */) {
+        while (rp->people != nullptr /* should never fail */) {
           /* find an NPC in the room */
-          for (tmp = rp->people; tmp; tmp = tmp->next_in_room) {
+          for (tmp = rp->people; tmp != nullptr; tmp = tmp->next_in_room) {
             if (IS_NPC(tmp)) {
               break;
             }
@@ -1278,10 +1282,10 @@ void TeleportPulseStuff(int pulse) {
         char_to_room(ch, rp->tele_targ);
         tmp_desc =
           find_ex_description("_tele_", real_roomp(orig_room)->ex_description);
-        if (tmp_desc) {
+        if (tmp_desc != nullptr) {
           page_string(ch->desc, tmp_desc, 1);
         }
-        if (rp->tele_look) {
+        if (rp->tele_look != 0) {
           do_look(ch, "\0", 15);
         }
         if (IS_SET(dest->room_flags, DEATH) && GetMaxLevel(ch) < LOW_IMMORTAL) {
@@ -1327,7 +1331,7 @@ void RiverPulseStuff(int pulse) {
     return;
   }
 
-  for (ch = character_list; ch; ch = tmp) {
+  for (ch = character_list; ch != nullptr; ch = tmp) {
     tmp = ch->next;
     if (!IS_NPC(ch)) {
       if (ch->in_room != NOWHERE) {
@@ -1339,9 +1343,9 @@ void RiverPulseStuff(int pulse) {
                   ((real_roomp(ch->in_room))->river_dir >= 0)) {
                 rd = (real_roomp(ch->in_room))->river_dir;
                 for (obj_object = (real_roomp(ch->in_room))->contents;
-                  obj_object; obj_object = next_obj) {
+                  obj_object != nullptr; obj_object = next_obj) {
                   next_obj = obj_object->next_content;
-                  if ((real_roomp(ch->in_room))->dir_option[rd]) {
+                  if ((real_roomp(ch->in_room))->dir_option[rd] != nullptr) {
                     obj_from_room(obj_object);
                     obj_to_room(obj_object,
                       (real_roomp(ch->in_room))->dir_option[rd]->to_room);
@@ -1353,9 +1357,10 @@ void RiverPulseStuff(int pulse) {
                 if (!IS_AFFECTED(ch, AFF_FLYING) ||
                     (real_roomp(ch->in_room)->sector_type == SECT_UNDERWATER)) {
                   rp = real_roomp(ch->in_room);
-                  if (rp && rp->dir_option[rd] && rp->dir_option[rd]->to_room &&
+                  if ((rp != nullptr) && (rp->dir_option[rd] != nullptr) &&
+                      (rp->dir_option[rd]->to_room != 0) &&
                       (EXIT(ch, rd)->to_room != NOWHERE)) {
-                    if (ch->specials.fighting) {
+                    if (ch->specials.fighting != nullptr) {
                       stop_fighting(ch);
                     }
                     sprintf(buf, "You drift %s...\n\r", dirs[rd]);
@@ -1383,7 +1388,7 @@ void RiverPulseStuff(int pulse) {
       /*
        *   mobiles
        */
-      if ((ch->player.sounds) && (number(0, 5) == 0)) {
+      if (((ch->player.sounds) != nullptr) && (number(0, 5) == 0)) {
         if (ch->specials.default_pos > POSITION_SLEEPING) {
           if (GET_POS(ch) > POSITION_SLEEPING) {
             /*
@@ -1416,7 +1421,7 @@ int apply_soundproof(struct char_data* ch) {
 
   rp = real_roomp(ch->in_room);
 
-  if (!rp) {
+  if (rp == nullptr) {
     return 0;
   }
 
@@ -1435,7 +1440,7 @@ int check_soundproof(struct char_data* ch) {
 
   rp = real_roomp(ch->in_room);
 
-  if (!rp) {
+  if (rp == nullptr) {
     return 0;
   }
 
@@ -1449,7 +1454,7 @@ int MobCountInRoom(struct char_data* list) {
   int i = 0;
   struct char_data* tmp = nullptr;
 
-  for (i = 0, tmp = list; tmp; tmp = tmp->next_in_room, i++) {
+  for (i = 0, tmp = list; tmp != nullptr; tmp = tmp->next_in_room, i++) {
     ;
   }
 
@@ -1474,14 +1479,14 @@ void SpaceForSkills(struct char_data* ch) {
 static int count_lims(struct obj_data* obj) {
   int total = 0;
 
-  if (!obj) {
+  if (obj == nullptr) {
     return (0);
   }
 
-  if (obj->contains) {
+  if (obj->contains != nullptr) {
     total += count_lims(obj->contains);
   }
-  if (obj->next_content) {
+  if (obj->next_content != nullptr) {
     total += count_lims(obj->next_content);
   }
   if (obj->obj_flags.cost_per_day > LIM_ITEM_COST_MIN) {
@@ -1496,8 +1501,8 @@ char* lower(char* s) {
 
   (void)snprintf(c, sizeof(c), "%s", s);
 
-  while (i < (int)sizeof(c) - 1 && c[i]) {
-    if (isupper(c[i])) {
+  while (i < (int)sizeof(c) - 1 && (c[i] != 0)) {
+    if (isupper(c[i]) != 0) {
       c[i] = tolower(c[i]);
     }
     i++;

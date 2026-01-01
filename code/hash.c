@@ -55,11 +55,11 @@ void hash_enter_no_key(struct hash_header* ht, int key, void* data) {
 void* hash_find(struct hash_header* ht, int key) {
   struct hash_link* scan = ht->buckets[HASH_KEY(ht, key)];
 
-  while (scan && scan->key != key) {
+  while ((scan != nullptr) && scan->key != key) {
     scan = scan->next;
   }
 
-  return scan ? scan->data : nullptr;
+  return (scan != nullptr) ? scan->data : nullptr;
 }
 
 /* room_data array functions */
@@ -73,7 +73,7 @@ int room_remove(struct room_data* rb[], int key) {
 
   tmp = room_find(rb, key);
 
-  if (tmp) {
+  if (tmp != nullptr) {
     rb[key] = nullptr;
     free(tmp);
   }

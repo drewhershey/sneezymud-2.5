@@ -19,13 +19,13 @@ void SwitchStuff(struct char_data* giver, struct char_data* taker) {
    */
 
   for (j = 0; j < MAX_WEAR; j++) {
-    if (giver->equipment[j]) {
+    if (giver->equipment[j] != nullptr) {
       obj = unequip_char(giver, j);
       obj_to_char(obj, taker);
     }
   }
 
-  for (obj = giver->carrying; obj; obj = next) {
+  for (obj = giver->carrying; obj != nullptr; obj = next) {
     next = obj->next_content;
     obj_from_char(obj);
     obj_to_char(obj, taker);
@@ -58,7 +58,7 @@ void SwitchStuff(struct char_data* giver, struct char_data* taker) {
 
   if (IS_NPC(taker)) {
     taker->player.char_class = giver->player.char_class;
-    if (!taker->skills) {
+    if (taker->skills == nullptr) {
       SpaceForSkills(taker);
     }
     for (j = 0; j < MAX_SKILLS; j++) {

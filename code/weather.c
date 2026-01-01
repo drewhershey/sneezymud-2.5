@@ -17,7 +17,7 @@ unsigned char moontype;
 
 void weather_and_time(int mode) {
   another_hour(mode);
-  if (mode) {
+  if (mode != 0) {
     weather_change();
   }
 }
@@ -28,7 +28,7 @@ void another_hour(int mode) {
 
   time_info.hours++;
 
-  if (mode) {
+  if (mode != 0) {
     switch (time_info.hours) {
       case 3: {
         send_to_outdoor("The moon sets.\n\r");

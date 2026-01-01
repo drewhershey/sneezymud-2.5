@@ -39,7 +39,7 @@ void open_door(struct char_data* ch, int dir) {
   }
 
   REMOVE_BIT(exitp->exit_info, EX_CLOSED);
-  if (exitp->keyword) {
+  if (exitp->keyword != nullptr) {
     if (!IS_SET(exitp->exit_info, EX_SECRET)) {
       sprintf(buf, "$n opens the %s", fname(exitp->keyword));
       act(buf, 0, ch, nullptr, nullptr, TO_ROOM);
@@ -51,10 +51,11 @@ void open_door(struct char_data* ch, int dir) {
   }
 
   /* now for opening the OTHER side of the door! */
-  if (exit_ok(exitp, &rp) && (back = rp->dir_option[rev_dir[dir]]) &&
+  if ((exit_ok(exitp, &rp) != 0) &&
+      ((back = rp->dir_option[rev_dir[dir]]) != nullptr) &&
       (back->to_room == ch->in_room)) {
     REMOVE_BIT(back->exit_info, EX_CLOSED);
-    if (back->keyword) {
+    if (back->keyword != nullptr) {
       sprintf(buf, "The %s is opened from the other side.\n\r",
         fname(back->keyword));
       send_to_room(buf, exitp->to_room);
@@ -90,10 +91,12 @@ void raw_open_door(struct char_data* ch, int dir) {
 
   REMOVE_BIT(exitp->exit_info, EX_CLOSED);
   /* now for opening the OTHER side of the door! */
-  if (exit_ok(exitp, &rp) && (back = rp->dir_option[rev_dir[dir]]) &&
+  if ((exit_ok(exitp, &rp) != 0) &&
+      ((back = rp->dir_option[rev_dir[dir]]) != nullptr) &&
       (back->to_room == ch->in_room)) {
     REMOVE_BIT(back->exit_info, EX_CLOSED);
-    if (back->keyword && (strcmp("secret", fname(back->keyword)) != 0)) {
+    if ((back->keyword != nullptr) &&
+        (strcmp("secret", fname(back->keyword)) != 0)) {
       sprintf(buf, "The %s is opened from the other side.\n\r",
         fname(back->keyword));
       send_to_room(buf, exitp->to_room);
@@ -114,7 +117,7 @@ int ValidMove(struct char_data* ch, int cmd) {
 
   exitp = EXIT(ch, cmd);
 
-  if (!exit_ok(exitp, nullptr)) {
+  if (exit_ok(exitp, nullptr) == 0) {
     not_legal_move(ch);
     return 0;
   }
@@ -128,7 +131,7 @@ int ValidMove(struct char_data* ch, int cmd) {
         ch);
       return 1;
     }
-    if (exitp->keyword) {
+    if (exitp->keyword != nullptr) {
       if (!IS_SET(exitp->exit_info, EX_SECRET)) {
         sprintf(tmp, "The %s seems to be closed.\n\r", fname(exitp->keyword));
         send_to_char(tmp, ch);
@@ -173,15 +176,16 @@ static int raw_move(struct char_data* ch, int dir) {
   struct room_data* to_here = nullptr;
   struct char_data* pers = nullptr;
 
-  if (special(ch, dir + 1, "")) { /* Check for special routines(North is 1)*/
+  if (special(ch, dir + 1, "") !=
+      0) { /* Check for special routines(North is 1)*/
     return 0;
   }
 
-  if (!ValidMove(ch, dir)) {
+  if (ValidMove(ch, dir) == 0) {
     return 0;
   }
 
-  if (IS_AFFECTED(ch, AFF_CHARM) && (ch->master) &&
+  if (IS_AFFECTED(ch, AFF_CHARM) && ((ch->master) != nullptr) &&
       (ch->in_room == ch->master->in_room)) {
     act("$n bursts into tears.", 0, ch, nullptr, nullptr, TO_ROOM);
     act("You burst into tears at the thought of leaving $N", 0, ch, nullptr,
@@ -230,16 +234,16 @@ static int raw_move(struct char_data* ch, int dir) {
     if ((!IS_AFFECTED(ch, AFF_WATERBREATH)) && (!IS_AFFECTED(ch, AFF_FLYING))) {
       has_boat = 0;
       /* See if char is carrying a boat */
-      for (obj = ch->carrying; obj; obj = obj->next_content) {
+      for (obj = ch->carrying; obj != nullptr; obj = obj->next_content) {
         if (obj->obj_flags.type_flag == ITEM_BOAT) {
           has_boat = 1;
         }
       }
-      if (!has_boat) {
+      if (has_boat == 0) {
         send_to_char("You need a boat to go there.\n\r", ch);
         return 0;
       }
-      if (has_boat) {
+      if (has_boat != 0) {
         need_movement = 1;
       }
     }
@@ -289,7 +293,7 @@ static int raw_move(struct char_data* ch, int dir) {
   /*
    *  nail the unlucky with traps.
    */
-  if (CheckForMoveTrap(ch, dir)) {
+  if (CheckForMoveTrap(ch, dir) != 0) {
     return 0;
   }
 
@@ -323,13 +327,13 @@ static int raw_move(struct char_data* ch, int dir) {
   */
 
   if (IS_NPC(ch)) {
-    if (ch->specials.hunting) {
-      if (IS_SET(ch->specials.act, ACT_HUNTING) && ch->desc) {
+    if (ch->specials.hunting != nullptr) {
+      if (IS_SET(ch->specials.act, ACT_HUNTING) && (ch->desc != nullptr)) {
         WAIT_STATE(ch, PULSE_VIOLENCE);
       }
     }
   } else {
-    if (ch->specials.hunting) {
+    if (ch->specials.hunting != nullptr) {
       if (IS_SET(ch->specials.act, PLR_HUNTING)) {
         send_to_char("You search for a trail\n\r", ch);
         WAIT_STATE(ch, PULSE_VIOLENCE);
@@ -345,10 +349,10 @@ int DisplayMove(struct char_data* ch, int dir, int was_in, int total) {
   struct char_data* tmp_ch = nullptr;
   char tmp[256];
 
-  for (tmp_ch = real_roomp(was_in)->people; tmp_ch;
+  for (tmp_ch = real_roomp(was_in)->people; tmp_ch != nullptr;
     tmp_ch = tmp_ch->next_in_room) {
     if ((!IS_AFFECTED(ch, AFF_SNEAK)) || (IS_IMMORTAL(tmp_ch))) {
-      if ((ch != tmp_ch) && (AWAKE(tmp_ch)) && (CAN_SEE(tmp_ch, ch))) {
+      if ((ch != tmp_ch) && (AWAKE(tmp_ch)) && ((CAN_SEE(tmp_ch, ch)) != 0)) {
         if (total > 1) {
           if (IS_NPC(ch)) {
             sprintf(tmp, "%s leaves %s. [%d]\n\r", ch->player.short_descr,
@@ -370,10 +374,10 @@ int DisplayMove(struct char_data* ch, int dir, int was_in, int total) {
     }
   }
 
-  for (tmp_ch = real_roomp(ch->in_room)->people; tmp_ch;
+  for (tmp_ch = real_roomp(ch->in_room)->people; tmp_ch != nullptr;
     tmp_ch = tmp_ch->next_in_room) {
     if (((!IS_AFFECTED(ch, AFF_SNEAK)) || (IS_IMMORTAL(tmp_ch))) &&
-        (CAN_SEE(tmp_ch, ch)) && (AWAKE(tmp_ch))) {
+        ((CAN_SEE(tmp_ch, ch)) != 0) && (AWAKE(tmp_ch))) {
       if (tmp_ch != ch) {
         if (dir < 4) {
           sprintf(tmp, "%s has arrived from the %s.", PERS(ch, tmp_ch),
@@ -410,17 +414,17 @@ static int add_to_char_heap(struct char_data* heap[50], int* top, int total[50],
     return 0;
   }
   found = 0;
-  for (i = 0; (i < *top && !found); i++) {
+  for (i = 0; (i < *top && (found == 0)); i++) {
     if (*top > 0) {
       if ((IS_NPC(k)) && (k->nr == heap[i]->nr) &&
-          (heap[i]->player.short_descr) &&
-          (!strcmp(k->player.short_descr, heap[i]->player.short_descr))) {
+          ((heap[i]->player.short_descr) != nullptr) &&
+          (strcmp(k->player.short_descr, heap[i]->player.short_descr) == 0)) {
         total[i] += 1;
         found = 1;
       }
     }
   }
-  if (!found) {
+  if (found == 0) {
     heap[*top] = k;
     total[*top] = 1;
     *top += 1;
@@ -433,7 +437,7 @@ int MoveOne(struct char_data* ch, int dir) {
   int was_in = 0;
 
   was_in = ch->in_room;
-  if (raw_move(ch, dir)) { /* no error */
+  if (raw_move(ch, dir) != 0) { /* no error */
     display_one_move(ch, dir, was_in);
     return 1;
   }
@@ -459,11 +463,11 @@ static void move_group(struct char_data* ch, int dir) {
    */
 
   was_in = ch->in_room;
-  if (raw_move(ch, dir)) { /* no error */
+  if (raw_move(ch, dir) != 0) { /* no error */
     display_one_move(ch, dir, was_in);
-    if (ch->followers) {
+    if (ch->followers != nullptr) {
       heap_top = 0;
-      for (k = ch->followers; k; k = next_dude) {
+      for (k = ch->followers; k != nullptr; k = next_dude) {
         next_dude = k->next;
         /*
          *  compose a list of followers, w/heaping
@@ -471,12 +475,12 @@ static void move_group(struct char_data* ch, int dir) {
         if ((was_in == k->follower->in_room) &&
             (GET_POS(k->follower) >= POSITION_STANDING)) {
           act("You follow $N.", 0, k->follower, nullptr, ch, TO_CHAR);
-          if (k->follower->followers) {
+          if (k->follower->followers != nullptr) {
             move_group(k->follower, dir);
           } else {
-            if (raw_move(k->follower, dir)) {
-              if (!add_to_char_heap(heap_ptr, &heap_top, heap_tot,
-                    k->follower)) {
+            if (raw_move(k->follower, dir) != 0) {
+              if (add_to_char_heap(heap_ptr, &heap_top, heap_tot,
+                    k->follower) == 0) {
                 display_one_move(k->follower, dir, was_in);
               }
             }
@@ -509,10 +513,10 @@ void do_move(struct char_data* ch, const char* argument, int cmd) {
     return;
   }
 
-  if (!ch->followers && !ch->master) {
+  if ((ch->followers == nullptr) && (ch->master == nullptr)) {
     MoveOne(ch, cmd);
   } else {
-    if (!ch->followers) {
+    if (ch->followers == nullptr) {
       MoveOne(ch, cmd);
     } else {
       move_group(ch, cmd);
@@ -527,17 +531,18 @@ int find_door(struct char_data* ch, char* type, char* dir) {
     "\n"};
   struct room_direction_data* exitp = nullptr;
 
-  if (*dir) { /* a direction was specified */
+  if (*dir != 0) { /* a direction was specified */
     if ((door = search_block(dir, dirs, 0)) == -1) { /* Partial Match */
       send_to_char("That's not a direction.\n\r", ch);
       return (-1);
     }
     exitp = EXIT(ch, door);
-    if (exitp) {
-      if (!exitp->keyword) {
+    if (exitp != nullptr) {
+      if (exitp->keyword == nullptr) {
         return (door);
       }
-      if ((isname(type, exitp->keyword)) && (strcmp(type, "secret") != 0)) {
+      if (((isname(type, exitp->keyword)) != 0) &&
+          (strcmp(type, "secret") != 0)) {
         return (door);
       }
       sprintf(buf, "I see no %s there.\n\r", type);
@@ -550,8 +555,8 @@ int find_door(struct char_data* ch, char* type, char* dir) {
 
   } /* try to locate the keyword */
   for (door = 0; door <= 5; door++) {
-    if ((exitp = EXIT(ch, door)) && exitp->keyword &&
-        isname(type, exitp->keyword)) {
+    if (((exitp = EXIT(ch, door)) != nullptr) && (exitp->keyword != nullptr) &&
+        (isname(type, exitp->keyword) != 0)) {
       return (door);
     }
   }
@@ -573,10 +578,10 @@ void do_open(struct char_data* ch, const char* argument, int cmd) {
 
   argument_interpreter(argument, type, dir);
 
-  if (!*type) {
+  if (*type == 0) {
     send_to_char("Open what?\n\r", ch);
   } else if (generic_find(argument, FIND_OBJ_INV | FIND_OBJ_ROOM, ch, &victim,
-               &obj)) {
+               &obj) != 0) {
     /* this is an object */
 
     if (obj->obj_flags.type_flag != ITEM_CONTAINER) {
@@ -623,10 +628,10 @@ void do_close(struct char_data* ch, const char* argument, int cmd) {
 
   argument_interpreter(argument, type, dir);
 
-  if (!*type) {
+  if (*type == 0) {
     send_to_char("Close what?\n\r", ch);
   } else if (generic_find(argument, FIND_OBJ_INV | FIND_OBJ_ROOM, ch, &victim,
-               &obj)) {
+               &obj) != 0) {
     /* this is an object */
 
     if (obj->obj_flags.type_flag != ITEM_CONTAINER) {
@@ -649,17 +654,18 @@ void do_close(struct char_data* ch, const char* argument, int cmd) {
       send_to_char("It's already closed!\n\r", ch);
     } else {
       SET_BIT(exitp->exit_info, EX_CLOSED);
-      if (exitp->keyword) {
+      if (exitp->keyword != nullptr) {
         act("$n closes the $F.", 0, ch, nullptr, exitp->keyword, TO_ROOM);
       } else {
         act("$n closes the door.", 0, ch, nullptr, nullptr, TO_ROOM);
       }
       send_to_char("Ok.\n\r", ch);
       /* now for closing the other side, too */
-      if (exit_ok(exitp, &rp) && (back = rp->dir_option[rev_dir[door]]) &&
+      if ((exit_ok(exitp, &rp) != 0) &&
+          ((back = rp->dir_option[rev_dir[door]]) != nullptr) &&
           (back->to_room == ch->in_room)) {
         SET_BIT(back->exit_info, EX_CLOSED);
-        if (back->keyword) {
+        if (back->keyword != nullptr) {
           sprintf(buf, "The %s closes quietly.\n\r", back->keyword);
           send_to_room(buf, exitp->to_room);
         } else {
@@ -673,13 +679,13 @@ void do_close(struct char_data* ch, const char* argument, int cmd) {
 static int has_key(struct char_data* ch, int key) {
   struct obj_data* o = nullptr;
 
-  for (o = ch->carrying; o; o = o->next_content) {
+  for (o = ch->carrying; o != nullptr; o = o->next_content) {
     if (obj_index[o->item_number].vnum == key) {
       return (1);
     }
   }
 
-  if (ch->equipment[HOLD]) {
+  if (ch->equipment[HOLD] != nullptr) {
     if (obj_index[ch->equipment[HOLD]->item_number].vnum == key) {
       return (1);
     }
@@ -700,10 +706,10 @@ void do_lock(struct char_data* ch, const char* argument, int cmd) {
 
   argument_interpreter(argument, type, dir);
 
-  if (!*type) {
+  if (*type == 0) {
     send_to_char("Lock what?\n\r", ch);
   } else if (generic_find(argument, FIND_OBJ_INV | FIND_OBJ_ROOM, ch, &victim,
-               &obj)) {
+               &obj) != 0) {
     /* this is an object */
 
     if (obj->obj_flags.type_flag != ITEM_CONTAINER) {
@@ -712,7 +718,7 @@ void do_lock(struct char_data* ch, const char* argument, int cmd) {
       send_to_char("Maybe you should close it first...\n\r", ch);
     } else if (obj->obj_flags.value[2] < 0) {
       send_to_char("That thing can't be locked.\n\r", ch);
-    } else if (!has_key(ch, obj->obj_flags.value[2])) {
+    } else if (has_key(ch, obj->obj_flags.value[2]) == 0) {
       send_to_char("You don't seem to have the proper key.\n\r", ch);
     } else if (IS_SET(obj->obj_flags.value[1], CONT_LOCKED)) {
       send_to_char("It is locked already.\n\r", ch);
@@ -731,13 +737,13 @@ void do_lock(struct char_data* ch, const char* argument, int cmd) {
       send_to_char("You have to close it first, I'm afraid.\n\r", ch);
     } else if (exitp->key < 0) {
       send_to_char("There does not seem to be any keyholes.\n\r", ch);
-    } else if (!has_key(ch, exitp->key)) {
+    } else if (has_key(ch, exitp->key) == 0) {
       send_to_char("You don't have the proper key.\n\r", ch);
     } else if (IS_SET(exitp->exit_info, EX_LOCKED)) {
       send_to_char("It's already locked!\n\r", ch);
     } else {
       SET_BIT(exitp->exit_info, EX_LOCKED);
-      if (exitp->keyword) {
+      if (exitp->keyword != nullptr) {
         act("$n locks the $F.", 0, ch, nullptr, exitp->keyword, TO_ROOM);
       } else {
         act("$n locks the door.", 0, ch, nullptr, nullptr, TO_ROOM);
@@ -745,7 +751,8 @@ void do_lock(struct char_data* ch, const char* argument, int cmd) {
       send_to_char("*Click*\n\r", ch);
       /* now for locking the other side, too */
       rp = real_roomp(exitp->to_room);
-      if (rp && (back = rp->dir_option[rev_dir[door]]) &&
+      if ((rp != nullptr) &&
+          ((back = rp->dir_option[rev_dir[door]]) != nullptr) &&
           back->to_room == ch->in_room) {
         SET_BIT(back->exit_info, EX_LOCKED);
       }
@@ -765,17 +772,17 @@ void do_unlock(struct char_data* ch, const char* argument, int cmd) {
 
   argument_interpreter(argument, type, dir);
 
-  if (!*type) {
+  if (*type == 0) {
     send_to_char("Unlock what?\n\r", ch);
   } else if (generic_find(argument, FIND_OBJ_INV | FIND_OBJ_ROOM, ch, &victim,
-               &obj)) {
+               &obj) != 0) {
     /* this is an object */
 
     if (obj->obj_flags.type_flag != ITEM_CONTAINER) {
       send_to_char("That's not a container.\n\r", ch);
     } else if (obj->obj_flags.value[2] < 0) {
       send_to_char("Odd - you can't seem to find a keyhole.\n\r", ch);
-    } else if (!has_key(ch, obj->obj_flags.value[2])) {
+    } else if (has_key(ch, obj->obj_flags.value[2]) == 0) {
       send_to_char("You don't seem to have the proper key.\n\r", ch);
     } else if (!IS_SET(obj->obj_flags.value[1], CONT_LOCKED)) {
       send_to_char("Oh.. it wasn't locked, after all.\n\r", ch);
@@ -794,13 +801,13 @@ void do_unlock(struct char_data* ch, const char* argument, int cmd) {
       send_to_char("Heck.. it ain't even closed!\n\r", ch);
     } else if (exitp->key < 0) {
       send_to_char("You can't seem to spot any keyholes.\n\r", ch);
-    } else if (!has_key(ch, exitp->key)) {
+    } else if (has_key(ch, exitp->key) == 0) {
       send_to_char("You do not have the proper key for that.\n\r", ch);
     } else if (!IS_SET(exitp->exit_info, EX_LOCKED)) {
       send_to_char("It's already unlocked, it seems.\n\r", ch);
     } else {
       REMOVE_BIT(exitp->exit_info, EX_LOCKED);
-      if (exitp->keyword) {
+      if (exitp->keyword != nullptr) {
         act("$n unlocks the $F.", 0, ch, nullptr, exitp->keyword, TO_ROOM);
       } else {
         act("$n unlocks the door.", 0, ch, nullptr, nullptr, TO_ROOM);
@@ -808,7 +815,8 @@ void do_unlock(struct char_data* ch, const char* argument, int cmd) {
       send_to_char("*click*\n\r", ch);
       /* now for unlocking the other side, too */
       rp = real_roomp(exitp->to_room);
-      if (rp && (back = rp->dir_option[rev_dir[door]]) &&
+      if ((rp != nullptr) &&
+          ((back = rp->dir_option[rev_dir[door]]) != nullptr) &&
           back->to_room == ch->in_room) {
         REMOVE_BIT(back->exit_info, EX_LOCKED);
       }
@@ -831,7 +839,7 @@ void do_pick(struct char_data* ch, const char* argument, int cmd) {
 
   percent = number(1, 101); /* 101% is a complete failure */
 
-  if (!ch->skills) {
+  if (ch->skills == nullptr) {
     send_to_char("You failed to pick the lock.\n\r", ch);
     return;
   }
@@ -841,16 +849,16 @@ void do_pick(struct char_data* ch, const char* argument, int cmd) {
     return;
   }
 
-  if (!HasClass(ch, CLASS_THIEF) && !HasClass(ch, CLASS_MONK) &&
+  if ((HasClass(ch, CLASS_THIEF) == 0) && (HasClass(ch, CLASS_MONK) == 0) &&
       (!IS_IMMORTAL(ch))) {
     send_to_char("You're no thief!\n\r", ch);
     return;
   }
 
-  if (!*type) {
+  if (*type == 0) {
     send_to_char("Pick what?\n\r", ch);
   } else if (generic_find(argument, FIND_OBJ_INV | FIND_OBJ_ROOM, ch, &victim,
-               &obj)) {
+               &obj) != 0) {
     /* this is an object */
 
     if (obj->obj_flags.type_flag != ITEM_CONTAINER) {
@@ -882,7 +890,7 @@ void do_pick(struct char_data* ch, const char* argument, int cmd) {
       send_to_char("You seem to be unable to pick this lock.\n\r", ch);
     } else {
       REMOVE_BIT(exitp->exit_info, EX_LOCKED);
-      if (exitp->keyword) {
+      if (exitp->keyword != nullptr) {
         act("$n skillfully picks the lock of the $F.", 0, ch, nullptr,
           exitp->keyword, TO_ROOM);
       } else {
@@ -891,7 +899,8 @@ void do_pick(struct char_data* ch, const char* argument, int cmd) {
       send_to_char("The lock quickly yields to your skills.\n\r", ch);
       /* now for unlocking the other side, too */
       rp = real_roomp(exitp->to_room);
-      if (rp && (back = rp->dir_option[rev_dir[door]]) &&
+      if ((rp != nullptr) &&
+          ((back = rp->dir_option[rev_dir[door]]) != nullptr) &&
           back->to_room == ch->in_room) {
         REMOVE_BIT(back->exit_info, EX_LOCKED);
       }
@@ -909,11 +918,11 @@ void do_enter(struct char_data* ch, const char* argument, int cmd) {
 
   one_argument(argument, buf);
 
-  if (*buf && str_cmp(buf, "portal")) {
+  if ((*buf != 0) && (str_cmp(buf, "portal") != 0)) {
     for (door = 0; door <= 5; door++) {
       if (EXIT(ch, door)) {
         if (EXIT(ch, door)->keyword) {
-          if (!str_cmp(EXIT(ch, door)->keyword, buf)) {
+          if (str_cmp(EXIT(ch, door)->keyword, buf) == 0) {
             do_move(ch, "", ++door);
             return;
           }
@@ -922,10 +931,10 @@ void do_enter(struct char_data* ch, const char* argument, int cmd) {
     }
     sprintf(tmp, "There is no %s here.\n\r", buf);
     send_to_char(tmp, ch);
-  } else if (!str_cmp("portal", buf)) {
+  } else if (str_cmp("portal", buf) == 0) {
     obj_object = real_roomp(ch->in_room)->contents;
     ;
-    if (obj_object) {
+    if (obj_object != nullptr) {
       send_to_char(
         "You step into the portal and are thrown into another room.\n\r", ch);
       act("$n disappears as $e step into the portal.", 0, ch, nullptr, nullptr,
@@ -969,7 +978,7 @@ void do_leave(struct char_data* ch, const char* argument, int cmd) {
     send_to_char("You are outside.. where do you want to go?\n\r", ch);
   } else {
     for (door = 0; door <= 5; door++) {
-      if (exit_ok(exitp = EXIT(ch, door), &rp) &&
+      if ((exit_ok(exitp = EXIT(ch, door), &rp) != 0) &&
           !IS_SET(exitp->exit_info, EX_CLOSED) &&
           !IS_SET(rp->room_flags, INDOORS)) {
         do_move(ch, "", ++door);
@@ -986,7 +995,7 @@ void do_stand(struct char_data* ch, const char* argument, int cmd) {
       act("You are already standing.", 0, ch, nullptr, nullptr, TO_CHAR);
     } break;
     case POSITION_SITTING: {
-      if (check_blackjack(ch)) {
+      if (check_blackjack(ch) != 0) {
         do_blackjack_exit(ch);
       }
       act("You stand up.", 0, ch, nullptr, nullptr, TO_CHAR);
@@ -1016,13 +1025,13 @@ void do_stand(struct char_data* ch, const char* argument, int cmd) {
 }
 
 void do_sit(struct char_data* ch, const char* argument, int cmd) {
-  if (check_blackjack(ch)) {
-    if (!do_blackjack_enter(ch)) {
+  if (check_blackjack(ch) != 0) {
+    if (do_blackjack_enter(ch) == 0) {
       return;
     }
   }
-  if (check_slots(ch)) {
-    if (check_slot_player(ch)) {
+  if (check_slots(ch) != 0) {
+    if (check_slot_player(ch) != 0) {
       send_to_char("Someone is already at this machine.\n\r", ch);
       return;
     }
@@ -1067,7 +1076,7 @@ void do_rest(struct char_data* ch, const char* argument, int cmd) {
       GET_POS(ch) = POSITION_RESTING;
     } break;
     case POSITION_SITTING: {
-      if (check_blackjack(ch)) {
+      if (check_blackjack(ch) != 0) {
         do_blackjack_exit(ch);
       }
       act("You rest your tired bones.", 0, ch, nullptr, nullptr, TO_CHAR);
@@ -1106,7 +1115,7 @@ void do_sleep(struct char_data* ch, const char* argument, int cmd) {
         send_to_char("You go to sleep.\n\r", ch);
         act("$n lies down and falls asleep.", 1, ch, nullptr, nullptr, TO_ROOM);
         GET_POS(ch) = POSITION_SLEEPING;
-        if (check_blackjack(ch)) {
+        if (check_blackjack(ch) != 0) {
           do_blackjack_exit(ch);
         }
     } break;
@@ -1131,13 +1140,13 @@ void do_wake(struct char_data* ch, const char* argument, int cmd) {
   char arg[MAX_STRING_LENGTH];
 
   one_argument(argument, arg);
-  if (*arg) {
+  if (*arg != 0) {
     if (GET_POS(ch) == POSITION_SLEEPING) {
       act("You can't wake people up if you are asleep yourself!", 0, ch,
         nullptr, nullptr, TO_CHAR);
     } else {
       tmp_char = get_char_room_vis(ch, arg);
-      if (tmp_char) {
+      if (tmp_char != nullptr) {
         if (tmp_char == ch) {
           act("If you want to wake yourself up, just type 'wake'", 0, ch,
             nullptr, nullptr, TO_CHAR);
@@ -1146,7 +1155,7 @@ void do_wake(struct char_data* ch, const char* argument, int cmd) {
             if (IS_AFFECTED(tmp_char, AFF_SLEEP)) {
               act("You can not wake $M up!", 0, ch, nullptr, tmp_char, TO_CHAR);
             } else {
-              if (check_blackjack(tmp_char)) {
+              if (check_blackjack(tmp_char) != 0) {
                 act("You wake $M up and drag $m to $M feet.", 0, ch, nullptr,
                   tmp_char, TO_CHAR);
                 GET_POS(tmp_char) = POSITION_STANDING;
@@ -1174,7 +1183,7 @@ void do_wake(struct char_data* ch, const char* argument, int cmd) {
       if (GET_POS(ch) > POSITION_SLEEPING) {
         send_to_char("You are already awake...\n\r", ch);
       } else {
-        if (check_blackjack(ch)) {
+        if (check_blackjack(ch) != 0) {
           send_to_char("You wake and decide to stand to see the games.\n\r",
             ch);
           act("$n awakens and clambers to his feet.", 1, ch, nullptr, nullptr,
@@ -1196,8 +1205,8 @@ void do_follow(struct char_data* ch, const char* argument, int cmd) {
 
   only_argument(argument, name);
 
-  if (*name) {
-    if (!(leader = get_char_room_vis(ch, name))) {
+  if (*name != 0) {
+    if ((leader = get_char_room_vis(ch, name)) == nullptr) {
       send_to_char("I see no person by that name here!\n\r", ch);
       return;
     }
@@ -1206,25 +1215,25 @@ void do_follow(struct char_data* ch, const char* argument, int cmd) {
     return;
   }
 
-  if (IS_AFFECTED(ch, AFF_CHARM) && (ch->master)) {
+  if (IS_AFFECTED(ch, AFF_CHARM) && ((ch->master) != nullptr)) {
     act("But you only feel like following $N!", 0, ch, nullptr, ch->master,
       TO_CHAR);
 
   } else { /* Not Charmed follow person */
 
     if (leader == ch) {
-      if (!ch->master) {
+      if (ch->master == nullptr) {
         send_to_char("You are already following yourself.\n\r", ch);
         return;
       }
       stop_follower(ch);
     } else {
-      if (circle_follow(ch, leader)) {
+      if (circle_follow(ch, leader) != 0) {
         act("Sorry, but following in 'loops' is not allowed", 0, ch, nullptr,
           nullptr, TO_CHAR);
         return;
       }
-      if (ch->master) {
+      if (ch->master != nullptr) {
         stop_follower(ch);
       }
 

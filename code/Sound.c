@@ -14,13 +14,13 @@ int RecGetObjRoom(struct obj_data* obj) {
   if (obj->in_room != NOWHERE) {
     return (obj->in_room);
   }
-  if (obj->carried_by) {
+  if (obj->carried_by != nullptr) {
     return (obj->carried_by->in_room);
   }
-  if (obj->equipped_by) {
+  if (obj->equipped_by != nullptr) {
     return (obj->equipped_by->in_room);
   }
-  if (obj->in_obj) {
+  if (obj->in_obj != nullptr) {
     return (RecGetObjRoom(obj->in_obj));
   }
   return NOWHERE;
@@ -34,18 +34,18 @@ void MakeNoise(int room, const char* local_snd, const char* distant_snd) {
 
   rp = real_roomp(room);
 
-  if (!rp) {
+  if (rp == nullptr) {
     return;
   }
 
-  for (ch = rp->people; ch; ch = ch->next_in_room) {
+  for (ch = rp->people; ch != nullptr; ch = ch->next_in_room) {
     send_to_char(local_snd, ch);
   }
 
   for (door = 0; door <= 5; door++) {
-    if (rp->dir_option[door] &&
-        (orp = real_roomp(rp->dir_option[door]->to_room))) {
-      for (ch = orp->people; ch; ch = ch->next_in_room) {
+    if ((rp->dir_option[door] != nullptr) &&
+        ((orp = real_roomp(rp->dir_option[door]->to_room)) != nullptr)) {
+      for (ch = orp->people; ch != nullptr; ch = ch->next_in_room) {
         if (!IS_NPC(ch) && (!IS_SET(ch->specials.act, PLR_NOSHOUT))) {
           send_to_char(distant_snd, ch);
         }
@@ -64,14 +64,14 @@ void MakeSound(int pulse) {
    *  objects
    */
 
-  for (obj = object_list; obj; obj = obj->next) {
+  for (obj = object_list; obj != nullptr; obj = obj->next) {
     if (ITEM_TYPE(obj) == ITEM_AUDIO) {
-      if (((obj->obj_flags.value[0]) &&
+      if ((((obj->obj_flags.value[0]) != 0) &&
             (pulse % obj->obj_flags.value[0]) == 0) ||
-          (!number(0, 5))) {
-        if (obj->carried_by) {
+          (number(0, 5) == 0)) {
+        if (obj->carried_by != nullptr) {
           room = obj->carried_by->in_room;
-        } else if (obj->equipped_by) {
+        } else if (obj->equipped_by != nullptr) {
           room = obj->equipped_by->in_room;
         } else if (obj->in_room != NOWHERE) {
           room = obj->in_room;
@@ -82,7 +82,7 @@ void MakeSound(int pulse) {
          *  broadcast to room
          */
 
-        if (obj->action_description) {
+        if (obj->action_description != nullptr) {
           MakeNoise(room, obj->action_description, obj->action_description);
         }
       }
@@ -93,8 +93,8 @@ void MakeSound(int pulse) {
    *   mobiles
    */
 
-  for (ch = character_list; ch; ch = ch->next) {
-    if (IS_NPC(ch) && (ch->player.sounds) && (number(0, 5) == 0)) {
+  for (ch = character_list; ch != nullptr; ch = ch->next) {
+    if (IS_NPC(ch) && ((ch->player.sounds) != nullptr) && (number(0, 5) == 0)) {
       if (ch->specials.default_pos > POSITION_SLEEPING) {
         if (GET_POS(ch) > POSITION_SLEEPING) {
           /*

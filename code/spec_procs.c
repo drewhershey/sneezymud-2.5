@@ -144,11 +144,12 @@ struct char_data* FindMobInRoomWithFunction(int room,
   int (*func)(struct char_data*, int, const char*)) {
   struct room_data* rp = real_roomp(room);
 
-  if (room <= NOWHERE || !rp) {
+  if (room <= NOWHERE || (rp == nullptr)) {
     return nullptr;
   }
 
-  for (struct char_data* ch = rp->people; ch; ch = ch->next_in_room) {
+  for (struct char_data* ch = rp->people; ch != nullptr;
+    ch = ch->next_in_room) {
     if (IS_MOB(ch) && mob_index[ch->nr].func.mob_f == func) {
       return ch;
     }
@@ -171,7 +172,7 @@ int AntiGuildMaster(struct char_data* ch, int cmd, const char* arg) {
     return 0;
   }
 
-  if (!ch->skills) {
+  if (ch->skills == nullptr) {
     return 0;
   }
 
@@ -179,17 +180,17 @@ int AntiGuildMaster(struct char_data* ch, int cmd, const char* arg) {
     return 0;
   }
 
-  if (check_soundproof(ch)) {
+  if (check_soundproof(ch) != 0) {
     return 0;
   }
 
   guildmaster = FindMobInRoomWithFunction(ch->in_room, AntiGuildMaster);
 
-  if (!guildmaster) {
+  if (guildmaster == nullptr) {
     return 0;
   }
 
-  if (HasClass(ch, CLASS_ANTIPALADIN)) {
+  if (HasClass(ch, CLASS_ANTIPALADIN) != 0) {
     if (cmd == 243) {
       if (GET_LEVEL(ch, ANTIPALADIN_LEVEL_IND) <
           GetMaxLevel(guildmaster) - 10) {
@@ -200,13 +201,13 @@ int AntiGuildMaster(struct char_data* ch, int cmd, const char* arg) {
       return 1;
     }
 
-    if (!*arg) {
+    if (*arg == 0) {
       sprintf(buf, "You have got %d practice sessions left.\n\r",
         ch->specials.spells_to_learn);
       send_to_char(buf, ch);
       send_to_char("You can practice any of the following:\n\r", ch);
       for (i = 0; *spells[i] != '\n' && i < MAX_SKILLS - 1; i++) {
-        if (spell_info[i + 1].spell_pointer &&
+        if ((spell_info[i + 1].spell_pointer != nullptr) &&
             (spell_info[i + 1].min_level_anti <=
               GET_LEVEL(ch, ANTIPALADIN_LEVEL_IND)) &&
             (spell_info[i + 1].min_level_anti <=
@@ -238,7 +239,7 @@ int AntiGuildMaster(struct char_data* ch, int cmd, const char* arg) {
 
     only_argument(arg, num);
 
-    if (is_abbrev(type, "kick")) {
+    if (is_abbrev(type, "kick") != 0) {
       if (ch->specials.spells_to_learn <= 0) {
         send_to_char("You do not seem to be able to practice now.\n\r", ch);
         return 1;
@@ -258,7 +259,7 @@ int AntiGuildMaster(struct char_data* ch, int cmd, const char* arg) {
         return 1;
       }
     }
-    if (is_abbrev(type, "double")) {
+    if (is_abbrev(type, "double") != 0) {
       if (ch->specials.spells_to_learn <= 0) {
         send_to_char("What are you stupid you have no practices.\n\r", ch);
         return 1;
@@ -279,7 +280,7 @@ int AntiGuildMaster(struct char_data* ch, int cmd, const char* arg) {
         return 1;
       }
     }
-    if (is_abbrev(type, "bash")) {
+    if (is_abbrev(type, "bash") != 0) {
       if (ch->specials.spells_to_learn <= 0) {
         send_to_char("You do not seem to be able to practice now.\n\r", ch);
         return 1;
@@ -300,7 +301,7 @@ int AntiGuildMaster(struct char_data* ch, int cmd, const char* arg) {
         return 1;
       }
     }
-    if (is_abbrev(type, "hide")) {
+    if (is_abbrev(type, "hide") != 0) {
       if (ch->specials.spells_to_learn <= 0) {
         send_to_char("You do not seem to be able to practice now.\n\r", ch);
         return 1;
@@ -322,7 +323,7 @@ int AntiGuildMaster(struct char_data* ch, int cmd, const char* arg) {
         return 1;
       }
     }
-    if (is_abbrev(type, "backstab")) {
+    if (is_abbrev(type, "backstab") != 0) {
       if (ch->specials.spells_to_learn <= 0) {
         send_to_char("You do not seem to be able to practice now.\n\r", ch);
         return 1;
@@ -343,7 +344,7 @@ int AntiGuildMaster(struct char_data* ch, int cmd, const char* arg) {
         return 1;
       }
     }
-    for (; isspace(*arg); arg++) {
+    for (; isspace(*arg) != 0; arg++) {
       ;
     }
     number = old_search_block(arg, 0, strlen(arg), spells, 0);
@@ -398,7 +399,7 @@ int MageGuildMaster(struct char_data* ch, int cmd, const char* arg) {
     return 0;
   }
 
-  if (!ch->skills) {
+  if (ch->skills == nullptr) {
     return 0;
   }
 
@@ -406,17 +407,17 @@ int MageGuildMaster(struct char_data* ch, int cmd, const char* arg) {
     return 0;
   }
 
-  if (check_soundproof(ch)) {
+  if (check_soundproof(ch) != 0) {
     return 0;
   }
 
   guildmaster = FindMobInRoomWithFunction(ch->in_room, MageGuildMaster);
 
-  if (!guildmaster) {
+  if (guildmaster == nullptr) {
     return 0;
   }
 
-  if (HasClass(ch, CLASS_MAGIC_USER)) {
+  if (HasClass(ch, CLASS_MAGIC_USER) != 0) {
     if (cmd == 243) { /* gain */
       if (GET_LEVEL(ch, MAGE_LEVEL_IND) < GetMaxLevel(guildmaster) - 10) {
         gain_level(ch, MAGE_LEVEL_IND);
@@ -426,13 +427,13 @@ int MageGuildMaster(struct char_data* ch, int cmd, const char* arg) {
       return 1;
     }
 
-    if (!*arg) {
+    if (*arg == 0) {
       sprintf(buf, "You have got %d practice sessions left.\n\r",
         ch->specials.spells_to_learn);
       send_to_char(buf, ch);
       send_to_char("You can practise any of these spells:\n\r", ch);
       for (i = 0; *spells[i] != '\n' && i < MAX_SKILLS - 1; i++) {
-        if (spell_info[i + 1].spell_pointer &&
+        if ((spell_info[i + 1].spell_pointer != nullptr) &&
             (spell_info[i + 1].min_level_magic <=
               GET_LEVEL(ch, MAGE_LEVEL_IND)) &&
             (spell_info[i + 1].min_level_magic <=
@@ -457,7 +458,7 @@ int MageGuildMaster(struct char_data* ch, int cmd, const char* arg) {
 
     one_argument(arg, type);
 
-    if (is_abbrev(type, "brew")) {
+    if (is_abbrev(type, "brew") != 0) {
       if (ch->specials.spells_to_learn <= 0) {
         send_to_char("You don't seem to be able to practice now.\n\r", ch);
         return 1;
@@ -473,7 +474,7 @@ int MageGuildMaster(struct char_data* ch, int cmd, const char* arg) {
       ch->skills[SKILL_BREW].learned = MIN(90, percent);
       return 1;
     }
-    if (is_abbrev(type, "scribe")) {
+    if (is_abbrev(type, "scribe") != 0) {
       if (ch->specials.spells_to_learn <= 0) {
         send_to_char("You don't seem to be able to practice now.\n\r", ch);
         return 1;
@@ -489,7 +490,7 @@ int MageGuildMaster(struct char_data* ch, int cmd, const char* arg) {
       ch->skills[SKILL_SCRIBE].learned = MIN(90, percent);
       return 1;
     }
-    for (; isspace(*arg); arg++) {
+    for (; isspace(*arg) != 0; arg++) {
       ;
     }
     number = old_search_block(arg, 0, strlen(arg), spells, 0);
@@ -547,7 +548,7 @@ int PaladinGuildMaster(struct char_data* ch, int cmd, const char* arg) {
     return 0;
   }
 
-  if (!ch->skills) {
+  if (ch->skills == nullptr) {
     return 0;
   }
 
@@ -555,17 +556,17 @@ int PaladinGuildMaster(struct char_data* ch, int cmd, const char* arg) {
     return 0;
   }
 
-  if (check_soundproof(ch)) {
+  if (check_soundproof(ch) != 0) {
     return 0;
   }
 
   guildmaster = FindMobInRoomWithFunction(ch->in_room, PaladinGuildMaster);
 
-  if (!guildmaster) {
+  if (guildmaster == nullptr) {
     return 0;
   }
 
-  if (HasClass(ch, CLASS_PALADIN)) {
+  if (HasClass(ch, CLASS_PALADIN) != 0) {
     if (cmd == 243) {
       if (GET_LEVEL(ch, PALADIN_LEVEL_IND) < GetMaxLevel(guildmaster) - 10) {
         gain_level(ch, PALADIN_LEVEL_IND);
@@ -575,13 +576,13 @@ int PaladinGuildMaster(struct char_data* ch, int cmd, const char* arg) {
       return 1;
     }
 
-    if (!*arg) {
+    if (*arg == 0) {
       sprintf(buf, "You have got %d practice sessions left.\n\r",
         ch->specials.spells_to_learn);
       send_to_char(buf, ch);
       send_to_char("You can practice any of the following:\n\r", ch);
       for (i = 0; *spells[i] != '\n' && i < MAX_SKILLS - 1; i++) {
-        if (spell_info[i + 1].spell_pointer &&
+        if ((spell_info[i + 1].spell_pointer != nullptr) &&
             (spell_info[i + 1].min_level_pal <=
               GET_LEVEL(ch, PALADIN_LEVEL_IND)) &&
             (spell_info[i + 1].min_level_pal <=
@@ -611,7 +612,7 @@ int PaladinGuildMaster(struct char_data* ch, int cmd, const char* arg) {
 
     one_argument(arg, type);
 
-    if (is_abbrev(type, "kick")) {
+    if (is_abbrev(type, "kick") != 0) {
       if (ch->specials.spells_to_learn <= 0) {
         send_to_char("You do not seem to be able to practice now.\n\r", ch);
         return 1;
@@ -632,7 +633,7 @@ int PaladinGuildMaster(struct char_data* ch, int cmd, const char* arg) {
         return 1;
       }
     }
-    if (is_abbrev(type, "double")) {
+    if (is_abbrev(type, "double") != 0) {
       if (ch->specials.spells_to_learn <= 0) {
         send_to_char("You do not seem to be able to practice now.\n\r", ch);
         return 1;
@@ -649,7 +650,7 @@ int PaladinGuildMaster(struct char_data* ch, int cmd, const char* arg) {
       ch->skills[SKILL_DOUBLE_ATTACK].learned = MIN(50, percent);
       return 1;
     }
-    if (is_abbrev(type, "bash")) {
+    if (is_abbrev(type, "bash") != 0) {
       if (ch->specials.spells_to_learn <= 0) {
         send_to_char("You do not seem to be able to practice now.\n\r", ch);
         return 1;
@@ -670,7 +671,7 @@ int PaladinGuildMaster(struct char_data* ch, int cmd, const char* arg) {
         return 1;
       }
     }
-    if (is_abbrev(type, "rescue")) {
+    if (is_abbrev(type, "rescue") != 0) {
       if (ch->specials.spells_to_learn <= 0) {
         send_to_char("You do not seem to be able to practice now.\n\r", ch);
         return 1;
@@ -692,7 +693,7 @@ int PaladinGuildMaster(struct char_data* ch, int cmd, const char* arg) {
         return 1;
       }
     }
-    if (is_abbrev(type, "lay")) {
+    if (is_abbrev(type, "lay") != 0) {
       if (ch->specials.spells_to_learn <= 0) {
         send_to_char("You do not seem to be able to practice now.\n\r", ch);
         return 1;
@@ -714,7 +715,7 @@ int PaladinGuildMaster(struct char_data* ch, int cmd, const char* arg) {
         return 1;
       }
     }
-    for (; isspace(*arg); arg++) {
+    for (; isspace(*arg) != 0; arg++) {
       ;
     }
     number = old_search_block(arg, 0, strlen(arg), spells, 0);
@@ -771,7 +772,7 @@ int RangerGuildMaster(struct char_data* ch, int cmd, const char* arg) {
     return 0;
   }
 
-  if (!ch->skills) {
+  if (ch->skills == nullptr) {
     return 0;
   }
 
@@ -779,17 +780,17 @@ int RangerGuildMaster(struct char_data* ch, int cmd, const char* arg) {
     return 0;
   }
 
-  if (check_soundproof(ch)) {
+  if (check_soundproof(ch) != 0) {
     return 0;
   }
 
   guildmaster = FindMobInRoomWithFunction(ch->in_room, RangerGuildMaster);
 
-  if (!guildmaster) {
+  if (guildmaster == nullptr) {
     return 0;
   }
 
-  if (HasClass(ch, CLASS_RANGER)) {
+  if (HasClass(ch, CLASS_RANGER) != 0) {
     if (cmd == 243) {
       if (GET_LEVEL(ch, RANGER_LEVEL_IND) < GetMaxLevel(guildmaster) - 10) {
         gain_level(ch, RANGER_LEVEL_IND);
@@ -799,13 +800,13 @@ int RangerGuildMaster(struct char_data* ch, int cmd, const char* arg) {
       return 1;
     }
 
-    if (!*arg) {
+    if (*arg == 0) {
       sprintf(buf, "You have got %d practice sessions left.\n\r",
         ch->specials.spells_to_learn);
       send_to_char(buf, ch);
       send_to_char("You can practice any of the following:\n\r", ch);
       for (i = 0; *spells[i] != '\n' && i < MAX_SKILLS - 1; i++) {
-        if (spell_info[i + 1].spell_pointer &&
+        if ((spell_info[i + 1].spell_pointer != nullptr) &&
             (spell_info[i + 1].min_level_ranger <=
               GET_LEVEL(ch, RANGER_LEVEL_IND)) &&
             (spell_info[i + 1].min_level_ranger <=
@@ -835,13 +836,13 @@ int RangerGuildMaster(struct char_data* ch, int cmd, const char* arg) {
       return 1;
     }
 
-    for (; isspace(*arg); arg++) {
+    for (; isspace(*arg) != 0; arg++) {
       ;
     }
 
     one_argument(arg, type);
 
-    if (is_abbrev(type, "kick")) {
+    if (is_abbrev(type, "kick") != 0) {
       if (ch->specials.spells_to_learn <= 0) {
         send_to_char("You do not seem to be able to practice now.\n\r", ch);
         return 1;
@@ -863,7 +864,7 @@ int RangerGuildMaster(struct char_data* ch, int cmd, const char* arg) {
         return 1;
       }
     }
-    if (is_abbrev(type, "double")) {
+    if (is_abbrev(type, "double") != 0) {
       if (ch->specials.spells_to_learn <= 0) {
         send_to_char("You don't seem to be able to practice now.\n\r", ch);
         return 1;
@@ -885,7 +886,7 @@ int RangerGuildMaster(struct char_data* ch, int cmd, const char* arg) {
         return 1;
       }
     }
-    if (is_abbrev(type, "track")) {
+    if (is_abbrev(type, "track") != 0) {
       if (ch->specials.spells_to_learn <= 0) {
         send_to_char("You do not seem to be able to practice now.\n\r", ch);
         return 1;
@@ -907,7 +908,7 @@ int RangerGuildMaster(struct char_data* ch, int cmd, const char* arg) {
         return 1;
       }
     }
-    if (is_abbrev(type, "bash")) {
+    if (is_abbrev(type, "bash") != 0) {
       if (ch->specials.spells_to_learn <= 0) {
         send_to_char("You do not seem to be able to practice now.\n\r", ch);
         return 1;
@@ -929,7 +930,7 @@ int RangerGuildMaster(struct char_data* ch, int cmd, const char* arg) {
         return 1;
       }
     }
-    if (is_abbrev(type, "sneak")) {
+    if (is_abbrev(type, "sneak") != 0) {
       if (ch->specials.spells_to_learn <= 0) {
         send_to_char("You do not seem to be able to practice now.\n\r", ch);
         return 1;
@@ -951,7 +952,7 @@ int RangerGuildMaster(struct char_data* ch, int cmd, const char* arg) {
         return 1;
       }
     }
-    if (is_abbrev(type, "rescue")) {
+    if (is_abbrev(type, "rescue") != 0) {
       if (ch->specials.spells_to_learn <= 0) {
         send_to_char("You do not seem to be able to practice now.\n\r", ch);
         return 1;
@@ -973,7 +974,7 @@ int RangerGuildMaster(struct char_data* ch, int cmd, const char* arg) {
         return 1;
       }
     }
-    for (; isspace(*arg); arg++) {
+    for (; isspace(*arg) != 0; arg++) {
       ;
     }
     number = old_search_block(arg, 0, strlen(arg), spells, 0);
@@ -1024,11 +1025,11 @@ int ClericGuildMaster(struct char_data* ch, int cmd, const char* arg) {
   struct char_data* guildmaster = nullptr;
   char type[100];
 
-  if (!ch->skills) {
+  if (ch->skills == nullptr) {
     return 0;
   }
 
-  if (check_soundproof(ch)) {
+  if (check_soundproof(ch) != 0) {
     return 0;
   }
 
@@ -1042,11 +1043,11 @@ int ClericGuildMaster(struct char_data* ch, int cmd, const char* arg) {
 
   guildmaster = FindMobInRoomWithFunction(ch->in_room, ClericGuildMaster);
 
-  if (!guildmaster) {
+  if (guildmaster == nullptr) {
     return 0;
   }
 
-  if (HasClass(ch, CLASS_CLERIC)) {
+  if (HasClass(ch, CLASS_CLERIC) != 0) {
     if (cmd == 243) { /* gain */
       if (GET_LEVEL(ch, CLERIC_LEVEL_IND) < GetMaxLevel(guildmaster) - 10) {
         gain_level(ch, CLERIC_LEVEL_IND);
@@ -1056,13 +1057,13 @@ int ClericGuildMaster(struct char_data* ch, int cmd, const char* arg) {
       return 1;
     }
 
-    if (!*arg) {
+    if (*arg == 0) {
       sprintf(buf, "You have got %d practice sessions left.\n\r",
         ch->specials.spells_to_learn);
       send_to_char(buf, ch);
       send_to_char("You can practise any of these spells:\n\r", ch);
       for (i = 0; *spells[i] != '\n' && i < MAX_SKILLS - 1; i++) {
-        if (spell_info[i + 1].spell_pointer &&
+        if ((spell_info[i + 1].spell_pointer != nullptr) &&
             (spell_info[i + 1].min_level_cleric <=
               GET_LEVEL(ch, CLERIC_LEVEL_IND)) &&
             (spell_info[i + 1].min_level_cleric <=
@@ -1081,7 +1082,7 @@ int ClericGuildMaster(struct char_data* ch, int cmd, const char* arg) {
 
     one_argument(arg, type);
 
-    if (is_abbrev(type, "brew")) {
+    if (is_abbrev(type, "brew") != 0) {
       if (ch->specials.spells_to_learn <= 0) {
         send_to_char("You don't seem to be able to practice now.\n\r", ch);
         return 1;
@@ -1097,7 +1098,7 @@ int ClericGuildMaster(struct char_data* ch, int cmd, const char* arg) {
       ch->skills[SKILL_BREW].learned = MIN(90, percent);
       return 1;
     }
-    if (is_abbrev(type, "scribe")) {
+    if (is_abbrev(type, "scribe") != 0) {
       if (ch->specials.spells_to_learn <= 0) {
         send_to_char("You don't seem to be able to practice now.\n\r", ch);
         return 1;
@@ -1113,7 +1114,7 @@ int ClericGuildMaster(struct char_data* ch, int cmd, const char* arg) {
       ch->skills[SKILL_SCRIBE].learned = MIN(90, percent);
       return 1;
     }
-    for (; isspace(*arg); arg++) {
+    for (; isspace(*arg) != 0; arg++) {
       ;
     }
     number = old_search_block(arg, 0, strlen(arg), spells, 0);
@@ -1170,7 +1171,7 @@ int ThiefGuildMaster(struct char_data* ch, int cmd, const char* arg) {
     return 0;
   }
 
-  if (!ch->skills) {
+  if (ch->skills == nullptr) {
     return 0;
   }
 
@@ -1178,17 +1179,17 @@ int ThiefGuildMaster(struct char_data* ch, int cmd, const char* arg) {
     return 0;
   }
 
-  if (check_soundproof(ch)) {
+  if (check_soundproof(ch) != 0) {
     return 0;
   }
 
   guildmaster = FindMobInRoomWithFunction(ch->in_room, ThiefGuildMaster);
 
-  if (!guildmaster) {
+  if (guildmaster == nullptr) {
     return 0;
   }
 
-  if (HasClass(ch, CLASS_THIEF)) {
+  if (HasClass(ch, CLASS_THIEF) != 0) {
     if (cmd == 243) { /* gain */
       if (GET_LEVEL(ch, THIEF_LEVEL_IND) < GetMaxLevel(guildmaster) - 10) {
         gain_level(ch, THIEF_LEVEL_IND);
@@ -1197,7 +1198,7 @@ int ThiefGuildMaster(struct char_data* ch, int cmd, const char* arg) {
       }
       return 1;
     }
-    if (!*arg) {
+    if (*arg == 0) {
       sprintf(buf, "You have got %d practice sessions left.\n\r",
         ch->specials.spells_to_learn);
       send_to_char(buf, ch);
@@ -1220,7 +1221,7 @@ int ThiefGuildMaster(struct char_data* ch, int cmd, const char* arg) {
     }
     one_argument(arg, type);
 
-    if (is_abbrev(type, "subterfuge")) {
+    if (is_abbrev(type, "subterfuge") != 0) {
       if (ch->specials.spells_to_learn <= 0) {
         send_to_char("You do not seem to be able to practice now.\n\r", ch);
         return 1;
@@ -1242,7 +1243,7 @@ int ThiefGuildMaster(struct char_data* ch, int cmd, const char* arg) {
         return 1;
       }
     }
-    if (is_abbrev(type, "detect")) {
+    if (is_abbrev(type, "detect") != 0) {
       if (ch->specials.spells_to_learn <= 0) {
         send_to_char("You do not seem to be able to practice now.\n\r", ch);
         return 1;
@@ -1264,7 +1265,7 @@ int ThiefGuildMaster(struct char_data* ch, int cmd, const char* arg) {
         return 1;
       }
     }
-    if (is_abbrev(type, "double")) {
+    if (is_abbrev(type, "double") != 0) {
       if (ch->specials.spells_to_learn <= 0) {
         send_to_char("You don't seem to be able to practice now.\n\r", ch);
         return 1;
@@ -1286,7 +1287,7 @@ int ThiefGuildMaster(struct char_data* ch, int cmd, const char* arg) {
         return 1;
       }
     }
-    for (; isspace(*arg); arg++) {
+    for (; isspace(*arg) != 0; arg++) {
       ;
     }
     number = search_block(arg, t_skills, 0);
@@ -1335,7 +1336,7 @@ int WarriorGuildMaster(struct char_data* ch, int cmd, const char* arg) {
     return 0;
   }
 
-  if (!ch->skills) {
+  if (ch->skills == nullptr) {
     return 0;
   }
 
@@ -1343,17 +1344,17 @@ int WarriorGuildMaster(struct char_data* ch, int cmd, const char* arg) {
     return 0;
   }
 
-  if (check_soundproof(ch)) {
+  if (check_soundproof(ch) != 0) {
     return 0;
   }
 
   guildmaster = FindMobInRoomWithFunction(ch->in_room, WarriorGuildMaster);
 
-  if (!guildmaster) {
+  if (guildmaster == nullptr) {
     return 0;
   }
 
-  if (HasClass(ch, CLASS_WARRIOR)) {
+  if (HasClass(ch, CLASS_WARRIOR) != 0) {
     if (cmd == 243) { /* gain */
       if (GET_LEVEL(ch, WARRIOR_LEVEL_IND) < GetMaxLevel(guildmaster) - 10) {
         gain_level(ch, WARRIOR_LEVEL_IND);
@@ -1363,7 +1364,7 @@ int WarriorGuildMaster(struct char_data* ch, int cmd, const char* arg) {
       return 1;
     }
 
-    if (!*arg) {
+    if (*arg == 0) {
       sprintf(buf, "You have got %d practice sessions left.\n\r",
         ch->specials.spells_to_learn);
       send_to_char(buf, ch);
@@ -1395,7 +1396,7 @@ int WarriorGuildMaster(struct char_data* ch, int cmd, const char* arg) {
 
     one_argument(arg, type);
 
-    if (is_abbrev(type, "throw")) {
+    if (is_abbrev(type, "throw") != 0) {
       if (ch->specials.spells_to_learn <= 0) {
         send_to_char("You do not seem to be able to practice now.\n\r", ch);
         return 1;
@@ -1411,7 +1412,7 @@ int WarriorGuildMaster(struct char_data* ch, int cmd, const char* arg) {
       ch->skills[SKILL_THROW].learned = MIN(90, percent);
       return 1;
     }
-    if (is_abbrev(type, "double")) {
+    if (is_abbrev(type, "double") != 0) {
       if (ch->specials.spells_to_learn <= 0) {
         send_to_char("You do not seem to be able to practice now.\n\r", ch);
         return 1;
@@ -1428,7 +1429,7 @@ int WarriorGuildMaster(struct char_data* ch, int cmd, const char* arg) {
       ch->skills[SKILL_DOUBLE_ATTACK].learned = MIN(90, percent);
       return 1;
     }
-    if (is_abbrev(type, "deathstroke")) {
+    if (is_abbrev(type, "deathstroke") != 0) {
       if (ch->specials.spells_to_learn <= 0) {
         send_to_char("You do not seem to be able to practice now.\n\r", ch);
         return 1;
@@ -1445,7 +1446,7 @@ int WarriorGuildMaster(struct char_data* ch, int cmd, const char* arg) {
       ch->skills[SKILL_DEATHSTROKE].learned = MIN(75, percent);
       return 1;
     }
-    if (is_abbrev(type, "bodyslam")) {
+    if (is_abbrev(type, "bodyslam") != 0) {
       if (ch->specials.spells_to_learn <= 0) {
         send_to_char("You do not seem to be able to practice now.\n\r", ch);
         return 1;
@@ -1462,7 +1463,7 @@ int WarriorGuildMaster(struct char_data* ch, int cmd, const char* arg) {
       ch->skills[SKILL_BODYSLAM].learned = MIN(75, percent);
       return 1;
     }
-    if (is_abbrev(type, "grapple")) {
+    if (is_abbrev(type, "grapple") != 0) {
       if (ch->specials.spells_to_learn <= 0) {
         send_to_char("You do not seem to be able to practice now.\n\r", ch);
         return 1;
@@ -1478,7 +1479,7 @@ int WarriorGuildMaster(struct char_data* ch, int cmd, const char* arg) {
       ch->skills[SKILL_GRAPPLE].learned = MIN(75, percent);
       return 1;
     }
-    if (is_abbrev(type, "headbutt")) {
+    if (is_abbrev(type, "headbutt") != 0) {
       if (ch->specials.spells_to_learn <= 0) {
         send_to_char("You do not seem to be able to practice now.\n\r", ch);
         return 1;
@@ -1500,7 +1501,7 @@ int WarriorGuildMaster(struct char_data* ch, int cmd, const char* arg) {
         return 1;
       }
     }
-    for (; isspace(*arg); arg++) {
+    for (; isspace(*arg) != 0; arg++) {
       ;
     }
     number = search_block(arg, w_skills, 0);
@@ -1593,7 +1594,7 @@ int metahospital(struct char_data* ch, int cmd, const char* arg) {
     opt = atoi(buf);
 
     for (i = 0; i < MAX_WEAR; i++) {
-      if (ch->equipment[i]) {
+      if (ch->equipment[i] != nullptr) {
         send_to_char(
           "You must remove all to use the metaphysician. Come on now! Don't be "
           "bashful!\n\r",
@@ -1771,10 +1772,10 @@ int dump(struct char_data* ch, int cmd, const char* arg) {
   struct char_data* tmp_char = nullptr;
   int value = 0;
 
-  for (k = real_roomp(ch->in_room)->contents; k;
+  for (k = real_roomp(ch->in_room)->contents; k != nullptr;
     k = real_roomp(ch->in_room)->contents) {
     sprintf(buf, "The %s vanish in a puff of smoke.\n\r", fname(k->name));
-    for (tmp_char = real_roomp(ch->in_room)->people; tmp_char;
+    for (tmp_char = real_roomp(ch->in_room)->people; tmp_char != nullptr;
       tmp_char = tmp_char->next_in_room) {
       if (CAN_SEE_OBJ(tmp_char, k)) {
         send_to_char(buf, tmp_char);
@@ -1791,10 +1792,10 @@ int dump(struct char_data* ch, int cmd, const char* arg) {
 
   value = 0;
 
-  for (k = real_roomp(ch->in_room)->contents; k;
+  for (k = real_roomp(ch->in_room)->contents; k != nullptr;
     k = real_roomp(ch->in_room)->contents) {
     sprintf(buf, "The %s vanish in a puff of smoke.\n\r", fname(k->name));
-    for (tmp_char = real_roomp(ch->in_room)->people; tmp_char;
+    for (tmp_char = real_roomp(ch->in_room)->people; tmp_char != nullptr;
       tmp_char = tmp_char->next_in_room) {
       if (CAN_SEE_OBJ(tmp_char, k)) {
         send_to_char(buf, tmp_char);
@@ -1807,7 +1808,7 @@ value += MAX(1, MIN(50, k->obj_flags.cost/10));
     extract_obj(k);
   }
 
-  if (value) {
+  if (value != 0) {
     act("You are awarded for outstanding performance.", 0, ch, nullptr, nullptr,
       TO_CHAR);
     act("$n has been awarded for being a good citizen.", 1, ch, nullptr,
@@ -1833,7 +1834,7 @@ int mayor(struct char_data* ch, int cmd, const char* arg) {
   static int index;
   static char move = 0;
 
-  if (!move) {
+  if (move == 0) {
     if (time_info.hours == 6) {
       move = 1;
       path = open_path;
@@ -1845,7 +1846,7 @@ int mayor(struct char_data* ch, int cmd, const char* arg) {
     }
   }
 
-  if (cmd || !move || (GET_POS(ch) < POSITION_SLEEPING) ||
+  if ((cmd != 0) || (move == 0) || (GET_POS(ch) < POSITION_SLEEPING) ||
       (GET_POS(ch) == POSITION_FIGHTING)) {
     return 0;
   }
@@ -1870,7 +1871,7 @@ int mayor(struct char_data* ch, int cmd, const char* arg) {
       break;
 
     case 'a':
-      if (check_soundproof(ch)) {
+      if (check_soundproof(ch) != 0) {
         return 0;
       }
       act("$n says 'Hello Honey!'", 0, ch, nullptr, nullptr, TO_ROOM);
@@ -1878,7 +1879,7 @@ int mayor(struct char_data* ch, int cmd, const char* arg) {
       break;
 
     case 'b':
-      if (check_soundproof(ch)) {
+      if (check_soundproof(ch) != 0) {
         return 0;
       }
       act("$n says 'What a view! I must get something done about that dump!'",
@@ -1886,7 +1887,7 @@ int mayor(struct char_data* ch, int cmd, const char* arg) {
       break;
 
     case 'c':
-      if (check_soundproof(ch)) {
+      if (check_soundproof(ch) != 0) {
         return 0;
       }
       act(
@@ -1895,14 +1896,14 @@ int mayor(struct char_data* ch, int cmd, const char* arg) {
       break;
 
     case 'd':
-      if (check_soundproof(ch)) {
+      if (check_soundproof(ch) != 0) {
         return 0;
       }
       act("$n says 'Good day, citizens!'", 0, ch, nullptr, nullptr, TO_ROOM);
       break;
 
     case 'e':
-      if (check_soundproof(ch)) {
+      if (check_soundproof(ch) != 0) {
         return 0;
       }
       act("$n says 'I hereby declare the bazaar open!'", 0, ch, nullptr,
@@ -1910,7 +1911,7 @@ int mayor(struct char_data* ch, int cmd, const char* arg) {
       break;
 
     case 'E':
-      if (check_soundproof(ch)) {
+      if (check_soundproof(ch) != 0) {
         return 0;
       }
       act("$n says 'I hereby declare Midgaard closed!'", 0, ch, nullptr,
@@ -1972,24 +1973,25 @@ int andy_wilcox(struct char_data* ch, int cmd, const char* arg) {
   };
   const struct pub_beers* scan = nullptr;
 
-  if (!ch || check_soundproof(ch)) {
+  if ((ch == nullptr) || (check_soundproof(ch) != 0)) {
     return 0;
   }
 
   struct room_data* room = real_roomp(ch->in_room);
 
-  if (!room) {
+  if (room == nullptr) {
     return 0;
   }
 
   struct char_data* andy = nullptr;
-  for (struct char_data* m = room->people; !andy && m; m = m->next_in_room) {
+  for (struct char_data* m = room->people; (andy == nullptr) && (m != nullptr);
+    m = m->next_in_room) {
     if (IS_MOB(m) && mob_index[m->nr].func.mob_f == andy_wilcox) {
       andy = m;
     }
   }
 
-  if (!andy) {
+  if (andy == nullptr) {
     return 0;
   }
 
@@ -2088,7 +2090,7 @@ int andy_wilcox(struct char_data* ch, int cmd, const char* arg) {
         return 1;
       }
       only_argument(arg, argm);
-      if (!(*argm)) {
+      if ((*argm) == 0) {
         act("$n tells you 'Sure, what do you want to buy?'", 0, andy, nullptr,
           ch, TO_VICT);
         return 1;
@@ -2102,7 +2104,7 @@ int andy_wilcox(struct char_data* ch, int cmd, const char* arg) {
         num = 1;
       }
 
-      if (!(temp1 = get_obj_in_list_vis(ch, argm, andy->carrying))) {
+      if ((temp1 = get_obj_in_list_vis(ch, argm, andy->carrying)) == nullptr) {
         act("$n tells you 'Sorry, but I don't sell that.'", 0, andy, nullptr,
           ch, TO_VICT);
         return 1;
@@ -2118,7 +2120,7 @@ int andy_wilcox(struct char_data* ch, int cmd, const char* arg) {
         return 1;
       }
 
-      if (scan->actflag & ACT_OVER_21 && GET_AGE(ch) < 21) {
+      if (((scan->actflag & ACT_OVER_21) != 0) && GET_AGE(ch) < 21) {
         if (IS_IMMORTAL(ch)) {
           act("$N manages to slip a fake ID past $n.", 0, andy, nullptr, ch,
             TO_NOTVICT);
@@ -2134,12 +2136,13 @@ int andy_wilcox(struct char_data* ch, int cmd, const char* arg) {
       }
 
       temp2 = read_object(scan->contains, VIRTUAL);
-      cost = ((temp2) ? (scan->quant * temp2->obj_flags.cost) : 0) +
-             temp1->obj_flags.cost;
+      cost =
+        (((temp2) != nullptr) ? (scan->quant * temp2->obj_flags.cost) : 0) +
+        temp1->obj_flags.cost;
       cost *= 9;
       cost /= 10;
       cost++;
-      if (temp2) {
+      if (temp2 != nullptr) {
         extract_obj(temp2);
       }
 
@@ -2157,10 +2160,10 @@ int andy_wilcox(struct char_data* ch, int cmd, const char* arg) {
         obj_to_char(temp1, ch);
         GET_GOLD(ch) -= cost;
         act("$N buys a $p from $n", 0, andy, temp1, ch, TO_NOTVICT);
-        if (scan->actflag & ACT_SNICKER) {
+        if ((scan->actflag & ACT_SNICKER) != 0) {
           act("$n snickers softly.", 0, andy, nullptr, ch, TO_ROOM);
         } else {
-          act((scan->actflag & ACT_OVER_21)
+          act(((scan->actflag & ACT_OVER_21) != 0)
                 ? "$n tells you 'Drink in good health' and gives you $p"
                 : "$n tells you 'Enjoy' and gives you $p",
             0, andy, temp1, ch, TO_VICT);
@@ -2173,10 +2176,11 @@ int andy_wilcox(struct char_data* ch, int cmd, const char* arg) {
       act("$n says 'We have", 0, andy, nullptr, ch, TO_VICT);
       for (scan = sold_here; scan->container >= 0; scan++) {
         temp1 = read_object(scan->container, VIRTUAL);
-        temp2 =
-          (scan->contains) ? read_object(scan->contains, VIRTUAL) : nullptr;
-        cost = (temp2 ? (scan->quant * temp2->obj_flags.cost) : 0) +
-               temp1->obj_flags.cost;
+        temp2 = ((scan->contains) != 0) ? read_object(scan->contains, VIRTUAL)
+                                        : nullptr;
+        cost =
+          ((temp2 != nullptr) ? (scan->quant * temp2->obj_flags.cost) : 0) +
+          temp1->obj_flags.cost;
         cost *= 9;
         cost /= 10;
         cost++;
@@ -2184,7 +2188,7 @@ int andy_wilcox(struct char_data* ch, int cmd, const char* arg) {
           cost);
         send_to_char(buf, ch);
         extract_obj(temp1);
-        if (temp2) {
+        if (temp2 != nullptr) {
           extract_obj(temp2);
         }
       }
@@ -2217,12 +2221,13 @@ int eric_johnson(struct char_data* ch, int cmd, const char* arg) {
 
   eric = nullptr;
 
-  if (check_soundproof(ch)) {
+  if (check_soundproof(ch) != 0) {
     return 0;
   }
 
   eric = FindMobInRoomWithFunction(ch->in_room, eric_johnson);
-  for (temp_char = real_roomp(ch->in_room)->people; (!eric) && (temp_char);
+  for (temp_char = real_roomp(ch->in_room)->people;
+    (eric == nullptr) && ((temp_char) != nullptr);
     temp_char = temp_char->next_in_room) {
     if (IS_MOB(temp_char)) {
       if (mob_index[temp_char->nr].func.mob_f == eric_johnson) {
@@ -2236,16 +2241,16 @@ int eric_johnson(struct char_data* ch, int cmd, const char* arg) {
       return 0; /* prevent recursion when eric wants to move */
     }
 
-    if (!fighting && ch->specials.fighting) {
+    if ((fighting == 0) && (ch->specials.fighting != nullptr)) {
       act("$n says 'What the fuck?'", 0, eric, nullptr, nullptr, TO_ROOM);
       fighting = 1;
     }
-    if (fighting && !ch->specials.fighting) {
+    if ((fighting != 0) && (ch->specials.fighting == nullptr)) {
       act("$n says 'I wonder what their problem was.'", 0, eric, nullptr,
         nullptr, TO_ROOM);
       fighting = 0;
     }
-    if (fighting) {
+    if (fighting != 0) {
       struct char_data* target = eric->specials.fighting;
       act("$n yells for help.", 0, eric, nullptr, nullptr, TO_ROOM);
       act("$n throws some nasty judo on $N.", 0, eric, nullptr, target,
@@ -2253,7 +2258,7 @@ int eric_johnson(struct char_data* ch, int cmd, const char* arg) {
       act("$n throws some nasty judo on you.", 0, eric, nullptr, target,
         TO_VICT);
       damage(eric, target, dice(2, 4), TYPE_HIT);
-      if (!saves_spell(target, SAVING_SPELL)) {
+      if (saves_spell(target, SAVING_SPELL) == 0) {
         struct affected_type af;
         af.type = SPELL_SLEEP;
         af.duration = 2;
@@ -2261,10 +2266,10 @@ int eric_johnson(struct char_data* ch, int cmd, const char* arg) {
         af.location = APPLY_NONE;
         af.bitvector = AFF_SLEEP;
         affect_join(target, &af, 0, 0);
-        if (target->specials.fighting) {
+        if (target->specials.fighting != nullptr) {
           stop_fighting(target);
         }
-        if (eric->specials.fighting) {
+        if (eric->specials.fighting != nullptr) {
           stop_fighting(eric);
         }
         act("$N is out cold.", 0, eric, nullptr, target, TO_NOTVICT);
@@ -2444,7 +2449,7 @@ int eric_johnson(struct char_data* ch, int cmd, const char* arg) {
         static const char* shopping_list[] = {"guinness", "harp", "sierra",
           "2.harp", nullptr};
 
-        for (temp_char = character_list; temp_char;
+        for (temp_char = character_list; temp_char != nullptr;
           temp_char = temp_char->next) {
           if (IS_MOB(temp_char)) {
             if (mob_index[temp_char->nr].func.mob_f == andy_wilcox) {
@@ -2474,7 +2479,7 @@ int eric_johnson(struct char_data* ch, int cmd, const char* arg) {
             go_direction(eric, dir);
           }
         } else {
-          for (scan = shopping_list; *scan; scan++) {
+          for (scan = shopping_list; *scan != nullptr; scan++) {
             if (nullptr == get_obj_in_list_vis(eric, *scan, eric->carrying)) {
               const char* s = nullptr;
               s = (scan[0][1] == '.') ? scan[0] + 2 : scan[0];
@@ -2645,17 +2650,17 @@ static void exec_social(struct char_data* npc, char* cmd, int next_line,
 
     case 'c': /* Find char in room */
       *thing = get_char_room_vis(npc, cmd + 1);
-      ok = (*thing != nullptr);
+      ok = static_cast<char>(*thing != nullptr);
       break;
 
     case 'o': /* Find object in room */
       *thing =
         get_obj_in_list_vis(npc, cmd + 1, real_roomp(npc->in_room)->contents);
-      ok = (*thing != nullptr);
+      ok = static_cast<char>(*thing != nullptr);
       break;
 
     case 'r': /* Test if in a certain room */
-      ok = (npc->in_room == atoi(cmd + 1));
+      ok = static_cast<char>(npc->in_room == atoi(cmd + 1));
       break;
 
     case 'O': /* Open something */
@@ -2684,7 +2689,7 @@ static void exec_social(struct char_data* npc, char* cmd, int next_line,
       break;
   } /* End Switch */
 
-  if (ok) {
+  if (ok != 0) {
     (*cur_line)++;
   } else {
     (*cur_line) += next_line;
@@ -2722,7 +2727,7 @@ int sheriff(struct char_data* ch, int cmd, const char* arg) {
   char buff[MAX_STRING_LENGTH];
   gun = ch->equipment[HOLD];
 
-  if (cmd || !AWAKE(ch)) {
+  if ((cmd != 0) || !AWAKE(ch)) {
     return 0;
   }
 
@@ -2730,11 +2735,11 @@ int sheriff(struct char_data* ch, int cmd, const char* arg) {
     return 0;
   }
 
-  if (!gun || gun->obj_flags.type_flag != ITEM_FIREWEAPON) {
+  if ((gun == nullptr) || gun->obj_flags.type_flag != ITEM_FIREWEAPON) {
     return 0;
   }
 
-  if (ch->specials.fighting &&
+  if ((ch->specials.fighting != nullptr) &&
       (ch->specials.fighting->in_room == ch->in_room)) {
     if (gun->obj_flags.value[3] >= 1) {
       act("$n shouts '$N is a bloody coward!'", 1, ch, nullptr,
@@ -2760,7 +2765,7 @@ int bow_shooter(struct char_data* ch, int cmd, const char* arg) {
   char buf2[MAX_STRING_LENGTH];
   bow = ch->equipment[HOLD];
 
-  if (cmd || !AWAKE(ch)) {
+  if ((cmd != 0) || !AWAKE(ch)) {
     return 0;
   }
 
@@ -2768,11 +2773,11 @@ int bow_shooter(struct char_data* ch, int cmd, const char* arg) {
     return 0;
   }
 
-  if (!bow || bow->obj_flags.type_flag != ITEM_BOW) {
+  if ((bow == nullptr) || bow->obj_flags.type_flag != ITEM_BOW) {
     return 0;
   }
 
-  if (ch->specials.fighting &&
+  if ((ch->specials.fighting != nullptr) &&
       (ch->specials.fighting->in_room == ch->in_room)) {
     if (bow->obj_flags.value[3] >= 1) {
       act("$n shouts '$N deserves to die!'", 1, ch, nullptr,
@@ -2792,7 +2797,7 @@ int bow_shooter(struct char_data* ch, int cmd, const char* arg) {
 }
 
 int snake(struct char_data* ch, int cmd, const char* arg) {
-  if (cmd || !AWAKE(ch)) {
+  if ((cmd != 0) || !AWAKE(ch)) {
     return 0;
   }
 
@@ -2800,7 +2805,7 @@ int snake(struct char_data* ch, int cmd, const char* arg) {
     return 0;
   }
 
-  if (ch->specials.fighting &&
+  if ((ch->specials.fighting != nullptr) &&
       (ch->specials.fighting->in_room == ch->in_room)) {
     act("$n poisons $N!", 1, ch, nullptr, ch->specials.fighting, TO_NOTVICT);
     act("$n poisons you!", 1, ch, nullptr, ch->specials.fighting, TO_VICT);
@@ -2828,11 +2833,11 @@ static int ninja_master(struct char_data* ch, int cmd, const char* arg) {
     return 0;
   }
 
-  if (!ch->skills) {
+  if (ch->skills == nullptr) {
     return 0;
   }
 
-  if (check_soundproof(ch)) {
+  if (check_soundproof(ch) != 0) {
     return 0;
   }
 
@@ -2842,7 +2847,7 @@ static int ninja_master(struct char_data* ch, int cmd, const char* arg) {
 
   if ((cmd == 164) || (cmd == 170)) {
     /* So far, just track */
-    if (!arg || (strlen(arg) == 0)) {
+    if ((arg == nullptr) || (strlen(arg) == 0)) {
       sprintf(buf, " track:   %s\n\r",
         how_good(ch->skills[SKILL_HUNT].learned));
       send_to_char(buf, ch);
@@ -2866,16 +2871,16 @@ static int ninja_master(struct char_data* ch, int cmd, const char* arg) {
       case 2:
         sk_num = SKILL_DISARM;
         mult = 1;
-        if (HasClass(ch, CLASS_MAGIC_USER)) {
+        if (HasClass(ch, CLASS_MAGIC_USER) != 0) {
           mult = 4;
         }
-        if (HasClass(ch, CLASS_CLERIC)) {
+        if (HasClass(ch, CLASS_CLERIC) != 0) {
           mult = 3;
         }
-        if (HasClass(ch, CLASS_THIEF)) {
+        if (HasClass(ch, CLASS_THIEF) != 0) {
           mult = 2;
         }
-        if (HasClass(ch, CLASS_WARRIOR)) {
+        if (HasClass(ch, CLASS_WARRIOR) != 0) {
           mult = 1;
         }
         charge *= mult;
@@ -2933,7 +2938,7 @@ static int has_object(struct char_data* ch, int ob_num) {
   found = 0;
 
   for (j = 0; j < MAX_WEAR; j++) {
-    if (ch->equipment[j]) {
+    if (ch->equipment[j] != nullptr) {
       found += RecCompObjNum(ch->equipment[j], ob_num);
     }
   }
@@ -2943,7 +2948,7 @@ static int has_object(struct char_data* ch, int ob_num) {
   }
 
   /* carrying  */
-  for (i = ch->carrying; i; i = i->next_content) {
+  for (i = ch->carrying; i != nullptr; i = i->next_content) {
     found += RecCompObjNum(i, ob_num);
   }
 
@@ -2956,19 +2961,19 @@ static int has_object(struct char_data* ch, int ob_num) {
 #define PG_SHIELD 25100
 
 int PaladinGuildGuard(struct char_data* ch, int cmd, const char* arg) {
-  if (cmd || !AWAKE(ch)) {
+  if ((cmd != 0) || !AWAKE(ch)) {
     return 0;
   }
 
-  if (!cmd) {
-    if (ch->specials.fighting) {
+  if (cmd == 0) {
+    if (ch->specials.fighting != nullptr) {
       fighter(ch, cmd, arg);
     }
   } else if (cmd >= 1 && cmd <= 6) {
     if (cmd == 4) {
       return 0; /* can always go west */
     }
-    if (!has_object(ch, PG_SHIELD)) {
+    if (has_object(ch, PG_SHIELD) == 0) {
       send_to_char("The guard shakes his head, and blocks your way.\n\r", ch);
       act("The guard shakes his head, and blocks $n's way.", 1, ch, nullptr,
         nullptr, TO_ROOM);
@@ -2979,12 +2984,12 @@ int PaladinGuildGuard(struct char_data* ch, int cmd, const char* arg) {
 }
 
 int AbyssGateKeeper(struct char_data* ch, int cmd, const char* arg) {
-  if (cmd || !AWAKE(ch)) {
+  if ((cmd != 0) || !AWAKE(ch)) {
     return 0;
   }
 
-  if (!cmd) {
-    if (ch->specials.fighting) {
+  if (cmd == 0) {
+    if (ch->specials.fighting != nullptr) {
       fighter(ch, cmd, arg);
     }
   } else if ((cmd >= 1 && cmd <= 6) && (!IS_IMMORTAL(ch))) {
@@ -3000,7 +3005,7 @@ int AbyssGateKeeper(struct char_data* ch, int cmd, const char* arg) {
 }
 
 int blink(struct char_data* ch, int cmd, const char* arg) {
-  if (cmd || !AWAKE(ch)) {
+  if ((cmd != 0) || !AWAKE(ch)) {
     return 0;
   }
 
@@ -3013,14 +3018,14 @@ int blink(struct char_data* ch, int cmd, const char* arg) {
 }
 
 int MidgaardCitizen(struct char_data* ch, int cmd, const char* arg) {
-  if (cmd || !AWAKE(ch)) {
+  if ((cmd != 0) || !AWAKE(ch)) {
     return 0;
   }
 
-  if (ch->specials.fighting) {
+  if (ch->specials.fighting != nullptr) {
     fighter(ch, cmd, arg);
 
-    if (check_soundproof(ch)) {
+    if (check_soundproof(ch) != 0) {
       return 0;
     }
 
@@ -3031,7 +3036,7 @@ int MidgaardCitizen(struct char_data* ch, int cmd, const char* arg) {
         TO_ROOM);
     }
 
-    if (ch->specials.fighting) {
+    if (ch->specials.fighting != nullptr) {
       CallForGuard(ch, ch->specials.fighting, 3, MIDGAARD);
     }
 
@@ -3043,13 +3048,13 @@ int MidgaardCitizen(struct char_data* ch, int cmd, const char* arg) {
 int ghoul(struct char_data* ch, int cmd, const char* arg) {
   struct char_data* tar = nullptr;
 
-  if (cmd || !AWAKE(ch)) {
+  if ((cmd != 0) || !AWAKE(ch)) {
     return 0;
   }
 
   tar = ch->specials.fighting;
 
-  if (tar && (tar->in_room == ch->in_room)) {
+  if ((tar != nullptr) && (tar->in_room == ch->in_room)) {
     if ((!IS_AFFECTED(tar, AFF_PROTECT_EVIL)) &&
         (!IS_AFFECTED(tar, AFF_SANCTUARY))) {
       act("$n touches $N!", 1, ch, nullptr, tar, TO_NOTVICT);
@@ -3067,7 +3072,7 @@ int CarrionCrawler(struct char_data* ch, int cmd, const char* arg) {
   struct char_data* tar = nullptr;
   int i = 0;
 
-  if (cmd || !AWAKE(ch)) {
+  if ((cmd != 0) || !AWAKE(ch)) {
     return 0;
   }
 
@@ -3076,7 +3081,7 @@ int CarrionCrawler(struct char_data* ch, int cmd, const char* arg) {
       tar = FindVictim(ch);
     }
 
-    if (tar && (tar->in_room == ch->in_room)) {
+    if ((tar != nullptr) && (tar->in_room == ch->in_room)) {
       act("$n touches $N!", 1, ch, nullptr, tar, TO_NOTVICT);
       act("$n touches you!", 1, ch, nullptr, tar, TO_VICT);
       if (!IS_AFFECTED(tar, AFF_PARALYSIS)) {
@@ -3093,19 +3098,20 @@ int WizardGuard(struct char_data* ch, int cmd, const char* arg) {
   struct char_data* evil = nullptr;
   int max_evil = 0;
 
-  if (cmd || !AWAKE(ch)) {
+  if ((cmd != 0) || !AWAKE(ch)) {
     return 0;
   }
 
-  if (ch->specials.fighting) {
+  if (ch->specials.fighting != nullptr) {
     fighter(ch, cmd, arg);
     CallForGuard(ch, ch->specials.fighting, 9, MIDGAARD);
   }
   max_evil = 1000;
   evil = nullptr;
 
-  for (tch = real_roomp(ch->in_room)->people; tch; tch = tch->next_in_room) {
-    if (tch->specials.fighting) {
+  for (tch = real_roomp(ch->in_room)->people; tch != nullptr;
+    tch = tch->next_in_room) {
+    if (tch->specials.fighting != nullptr) {
       if ((GET_ALIGNMENT(tch) < max_evil) &&
           (IS_NPC(tch) || IS_NPC(tch->specials.fighting))) {
         max_evil = GET_ALIGNMENT(tch);
@@ -3114,9 +3120,9 @@ int WizardGuard(struct char_data* ch, int cmd, const char* arg) {
     }
   }
 
-  if (evil && (GET_ALIGNMENT(evil->specials.fighting) >= 0) &&
-      !check_peaceful(ch, "")) {
-    if (!check_soundproof(ch)) {
+  if ((evil != nullptr) && (GET_ALIGNMENT(evil->specials.fighting) >= 0) &&
+      (check_peaceful(ch, "") == 0)) {
+    if (check_soundproof(ch) == 0) {
       act("$n screams 'DEATH!!!!!!!!'", 0, ch, nullptr, nullptr, TO_ROOM);
     }
     hit(ch, evil, TYPE_UNDEFINED);
@@ -3126,17 +3132,17 @@ int WizardGuard(struct char_data* ch, int cmd, const char* arg) {
 }
 
 int vampire(struct char_data* ch, int cmd, const char* arg) {
-  if (cmd || !AWAKE(ch)) {
+  if ((cmd != 0) || !AWAKE(ch)) {
     return 0;
   }
 
-  if (ch->specials.fighting &&
+  if ((ch->specials.fighting != nullptr) &&
       (ch->specials.fighting->in_room == ch->in_room)) {
     act("$n touches $N!", 1, ch, nullptr, ch->specials.fighting, TO_NOTVICT);
     act("$n touches you!", 1, ch, nullptr, ch->specials.fighting, TO_VICT);
     cast_energy_drain(GetMaxLevel(ch), ch, "", SPELL_TYPE_SPELL,
       ch->specials.fighting, nullptr);
-    if (ch->specials.fighting &&
+    if ((ch->specials.fighting != nullptr) &&
         (ch->specials.fighting->in_room == ch->in_room)) {
       cast_energy_drain(GetMaxLevel(ch), ch, "", SPELL_TYPE_SPELL,
         ch->specials.fighting, nullptr);
@@ -3147,17 +3153,17 @@ int vampire(struct char_data* ch, int cmd, const char* arg) {
 }
 
 int arch_vampire(struct char_data* ch, int cmd, const char* arg) {
-  if (cmd || !AWAKE(ch)) {
+  if ((cmd != 0) || !AWAKE(ch)) {
     return 0;
   }
 
-  if (ch->specials.fighting &&
+  if ((ch->specials.fighting != nullptr) &&
       (ch->specials.fighting->in_room == ch->in_room)) {
     act("$n bites $N!", 1, ch, nullptr, ch->specials.fighting, TO_NOTVICT);
     act("$n bites you!", 1, ch, nullptr, ch->specials.fighting, TO_VICT);
     cast_energy_drain(GetMaxLevel(ch), ch, "", SPELL_TYPE_SPELL,
       ch->specials.fighting, nullptr);
-    if (ch->specials.fighting &&
+    if ((ch->specials.fighting != nullptr) &&
         (ch->specials.fighting->in_room == ch->in_room)) {
       cast_energy_drain(GetMaxLevel(ch), ch, "", SPELL_TYPE_SPELL,
         ch->specials.fighting, nullptr);
@@ -3168,11 +3174,11 @@ int arch_vampire(struct char_data* ch, int cmd, const char* arg) {
 }
 
 int wraith(struct char_data* ch, int cmd, const char* arg) {
-  if (cmd || !AWAKE(ch)) {
+  if ((cmd != 0) || !AWAKE(ch)) {
     return 0;
   }
 
-  if (ch->specials.fighting &&
+  if ((ch->specials.fighting != nullptr) &&
       (ch->specials.fighting->in_room == ch->in_room)) {
     act("$n touches $N!", 1, ch, nullptr, ch->specials.fighting, TO_NOTVICT);
     act("$n touches you!", 1, ch, nullptr, ch->specials.fighting, TO_VICT);
@@ -3184,17 +3190,17 @@ int wraith(struct char_data* ch, int cmd, const char* arg) {
 }
 
 int shadow(struct char_data* ch, int cmd, const char* arg) {
-  if (cmd || !AWAKE(ch)) {
+  if ((cmd != 0) || !AWAKE(ch)) {
     return 0;
   }
 
-  if (ch->specials.fighting &&
+  if ((ch->specials.fighting != nullptr) &&
       (ch->specials.fighting->in_room == ch->in_room)) {
     act("$n touches $N!", 1, ch, nullptr, ch->specials.fighting, TO_NOTVICT);
     act("$n touches you!", 1, ch, nullptr, ch->specials.fighting, TO_VICT);
     cast_chill_touch(GetMaxLevel(ch), ch, "", SPELL_TYPE_SPELL,
       ch->specials.fighting, nullptr);
-    if (ch->specials.fighting) {
+    if (ch->specials.fighting != nullptr) {
       cast_weakness(GetMaxLevel(ch), ch, "", SPELL_TYPE_SPELL,
         ch->specials.fighting, nullptr);
     }
@@ -3204,7 +3210,7 @@ int shadow(struct char_data* ch, int cmd, const char* arg) {
 }
 
 int geyser(struct char_data* ch, int cmd, const char* arg) {
-  if (cmd || !AWAKE(ch)) {
+  if ((cmd != 0) || !AWAKE(ch)) {
     return 0;
   }
 
@@ -3219,11 +3225,11 @@ int geyser(struct char_data* ch, int cmd, const char* arg) {
 int green_slime(struct char_data* ch, int cmd, const char* arg) {
   struct char_data* cons = nullptr;
 
-  if (cmd || !AWAKE(ch)) {
+  if ((cmd != 0) || !AWAKE(ch)) {
     return 0;
   }
 
-  for (cons = real_roomp(ch->in_room)->people; cons;
+  for (cons = real_roomp(ch->in_room)->people; cons != nullptr;
     cons = cons->next_in_room) {
     if ((!IS_NPC(cons)) && (GetMaxLevel(cons) < LOW_IMMORTAL)) {
       cast_green_slime(GetMaxLevel(ch), ch, "", SPELL_TYPE_SPELL, cons,
@@ -3246,7 +3252,7 @@ static struct breath_victim* choose_victims(struct char_data* ch,
   struct breath_victim* head = nullptr;
   struct breath_victim* temp = nullptr;
 
-  for (cons = real_roomp(ch->in_room)->people; cons;
+  for (cons = real_roomp(ch->in_room)->people; cons != nullptr;
     cons = cons->next_in_room) {
     temp = (struct breath_victim*)malloc(sizeof(*temp));
     temp->ch = cons;
@@ -3256,15 +3262,16 @@ static struct breath_victim* choose_victims(struct char_data* ch,
       temp->yesno = 1;
     } else if (ch == cons) {
       temp->yesno = 0;
-    } else if ((in_group(first_victim, cons) || cons == first_victim->master ||
+    } else if (((in_group(first_victim, cons) != 0) ||
+                 cons == first_victim->master ||
                  cons->master == first_victim) &&
-               (temp->yesno = (3 != dice(1, 5)))) {
+               ((temp->yesno = static_cast<int>(3 != dice(1, 5))) != 0)) {
       /* group members will get hit 4/5 times */
     } else if (cons->specials.fighting == ch) {
       /* people fighting the dragon get hit 4/5 times */
-      temp->yesno = (3 != dice(1, 5));
+      temp->yesno = static_cast<int>(3 != dice(1, 5));
     } else { /* bystanders get his 2/5 times */
-      temp->yesno = (dice(1, 5) < 3);
+      temp->yesno = static_cast<int>(dice(1, 5) < 3);
     }
   }
   return head;
@@ -3273,7 +3280,7 @@ static struct breath_victim* choose_victims(struct char_data* ch,
 static void free_victims(struct breath_victim* head) {
   struct breath_victim* temp = nullptr;
 
-  while (head) {
+  while (head != nullptr) {
     temp = head->next;
     free(head);
     head = temp;
@@ -3294,8 +3301,8 @@ int breath_weapon(struct char_data* ch, struct char_data* target, int mana_cost,
   act("$n rears back and inhales", 1, ch, nullptr, ch->specials.fighting,
     TO_ROOM);
   victim = 0;
-  for (scan = hitlist; scan; scan = scan->next) {
-    if (!scan->yesno || IS_IMMORTAL(scan->ch) ||
+  for (scan = hitlist; scan != nullptr; scan = scan->next) {
+    if ((scan->yesno == 0) || IS_IMMORTAL(scan->ch) ||
         scan->ch->in_room != ch->in_room) {
       continue;
     }
@@ -3303,11 +3310,11 @@ int breath_weapon(struct char_data* ch, struct char_data* target, int mana_cost,
     cast_fear(GetMaxLevel(ch), ch, "", SPELL_TYPE_SPELL, scan->ch, nullptr);
   }
 
-  if (func != nullptr && victim) {
+  if (func != nullptr && (victim != 0)) {
     act("$n Breathes...", 1, ch, nullptr, ch->specials.fighting, TO_ROOM);
 
-    for (scan = hitlist; scan; scan = scan->next) {
-      if (!scan->yesno || IS_IMMORTAL(scan->ch) ||
+    for (scan = hitlist; scan != nullptr; scan = scan->next) {
+      if ((scan->yesno == 0) || IS_IMMORTAL(scan->ch) ||
           scan->ch->in_room != ch->in_room) {
         continue;
       }
@@ -3331,7 +3338,7 @@ static void cast_breath(struct char_data* ch, struct char_data* victim,
 
   int dam = dice(min_dice, max_dice) + level;
 
-  if (saves_spell(victim, SAVING_BREATH)) {
+  if (saves_spell(victim, SAVING_BREATH) != 0) {
     dam >>= 1;
   }
 
@@ -3343,7 +3350,8 @@ static void cast_fire_breath(signed char level, struct char_data* ch, int type,
   cast_breath(ch, tar_ch, level, type, 1, 100, SPELL_FIRE_BREATH);
 
   struct obj_data* next_obj = nullptr;
-  for (struct obj_data* burn = tar_ch->carrying; burn; burn = next_obj) {
+  for (struct obj_data* burn = tar_ch->carrying; burn != nullptr;
+    burn = next_obj) {
     next_obj = burn->next_content;
     /* Only paper and wood items are vulnerable to fire */
     if (burn->obj_flags.type_flag != ITEM_SCROLL &&
@@ -3352,7 +3360,7 @@ static void cast_fire_breath(signed char level, struct char_data* ch, int type,
         burn->obj_flags.type_flag != ITEM_BOAT) {
       continue;
     }
-    if (!saves_spell(tar_ch, SAVING_BREATH)) {
+    if (saves_spell(tar_ch, SAVING_BREATH) == 0) {
       act("$o burns", 0, tar_ch, burn, nullptr, TO_CHAR);
       extract_obj(burn);
     }
@@ -3364,14 +3372,15 @@ static void cast_frost_breath(signed char level, struct char_data* ch, int type,
   cast_breath(ch, tar_ch, level, type, 10, 100, SPELL_FROST_BREATH);
 
   struct obj_data* next_obj = nullptr;
-  for (struct obj_data* frozen = tar_ch->carrying; frozen; frozen = next_obj) {
+  for (struct obj_data* frozen = tar_ch->carrying; frozen != nullptr;
+    frozen = next_obj) {
     next_obj = frozen->next_content;
     /* Only liquid containers are vulnerable to frost */
     if (frozen->obj_flags.type_flag != ITEM_DRINKCON &&
         frozen->obj_flags.type_flag != ITEM_POTION) {
       continue;
     }
-    if (!saves_spell(tar_ch, SAVING_BREATH)) {
+    if (saves_spell(tar_ch, SAVING_BREATH) == 0) {
       act("$o shatters.", 0, tar_ch, frozen, nullptr, TO_CHAR);
       extract_obj(frozen);
     }
@@ -3434,7 +3443,7 @@ static const struct breather breath_monsters[] = {
 };
 
 int BreathWeapon(struct char_data* ch, int cmd, const char* arg) {
-  if (cmd || !ch->specials.fighting ||
+  if ((cmd != 0) || (ch->specials.fighting == nullptr) ||
       (ch->specials.fighting->in_room != ch->in_room)) {
     return 0;
   }
@@ -3450,7 +3459,7 @@ int BreathWeapon(struct char_data* ch, int cmd, const char* arg) {
   }
 
   char buf[MAX_STRING_LENGTH];
-  if (!mob) {
+  if (mob == nullptr) {
     sprintf(buf, "monster %s tries to breath, but isn't listed.",
       ch->player.short_descr);
     vlog(buf);
@@ -3458,7 +3467,7 @@ int BreathWeapon(struct char_data* ch, int cmd, const char* arg) {
   }
 
   int count = 0;
-  while (count < MAX_BREATHS && mob->breaths[count]) {
+  while (count < MAX_BREATHS && (mob->breaths[count] != nullptr)) {
     count++;
   }
 
@@ -3560,7 +3569,7 @@ void do_breath(struct char_data* ch, const char* argument, int cmd) {
 
   (void)cmd;
 
-  if (check_peaceful(ch, "That wouldn't be nice at all.\n\r")) {
+  if (check_peaceful(ch, "That wouldn't be nice at all.\n\r") != 0) {
     return;
   }
 
@@ -3568,19 +3577,19 @@ void do_breath(struct char_data* ch, const char* argument, int cmd) {
 
   for (spell_type = FIRST_BREATH_WEAPON; spell_type <= LAST_BREATH_WEAPON;
     spell_type++) {
-    if (affected_by_spell(ch, spell_type)) {
+    if (affected_by_spell(ch, spell_type) != 0) {
       weapon = bweapons[spell_type - FIRST_BREATH_WEAPON];
       affect_from_char(ch, spell_type);
       break;
     }
   }
 
-  if (!weapon && IS_NPC(ch)) {
+  if ((weapon == nullptr) && IS_NPC(ch)) {
     const struct breather* scan = breath_monsters;
     while (scan->vnum >= 0) {
       if (scan->vnum == mob_index[ch->nr].vnum) {
         int count = 0;
-        while (count < MAX_BREATHS && scan->breaths[count]) {
+        while (count < MAX_BREATHS && (scan->breaths[count] != nullptr)) {
           count++;
         }
         if (count > 0) {
@@ -3605,7 +3614,7 @@ void do_breath(struct char_data* ch, const char* argument, int cmd) {
     }
   }
 
-  if (!weapon) {
+  if (weapon == nullptr) {
     send_to_char("You don't have a breath weapon.\n\r", ch);
     return;
   }
@@ -3615,8 +3624,8 @@ void do_breath(struct char_data* ch, const char* argument, int cmd) {
     return;
   }
 
-  if (!(victim = get_char_room_vis(ch, name))) {
-    if (ch->specials.fighting) {
+  if ((victim = get_char_room_vis(ch, name)) == nullptr) {
+    if (ch->specials.fighting != nullptr) {
       victim = ch->specials.fighting;
     } else {
       send_to_char("Breathe on whom?\n\r", ch);
@@ -3644,7 +3653,7 @@ int Leader(struct char_data* ch, int cmd, const char* arg) { return 0; }
 int thief(struct char_data* ch, int cmd, const char* arg) {
   struct char_data* cons = nullptr;
 
-  if (cmd || !AWAKE(ch)) {
+  if ((cmd != 0) || !AWAKE(ch)) {
     return 0;
   }
 
@@ -3652,7 +3661,7 @@ int thief(struct char_data* ch, int cmd, const char* arg) {
     return 0;
   }
 
-  for (cons = real_roomp(ch->in_room)->people; cons;
+  for (cons = real_roomp(ch->in_room)->people; cons != nullptr;
     cons = cons->next_in_room) {
     if ((!IS_NPC(cons)) && (GetMaxLevel(cons) < LOW_IMMORTAL) &&
         (number(1, 5) == 1)) {
@@ -3669,27 +3678,28 @@ static int astraller(struct char_data* ch, int cmd) {
   struct char_list* i = nullptr;
   char buf[200];
 
-  if (cmd || !AWAKE(ch)) {
+  if ((cmd != 0) || !AWAKE(ch)) {
     return 0;
   }
 
-  if (check_soundproof(ch)) {
+  if (check_soundproof(ch) != 0) {
     return 0;
   }
 
-  if (ch->specials.fighting) {
+  if (ch->specials.fighting != nullptr) {
     return 0;
   }
 
   if (IS_SET(ch->hatefield, HATE_CHAR)) {
-    if (ch->hates.clist) {
-      for (i = ch->hates.clist; i; i = i->next) {
-        if (i->op_ch) {
+    if (ch->hates.clist != nullptr) {
+      for (i = ch->hates.clist; i != nullptr; i = i->next) {
+        if (i->op_ch != nullptr) {
           targ = i->op_ch;
           break;
         }
-        for (d = descriptor_list; d; d = d->next) {
-          if (d->character && strcmp(GET_NAME(d->character), i->name) == 0) {
+        for (d = descriptor_list; d != nullptr; d = d->next) {
+          if ((d->character != nullptr) &&
+              strcmp(GET_NAME(d->character), i->name) == 0) {
             targ = d->character;
             break;
           }
@@ -3698,7 +3708,7 @@ static int astraller(struct char_data* ch, int cmd) {
     }
   }
 
-  if (targ) {
+  if (targ != nullptr) {
     spell_astral_walk(GetMaxLevel(ch), ch, targ, nullptr);
     sprintf(buf, "Nightcrawler says 'AHA %s, I have FOUND you!'\n\r",
       GET_NAME(targ));
@@ -3716,15 +3726,15 @@ static int summoner(struct char_data* ch, int cmd) {
   struct char_data* targ = nullptr;
   struct char_list* i = nullptr;
 
-  if (cmd || !AWAKE(ch)) {
+  if ((cmd != 0) || !AWAKE(ch)) {
     return 0;
   }
 
-  if (check_soundproof(ch)) {
+  if (check_soundproof(ch) != 0) {
     return 0;
   }
 
-  if (ch->specials.fighting) {
+  if (ch->specials.fighting != nullptr) {
     return 0;
   }
 
@@ -3737,14 +3747,14 @@ static int summoner(struct char_data* ch, int cmd) {
     **  check for hatreds
     */
     if (IS_SET(ch->hatefield, HATE_CHAR)) {
-      if (ch->hates.clist) {
-        for (i = ch->hates.clist; i; i = i->next) {
-          if (i->op_ch) { /* if there is a char_ptr */
+      if (ch->hates.clist != nullptr) {
+        for (i = ch->hates.clist; i != nullptr; i = i->next) {
+          if (i->op_ch != nullptr) { /* if there is a char_ptr */
             targ = i->op_ch;
             break;
           } /* look up the char_ptr */
-          for (d = descriptor_list; d; d = d->next) {
-            if ((d->connected == CON_PLYNG) && (d->character) &&
+          for (d = descriptor_list; d != nullptr; d = d->next) {
+            if ((d->connected == CON_PLYNG) && ((d->character) != nullptr) &&
                 (strcmp(GET_NAME(d->character), i->name) == 0)) {
               targ = d->character;
               break;
@@ -3753,7 +3763,7 @@ static int summoner(struct char_data* ch, int cmd) {
         }
       }
     }
-    if (targ) {
+    if (targ != nullptr) {
       act("$n utters the words 'Your ass is mine!'.", 1, ch, nullptr, nullptr,
         TO_ROOM);
       spell_summon(GetMaxLevel(ch), ch, targ, nullptr);
@@ -3771,12 +3781,12 @@ int nightcrawler(struct char_data* ch, int cmd, const char* arg) {
   struct char_data* vict = nullptr;
   char buf[200];
 
-  if (cmd || !AWAKE(ch) || IS_AFFECTED(ch, AFF_PARALYSIS)) {
+  if ((cmd != 0) || !AWAKE(ch) || IS_AFFECTED(ch, AFF_PARALYSIS)) {
     return 0;
   }
 
-  if (!ch->specials.fighting) {
-    if (!ch->desc) {
+  if (ch->specials.fighting == nullptr) {
+    if (ch->desc == nullptr) {
       return (astraller(ch, cmd));
     }
   }
@@ -3808,11 +3818,11 @@ static int check_nomagic(struct char_data* ch, char* msg_ch, char* msg_rm) {
   struct room_data* rp = nullptr;
 
   rp = real_roomp(ch->in_room);
-  if (rp && rp->room_flags & NO_MAGIC) {
-    if (msg_ch) {
+  if ((rp != nullptr) && ((rp->room_flags & NO_MAGIC) != 0)) {
+    if (msg_ch != nullptr) {
       send_to_char(msg_ch, ch);
     }
-    if (msg_rm) {
+    if (msg_rm != nullptr) {
       act(msg_rm, 0, ch, nullptr, nullptr, TO_ROOM);
     }
     return 1;
@@ -3826,9 +3836,9 @@ static int num_charmed_followers_in_room(struct char_data* ch) {
   struct room_data* rp = nullptr;
 
   rp = real_roomp(ch->in_room);
-  if (rp) {
+  if (rp != nullptr) {
     count = 0;
-    for (t = rp->people; t; t = t->next_in_room) {
+    for (t = rp->people; t != nullptr; t = t->next_in_room) {
       if (IS_AFFECTED(t, AFF_CHARM) && (t->master == ch)) {
         count++;
       }
@@ -3848,7 +3858,7 @@ static struct char_data* find_mob_diff_zone_same_race(struct char_data* ch) {
 
   num = number(1, 100);
 
-  for (t = character_list; t; t = t->next, num--) {
+  for (t = character_list; t != nullptr; t = t->next, num--) {
     if (GET_RACE(t) == GET_RACE(ch) && IS_NPC(t) && !IS_PC(t) && num == 0) {
       rp1 = real_roomp(ch->in_room);
       rp2 = real_roomp(t->in_room);
@@ -3866,17 +3876,17 @@ int magic_user(struct char_data* ch, int cmd, const char* arg) {
   signed char lspell = 0;
   char buf[200];
 
-  if (cmd || !AWAKE(ch) || IS_AFFECTED(ch, AFF_PARALYSIS)) {
+  if ((cmd != 0) || !AWAKE(ch) || IS_AFFECTED(ch, AFF_PARALYSIS)) {
     return 0;
   }
 
-  if (!ch->specials.fighting && !IS_PC(ch)) {
+  if ((ch->specials.fighting == nullptr) && !IS_PC(ch)) {
     SET_BIT(ch->player.char_class, CLASS_MAGIC_USER);
     if (GetMaxLevel(ch) < 25) {
       return 0;
     }
-    if (!ch->desc) {
-      if (summoner(ch, cmd)) {
+    if (ch->desc == nullptr) {
+      if (summoner(ch, cmd) != 0) {
         return 1;
       }
       if (num_charmed_followers_in_room(ch) < 5 &&
@@ -3891,7 +3901,7 @@ int magic_user(struct char_data* ch, int cmd, const char* arg) {
     return 0;
   }
 
-  if (!ch->specials.fighting) {
+  if (ch->specials.fighting == nullptr) {
     return 0;
   }
 
@@ -3908,11 +3918,11 @@ int magic_user(struct char_data* ch, int cmd, const char* arg) {
     }
   }
 
-  if (check_soundproof(ch)) {
+  if (check_soundproof(ch) != 0) {
     return 0;
   }
 
-  if (check_nomagic(ch, nullptr, nullptr)) {
+  if (check_nomagic(ch, nullptr, nullptr) != 0) {
     return 0;
   }
 
@@ -3920,11 +3930,11 @@ int magic_user(struct char_data* ch, int cmd, const char* arg) {
 
   vict = FindVictim(ch);
 
-  if (!vict) {
+  if (vict == nullptr) {
     vict = ch->specials.fighting;
   }
 
-  if (!vict) {
+  if (vict == nullptr) {
     return 0;
   }
 
@@ -3978,7 +3988,7 @@ int magic_user(struct char_data* ch, int cmd, const char* arg) {
         ch, nullptr, nullptr, TO_ROOM);
 
       vict = find_mob_diff_zone_same_race(ch);
-      if (vict) {
+      if (vict != nullptr) {
         cast_astral_walk(GetMaxLevel(ch), ch, "", SPELL_TYPE_SPELL, vict,
           nullptr);
         return 1;
@@ -4000,7 +4010,7 @@ int magic_user(struct char_data* ch, int cmd, const char* arg) {
 
   if (GET_HIT(ch) > (GET_MAX_HIT(ch) / 2) &&
       !IS_SET(ch->specials.act, ACT_AGGRESSIVE) &&
-      GetMaxLevel(vict) < GetMaxLevel(ch) && (number(0, 1))) {
+      GetMaxLevel(vict) < GetMaxLevel(ch) && ((number(0, 1)) != 0)) {
     /*
      **  Non-damaging case:
      */
@@ -4047,7 +4057,7 @@ int magic_user(struct char_data* ch, int cmd, const char* arg) {
       if (IS_AFFECTED(vict, AFF_CHARM)) {
         char buf[200];
 
-        if (!vict->specials.fighting) {
+        if (vict->specials.fighting == nullptr) {
           sprintf(buf, "%s kill %s", GET_NAME(vict),
             GET_NAME(ch->specials.fighting));
           do_order(ch, buf, 0);
@@ -4257,7 +4267,7 @@ int cleric(struct char_data* ch, int cmd, const char* arg) {
   signed char lspell = 0;
   signed char healperc = 0;
 
-  if (cmd || !AWAKE(ch)) {
+  if ((cmd != 0) || !AWAKE(ch)) {
     return 0;
   }
 
@@ -4268,11 +4278,11 @@ int cleric(struct char_data* ch, int cmd, const char* arg) {
     return 0;
   }
 
-  if (check_soundproof(ch)) {
+  if (check_soundproof(ch) != 0) {
     return 0;
   }
 
-  if (!ch->specials.fighting) {
+  if (ch->specials.fighting == nullptr) {
     return 0;
   }
 
@@ -4282,11 +4292,11 @@ int cleric(struct char_data* ch, int cmd, const char* arg) {
     vict = FindVictim(ch);
   }
 
-  if (!vict) {
+  if (vict == nullptr) {
     vict = ch->specials.fighting;
   }
 
-  if (!vict) {
+  if (vict == nullptr) {
     return 0;
   }
 
@@ -4404,7 +4414,9 @@ int cleric(struct char_data* ch, int cmd, const char* arg) {
 
   } /* do heal */
 
-  if (IS_AFFECTED(ch, AFF_BLIND) && (lspell >= 4) & (number(0, 3) == 0)) {
+  if (IS_AFFECTED(ch, AFF_BLIND) &&
+      ((static_cast<int>(lspell >= 4) & static_cast<int>(number(0, 3) == 0)) !=
+        0)) {
     act("$n utters the words 'Praise <Deity Name>, I can SEE!'.", 1, ch,
       nullptr, nullptr, TO_ROOM);
     cast_cure_blind(GetMaxLevel(ch), ch, "", SPELL_TYPE_SPELL, ch, nullptr);
@@ -4491,7 +4503,7 @@ static int check_for_blocked_move(struct char_data* ch, int cmd, int room,
   }
 
   if ((ch->in_room == room) && (cmd == dir + 1)) {
-    if (!HasClass(ch, char_class)) {
+    if (HasClass(ch, char_class) == 0) {
       act(buf2, 0, ch, nullptr, nullptr, TO_ROOM);
       send_to_char(buf, ch);
       return 1;
@@ -4501,8 +4513,8 @@ static int check_for_blocked_move(struct char_data* ch, int cmd, int room,
 }
 
 int guild_guard(struct char_data* ch, int cmd, const char* arg) {
-  if (!cmd) {
-    if (ch->specials.fighting) {
+  if (cmd == 0) {
+    if (ch->specials.fighting != nullptr) {
       return (fighter(ch, cmd, arg));
     }
   } else {
@@ -4535,11 +4547,11 @@ int guild_guard(struct char_data* ch, int cmd, const char* arg) {
 }
 
 int Inquisitor(struct char_data* ch, int cmd, const char* arg) {
-  if (cmd || !AWAKE(ch)) {
+  if ((cmd != 0) || !AWAKE(ch)) {
     return 0;
   }
 
-  if (ch->specials.fighting) {
+  if (ch->specials.fighting != nullptr) {
     return (fighter(ch, cmd, arg));
   }
   return 0;
@@ -4551,11 +4563,11 @@ int puff(struct char_data* ch, int cmd, const char* arg) {
   struct char_data* tmp_ch = nullptr;
   char buf[80];
 
-  if (cmd) {
+  if (cmd != 0) {
     return (0);
   }
 
-  if (check_soundproof(ch)) {
+  if (check_soundproof(ch) != 0) {
     return 0;
   }
 
@@ -4582,17 +4594,17 @@ int puff(struct char_data* ch, int cmd, const char* arg) {
         "gives you a long and passionate kiss.  It seems to last forever.", 0);
       return (1);
     case 7: {
-      for (i = character_list; i; i = i->next) {
+      for (i = character_list; i != nullptr; i = i->next) {
         if (!IS_NPC(i)) {
           if (number(0, 5) == 0) {
-            if (!strcmp(GET_NAME(i), "Brutius")) {
+            if (strcmp(GET_NAME(i), "Brutius") == 0) {
               do_shout(ch, "Brutius!  I have some files for you to copy!", 0);
-            } else if (!strcmp(GET_NAME(i), "Batopr")) {
+            } else if (strcmp(GET_NAME(i), "Batopr") == 0) {
               do_shout(ch, "Batopr!  Why have you been messing with the code?",
                 0);
-            } else if (!strcmp(GET_NAME(i), "Stargazer")) {
+            } else if (strcmp(GET_NAME(i), "Stargazer") == 0) {
               do_shout(ch, "Stargazer! Get back to work!!", 0);
-            } else if (!strcmp(GET_NAME(i), "Gonge")) {
+            } else if (strcmp(GET_NAME(i), "Gonge") == 0) {
               do_shout(ch, "Gonge! I heard you have done kiddie porn!", 0);
             } else if (GET_SEX(i) == SEX_MALE) {
               sprintf(buf, "Hey, %s, how about some MUDSex?", GET_NAME(i));
@@ -4630,7 +4642,7 @@ int puff(struct char_data* ch, int cmd, const char* arg) {
       do_say(ch, "Bad news.  Termites.", 0);
       return (1);
     case 13:
-      for (i = character_list; i; i = i->next) {
+      for (i = character_list; i != nullptr; i = i->next) {
         if (!IS_NPC(i)) {
           if (number(0, 15) == 0) {
             sprintf(buf, "%s shout I love Puff!", GET_NAME(i));
@@ -4661,7 +4673,7 @@ int puff(struct char_data* ch, int cmd, const char* arg) {
       do_say(ch, "Does he say 'Good morning citizens.'?", 0);
       return (0);
     case 20:
-      for (i = character_list; i; i = i->next) {
+      for (i = character_list; i != nullptr; i = i->next) {
         if (!IS_NPC(i)) {
           if (number(0, 15) == 0) {
             sprintf(buf, "Top of the morning to you %s!", GET_NAME(i));
@@ -4672,7 +4684,8 @@ int puff(struct char_data* ch, int cmd, const char* arg) {
       }
       break;
     case 21:
-      for (i = real_roomp(ch->in_room)->people; i; i = i->next_in_room) {
+      for (i = real_roomp(ch->in_room)->people; i != nullptr;
+        i = i->next_in_room) {
         if (!IS_NPC(i)) {
           if (number(0, 3) == 0) {
             sprintf(buf,
@@ -4685,7 +4698,8 @@ int puff(struct char_data* ch, int cmd, const char* arg) {
       }
       break;
     case 22:
-      for (i = real_roomp(ch->in_room)->people; i; i = i->next_in_room) {
+      for (i = real_roomp(ch->in_room)->people; i != nullptr;
+        i = i->next_in_room) {
         if (!IS_NPC(i)) {
           if (number(0, 3) == 0) {
             sprintf(buf, "Pardon me, %s, but do you have any Grey Poupon?",
@@ -4744,7 +4758,7 @@ int puff(struct char_data* ch, int cmd, const char* arg) {
       break;
     case 34:
       if (number(0, 5) == 0) {
-        for (i = character_list; i; i = i->next) {
+        for (i = character_list; i != nullptr; i = i->next) {
           if (mob_index[i->nr].func.mob_f == Inquisitor) {
             do_shout(ch, "I wasn't expecting the Spanish Inquisition!", 0);
             return 1;
@@ -4757,7 +4771,8 @@ int puff(struct char_data* ch, int cmd, const char* arg) {
       do_say(ch, "Are you crazy, is that your problem?", 0);
       return 1;
     case 36:
-      for (i = real_roomp(ch->in_room)->people; i; i = i->next_in_room) {
+      for (i = real_roomp(ch->in_room)->people; i != nullptr;
+        i = i->next_in_room) {
         if (!IS_NPC(i)) {
           if (number(0, 3) == 0) {
             sprintf(buf, "%s, do you 'Think I'm Going Bald'?", GET_NAME(i));
@@ -4774,7 +4789,7 @@ int puff(struct char_data* ch, int cmd, const char* arg) {
       do_say(ch, "Any questions?", 0);
       return 1;
     case 38:
-      for (i = character_list; i; i = i->next) {
+      for (i = character_list; i != nullptr; i = i->next) {
         if (!IS_NPC(i)) {
           if (number(0, 20) == 0) {
             if (i->in_room != NOWHERE) {
@@ -4841,7 +4856,7 @@ int puff(struct char_data* ch, int cmd, const char* arg) {
 }
 
 int regenerator(struct char_data* ch, int cmd, const char* arg) {
-  if (cmd) {
+  if (cmd != 0) {
     return 0;
   }
 
@@ -4856,7 +4871,7 @@ int regenerator(struct char_data* ch, int cmd, const char* arg) {
 }
 
 int mega_regenerator(struct char_data* ch, int cmd, const char* arg) {
-  if (cmd) {
+  if (cmd != 0) {
     return 0;
   }
 
@@ -4874,7 +4889,7 @@ int mega_regenerator(struct char_data* ch, int cmd, const char* arg) {
 int replicant(struct char_data* ch, int cmd, const char* arg) {
   struct char_data* mob = nullptr;
 
-  if (cmd) {
+  if (cmd != 0) {
     return 0;
   }
 
@@ -4900,25 +4915,25 @@ int replicant(struct char_data* ch, int cmd, const char* arg) {
 int Tytan(struct char_data* ch, int cmd, const char* arg) {
   struct char_data* vict = nullptr;
 
-  if (cmd || !AWAKE(ch)) {
+  if ((cmd != 0) || !AWAKE(ch)) {
     return 0;
   }
 
-  if (ch->specials.fighting) {
+  if (ch->specials.fighting != nullptr) {
     return (magic_user(ch, cmd, arg));
   }
-  if (!ch->act_ptr) { /* no state info */
+  if (ch->act_ptr == nullptr) { /* no state info */
     ch->act_ptr = (struct mob_act_data*)calloc(1, sizeof(struct mob_act_data));
   }
   switch ((*((int*)ch->act_ptr))) {
     case TYT_NONE:
-      if ((vict = FindVictim(ch))) {
+      if ((vict = FindVictim(ch)) != nullptr) {
         (*((int*)ch->act_ptr)) = TYT_CIT;
         SetHunting(ch, vict);
       }
       break;
     case TYT_CIT:
-      if (ch->specials.hunting) {
+      if (ch->specials.hunting != nullptr) {
         if (IS_SET(ch->specials.act, ACT_AGGRESSIVE)) {
           REMOVE_BIT(ch->specials.act, ACT_AGGRESSIVE);
         }
@@ -4931,7 +4946,7 @@ int Tytan(struct char_data* ch, int cmd, const char* arg) {
       }
       break;
     case TYT_WHAT:
-      if (ch->specials.hunting) {
+      if (ch->specials.hunting != nullptr) {
         if (ch->in_room == ch->specials.hunting->in_room) {
           act("What must we do?", 1, ch, nullptr, nullptr, TO_ROOM);
           (*((int*)ch->act_ptr)) = TYT_TELL;
@@ -4941,7 +4956,7 @@ int Tytan(struct char_data* ch, int cmd, const char* arg) {
       }
       break;
     case TYT_TELL:
-      if (ch->specials.hunting) {
+      if (ch->specials.hunting != nullptr) {
         if (ch->in_room == ch->specials.hunting->in_room) {
           act("Tell Us!  Command Us!", 1, ch, nullptr, nullptr, TO_ROOM);
           (*((int*)ch->act_ptr)) = TYT_HIT;
@@ -4951,9 +4966,9 @@ int Tytan(struct char_data* ch, int cmd, const char* arg) {
       }
       break;
     case TYT_HIT:
-      if (ch->specials.hunting) {
+      if (ch->specials.hunting != nullptr) {
         if (ch->in_room == ch->specials.hunting->in_room) {
-          if (!check_peaceful(ch, "The Tytan screams in anger")) {
+          if (check_peaceful(ch, "The Tytan screams in anger") == 0) {
             hit(ch, ch->specials.hunting, TYPE_UNDEFINED);
             if (!IS_SET(ch->specials.act, ACT_AGGRESSIVE)) {
               SET_BIT(ch->specials.act, ACT_AGGRESSIVE);
@@ -4977,13 +4992,13 @@ int Tytan(struct char_data* ch, int cmd, const char* arg) {
 int AbbarachDragon(struct char_data* ch, int cmd, const char* arg) {
   struct char_data* targ = nullptr;
 
-  if (cmd || !AWAKE(ch)) {
+  if ((cmd != 0) || !AWAKE(ch)) {
     return 0;
   }
 
-  if (!ch->specials.fighting) {
+  if (ch->specials.fighting == nullptr) {
     targ = FindAnyVictim(ch);
-    if (targ && !check_peaceful(ch, "")) {
+    if ((targ != nullptr) && (check_peaceful(ch, "") == 0)) {
       hit(ch, targ, TYPE_UNDEFINED);
       act("You have now payed the price of crossing.", 1, ch, nullptr, nullptr,
         TO_ROOM);
@@ -5005,7 +5020,7 @@ int fido(struct char_data* ch, int cmd, const char* arg) {
   struct room_data* rp = nullptr;
   char found = 0;
 
-  if (cmd || !AWAKE(ch)) {
+  if ((cmd != 0) || !AWAKE(ch)) {
     return 0;
   }
 
@@ -5013,11 +5028,11 @@ int fido(struct char_data* ch, int cmd, const char* arg) {
     return 0;
   }
 
-  for (v = rp->people; (v && (!found)); v = next) {
+  for (v = rp->people; ((v != nullptr) && (found == 0)); v = next) {
     next = v->next_in_room;
     if ((IS_NPC(v)) && (mob_index[v->nr].vnum == 100) &&
-        CAN_SEE(ch, v)) { /* is a zombie */
-      if (v->specials.fighting) {
+        (CAN_SEE(ch, v) != 0)) { /* is a zombie */
+      if (v->specials.fighting != nullptr) {
         stop_fighting(v);
       }
       make_corpse(v);
@@ -5026,11 +5041,11 @@ int fido(struct char_data* ch, int cmd, const char* arg) {
     }
   }
 
-  for (i = real_roomp(ch->in_room)->contents; i; i = next_r_obj) {
+  for (i = real_roomp(ch->in_room)->contents; i != nullptr; i = next_r_obj) {
     next_r_obj = i->next_content;
-    if (GET_ITEM_TYPE(i) == ITEM_CONTAINER && i->obj_flags.value[3]) {
+    if (GET_ITEM_TYPE(i) == ITEM_CONTAINER && (i->obj_flags.value[3] != 0)) {
       act("$n savagely devours a corpse.", 0, ch, nullptr, nullptr, TO_ROOM);
-      for (temp = i->contains; temp; temp = next_obj) {
+      for (temp = i->contains; temp != nullptr; temp = next_obj) {
         next_obj = temp->next_content;
         obj_from_obj(temp);
         obj_to_room(temp, ch->in_room);
@@ -5047,11 +5062,12 @@ int janitor(struct char_data* ch, int cmd, const char* arg) {
   struct obj_data* temp = nullptr;
   struct obj_data* next_obj = nullptr;
 
-  if (cmd || !AWAKE(ch)) {
+  if ((cmd != 0) || !AWAKE(ch)) {
     return 0;
   }
 
-  for (i = real_roomp(ch->in_room)->contents; i; i = i->next_content) {
+  for (i = real_roomp(ch->in_room)->contents; i != nullptr;
+    i = i->next_content) {
     if (IS_SET(i->obj_flags.wear_flags, ITEM_TAKE) &&
         ((i->obj_flags.type_flag == ITEM_DRINKCON) ||
           (i->obj_flags.cost <= 10))) {
@@ -5066,7 +5082,7 @@ int janitor(struct char_data* ch, int cmd, const char* arg) {
 }
 
 int tormentor(struct char_data* ch, int cmd, const char* arg) {
-  if (!cmd) {
+  if (cmd == 0) {
     return 0;
   }
 
@@ -5091,11 +5107,11 @@ int magneto(struct char_data* ch, int cmd, const char* arg) {
   int percent = 0;
   char buf[200];
 
-  if (cmd || !AWAKE(ch)) {
+  if ((cmd != 0) || !AWAKE(ch)) {
     return 0;
   }
 
-  if (!ch->specials.fighting) {
+  if (ch->specials.fighting == nullptr) {
     return 0;
   }
 
@@ -5103,11 +5119,11 @@ int magneto(struct char_data* ch, int cmd, const char* arg) {
 
   victim = FindVictim(ch);
 
-  if (!victim) {
+  if (victim == nullptr) {
     victim = ch->specials.fighting;
   }
 
-  if (!victim) {
+  if (victim == nullptr) {
     return 0;
   }
 
@@ -5135,28 +5151,28 @@ int magneto(struct char_data* ch, int cmd, const char* arg) {
         victim);
       send_to_char("Magneto makes you give him your equipment!.\n\r", victim);
 
-      if (weapon) {
+      if (weapon != nullptr) {
         do_remove(victim, weapon->name, 0);
         do_drop(victim, weapon->name, 0);
         sprintf(buf, "get all");
         command_interpreter(ch, buf);
         sprintf(buf, "wear all");
         command_interpreter(ch, buf);
-      } else if (held) {
+      } else if (held != nullptr) {
         do_remove(victim, held->name, 0);
         do_drop(victim, held->name, 0);
         sprintf(buf, "get all");
         command_interpreter(ch, buf);
         sprintf(buf, "wear all");
         command_interpreter(ch, buf);
-      } else if (finger) {
+      } else if (finger != nullptr) {
         do_remove(victim, finger->name, 0);
         do_drop(victim, finger->name, 0);
         sprintf(buf, "get all");
         command_interpreter(ch, buf);
         sprintf(buf, "wear all");
         command_interpreter(ch, buf);
-      } else if (neck) {
+      } else if (neck != nullptr) {
         do_remove(victim, neck->name, 0);
         do_drop(victim, neck->name, 0);
         sprintf(buf, "get all");
@@ -5180,11 +5196,11 @@ int RustMonster(struct char_data* ch, int cmd, const char* arg) {
   /*
   **   find a victim
   */
-  if (ch->specials.fighting) {
+  if (ch->specials.fighting != nullptr) {
     vict = ch->specials.fighting;
   } else {
     vict = FindVictim(ch);
-    if (!vict) {
+    if (vict == nullptr) {
       return 0;
     }
   }
@@ -5200,22 +5216,22 @@ int RustMonster(struct char_data* ch, int cmd, const char* arg) {
   **  helm
   */
 
-  if (vict->equipment[WIELD]) {
+  if (vict->equipment[WIELD] != nullptr) {
     t_item = vict->equipment[WIELD];
     t_pos = WIELD;
-  } else if (vict->equipment[WEAR_SHIELD]) {
+  } else if (vict->equipment[WEAR_SHIELD] != nullptr) {
     t_item = vict->equipment[WEAR_SHIELD];
     t_pos = WEAR_SHIELD;
-  } else if (vict->equipment[WEAR_BODY]) {
+  } else if (vict->equipment[WEAR_BODY] != nullptr) {
     t_item = vict->equipment[WEAR_BODY];
     t_pos = WEAR_BODY;
-  } else if (vict->equipment[WEAR_LEGS]) {
+  } else if (vict->equipment[WEAR_LEGS] != nullptr) {
     t_item = vict->equipment[WEAR_LEGS];
     t_pos = WEAR_LEGS;
-  } else if (vict->equipment[WEAR_ARMS]) {
+  } else if (vict->equipment[WEAR_ARMS] != nullptr) {
     t_item = vict->equipment[WEAR_ARMS];
     t_pos = WEAR_ARMS;
-  } else if (vict->equipment[WEAR_HEAD]) {
+  } else if (vict->equipment[WEAR_HEAD] != nullptr) {
     t_item = vict->equipment[WEAR_HEAD];
     t_pos = WEAR_HEAD;
   } else {
@@ -5224,11 +5240,11 @@ int RustMonster(struct char_data* ch, int cmd, const char* arg) {
 }
 
 int temple_labrynth_liar(struct char_data* ch, int cmd, const char* arg) {
-  if (cmd || !AWAKE(ch)) {
+  if ((cmd != 0) || !AWAKE(ch)) {
     return (0);
   }
 
-  if (check_soundproof(ch)) {
+  if (check_soundproof(ch) != 0) {
     return 0;
   }
 
@@ -5272,7 +5288,7 @@ int temple_labrynth_sentry(struct char_data* ch, int cmd, const char* arg) {
   struct char_data* tch = nullptr;
   int counter = 0;
 
-  if (cmd || !AWAKE(ch)) {
+  if ((cmd != 0) || !AWAKE(ch)) {
     return 0;
   }
 
@@ -5280,18 +5296,19 @@ int temple_labrynth_sentry(struct char_data* ch, int cmd, const char* arg) {
     return 0;
   }
 
-  if (!ch->specials.fighting) {
+  if (ch->specials.fighting == nullptr) {
     return 0;
   }
 
-  if (check_soundproof(ch)) {
+  if (check_soundproof(ch) != 0) {
     return 0;
   }
 
   /* Find a dude to do very evil things upon ! */
 
-  for (tch = real_roomp(ch->in_room)->people; tch; tch = tch->next_in_room) {
-    if (GetMaxLevel(tch) > 10 && CAN_SEE(ch, tch)) {
+  for (tch = real_roomp(ch->in_room)->people; tch != nullptr;
+    tch = tch->next_in_room) {
+    if (GetMaxLevel(tch) > 10 && (CAN_SEE(ch, tch) != 0)) {
       act("The sentry snaps out of his trance and ...", 1, ch, nullptr, nullptr,
         TO_ROOM);
       do_say(ch, "You will die for your insolence, pig-dog!", 0);
@@ -5322,19 +5339,20 @@ static int whirlwind(struct char_data* ch, int cmd) {
   if (ch->in_room == -1) {
     return 0;
   }
-  if (!ch->act_ptr) {
+  if (ch->act_ptr == nullptr) {
     ch->act_ptr = (struct mob_act_data*)calloc(1, sizeof(struct mob_act_data));
   }
   if (cmd == 0 && (*((int*)ch->act_ptr)) == WW_LOOSE) {
-    for (tmp = real_roomp(ch->in_room)->people; tmp; tmp = tmp->next_in_room) {
-      while (names[i]) {
-        if (!strcmp(GET_NAME(tmp), names[i]) &&
+    for (tmp = real_roomp(ch->in_room)->people; tmp != nullptr;
+      tmp = tmp->next_in_room) {
+      while (names[i] != nullptr) {
+        if ((strcmp(GET_NAME(tmp), names[i]) == 0) &&
             (*((int*)ch->act_ptr)) == WW_LOOSE) {
           /* start following */
-          if (circle_follow(ch, tmp)) {
+          if (circle_follow(ch, tmp) != 0) {
             return 0;
           }
-          if (ch->master) {
+          if (ch->master != nullptr) {
             stop_follower(ch);
           }
           add_follower(ch, tmp);
@@ -5343,7 +5361,7 @@ static int whirlwind(struct char_data* ch, int cmd) {
         i++;
       }
     }
-    if ((*((int*)ch->act_ptr)) == WW_LOOSE && !cmd) {
+    if ((*((int*)ch->act_ptr)) == WW_LOOSE && (cmd == 0)) {
       act("The $n suddenly dissispates into nothingness.", 0, ch, nullptr,
         nullptr, TO_ROOM);
       extract_char(ch);
@@ -5359,15 +5377,15 @@ static int whirlwind(struct char_data* ch, int cmd) {
 int NudgeNudge(struct char_data* ch, int cmd, const char* arg) {
   struct char_data* vict = nullptr;
 
-  if (cmd || !AWAKE(ch)) {
+  if ((cmd != 0) || !AWAKE(ch)) {
     return 0;
   }
 
-  if (ch->specials.fighting) {
+  if (ch->specials.fighting != nullptr) {
     return 0;
   }
 
-  if (!ch->act_ptr) {
+  if (ch->act_ptr == nullptr) {
     ch->act_ptr = (struct mob_act_data*)calloc(1, sizeof(struct mob_act_data));
   }
   switch ((*((int*)ch->act_ptr))) {
@@ -5376,19 +5394,19 @@ int NudgeNudge(struct char_data* ch, int cmd, const char* arg) {
       ** find a victim
       */
       vict = FindVictim(ch);
-      if (!vict) {
+      if (vict == nullptr) {
         return 0;
       }
       /* start following */
-      if (circle_follow(ch, vict)) {
+      if (circle_follow(ch, vict) != 0) {
         return 0;
       }
-      if (ch->master) {
+      if (ch->master != nullptr) {
         stop_follower(ch);
       }
       add_follower(ch, vict);
       (*((int*)ch->act_ptr)) = NN_FOLLOW;
-      if (!check_soundproof(ch)) {
+      if (check_soundproof(ch) == 0) {
         do_say(ch, "Good Evenin' Squire!", 0);
       }
       act("$n nudges you.", 0, ch, nullptr, nullptr, TO_CHAR);
@@ -5397,7 +5415,7 @@ int NudgeNudge(struct char_data* ch, int cmd, const char* arg) {
     case NN_FOLLOW:
       switch (number(0, 20)) {
         case 0:
-          if (!check_soundproof(ch)) {
+          if (check_soundproof(ch) == 0) {
             do_say(ch, "Is your wife a goer?  Know what I mean, eh?", 0);
           }
           act("$n nudges you.", 0, ch, nullptr, nullptr, TO_CHAR);
@@ -5412,12 +5430,12 @@ int NudgeNudge(struct char_data* ch, int cmd, const char* arg) {
           act("$n nudges $N.", 0, ch, nullptr, ch->master, TO_ROOM);
           act("$n nudges you.", 0, ch, nullptr, nullptr, TO_CHAR);
           act("$n nudges $N.", 0, ch, nullptr, ch->master, TO_ROOM);
-          if (!check_soundproof(ch)) {
+          if (check_soundproof(ch) == 0) {
             do_say(ch, "Say no more!  Say no MORE!", 0);
           }
           break;
         case 2:
-          if (!check_soundproof(ch)) {
+          if (check_soundproof(ch) == 0) {
             do_say(ch, "You been around, eh?", 0);
             do_say(ch, "...I mean you've ..... done it, eh?", 0);
           }
@@ -5427,7 +5445,7 @@ int NudgeNudge(struct char_data* ch, int cmd, const char* arg) {
           act("$n nudges $N.", 0, ch, nullptr, ch->master, TO_ROOM);
           break;
         case 3:
-          if (!check_soundproof(ch)) {
+          if (check_soundproof(ch) == 0) {
             do_say(ch, "A nod's as good as a wink to a blind bat, eh?", 0);
           }
           act("$n nudges you.", 0, ch, nullptr, nullptr, TO_CHAR);
@@ -5436,7 +5454,7 @@ int NudgeNudge(struct char_data* ch, int cmd, const char* arg) {
           act("$n nudges $N.", 0, ch, nullptr, ch->master, TO_ROOM);
           break;
         case 4:
-          if (!check_soundproof(ch)) {
+          if (check_soundproof(ch) == 0) {
             do_say(ch, "You're WICKED, eh!  WICKED!", 0);
           }
           act("$n winks at you.", 0, ch, nullptr, nullptr, TO_CHAR);
@@ -5445,12 +5463,12 @@ int NudgeNudge(struct char_data* ch, int cmd, const char* arg) {
           act("$n winks at $N.", 0, ch, nullptr, ch->master, TO_ROOM);
           break;
         case 5:
-          if (!check_soundproof(ch)) {
+          if (check_soundproof(ch) == 0) {
             do_say(ch, "Wink. Wink.", 0);
           }
           break;
         case 6:
-          if (!check_soundproof(ch)) {
+          if (check_soundproof(ch) == 0) {
             do_say(ch, "Nudge. Nudge.", 0);
           }
           break;
@@ -5466,7 +5484,7 @@ int NudgeNudge(struct char_data* ch, int cmd, const char* arg) {
       /*
       **  Stop following
       */
-      if (!check_soundproof(ch)) {
+      if (check_soundproof(ch) == 0) {
         do_say(ch, "Evening, Squire", 0);
       }
       stop_follower(ch);
@@ -5483,12 +5501,12 @@ int AGGRESSIVE(struct char_data* ch, int cmd, const char* arg) {
   struct char_data* i = nullptr;
   struct char_data* next = nullptr;
 
-  if (cmd || !AWAKE(ch)) {
+  if ((cmd != 0) || !AWAKE(ch)) {
     return 0;
   }
 
   if (ch->in_room > -1) {
-    for (i = real_roomp(ch->in_room)->people; i; i = next) {
+    for (i = real_roomp(ch->in_room)->people; i != nullptr; i = next) {
       next = i->next_in_room;
       if (i->nr != ch->nr) {
         if (!IS_IMMORTAL(i)) {
@@ -5501,14 +5519,14 @@ int AGGRESSIVE(struct char_data* ch, int cmd, const char* arg) {
 }
 
 int citizen(struct char_data* ch, int cmd, const char* arg) {
-  if (cmd || !AWAKE(ch)) {
+  if ((cmd != 0) || !AWAKE(ch)) {
     return 0;
   }
 
-  if (ch->specials.fighting) {
+  if (ch->specials.fighting != nullptr) {
     fighter(ch, cmd, arg);
 
-    if (check_soundproof(ch)) {
+    if (check_soundproof(ch) != 0) {
       return 0;
     }
 
@@ -5527,10 +5545,10 @@ int aunt_bee(struct char_data* ch, int cmd, const char* arg) {
   struct char_data* evil = nullptr;
   struct char_data* i = nullptr;
 
-  if (cmd || !AWAKE(ch)) {
+  if ((cmd != 0) || !AWAKE(ch)) {
     return utility_irritable(ch, cmd, arg, aunt_bee);
   }
-  if (ch->specials.fighting) {
+  if (ch->specials.fighting != nullptr) {
     if (number(0, 20) == 0) {
       do_shout(ch, "Help me! Help me! I am being attacked!!", 0);
     } else {
@@ -5551,14 +5569,14 @@ int cityguard(struct char_data* ch, int cmd, const char* arg) {
   int max_evil = 0;
   int lev = 0;
 
-  if (cmd || !AWAKE(ch)) {
+  if ((cmd != 0) || !AWAKE(ch)) {
     return 0;
   }
 
-  if (ch->specials.fighting) {
+  if (ch->specials.fighting != nullptr) {
     fighter(ch, cmd, arg);
 
-    if (!check_soundproof(ch)) {
+    if (check_soundproof(ch) == 0) {
       if (number(0, 20) == 0) {
         do_shout(ch, "To me, my fellows! I am in need of thy aid!", 0);
       } else {
@@ -5566,7 +5584,7 @@ int cityguard(struct char_data* ch, int cmd, const char* arg) {
           nullptr, TO_ROOM);
       }
 
-      if (ch->specials.fighting) {
+      if (ch->specials.fighting != nullptr) {
         CallForGuard(ch, ch->specials.fighting, 3, MIDGAARD);
       }
 
@@ -5577,32 +5595,33 @@ int cityguard(struct char_data* ch, int cmd, const char* arg) {
   max_evil = 1000;
   evil = nullptr;
 
-  if (check_peaceful(ch, "")) {
+  if (check_peaceful(ch, "") != 0) {
     return 0;
   }
 
-  for (tch = real_roomp(ch->in_room)->people; tch; tch = tch->next_in_room) {
+  for (tch = real_roomp(ch->in_room)->people; tch != nullptr;
+    tch = tch->next_in_room) {
     if ((IS_PC(tch)) &&
         (IS_SET(tch->specials.act, PLR_KILLER) ||
           IS_SET(tch->specials.act, PLR_OUTLAW)) &&
-        CAN_SEE(ch, tch)) {
+        (CAN_SEE(ch, tch) != 0)) {
       act("$n screams '$N is a CRIMINAL! All OUTLAWS must DIE!!'", 0, ch,
         nullptr, tch, TO_ROOM);
       hit(ch, tch, TYPE_UNDEFINED);
       return 1;
     }
 
-    if ((IS_NPC(tch)) && (IsUndead(tch)) && CAN_SEE(ch, tch)) {
+    if ((IS_NPC(tch)) && ((IsUndead(tch)) != 0) && (CAN_SEE(ch, tch) != 0)) {
       max_evil = -1000;
       evil = tch;
-      if (!check_soundproof(ch)) {
+      if (check_soundproof(ch) == 0) {
         act("$n screams 'EVIL!!!  BANZAI!  SPOOON!'", 0, ch, nullptr, nullptr,
           TO_ROOM);
       }
       hit(ch, evil, TYPE_UNDEFINED);
       return 1;
     }
-    if (tch->specials.fighting) {
+    if (tch->specials.fighting != nullptr) {
       if ((GET_ALIGNMENT(tch) < max_evil) &&
           (IS_NPC(tch) || IS_NPC(tch->specials.fighting))) {
         max_evil = GET_ALIGNMENT(tch);
@@ -5611,8 +5630,8 @@ int cityguard(struct char_data* ch, int cmd, const char* arg) {
     }
   }
 
-  if (evil && (GET_ALIGNMENT(evil->specials.fighting) >= 0)) {
-    if (!check_soundproof(ch)) {
+  if ((evil != nullptr) && (GET_ALIGNMENT(evil->specials.fighting) >= 0)) {
+    if (check_soundproof(ch) == 0) {
       act("$n screams 'PROTECT THE INNOCENT! BANZAI!!! CHARGE!!! SPOON!'", 0,
         ch, nullptr, nullptr, TO_ROOM);
     }
@@ -5629,19 +5648,21 @@ static int room_of_object(struct obj_data* obj) {
   if (obj->in_room != NOWHERE) {
     return obj->in_room;
   }
-  if (obj->carried_by) {
+  if (obj->carried_by != nullptr) {
     return obj->carried_by->in_room;
   }
-  if (obj->equipped_by) {
+  if (obj->equipped_by != nullptr) {
     return obj->equipped_by->in_room;
   }
-  if (obj->in_obj) {
+  if (obj->in_obj != nullptr) {
     return room_of_object(obj->in_obj);
   }
   return NOWHERE;
 }
 
-int is_target_room_p(int room, int tgt_room) { return room == tgt_room; }
+int is_target_room_p(int room, int tgt_room) {
+  return static_cast<int>(room == tgt_room);
+}
 
 int Ringwraith(struct char_data* ch, int cmd, const char* arg) {
   static char buf[256];
@@ -5652,11 +5673,11 @@ int Ringwraith(struct char_data* ch, int cmd, const char* arg) {
   int rnum = 0;
   int dir = 0;
 
-  if (!AWAKE(ch) || !IS_NPC(ch) || cmd) {
+  if (!AWAKE(ch) || !IS_NPC(ch) || (cmd != 0)) {
     return 0;
   }
 
-  if (ch->specials.fighting) {
+  if (ch->specials.fighting != nullptr) {
     fighter(ch, cmd, arg);
     return 0;
   }
@@ -5669,9 +5690,9 @@ int Ringwraith(struct char_data* ch, int cmd, const char* arg) {
   struct mob_act_ringwraith* wh = nullptr;
 
   /* does our ringwraith have his state info? */
-  if (!ch->act_ptr) {
+  if (ch->act_ptr == nullptr) {
     ch->act_ptr = (struct mob_act_data*)malloc(sizeof(struct mob_act_data));
-    if (!ch->act_ptr) {
+    if (ch->act_ptr == nullptr) {
       vlog("Unable to allocate memory for act_ptr in Ringwraith proc");
       return 0;
     }
@@ -5688,7 +5709,7 @@ int Ringwraith(struct char_data* ch, int cmd, const char* arg) {
   }
 
   /* is he currently tracking a ring */
-  if (!wh->ringnumber) {
+  if (wh->ringnumber == 0) {
     wh->chances = 0;
     wh->ringnumber = number(1, quantrings++);
   }
@@ -5724,7 +5745,7 @@ int Ringwraith(struct char_data* ch, int cmd, const char* arg) {
 
   /* the ring is in the same room! */
 
-  if ((victim = char_holding(ring))) {
+  if ((victim = char_holding(ring)) != nullptr) {
     if (victim == ch) {
       obj_from_char(ring);
       extract_obj(ring);
@@ -5734,7 +5755,7 @@ int Ringwraith(struct char_data* ch, int cmd, const char* arg) {
       switch (wh->chances) {
         case 0:
           do_wake(ch, GET_NAME(victim), 0);
-          if (!check_soundproof(ch)) {
+          if (check_soundproof(ch) == 0) {
             act("$n says '$N, give me The Ring'.", 0, ch, nullptr, victim,
               TO_ROOM);
           } else {
@@ -5747,14 +5768,14 @@ int Ringwraith(struct char_data* ch, int cmd, const char* arg) {
           if (IS_NPC(victim)) {
             act("$N quickly surrenders The Ring to $n.", 0, ch, nullptr, victim,
               TO_ROOM);
-            if (ring->carried_by) {
+            if (ring->carried_by != nullptr) {
               obj_from_char(ring);
-            } else if (ring->equipped_by) {
+            } else if (ring->equipped_by != nullptr) {
               unequip_char(victim, ring->eq_pos);
             }
             obj_to_char(ring, ch);
           } else {
-            if (!check_soundproof(ch)) {
+            if (check_soundproof(ch) == 0) {
               act("$n says '$N, give me The Ring *NOW*'.", 0, ch, nullptr,
                 victim, TO_ROOM);
             } else {
@@ -5767,13 +5788,13 @@ int Ringwraith(struct char_data* ch, int cmd, const char* arg) {
           return 1;
           break;
         default:
-          if (check_peaceful(ch, "Damn, he's in a safe spot.")) {
-            if (!check_soundproof(ch)) {
+          if (check_peaceful(ch, "Damn, he's in a safe spot.") != 0) {
+            if (check_soundproof(ch) == 0) {
               act("$n says 'You can't stay here forever, $N'.", 0, ch, nullptr,
                 victim, TO_ROOM);
             }
           } else {
-            if (!check_soundproof(ch)) {
+            if (check_soundproof(ch) == 0) {
               act("$n says 'I guess I'll just have to get it myself'.", 0, ch,
                 nullptr, victim, TO_ROOM);
             }
@@ -5782,7 +5803,7 @@ int Ringwraith(struct char_data* ch, int cmd, const char* arg) {
           break;
       }
     }
-  } else if (ring->in_obj) {
+  } else if (ring->in_obj != nullptr) {
     /* the ring is in an object */
     obj_from_obj(ring);
     obj_to_char(ring, ch);
@@ -5805,11 +5826,11 @@ static int warren_guard(struct char_data* ch, int cmd, const char* arg) {
   int max_good = 0;
   int lev = 0;
 
-  if (cmd || !AWAKE(ch)) {
+  if ((cmd != 0) || !AWAKE(ch)) {
     return 0;
   }
 
-  if (ch->specials.fighting) {
+  if (ch->specials.fighting != nullptr) {
     fighter(ch, cmd, arg);
     return 1;
   }
@@ -5817,12 +5838,13 @@ static int warren_guard(struct char_data* ch, int cmd, const char* arg) {
   max_good = -1000;
   good = nullptr;
 
-  if (check_peaceful(ch, "")) {
+  if (check_peaceful(ch, "") != 0) {
     return 0;
   }
 
-  for (tch = real_roomp(ch->in_room)->people; tch; tch = tch->next_in_room) {
-    if (tch->specials.fighting) {
+  for (tch = real_roomp(ch->in_room)->people; tch != nullptr;
+    tch = tch->next_in_room) {
+    if (tch->specials.fighting != nullptr) {
       if ((GET_ALIGNMENT(tch) > max_good) &&
           (IS_NPC(tch) || IS_NPC(tch->specials.fighting))) {
         max_good = GET_ALIGNMENT(tch);
@@ -5831,8 +5853,8 @@ static int warren_guard(struct char_data* ch, int cmd, const char* arg) {
     }
   }
 
-  if (good && (GET_ALIGNMENT(good->specials.fighting) <= 0)) {
-    if (!check_soundproof(ch)) {
+  if ((good != nullptr) && (GET_ALIGNMENT(good->specials.fighting) <= 0)) {
+    if (check_soundproof(ch) == 0) {
       act("$n screams 'DEATH TO GOODY-GOODIES!!!!'", 0, ch, nullptr, nullptr,
         TO_ROOM);
     }
@@ -5849,7 +5871,7 @@ static int zm_tired(struct char_data* zmaster) {
 
 static int zm_stunned_followers(struct char_data* zmaster) {
   struct follow_type* fwr = nullptr;
-  for (fwr = zmaster->followers; fwr; fwr = fwr->next) {
+  for (fwr = zmaster->followers; fwr != nullptr; fwr = fwr->next) {
     if (GET_POS(fwr->follower) == POSITION_STUNNED) {
       return 1;
     }
@@ -5860,7 +5882,7 @@ static int zm_stunned_followers(struct char_data* zmaster) {
 static void zm_init_combat(struct char_data* zmaster,
   struct char_data* target) {
   struct follow_type* fwr = nullptr;
-  for (fwr = zmaster->followers; fwr; fwr = fwr->next) {
+  for (fwr = zmaster->followers; fwr != nullptr; fwr = fwr->next) {
     if (IS_AFFECTED(fwr->follower, AFF_CHARM) &&
         fwr->follower->specials.fighting == nullptr &&
         fwr->follower->in_room == target->in_room) {
@@ -5877,8 +5899,8 @@ static void zm_init_combat(struct char_data* zmaster,
 static int zm_kill_fidos(struct char_data* zmaster) {
   struct char_data* fido_b = nullptr;
   fido_b = FindMobInRoomWithFunction(zmaster->in_room, fido);
-  if (fido_b) {
-    if (!check_soundproof(zmaster)) {
+  if (fido_b != nullptr) {
+    if (check_soundproof(zmaster) == 0) {
       act("$n shrilly screams 'Kill that carrion beast!'", 0, zmaster, nullptr,
         nullptr, TO_ROOM);
       zm_init_combat(zmaster, fido_b);
@@ -5890,18 +5912,18 @@ static int zm_kill_fidos(struct char_data* zmaster) {
 
 static int zm_kill_aggressor(struct char_data* zmaster) {
   struct follow_type* fwr = nullptr;
-  if (zmaster->specials.fighting) {
-    if (!check_soundproof(zmaster)) {
+  if (zmaster->specials.fighting != nullptr) {
+    if (check_soundproof(zmaster) == 0) {
       act("$n bellows 'Kill that mortal that dares lay hands on me!'", 0,
         zmaster, nullptr, nullptr, TO_ROOM);
       zm_init_combat(zmaster, zmaster->specials.fighting);
       return 1;
     }
   }
-  for (fwr = zmaster->followers; fwr; fwr = fwr->next) {
-    if (fwr->follower->specials.fighting &&
+  for (fwr = zmaster->followers; fwr != nullptr; fwr = fwr->next) {
+    if ((fwr->follower->specials.fighting != nullptr) &&
         IS_AFFECTED(fwr->follower, AFF_CHARM)) {
-      if (!check_soundproof(zmaster)) {
+      if (check_soundproof(zmaster) == 0) {
         act("$n bellows 'Assist your brethren, my loyal servants!'", 0, zmaster,
           nullptr, nullptr, TO_ROOM);
         zm_init_combat(zmaster, fwr->follower->specials.fighting);
@@ -5913,7 +5935,8 @@ static int zm_kill_aggressor(struct char_data* zmaster) {
 }
 
 static int named_object_on_ground(int room, char* c_data) {
-  return nullptr != get_obj_in_list(c_data, real_roomp(room)->contents);
+  return static_cast<int>(
+    nullptr != get_obj_in_list(c_data, real_roomp(room)->contents));
 }
 
 static const struct find_path_data find_corpse_on_ground = {
@@ -5936,21 +5959,21 @@ int zombie_master(struct char_data* ch, int cmd, const char* arg) {
     return 0;
   }
 
-  if (!check_peaceful(ch, "") &&
-      (zm_kill_fidos(zmaster) || zm_kill_aggressor(zmaster))) {
+  if ((check_peaceful(ch, "") == 0) &&
+      ((zm_kill_fidos(zmaster) != 0) || (zm_kill_aggressor(zmaster) != 0))) {
     do_stand(zmaster, "", -1);
     return 1;
   }
 
   switch (GET_POS(zmaster)) {
     case POSITION_RESTING:
-      if (!zm_tired(zmaster)) {
+      if (zm_tired(zmaster) == 0) {
         do_stand(zmaster, "", -1);
       }
       break;
     case POSITION_SITTING:
-      if (!zm_stunned_followers(zmaster)) {
-        if (!check_soundproof(ch)) {
+      if (zm_stunned_followers(zmaster) == 0) {
+        if (check_soundproof(ch) == 0) {
           act("$n says 'It took you long enough...'", 0, zmaster, nullptr,
             nullptr, TO_ROOM);
         }
@@ -5958,7 +5981,7 @@ int zombie_master(struct char_data* ch, int cmd, const char* arg) {
       }
       break;
     case POSITION_STANDING: {
-      if (zm_tired(zmaster)) {
+      if (zm_tired(zmaster) != 0) {
         do_rest(zmaster, "", -1);
         return 1;
       }
@@ -5966,16 +5989,16 @@ int zombie_master(struct char_data* ch, int cmd, const char* arg) {
       temp1 = get_obj_in_list_vis(zmaster, "corpse",
         real_roomp(zmaster->in_room)->contents);
 
-      if (temp1) {
+      if (temp1 != nullptr) {
         if (GET_MANA(zmaster) < ZM_MANA) {
           if (1 == dice(1, 20)) {
-            if (!check_soundproof(ch)) {
+            if (check_soundproof(ch) == 0) {
               act("$n says 'So many bodies, so little time' and sighs.", 0,
                 zmaster, nullptr, nullptr, TO_ROOM);
             }
           }
         } else {
-          if (!check_soundproof(ch)) {
+          if (check_soundproof(ch) == 0) {
             act(
               "$n says 'Wonderful, another loyal follower!' and grins "
               "maniacly.",
@@ -5989,7 +6012,7 @@ int zombie_master(struct char_data* ch, int cmd, const char* arg) {
         return 1;
       }
 
-      if (zm_stunned_followers(zmaster)) {
+      if (zm_stunned_followers(zmaster) != 0) {
         do_sit(zmaster, "", -1);
         return 1;
       }
@@ -6029,7 +6052,8 @@ int pet_shops(struct char_data* ch, int cmd, const char* arg) {
 
   if (cmd == 59) { /* List */
     send_to_char("Available pets are:\n\r", ch);
-    for (pet = real_roomp(pet_room)->people; pet; pet = pet->next_in_room) {
+    for (pet = real_roomp(pet_room)->people; pet != nullptr;
+      pet = pet->next_in_room) {
       sprintf(buf, "%8d - %s\n\r", 24 * GET_EXP(pet), pet->player.short_descr);
       send_to_char(buf, ch);
     }
@@ -6041,7 +6065,7 @@ int pet_shops(struct char_data* ch, int cmd, const char* arg) {
     only_argument(arg, pet_name);
     /* Pet_Name is for later use when I feel like it */
 
-    if (!(pet = get_char_room(buf, pet_room))) {
+    if ((pet = get_char_room(buf, pet_room)) == nullptr) {
       send_to_char("There is no such pet!\n\r", ch);
       return 1;
     }
@@ -6057,7 +6081,7 @@ int pet_shops(struct char_data* ch, int cmd, const char* arg) {
     GET_EXP(pet) = 0;
     SET_BIT(pet->specials.affected_by, AFF_CHARM);
 
-    if (*pet_name) {
+    if (*pet_name != 0) {
       sprintf(buf, "%s %s", pet->player.name, pet_name);
       free(pet->player.name);
       pet->player.name = strdup(buf);
@@ -6098,7 +6122,7 @@ int Fountain(struct char_data* ch, int cmd, const char* arg) {
     bits = generic_find(buf, FIND_OBJ_INV | FIND_OBJ_ROOM | FIND_OBJ_EQUIP, ch,
       &tmp_char, &obj);
 
-    if (!bits) {
+    if (bits == 0) {
       return 0;
     }
 
@@ -6131,7 +6155,7 @@ int Fountain(struct char_data* ch, int cmd, const char* arg) {
   if (cmd == 11) { /* drink */
     only_argument(arg, buf);
 
-    if (!is_abbrev(buf, "fountain") && !is_abbrev(buf, "water")) {
+    if ((is_abbrev(buf, "fountain") == 0) && (is_abbrev(buf, "water") == 0)) {
       return 0;
     }
 
@@ -6179,7 +6203,7 @@ int bank(struct char_data* ch, int cmd, const char* arg) {
 
   /*deposit*/
   if (cmd == 219) {
-    if (HasClass(ch, CLASS_MONK) && (GetMaxLevel(ch) < 40)) {
+    if ((HasClass(ch, CLASS_MONK) != 0) && (GetMaxLevel(ch) < 40)) {
       send_to_char("Your vows forbid you to retain personal wealth\n\r", ch);
       return 1;
     }
@@ -6208,7 +6232,7 @@ int bank(struct char_data* ch, int cmd, const char* arg) {
     /*withdraw*/
   }
   if (cmd == 220) {
-    if (HasClass(ch, CLASS_MONK) && (GetMaxLevel(ch) < 40)) {
+    if ((HasClass(ch, CLASS_MONK) != 0) && (GetMaxLevel(ch) < 40)) {
       send_to_char("Your vows forbid you to retain personal wealth\n\r", ch);
       return 1;
     }
@@ -6265,9 +6289,9 @@ static int pray_for_items(struct char_data* ch, int cmd) {
   gold = 0;
   found = 0;
 
-  for (tmp_obj = real_roomp(key_room)->contents; tmp_obj;
+  for (tmp_obj = real_roomp(key_room)->contents; tmp_obj != nullptr;
     tmp_obj = tmp_obj->next_content) {
-    for (ext = tmp_obj->ex_description; ext; ext = ext->next) {
+    for (ext = tmp_obj->ex_description; ext != nullptr; ext = ext->next) {
       if (str_cmp(buf, ext->keyword) == 0) {
         if (gold == 0) {
           gold = 1;
@@ -6286,7 +6310,7 @@ static int pray_for_items(struct char_data* ch, int cmd) {
     }
   }
 
-  if (found) {
+  if (found != 0) {
     GET_GOLD(ch) -= gold;
     GET_GOLD(ch) = MAX(0, GET_GOLD(ch));
     return 1;
@@ -6331,7 +6355,7 @@ int vorpal(struct char_data* victim, int cmd, const char* arg,
   num = number(1, percent);
 
   if ((num == 1) || (GET_HIT(victim) < 50)) {
-    if (IS_NPC(victim) || victim->desc) {
+    if (IS_NPC(victim) || (victim->desc != nullptr)) {
       if (IS_AFFECTED(ch, AFF_GROUP)) {
         group_gain(ch, victim);
       } else {
@@ -6378,9 +6402,9 @@ static int chalice(struct char_data* ch, int cmd, const char* arg) {
   switch (cmd) {
     case 10: /* get */
       chalice = get_obj_in_list_num(chl, real_roomp(ch->in_room)->contents);
-      if (!chalice || !CAN_SEE_OBJ(ch, chalice)) {
+      if ((chalice == nullptr) || !CAN_SEE_OBJ(ch, chalice)) {
         chalice = get_obj_in_list_num(achl, real_roomp(ch->in_room)->contents);
-        if (!chalice || !CAN_SEE_OBJ(ch, chalice)) {
+        if ((chalice == nullptr) || !CAN_SEE_OBJ(ch, chalice)) {
           return (0);
         }
       }
@@ -6396,12 +6420,12 @@ static int chalice(struct char_data* ch, int cmd, const char* arg) {
       return (1);
       break;
     case 67: /* put */
-      if (!(chalice = get_obj_in_list_num(chl, ch->carrying))) {
+      if ((chalice = get_obj_in_list_num(chl, ch->carrying)) == nullptr) {
         return (0);
       }
 
       argument_interpreter(arg, buf1, buf2);
-      if (!str_cmp(buf1, "chalice") && !str_cmp(buf2, "altar")) {
+      if ((str_cmp(buf1, "chalice") == 0) && (str_cmp(buf2, "altar") == 0)) {
         extract_obj(chalice);
         chalice = read_object(achl, VIRTUAL);
         obj_to_room(chalice, ch->in_room);
@@ -6410,8 +6434,8 @@ static int chalice(struct char_data* ch, int cmd, const char* arg) {
       return (1);
       break;
     case 176: /* pray */
-      if (!(chalice =
-              get_obj_in_list_num(achl, real_roomp(ch->in_room)->contents))) {
+      if ((chalice = get_obj_in_list_num(achl,
+             real_roomp(ch->in_room)->contents)) == nullptr) {
         return (0);
       }
 
@@ -6460,7 +6484,7 @@ int Donation(struct char_data* ch, int cmd, const char* arg) {
 
   tmp = one_argument(arg, check);
 
-  if (*check) {
+  if (*check != 0) {
     if (strncmp(check, "all", 3) == 0) {
       send_to_char("Now now, that would be greedy!\n\r", ch);
       return 1;
@@ -6578,8 +6602,8 @@ int mirror_room(struct char_data* ch, int cmd, const char* arg) {
 
   one_argument(arg, name);
 
-  if (*name) {
-    if (is_abbrev(name, "mirror")) {
+  if (*name != 0) {
+    if (is_abbrev(name, "mirror") != 0) {
       act("$n steps into the mirror and is tossed through!", 0, ch, nullptr,
         nullptr, TO_ROOM);
       char_from_room(ch);
@@ -6631,29 +6655,29 @@ int House(struct char_data* ch, int cmd, const char* arg) {
 static void fighter_move(struct char_data* ch) {
   int num = 0;
 
-  if (!ch->skills) {
+  if (ch->skills == nullptr) {
     SpaceForSkills(ch);
   }
   num = number(1, 4);
   if (num <= 2) {
-    if (!ch->skills[SKILL_BASH].learned) {
+    if (ch->skills[SKILL_BASH].learned == 0) {
       ch->skills[SKILL_BASH].learned = 10 + GetMaxLevel(ch) * 4;
     }
     do_bash(ch, GET_NAME(ch->specials.fighting), 0);
   } else if (num == 3) {
-    if (ch->equipment[WIELD]) {
-      if (!ch->skills[SKILL_DISARM].learned) {
+    if (ch->equipment[WIELD] != nullptr) {
+      if (ch->skills[SKILL_DISARM].learned == 0) {
         ch->skills[SKILL_DISARM].learned = 10 + GetMaxLevel(ch) * 4;
       }
       do_disarm(ch, GET_NAME(ch->specials.fighting), 0);
     } else {
-      if (!ch->skills[SKILL_DISARM].learned) {
+      if (ch->skills[SKILL_DISARM].learned == 0) {
         ch->skills[SKILL_DISARM].learned = 60 + GetMaxLevel(ch) * 4;
       }
       do_disarm(ch, GET_NAME(ch->specials.fighting), 0);
     }
   } else {
-    if (!ch->skills[SKILL_KICK].learned) {
+    if (ch->skills[SKILL_KICK].learned == 0) {
       ch->skills[SKILL_KICK].learned = 10 + GetMaxLevel(ch) * 4;
     }
     do_kick(ch, GET_NAME(ch->specials.fighting), 0);
@@ -6673,13 +6697,13 @@ static void fighter_move(struct char_data* ch) {
    large party to sweep the section. */
 
 int sisyphus(struct char_data* ch, int cmd, const char* arg) {
-  if (cmd) {
+  if (cmd != 0) {
     if (cmd <= 6 && cmd >= 1 && !IS_NPC(ch)) {
       send_to_char("Sisyphus looks at you\n\r", ch);
       if ((ch->in_room == IVORY_GATE) && (cmd == 4)) {
         if ((SISYPHUS_MAX_LEVEL < GetMaxLevel(ch)) &&
             (GetMaxLevel(ch) < LOW_IMMORTAL)) {
-          if (!check_soundproof(ch)) {
+          if (check_soundproof(ch) == 0) {
             act("Sisyphus tells you 'First you'll have to get past me.'", 1, ch,
               nullptr, nullptr, TO_CHAR);
           }
@@ -6691,7 +6715,7 @@ int sisyphus(struct char_data* ch, int cmd, const char* arg) {
     } /* cmd 1 - 6 */
     return 0;
   }
-  if (ch->specials.fighting) {
+  if (ch->specials.fighting != nullptr) {
     if ((GET_POS(ch) < POSITION_FIGHTING) && (GET_POS(ch) > POSITION_STUNNED)) {
       stand_up(ch);
     } else {
@@ -6704,11 +6728,11 @@ int sisyphus(struct char_data* ch, int cmd, const char* arg) {
 } /* end sisyphus */
 
 int jabberwocky(struct char_data* ch, int cmd, const char* arg) {
-  if (cmd) {
+  if (cmd != 0) {
     return 0;
   }
 
-  if (ch->specials.fighting) {
+  if (ch->specials.fighting != nullptr) {
     if ((GET_POS(ch) < POSITION_FIGHTING) && (GET_POS(ch) > POSITION_STUNNED)) {
       stand_up(ch);
     } else {
@@ -6720,10 +6744,10 @@ int jabberwocky(struct char_data* ch, int cmd, const char* arg) {
 }
 
 int flame(struct char_data* ch, int cmd, const char* arg) {
-  if (cmd) {
+  if (cmd != 0) {
     return 0;
   }
-  if (ch->specials.fighting) {
+  if (ch->specials.fighting != nullptr) {
     if ((GET_POS(ch) < POSITION_FIGHTING) && (GET_POS(ch) > POSITION_STUNNED)) {
       stand_up(ch);
     } else {
@@ -6735,13 +6759,13 @@ int flame(struct char_data* ch, int cmd, const char* arg) {
 }
 
 int banana(struct char_data* ch, int cmd, const char* arg) {
-  if (!cmd) {
+  if (cmd == 0) {
     return 0;
   }
 
   if ((cmd >= 1) && (cmd <= 6) && (GET_POS(ch) == POSITION_STANDING) &&
       (!IS_NPC(ch))) {
-    if (!saves_spell(ch, SAVING_PARA)) {
+    if (saves_spell(ch, SAVING_PARA) == 0) {
       act("$N tries to leave, but slips on a banana and falls.", 1, ch, nullptr,
         ch, TO_NOTVICT);
       act("As you try to leave, you slip on a banana.", 1, ch, nullptr, ch,
@@ -6758,23 +6782,23 @@ int paramedics(struct char_data* ch, int cmd, const char* arg) {
   struct char_data* vict = nullptr;
   struct char_data* most_hurt = nullptr;
 
-  if (!cmd) {
-    if (ch->specials.fighting) {
+  if (cmd == 0) {
+    if (ch->specials.fighting != nullptr) {
       return (cleric(ch, 0, ""));
     }
     if (GET_POS(ch) == POSITION_STANDING) {
       /* Find a dude to do good things upon ! */
 
       most_hurt = real_roomp(ch->in_room)->people;
-      for (vict = real_roomp(ch->in_room)->people; vict;
+      for (vict = real_roomp(ch->in_room)->people; vict != nullptr;
         vict = vict->next_in_room) {
         if (((float)GET_HIT(vict) / (float)hit_limit(vict) <
               (float)GET_HIT(most_hurt) / (float)hit_limit(most_hurt)) &&
-            (CAN_SEE(ch, vict))) {
+            ((CAN_SEE(ch, vict)) != 0)) {
           most_hurt = vict;
         }
       }
-      if (!most_hurt) {
+      if (most_hurt == nullptr) {
         return 0; /* nobody here */
       }
 
@@ -6786,7 +6810,7 @@ int paramedics(struct char_data* ch, int cmd, const char* arg) {
         return 1; /* not hurt enough */
       }
 
-      if (!check_soundproof(ch)) {
+      if (check_soundproof(ch) == 0) {
         if (number(0, 4) == 0) {
           if (most_hurt != ch) {
             act("$n looks at $N.", 1, ch, nullptr, most_hurt, TO_NOTVICT);
@@ -6829,15 +6853,15 @@ int delivery_elf(struct char_data* ch, int cmd, const char* arg) {
 #define ELF_RETURN_TOWER 5
 #define ELF_RETURN_HOME 6
 
-  if (cmd) {
+  if (cmd != 0) {
     return 0;
   }
 
-  if (ch->specials.fighting) {
+  if (ch->specials.fighting != nullptr) {
     return 0;
   }
 
-  if (!ch->act_ptr) {
+  if (ch->act_ptr == nullptr) {
     ch->act_ptr = (struct mob_act_data*)calloc(1, sizeof(struct mob_act_data));
   }
   switch ((*((int*)ch->act_ptr))) {
@@ -6958,7 +6982,7 @@ int delivery_elf(struct char_data* ch, int cmd, const char* arg) {
 int delivery_beast(struct char_data* ch, int cmd, const char* arg) {
   struct obj_data* o = nullptr;
 
-  if (cmd) {
+  if (cmd != 0) {
     return 0;
   }
 
@@ -6966,7 +6990,7 @@ int delivery_beast(struct char_data* ch, int cmd, const char* arg) {
     do_drop(ch, "all.loaf", 0);
     do_drop(ch, "all.biscuit", 0);
   } else if (time_info.hours < 2) {
-    if (number(0, 1)) {
+    if (number(0, 1) != 0) {
       o = read_object(3012, VIRTUAL);
       obj_to_char(o, ch);
     } else {
@@ -6986,19 +7010,19 @@ int Keftab(struct char_data* ch, int cmd, const char* arg) {
   int targ_item = 0;
   struct char_data* i = nullptr;
 
-  if (cmd) {
+  if (cmd != 0) {
     return 0;
   }
 
-  if (!ch->specials.hunting) {
+  if (ch->specials.hunting == nullptr) {
     /* find a victim */
 
-    for (i = character_list; i; i = i->next) {
+    for (i = character_list; i != nullptr; i = i->next) {
       if (!IS_NPC(ch)) {
         targ_item = SWORD_ANCIENTS;
         found = 0;
-        while (!found) {
-          if ((has_object(i, targ_item)) && (GetMaxLevel(i) < 30)) {
+        while (found == 0) {
+          if (((has_object(i, targ_item)) != 0) && (GetMaxLevel(i) < 30)) {
             AddHated(ch, i);
             SetHunting(ch, i);
             return 1;
@@ -7014,8 +7038,8 @@ int Keftab(struct char_data* ch, int cmd, const char* arg) {
   } /* check to make sure that the victim still has an item */
   found = 0;
   targ_item = SWORD_ANCIENTS;
-  while (!found) {
-    if (has_object(ch->specials.hunting, targ_item)) {
+  while (found == 0) {
+    if (has_object(ch->specials.hunting, targ_item) != 0) {
       return 0;
     }
     targ_item++;
@@ -7033,22 +7057,22 @@ int Keftab(struct char_data* ch, int cmd, const char* arg) {
 int StormGiant(struct char_data* ch, int cmd, const char* arg) {
   struct char_data* vict = nullptr;
 
-  if (cmd) {
+  if (cmd != 0) {
     return 0;
   }
 
-  if (ch->specials.fighting) {
+  if (ch->specials.fighting != nullptr) {
     if ((GET_POS(ch) < POSITION_FIGHTING) && (GET_POS(ch) > POSITION_STUNNED)) {
       stand_up(ch);
     } else {
-      if (number(0, 5)) {
+      if (number(0, 5) != 0) {
         fighter(ch, cmd, arg);
       } else {
         act("$n creates a lightning bolt", 1, ch, nullptr, nullptr, TO_ROOM);
         if ((vict = FindAHatee(ch)) == nullptr) {
           vict = FindVictim(ch);
         }
-        if (!vict) {
+        if (vict == nullptr) {
           return 0;
         }
         cast_lightning_bolt(GetMaxLevel(ch), ch, "", SPELL_TYPE_SPELL, vict,
@@ -7098,7 +7122,7 @@ static int get_damage(struct obj_data* w, struct char_data* ch) {
     check for immunity:
     */
   iave = ave;
-  if (ch->specials.fighting) {
+  if (ch->specials.fighting != nullptr) {
     iave = PreProcDam(ch->specials.fighting, ITEM_TYPE(w), iave);
     iave = WeaponCheck(ch, ch->specials.fighting, ITEM_TYPE(w), iave);
   }
@@ -7127,7 +7151,7 @@ static int get_hand_damage(struct char_data* ch) {
     check for immunity:
     */
   iave = ave;
-  if (ch->specials.fighting) {
+  if (ch->specials.fighting != nullptr) {
     iave = PreProcDam(ch->specials.fighting, TYPE_HIT, iave);
     iave = WeaponCheck(ch, ch->specials.fighting, TYPE_HIT, iave);
   }
@@ -7135,7 +7159,7 @@ static int get_hand_damage(struct char_data* ch) {
 }
 
 static int is_weapon(struct obj_data* o) {
-  return o->obj_flags.type_flag == ITEM_WEAPON;
+  return static_cast<int>(o->obj_flags.type_flag == ITEM_WEAPON);
 }
 
 static char find_a_better_weapon(struct char_data* mob) {
@@ -7147,42 +7171,43 @@ static char find_a_better_weapon(struct char_data* mob) {
     */
 
   /* check whether this mob can wield */
-  if (!HasHands(mob)) {
+  if (HasHands(mob) == 0) {
     return 0;
   }
 
-  if (!real_roomp(mob->in_room)) {
+  if (real_roomp(mob->in_room) == nullptr) {
     return 0;
   }
 
   /* check room */
   best = nullptr;
-  for (o = real_roomp(mob->in_room)->contents; o; o = o->next_content) {
-    if (best && is_weapon(o)) {
+  for (o = real_roomp(mob->in_room)->contents; o != nullptr;
+    o = o->next_content) {
+    if ((best != nullptr) && (is_weapon(o) != 0)) {
       if (get_damage(o, mob) > get_damage(best, mob)) {
         best = o;
       }
     } else {
-      if (is_weapon(o)) {
+      if (is_weapon(o) != 0) {
         best = o;
       }
     }
   }
   /* check inv */
-  for (o = mob->carrying; o; o = o->next_content) {
-    if (best && is_weapon(o)) {
+  for (o = mob->carrying; o != nullptr; o = o->next_content) {
+    if ((best != nullptr) && (is_weapon(o) != 0)) {
       if (get_damage(o, mob) > get_damage(best, mob)) {
         best = o;
       }
     } else {
-      if (is_weapon(o)) {
+      if (is_weapon(o) != 0) {
         best = o;
       }
     }
   }
 
-  if (mob->equipment[WIELD]) {
-    if (best) {
+  if (mob->equipment[WIELD] != nullptr) {
+    if (best != nullptr) {
       if (get_damage(mob->equipment[WIELD], mob) >= get_damage(best, mob)) {
         best = mob->equipment[WIELD];
       }
@@ -7191,7 +7216,7 @@ static char find_a_better_weapon(struct char_data* mob) {
     }
   }
 
-  if (best) {
+  if (best != nullptr) {
     if (get_hand_damage(mob) > get_damage(best, mob)) {
       best = nullptr;
     }
@@ -7199,12 +7224,12 @@ static char find_a_better_weapon(struct char_data* mob) {
     return 0; /* nothing to choose from */
   }
 
-  if (best) {
+  if (best != nullptr) {
     /*
 out with the old, in with the new
     */
     if (best->carried_by == mob) {
-      if (mob->equipment[WIELD]) {
+      if (mob->equipment[WIELD] != nullptr) {
         do_remove(mob, mob->equipment[WIELD]->name, 0);
       }
       do_wield(mob, best->name, 0);
@@ -7215,7 +7240,7 @@ out with the old, in with the new
       do_get(mob, best->name, 0);
     }
   } else {
-    if (mob->equipment[WIELD]) {
+    if (mob->equipment[WIELD] != nullptr) {
       do_remove(mob, mob->equipment[WIELD]->name, 0);
     }
   }
@@ -7223,11 +7248,11 @@ out with the old, in with the new
 }
 
 int fighter(struct char_data* ch, int cmd, const char* arg) {
-  if (cmd || !AWAKE(ch)) {
+  if ((cmd != 0) || !AWAKE(ch)) {
     return 0;
   }
 
-  if (ch->specials.fighting) {
+  if (ch->specials.fighting != nullptr) {
     if (GET_POS(ch) == POSITION_FIGHTING) {
       fighter_move(ch);
     } else {
@@ -7241,11 +7266,11 @@ int fighter(struct char_data* ch, int cmd, const char* arg) {
 int web_slinger(struct char_data* ch, int cmd, const char* arg) {
   struct char_data* victim = nullptr;
 
-  if (cmd || !AWAKE(ch)) {
+  if ((cmd != 0) || !AWAKE(ch)) {
     return 0;
   }
 
-  if (ch->specials.fighting) {
+  if (ch->specials.fighting != nullptr) {
     victim = ch->specials.fighting;
     act("$n throws webs on you!", 0, ch, nullptr, victim, TO_VICT);
     act("$n throws webs on $N!", 0, ch, nullptr, victim, TO_NOTVICT);
@@ -7258,11 +7283,11 @@ int juggernaut(struct char_data* ch, int cmd, const char* arg) {
   struct char_data* victim = nullptr;
   int dam = 0;
 
-  if (cmd || !AWAKE(ch)) {
+  if ((cmd != 0) || !AWAKE(ch)) {
     return 0;
   }
 
-  if (ch->specials.fighting) {
+  if (ch->specials.fighting != nullptr) {
     victim = ch->specials.fighting;
     act("$n charges at you, knocking you over.", 0, ch, nullptr, nullptr,
       TO_VICT);
@@ -7295,7 +7320,7 @@ static void bouncer_throw(struct char_data* ch) {
 
   rp = real_roomp(ch->in_room);
   rp2 = real_roomp((ch->in_room) - 1);
-  if (rp && rp2) {
+  if ((rp != nullptr) && (rp2 != nullptr)) {
     send_to_char(
       "The bouncer picks you up over his head and throws you toward the "
       "door.\n\r",
@@ -7315,11 +7340,11 @@ int prof_x(struct char_data* ch, int cmd, const char* arg) {
   int num = 0;
   char buf[200];
 
-  if (cmd || !AWAKE(ch)) {
+  if ((cmd != 0) || !AWAKE(ch)) {
     return 0;
   }
 
-  if (!ch->specials.fighting) {
+  if (ch->specials.fighting == nullptr) {
     return 0;
   }
 
@@ -7360,7 +7385,7 @@ int prof_x(struct char_data* ch, int cmd, const char* arg) {
   act("$n waves his arms, and utters the words 'Muhahahahaha'", 1, ch, nullptr,
     nullptr, TO_ROOM);
   victim = ch->specials.fighting;
-  if (!victim) {
+  if (victim == nullptr) {
     return 0;
   }
 
@@ -7437,14 +7462,14 @@ int elektro(struct char_data* ch, int cmd, const char* arg) {
   int dam = 0;
   char buf[200];
 
-  if (cmd || !AWAKE(ch) || !ch->specials.fighting) {
+  if ((cmd != 0) || !AWAKE(ch) || (ch->specials.fighting == nullptr)) {
     return 0;
   }
 
   dam = dice(2, 200);
 
   act("$n says 'Get ready for a JOLT!'", 1, ch, nullptr, nullptr, TO_ROOM);
-  for (tmp_victim = character_list; tmp_victim; tmp_victim = temp) {
+  for (tmp_victim = character_list; tmp_victim != nullptr; tmp_victim = temp) {
     temp = tmp_victim->next;
     if ((ch->in_room == tmp_victim->in_room) && (ch != tmp_victim)) {
       if (IS_IMMORTAL(tmp_victim)) {
@@ -7461,7 +7486,7 @@ int iceman(struct char_data* ch, int cmd, const char* arg) {
   int dam = 0;
   char buf[200];
 
-  if (cmd || !AWAKE(ch) || !ch->specials.fighting) {
+  if ((cmd != 0) || !AWAKE(ch) || (ch->specials.fighting == nullptr)) {
     return 0;
   }
 
@@ -7469,11 +7494,11 @@ int iceman(struct char_data* ch, int cmd, const char* arg) {
 
   victim = FindVictim(ch);
 
-  if (!victim) {
+  if (victim == nullptr) {
     victim = ch->specials.fighting;
   }
 
-  if (!victim) {
+  if (victim == nullptr) {
     return 0;
   }
 
@@ -7514,11 +7539,11 @@ int storm(struct char_data* ch, int cmd, const char* arg) {
 
   percent = number(1, 10);
 
-  if (cmd || !AWAKE(ch) || IS_AFFECTED(ch, AFF_PARALYSIS)) {
+  if ((cmd != 0) || !AWAKE(ch) || IS_AFFECTED(ch, AFF_PARALYSIS)) {
     return 0;
   }
 
-  if (!ch->specials.fighting) {
+  if (ch->specials.fighting == nullptr) {
     return 0;
   }
 
@@ -7541,7 +7566,8 @@ int storm(struct char_data* ch, int cmd, const char* arg) {
       dam = dice(1, 200);
 
       act("$n says 'Let it rain!'", 1, ch, nullptr, nullptr, TO_ROOM);
-      for (tmp_victim = character_list; tmp_victim; tmp_victim = temp) {
+      for (tmp_victim = character_list; tmp_victim != nullptr;
+        tmp_victim = temp) {
         temp = tmp_victim->next;
         if ((ch->in_room == tmp_victim->in_room) && (ch != tmp_victim)) {
           send_to_char("You are hit by torrential rains!\n\r", tmp_victim);
@@ -7555,7 +7581,7 @@ int storm(struct char_data* ch, int cmd, const char* arg) {
       act("$n waves her arms.", 1, ch, nullptr, nullptr, TO_ROOM);
       act("$n has summoned a great hurricane!", 1, ch, nullptr, nullptr,
         TO_ROOM);
-      for (tmp_victim = real_roomp(ch->in_room)->people; tmp_victim;
+      for (tmp_victim = real_roomp(ch->in_room)->people; tmp_victim != nullptr;
         tmp_victim = tmp_victim->next_in_room) {
         if ((ch != tmp_victim) && IS_PC(tmp_victim)) {
           blow_char(tmp_victim);
@@ -7597,13 +7623,13 @@ int storm(struct char_data* ch, int cmd, const char* arg) {
 #define NTM_FIX 15
 
 int NewThalosMayor(struct char_data* ch, int cmd, const char* arg) {
-  if (cmd || !AWAKE(ch)) {
+  if ((cmd != 0) || !AWAKE(ch)) {
     return 0;
   }
-  if (!ch->act_ptr) {
+  if (ch->act_ptr == nullptr) {
     ch->act_ptr = (struct mob_act_data*)calloc(1, sizeof(struct mob_act_data));
   }
-  if (ch->specials.fighting) {
+  if (ch->specials.fighting != nullptr) {
     return 0;
   }
   switch ((*((int*)ch->act_ptr))) { /* state info */
@@ -7837,14 +7863,14 @@ int SultanGuard(struct char_data* ch, int cmd, const char* arg) {
   int max_evil = 0;
   int lev = 0;
 
-  if (cmd || !AWAKE(ch)) {
+  if ((cmd != 0) || !AWAKE(ch)) {
     return 0;
   }
 
-  if (ch->specials.fighting) {
+  if (ch->specials.fighting != nullptr) {
     fighter(ch, cmd, arg);
 
-    if (!check_soundproof(ch)) {
+    if (check_soundproof(ch) == 0) {
       if (number(0, 20) == 0) {
         do_shout(ch, "To me, my fellows! I am in need of thy aid!", 0);
       } else {
@@ -7852,7 +7878,7 @@ int SultanGuard(struct char_data* ch, int cmd, const char* arg) {
           nullptr, TO_ROOM);
       }
 
-      if (ch->specials.fighting) {
+      if (ch->specials.fighting != nullptr) {
         CallForGuard(ch, ch->specials.fighting, 3, NEWTHALOS);
       }
 
@@ -7863,12 +7889,13 @@ int SultanGuard(struct char_data* ch, int cmd, const char* arg) {
   max_evil = 1000;
   evil = nullptr;
 
-  if (check_peaceful(ch, "")) {
+  if (check_peaceful(ch, "") != 0) {
     return 0;
   }
 
-  for (tch = real_roomp(ch->in_room)->people; tch; tch = tch->next_in_room) {
-    if (tch->specials.fighting) {
+  for (tch = real_roomp(ch->in_room)->people; tch != nullptr;
+    tch = tch->next_in_room) {
+    if (tch->specials.fighting != nullptr) {
       if ((GET_ALIGNMENT(tch) < max_evil) &&
           (IS_NPC(tch) || IS_NPC(tch->specials.fighting))) {
         max_evil = GET_ALIGNMENT(tch);
@@ -7877,8 +7904,8 @@ int SultanGuard(struct char_data* ch, int cmd, const char* arg) {
     }
   }
 
-  if (evil && (GET_ALIGNMENT(evil->specials.fighting) >= 0)) {
-    if (!check_soundproof(ch)) {
+  if ((evil != nullptr) && (GET_ALIGNMENT(evil->specials.fighting) >= 0)) {
+    if (check_soundproof(ch) == 0) {
       act("$n screams 'PROTECT THE INNOCENT! BANZAI!!! CHARGE!!! SPOON!'", 0,
         ch, nullptr, nullptr, TO_ROOM);
     }
@@ -7890,14 +7917,14 @@ int SultanGuard(struct char_data* ch, int cmd, const char* arg) {
 }
 
 int NewThalosCitizen(struct char_data* ch, int cmd, const char* arg) {
-  if (cmd || !AWAKE(ch)) {
+  if ((cmd != 0) || !AWAKE(ch)) {
     return 0;
   }
 
-  if (ch->specials.fighting) {
+  if (ch->specials.fighting != nullptr) {
     fighter(ch, cmd, arg);
 
-    if (!check_soundproof(ch)) {
+    if (check_soundproof(ch) == 0) {
       if (number(0, 18) == 0) {
         do_shout(ch, "Guards! Help me! Please!", 0);
       } else {
@@ -7905,7 +7932,7 @@ int NewThalosCitizen(struct char_data* ch, int cmd, const char* arg) {
           TO_ROOM);
       }
 
-      if (ch->specials.fighting) {
+      if (ch->specials.fighting != nullptr) {
         CallForGuard(ch, ch->specials.fighting, 3, NEWTHALOS);
       }
 
@@ -7918,8 +7945,8 @@ int NewThalosCitizen(struct char_data* ch, int cmd, const char* arg) {
 }
 
 int NewThalosGuildGuard(struct char_data* ch, int cmd, const char* arg) {
-  if (!cmd) {
-    if (ch->specials.fighting) {
+  if (cmd == 0) {
+    if (ch->specials.fighting != nullptr) {
       return (fighter(ch, cmd, arg));
     }
   } else {
@@ -7951,11 +7978,11 @@ int magic_user2(struct char_data* ch, int cmd, const char* arg) {
   struct char_data* vict = nullptr;
   signed char lspell = 0;
 
-  if (cmd || !AWAKE(ch)) {
+  if ((cmd != 0) || !AWAKE(ch)) {
     return 0;
   }
 
-  if (!ch->specials.fighting) {
+  if (ch->specials.fighting == nullptr) {
     return 0;
   }
 
@@ -7966,11 +7993,11 @@ int magic_user2(struct char_data* ch, int cmd, const char* arg) {
 
   vict = FindVictim(ch);
 
-  if (!vict) {
+  if (vict == nullptr) {
     vict = ch->specials.fighting;
   }
 
-  if (!vict) {
+  if (vict == nullptr) {
     return 0;
   }
 
@@ -8079,14 +8106,14 @@ int MordGuard(struct char_data* ch, int cmd, const char* arg) {
   int max_evil = 0;
   int lev = 0;
 
-  if (cmd || !AWAKE(ch)) {
+  if ((cmd != 0) || !AWAKE(ch)) {
     return 0;
   }
 
-  if (ch->specials.fighting) {
+  if (ch->specials.fighting != nullptr) {
     fighter(ch, cmd, arg);
 
-    if (!check_soundproof(ch)) {
+    if (check_soundproof(ch) == 0) {
       if (number(0, 20) == 0) {
         do_shout(ch, "To me, my fellows! I am in need of thy aid!", 0);
       } else {
@@ -8094,7 +8121,7 @@ int MordGuard(struct char_data* ch, int cmd, const char* arg) {
           nullptr, TO_ROOM);
       }
 
-      if (ch->specials.fighting) {
+      if (ch->specials.fighting != nullptr) {
         CallForGuard(ch, ch->specials.fighting, 3, MORDILNIA);
       }
 
@@ -8105,12 +8132,13 @@ int MordGuard(struct char_data* ch, int cmd, const char* arg) {
   max_evil = 1000;
   evil = nullptr;
 
-  if (check_peaceful(ch, "")) {
+  if (check_peaceful(ch, "") != 0) {
     return 0;
   }
 
-  for (tch = real_roomp(ch->in_room)->people; tch; tch = tch->next_in_room) {
-    if (tch->specials.fighting) {
+  for (tch = real_roomp(ch->in_room)->people; tch != nullptr;
+    tch = tch->next_in_room) {
+    if (tch->specials.fighting != nullptr) {
       if ((GET_ALIGNMENT(tch) < max_evil) &&
           (IS_NPC(tch) || IS_NPC(tch->specials.fighting))) {
         max_evil = GET_ALIGNMENT(tch);
@@ -8119,8 +8147,8 @@ int MordGuard(struct char_data* ch, int cmd, const char* arg) {
     }
   }
 
-  if (evil && (GET_ALIGNMENT(evil->specials.fighting) >= 0)) {
-    if (!check_soundproof(ch)) {
+  if ((evil != nullptr) && (GET_ALIGNMENT(evil->specials.fighting) >= 0)) {
+    if (check_soundproof(ch) == 0) {
       act("$n screams 'PROTECT THE INNOCENT! BANZAI!!! CHARGE!!! SPOON!'", 0,
         ch, nullptr, nullptr, TO_ROOM);
     }
@@ -8132,14 +8160,14 @@ int MordGuard(struct char_data* ch, int cmd, const char* arg) {
 }
 
 static int mord_citizen(struct char_data* ch, int cmd, const char* arg) {
-  if (cmd || !AWAKE(ch)) {
+  if ((cmd != 0) || !AWAKE(ch)) {
     return 0;
   }
 
-  if (ch->specials.fighting) {
+  if (ch->specials.fighting != nullptr) {
     fighter(ch, cmd, arg);
 
-    if (!check_soundproof(ch)) {
+    if (check_soundproof(ch) == 0) {
       if (number(0, 18) == 0) {
         do_shout(ch, "Guards! Help me! Please!", 0);
       } else {
@@ -8147,7 +8175,7 @@ static int mord_citizen(struct char_data* ch, int cmd, const char* arg) {
           TO_ROOM);
       }
 
-      if (ch->specials.fighting) {
+      if (ch->specials.fighting != nullptr) {
         CallForGuard(ch, ch->specials.fighting, 3, MORDILNIA);
       }
 
@@ -8160,8 +8188,8 @@ static int mord_citizen(struct char_data* ch, int cmd, const char* arg) {
 }
 
 int MordGuildGuard(struct char_data* ch, int cmd, const char* arg) {
-  if (!cmd) {
-    if (ch->specials.fighting) {
+  if (cmd == 0) {
+    if (ch->specials.fighting != nullptr) {
       return (fighter(ch, cmd, arg));
     }
   } else {
@@ -8196,8 +8224,8 @@ int Demon(struct char_data* ch, int cmd, const char* arg) {
 }
 
 int CaravanGuildGuard(struct char_data* ch, int cmd, const char* arg) {
-  if (!cmd) {
-    if (ch->specials.fighting) {
+  if (cmd == 0) {
+    if (ch->specials.fighting != nullptr) {
       return (fighter(ch, cmd, arg));
     }
   } else {
@@ -8227,7 +8255,7 @@ int StatTeller(struct char_data* ch, int cmd, const char* arg) {
   int choice = 0;
   char buf[200];
 
-  if (cmd) {
+  if (cmd != 0) {
     if (cmd == 56) { /* buy */
 
       /*
@@ -8269,7 +8297,7 @@ int StatTeller(struct char_data* ch, int cmd, const char* arg) {
     **  in combat, issues a more potent curse.
     */
 
-    if (ch->specials.fighting) {
+    if (ch->specials.fighting != nullptr) {
       act("$n gives you the evil eye!  You feel your hitpoints ebbing away", 0,
         ch, nullptr, ch->specials.fighting, TO_VICT);
       act("$n gives $N the evil eye!  $N seems weaker!", 0, ch, nullptr,
@@ -8290,9 +8318,10 @@ void ThrowChar(struct char_data* ch, struct char_data* v, int dir) {
 
   (void)dam;
   rp = real_roomp(v->in_room);
-  if (rp && rp->dir_option[dir] && rp->dir_option[dir]->to_room &&
+  if ((rp != nullptr) && (rp->dir_option[dir] != nullptr) &&
+      (rp->dir_option[dir]->to_room != 0) &&
       (EXIT(v, dir)->to_room != NOWHERE)) {
-    if (v->specials.fighting) {
+    if (v->specials.fighting != nullptr) {
       send_to_char("Not while fighting!\n\r", ch);
       return;
     }
@@ -8327,8 +8356,8 @@ int ThrowerMob(struct char_data* ch, int cmd, const char* arg) {
   **  Throws people in various directions
   */
 
-  if (!cmd) {
-    if (AWAKE(ch) && ch->specials.fighting) {
+  if (cmd == 0) {
+    if (AWAKE(ch) && (ch->specials.fighting != nullptr)) {
       /*
       **  take this person and throw them
       */
@@ -8438,7 +8467,7 @@ int soap(struct char_data* ch, int cmd, const char* arg, struct obj_data* me) {
     return 0;
   }
 
-  if (!(obj = ch->equipment[HOLD])) {
+  if ((obj = ch->equipment[HOLD]) == nullptr) {
     return 0;
   }
   if (obj_index[obj->item_number].func.obj_f != soap) {
@@ -8446,19 +8475,19 @@ int soap(struct char_data* ch, int cmd, const char* arg, struct obj_data* me) {
   }
 
   arg = one_argument(arg, dummy);
-  if (!(*dummy)) {
+  if ((*dummy) == 0) {
     return 0;
   }
   only_argument(arg, name);
-  if (!(*name)) {
+  if ((*name) == 0) {
     return 0;
   }
 
-  if (!(t = get_char_room_vis(ch, name))) {
+  if ((t = get_char_room_vis(ch, name)) == nullptr) {
     return 0;
   }
 
-  if (affected_by_spell(t, SPELL_WEB)) {
+  if (affected_by_spell(t, SPELL_WEB) != 0) {
     affect_from_char(t, SPELL_WEB);
     act("$n washes some webbing off $N with $p.", 1, ch, obj, t, TO_ROOM);
     act("You wash some webbing off $N with $p.", 0, ch, obj, t, TO_CHAR);
@@ -8468,7 +8497,7 @@ int soap(struct char_data* ch, int cmd, const char* arg, struct obj_data* me) {
   }
 
   obj->obj_flags.value[0]--;
-  if (!obj->obj_flags.value[0]) {
+  if (obj->obj_flags.value[0] == 0) {
     act("That used up $p.", 0, ch, obj, t, TO_CHAR);
     extract_obj(obj);
   }
@@ -8499,28 +8528,28 @@ int nodrop(struct char_data* ch, int cmd, const char* arg,
   }
 
   arg = one_argument(arg, obj_name);
-  if (!*obj_name) {
+  if (*obj_name == 0) {
     return 0;
   }
 
   obj = nullptr;
   do_all = 0;
 
-  if (!(strncmp(obj_name, "all", 3))) {
+  if ((strncmp(obj_name, "all", 3)) == 0) {
     do_all = 1;
     num = IS_CARRYING_N(ch);
   } else {
     strcpy(buf, obj_name);
     name = buf;
-    if (!(num = get_number(&name))) {
+    if ((num = get_number(&name)) == 0) {
       return 0;
     }
   }
 
   /* Look in the room first, in get case */
   if (cmd == 10) {
-    for (i = real_roomp(ch->in_room)->contents, j = 1; i && (j <= num);
-      i = i->next_content) {
+    for (i = real_roomp(ch->in_room)->contents, j = 1;
+      (i != nullptr) && (j <= num); i = i->next_content) {
       if (i->item_number >= 0) {
         if (do_all || isname(name, i->name)) {
           if (do_all || j == num) {
@@ -8537,13 +8566,14 @@ int nodrop(struct char_data* ch, int cmd, const char* arg,
   }
 
   /* Check the character's inventory for give, drop, steal. */
-  if (!obj) {
+  if (obj == nullptr) {
     /* Don't bother with get anymore */
     if (cmd == 10) {
       return 0;
     }
   }
-  for (i = ch->carrying, j = 1; i && (j <= num); i = i->next_content) {
+  for (i = ch->carrying, j = 1; (i != nullptr) && (j <= num);
+    i = i->next_content) {
     if (i->item_number >= 0) {
       if (do_all || isname(name, i->name)) {
         if (do_all || j == num) {
@@ -8551,7 +8581,7 @@ int nodrop(struct char_data* ch, int cmd, const char* arg,
             obj = i;
             break;
           }
-          if (!do_all) {
+          if (do_all == 0) {
             return 0;
           }
         } else {
@@ -8562,13 +8592,14 @@ int nodrop(struct char_data* ch, int cmd, const char* arg,
   }
 
   /* Musta been something else */
-  if (!obj) {
+  if (obj == nullptr) {
     return 0;
   }
 
   if ((cmd == 72) || (cmd == 156)) {
     only_argument(arg, vict_name);
-    if ((!*vict_name) || (!(t = get_char_room_vis(ch, vict_name)))) {
+    if ((*vict_name == 0) ||
+        ((t = get_char_room_vis(ch, vict_name)) == nullptr)) {
       return 0;
     }
   }
@@ -8581,7 +8612,7 @@ int nodrop(struct char_data* ch, int cmd, const char* arg,
         act("$n tries to get $p, but it disintegrates in his hand!", 0, ch, obj,
           nullptr, TO_ROOM);
         extract_obj(obj);
-        if (do_all) {
+        if (do_all != 0) {
           return 0;
         }
         return 1;
@@ -8602,7 +8633,7 @@ int nodrop(struct char_data* ch, int cmd, const char* arg,
         obj_to_room(i, ch->in_room);
         obj_from_char(obj);
         extract_obj(obj);
-        if (do_all) {
+        if (do_all != 0) {
           return 0;
         }
         return 1;
@@ -8621,7 +8652,7 @@ int nodrop(struct char_data* ch, int cmd, const char* arg,
           act("As $n tries to give $p to $N, it vanishes!", 0, ch, obj, t,
             TO_ROOM);
           extract_obj(obj);
-          if (do_all) {
+          if (do_all != 0) {
             return 0;
           }
           return 1;
@@ -8663,9 +8694,9 @@ static int affect_status(struct mob_act_lattimore* mem, struct char_data* t,
   int aff_status) {
   int i = 0;
 
-  if (mem->c) {
+  if (mem->c != 0) {
     for (i = 0; i < mem->c; ++i) {
-      if (!(strcmp(GET_NAME(t), mem->names[i]))) {
+      if ((strcmp(GET_NAME(t), mem->names[i])) == 0) {
         mem->status[i] += aff_status;
         return (i);
         break;
@@ -8673,7 +8704,7 @@ static int affect_status(struct mob_act_lattimore* mem, struct char_data* t,
     }
   }
 
-  if (!mem->c) {
+  if (mem->c == 0) {
     mem->names = (char**)calloc(1, sizeof(char*));
     mem->status = (int*)calloc(1, sizeof(int));
   } else {
@@ -8725,7 +8756,7 @@ static struct mob_act_lattimore* init_lattimore(struct char_data* ch) {
 }
 
 static struct mob_act_lattimore* get_lattimore_mem(struct char_data* ch) {
-  if (!ch->act_ptr) {
+  if (ch->act_ptr == nullptr) {
     return init_lattimore(ch);
   }
   return &ch->act_ptr->data.lattimore;
@@ -8741,21 +8772,21 @@ int lattimore(struct char_data* ch, int cmd, const char* arg) {
 
   struct mob_act_lattimore* mem = nullptr;
 
-  if (!cmd) {
+  if (cmd == 0) {
     if (!AWAKE(ch)) {
       return 0;
     }
 
     mem = get_lattimore_mem(ch);
 
-    if (ch->master) {
+    if (ch->master != nullptr) {
       mem->pointer = 0;
       return 0;
     }
 
-    if (ch->specials.fighting) {
+    if (ch->specials.fighting != nullptr) {
       if (!IS_MOB(ch->specials.fighting) &&
-          CAN_SEE(ch, ch->specials.fighting)) {
+          (CAN_SEE(ch, ch->specials.fighting) != 0)) {
         affect_status(mem, ch->specials.fighting, -5);
       }
 
@@ -8854,7 +8885,7 @@ int lattimore(struct char_data* ch, int cmd, const char* arg) {
             nullptr, TO_ROOM);
           strcpy(ch->player.long_descr, lattimore_descs[1]);
           mem->pointer = LATTIMORE_STATE_GO_HOME;
-        } else if (!number(0, 2)) {
+        } else if (number(0, 2) == 0) {
           act("$n gets some bread from the oven to go with his stew.", 0, ch,
             nullptr, nullptr, TO_ROOM);
           act("$n dips the bread in the stew and eats it.", 0, ch, nullptr,
@@ -8983,10 +9014,10 @@ int lattimore(struct char_data* ch, int cmd, const char* arg) {
           go_direction(ch, dir);
 
         } else {
-          for (struct char_data* t = real_roomp(ch->in_room)->people; t;
-            t = t->next_in_room) {
-            if (!IS_NPC(t) && CAN_SEE(ch, t)) {
-              if (!(strcmp(mem->names[mem->index], GET_NAME(t)))) {
+          for (struct char_data* t = real_roomp(ch->in_room)->people;
+            t != nullptr; t = t->next_in_room) {
+            if (!IS_NPC(t) && (CAN_SEE(ch, t) != 0)) {
+              if ((strcmp(mem->names[mem->index], GET_NAME(t))) == 0) {
                 act("$n crawls under the large table.", 0, ch, nullptr, nullptr,
                   TO_ROOM);
 
@@ -9035,7 +9066,8 @@ int lattimore(struct char_data* ch, int cmd, const char* arg) {
   arg = one_argument(arg, obj_name);
 
   struct obj_data* obj = nullptr;
-  if (!*obj_name || !(obj = get_obj_in_list_vis(ch, obj_name, ch->carrying))) {
+  if ((*obj_name == 0) ||
+      ((obj = get_obj_in_list_vis(ch, obj_name, ch->carrying)) == nullptr)) {
     return 0;
   }
 
@@ -9043,7 +9075,8 @@ int lattimore(struct char_data* ch, int cmd, const char* arg) {
   only_argument(arg, player_name);
 
   struct char_data* latt = nullptr;
-  if (!*player_name || !(latt = get_char_room_vis(ch, player_name)) ||
+  if ((*player_name == 0) ||
+      ((latt = get_char_room_vis(ch, player_name)) == nullptr) ||
       mob_index[latt->nr].func.mob_f != lattimore) {
     return 0;
   }
@@ -9061,7 +9094,7 @@ int lattimore(struct char_data* ch, int cmd, const char* arg) {
 
   switch (obj->obj_flags.type_flag) {
     case ITEM_FOOD:
-      if (obj->obj_flags.value[3]) {
+      if (obj->obj_flags.value[3] != 0) {
         act("$n sniffs $p, then discards it with disgust.", 1, latt, obj,
           nullptr, TO_ROOM);
 
@@ -9085,7 +9118,7 @@ int lattimore(struct char_data* ch, int cmd, const char* arg) {
 
         const struct obj_data* const held = latt->equipment[HOLD];
 
-        if (held) {
+        if (held != nullptr) {
           if (held->item_number == obj->item_number) {
             extract_obj(obj);
           } else {
@@ -9104,7 +9137,7 @@ int lattimore(struct char_data* ch, int cmd, const char* arg) {
       break;
   }
 
-  if (status_change != 0 && !IS_MOB(ch) && CAN_SEE(latt, ch)) {
+  if (status_change != 0 && !IS_MOB(ch) && (CAN_SEE(latt, ch) != 0)) {
     // They gave something to him, and the status was affected, now we set the
     // pointer according to the status value
 
@@ -9128,7 +9161,7 @@ int coldcaster(struct char_data* ch, int cmd, const char* arg) {
   struct char_data* vict = nullptr;
   signed char lspell = 0;
 
-  if (cmd || !AWAKE(ch)) {
+  if ((cmd != 0) || !AWAKE(ch)) {
     return 0;
   }
 
@@ -9136,11 +9169,11 @@ int coldcaster(struct char_data* ch, int cmd, const char* arg) {
 
   vict = FindVictim(ch);
 
-  if (!vict) {
+  if (vict == nullptr) {
     vict = ch->specials.fighting;
   }
 
-  if (!vict) {
+  if (vict == nullptr) {
     return 0;
   }
 
@@ -9174,7 +9207,7 @@ int coldcaster(struct char_data* ch, int cmd, const char* arg) {
 int trapper(struct char_data* ch, int cmd, const char* arg) {
   struct char_data* tch = nullptr;
 
-  if (cmd || !AWAKE(ch)) {
+  if ((cmd != 0) || !AWAKE(ch)) {
     return 0;
   }
 
@@ -9183,8 +9216,9 @@ int trapper(struct char_data* ch, int cmd, const char* arg) {
      invisible, or whatever. The trapper will attack both PCs and NPCs,
      so don't have a lot of wandering NPCs around it. */
 
-  if (!ch->specials.fighting) {
-    for (tch = real_roomp(ch->in_room)->people; tch; tch = tch->next_in_room) {
+  if (ch->specials.fighting == nullptr) {
+    for (tch = real_roomp(ch->in_room)->people; tch != nullptr;
+      tch = tch->next_in_room) {
       if ((ch != tch) && !IS_IMMORTAL(tch) && !IS_AFFECTED(tch, AFF_FLYING)) {
         set_fighting(ch, tch);
         return 1;
@@ -9200,7 +9234,7 @@ int trapper(struct char_data* ch, int cmd, const char* arg) {
   /* Equipment must save against crush - will fail 25% of the time */
 
   /* Make the poor sucker save against paralzyation, or suffocate */
-  if (saves_spell(ch->specials.fighting, SAVING_PARA)) {
+  if (saves_spell(ch->specials.fighting, SAVING_PARA) != 0) {
     act("You can hardly breathe, $N is suffocating you!", 0,
       ch->specials.fighting, nullptr, ch, TO_CHAR);
     act("$N is stifling $n, who will suffocate soon!", 0, ch->specials.fighting,
@@ -9224,20 +9258,21 @@ int trogcook(struct char_data* ch, int cmd, const char* arg) {
   struct obj_data* corpse = nullptr;
   char buf[MAX_INPUT_LENGTH];
 
-  if (cmd || !AWAKE(ch)) {
+  if ((cmd != 0) || !AWAKE(ch)) {
     return 0;
   }
 
-  if (ch->specials.fighting) {
+  if (ch->specials.fighting != nullptr) {
     if (GET_POS(ch) != POSITION_FIGHTING) {
       stand_up(ch);
     }
     return 0;
   }
 
-  for (tch = real_roomp(ch->in_room)->people; tch; tch = tch->next_in_room) {
-    if (IS_NPC(tch) && IsAnimal(tch) && CAN_SEE(ch, tch)) {
-      if (!check_soundproof(ch)) {
+  for (tch = real_roomp(ch->in_room)->people; tch != nullptr;
+    tch = tch->next_in_room) {
+    if (IS_NPC(tch) && (IsAnimal(tch) != 0) && (CAN_SEE(ch, tch) != 0)) {
+      if (check_soundproof(ch) == 0) {
         act("$n cackles 'Something else for the pot!'", 0, ch, nullptr, nullptr,
           TO_ROOM);
       }
@@ -9247,7 +9282,7 @@ int trogcook(struct char_data* ch, int cmd, const char* arg) {
   }
 
   corpse = get_obj_in_list_vis(ch, "corpse", real_roomp(ch->in_room)->contents);
-  if (corpse) {
+  if (corpse != nullptr) {
     // TODO: This should return value for success/failure to make this sort of
     // behavior safely possible
     do_get(ch, "corpse", -1);
@@ -9266,16 +9301,17 @@ int shaman(struct char_data* ch, int cmd, const char* arg) {
   struct char_data* god = nullptr;
   struct char_data* tch = nullptr;
 
-  if (cmd || !AWAKE(ch)) {
+  if ((cmd != 0) || !AWAKE(ch)) {
     return 0;
   }
 
-  if (ch->specials.fighting) {
+  if (ch->specials.fighting != nullptr) {
     if (number(0, 3) == 0) {
-      for (tch = real_roomp(ch->in_room)->people; tch;
+      for (tch = real_roomp(ch->in_room)->people; tch != nullptr;
         tch = tch->next_in_room) {
-        if ((!IS_NPC(tch)) && (GetMaxLevel(tch) > 20) && CAN_SEE(ch, tch)) {
-          if (!(god = get_char_room_vis(ch, DEITY_NAME))) {
+        if ((!IS_NPC(tch)) && (GetMaxLevel(tch) > 20) &&
+            (CAN_SEE(ch, tch) != 0)) {
+          if ((god = get_char_room_vis(ch, DEITY_NAME)) == nullptr) {
             act("$n screams 'Golgar, I summon thee to aid thy servants!'", 0,
               ch, nullptr, nullptr, TO_ROOM);
             if (number(0, 8) == 0) {
@@ -9302,16 +9338,17 @@ int golgar(struct char_data* ch, int cmd, const char* arg) {
   struct char_data* shaman = nullptr;
   struct char_data* tch = nullptr;
 
-  if (cmd) {
+  if (cmd != 0) {
     return 0;
   }
 
-  if (!ch->specials.fighting) {
-    if (!(shaman = get_char_room_vis(ch, SHAMAN_NAME))) {
-      for (tch = real_roomp(ch->in_room)->people; tch;
+  if (ch->specials.fighting == nullptr) {
+    if ((shaman = get_char_room_vis(ch, SHAMAN_NAME)) == nullptr) {
+      for (tch = real_roomp(ch->in_room)->people; tch != nullptr;
         tch = tch->next_in_room) {
         if (IS_NPC(tch) && (GET_RACE(tch) == RACE_TROGMAN)) {
-          if ((tch->specials.fighting) && (!IS_NPC(tch->specials.fighting))) {
+          if (((tch->specials.fighting) != nullptr) &&
+              (!IS_NPC(tch->specials.fighting))) {
             act("$n growls 'Death to those attacking my people!'", 0, ch,
               nullptr, nullptr, TO_ROOM);
             hit(ch, tch->specials.fighting, TYPE_UNDEFINED);
@@ -9325,7 +9362,7 @@ int golgar(struct char_data* ch, int cmd, const char* arg) {
         extract_char(ch);
       }
     } else {
-      if (!shaman->specials.fighting) {
+      if (shaman->specials.fighting == nullptr) {
         act("$n growls 'How dare you summon me!'", 0, ch, nullptr, nullptr,
           TO_ROOM);
         hit(ch, shaman, TYPE_UNDEFINED);
@@ -9349,21 +9386,21 @@ int troguard(struct char_data* ch, int cmd, const char* arg) {
   int max_good = 0;
   int lev = 0;
 
-  if (cmd || !AWAKE(ch)) {
+  if ((cmd != 0) || !AWAKE(ch)) {
     return 0;
   }
 
-  if (ch->specials.fighting) {
+  if (ch->specials.fighting != nullptr) {
     if (GET_POS(ch) == POSITION_FIGHTING) {
       fighter_move(ch);
     } else {
       stand_up(ch);
     }
 
-    if (!check_soundproof(ch)) {
+    if (check_soundproof(ch) == 0) {
       act("$n shouts 'The enemy is upon us! Help me, my brothers!'", 1, ch,
         nullptr, nullptr, TO_ROOM);
-      if (ch->specials.fighting) {
+      if (ch->specials.fighting != nullptr) {
         CallForGuard(ch, ch->specials.fighting, 3, TROGCAVES);
       }
       return 1;
@@ -9373,7 +9410,8 @@ int troguard(struct char_data* ch, int cmd, const char* arg) {
   max_good = -1001;
   good = nullptr;
 
-  for (tch = real_roomp(ch->in_room)->people; tch; tch = tch->next_in_room) {
+  for (tch = real_roomp(ch->in_room)->people; tch != nullptr;
+    tch = tch->next_in_room) {
     if ((GET_ALIGNMENT(tch) > max_good) && !IS_IMMORTAL(tch) &&
         (!IS_NPC(tch) || (IS_NPC(tch) && (GET_RACE(tch) != RACE_TROGMAN) &&
                            (GET_RACE(tch) != RACE_ARACHNID)))) {
@@ -9382,12 +9420,12 @@ int troguard(struct char_data* ch, int cmd, const char* arg) {
     }
   }
 
-  if (check_peaceful(ch, "")) {
+  if (check_peaceful(ch, "") != 0) {
     return 0;
   }
 
-  if (good) {
-    if (!check_soundproof(ch)) {
+  if (good != nullptr) {
+    if (check_soundproof(ch) == 0) {
       act("$n screams 'Die invading scum! Take that!'", 0, ch, nullptr, nullptr,
         TO_ROOM);
     }
@@ -9411,12 +9449,12 @@ int keystone(struct char_data* ch, int cmd, const char* arg) {
   struct char_data* master = nullptr;
   int i = 0;
 
-  if (cmd || !AWAKE(ch)) {
+  if ((cmd != 0) || !AWAKE(ch)) {
     return 0;
   }
 
   if (time_info.hours == 22) {
-    if (!(ghost = get_char_vis_world(ch, IDENTIFIER, nullptr))) {
+    if ((ghost = get_char_vis_world(ch, IDENTIFIER, nullptr)) == nullptr) {
       act("$n cries 'Awaken my soldiers! Our time is nigh!'", 0, ch, nullptr,
         nullptr, TO_ROOM);
       act("You suddenly feel very, very afraid.", 0, ch, nullptr, nullptr,
@@ -9430,7 +9468,7 @@ int keystone(struct char_data* ch, int cmd, const char* arg) {
           char_to_room(ghost, i);
         }
       }
-      for (t = character_list; t; t = t->next) {
+      for (t = character_list; t != nullptr; t = t->next) {
         if (real_roomp(ch->in_room)->zone == real_roomp(t->in_room)->zone) {
           act("You hear a strange cry that fills your soul with fear!", 0, t,
             nullptr, nullptr, TO_CHAR);
@@ -9439,10 +9477,11 @@ int keystone(struct char_data* ch, int cmd, const char* arg) {
     }
   }
 
-  if (ch->specials.fighting) {
+  if (ch->specials.fighting != nullptr) {
     if (IS_NPC(ch->specials.fighting) &&
         !IS_SET((ch->specials.fighting)->specials.act, ACT_POLYSELF)) {
-      if ((master = (ch->specials.fighting)->master) && CAN_SEE(ch, master)) {
+      if (((master = (ch->specials.fighting)->master) != nullptr) &&
+          (CAN_SEE(ch, master) != 0)) {
         stop_fighting(ch);
         hit(ch, master, TYPE_UNDEFINED);
       }
@@ -9464,7 +9503,7 @@ int ghostsoldier(struct char_data* ch, int cmd, const char* arg) {
   struct char_data* master = nullptr;
   int max_good = 0;
 
-  if (cmd) {
+  if (cmd != 0) {
     return 0;
   }
 
@@ -9490,12 +9529,12 @@ int ghostsoldier(struct char_data* ch, int cmd, const char* arg) {
   }
 
   /* What is a ghost Soldier doing in a peaceful room? */
-  if (check_peaceful(ch, "")) {
+  if (check_peaceful(ch, "") != 0) {
     return 0;
   }
 
-  if (good) {
-    if (!check_soundproof(ch)) {
+  if (good != nullptr) {
+    if (check_soundproof(ch) == 0) {
       act("$N attacks you with an unholy scream!", 0, good, nullptr, ch,
         TO_CHAR);
     }
@@ -9503,10 +9542,11 @@ int ghostsoldier(struct char_data* ch, int cmd, const char* arg) {
     return 1;
   }
 
-  if (ch->specials.fighting) {
+  if (ch->specials.fighting != nullptr) {
     if (IS_NPC(ch->specials.fighting) &&
         !IS_SET((ch->specials.fighting)->specials.act, ACT_POLYSELF)) {
-      if ((master = (ch->specials.fighting)->master) && CAN_SEE(ch, master)) {
+      if (((master = (ch->specials.fighting)->master) != nullptr) &&
+          (CAN_SEE(ch, master) != 0)) {
         stop_fighting(ch);
         hit(ch, master, TYPE_UNDEFINED);
       }
@@ -9605,15 +9645,16 @@ static int valik(struct char_data* ch, int cmd, const char* arg) {
   short valik_dests[9] = {104, 1638, 7902, 13551, 16764, 17330, 19244, 21325,
     25230};
 
-  if ((cmd && (cmd != 72) && (cmd != 86)) || (!AWAKE(ch))) {
+  if (((cmd != 0) && (cmd != 72) && (cmd != 86)) || (!AWAKE(ch))) {
     return 0;
   }
 
-  if (!cmd) {
-    if (ch->specials.fighting) {
+  if (cmd == 0) {
+    if (ch->specials.fighting != nullptr) {
       if (IS_NPC(ch->specials.fighting) &&
           !IS_SET((ch->specials.fighting)->specials.act, ACT_POLYSELF)) {
-        if ((master = (ch->specials.fighting)->master) && CAN_SEE(ch, master)) {
+        if (((master = (ch->specials.fighting)->master) != nullptr) &&
+            (CAN_SEE(ch, master) != 0)) {
           stop_fighting(ch);
           hit(ch, master, TYPE_UNDEFINED);
         }
@@ -9623,11 +9664,11 @@ static int valik(struct char_data* ch, int cmd, const char* arg) {
   }
 
   vict = get_char_room_vis(ch, "valik");
-  if (!vict) {
+  if (vict == nullptr) {
     return 0;
   }
 
-  if (!vict->act_ptr) {
+  if (vict->act_ptr == nullptr) {
     vict->act_ptr =
       (struct mob_act_data*)calloc(1, sizeof(struct mob_act_data));
   }
@@ -9638,12 +9679,13 @@ static int valik(struct char_data* ch, int cmd, const char* arg) {
     case VALIK_QTHREE:
       if (cmd == 72) { /* give */
         arg = one_argument(arg, obj_name);
-        if ((!*obj_name) ||
-            !(obj = get_obj_in_list_vis(ch, obj_name, ch->carrying))) {
+        if ((*obj_name == 0) || ((obj = get_obj_in_list_vis(ch, obj_name,
+                                    ch->carrying)) == nullptr)) {
           return 0;
         }
         only_argument(arg, vict_name);
-        if ((!*vict_name) || (!(vict = get_char_room_vis(ch, vict_name)))) {
+        if ((*vict_name == 0) ||
+            ((vict = get_char_room_vis(ch, vict_name)) == nullptr)) {
           return 0;
         }
         /* the target is valik */
@@ -9656,13 +9698,14 @@ static int valik(struct char_data* ch, int cmd, const char* arg) {
         gave_this_click = 1;
       } else if (cmd == 86) { /* ask */
         arg = one_argument(arg, vict_name);
-        if ((!*vict_name) || (!(vict = get_char_room_vis(ch, vict_name)))) {
+        if ((*vict_name == 0) ||
+            ((vict = get_char_room_vis(ch, vict_name)) == nullptr)) {
           return 0;
         }
         if (!(mob_index[vict->nr].func.mob_f == valik)) {
           return 0;
         }
-        if (!(strcmp(arg, " What is the quest of the Rhyodin?"))) {
+        if ((strcmp(arg, " What is the quest of the Rhyodin?")) == 0) {
           for (i = 0; i < 9; ++i) {
             sprintf(buf, "%s %s", GET_NAME(ch), quest_intro[i]);
             do_tell(vict, buf, 19);
@@ -9684,7 +9727,7 @@ static int valik(struct char_data* ch, int cmd, const char* arg) {
           TO_ROOM);
         return 0;
       } else {
-        for (vict = real_roomp(ch->in_room)->people; vict;
+        for (vict = real_roomp(ch->in_room)->people; vict != nullptr;
           vict = vict->next_in_room) {
           if (!IS_NPC(vict) && (GetMaxLevel(vict) < LOW_IMMORTAL) &&
               (number(0, 3) == 0)) {
@@ -9705,12 +9748,12 @@ static int valik(struct char_data* ch, int cmd, const char* arg) {
   /* There are four valid objects */
   switch (*((int*)vict->act_ptr)) {
     case VALIK_WANDERING:
-      if (gave_this_click) {
+      if (gave_this_click != 0) {
         /* Take it, in either case */
         obj_from_char(obj);
         obj_to_char(obj, vict);
         if (obj_index[obj->item_number].vnum == SHIELD) {
-          if (!check_soundproof(ch)) {
+          if (check_soundproof(ch) == 0) {
             act("$N says 'The Shield of Lorces!'", 0, ch, nullptr, vict,
               TO_CHAR);
             act("$N says 'You may now undertake the first quest.'", 0, ch,
@@ -9724,11 +9767,11 @@ static int valik(struct char_data* ch, int cmd, const char* arg) {
             TO_ROOM);
           return 1;
         }
-      } else if (cmd) {
+      } else if (cmd != 0) {
         return 0;
       } else {
         if (time_info.hours > 21) {
-          if (!check_soundproof(ch)) {
+          if (check_soundproof(ch) == 0) {
             act("$n says 'It is time to meditate.'", 0, ch, nullptr, nullptr,
               TO_ROOM);
           }
@@ -9748,9 +9791,9 @@ static int valik(struct char_data* ch, int cmd, const char* arg) {
       }
       break;
     case VALIK_QONE:
-      if (gave_this_click) {
+      if (gave_this_click != 0) {
         if (obj_index[obj->item_number].vnum == RING) {
-          if (!check_soundproof(ch)) {
+          if (check_soundproof(ch) == 0) {
             act("$N says 'You have brought me the ring of Tlanic.'", 0, ch,
               nullptr, vict, TO_CHAR);
             act("$N says 'You may now undertake the second quest.'", 0, ch,
@@ -9771,9 +9814,9 @@ static int valik(struct char_data* ch, int cmd, const char* arg) {
       }
       break;
     case VALIK_QTWO:
-      if (gave_this_click) {
+      if (gave_this_click != 0) {
         if (obj_index[obj->item_number].vnum == CHALICE) {
-          if (!check_soundproof(ch)) {
+          if (check_soundproof(ch) == 0) {
             act("$N says 'You have brought me the chalice of Evistar.'", 0, ch,
               nullptr, vict, TO_CHAR);
             act("$N says 'You may now undertake the third quest.'", 0, ch,
@@ -9794,9 +9837,9 @@ static int valik(struct char_data* ch, int cmd, const char* arg) {
       }
       break;
     case VALIK_QTHREE:
-      if (gave_this_click) {
+      if (gave_this_click != 0) {
         if (obj_index[obj->item_number].vnum == CIRCLET) {
-          if (!check_soundproof(ch)) {
+          if (check_soundproof(ch) == 0) {
             act("$N says 'You have brought me the circlet of C*zarnak.'", 0, ch,
               nullptr, vict, TO_CHAR);
             act("$N says 'You may now undertake the final quest.'", 0, ch,
@@ -9871,14 +9914,15 @@ int guardian(struct char_data* ch, int cmd, const char* arg) {
   static const char* const rhyodin_file = "rhyodin";
 
   // If no cmd, only proceed if ch has the guardian proc assigned
-  if (!cmd && mob_index[ch->nr].func.mob_f != guardian) {
+  if ((cmd == 0) && mob_index[ch->nr].func.mob_f != guardian) {
     return 0;
   }
 
   // Initialize mob's act_ptr if this is the first time the proc is called (or
   // somehow it has the wrong type of act_ptr)
-  if (!cmd && (!ch->act_ptr || ch->act_ptr->type != MOB_ACT_GUARDIAN)) {
-    if (ch->act_ptr && ch->act_ptr->type != MOB_ACT_GUARDIAN) {
+  if ((cmd == 0) &&
+      ((ch->act_ptr == nullptr) || ch->act_ptr->type != MOB_ACT_GUARDIAN)) {
+    if ((ch->act_ptr != nullptr) && ch->act_ptr->type != MOB_ACT_GUARDIAN) {
       vlog(
         "guardian proc: ch has guardian proc assigned but ch->act_ptr is not "
         "of type MOB_ACT_GUARDIAN. "
@@ -9891,7 +9935,7 @@ int guardian(struct char_data* ch, int cmd, const char* arg) {
 
     FILE* pass = fopen(rhyodin_file, "r");
 
-    if (!pass) {
+    if (pass == nullptr) {
       vlog("guardian proc: Rhyodin access file unreadable or non-existant");
       return 0;
     }
@@ -9904,7 +9948,7 @@ int guardian(struct char_data* ch, int cmd, const char* arg) {
     act_data->names = nullptr;
 
     char name[15];
-    while (fscanf(pass, " %s\n", name)) {
+    while (fscanf(pass, " %s\n", name) != 0) {
       ++act_data->num_names;
       RECREATE(act_data->names, char*, act_data->num_names);
       CREATE(act_data->names[act_data->num_names - 1], char, 15);
@@ -9914,17 +9958,17 @@ int guardian(struct char_data* ch, int cmd, const char* arg) {
   }
 
   // Default behavior when proc executes without a cmd
-  if (!cmd) {
+  if (cmd == 0) {
     struct char_data* opponent = ch->specials.fighting;
 
-    if (!opponent || !AWAKE(ch)) {
+    if ((opponent == nullptr) || !AWAKE(ch)) {
       return 0;
     }
 
     if (!IS_PC(opponent)) {
       struct char_data* master = opponent->master;
 
-      if (master && CAN_SEE(ch, master)) {
+      if ((master != nullptr) && (CAN_SEE(ch, master) != 0)) {
         stop_fighting(ch);
         set_fighting(ch, master);
       }
@@ -9948,8 +9992,8 @@ int guardian(struct char_data* ch, int cmd, const char* arg) {
     char obj_name[80];
     arg = one_argument(arg, obj_name);
 
-    if (!*obj_name ||
-        !(obj = get_obj_in_list_vis(ch, obj_name, ch->carrying))) {
+    if ((*obj_name == 0) ||
+        ((obj = get_obj_in_list_vis(ch, obj_name, ch->carrying)) == nullptr)) {
       return 0;
     }
 
@@ -9957,7 +10001,8 @@ int guardian(struct char_data* ch, int cmd, const char* arg) {
     only_argument(arg, player_name);
 
     struct char_data* g = nullptr;
-    if (!*player_name || !(g = get_char_room_vis(ch, player_name))) {
+    if ((*player_name == 0) ||
+        ((g = get_char_room_vis(ch, player_name)) == nullptr)) {
       return 0;
     }
 
@@ -9977,9 +10022,9 @@ int guardian(struct char_data* ch, int cmd, const char* arg) {
 
     FILE* pass = fopen(rhyodin_file, "a");
 
-    if (!pass) {
+    if (pass == nullptr) {
       vlog("ERROR: Couldn't open file for writing permanent Rhyodin passlist.");
-      if (!room_soundproof) {
+      if (room_soundproof == 0) {
         act("$n says 'I'm sorry, but I can't do that.'", 0, g, nullptr, nullptr,
           TO_ROOM);
       }
@@ -10004,7 +10049,7 @@ int guardian(struct char_data* ch, int cmd, const char* arg) {
     extract_obj(obj);
     act("$p pulses in $s hand, and disappears.", 0, g, obj, nullptr, TO_ROOM);
 
-    if (!room_soundproof) {
+    if (room_soundproof == 0) {
       act("$N says 'You have proven youself worthy.'", 0, ch, nullptr, g,
         TO_CHAR);
       act("$N says 'You are now an ambassador from the north to Rhyodin.'", 0,
@@ -10014,9 +10059,9 @@ int guardian(struct char_data* ch, int cmd, const char* arg) {
     struct room_data* rp = real_roomp(ch->in_room);
     int to_room = NOWHERE;
 
-    if (!rp || !rp->dir_option[2] ||
+    if ((rp == nullptr) || (rp->dir_option[2] == nullptr) ||
         (to_room = rp->dir_option[2]->to_room) == NOWHERE ||
-        ch->specials.fighting) {
+        (ch->specials.fighting != nullptr)) {
       return 0;
     }
 
@@ -10029,16 +10074,17 @@ int guardian(struct char_data* ch, int cmd, const char* arg) {
     do_look(ch, "\0", 0);
 
     /* First level followers can tag along */
-    if (ch->followers) {
+    if (ch->followers != nullptr) {
       act("$n says 'If they're with you, they can enter as well.'", 0, g,
         nullptr, nullptr, TO_ROOM);
 
-      for (struct follow_type* fol = ch->followers; fol; fol = fol->next) {
-        if (fol->follower->specials.fighting) {
+      for (struct follow_type* fol = ch->followers; fol != nullptr;
+        fol = fol->next) {
+        if (fol->follower->specials.fighting != nullptr) {
           continue;
         }
 
-        if (real_roomp(fol->follower->in_room) &&
+        if ((real_roomp(fol->follower->in_room) != nullptr) &&
             EXIT(fol->follower, 2)->to_room != NOWHERE &&
             GET_POS(fol->follower) >= POSITION_STANDING) {
           char_from_room(fol->follower);
@@ -10067,9 +10113,9 @@ int guardian(struct char_data* ch, int cmd, const char* arg) {
       struct room_data* rp = real_roomp(ch->in_room);
       int to_room = NOWHERE;
 
-      if (!rp || !rp->dir_option[2] ||
+      if ((rp == nullptr) || (rp->dir_option[2] == nullptr) ||
           (to_room = rp->dir_option[2]->to_room) == NOWHERE ||
-          ch->specials.fighting) {
+          (ch->specials.fighting != nullptr)) {
         return 0;
       }
 
@@ -10083,16 +10129,17 @@ int guardian(struct char_data* ch, int cmd, const char* arg) {
       do_look(ch, "\0", 0);
 
       /* Follower stuff again */
-      if (ch->followers) {
+      if (ch->followers != nullptr) {
         act("$N says 'If they're with you, they can enter as well.'", 0, ch,
           nullptr, g, TO_CHAR);
 
-        for (struct follow_type* fol = ch->followers; fol; fol = fol->next) {
-          if (fol->follower->specials.fighting) {
+        for (struct follow_type* fol = ch->followers; fol != nullptr;
+          fol = fol->next) {
+          if (fol->follower->specials.fighting != nullptr) {
             continue;
           }
 
-          if (real_roomp(fol->follower->in_room) &&
+          if ((real_roomp(fol->follower->in_room) != nullptr) &&
               EXIT(fol->follower, 2)->to_room != NOWHERE &&
               GET_POS(fol->follower) >= POSITION_STANDING) {
             char_from_room(fol->follower);
@@ -10114,16 +10161,16 @@ int bouncer(struct char_data* ch, int cmd, const char* arg) {
   struct char_data* temp = nullptr;
   int dir = 0;
 
-  if (cmd || !AWAKE(ch) || !ch->specials.fighting) {
+  if ((cmd != 0) || !AWAKE(ch) || (ch->specials.fighting == nullptr)) {
     return 0;
   }
 
-  for (tmp_victim = character_list; tmp_victim; tmp_victim = temp) {
+  for (tmp_victim = character_list; tmp_victim != nullptr; tmp_victim = temp) {
     temp = tmp_victim->next;
     if ((ch->in_room == tmp_victim->in_room) && (ch != tmp_victim)) {
-      if (tmp_victim->specials.fighting) {
+      if (tmp_victim->specials.fighting != nullptr) {
         if (tmp_victim->specials.fighting == ch) {
-          if (!saves_spell(tmp_victim, SAVING_PETRI)) {
+          if (saves_spell(tmp_victim, SAVING_PETRI) == 0) {
             bouncer_throw(tmp_victim);
           }
         }
@@ -10139,7 +10186,7 @@ int gilbert(struct char_data* ch, int cmd, const char* arg) {
   int num = 0;
   char buf[255];
 
-  if (cmd) {
+  if (cmd != 0) {
     return 0;
   }
 
@@ -10153,7 +10200,7 @@ int gilbert(struct char_data* ch, int cmd, const char* arg) {
     return 0;
   }
 
-  if (!ch->specials.fighting) {
+  if (ch->specials.fighting == nullptr) {
     return 0;
   }
 
@@ -10166,7 +10213,7 @@ int gilbert(struct char_data* ch, int cmd, const char* arg) {
   obj_to_char(o, ch);
   send_to_room("Gilbert screams ' Scum like you don't belong in my bar!\n\r",
     ch->in_room);
-  if (!saves_spell(victim, SAVING_PARA)) {
+  if (saves_spell(victim, SAVING_PARA) == 0) {
     sprintf(buf, "scroll %s", GET_NAME(victim));
     do_recite(ch, buf, 207);
     sprintf(buf, "%s .......and stay out.", GET_NAME(victim));
@@ -10189,7 +10236,7 @@ int toilet_thing(struct char_data* ch, int cmd, const char* arg) {
   struct char_data* temp = nullptr;
   int dam = 0;
 
-  if (cmd) {
+  if (cmd != 0) {
     return 0;
   }
 
@@ -10197,7 +10244,7 @@ int toilet_thing(struct char_data* ch, int cmd, const char* arg) {
     return 0;
   }
 
-  if (!ch->specials.fighting) {
+  if (ch->specials.fighting == nullptr) {
     return 0;
   }
 
@@ -10207,7 +10254,7 @@ int toilet_thing(struct char_data* ch, int cmd, const char* arg) {
     "The thing floating in the toilet spews forth filth and noxious crud.\n\r",
     ch->in_room);
 
-  for (tmp_victim = character_list; tmp_victim; tmp_victim = temp) {
+  for (tmp_victim = character_list; tmp_victim != nullptr; tmp_victim = temp) {
     temp = tmp_victim->next;
     if ((ch->in_room == tmp_victim->in_room) && (ch != tmp_victim)) {
       if (IS_IMMORTAL(tmp_victim)) {
@@ -10225,11 +10272,11 @@ int zombie_hater(struct char_data* ch, int cmd, const char* arg) {
   struct char_data* vict = nullptr;
   struct char_data* next_v = nullptr;
 
-  if (cmd || !AWAKE(ch) || !ch->specials.fighting) {
+  if ((cmd != 0) || !AWAKE(ch) || (ch->specials.fighting == nullptr)) {
     return 0;
   }
 
-  for (vict = real_roomp(ch->in_room)->people; vict; vict = next_v) {
+  for (vict = real_roomp(ch->in_room)->people; vict != nullptr; vict = next_v) {
     next_v = vict->next_in_room;
     if (GET_RACE(vict) == RACE_UNDEAD) {
       act("$n screams 'How dare you let an undead creature attack me!", 0, ch,
@@ -10247,7 +10294,7 @@ int dishboy(struct char_data* ch, int cmd, const char* arg) {
   struct char_data* temp = nullptr;
   int dam = 0;
 
-  if (cmd || !AWAKE(ch) || !ch->specials.fighting) {
+  if ((cmd != 0) || !AWAKE(ch) || (ch->specials.fighting == nullptr)) {
     return 0;
   }
 
@@ -10255,7 +10302,7 @@ int dishboy(struct char_data* ch, int cmd, const char* arg) {
 
   send_to_room("The dishboy pulls out a hose and aims it at you.\n\r",
     ch->in_room);
-  for (tmp_victim = character_list; tmp_victim; tmp_victim = temp) {
+  for (tmp_victim = character_list; tmp_victim != nullptr; tmp_victim = temp) {
     temp = tmp_victim->next;
     if ((ch->in_room == tmp_victim->in_room) && (ch != tmp_victim)) {
       if (IS_IMMORTAL(tmp_victim)) {
@@ -10274,7 +10321,7 @@ int game_wizard(struct char_data* ch, int cmd, const char* arg) {
   struct char_data* temp = nullptr;
   int dam = 0;
 
-  if (cmd || !AWAKE(ch) || !ch->specials.fighting) {
+  if ((cmd != 0) || !AWAKE(ch) || (ch->specials.fighting == nullptr)) {
     return 0;
   }
 
@@ -10285,7 +10332,7 @@ int game_wizard(struct char_data* ch, int cmd, const char* arg) {
     "you...\n\r",
     ch->in_room);
 
-  for (tmp_victim = character_list; tmp_victim; tmp_victim = temp) {
+  for (tmp_victim = character_list; tmp_victim != nullptr; tmp_victim = temp) {
     temp = tmp_victim->next;
     if ((ch->in_room == tmp_victim->in_room) && (ch != tmp_victim)) {
       if (IS_IMMORTAL(tmp_victim)) {
@@ -10303,28 +10350,28 @@ int game_wizard(struct char_data* ch, int cmd, const char* arg) {
 /* monks */
 
 static void monk_move(struct char_data* ch) {
-  if (!ch->skills) {
+  if (ch->skills == nullptr) {
     SpaceForSkills(ch);
     ch->skills[SKILL_DODGE].learned = GetMaxLevel(ch) + 50;
     SET_BIT(ch->player.char_class, CLASS_MONK);
   }
 
-  if (!ch->specials.fighting) {
+  if (ch->specials.fighting == nullptr) {
     return;
   }
 
   if (GET_POS(ch) < POSITION_FIGHTING) {
-    if (!ch->skills[SKILL_SPRING_LEAP].learned) {
+    if (ch->skills[SKILL_SPRING_LEAP].learned == 0) {
       ch->skills[SKILL_SPRING_LEAP].learned = (GetMaxLevel(ch) * 3) / 2 + 25;
     }
     do_springleap(ch, GET_NAME(ch->specials.fighting), 0);
     return;
   }
-  if (GetMaxLevel(ch) > 30 && !number(0, 4)) {
+  if (GetMaxLevel(ch) > 30 && (number(0, 4) == 0)) {
     if (GetMaxLevel(ch->specials.fighting) <= GetMaxLevel(ch)) {
       if (GET_MAX_HIT(ch->specials.fighting) < 2 * GET_MAX_HIT(ch)) {
-        if (!affected_by_spell(ch, SKILL_QUIV_PALM)) {
-          if (!ch->skills[SKILL_QUIV_PALM].learned) {
+        if (affected_by_spell(ch, SKILL_QUIV_PALM) == 0) {
+          if (ch->skills[SKILL_QUIV_PALM].learned == 0) {
             ch->skills[SKILL_QUIV_PALM].learned = GetMaxLevel(ch) * 2 - 5;
           }
           do_quivering_palm(ch, GET_NAME(ch->specials.fighting), 0);
@@ -10333,14 +10380,14 @@ static void monk_move(struct char_data* ch) {
       }
     }
   }
-  if (ch->specials.fighting->equipment[WIELD]) {
-    if (!ch->skills[SKILL_DISARM].learned) {
+  if (ch->specials.fighting->equipment[WIELD] != nullptr) {
+    if (ch->skills[SKILL_DISARM].learned == 0) {
       ch->skills[SKILL_DISARM].learned = (GetMaxLevel(ch) * 3) / 2 + 25;
     }
     do_disarm(ch, GET_NAME(ch->specials.fighting), 0);
     return;
   }
-  if (!ch->skills[SKILL_KICK].learned) {
+  if (ch->skills[SKILL_KICK].learned == 0) {
     ch->skills[SKILL_KICK].learned = (GetMaxLevel(ch) * 3) / 2 + 25;
   }
   if (number(1, 4) == 1) {
@@ -10349,11 +10396,11 @@ static void monk_move(struct char_data* ch) {
 }
 
 int monk(struct char_data* ch, int cmd, const char* arg) {
-  if (cmd || !AWAKE(ch)) {
+  if ((cmd != 0) || !AWAKE(ch)) {
     return 0;
   }
 
-  if (ch->specials.fighting) {
+  if (ch->specials.fighting != nullptr) {
     monk_move(ch);
   }
   return 0;
@@ -10385,18 +10432,18 @@ int monk_master(struct char_data* ch, int cmd, const char* arg) {
     return 0;
   }
 
-  if (!cmd) {
-    if (ch->specials.fighting) {
+  if (cmd == 0) {
+    if (ch->specials.fighting != nullptr) {
       return (fighter(ch, cmd, arg));
     }
     return 0;
   }
 
-  if (!ch->skills) {
+  if (ch->skills == nullptr) {
     return 0;
   }
 
-  if (check_soundproof(ch)) {
+  if (check_soundproof(ch) != 0) {
     return 0;
   }
 
@@ -10405,7 +10452,7 @@ int monk_master(struct char_data* ch, int cmd, const char* arg) {
   }
 
   if ((cmd == 164) || (cmd == 170)) {
-    if (!arg || (strlen(arg) == 0)) {
+    if ((arg == nullptr) || (strlen(arg) == 0)) {
       sprintf(buf, "You have %d practices remaining\n\r",
         ch->specials.spells_to_learn);
       send_to_char(buf, ch);
@@ -10455,7 +10502,7 @@ int monk_master(struct char_data* ch, int cmd, const char* arg) {
       case 0:
       case 1:
         sk_num = SKILL_QUIV_PALM;
-        if (!HasClass(ch, CLASS_MONK)) {
+        if (HasClass(ch, CLASS_MONK) == 0) {
           send_to_char("'You do not possess the proper skills'\n\r", ch);
           return 1;
         }
@@ -10466,14 +10513,15 @@ int monk_master(struct char_data* ch, int cmd, const char* arg) {
         break;
       case 2:
         sk_num = SKILL_FEIGN_DEATH;
-        if (!HasClass(ch, CLASS_MONK)) {
+        if (HasClass(ch, CLASS_MONK) == 0) {
           send_to_char("'You do not possess the proper skills'\n\r", ch);
           return 1;
         }
         break;
       case 3:
         sk_num = SKILL_RETREAT;
-        if (!HasClass(ch, CLASS_WARRIOR) && !(HasClass(ch, CLASS_MONK))) {
+        if ((HasClass(ch, CLASS_WARRIOR) == 0) &&
+            ((HasClass(ch, CLASS_MONK)) == 0)) {
           send_to_char("'You do not possess the necessary fighting skills'\n\r",
             ch);
           return 1;
@@ -10481,7 +10529,8 @@ int monk_master(struct char_data* ch, int cmd, const char* arg) {
         break;
       case 4:
         sk_num = SKILL_KICK;
-        if (!HasClass(ch, CLASS_WARRIOR) && !(HasClass(ch, CLASS_MONK))) {
+        if ((HasClass(ch, CLASS_WARRIOR) == 0) &&
+            ((HasClass(ch, CLASS_MONK)) == 0)) {
           send_to_char("'You do not possess the necessary fighting skills'\n\r",
             ch);
           return 1;
@@ -10489,28 +10538,32 @@ int monk_master(struct char_data* ch, int cmd, const char* arg) {
         break;
       case 5:
         sk_num = SKILL_HIDE;
-        if (!HasClass(ch, CLASS_THIEF) && !(HasClass(ch, CLASS_MONK))) {
+        if ((HasClass(ch, CLASS_THIEF) == 0) &&
+            ((HasClass(ch, CLASS_MONK)) == 0)) {
           send_to_char("'You do not possess the necessary skills'\n\r", ch);
           return 1;
         }
         break;
       case 6:
         sk_num = SKILL_SNEAK;
-        if (!HasClass(ch, CLASS_THIEF) && !(HasClass(ch, CLASS_MONK))) {
+        if ((HasClass(ch, CLASS_THIEF) == 0) &&
+            ((HasClass(ch, CLASS_MONK)) == 0)) {
           send_to_char("'You do not possess the necessary skills'\n\r", ch);
           return 1;
         }
         break;
       case 7:
         sk_num = SKILL_PICK_LOCK;
-        if (!HasClass(ch, CLASS_THIEF) && !(HasClass(ch, CLASS_MONK))) {
+        if ((HasClass(ch, CLASS_THIEF) == 0) &&
+            ((HasClass(ch, CLASS_MONK)) == 0)) {
           send_to_char("'You do not possess the necessary skills'\n\r", ch);
           return 1;
         }
         break;
       case 8:
         sk_num = SKILL_DISARM;
-        if (!HasClass(ch, CLASS_WARRIOR) && !(HasClass(ch, CLASS_MONK))) {
+        if ((HasClass(ch, CLASS_WARRIOR) == 0) &&
+            ((HasClass(ch, CLASS_MONK)) == 0)) {
           send_to_char("'You do not possess the necessary fighting skills'\n\r",
             ch);
           return 1;
@@ -10518,7 +10571,8 @@ int monk_master(struct char_data* ch, int cmd, const char* arg) {
         break;
       case 9:
         sk_num = SKILL_DODGE;
-        if (!HasClass(ch, CLASS_WARRIOR) && !(HasClass(ch, CLASS_MONK))) {
+        if ((HasClass(ch, CLASS_WARRIOR) == 0) &&
+            ((HasClass(ch, CLASS_MONK)) == 0)) {
           send_to_char("'You do not possess the necessary fighting skills'\n\r",
             ch);
           return 1;
@@ -10526,7 +10580,8 @@ int monk_master(struct char_data* ch, int cmd, const char* arg) {
         break;
       case 10:
         sk_num = SKILL_SWITCH_OPP;
-        if (!HasClass(ch, CLASS_WARRIOR) && !(HasClass(ch, CLASS_MONK))) {
+        if ((HasClass(ch, CLASS_WARRIOR) == 0) &&
+            ((HasClass(ch, CLASS_MONK)) == 0)) {
           send_to_char("'You do not possess the necessary fighting skills'\n\r",
             ch);
           return 1;
@@ -10534,7 +10589,7 @@ int monk_master(struct char_data* ch, int cmd, const char* arg) {
         break;
       case 11:
         sk_num = SKILL_SPRING_LEAP;
-        if (!HasClass(ch, CLASS_MONK)) {
+        if (HasClass(ch, CLASS_MONK) == 0) {
           send_to_char("'You do not possess the proper skills'\n\r", ch);
           return 1;
         }
@@ -10547,7 +10602,7 @@ int monk_master(struct char_data* ch, int cmd, const char* arg) {
         return 1;
     }
 
-    if (!HasClass(ch, CLASS_MONK) && GET_GOLD(ch) < charge) {
+    if ((HasClass(ch, CLASS_MONK) == 0) && GET_GOLD(ch) < charge) {
       send_to_char("'Ah, but you do not have enough money to pay.'\n\r", ch);
       return 1;
     }
@@ -10572,7 +10627,7 @@ int monk_master(struct char_data* ch, int cmd, const char* arg) {
       return 1;
     }
 
-    if (!HasClass(ch, CLASS_MONK)) {
+    if (HasClass(ch, CLASS_MONK) == 0) {
       GET_GOLD(ch) -= charge;
     }
     send_to_char("'We will now begin.'\n\r", ch);
@@ -10586,7 +10641,7 @@ int monk_master(struct char_data* ch, int cmd, const char* arg) {
       return 1;
     }
   } else if (cmd == 243) {
-    if (HasClass(ch, CLASS_MONK)) {
+    if (HasClass(ch, CLASS_MONK) != 0) {
       gain_level(ch, MONK_LEVEL_IND);
       return 1;
     }
@@ -10608,11 +10663,11 @@ int monk_challenge_room(struct char_data* ch, int cmd, const char* arg) {
   rm = ch->in_room;
 
   me = real_roomp(ch->in_room);
-  if (!me) {
+  if (me == nullptr) {
     return 0;
   }
 
-  if (!me->river_speed) {
+  if (me->river_speed == 0) {
     return 0;
   }
 
@@ -10636,7 +10691,7 @@ int monk_challenge_room(struct char_data* ch, int cmd, const char* arg) {
     /*
       find pc in room;
       */
-    for (i = me->people; i; i = i->next_in_room) {
+    for (i = me->people; i != nullptr; i = i->next_in_room) {
       if (IS_PC(i)) {
         GET_EXP(i) =
           MAX(titles[MONK_LEVEL_IND][GET_LEVEL(i, MONK_LEVEL_IND) + 1].exp + 1,
@@ -10647,11 +10702,11 @@ int monk_challenge_room(struct char_data* ch, int cmd, const char* arg) {
         char_from_room(i);
         char_to_room(i, rm - 1);
 
-        while (me->people) {
+        while (me->people != nullptr) {
           extract_char(me->people);
         }
 
-        while (me->contents) {
+        while (me->contents != nullptr) {
           extract_obj(me->contents);
         }
 
@@ -10673,18 +10728,18 @@ int monk_challenge_prep_room(struct char_data* ch, int cmd, const char* arg) {
   struct char_data* mob = nullptr;
 
   me = real_roomp(ch->in_room);
-  if (!me) {
+  if (me == nullptr) {
     return 0;
   }
 
   chal = real_roomp(ch->in_room + 1);
-  if (!chal) {
+  if (chal == nullptr) {
     send_to_char("The challenge room is gone.. please contact a god\n\r", ch);
     return 1;
   }
 
   if (cmd == NOD) {
-    if (!HasClass(ch, CLASS_MONK)) {
+    if (HasClass(ch, CLASS_MONK) == 0) {
       send_to_char("You're no monk\n\r", ch);
       return 0;
     }
@@ -10705,12 +10760,12 @@ int monk_challenge_prep_room(struct char_data* ch, int cmd, const char* arg) {
       return 1;
     }
     for (i = 0; i < MAX_WEAR; i++) {
-      if (ch->equipment[i]) {
+      if (ch->equipment[i] != nullptr) {
         o = unequip_char(ch, i);
         obj_to_char(o, ch);
       }
     }
-    while (ch->carrying) {
+    while (ch->carrying != nullptr) {
       extract_obj(ch->carrying);
     }
 
@@ -10722,7 +10777,7 @@ int monk_challenge_prep_room(struct char_data* ch, int cmd, const char* arg) {
     char_to_room(ch, newr);
     /* load the mob at the same lev as char */
     mob = read_mobile(MONK_MOB + GET_LEVEL(ch, MONK_LEVEL_IND) - 10, VIRTUAL);
-    if (!mob) {
+    if (mob == nullptr) {
       send_to_char("The fight is called off.  go home\n\r", ch);
       return 1;
     }
@@ -10744,11 +10799,11 @@ int monk_challenge_prep_room(struct char_data* ch, int cmd, const char* arg) {
 #define DEMON 29000
 
 static int ghost(struct char_data* ch, int cmd) {
-  if (cmd || !AWAKE(ch)) {
+  if ((cmd != 0) || !AWAKE(ch)) {
     return 0;
   }
 
-  if (ch->specials.fighting &&
+  if ((ch->specials.fighting != nullptr) &&
       (ch->specials.fighting->in_room == ch->in_room)) {
     act("$n touches $N!", 1, ch, nullptr, ch->specials.fighting, TO_NOTVICT);
     act("$n touches you!", 1, ch, nullptr, ch->specials.fighting, TO_VICT);
@@ -10785,7 +10840,7 @@ int Magic_Fountain(struct char_data* ch, int cmd, const char* arg) {
 
     only_argument(arg, buf);
 
-    if (str_cmp(buf, "fountain") && str_cmp(buf, "water")) {
+    if ((str_cmp(buf, "fountain") != 0) && (str_cmp(buf, "water") != 0)) {
       return 0;
     }
 
@@ -11096,18 +11151,18 @@ int new_ninja_master(struct char_data* ch, int cmd, const char* arg) {
     return 0;
   }
 
-  if (!cmd) {
-    if (ch->specials.fighting) {
+  if (cmd == 0) {
+    if (ch->specials.fighting != nullptr) {
       return (fighter(ch, cmd, arg));
     }
     return 0;
   }
 
-  if (!ch->skills) {
+  if (ch->skills == nullptr) {
     return 0;
   }
 
-  if (check_soundproof(ch)) {
+  if (check_soundproof(ch) != 0) {
     return 0;
   }
 
@@ -11116,7 +11171,7 @@ int new_ninja_master(struct char_data* ch, int cmd, const char* arg) {
   }
 
   if ((cmd == 164) || (cmd == 170)) {
-    if (!arg || (strlen(arg) == 0)) {
+    if ((arg == nullptr) || (strlen(arg) == 0)) {
       sprintf(buf, " disarm  :  %s\n\r",
         how_good(ch->skills[SKILL_DISARM].learned));
       send_to_char(buf, ch);
@@ -11142,7 +11197,7 @@ int new_ninja_master(struct char_data* ch, int cmd, const char* arg) {
       case 0:
       case 1:
         sk_num = SKILL_DISARM;
-        if (!HasClass(ch, CLASS_WARRIOR)) {
+        if (HasClass(ch, CLASS_WARRIOR) == 0) {
           send_to_char("'You do not possess the necessary fighting skills'\n\r",
             ch);
           return 1;
@@ -11150,7 +11205,8 @@ int new_ninja_master(struct char_data* ch, int cmd, const char* arg) {
         break;
       case 2:
         sk_num = SKILL_DOORBASH;
-        if (!HasClass(ch, CLASS_WARRIOR) && !HasClass(ch, CLASS_PALADIN)) {
+        if ((HasClass(ch, CLASS_WARRIOR) == 0) &&
+            (HasClass(ch, CLASS_PALADIN) == 0)) {
           send_to_char("'You do not possess the necessary fighting skills'\n\r",
             ch);
           return 1;
@@ -11158,7 +11214,7 @@ int new_ninja_master(struct char_data* ch, int cmd, const char* arg) {
         break;
       case 3:
         sk_num = SKILL_SPY;
-        if (!HasClass(ch, CLASS_THIEF)) {
+        if (HasClass(ch, CLASS_THIEF) == 0) {
           send_to_char("'You do not possess the necessary thieving skills'\n\r",
             ch);
           return 1;
@@ -11166,7 +11222,7 @@ int new_ninja_master(struct char_data* ch, int cmd, const char* arg) {
         break;
       case 4:
         sk_num = SKILL_RETREAT;
-        if (!HasClass(ch, CLASS_THIEF)) {
+        if (HasClass(ch, CLASS_THIEF) == 0) {
           send_to_char("'I only teach this skill to thieves'\n\r", ch);
           return 1;
         }
@@ -11240,20 +11296,20 @@ int RepairGuy(struct char_data* ch, int cmd, const char* arg) {
   if (cmd == 72) { /* give */
     /* determine the correct obj */
     arg = one_argument(arg, obj_name);
-    if (!*obj_name) {
+    if (*obj_name == 0) {
       send_to_char("Give what?\n\r", ch);
       return 0;
     }
-    if (!(obj = get_obj_in_list_vis(ch, obj_name, ch->carrying))) {
+    if ((obj = get_obj_in_list_vis(ch, obj_name, ch->carrying)) == nullptr) {
       send_to_char("Give what?\n\r", ch);
       return 1;
     }
     arg = one_argument(arg, vict_name);
-    if (!*vict_name) {
+    if (*vict_name == 0) {
       send_to_char("To who?\n\r", ch);
       return 0;
     }
-    if (!(vict = get_char_room_vis(ch, vict_name))) {
+    if ((vict = get_char_room_vis(ch, vict_name)) == nullptr) {
       send_to_char("To who?\n\r", ch);
       return 0;
     }
@@ -11287,7 +11343,7 @@ int RepairGuy(struct char_data* ch, int cmd, const char* arg) {
           cost *= 2;
         }
         if (cost > GET_GOLD(ch)) {
-          if (check_soundproof(ch)) {
+          if (check_soundproof(ch) != 0) {
             act("$N shakes $S head.\n\r", 1, ch, nullptr, vict, TO_ROOM);
             act("$N shakes $S head.\n\r", 1, ch, nullptr, vict, TO_CHAR);
           } else {
@@ -11314,7 +11370,7 @@ int RepairGuy(struct char_data* ch, int cmd, const char* arg) {
             obj->obj_flags.value[0] = ave;
             obj->obj_flags.value[1] = ave;
           }
-          if (check_soundproof(ch)) {
+          if (check_soundproof(ch) != 0) {
             act("$N smiles broadly.", 1, ch, nullptr, vict, TO_ROOM);
             act("$N smiles broadly.", 1, ch, nullptr, vict, TO_CHAR);
           } else {
@@ -11323,7 +11379,7 @@ int RepairGuy(struct char_data* ch, int cmd, const char* arg) {
           }
         }
       } else {
-        if (check_soundproof(ch)) {
+        if (check_soundproof(ch) != 0) {
           act("$N shrugs.", 1, ch, nullptr, vict, TO_ROOM);
           act("$N shrugs.", 1, ch, nullptr, vict, TO_CHAR);
         } else {
@@ -11335,7 +11391,7 @@ int RepairGuy(struct char_data* ch, int cmd, const char* arg) {
       }
     } else {
       if (GetMaxLevel(vict) < 25 || (ITEM_TYPE(obj) != ITEM_WEAPON)) {
-        if (check_soundproof(ch)) {
+        if (check_soundproof(ch) != 0) {
           act("$N shakes $S head.\n\r", 1, ch, nullptr, vict, TO_ROOM);
           act("$N shakes $S head.\n\r", 1, ch, nullptr, vict, TO_CHAR);
         } else {
@@ -11353,14 +11409,14 @@ int RepairGuy(struct char_data* ch, int cmd, const char* arg) {
         /* weapon repair.  expensive!   */
         cost = obj->obj_flags.cost;
         new_obj = read_object(obj->item_number, REAL);
-        if (obj->obj_flags.value[2]) {
+        if (obj->obj_flags.value[2] != 0) {
           cost /= obj->obj_flags.value[2];
         }
 
         cost *= (new_obj->obj_flags.value[2] - obj->obj_flags.value[2]);
 
         if (cost > GET_GOLD(ch)) {
-          if (check_soundproof(ch)) {
+          if (check_soundproof(ch) != 0) {
             act("$N shakes $S head.\n\r", 1, ch, nullptr, vict, TO_ROOM);
             act("$N shakes $S head.\n\r", 1, ch, nullptr, vict, TO_CHAR);
           } else {
@@ -11383,7 +11439,7 @@ int RepairGuy(struct char_data* ch, int cmd, const char* arg) {
           obj->obj_flags.value[2] = new_obj->obj_flags.value[2];
           extract_obj(new_obj);
 
-          if (check_soundproof(ch)) {
+          if (check_soundproof(ch) != 0) {
             act("$N smiles broadly.", 1, ch, nullptr, vict, TO_ROOM);
             act("$N smiles broadly.", 1, ch, nullptr, vict, TO_CHAR);
           } else {
@@ -11398,7 +11454,7 @@ int RepairGuy(struct char_data* ch, int cmd, const char* arg) {
     act("$N gives $p to $n.", 1, ch, obj, vict, TO_ROOM);
     return 1;
   }
-  if (cmd) {
+  if (cmd != 0) {
     return 0;
   }
   return (fighter(ch, cmd, arg));
@@ -11415,11 +11471,11 @@ static int samah(struct char_data* ch, int cmd, const char* arg) {
   struct room_data* rp = nullptr;
 
   rp = real_roomp(ch->in_room);
-  if (!rp) {
+  if (rp == nullptr) {
     return 0;
   }
 
-  if (cmd) {
+  if (cmd != 0) {
     if (GET_RACE(ch) == RACE_SARTAN || GET_RACE(ch) == RACE_PATRYN ||
         GetMaxLevel(ch) == BRUTIUS) {
       return 0;
@@ -11517,21 +11573,22 @@ static int samah(struct char_data* ch, int cmd, const char* arg) {
       return 1;
     }
   } else {
-    if (ch->specials.fighting) {
+    if (ch->specials.fighting != nullptr) {
     } else {
       /*
    check for followers in the room
    */
-      for (t = rp->people; t; t = t->next_in_room) {
-        if (IS_NPC(t) && !IS_PC(t) && t->master && t != ch && t->master != ch) {
+      for (t = rp->people; t != nullptr; t = t->next_in_room) {
+        if (IS_NPC(t) && !IS_PC(t) && (t->master != nullptr) && t != ch &&
+            t->master != ch) {
           break;
         }
       }
-      if (t) {
+      if (t != nullptr) {
         act("$n says 'What is $N doing here?'", 0, ch, nullptr, t, TO_ROOM);
         act("$n makes a magical gesture", 0, ch, nullptr, nullptr, TO_ROOM);
         purge_nr = t->nr;
-        for (t2 = rp->people; t2; t2 = t3) {
+        for (t2 = rp->people; t2 != nullptr; t2 = t3) {
           t3 = t2->next_in_room;
           if (t2->nr == purge_nr && !IS_PC(t2)) {
             act("$N, looking very surprised, quickly fades out of existence.",
@@ -11543,7 +11600,7 @@ static int samah(struct char_data* ch, int cmd, const char* arg) {
         /*
           check for polymorphs in the room
           */
-        for (t = rp->people; t; t = t->next_in_room) {
+        for (t = rp->people; t != nullptr; t = t->next_in_room) {
           if (IS_NPC(t) && IS_PC(t)) { /* ah.. polymorphed :-) */
             /*
               I would like to digress at this point, and state that
@@ -11811,11 +11868,11 @@ static int make_quest(struct char_data* ch, struct char_data* gm, int Class,
   if (cmd == GIVE) {
     arg = one_argument(arg, obj_name);
     arg = one_argument(arg, vict_name);
-    if (!(obj = get_obj_in_list_vis(ch, obj_name, ch->carrying))) {
+    if ((obj = get_obj_in_list_vis(ch, obj_name, ch->carrying)) == nullptr) {
       send_to_char("You do not seem to have anything like that.\n\r", ch);
       return 0;
     }
-    if (!(vict = get_char_room_vis(ch, vict_name))) {
+    if ((vict = get_char_room_vis(ch, vict_name)) == nullptr) {
       send_to_char("No one by that name around here.\n\r", ch);
       return 0;
     }
@@ -11843,7 +11900,7 @@ static int make_quest(struct char_data* ch, struct char_data* gm, int Class,
       return 0;
     }
 
-    if (QuestList[Class][GET_LEVEL(ch, Class)].item) {
+    if (QuestList[Class][GET_LEVEL(ch, Class)].item != 0) {
       act("$n shakes $s head", 0, gm, nullptr, nullptr, TO_ROOM);
       act("$n tells you 'First you must prove your mastery of knowledge'", 0,
         gm, nullptr, ch, TO_VICT);
@@ -11867,13 +11924,13 @@ static int creeping_death(struct char_data* ch, int cmd) {
   struct obj_data* co = nullptr;
   struct obj_data* o = nullptr;
 
-  if (cmd) {
+  if (cmd != 0) {
     return 0;
   }
-  if (!ch->act_ptr) {
+  if (ch->act_ptr == nullptr) {
     ch->act_ptr = (struct mob_act_data*)calloc(1, sizeof(struct mob_act_data));
   }
-  if (ch->specials.fighting) { /* kill */
+  if (ch->specials.fighting != nullptr) { /* kill */
 
     t = ch->specials.fighting;
     if (t->in_room == ch->in_room) {
@@ -11886,12 +11943,12 @@ static int creeping_death(struct char_data* ch, int cmd) {
       die(t);
       /* find the corpse and destroy it */
       rp = real_roomp(ch->in_room);
-      if (!rp) {
+      if (rp == nullptr) {
         return 0;
       }
-      for (co = rp->contents; co; co = co->next_content) {
+      for (co = rp->contents; co != nullptr; co = co->next_content) {
         if (IS_CORPSE(co)) { /* assume 1st corpse is victim's */
-          while (co->contains) {
+          while (co->contains != nullptr) {
             o = co->contains;
             obj_from_obj(o);
             obj_to_room(o, ch->in_room);
@@ -11914,7 +11971,7 @@ static int creeping_death(struct char_data* ch, int cmd) {
   /* the act_ptr is the direction of travel */
 
   if (number(0, 1) == 0) { /* move */
-    if (!ValidMove(ch, (*((int*)ch->act_ptr)))) {
+    if (ValidMove(ch, (*((int*)ch->act_ptr))) == 0) {
       act("$n dissapates, you breath a sigh of relief", 0, ch, nullptr, nullptr,
         TO_ROOM);
       GET_HIT(ch) = 1;
@@ -11926,17 +11983,17 @@ static int creeping_death(struct char_data* ch, int cmd) {
     return 0;
 
   } /* make everyone with any brains flee */
-  for (t = real_roomp(ch->in_room)->people; t; t = next) {
+  for (t = real_roomp(ch->in_room)->people; t != nullptr; t = next) {
     next = t->next_in_room;
     if (t != ch) {
-      if (!saves_spell(t, SAVING_PETRI)) {
+      if (saves_spell(t, SAVING_PETRI) == 0) {
         do_flee(t, "\0", 0);
       }
     }
   }
 
   /* find someone in the room to flay */
-  for (t = real_roomp(ch->in_room)->people; t; t = next) {
+  for (t = real_roomp(ch->in_room)->people; t != nullptr; t = next) {
     next = t->next_in_room;
     if (!IS_IMMORTAL(t) && t != ch && number(0, 2) == 0) {
       act("$N is engulfed by $n!", 0, ch, nullptr, t, TO_NOTVICT);
@@ -11948,12 +12005,12 @@ static int creeping_death(struct char_data* ch, int cmd) {
       die(t);
       /* find the corpse and destroy it */
       rp = real_roomp(ch->in_room);
-      if (!rp) {
+      if (rp == nullptr) {
         return 0;
       }
-      for (co = rp->contents; co; co = co->next_content) {
+      for (co = rp->contents; co != nullptr; co = co->next_content) {
         if (IS_CORPSE(co)) { /* assume 1st corpse is victim's */
-          while (co->contains) {
+          while (co->contains != nullptr) {
             o = co->contains;
             obj_from_obj(o);
             obj_to_room(o, ch->in_room);
@@ -11986,14 +12043,14 @@ static int generic_cityguard_hate_undead(struct char_data* ch, int cmd,
   int max_evil = 0;
   int lev = 0;
 
-  if (cmd || !AWAKE(ch)) {
+  if ((cmd != 0) || !AWAKE(ch)) {
     return 0;
   }
 
-  if (ch->specials.fighting) {
+  if (ch->specials.fighting != nullptr) {
     fighter(ch, cmd, arg);
 
-    if (!check_soundproof(ch)) {
+    if (check_soundproof(ch) == 0) {
       if (number(0, 20) == 0) {
         do_shout(ch, "To me, my fellows! I am in need of thy aid!", 0);
       } else {
@@ -12001,7 +12058,7 @@ static int generic_cityguard_hate_undead(struct char_data* ch, int cmd,
           nullptr, TO_ROOM);
       }
 
-      if (ch->specials.fighting) {
+      if (ch->specials.fighting != nullptr) {
         CallForGuard(ch, ch->specials.fighting, 3, type);
       }
 
@@ -12012,15 +12069,16 @@ static int generic_cityguard_hate_undead(struct char_data* ch, int cmd,
   max_evil = 0;
   evil = nullptr;
 
-  if (check_peaceful(ch, "")) {
+  if (check_peaceful(ch, "") != 0) {
     return 0;
   }
 
-  for (tch = real_roomp(ch->in_room)->people; tch; tch = tch->next_in_room) {
-    if ((IS_NPC(tch)) && (IsUndead(tch)) && CAN_SEE(ch, tch)) {
+  for (tch = real_roomp(ch->in_room)->people; tch != nullptr;
+    tch = tch->next_in_room) {
+    if ((IS_NPC(tch)) && ((IsUndead(tch)) != 0) && (CAN_SEE(ch, tch) != 0)) {
       max_evil = -1000;
       evil = tch;
-      if (!check_soundproof(ch)) {
+      if (check_soundproof(ch) == 0) {
         act("$n screams 'EVIL!!!  BANZAI!  SPOOON!'", 0, ch, nullptr, nullptr,
           TO_ROOM);
       }
@@ -12028,7 +12086,7 @@ static int generic_cityguard_hate_undead(struct char_data* ch, int cmd,
       return 1;
     }
     if (!IS_PC(tch)) {
-      if (tch->specials.fighting) {
+      if (tch->specials.fighting != nullptr) {
         if ((GET_ALIGNMENT(tch) < max_evil) &&
             (!IS_PC(tch) || !IS_PC(tch->specials.fighting))) {
           max_evil = GET_ALIGNMENT(tch);
@@ -12038,26 +12096,26 @@ static int generic_cityguard_hate_undead(struct char_data* ch, int cmd,
     }
   }
 
-  if (evil && (GET_ALIGNMENT(evil->specials.fighting) >= 0)) {
+  if ((evil != nullptr) && (GET_ALIGNMENT(evil->specials.fighting) >= 0)) {
     if (GET_HIT(evil->specials.fighting) > GET_HIT(evil) ||
         (evil->specials.fighting->attackers > 3)) {
-      if (!check_soundproof(ch)) {
+      if (check_soundproof(ch) == 0) {
         act("$n screams 'PROTECT THE INNOCENT! BANZAI!!! CHARGE!!! SPOON!'", 0,
           ch, nullptr, nullptr, TO_ROOM);
       }
       hit(ch, evil, TYPE_UNDEFINED);
       return 1;
     }
-    if (!check_soundproof(ch)) {
+    if (check_soundproof(ch) == 0) {
       act("$n yells 'There's no need to fear! $n is here!'", 0, ch, nullptr,
         nullptr, TO_ROOM);
     }
 
-    if (!ch->skills) {
+    if (ch->skills == nullptr) {
       SpaceForSkills(ch);
     }
 
-    if (!ch->skills[SKILL_RESCUE].learned) {
+    if (ch->skills[SKILL_RESCUE].learned == 0) {
       ch->skills[SKILL_RESCUE].learned = GetMaxLevel(ch) * 3 + 30;
     }
     do_rescue(ch, GET_NAME(evil->specials.fighting), 0);
@@ -12074,14 +12132,14 @@ static int generic_cityguard(struct char_data* ch, int cmd, char* arg,
   int max_evil = 0;
   int lev = 0;
 
-  if (cmd || !AWAKE(ch)) {
+  if ((cmd != 0) || !AWAKE(ch)) {
     return 0;
   }
 
-  if (ch->specials.fighting) {
+  if (ch->specials.fighting != nullptr) {
     fighter(ch, cmd, arg);
 
-    if (!check_soundproof(ch)) {
+    if (check_soundproof(ch) == 0) {
       if (number(0, 20) == 0) {
         do_shout(ch, "To me, my fellows! I am in need of thy aid!", 0);
       } else {
@@ -12089,7 +12147,7 @@ static int generic_cityguard(struct char_data* ch, int cmd, char* arg,
           nullptr, TO_ROOM);
       }
 
-      if (ch->specials.fighting) {
+      if (ch->specials.fighting != nullptr) {
         CallForGuard(ch, ch->specials.fighting, 3, type);
       }
 
@@ -12100,12 +12158,13 @@ static int generic_cityguard(struct char_data* ch, int cmd, char* arg,
   max_evil = 1000;
   evil = nullptr;
 
-  if (check_peaceful(ch, "")) {
+  if (check_peaceful(ch, "") != 0) {
     return 0;
   }
 
-  for (tch = real_roomp(ch->in_room)->people; tch; tch = tch->next_in_room) {
-    if (tch->specials.fighting) {
+  for (tch = real_roomp(ch->in_room)->people; tch != nullptr;
+    tch = tch->next_in_room) {
+    if (tch->specials.fighting != nullptr) {
       if ((GET_ALIGNMENT(tch) < max_evil) &&
           (IS_NPC(tch) || IS_NPC(tch->specials.fighting))) {
         max_evil = GET_ALIGNMENT(tch);
@@ -12114,8 +12173,8 @@ static int generic_cityguard(struct char_data* ch, int cmd, char* arg,
     }
   }
 
-  if (evil && (GET_ALIGNMENT(evil->specials.fighting) >= 0)) {
-    if (!check_soundproof(ch)) {
+  if ((evil != nullptr) && (GET_ALIGNMENT(evil->specials.fighting) >= 0)) {
+    if (check_soundproof(ch) == 0) {
       act("$n screams 'PROTECT THE INNOCENT! BANZAI!!! CHARGE!!! SPOON!'", 0,
         ch, nullptr, nullptr, TO_ROOM);
     }
@@ -12151,18 +12210,18 @@ int loremaster(struct char_data* ch, int cmd, const char* arg) {
     return 0;
   }
 
-  if (!ch->skills) {
+  if (ch->skills == nullptr) {
     return 0;
   }
 
-  if (!cmd) {
-    if (ch->specials.fighting) {
+  if (cmd == 0) {
+    if (ch->specials.fighting != nullptr) {
       return (fighter(ch, cmd, arg));
     }
     return 0;
   }
 
-  if (check_soundproof(ch)) {
+  if (check_soundproof(ch) != 0) {
     return 0;
   }
 
@@ -12171,7 +12230,7 @@ int loremaster(struct char_data* ch, int cmd, const char* arg) {
   }
 
   if ((cmd == 164) || (cmd == 170)) {
-    if (!arg || (strlen(arg) == 0)) {
+    if ((arg == nullptr) || (strlen(arg) == 0)) {
       sprintf(buf, " necromancy      :  %s\n\r",
         how_good(ch->skills[SKILL_CONS_UNDEAD].learned));
       send_to_char(buf, ch);
@@ -12235,12 +12294,13 @@ int loremaster(struct char_data* ch, int cmd, const char* arg) {
         sk_num = SKILL_CONS_OTHER;
         break;
       case 8:
-        if (!HasClass(ch, CLASS_CLERIC) && !HasClass(ch, CLASS_MAGIC_USER)) {
+        if ((HasClass(ch, CLASS_CLERIC) == 0) &&
+            (HasClass(ch, CLASS_MAGIC_USER) == 0)) {
           sk_num = SKILL_READ_MAGIC;
         } else {
           send_to_char("'You already have this skill!'\n\r", ch);
-          if (ch->skills) {
-            if (!ch->skills[SKILL_READ_MAGIC].learned) {
+          if (ch->skills != nullptr) {
+            if (ch->skills[SKILL_READ_MAGIC].learned == 0) {
               ch->skills[SKILL_READ_MAGIC].learned = 95;
             }
           }
@@ -12317,7 +12377,7 @@ void station(void) {
       "off.\n\r",
       8602);
     ch = real_roomp(8602)->people;
-    while (ch) {
+    while (ch != nullptr) {
       char_from_room(ch);
       char_to_room(ch, 8600);
       ch = real_roomp(8602)->people;
@@ -12330,7 +12390,7 @@ void station(void) {
       "off.\n\r",
       8601);
     ch = real_roomp(8601)->people;
-    while (ch) {
+    while (ch != nullptr) {
       char_from_room(ch);
       char_to_room(ch, 18999);
       ch = real_roomp(8601)->people;
@@ -12341,7 +12401,7 @@ void station(void) {
     send_to_room("The train has left for the casino!\n\r", 18999);
     send_to_room("The train rumbles as you depart for the casino!\n\r", 8602);
     obj = get_obj_in_list("train", real_roomp(18999)->contents);
-    if (obj) {
+    if (obj != nullptr) {
       extract_obj(obj);
     }
   }
@@ -12351,7 +12411,7 @@ void station(void) {
     send_to_room(
       "The train rumbles and shakes as it heads back to the city.\n\r", 8601);
     obj = get_obj_in_list("train", real_roomp(8600)->contents);
-    if (obj) {
+    if (obj != nullptr) {
       extract_obj(obj);
     }
   }
@@ -12397,15 +12457,16 @@ int dragon(struct char_data* ch, int cmd, const char* arg) {
   struct char_data* t1 = nullptr;
   struct char_data* t2 = nullptr;
   int damage = 0;
-  if (cmd) {
+  if (cmd != 0) {
     return 0;
   }
-  if (!ch->specials.fighting) {
+  if (ch->specials.fighting == nullptr) {
     return 0;
   }
   if (number(1, 10) < 7) {
     act("$n breathes a cone of frost!", 0, ch, nullptr, nullptr, TO_ROOM);
-    for (t1 = real_roomp(ch->in_room)->people; t1; t1 = t1->next_in_room) {
+    for (t1 = real_roomp(ch->in_room)->people; t1 != nullptr;
+      t1 = t1->next_in_room) {
       if (!IS_MOB(t1)) {
         send_to_char("The cold is FREEZING you!\n\r", t1);
         damage = MIN(number(10, 100), GET_HIT(t1) + 8);
@@ -12416,16 +12477,17 @@ int dragon(struct char_data* ch, int cmd, const char* arg) {
     }
   } else {
     t2 = nullptr;
-    for (t1 = real_roomp(ch->in_room)->people; t1; t1 = t1->next_in_room) {
+    for (t1 = real_roomp(ch->in_room)->people; t1 != nullptr;
+      t1 = t1->next_in_room) {
       if (!IS_MOB(t1)) {
-        if (!t2) {
+        if (t2 == nullptr) {
           t2 = t1;
         } else if ((GET_HIT(t1) > -1) && (GET_HIT(t1) < GET_HIT(t2))) {
           t2 = t1;
         }
       }
     }
-    if (t2) {
+    if (t2 != nullptr) {
       act("The Dragon whips $n with his tail!", 0, t2, nullptr, nullptr,
         TO_ROOM);
       send_to_char("The Dragon slashes you with his spiked tail! OUCH!\n\r",
@@ -12457,18 +12519,18 @@ int hunter(struct char_data* ch, int cmd, const char* arg) {
     return 0;
   }
 
-  if (!cmd) {
-    if (ch->specials.fighting) {
+  if (cmd == 0) {
+    if (ch->specials.fighting != nullptr) {
       return (fighter(ch, cmd, arg));
     }
     return 0;
   }
 
-  if (!ch->skills) {
+  if (ch->skills == nullptr) {
     return 0;
   }
 
-  if (check_soundproof(ch)) {
+  if (check_soundproof(ch) != 0) {
     return 0;
   }
 
@@ -12477,7 +12539,7 @@ int hunter(struct char_data* ch, int cmd, const char* arg) {
   }
 
   if ((cmd == 164) || (cmd == 170)) {
-    if (!arg || (strlen(arg) == 0)) {
+    if ((arg == nullptr) || (strlen(arg) == 0)) {
       sprintf(buf, " track          :  %s\n\r",
         how_good(ch->skills[SKILL_HUNT].learned));
       send_to_char(buf, ch);
@@ -12489,7 +12551,7 @@ int hunter(struct char_data* ch, int cmd, const char* arg) {
       send_to_char(buf, ch);
       return 1;
     }
-    if (!HasClass(ch, CLASS_THIEF)) {
+    if (HasClass(ch, CLASS_THIEF) == 0) {
       send_to_char("'You're not the sort I'll teach to'\n\r", ch);
       return 1;
     }
@@ -12556,12 +12618,13 @@ static int scraps(struct obj_data* obj, int type) {
   if (type == PULSE_COMMAND) {
     return 0;
   }
-  if (obj->obj_flags.value[0]) {
+  if (obj->obj_flags.value[0] != 0) {
     obj->obj_flags.value[0]--;
   }
 
-  if (obj->obj_flags.value[0] == 0 && obj->in_room) {
-    if ((obj->in_room != NOWHERE) && (real_roomp(obj->in_room)->people)) {
+  if (obj->obj_flags.value[0] == 0 && (obj->in_room != 0)) {
+    if ((obj->in_room != NOWHERE) &&
+        ((real_roomp(obj->in_room)->people) != nullptr)) {
       act("$p disintegrates into atomic particles!", 0,
         real_roomp(obj->in_room)->people, obj, nullptr, TO_ROOM);
       act("$p disintegrates into atomic particles!", 0,
@@ -12576,9 +12639,9 @@ static int scraps(struct obj_data* obj, int type) {
 static struct char_data* char_with_name(char* name) {
   struct descriptor_data* d = nullptr;
 
-  for (d = descriptor_list; d; d = d->next) {
-    if ((d->connected == CON_PLYNG) && (d->character) &&
-        (!strcasecmp(GET_NAME(d->character), name))) {
+  for (d = descriptor_list; d != nullptr; d = d->next) {
+    if ((d->connected == CON_PLYNG) && ((d->character) != nullptr) &&
+        (strcasecmp(GET_NAME(d->character), name) == 0)) {
       return d->character;
     }
   }
@@ -12590,9 +12653,10 @@ static int adjacent_room(int room) {
   struct room_data* rp = nullptr;
   int dir = 0;
 
-  if ((rp = real_roomp(room))) {
+  if ((rp = real_roomp(room)) != nullptr) {
     for (dir = 0; dir < 6; dir++) {
-      if (rp->dir_option[dir] && (rp->dir_option[dir]->to_room > 0)) {
+      if ((rp->dir_option[dir] != nullptr) &&
+          (rp->dir_option[dir]->to_room > 0)) {
         return rp->dir_option[dir]->to_room;
       }
     }
@@ -12606,8 +12670,8 @@ static int adjacent_room(int room) {
 int bounty_hunter(struct char_data* ch, int cmd, const char* arg) {
   assert(ch);
 
-  if (cmd) {
-    if (!arg) {
+  if (cmd != 0) {
+    if (arg == nullptr) {
       return 0;
     }
 
@@ -12619,13 +12683,15 @@ int bounty_hunter(struct char_data* ch, int cmd, const char* arg) {
     if (cmd == 92 || cmd == 60 || cmd == 72) {
       struct room_data* rp = real_roomp(ch->in_room);
 
-      if (!rp) {
+      if (rp == nullptr) {
         return 0;
       }
 
-      for (struct char_data* me = rp->people; me; me = me->next_in_room) {
+      for (struct char_data* me = rp->people; me != nullptr;
+        me = me->next_in_room) {
         if (!IS_MOB(me) || mob_index[me->nr].func.mob_f != bounty_hunter ||
-            !me->act_ptr || !(me->act_ptr->type == MOB_ACT_BOUNTYHUNTER)) {
+            (me->act_ptr == nullptr) ||
+            !(me->act_ptr->type == MOB_ACT_BOUNTYHUNTER)) {
           continue;
         }
 
@@ -12640,7 +12706,7 @@ int bounty_hunter(struct char_data* ch, int cmd, const char* arg) {
 
         struct obj_data* temp_obj = get_obj_vis_world(me, buf, nullptr);
 
-        if (!temp_obj || ch != char_holding(temp_obj)) {
+        if ((temp_obj == nullptr) || ch != char_holding(temp_obj)) {
           continue;
         }
 
@@ -12656,11 +12722,11 @@ int bounty_hunter(struct char_data* ch, int cmd, const char* arg) {
           char buf2[256];
 
           if (sscanf(arg, " %s %s", buf, buf2) != 2 ||
-              !isname(buf, temp_obj->name)) {
+              (isname(buf, temp_obj->name) == 0)) {
             continue;
           }
 
-          if (isname(buf2, GET_NAME(me))) {
+          if (isname(buf2, GET_NAME(me)) != 0) {
             do_give(ch, arg, 72);
             do_action(me, GET_NAME(ch), 23);
             do_say(me,
@@ -12680,7 +12746,7 @@ int bounty_hunter(struct char_data* ch, int cmd, const char* arg) {
 
         //  cmd == 60
         sscanf(arg, " %s ", buf);
-        if (!isname(buf, temp_obj->name)) {
+        if (isname(buf, temp_obj->name) == 0) {
           continue;
         }
 
@@ -12706,8 +12772,8 @@ int bounty_hunter(struct char_data* ch, int cmd, const char* arg) {
       return 1;
     }
 
-    if (cmd == 207 &&
-        (strcasestr(arg, "recall") || strcasestr(arg, "scroll"))) {
+    if (cmd == 207 && ((strcasestr(arg, "recall") != nullptr) ||
+                        (strcasestr(arg, "scroll") != nullptr))) {
       struct char_data* me =
         FindMobInRoomWithFunction(ch->in_room, bounty_hunter);
 
@@ -12728,7 +12794,7 @@ int bounty_hunter(struct char_data* ch, int cmd, const char* arg) {
       int offset = 1;
       char spell_buf[MAX_INPUT_LENGTH];
 
-      for (; *(arg + offset) && (*(arg + offset) != '\''); ++offset) {
+      for (; (*(arg + offset) != 0) && (*(arg + offset) != '\''); ++offset) {
         spell_buf[offset - 1] = LOWER(*(arg + offset));
       }
       spell_buf[offset - 1] = '\0';
@@ -12766,7 +12832,7 @@ int bounty_hunter(struct char_data* ch, int cmd, const char* arg) {
 
       assert(me);
 
-      if (!strncasecmp(arg, " version", 8)) {
+      if (strncasecmp(arg, " version", 8) == 0) {
         act("$n says 'I am version 1.11 of the Bounty Hunter spec_proc.'", 0,
           me, nullptr, nullptr, TO_ROOM);
         act("$n says 'I was conceived of and designed by Stargazer.'", 0, me,
@@ -12776,12 +12842,14 @@ int bounty_hunter(struct char_data* ch, int cmd, const char* arg) {
 
       act("$n whispers something to $N.", 0, me, nullptr, ch, TO_NOTVICT);
 
-      if (!strncasecmp(arg, " status", 7)) {
-        if (!me->act_ptr || me->act_ptr->type != MOB_ACT_BOUNTYHUNTER) {
+      if (strncasecmp(arg, " status", 7) == 0) {
+        if ((me->act_ptr == nullptr) ||
+            me->act_ptr->type != MOB_ACT_BOUNTYHUNTER) {
           act("$n whispers 'Master $N, I am currently idle with no memory.'", 0,
             me, nullptr, ch, TO_VICT);
 
-          if (me->act_ptr && me->act_ptr->type != MOB_ACT_BOUNTYHUNTER) {
+          if ((me->act_ptr != nullptr) &&
+              me->act_ptr->type != MOB_ACT_BOUNTYHUNTER) {
             vlog(
               "bounty_hunter proc: ch->act_ptr is not of type "
               "MOB_ACT_BOUNTYHUNTER.  Resetting.");
@@ -12842,8 +12910,10 @@ int bounty_hunter(struct char_data* ch, int cmd, const char* arg) {
 
       struct mob_act_bountyhunter* job = nullptr;
 
-      if (!me->act_ptr || me->act_ptr->type != MOB_ACT_BOUNTYHUNTER) {
-        if (me->act_ptr && me->act_ptr->type != MOB_ACT_BOUNTYHUNTER) {
+      if ((me->act_ptr == nullptr) ||
+          me->act_ptr->type != MOB_ACT_BOUNTYHUNTER) {
+        if ((me->act_ptr != nullptr) &&
+            me->act_ptr->type != MOB_ACT_BOUNTYHUNTER) {
           vlog(
             "bounty_hunter proc: ch->act_ptr is not of type "
             "MOB_ACT_BOUNTYHUNTER.  Resetting.");
@@ -12920,7 +12990,7 @@ int bounty_hunter(struct char_data* ch, int cmd, const char* arg) {
         return 1;
       }
 
-      if (!strncasecmp(arg, " forget", 7)) {
+      if (strncasecmp(arg, " forget", 7) == 0) {
         act("$n whispers 'Master $N, I am clearing my memory.'", 0, me, nullptr,
           ch, TO_VICT);
         free(me->act_ptr);
@@ -12928,7 +12998,7 @@ int bounty_hunter(struct char_data* ch, int cmd, const char* arg) {
         return 1;
       }
 
-      if (!strncasecmp(arg, " no mercy", 9)) {
+      if (strncasecmp(arg, " no mercy", 9) == 0) {
         act("$n whispers 'Master $N, I will have no mercy.'", 0, me, nullptr,
           ch, TO_VICT);
 
@@ -12942,7 +13012,7 @@ int bounty_hunter(struct char_data* ch, int cmd, const char* arg) {
         return 1;
       }
 
-      if (!strncasecmp(arg, " show mercy", 11)) {
+      if (strncasecmp(arg, " show mercy", 11) == 0) {
         act("$n whispers 'Master $N, I will now show mercy.'", 0, me, nullptr,
           ch, TO_VICT);
         job->num_chances = 9;
@@ -12960,8 +13030,8 @@ int bounty_hunter(struct char_data* ch, int cmd, const char* arg) {
   }
 
   // Cmd == 0, default behavior follows
-  if (!ch->act_ptr || ch->act_ptr->type != MOB_ACT_BOUNTYHUNTER || !AWAKE(ch) ||
-      !IS_NPC(ch) || ch->specials.fighting) {
+  if ((ch->act_ptr == nullptr) || ch->act_ptr->type != MOB_ACT_BOUNTYHUNTER ||
+      !AWAKE(ch) || !IS_NPC(ch) || (ch->specials.fighting != nullptr)) {
     return 0;
   }
 
@@ -12973,16 +13043,16 @@ int bounty_hunter(struct char_data* ch, int cmd, const char* arg) {
 
     struct obj_data* temp_obj = get_obj_vis_world(ch, buf, nullptr);
 
-    if (!temp_obj) {
+    if (temp_obj == nullptr) {
       *job->hunted_victim = '\0';
       return 0;
     }
 
     struct char_data* targ = char_holding(temp_obj);
 
-    if (targ) {
+    if (targ != nullptr) {
       if (targ == ch) {
-        if (temp_obj->equipped_by) {
+        if (temp_obj->equipped_by != nullptr) {
           unequip_char(targ, temp_obj->eq_pos);
         }
 
@@ -12996,7 +13066,7 @@ int bounty_hunter(struct char_data* ch, int cmd, const char* arg) {
           act("$n appears pleased.", 0, ch, nullptr, targ, TO_ROOM);
         }
 
-        if (ch->master) {
+        if (ch->master != nullptr) {
           stop_follower(ch);
         }
 
@@ -13009,7 +13079,7 @@ int bounty_hunter(struct char_data* ch, int cmd, const char* arg) {
       if (*(job->hunted_victim) != '\0') {
         if (strcasecmp(job->hunted_victim, GET_NAME(targ)) != 0) {
           strcpy(job->hunted_victim, GET_NAME(targ));
-          if (ch->master) {
+          if (ch->master != nullptr) {
             stop_follower(ch);
           }
           if (job->num_chances != -99) {
@@ -13018,7 +13088,7 @@ int bounty_hunter(struct char_data* ch, int cmd, const char* arg) {
         }
       } else {
         strcpy(job->hunted_victim, GET_NAME(targ));
-        if (ch->master) {
+        if (ch->master != nullptr) {
           stop_follower(ch);
         }
         if (job->num_chances != -99) {
@@ -13055,11 +13125,11 @@ int bounty_hunter(struct char_data* ch, int cmd, const char* arg) {
 
       go_direction(ch, dir);
     } else {
-      if (targ) {
+      if (targ != nullptr) {
         do_wake(ch, targ->player.name, 46);
 
-        if (!circle_follow(ch, targ) && ch->master != targ) {
-          if (ch->master) {
+        if ((circle_follow(ch, targ) == 0) && ch->master != targ) {
+          if (ch->master != nullptr) {
             stop_follower(ch);
           }
 
@@ -13132,17 +13202,18 @@ int bounty_hunter(struct char_data* ch, int cmd, const char* arg) {
               sprintf(buf, "$n quickly surrenders the %s.", job->hunted_item);
               act(buf, 0, targ, nullptr, targ, TO_ROOM);
 
-              if (temp_obj->in_obj) {
+              if (temp_obj->in_obj != nullptr) {
                 obj_from_obj(temp_obj);
-              } else if (temp_obj->carried_by) {
+              } else if (temp_obj->carried_by != nullptr) {
                 obj_from_char(temp_obj);
-              } else if (temp_obj->equipped_by) {
+              } else if (temp_obj->equipped_by != nullptr) {
                 unequip_char(targ, temp_obj->eq_pos);
               }
 
               obj_to_char(temp_obj, ch);
-            } else if (targ->desc && targ->desc->connected == CON_PLYNG) {
-              if (check_peaceful(ch, "")) {
+            } else if ((targ->desc != nullptr) &&
+                       targ->desc->connected == CON_PLYNG) {
+              if (check_peaceful(ch, "") != 0) {
                 if (job->num_chances > -5) {
                   --job->num_chances;
 
@@ -13185,7 +13256,7 @@ int bounty_hunter(struct char_data* ch, int cmd, const char* arg) {
                   do_look(ch, "\0", 0);
                   do_look(targ, "\0", 0);
 
-                  if (!check_peaceful(ch, "")) {
+                  if (check_peaceful(ch, "") == 0) {
                     hit(ch, targ, 0);
                   }
                 }
@@ -13196,11 +13267,11 @@ int bounty_hunter(struct char_data* ch, int cmd, const char* arg) {
               act("$n gets something from a link dead player and laughs evily.",
                 0, ch, nullptr, targ, TO_ROOM);
 
-              if (temp_obj->carried_by) {
+              if (temp_obj->carried_by != nullptr) {
                 obj_from_char(temp_obj);
-              } else if (temp_obj->equipped_by) {
+              } else if (temp_obj->equipped_by != nullptr) {
                 unequip_char(targ, temp_obj->eq_pos);
-              } else if (temp_obj->in_obj) {
+              } else if (temp_obj->in_obj != nullptr) {
                 obj_from_obj(temp_obj);
               }
 
@@ -13209,7 +13280,7 @@ int bounty_hunter(struct char_data* ch, int cmd, const char* arg) {
 
             break;
         }
-      } else if (temp_obj->in_obj) { /* item is in object */
+      } else if (temp_obj->in_obj != nullptr) { /* item is in object */
         obj_from_obj(temp_obj);
         obj_to_char(temp_obj, ch);
         act("$n picks up something quickly.", 0, ch, nullptr, nullptr, TO_ROOM);
@@ -13232,16 +13303,16 @@ int bounty_hunter(struct char_data* ch, int cmd, const char* arg) {
   if (*(job->hunted_victim) != '\0') {
     struct char_data* targ = char_with_name(job->hunted_victim);
 
-    if (!targ) {
+    if (targ == nullptr) {
       return 0;
     }
 
     if (targ->in_room == ch->in_room) {
       do_wake(ch, targ->player.name, 46);
 
-      if (!circle_follow(ch, targ)) {
+      if (circle_follow(ch, targ) == 0) {
         if (ch->master != targ) {
-          if (ch->master) {
+          if (ch->master != nullptr) {
             stop_follower(ch);
           }
 
@@ -13274,7 +13345,7 @@ int bounty_hunter(struct char_data* ch, int cmd, const char* arg) {
           --job->num_chances;
           break;
         default:
-          if (check_peaceful(ch, "")) {
+          if (check_peaceful(ch, "") != 0) {
             do_say(ch, "You can't stay here forever, you know.", 17);
           } else {
             hit(ch, targ, 0);
@@ -13303,33 +13374,33 @@ int bounty_hunter(struct char_data* ch, int cmd, const char* arg) {
 }
 
 static int potentially_annoying(int cmd) {
-  return ((cmd == 27) ||  /* laugh  */
-          (cmd == 30) ||  /* puke   */
-          (cmd == 31) ||  /* growl  */
-          (cmd == 33) ||  /* insult */
-          (cmd == 111) || /* fart   */
-          (cmd == 112) || /* flip   */
-          (cmd == 113) || /* fondle */
-          (cmd == 118) || /* grope  */
-          (cmd == 130) || /* slap   */
-          (cmd == 137) || /* spit   */
-          (cmd == 160) || /* french */
-          (cmd == 182) || /* fume   */
-          (cmd == 189) || /* punch  */
-          (cmd == 190) || /* snarl  */
-          (cmd == 191) || /* spank  */
-          (cmd == 193) || /* tackle */
-          (cmd == 194) || /* taunt  */
-          (cmd == 196) || /* whine  */
-          (cmd == 261) || /* bonk   */
-          (cmd == 262) || /* scold  */
-          (cmd == 264) || /* rip    */
-          (cmd == 271) || /* belittle */
-          (cmd == 272) || /* piledrive */
-          (cmd == 285) || /* flipoff */
-          (cmd == 286) || /* moon   */
-          (cmd == 287) || /* pinch  */
-          (cmd == 288));  /* bite   */
+  return static_cast<int>((cmd == 27) ||  /* laugh  */
+                          (cmd == 30) ||  /* puke   */
+                          (cmd == 31) ||  /* growl  */
+                          (cmd == 33) ||  /* insult */
+                          (cmd == 111) || /* fart   */
+                          (cmd == 112) || /* flip   */
+                          (cmd == 113) || /* fondle */
+                          (cmd == 118) || /* grope  */
+                          (cmd == 130) || /* slap   */
+                          (cmd == 137) || /* spit   */
+                          (cmd == 160) || /* french */
+                          (cmd == 182) || /* fume   */
+                          (cmd == 189) || /* punch  */
+                          (cmd == 190) || /* snarl  */
+                          (cmd == 191) || /* spank  */
+                          (cmd == 193) || /* tackle */
+                          (cmd == 194) || /* taunt  */
+                          (cmd == 196) || /* whine  */
+                          (cmd == 261) || /* bonk   */
+                          (cmd == 262) || /* scold  */
+                          (cmd == 264) || /* rip    */
+                          (cmd == 271) || /* belittle */
+                          (cmd == 272) || /* piledrive */
+                          (cmd == 285) || /* flipoff */
+                          (cmd == 286) || /* moon   */
+                          (cmd == 287) || /* pinch  */
+                          (cmd == 288));  /* bite   */
 }
 
 /* DO NOT use the following as a stand-alone spec_proc... it is meant to be  */
@@ -13339,20 +13410,21 @@ int utility_irritable(struct char_data* ch, int cmd, const char* arg,
   struct char_data* me = nullptr;
   struct char_data* targ = nullptr;
 
-  if (!cmd || IS_NPC(ch)) {
+  if ((cmd == 0) || IS_NPC(ch)) {
     return 0;
   }
 
-  if (potentially_annoying(cmd)) {
+  if (potentially_annoying(cmd) != 0) {
     do_action(ch, arg, cmd);
     for (; ((*arg == ' ') || (*arg == '\t')); arg++) {
       ;
     }
-    if ((targ = get_char_room_vis(ch, arg))) {
-      for (me = real_roomp(ch->in_room)->people; me; me = me->next_in_room) {
+    if ((targ = get_char_room_vis(ch, arg)) != nullptr) {
+      for (me = real_roomp(ch->in_room)->people; me != nullptr;
+        me = me->next_in_room) {
         if (IS_MOB(me) && mob_index[me->nr].func.mob_f == func) {
-          if (!(me->specials.fighting) &&
-              !strcmp(GET_NAME(targ), GET_NAME(me))) {
+          if (((me->specials.fighting) == nullptr) &&
+              (strcmp(GET_NAME(targ), GET_NAME(me)) == 0)) {
             act("$n becomes enraged by $N's behavior!", 1, me, nullptr, ch,
               TO_NOTVICT);
             act("$n becomes enraged with you!", 1, me, nullptr, ch, TO_VICT);
@@ -13390,15 +13462,16 @@ static int utility_police(struct char_data* ch, int cmd,
   struct char_data* targ = nullptr;
   struct char_data* me = nullptr;
 
-  if (cmd) { /* "ch" is not me.  It is a player. */
+  if (cmd != 0) { /* "ch" is not me.  It is a player. */
     if (IS_PC(ch) && (IS_OUTLAW(ch) || IS_KILLER(ch)) &&
         (ch->in_room != NOWHERE)) {
-      for (me = real_roomp(ch->in_room)->people; me; me = me->next_in_room) {
+      for (me = real_roomp(ch->in_room)->people; me != nullptr;
+        me = me->next_in_room) {
         if (IS_MOB(me) && (mob_index[me->nr].func.mob_f == func)) {
-          if (AWAKE(me) && !(me->specials.fighting) &&
-              (me->specials.hunting != ch) && CAN_SEE(me, ch)) {
+          if (AWAKE(me) && ((me->specials.fighting) == nullptr) &&
+              (me->specials.hunting != ch) && (CAN_SEE(me, ch) != 0)) {
             police_hunt(me, ch);
-            if (!check_peaceful(ch, "")) {
+            if (check_peaceful(ch, "") == 0) {
               act("$n points at $N screaming 'DIE CRIMINAL!'", 1, me, nullptr,
                 ch, TO_NOTVICT);
               act("$n points at you screaming 'DIE CRIMINAL!'", 1, me, nullptr,
@@ -13410,13 +13483,15 @@ static int utility_police(struct char_data* ch, int cmd,
       }
     }
   } else { /* "ch" is me, the policeman */
-    if (AWAKE(ch) && !(ch->specials.fighting) && (ch->in_room != NOWHERE)) {
-      for (targ = real_roomp(ch->in_room)->people; targ;
+    if (AWAKE(ch) && ((ch->specials.fighting) == nullptr) &&
+        (ch->in_room != NOWHERE)) {
+      for (targ = real_roomp(ch->in_room)->people; targ != nullptr;
         targ = targ->next_in_room) {
         if (IS_PC(ch) && (ch->specials.hunting != targ) &&
-            (IS_OUTLAW(targ) || IS_KILLER(targ)) && (CAN_SEE(ch, targ))) {
+            (IS_OUTLAW(targ) || IS_KILLER(targ)) &&
+            ((CAN_SEE(ch, targ)) != 0)) {
           police_hunt(ch, targ);
-          if (!check_peaceful(ch, "")) {
+          if (check_peaceful(ch, "") == 0) {
             hit(ch, targ, TYPE_UNDEFINED);
             act("$n points at $N screaming 'DIE CRIMINAL!'", 1, ch, nullptr,
               targ, TO_NOTVICT);
@@ -13466,7 +13541,7 @@ int warMaker(struct char_data* ch, int cmd, const char* arg,
           "You feel confused... what was it you were going to do?\n\r", ch);
         return 1;
       case 151:
-        if (o->equipped_by) {
+        if (o->equipped_by != nullptr) {
           act("$n's $p glows red-hot in $s hands!", 1, ch, o, nullptr, TO_ROOM);
           act("Your $p glows red-hot in your hands!", 1, ch, o, nullptr,
             TO_CHAR);
@@ -13488,12 +13563,12 @@ int warMaker(struct char_data* ch, int cmd, const char* arg,
       default:
         return 0;
     }
-  } else if (!cmd) {
+  } else if (cmd == 0) {
     if (o->in_room != -1) {
       sprintf(buf, "%s moves a bit... as if alive!\n\r", o->short_description);
       send_to_room(buf, room_of_object(o));
-    } else if ((ch = o->equipped_by)) {
-      if (!(ch->specials.fighting)) {
+    } else if ((ch = o->equipped_by) != nullptr) {
+      if ((ch->specials.fighting) == nullptr) {
         switch (dice(1, 30)) {
           case 1:
             obj_act("sings 'Follow the Yellow Brick Road.'", ch, o, nullptr);
@@ -13625,13 +13700,13 @@ int warMaker(struct char_data* ch, int cmd, const char* arg,
             break;
         }
       }
-    } else if (o->in_obj) {
+    } else if (o->in_obj != nullptr) {
       sprintf(buf,
         "Something grumbles 'Damnit, I'm %s.  Let me out of here.  Its "
         "dark.'\n\r",
         o->short_description);
       send_to_room(buf, room_of_object(o));
-    } else if ((ch = o->carried_by)) {
+    } else if ((ch = o->carried_by) != nullptr) {
       act("$n's $p begs $m to wield it.", 1, ch, o, nullptr, TO_ROOM);
       act("Your $p begs you to wield it.", 1, ch, o, nullptr, TO_CHAR);
     }
@@ -13741,10 +13816,10 @@ int orbOfDestruction(struct char_data* ch, int cmd, const char* arg,
 
   if (cmd == 172) { /* use */
     arg = one_argument(arg, buffer);
-    if (isname(buffer, o->name)) {
+    if (isname(buffer, o->name) != 0) {
       if (GET_INT(ch) < 15) {
         send_to_char("You can't figure out how to use it.\n\r", ch);
-      } else if (!o->equipped_by) {
+      } else if (o->equipped_by == nullptr) {
         send_to_char("You must be holding it to use it.\n\r", ch);
       } else {
         act("You trigger $p, causing it to explode in a fiery blast of light!",
@@ -13754,7 +13829,7 @@ int orbOfDestruction(struct char_data* ch, int cmd, const char* arg,
         unequip_char(ch, o->eq_pos);
         extract_obj(o);
         r = real_roomp(ch->in_room);
-        for (v = r->people; v; v = n) {
+        for (v = r->people; v != nullptr; v = n) {
           n = v->next_in_room;
           if (v != ch) {
             MissileDamage(ch, v, dice(10, 100), SPELL_DISINTEGRATE);

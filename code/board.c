@@ -31,11 +31,11 @@ void InitABoard(struct obj_data* obj) {
   struct Board* tmp = nullptr;
   int i = 0;
 
-  if (board_list) {
+  if (board_list != nullptr) {
     /*
      **  try to match a board with an existing board in the game
      */
-    for (tmp = board_list; tmp; tmp = tmp->next) {
+    for (tmp = board_list; tmp != nullptr; tmp = tmp->next) {
       if (tmp->Rnum == obj->item_number) {
         /*
          **  board has been matched, load and ignore it.
@@ -47,7 +47,7 @@ void InitABoard(struct obj_data* obj) {
   }
 
   new_board = (struct Board*)malloc(sizeof(*new_board));
-  if (!new_board) {
+  if (new_board == nullptr) {
     perror("InitABoard(malloc)");
     exit(0);
   }
@@ -78,7 +78,7 @@ void InitABoard(struct obj_data* obj) {
 void OpenBoardFile(struct Board* b) {
   b->file = fopen(b->filename, "r+");
 
-  if (!b->file) {
+  if (b->file == nullptr) {
     perror("OpenBoardFile(fopen)");
     exit(0);
   }
@@ -88,13 +88,13 @@ struct Board* FindBoardInRoom(int room) {
   struct obj_data* o = nullptr;
   struct Board* nb = nullptr;
 
-  if (!real_roomp(room)) {
+  if (real_roomp(room) == nullptr) {
     return (nullptr);
   }
 
-  for (o = real_roomp(room)->contents; o; o = o->next_content) {
+  for (o = real_roomp(room)->contents; o != nullptr; o = o->next_content) {
     if (obj_index[o->item_number].func.obj_f == board) {
-      for (nb = board_list; nb; nb = nb->next) {
+      for (nb = board_list; nb != nullptr; nb = nb->next) {
         if (nb->Rnum == o->item_number) {
           return (nb);
         }
@@ -108,17 +108,17 @@ struct Board* FindBoardInRoom(int room) {
 int board(struct char_data* ch, int cmd, const char* arg, struct obj_data* me) {
   struct Board* nb = nullptr;
 
-  if (!ch) {
+  if (ch == nullptr) {
     return 0;
   }
 
   nb = FindBoardInRoom(ch->in_room);
 
-  if (!nb) {
+  if (nb == nullptr) {
     return 0;
   }
 
-  if (!ch->desc) {
+  if (ch->desc == nullptr) {
     return 0;
   }
 
@@ -147,7 +147,7 @@ void board_write_msg(struct char_data* ch, const char* arg, struct Board* b) {
     return;
   }
 
-  if (board_kludge_char) {
+  if (board_kludge_char != nullptr) {
     send_to_char(
       "Sorry, but someone has stolen the pen.. wait a few minutes.\n\r", ch);
     return;
@@ -155,11 +155,11 @@ void board_write_msg(struct char_data* ch, const char* arg, struct Board* b) {
 
   /* skip blanks */
 
-  for (; isspace(*arg); arg++) {
+  for (; isspace(*arg) != 0; arg++) {
     ;
   }
 
-  if (!*arg) {
+  if (*arg == 0) {
     send_to_char("We must have a headline!\n\r", ch);
     return;
   }
@@ -175,7 +175,7 @@ void board_write_msg(struct char_data* ch, const char* arg, struct Board* b) {
 
   /* +8 is for a space and '()' around the character name. */
 
-  if (!b->head[b->msg_num]) {
+  if (b->head[b->msg_num] == nullptr) {
     error_log("Malloc for board header failed.\n\r");
     send_to_char("The board is malfunctioning - sorry.\n\r", ch);
     return;
@@ -201,13 +201,13 @@ int board_remove_msg(struct char_data* ch, const char* arg, struct Board* b) {
 
   one_argument(arg, number);
 
-  if (!*number || !isdigit(*number)) {
+  if ((*number == 0) || (isdigit(*number) == 0)) {
     return (0);
   }
-  if (!(msg = atoi(number))) {
+  if ((msg = atoi(number)) == 0) {
     return (0);
   }
-  if (!b->msg_num) {
+  if (b->msg_num == 0) {
     send_to_char("The board is empty!\n\r", ch);
     return (1);
   }
@@ -225,7 +225,7 @@ int board_remove_msg(struct char_data* ch, const char* arg, struct Board* b) {
 
   ind = msg;
   free(b->head[--ind]);
-  if (b->msgs[ind] && *b->msgs[ind]) {
+  if ((b->msgs[ind] != nullptr) && (*b->msgs[ind] != 0)) {
     free(b->msgs[ind]);
   }
   for (; ind < b->msg_num - 1; ind++) {
@@ -245,11 +245,11 @@ void board_save_board(struct Board* b) {
   int ind = 0;
   int len = 0;
 
-  if (!b) {
+  if (b == nullptr) {
     return;
   }
 
-  if (!b->msg_num) {
+  if (b->msg_num == 0) {
     error_log("No messages to save.\n\r");
     return;
   }
@@ -261,8 +261,8 @@ void board_save_board(struct Board* b) {
     len = strlen(b->head[ind]) + 1;
     fwrite(&len, sizeof(int), 1, b->file);
     fwrite(b->head[ind], sizeof(char), len, b->file);
-    if (!b->msgs[ind]) {
-      if ((b->msgs[ind] = (char*)Mymalloc(50))) {
+    if (b->msgs[ind] == nullptr) {
+      if ((b->msgs[ind] = (char*)Mymalloc(50)) != nullptr) {
         strcpy(b->msgs[ind], "Generic Message");
       } else {
         exit(1);
@@ -285,7 +285,7 @@ void board_load_board(struct Board* b) {
 
   fread(&b->msg_num, sizeof(int), 1, b->file);
 
-  if (b->msg_num < 1 || b->msg_num > MAX_MSGS || feof(b->file)) {
+  if (b->msg_num < 1 || b->msg_num > MAX_MSGS || (feof(b->file) != 0)) {
     error_log("Board-message file corrupt or nonexistent.\n\r");
     fclose(b->file);
     return;
@@ -293,7 +293,7 @@ void board_load_board(struct Board* b) {
   for (ind = 0; ind < b->msg_num; ind++) {
     fread(&len, sizeof(int), 1, b->file);
     b->head[ind] = (char*)Mymalloc(len + 1);
-    if (!b->head[ind]) {
+    if (b->head[ind] == nullptr) {
       error_log("Malloc for board header failed.\n\r");
       board_reset_board(b);
       fclose(b->file);
@@ -302,7 +302,7 @@ void board_load_board(struct Board* b) {
     fread(b->head[ind], sizeof(char), len, b->file);
     fread(&len, sizeof(int), 1, b->file);
     b->msgs[ind] = (char*)Mymalloc(len + 1);
-    if (!b->msgs[ind]) {
+    if (b->msgs[ind] == nullptr) {
       error_log("Malloc for board msg failed..\n\r");
       board_reset_board(b);
       fclose(b->file);
@@ -318,10 +318,10 @@ void board_reset_board(struct Board* b) {
   int ind = 0;
 
   for (ind = 0; ind < MAX_MSGS; ind++) {
-    if (b->head[ind]) {
+    if (b->head[ind] != nullptr) {
       free(b->head[ind]);
     }
-    if (b->msgs[ind]) {
+    if (b->msgs[ind] != nullptr) {
       free(b->msgs[ind]);
     }
     b->head[ind] = b->msgs[ind] = nullptr;
@@ -342,13 +342,13 @@ int board_display_msg(struct char_data* ch, const char* arg, struct Board* b) {
   int msg = 0;
 
   one_argument(arg, number);
-  if (!*number || !isdigit(*number)) {
+  if ((*number == 0) || (isdigit(*number) == 0)) {
     return (0);
   }
-  if (!(msg = atoi(number))) {
+  if ((msg = atoi(number)) == 0) {
     return (0);
   }
-  if (!b->msg_num) {
+  if (b->msg_num == 0) {
     send_to_char("The board is empty!\n\r", ch);
     return (1);
   }
@@ -377,11 +377,11 @@ int board_show_board(struct char_data* ch, const char* arg, struct Board* b) {
 
   one_argument(arg, tmp);
 
-  if (!*tmp || !isname(tmp, "board bulletin")) {
+  if ((*tmp == 0) || (isname(tmp, "board bulletin") == 0)) {
     return (0);
   }
 
-  if (board_kludge_char) {
+  if (board_kludge_char != nullptr) {
     send_to_char("Sorry, but someone is writing a message\n\r", ch);
     return (0);
   }
@@ -391,7 +391,7 @@ int board_show_board(struct char_data* ch, const char* arg, struct Board* b) {
   strcpy(buf,
     "This is a bulletin board. Usage: READ/REMOVE <messg #>, WRITE "
     "<header>\n\r");
-  if (!b->msg_num) {
+  if (b->msg_num == 0) {
     strcat(buf, "The board is empty.\n\r");
   } else if (b->msg_num == 1) {
     sprintf(buf + strlen(buf), "There is 1 message on the board.\n\r");

@@ -33,11 +33,11 @@ void weight_change_object(struct obj_data* obj, int weight) {
 
   if (obj->in_room != NOWHERE) {
     GET_OBJ_WEIGHT(obj) += weight;
-  } else if ((tmp_ch = obj->carried_by)) {
+  } else if ((tmp_ch = obj->carried_by) != nullptr) {
     obj_from_char(obj);
     GET_OBJ_WEIGHT(obj) += weight;
     obj_to_char(obj, tmp_ch);
-  } else if ((tmp_obj = obj->in_obj)) {
+  } else if ((tmp_obj = obj->in_obj) != nullptr) {
     obj_from_obj(obj);
     GET_OBJ_WEIGHT(obj) += weight;
     obj_to_obj(obj, tmp_obj);
@@ -99,7 +99,7 @@ void do_drink(struct char_data* ch, const char* argument, int cmd) {
 
   only_argument(argument, buf);
 
-  if (!(temp = get_obj_in_list_vis(ch, buf, ch->carrying))) {
+  if ((temp = get_obj_in_list_vis(ch, buf, ch->carrying)) == nullptr) {
     act("You can't find it!", 0, ch, nullptr, nullptr, TO_CHAR);
     return;
   }
@@ -188,7 +188,7 @@ void do_drink(struct char_data* ch, const char* argument, int cmd) {
       if (!IS_SET(temp->obj_flags.value[3], DRINK_PERM)) {
         temp->obj_flags.value[1] -= amount;
       }
-      if (!temp->obj_flags.value[1]) { /* The last bit */
+      if (temp->obj_flags.value[1] == 0) { /* The last bit */
         temp->obj_flags.value[2] = 0;
         temp->obj_flags.value[3] = 0;
         name_from_drinkcon(temp);
@@ -215,7 +215,7 @@ void do_eat(struct char_data* ch, const char* argument, int cmd) {
 
   one_argument(argument, buf);
 
-  if (!(temp = get_obj_in_list_vis(ch, buf, ch->carrying))) {
+  if ((temp = get_obj_in_list_vis(ch, buf, ch->carrying)) == nullptr) {
     act("You can't find it!", 0, ch, nullptr, nullptr, TO_CHAR);
     return;
   }
@@ -253,7 +253,7 @@ void do_eat(struct char_data* ch, const char* argument, int cmd) {
     }
   }
 
-  if (temp->obj_flags.value[3] && (GetMaxLevel(ch) < LOW_IMMORTAL)) {
+  if ((temp->obj_flags.value[3] != 0) && (GetMaxLevel(ch) < LOW_IMMORTAL)) {
     act("That tasted rather strange !!", 0, ch, nullptr, nullptr, TO_CHAR);
     act("$n coughs and utters some strange sounds.", 0, ch, nullptr, nullptr,
       TO_ROOM);
@@ -279,12 +279,12 @@ void do_pour(struct char_data* ch, const char* argument, int cmd) {
 
   argument_interpreter(argument, arg1, arg2);
 
-  if (!*arg1) /* No arguments */ {
+  if (*arg1 == 0) /* No arguments */ {
     act("What do you want to pour from?", 0, ch, nullptr, nullptr, TO_CHAR);
     return;
   }
 
-  if (!(from_obj = get_obj_in_list_vis(ch, arg1, ch->carrying))) {
+  if ((from_obj = get_obj_in_list_vis(ch, arg1, ch->carrying)) == nullptr) {
     act("You can't find it!", 0, ch, nullptr, nullptr, TO_CHAR);
     return;
   }
@@ -299,13 +299,13 @@ void do_pour(struct char_data* ch, const char* argument, int cmd) {
     return;
   }
 
-  if (!*arg2) {
+  if (*arg2 == 0) {
     act("Where do you want it? Out or in what?", 0, ch, nullptr, nullptr,
       TO_CHAR);
     return;
   }
 
-  if (!str_cmp(arg2, "out")) {
+  if (str_cmp(arg2, "out") == 0) {
     act("$n empties $p", 1, ch, from_obj, nullptr, TO_ROOM);
     act("You empty the $p.", 0, ch, from_obj, nullptr, TO_CHAR);
 
@@ -319,7 +319,7 @@ void do_pour(struct char_data* ch, const char* argument, int cmd) {
     return;
   }
 
-  if (!(to_obj = get_obj_in_list_vis(ch, arg2, ch->carrying))) {
+  if ((to_obj = get_obj_in_list_vis(ch, arg2, ch->carrying)) == nullptr) {
     act("You can't find it!", 0, ch, nullptr, nullptr, TO_CHAR);
     return;
   }
@@ -372,8 +372,8 @@ void do_pour(struct char_data* ch, const char* argument, int cmd) {
   }
 
   /* Then the poison boogie */
-  to_obj->obj_flags.value[3] =
-    (to_obj->obj_flags.value[3] || from_obj->obj_flags.value[3]);
+  to_obj->obj_flags.value[3] = static_cast<int>(
+    (to_obj->obj_flags.value[3] != 0) || (from_obj->obj_flags.value[3] != 0));
 }
 
 void do_sip(struct char_data* ch, const char* argument, int cmd) {
@@ -384,7 +384,7 @@ void do_sip(struct char_data* ch, const char* argument, int cmd) {
 
   one_argument(argument, arg);
 
-  if (!(temp = get_obj_in_list_vis(ch, arg, ch->carrying))) {
+  if ((temp = get_obj_in_list_vis(ch, arg, ch->carrying)) == nullptr) {
     act("You can't find it!", 0, ch, nullptr, nullptr, TO_CHAR);
     return;
   }
@@ -402,7 +402,7 @@ void do_sip(struct char_data* ch, const char* argument, int cmd) {
     return;
   }
 
-  if (!temp->obj_flags.value[1]) /* Empty */
+  if (temp->obj_flags.value[1] == 0) /* Empty */
   {
     act("But there is nothing in it?", 0, ch, nullptr, nullptr, TO_CHAR);
     return;
@@ -455,7 +455,7 @@ void do_sip(struct char_data* ch, const char* argument, int cmd) {
     temp->obj_flags.value[1]--;
   }
 
-  if (!temp->obj_flags.value[1]) /* The last bit */
+  if (temp->obj_flags.value[1] == 0) /* The last bit */
   {
     temp->obj_flags.value[2] = 0;
     temp->obj_flags.value[3] = 0;
@@ -470,7 +470,7 @@ void do_taste(struct char_data* ch, const char* argument, int cmd) {
 
   one_argument(argument, arg);
 
-  if (!(temp = get_obj_in_list_vis(ch, arg, ch->carrying))) {
+  if ((temp = get_obj_in_list_vis(ch, arg, ch->carrying)) == nullptr) {
     act("You can't find it!", 0, ch, nullptr, nullptr, TO_CHAR);
     return;
   }
@@ -495,7 +495,7 @@ void do_taste(struct char_data* ch, const char* argument, int cmd) {
     act("You are full.", 0, ch, nullptr, nullptr, TO_CHAR);
   }
 
-  if (temp->obj_flags.value[3] &&
+  if ((temp->obj_flags.value[3] != 0) &&
       !IS_AFFECTED(ch, AFF_POISON)) /* The shit was poisoned ! */
   {
     act("Ooups, it did not taste good at all!", 0, ch, nullptr, nullptr,
@@ -511,7 +511,7 @@ void do_taste(struct char_data* ch, const char* argument, int cmd) {
 
   temp->obj_flags.value[0]--;
 
-  if (!temp->obj_flags.value[0]) { /* Nothing left */
+  if (temp->obj_flags.value[0] == 0) { /* Nothing left */
     act("There is nothing left now.", 0, ch, nullptr, nullptr, TO_CHAR);
     extract_obj(temp);
   }
@@ -650,7 +650,7 @@ static void wear(struct char_data* ch, struct obj_data* obj_object,
 
   if (!IS_IMMORTAL(ch)) {
     bit_mask = get_item_class_restrictions(obj_object);
-    if (is_restricted(bit_mask, ch->player.char_class) &&
+    if ((is_restricted(bit_mask, ch->player.char_class) != 0) &&
         (!IS_NPC(ch) || IS_SET(ch->specials.act, ACT_POLYSELF))) {
       send_to_char("You are forbidden to do that.\n\r", ch);
       return;
@@ -659,14 +659,14 @@ static void wear(struct char_data* ch, struct obj_data* obj_object,
 
   switch (keyword) {
     case 0: { /* LIGHT SOURCE */
-      if (ch->equipment[WEAR_LIGHT]) {
+      if (ch->equipment[WEAR_LIGHT] != nullptr) {
         send_to_char("You are already holding a light source.\n\r", ch);
       } else {
         send_to_char("Ok.\n\r", ch);
         perform_wear(ch, obj_object, keyword);
         obj_from_char(obj_object);
         equip_char(ch, obj_object, WEAR_LIGHT);
-        if (obj_object->obj_flags.value[2]) {
+        if (obj_object->obj_flags.value[2] != 0) {
           real_roomp(ch->in_room)->light++;
         }
       }
@@ -674,12 +674,13 @@ static void wear(struct char_data* ch, struct obj_data* obj_object,
 
     case 1: {
       if (CAN_WEAR(obj_object, ITEM_WEAR_FINGER)) {
-        if ((ch->equipment[WEAR_FINGER_L]) && (ch->equipment[WEAR_FINGER_R])) {
+        if (((ch->equipment[WEAR_FINGER_L]) != nullptr) &&
+            ((ch->equipment[WEAR_FINGER_R]) != nullptr)) {
           send_to_char("You are already wearing something on your fingers.\n\r",
             ch);
         } else {
           perform_wear(ch, obj_object, keyword);
-          if (ch->equipment[WEAR_FINGER_L]) {
+          if (ch->equipment[WEAR_FINGER_L] != nullptr) {
             sprintf(buffer, "You put %s on your right finger.\n\r",
               obj_object->short_description);
             send_to_char(buffer, ch);
@@ -699,12 +700,13 @@ static void wear(struct char_data* ch, struct obj_data* obj_object,
     } break;
     case 2: {
       if (CAN_WEAR(obj_object, ITEM_WEAR_NECK)) {
-        if ((ch->equipment[WEAR_NECK_1]) && (ch->equipment[WEAR_NECK_2])) {
+        if (((ch->equipment[WEAR_NECK_1]) != nullptr) &&
+            ((ch->equipment[WEAR_NECK_2]) != nullptr)) {
           send_to_char("You can't wear any more around your neck.\n\r", ch);
         } else {
           send_to_char("OK.\n\r", ch);
           perform_wear(ch, obj_object, keyword);
-          if (ch->equipment[WEAR_NECK_1]) {
+          if (ch->equipment[WEAR_NECK_1] != nullptr) {
             obj_from_char(obj_object);
             equip_char(ch, obj_object, WEAR_NECK_2);
           } else {
@@ -718,7 +720,7 @@ static void wear(struct char_data* ch, struct obj_data* obj_object,
     } break;
     case 3: {
       if (CAN_WEAR(obj_object, ITEM_WEAR_BODY)) {
-        if (ch->equipment[WEAR_BODY]) {
+        if (ch->equipment[WEAR_BODY] != nullptr) {
           send_to_char("You already wear something on your body.\n\r", ch);
         } else {
           send_to_char("OK.\n\r", ch);
@@ -732,7 +734,7 @@ static void wear(struct char_data* ch, struct obj_data* obj_object,
     } break;
     case 4: {
       if (CAN_WEAR(obj_object, ITEM_WEAR_HEAD)) {
-        if (ch->equipment[WEAR_HEAD]) {
+        if (ch->equipment[WEAR_HEAD] != nullptr) {
           send_to_char("You already wear something on your head.\n\r", ch);
         } else {
           send_to_char("OK.\n\r", ch);
@@ -746,7 +748,7 @@ static void wear(struct char_data* ch, struct obj_data* obj_object,
     } break;
     case 5: {
       if (CAN_WEAR(obj_object, ITEM_WEAR_LEGS)) {
-        if (ch->equipment[WEAR_LEGS]) {
+        if (ch->equipment[WEAR_LEGS] != nullptr) {
           send_to_char("You already wear something on your legs.\n\r", ch);
         } else {
           send_to_char("OK.\n\r", ch);
@@ -760,7 +762,7 @@ static void wear(struct char_data* ch, struct obj_data* obj_object,
     } break;
     case 6: {
       if (CAN_WEAR(obj_object, ITEM_WEAR_FEET)) {
-        if (ch->equipment[WEAR_FEET]) {
+        if (ch->equipment[WEAR_FEET] != nullptr) {
           send_to_char("You already wear something on your feet.\n\r", ch);
         } else {
           send_to_char("OK.\n\r", ch);
@@ -774,7 +776,7 @@ static void wear(struct char_data* ch, struct obj_data* obj_object,
     } break;
     case 7: {
       if (CAN_WEAR(obj_object, ITEM_WEAR_HANDS)) {
-        if (ch->equipment[WEAR_HANDS]) {
+        if (ch->equipment[WEAR_HANDS] != nullptr) {
           send_to_char("You already wear something on your hands.\n\r", ch);
         } else {
           send_to_char("OK.\n\r", ch);
@@ -788,7 +790,7 @@ static void wear(struct char_data* ch, struct obj_data* obj_object,
     } break;
     case 8: {
       if (CAN_WEAR(obj_object, ITEM_WEAR_ARMS)) {
-        if (ch->equipment[WEAR_ARMS]) {
+        if (ch->equipment[WEAR_ARMS] != nullptr) {
           send_to_char("You already wear something on your arms.\n\r", ch);
         } else {
           send_to_char("OK.\n\r", ch);
@@ -802,7 +804,7 @@ static void wear(struct char_data* ch, struct obj_data* obj_object,
     } break;
     case 9: {
       if (CAN_WEAR(obj_object, ITEM_WEAR_ABOUT)) {
-        if (ch->equipment[WEAR_ABOUT]) {
+        if (ch->equipment[WEAR_ABOUT] != nullptr) {
           send_to_char("You already wear something about your body.\n\r", ch);
         } else {
           send_to_char("OK.\n\r", ch);
@@ -816,7 +818,7 @@ static void wear(struct char_data* ch, struct obj_data* obj_object,
     } break;
     case 10: {
       if (CAN_WEAR(obj_object, ITEM_WEAR_WAISTE)) {
-        if (ch->equipment[WEAR_WAISTE]) {
+        if (ch->equipment[WEAR_WAISTE] != nullptr) {
           send_to_char("You already wear something about your waiste.\n\r", ch);
         } else {
           send_to_char("OK.\n\r", ch);
@@ -830,13 +832,14 @@ static void wear(struct char_data* ch, struct obj_data* obj_object,
     } break;
     case 11: {
       if (CAN_WEAR(obj_object, ITEM_WEAR_WRIST)) {
-        if ((ch->equipment[WEAR_WRIST_L]) && (ch->equipment[WEAR_WRIST_R])) {
+        if (((ch->equipment[WEAR_WRIST_L]) != nullptr) &&
+            ((ch->equipment[WEAR_WRIST_R]) != nullptr)) {
           send_to_char(
             "You already wear something around both your wrists.\n\r", ch);
         } else {
           perform_wear(ch, obj_object, keyword);
           obj_from_char(obj_object);
-          if (ch->equipment[WEAR_WRIST_L]) {
+          if (ch->equipment[WEAR_WRIST_L] != nullptr) {
             sprintf(buffer, "You wear %s around your right wrist.\n\r",
               obj_object->short_description);
             send_to_char(buffer, ch);
@@ -855,16 +858,16 @@ static void wear(struct char_data* ch, struct obj_data* obj_object,
 
     case 12:
       if (CAN_WEAR(obj_object, ITEM_WIELD)) {
-        if (ch->equipment[WIELD]) {
+        if (ch->equipment[WIELD] != nullptr) {
           send_to_char("You are already wielding something.\n\r", ch);
         } else if (GET_OBJ_WEIGHT(obj_object) >
                    str_app[STRENGTH_APPLY_INDEX(ch)].wield_w) {
           send_to_char("It is too heavy for you to use.\n\r", ch);
-        } else if ((ch->equipment[WEAR_SHIELD]) &&
+        } else if (((ch->equipment[WEAR_SHIELD]) != nullptr) &&
                    ((CAN_CARRY_N(ch) - (CAN_CARRY_N(ch) / 3)) <
                      (IS_CARRYING_N(ch) - GET_OBJ_VOLUME(obj_object)))) {
           send_to_char("Your hands are too full to wield anything!\n\r", ch);
-        } else if (!ch->equipment[WEAR_SHIELD] &&
+        } else if ((ch->equipment[WEAR_SHIELD] == nullptr) &&
                    ((CAN_CARRY_N(ch) / 2) <
                      IS_CARRYING_N(ch) - GET_OBJ_VOLUME(obj_object))) {
           send_to_char("Your hands are too full to wield anything!\n\r", ch);
@@ -881,7 +884,7 @@ static void wear(struct char_data* ch, struct obj_data* obj_object,
 
     case 13:
       if (CAN_WEAR(obj_object, ITEM_HOLD)) {
-        if (ch->equipment[HOLD]) {
+        if (ch->equipment[HOLD] != nullptr) {
           send_to_char("You are already holding something.\n\r", ch);
         } else {
           send_to_char("OK.\n\r", ch);
@@ -895,13 +898,13 @@ static void wear(struct char_data* ch, struct obj_data* obj_object,
       break;
     case 14: {
       if (CAN_WEAR(obj_object, ITEM_WEAR_SHIELD)) {
-        if ((ch->equipment[WEAR_SHIELD])) {
+        if ((ch->equipment[WEAR_SHIELD]) != nullptr) {
           send_to_char("You are already using a shield\n\r", ch);
-        } else if ((ch->equipment[WIELD]) &&
+        } else if (((ch->equipment[WIELD]) != nullptr) &&
                    ((2 * (CAN_CARRY_N(ch)) / 3) <
                      IS_CARRYING_N(ch) - GET_OBJ_VOLUME(obj_object))) {
           send_to_char("Your hands are too full to wear a shield!\n\r", ch);
-        } else if (!ch->equipment[WIELD] &&
+        } else if ((ch->equipment[WIELD] == nullptr) &&
                    ((CAN_CARRY_N(ch) / 2) <
                      IS_CARRYING_N(ch) - GET_OBJ_VOLUME(obj_object))) {
           send_to_char("Your hands are too full to wear a shield!\n\r", ch);
@@ -919,7 +922,7 @@ static void wear(struct char_data* ch, struct obj_data* obj_object,
     } break;
     case 15: {
       if (CAN_WEAR(obj_object, ITEM_WEAR_EAR)) {
-        if ((ch->equipment[WEAR_EAR])) {
+        if ((ch->equipment[WEAR_EAR]) != nullptr) {
           send_to_char("You are already wearing an earring\n\r", ch);
         } else {
           perform_wear(ch, obj_object, keyword);
@@ -935,7 +938,7 @@ static void wear(struct char_data* ch, struct obj_data* obj_object,
     } break;
     case 16: {
       if (CAN_WEAR(obj_object, ITEM_WEAR_FACE)) {
-        if ((ch->equipment[WEAR_FACE])) {
+        if ((ch->equipment[WEAR_FACE]) != nullptr) {
           send_to_char("You are already wearing something on your face.\n\r",
             ch);
         } else {
@@ -951,7 +954,7 @@ static void wear(struct char_data* ch, struct obj_data* obj_object,
     } break;
     case 17: {
       if (CAN_WEAR(obj_object, ITEM_WORN_AS_RADIO)) {
-        if ((ch->equipment[WEAR_RADIO])) {
+        if ((ch->equipment[WEAR_RADIO]) != nullptr) {
           send_to_char("You are already holding a radio.\n\r", ch);
         } else {
           perform_wear(ch, obj_object, keyword);
@@ -989,9 +992,10 @@ void do_wear(struct char_data* ch, const char* argument, int cmd) {
     "legs", "feet", "hands", "arms", "about", "waist", "wrist", "shield", "\n"};
 
   argument_interpreter(argument, arg1, arg2);
-  if (*arg1) {
-    if (!strcmp(arg1, "all")) {
-      for (obj_object = ch->carrying; obj_object; obj_object = next_obj) {
+  if (*arg1 != 0) {
+    if (strcmp(arg1, "all") == 0) {
+      for (obj_object = ch->carrying; obj_object != nullptr;
+        obj_object = next_obj) {
         next_obj = obj_object->next_content;
         keyword = -2;
 
@@ -1055,8 +1059,8 @@ void do_wear(struct char_data* ch, const char* argument, int cmd) {
 
     } else {
       obj_object = get_obj_in_list_vis(ch, arg1, ch->carrying);
-      if (obj_object) {
-        if (*arg2) {
+      if (obj_object != nullptr) {
+        if (*arg2 != 0) {
           keyword = search_block(arg2, keywords, 0); /* Partial Match */
           if (keyword == -1) {
             sprintf(buf, "%s is an unknown body location.\n\r", arg2);
@@ -1136,9 +1140,9 @@ void do_wield(struct char_data* ch, const char* argument, int cmd) {
   int keyword = 12;
 
   argument_interpreter(argument, arg1, arg2);
-  if (*arg1) {
+  if (*arg1 != 0) {
     obj_object = get_obj_in_list_vis(ch, arg1, ch->carrying);
-    if (obj_object) {
+    if (obj_object != nullptr) {
       wear(ch, obj_object, keyword);
     } else {
       sprintf(buffer, "You do not seem to have the '%s'.\n\r", arg1);
@@ -1157,9 +1161,9 @@ void do_grab(struct char_data* ch, const char* argument, int cmd) {
 
   argument_interpreter(argument, arg1, arg2);
 
-  if (*arg1) {
+  if (*arg1 != 0) {
     obj_object = get_obj_in_list(arg1, ch->carrying);
-    if (obj_object) {
+    if (obj_object != nullptr) {
       if (obj_object->obj_flags.type_flag == ITEM_LIGHT) {
         wear(ch, obj_object, WEAR_LIGHT);
       } else {
@@ -1177,9 +1181,9 @@ void do_grab(struct char_data* ch, const char* argument, int cmd) {
 static struct obj_data* get_object_in_equip_vis(struct char_data* ch, char* arg,
   struct obj_data* equipment[], int* j) {
   for ((*j) = 0; (*j) < MAX_WEAR; (*j)++) {
-    if (equipment[(*j)]) {
+    if (equipment[(*j)] != nullptr) {
       if (CAN_SEE_OBJ(ch, equipment[(*j)])) {
-        if (isname(arg, equipment[(*j)]->name)) {
+        if (isname(arg, equipment[(*j)]->name) != 0) {
           return (equipment[(*j)]);
         }
       }
@@ -1201,16 +1205,16 @@ void do_remove(struct char_data* ch, const char* argument, int cmd) {
 
   one_argument(argument, arg1);
 
-  if (*arg1) {
-    if (!strcmp(arg1, "all")) {
+  if (*arg1 != 0) {
+    if (strcmp(arg1, "all") == 0) {
       for (j = 0; j < MAX_WEAR; j++) {
         if (CAN_CARRY_N(ch) > IS_CARRYING_N(ch)) {
-          if (ch->equipment[j]) {
+          if (ch->equipment[j] != nullptr) {
             if ((obj_object = unequip_char(ch, j)) != nullptr) {
               obj_to_char(obj_object, ch);
 
               if (obj_object->obj_flags.type_flag == ITEM_LIGHT) {
-                if (obj_object->obj_flags.value[2]) {
+                if (obj_object->obj_flags.value[2] != 0) {
                   real_roomp(ch->in_room)->light--;
                 }
               }
@@ -1226,14 +1230,14 @@ void do_remove(struct char_data* ch, const char* argument, int cmd) {
       act("$n stops using $s equipment.", 1, ch, obj_object, nullptr, TO_ROOM);
       return;
     }
-    if (isdigit(arg1[0])) {
+    if (isdigit(arg1[0]) != 0) {
       /* PAT-PAT-PAT */
 
       /* Make a list of item numbers for stuff to remove */
 
       for (num_equip = j = 0; j < MAX_WEAR; j++) {
         if (CAN_CARRY_N(ch) > IS_CARRYING_N(ch)) {
-          if (ch->equipment[j]) {
+          if (ch->equipment[j] != nullptr) {
             rem_list[num_equip++] = j;
           }
         }
@@ -1241,21 +1245,21 @@ void do_remove(struct char_data* ch, const char* argument, int cmd) {
 
       t = arg1;
 
-      while (isdigit(*t) && (*t != '\0')) {
+      while ((isdigit(*t) != 0) && (*t != '\0')) {
         p = t;
-        if (strchr(t, ',')) {
+        if (strchr(t, ',') != nullptr) {
           p = strchr(t, ',');
           *p = '\0';
         }
         if (atoi(t) > 0 && atoi(t) <= num_equip) {
           if (CAN_CARRY_N(ch) > IS_CARRYING_N(ch)) {
             j = rem_list[atoi(t) - 1];
-            if (ch->equipment[j]) {
+            if (ch->equipment[j] != nullptr) {
               if ((obj_object = unequip_char(ch, j)) != nullptr) {
                 obj_to_char(obj_object, ch);
 
                 if (obj_object->obj_flags.type_flag == ITEM_LIGHT) {
-                  if (obj_object->obj_flags.value[2]) {
+                  if (obj_object->obj_flags.value[2] != 0) {
                     real_roomp(ch->in_room)->light--;
                   }
                 }
@@ -1280,7 +1284,7 @@ void do_remove(struct char_data* ch, const char* argument, int cmd) {
       }
     } else {
       obj_object = get_object_in_equip_vis(ch, arg1, ch->equipment, &j);
-      if (obj_object) {
+      if (obj_object != nullptr) {
         if (IS_OBJ_STAT(obj_object, ITEM_NODROP)) {
           send_to_char("You can't let go of it, it must be CURSED!\n\r", ch);
           return;
@@ -1289,7 +1293,7 @@ void do_remove(struct char_data* ch, const char* argument, int cmd) {
           obj_to_char(unequip_char(ch, j), ch);
 
           if (obj_object->obj_flags.type_flag == ITEM_LIGHT) {
-            if (obj_object->obj_flags.value[2]) {
+            if (obj_object->obj_flags.value[2] != 0) {
               real_roomp(ch->in_room)->light--;
             }
           }

@@ -51,7 +51,7 @@ static char* fread_action(FILE* fl) {
 
   for (;;) {
     fgets(buf, MAX_STRING_LENGTH, fl);
-    if (feof(fl)) {
+    if (feof(fl) != 0) {
       vlog("Fread_action - unexpected EOF.");
       exit(0);
     }
@@ -72,7 +72,7 @@ void boot_social_messages(void) {
   int hide = 0;
   int min_pos = 0;
 
-  if (!(fl = fopen(SOCMESS_FILE, "r"))) {
+  if ((fl = fopen(SOCMESS_FILE, "r")) == nullptr) {
     perror("boot_social_messages");
     exit(0);
   }
@@ -86,7 +86,7 @@ void boot_social_messages(void) {
     fscanf(fl, " %d \n", &min_pos);
 
     /* alloc a new cell */
-    if (!soc_mess_list) {
+    if (soc_mess_list == nullptr) {
       CREATE(soc_mess_list, struct social_messg, 1);
       list_top = 0;
     } else {
@@ -105,7 +105,7 @@ void boot_social_messages(void) {
     soc_mess_list[list_top].char_found = fread_action(fl);
 
     /* if no char_found, the rest is to be ignored */
-    if (!soc_mess_list[list_top].char_found) {
+    if (soc_mess_list[list_top].char_found == nullptr) {
       continue;
     }
 
@@ -166,20 +166,20 @@ void do_action(struct char_data* ch, const char* argument, int cmd) {
 
   action = &soc_mess_list[act_nr];
 
-  if (action->char_found) {
+  if (action->char_found != nullptr) {
     only_argument(argument, buf);
   } else {
     *buf = '\0';
   }
 
-  if (!*buf) {
+  if (*buf == 0) {
     send_to_char(action->char_no_arg, ch);
     send_to_char("\n\r", ch);
     act(action->others_no_arg, action->hide, ch, nullptr, nullptr, TO_ROOM);
     return;
   }
 
-  if (!(vict = get_char_room_vis(ch, buf))) {
+  if ((vict = get_char_room_vis(ch, buf)) == nullptr) {
     send_to_char(action->not_found, ch);
     send_to_char("\n\r", ch);
   } else if (vict == ch) {
@@ -207,8 +207,8 @@ void do_insult(struct char_data* ch, const char* argument, int cmd) {
 
   only_argument(argument, arg);
 
-  if (*arg) {
-    if (!(victim = get_char_room_vis(ch, arg))) {
+  if (*arg != 0) {
+    if ((victim = get_char_room_vis(ch, arg)) == nullptr) {
       send_to_char("Can't hear you!\n\r", ch);
     } else {
       if (victim != ch) {
@@ -262,7 +262,7 @@ void boot_pose_messages(void) {
   int tmp = 0;
   signed char char_class = 0;
 
-  if (!(fl = fopen(POSEMESS_FILE, "r"))) {
+  if ((fl = fopen(POSEMESS_FILE, "r")) == nullptr) {
     perror("boot_pose_messages");
     exit(0);
   }

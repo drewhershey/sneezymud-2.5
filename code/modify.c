@@ -54,14 +54,14 @@ void string_add(struct descriptor_data* d, char* str) {
   int terminator = 0;
 
   /* determine if this is the terminal string, and truncate if so */
-  for (scan = str; *scan; scan++) {
-    if ((terminator = (*scan == '@'))) {
+  for (scan = str; *scan != 0; scan++) {
+    if ((terminator = static_cast<int>(*scan == '@')) != 0) {
       *scan = '\0';
       break;
     }
   }
 
-  if (!(*d->str)) {
+  if ((*d->str) == nullptr) {
     if (strlen(str) > d->max_str) {
       send_to_char("String too long - Truncated.\n\r", d->character);
       *(str + d->max_str) = '\0';
@@ -74,8 +74,8 @@ void string_add(struct descriptor_data* d, char* str) {
       send_to_char("String too long. Last line skipped.\n\r", d->character);
       terminator = 1;
     } else {
-      if (!(*d->str =
-              (char*)realloc(*d->str, strlen(*d->str) + strlen(str) + 3))) {
+      if ((*d->str = (char*)realloc(*d->str,
+             strlen(*d->str) + strlen(str) + 3)) == nullptr) {
         perror("string_add");
         exit(1);
       }
@@ -83,13 +83,14 @@ void string_add(struct descriptor_data* d, char* str) {
     }
   }
 
-  if (terminator) {
-    if (!d->connected && (IS_SET(d->character->specials.act, PLR_MAILING))) {
+  if (terminator != 0) {
+    if ((d->connected == 0) &&
+        (IS_SET(d->character->specials.act, PLR_MAILING))) {
       store_mail(d->name, d->character->player.name, *d->str);
-      if (*d->str) {
+      if (*d->str != nullptr) {
         free(*d->str);
       }
-      if (d->str) {
+      if (d->str != nullptr) {
         free((void*)d->str);
       }
       *(d->name) = '\0';
@@ -118,9 +119,9 @@ static void quad_arg(const char* arg, int* type, char* name, int* field,
 
   /* determine type */
   arg = one_argument(arg, buf);
-  if (is_abbrev(buf, "char")) {
+  if (is_abbrev(buf, "char") != 0) {
     *type = TP_MOB;
-  } else if (is_abbrev(buf, "obj")) {
+  } else if (is_abbrev(buf, "obj") != 0) {
     *type = TP_OBJ;
   } else {
     *type = TP_ERROR;
@@ -132,15 +133,15 @@ static void quad_arg(const char* arg, int* type, char* name, int* field,
 
   /* field name and number */
   arg = one_argument(arg, buf);
-  if (!(*field = old_search_block(buf, 0, strlen(buf), string_fields, 0))) {
+  if ((*field = old_search_block(buf, 0, strlen(buf), string_fields, 0)) == 0) {
     return;
   }
 
   /* string */
-  for (; isspace(*arg); arg++) {
+  for (; isspace(*arg) != 0; arg++) {
     ;
   }
-  for (; (*string = *arg); arg++, string++) {
+  for (; (*string = *arg) != 0; arg++, string++) {
     ;
   }
 }
@@ -167,14 +168,14 @@ void do_string(struct char_data* ch, const char* arg, int cmd) {
     return;
   }
 
-  if (!field) {
+  if (field == 0) {
     send_to_char("No field by that name. Try 'help string'.\n\r", ch);
     return;
   }
 
   if (type == TP_MOB) {
     /* locate the beast */
-    if (!(mob = get_char_vis(ch, name))) {
+    if ((mob = get_char_vis(ch, name)) == nullptr) {
       send_to_char("I don't know anyone by that name...\n\r", ch);
       return;
     }
@@ -185,7 +186,7 @@ void do_string(struct char_data* ch, const char* arg, int cmd) {
           send_to_char("You can't change that field for players.", ch);
           return;
         }
-        if (!*string) {
+        if (*string == 0) {
           send_to_char("You have to supply a name!\n\r", ch);
           return;
         }
@@ -200,7 +201,7 @@ void do_string(struct char_data* ch, const char* arg, int cmd) {
           send_to_char("That field is for monsters only.\n\r", ch);
           return;
         }
-        if (!*string) {
+        if (*string == 0) {
           send_to_char("You have to supply a description!\n\r", ch);
           return;
         }
@@ -236,14 +237,14 @@ void do_string(struct char_data* ch, const char* arg, int cmd) {
     }
   } else { /* type == TP_OBJ */
     /* locate the object */
-    if (!(obj = get_obj_vis(ch, name))) {
+    if ((obj = get_obj_vis(ch, name)) == nullptr) {
       send_to_char("Can't find such a thing here..\n\r", ch);
       return;
     }
 
     switch (field) {
       case 1:
-        if (!*string) {
+        if (*string == 0) {
           send_to_char("You have to supply a keyword.\n\r", ch);
           return;
         } else {
@@ -252,7 +253,7 @@ void do_string(struct char_data* ch, const char* arg, int cmd) {
         }
         break;
       case 2:
-        if (!*string) {
+        if (*string == 0) {
           send_to_char("You have to supply a keyword.\n\r", ch);
           return;
         } else {
@@ -263,13 +264,13 @@ void do_string(struct char_data* ch, const char* arg, int cmd) {
         ch->desc->str = &obj->description;
         break;
       case 4:
-        if (!*string) {
+        if (*string == 0) {
           send_to_char("You have to supply a keyword.\n\r", ch);
           return;
         }
         /* try to locate extra description */
         for (ed = obj->ex_description;; ed = ed->next) {
-          if (!ed) {
+          if (ed == nullptr) {
             CREATE(ed, struct extra_descr_data, 1);
             ed->next = obj->ex_description;
             obj->ex_description = ed;
@@ -280,7 +281,7 @@ void do_string(struct char_data* ch, const char* arg, int cmd) {
             send_to_char("New field.\n\r", ch);
             break;
           }
-          if (!str_cmp(ed->keyword, string)) /* the field exists */
+          if (str_cmp(ed->keyword, string) == 0) /* the field exists */
           {
             free(ed->description);
             ed->description = nullptr;
@@ -293,19 +294,19 @@ void do_string(struct char_data* ch, const char* arg, int cmd) {
         return; /* the stndrd (see below) procedure does not apply here */
         break;
       case 6: /* deletion */
-        if (!*string) {
+        if (*string == 0) {
           send_to_char("You must supply a field name.\n\r", ch);
           return;
         }
         /* try to locate field */
         for (ed = obj->ex_description;; ed = ed->next) {
-          if (!ed) {
+          if (ed == nullptr) {
             send_to_char("No field with that keyword.\n\r", ch);
             return;
           }
-          if (!str_cmp(ed->keyword, string)) {
+          if (str_cmp(ed->keyword, string) == 0) {
             free(ed->keyword);
-            if (ed->description) {
+            if (ed->description != nullptr) {
               free(ed->description);
             }
 
@@ -333,11 +334,11 @@ void do_string(struct char_data* ch, const char* arg, int cmd) {
     }
   }
 
-  if (*ch->desc->str) {
+  if (*ch->desc->str != nullptr) {
     free(*ch->desc->str);
   }
 
-  if (*string) { /* there was a string in the argument array */
+  if (*string != 0) { /* there was a string in the argument array */
     if (strlen(string) > length[field - 1]) {
       send_to_char("String too long - truncated.\n\r", ch);
       *(string + length[field - 1]) = '\0';
@@ -359,15 +360,15 @@ static void bisect_arg(const char* arg, int* field, char* string) {
 
   /* field name and number */
   arg = one_argument(arg, buf);
-  if (!(*field = old_search_block(buf, 0, strlen(buf), room_fields, 0))) {
+  if ((*field = old_search_block(buf, 0, strlen(buf), room_fields, 0)) == 0) {
     return;
   }
 
   /* string */
-  for (; isspace(*arg); arg++) {
+  for (; isspace(*arg) != 0; arg++) {
     ;
   }
-  for (; (*string = *arg); arg++, string++) {
+  for (; (*string = *arg) != 0; arg++, string++) {
     ;
   }
 }
@@ -401,13 +402,14 @@ void do_edit(struct char_data* ch, const char* arg, int cmd) {
     return;
   }
 
-  if (!ch->desc) { /* someone is forced to do something. can be bad! */
-    return;        /* the ch->desc->str field will cause problems... */
+  if (ch->desc ==
+      nullptr) { /* someone is forced to do something. can be bad! */
+    return;      /* the ch->desc->str field will cause problems... */
   }
 
   bisect_arg(arg, &field, string);
 
-  if (!field) {
+  if (field == 0) {
     send_to_char("No field by that name. Try 'help edit'.\n\r", ch);
     return;
   }
@@ -456,7 +458,7 @@ void do_edit(struct char_data* ch, const char* arg, int cmd) {
         return;
       }
 
-      if (rp->dir_option[dir]) {
+      if (rp->dir_option[dir] != nullptr) {
         send_to_char("modifying exit\n\r", ch);
         if (dflags == 1) {
           rp->dir_option[dir]->exit_info = EX_ISDOOR;
@@ -515,7 +517,7 @@ void do_edit(struct char_data* ch, const char* arg, int cmd) {
       if ((dir >= 0) && (dir <= 5)) {
         send_to_char("Enter text, term. with '@' on a blank line", ch);
         string[0] = 0;
-        if (rp->dir_option[dir]) {
+        if (rp->dir_option[dir] != nullptr) {
           ch->desc->str = &rp->dir_option[dir]->general_description;
         } else {
           CREATE(rp->dir_option[dir], struct room_direction_data, 1);
@@ -531,13 +533,13 @@ void do_edit(struct char_data* ch, const char* arg, int cmd) {
       /*
         extra descriptions
         */
-      if (!*string) {
+      if (*string == 0) {
         send_to_char("You have to supply a keyword.\n\r", ch);
         return;
       }
       /* try to locate extra description */
       for (ed = rp->ex_description;; ed = ed->next) {
-        if (!ed) {
+        if (ed == nullptr) {
           CREATE(ed, struct extra_descr_data, 1);
           ed->next = rp->ex_description;
           rp->ex_description = ed;
@@ -548,7 +550,7 @@ void do_edit(struct char_data* ch, const char* arg, int cmd) {
           send_to_char("New field.\n\r", ch);
           break;
         }
-        if (!str_cmp(ed->keyword, string)) {
+        if (str_cmp(ed->keyword, string) == 0) {
           /* the field exists */
           free(ed->description);
           ed->description = nullptr;
@@ -609,19 +611,19 @@ void do_edit(struct char_data* ch, const char* arg, int cmd) {
       /*
         deletion
         */
-      if (!*string) {
+      if (*string == 0) {
         send_to_char("You must supply a field name.\n\r", ch);
         return;
       }
       /* try to locate field */
       for (ed = rp->ex_description;; ed = ed->next) {
-        if (!ed) {
+        if (ed == nullptr) {
           send_to_char("No field with that keyword.\n\r", ch);
           return;
         }
-        if (!str_cmp(ed->keyword, string)) {
+        if (str_cmp(ed->keyword, string) == 0) {
           free(ed->keyword);
-          if (ed->description) {
+          if (ed->description != nullptr) {
             free(ed->description);
           }
 
@@ -648,11 +650,11 @@ void do_edit(struct char_data* ch, const char* arg, int cmd) {
       break;
   }
 
-  if (*ch->desc->str) {
+  if (*ch->desc->str != nullptr) {
     free(*ch->desc->str);
   }
 
-  if (*string) { /* there was a string in the argument array */
+  if (*string != 0) { /* there was a string in the argument array */
     if (strlen(string) > room_length[field - 1]) {
       send_to_char("String too long - truncated.\n\r", ch);
       *(string + length[field - 1]) = '\0';
@@ -690,7 +692,7 @@ static char* one_word(char* argument, char* first_arg) {
   found = begin = 0;
 
   do {
-    for (; isspace(*(argument + begin)); begin++) {
+    for (; isspace(*(argument + begin)) != 0; begin++) {
       ;
     }
 
@@ -716,24 +718,24 @@ static char* one_word(char* argument, char* first_arg) {
 
     *(first_arg + look_at) = '\0';
     begin += look_at;
-  } while (fill_word(first_arg));
+  } while (fill_word(first_arg) != 0);
 
   return (argument + begin);
 }
 
 int start_page_file(struct descriptor_data* d, const char* fpath,
   const char* errormsg) {
-  if (!d || !(d->character)) {
+  if ((d == nullptr) || ((d->character) == nullptr)) {
     return 0;
   }
 
-  if (d->pagedfile) {
+  if (d->pagedfile != nullptr) {
     free(d->pagedfile);
   }
   d->pagedfile = (char*)calloc(strlen(fpath) + 1, 1);
   strcpy(d->pagedfile, fpath);
   d->position = 0;
-  if (!page_file(d, "")) { /* couldn't open file, etc. */
+  if (page_file(d, "") == 0) { /* couldn't open file, etc. */
     d->position = -1;
     send_to_char(errormsg, d->character);
     return 0;
@@ -752,18 +754,18 @@ int page_file(struct descriptor_data* d, const char* input) {
 
   /* see if they have typed a command / abort */
   one_argument(input, buffer);
-  if (*buffer) {
+  if (*buffer != 0) {
     d->position = -1;
     send_to_char("*** INTERUPTED ***\n\r", d->character);
     return 0;
   }
 
-  if (d->connected || (!d->pagedfile) || ((d->position) < 0) ||
-      (!(fp = fopen(d->pagedfile, "r")))) {
+  if ((d->connected != 0) || (d->pagedfile == nullptr) || ((d->position) < 0) ||
+      ((fp = fopen(d->pagedfile, "r")) == nullptr)) {
     return 0;
   }
 
-  numlines = (d->screen_size) ? d->screen_size - 2 : 24;
+  numlines = ((d->screen_size) != 0) ? d->screen_size - 2 : 24;
   fseek(fp, d->position, 0);
   for (i = 0; i < numlines; i++) {
     if (fgets(buffer, 255, fp) != nullptr) {
@@ -777,7 +779,7 @@ int page_file(struct descriptor_data* d, const char* input) {
     }
   }
 
-  if (!feof(fp)) {
+  if (feof(fp) == 0) {
     d->position = ftell(fp);
   } else {
     d->position = -1;
@@ -789,11 +791,11 @@ int page_file(struct descriptor_data* d, const char* input) {
 }
 
 void page_string(struct descriptor_data* d, char* str, int keep_internal) {
-  if (!d) {
+  if (d == nullptr) {
     return;
   }
 
-  if (keep_internal) {
+  if (keep_internal != 0) {
     CREATE(d->showstr_head, char, strlen(str) + 1);
     strcpy(d->showstr_head, str);
     d->showstr_point = d->showstr_head;
@@ -814,8 +816,8 @@ void show_string(struct descriptor_data* d, const char* input) {
 
   one_argument(input, buf);
 
-  if (*buf) {
-    if (d->showstr_head) {
+  if (*buf != 0) {
+    if (d->showstr_head != nullptr) {
       free(d->showstr_head);
       d->showstr_head = nullptr;
     }
@@ -828,16 +830,17 @@ void show_string(struct descriptor_data* d, const char* input) {
     if ((((*scan = *d->showstr_point) == '\n') || (*scan == '\r')) &&
         ((toggle = -toggle) < 0)) {
       lines++;
-    } else if (!*scan || (d->screen_size && (lines >= (d->screen_size - 2)))) {
+    } else if ((*scan == 0) ||
+               ((d->screen_size != 0) && (lines >= (d->screen_size - 2)))) {
       *scan = '\0';
       SEND_TO_Q(buffer, d);
 
       /* see if this is the end (or near the end) of the string */
-      for (chk = d->showstr_point; isspace(*chk); chk++) {
+      for (chk = d->showstr_point; isspace(*chk) != 0; chk++) {
         ;
       }
-      if (!*chk) {
-        if (d->showstr_head) {
+      if (*chk == 0) {
+        if (d->showstr_head != nullptr) {
           free(d->showstr_head);
           d->showstr_head = nullptr;
         }
@@ -879,14 +882,14 @@ void check_reboot(void) {
   t_info = localtime(&tc);
 
   if ((t_info->tm_hour + 1) == REBOOT_AT && t_info->tm_min > 30) {
-    if ((boot = fopen("./reboot", "r"))) {
+    if ((boot = fopen("./reboot", "r")) != nullptr) {
       if (t_info->tm_min > 50) {
         vlog("Reboot exists.");
         fread(&dummy, sizeof(dummy), 1, boot);
-        if (!feof(boot)) /* the file is nonepty */
+        if (feof(boot) == 0) /* the file is nonepty */
         {
           vlog("Reboot is nonempty.");
-          if (system("./reboot")) {
+          if (system("./reboot") != 0) {
             vlog("Reboot script terminated abnormally");
             send_to_all("The reboot was cancelled.\n\r");
             system("mv ./reboot reboot.FAILED");
@@ -921,8 +924,8 @@ int workhours(void) {
   tc = time(nullptr);
   t_info = localtime(&tc);
 
-  return ((t_info->tm_wday > 0) && (t_info->tm_wday < 6) &&
-          (t_info->tm_hour >= 9) && (t_info->tm_hour < 17));
+  return static_cast<int>((t_info->tm_wday > 0) && (t_info->tm_wday < 6) &&
+                          (t_info->tm_hour >= 9) && (t_info->tm_hour < 17));
 }
 
 /*
@@ -948,12 +951,12 @@ int load(void) {
   static int previous[5];
   static int p_point = -1;
 
-  if (!(fl = fopen("/tmp/.sysline", "r"))) {
+  if ((fl = fopen("/tmp/.sysline", "r")) == nullptr) {
     perror("sysline. (dying)");
     slow_death = 1;
     return (-1);
   }
-  if (!fread(&info, sizeof(info), 1, fl)) {
+  if (fread(&info, sizeof(info), 1, fl) == 0u) {
     perror("fread sysline (dying)");
     (void)fclose(fl);
     slow_death = 1;
@@ -984,7 +987,7 @@ static char* nogames(void) {
   static char text[200];
   FILE* fl = nullptr;
 
-  if ((fl = fopen("lib/nogames", "r"))) {
+  if ((fl = fopen("lib/nogames", "r")) != nullptr) {
     vlog("/usr/games/nogames exists");
     (void)fgets(text, 200, fl);
     (void)fclose(fl);
@@ -1004,11 +1007,12 @@ void gr(int s) {
     "WARNING: The game will close in 1 minute.\n\r"};
   static int wnr = 0;
 
-  if (((ld = load()) >= 6) || (txt = nogames()) || slow_death) {
+  if (((ld = load()) >= 6) || ((txt = nogames()) != nullptr) ||
+      (slow_death != 0)) {
     if (ld >= 6) {
       sprintf(buf, "The system load is greater than 6.0 (%d)\n\r", ld);
       send_to_all(buf);
-    } else if (slow_death) {
+    } else if (slow_death != 0) {
       send_to_all("The game is dying.\n\r");
     } else {
       strcpy(buf, "Game playing is no longer permitted on this machine:\n\r");
@@ -1025,9 +1029,9 @@ void gr(int s) {
     } else {
       Shutdown = 1;
     }
-  } else if (workhours()) {
+  } else if (workhours() != 0) {
     Shutdown = 1; /* this shouldn't happen */
-  } else if (wnr) {
+  } else if (wnr != 0) {
     send_to_all("Things look brighter now - you can continue playing.\n\r");
     wnr = 0;
   }

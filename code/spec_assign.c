@@ -924,7 +924,7 @@ void assign_rooms(void) {
   for (size_t i = 0; i < num_room_specials; ++i) {
     struct room_data* rp = real_roomp(room_specials[i].vnum);
 
-    if (rp) {
+    if (rp != nullptr) {
       rp->funct = room_specials[i].proc;
     } else {
       vlog("assign_rooms: unknown room");

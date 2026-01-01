@@ -61,12 +61,12 @@ static void set_oedesc(struct char_data* ch, struct obj_data* obj,
   struct extra_descr_data* newdesc = nullptr;
   char buf[256];
 
-  if (!*keywds) {
+  if (*keywds == 0) {
     send_to_char("You must give a list of keywords.\n\r", ch);
     return;
   }
-  for (tmp = obj->ex_description; tmp; tmp = tmp->next) {
-    if (!strcasecmp(tmp->keyword, keywds)) {
+  for (tmp = obj->ex_description; tmp != nullptr; tmp = tmp->next) {
+    if (strcasecmp(tmp->keyword, keywds) == 0) {
       break;
     }
   }
@@ -74,7 +74,7 @@ static void set_oedesc(struct char_data* ch, struct obj_data* obj,
   CREATE(newdesc, struct extra_descr_data, 1);
   newdesc->description = (char*)nullptr;
 
-  if (!tmp) {
+  if (tmp == nullptr) {
     newdesc->next = obj->ex_description;
     obj->ex_description = newdesc;
     newdesc->keyword = strdup(keywds);
@@ -85,7 +85,7 @@ static void set_oedesc(struct char_data* ch, struct obj_data* obj,
     newdesc = tmp;
   }
 
-  if (newdesc->description) {
+  if (newdesc->description != nullptr) {
     free(newdesc->description);
     newdesc->description = (char*)nullptr;
   }
@@ -106,7 +106,7 @@ static void set_mtype(struct char_data* ch, struct obj_data* obj, char* arg) {
     "legs", "feet", "hands", "arms", "shield", "about", "waiste", "wrist",
     "wield", "hold", "", "\n"};
 
-  if (!*arg) {
+  if (*arg == 0) {
     send_to_char("The following types are available:\n\r\n\r", ch);
     for (i = 0; *obj_type[i] != '\n'; i++) {
       send_to_char(obj_type[i], ch);
@@ -117,33 +117,33 @@ static void set_mtype(struct char_data* ch, struct obj_data* obj, char* arg) {
 
   one_argument(arg, type);
 
-  if (is_abbrev(type, "finger")) {
+  if (is_abbrev(type, "finger") != 0) {
     obj->obj_flags.wear_flags = 3;
-  } else if (is_abbrev(type, "neck")) {
+  } else if (is_abbrev(type, "neck") != 0) {
     obj->obj_flags.wear_flags = 5;
-  } else if (is_abbrev(type, "body")) {
+  } else if (is_abbrev(type, "body") != 0) {
     obj->obj_flags.wear_flags = 9;
-  } else if (is_abbrev(type, "head")) {
+  } else if (is_abbrev(type, "head") != 0) {
     obj->obj_flags.wear_flags = 17;
-  } else if (is_abbrev(type, "legs")) {
+  } else if (is_abbrev(type, "legs") != 0) {
     obj->obj_flags.wear_flags = 33;
-  } else if (is_abbrev(type, "feet")) {
+  } else if (is_abbrev(type, "feet") != 0) {
     obj->obj_flags.wear_flags = 65;
-  } else if (is_abbrev(type, "hands")) {
+  } else if (is_abbrev(type, "hands") != 0) {
     obj->obj_flags.wear_flags = 129;
-  } else if (is_abbrev(type, "arms")) {
+  } else if (is_abbrev(type, "arms") != 0) {
     obj->obj_flags.wear_flags = 257;
-  } else if (is_abbrev(type, "shield")) {
+  } else if (is_abbrev(type, "shield") != 0) {
     obj->obj_flags.wear_flags = 513;
-  } else if (is_abbrev(type, "about")) {
+  } else if (is_abbrev(type, "about") != 0) {
     obj->obj_flags.wear_flags = 1025;
-  } else if (is_abbrev(type, "waist")) {
+  } else if (is_abbrev(type, "waist") != 0) {
     obj->obj_flags.wear_flags = 2049;
-  } else if (is_abbrev(type, "wrist")) {
+  } else if (is_abbrev(type, "wrist") != 0) {
     obj->obj_flags.wear_flags = 4097;
-  } else if (is_abbrev(type, "wield")) {
+  } else if (is_abbrev(type, "wield") != 0) {
     obj->obj_flags.wear_flags = 8193;
-  } else if (is_abbrev(type, "hold")) {
+  } else if (is_abbrev(type, "hold") != 0) {
     obj->obj_flags.wear_flags = 16385;
   } else {
     send_to_char("That is not a valid place for the item to be worn!\n\r", ch);
@@ -181,7 +181,7 @@ static void set_oflags(struct char_data* ch, struct obj_data* obj, char* arg) {
     "ITEM_LEVEL20      262144 /*cant be worn by levels < 20 */",
     "ITEM_LEVEL30      524288 /*Cant be worn by levels < 30 */", "\n"};
 
-  if (!*arg) {
+  if (*arg == 0) {
     send_to_char("The following types are available:\n\r\n\r", ch);
     for (i = 0; *obj_type[i] != '\n'; i++) {
       send_to_char(obj_type[i], ch);
@@ -195,7 +195,7 @@ static void set_oflags(struct char_data* ch, struct obj_data* obj, char* arg) {
   }
 
   only_argument(arg, num);
-  if (isdigit(*num)) {
+  if (isdigit(*num) != 0) {
     number = atoi(num);
   } else {
     send_to_char("You must enter a number for this flag.\n\r", ch);
@@ -218,7 +218,7 @@ static void set_otype(struct char_data* ch, struct obj_data* obj, char* arg) {
     "other", "trash", "trap", "container", "note", "drinkcon", "key", "food",
     "money", "pen", "boat", "\n"};
 
-  if (!*arg) {
+  if (*arg == 0) {
     send_to_char("The following types are available:\n\r\n\r", ch);
     for (i = 0; *obj_type[i] != '\n'; i++) {
       send_to_char(obj_type[i], ch);
@@ -259,7 +259,7 @@ static void set_oaffect(struct char_data* ch, struct obj_data* obj,
     "eat spells", "backstab", "kick", "sneak", "hide", "bash", "pick", "steal",
     "track", "hitndam", "\n"};
 
-  if (!*arg) {
+  if (*arg == 0) {
     send_to_char("The following affects are available:\n\r\n\r", ch);
     send_to_char("none\n\r", ch);
     for (i = 0; *oaffects[i] != '\n'; i++) {
@@ -269,7 +269,7 @@ static void set_oaffect(struct char_data* ch, struct obj_data* obj,
     return;
   }
 
-  if (!strcasecmp(arg, "none")) {
+  if (strcasecmp(arg, "none") == 0) {
     obj->affected[a].location = 0;
     obj->affected[a].modifier = 0;
     send_to_char("Done.\n\r", ch);
@@ -286,7 +286,7 @@ static void set_oaffect(struct char_data* ch, struct obj_data* obj,
     send_to_char("That affect does not exist.\n\r", ch);
     return;
   }
-  if (!mod) {
+  if (mod == 0) {
     send_to_char("You must specify an amount to affect it by.\n\r", ch);
     return;
   }
@@ -332,12 +332,12 @@ void do_oset(struct char_data* ch, const char* argument, int cmd) {
   half_chop(argument, arg2, arg3);
 
   obj = get_obj_vis(ch, arg1);
-  if (!obj) {
+  if (obj == nullptr) {
     send_to_char("That object does not exist.\n\r", ch);
     return;
   }
 
-  if (!*arg2) {
+  if (*arg2 == 0) {
     for (i = 0; *generic_field[i] != '\n'; i++) {
       spaces = 15 - strlen(generic_field[i]);
       sprintf(buf2, "");
@@ -363,20 +363,21 @@ void do_oset(struct char_data* ch, const char* argument, int cmd) {
   }
 
   for (i = 0; *generic_field[i] != '\n'; i++) {
-    if (!strncasecmp(generic_field[i], arg2, strlen(arg2))) {
+    if (strncasecmp(generic_field[i], arg2, strlen(arg2)) == 0) {
       break;
     }
   }
 
   switch (i) {
     case 0: /* name */
-      for (tmpexd = obj->ex_description; tmpexd; tmpexd = tmpexd->next) {
-        if (!strcasecmp(tmpexd->keyword, obj->name)) {
+      for (tmpexd = obj->ex_description; tmpexd != nullptr;
+        tmpexd = tmpexd->next) {
+        if (strcasecmp(tmpexd->keyword, obj->name) == 0) {
           break;
         }
       }
 
-      if (tmpexd) {
+      if (tmpexd != nullptr) {
         free(tmpexd->keyword);
         tmpexd->keyword = strdup(arg3);
       }
@@ -443,8 +444,8 @@ void do_oset(struct char_data* ch, const char* argument, int cmd) {
   }
 
   for (i = 0; i < 4; i++) {
-    if (!strncasecmp(oset_field[obj->obj_flags.type_flag].set[i], arg2,
-          strlen(arg2))) {
+    if (strncasecmp(oset_field[obj->obj_flags.type_flag].set[i], arg2,
+          strlen(arg2)) == 0) {
       break;
     }
   }
@@ -460,7 +461,7 @@ void do_oset(struct char_data* ch, const char* argument, int cmd) {
     case ITEM_LIGHT:
       switch (i) {
         case 0: /* duration */
-          if (!*arg3) {
+          if (*arg3 == 0) {
             send_to_char(
               "ITEM_LIGHT: DURATION\n\r\n\rThe light's duration is the amount "
               "of time (in game hours) that the\n\rlight will stay on.  Use a "
@@ -486,7 +487,7 @@ void do_oset(struct char_data* ch, const char* argument, int cmd) {
     case ITEM_SCROLL:
       switch (i) {
         case 0: /* level */
-          if (!*arg3) {
+          if (*arg3 == 0) {
             send_to_char(
               "ITEM_SCROLL: LEVEL\n\r\n\rThis value represents the level of "
               "the spells contained in the scroll.\n\rIt must be a number "
@@ -504,7 +505,7 @@ void do_oset(struct char_data* ch, const char* argument, int cmd) {
         case 1: /* spell */
         case 2:
         case 3:
-          if (!*arg3) {
+          if (*arg3 == 0) {
             send_to_char(
               "ITEM_SCROLL: SPELL\n\r\n\rThis value determines which spell is "
               "performed by reciting the scroll.\n\rYou need not use the spell "
@@ -533,7 +534,7 @@ void do_oset(struct char_data* ch, const char* argument, int cmd) {
     case ITEM_WAND:
       switch (i) {
         case 0: /* level */
-          if (!*arg3) {
+          if (*arg3 == 0) {
             send_to_char(
               "ITEM_WAND: LEVEL\n\r\n\rThis value represents the level of the "
               "spell contained in the wand.\n\rIt must be a number between 1 "
@@ -549,7 +550,7 @@ void do_oset(struct char_data* ch, const char* argument, int cmd) {
           send_to_char("Done.\n\r", ch);
           break;
         case 1: /* max-charges */
-          if (!*arg3) {
+          if (*arg3 == 0) {
             send_to_char(
               "ITEM_WAND: MAX-CHARGES\n\r\n\rThe number of \"charges\" that a "
               "wand has is the amount of times that it\n\rcan be used.  In the "
@@ -569,7 +570,7 @@ void do_oset(struct char_data* ch, const char* argument, int cmd) {
           send_to_char("Done.\n\r", ch);
           break;
         case 2: /* charges */
-          if (!*arg3) {
+          if (*arg3 == 0) {
             send_to_char(
               "ITEM_WAND: CHARGES\n\r\n\rThe number of \"charges\" that a wand "
               "has is the amount of times that it\n\rcan be used.  In the "
@@ -589,7 +590,7 @@ void do_oset(struct char_data* ch, const char* argument, int cmd) {
           send_to_char("Done.\n\r", ch);
           break;
         case 3: /* spell */
-          if (!*arg3) {
+          if (*arg3 == 0) {
             send_to_char(
               "ITEM_WAND: SPELL\n\r\n\rThis value determines which spell is "
               "performed by using the wand.\n\rYou need not use the spell "
@@ -617,7 +618,7 @@ void do_oset(struct char_data* ch, const char* argument, int cmd) {
     case ITEM_STAFF:
       switch (i) {
         case 0: /* level */
-          if (!*arg3) {
+          if (*arg3 == 0) {
             send_to_char(
               "ITEM_STAFF: LEVEL\n\r\n\rThis value represents the level of the "
               "spell contained in the staff.\n\rIt must be a number between 1 "
@@ -633,7 +634,7 @@ void do_oset(struct char_data* ch, const char* argument, int cmd) {
           send_to_char("Done.\n\r", ch);
           break;
         case 1: /* max-charges */
-          if (!*arg3) {
+          if (*arg3 == 0) {
             send_to_char(
               "ITEM_STAFF: MAX-CHARGES\n\r\n\rThe number of \"charges\" that a "
               "staff has is the amount of times that it\n\rcan be used.  In "
@@ -653,7 +654,7 @@ void do_oset(struct char_data* ch, const char* argument, int cmd) {
           send_to_char("Done.\n\r", ch);
           break;
         case 2: /* charges */
-          if (!*arg3) {
+          if (*arg3 == 0) {
             send_to_char(
               "ITEM_STAFF: CHARGES\n\r\n\rThe number of \"charges\" that a "
               "staff has is the amount of times that it\n\rcan be used.  In "
@@ -673,7 +674,7 @@ void do_oset(struct char_data* ch, const char* argument, int cmd) {
           send_to_char("Done.\n\r", ch);
           break;
         case 3: /* spell */
-          if (!*arg3) {
+          if (*arg3 == 0) {
             send_to_char(
               "ITEM_STAFF: SPELL\n\r\n\rThis value determines which spell is "
               "performed by using the staff.\n\rYou need not use the spell "
@@ -702,7 +703,7 @@ void do_oset(struct char_data* ch, const char* argument, int cmd) {
     case ITEM_WEAPON:
       switch (i) {
         case 0:
-          if (!*arg3) {
+          if (*arg3 == 0) {
             send_to_char(
               "ITEM_WEAPON: DAMAGE\n\r\n\rWeapon damage *must* be given in the "
               "form \"XdY\", where X and Y are the\n\rtwo damage dice.  A die "
@@ -725,7 +726,7 @@ void do_oset(struct char_data* ch, const char* argument, int cmd) {
           send_to_char("Done.\n\r", ch);
           break;
         case 1: /* wtype */
-          if (!*arg3) {
+          if (*arg3 == 0) {
             send_to_char(
               "ITEM_WEAPON: WTYPE\n\r\n\rThe weapon type determines the attack "
               "type used by the weapon.\n\rYou may set it to (p)iercing, "
@@ -774,7 +775,7 @@ void do_oset(struct char_data* ch, const char* argument, int cmd) {
         case ITEM_ARMOR:
           switch (i) {
             case 0: /* points */
-              if (!*arg3) {
+              if (*arg3 == 0) {
                 send_to_char(
                   "ITEM_ARMOR: POINTS\n\r\n\rArmor points are directly "
                   "proportional to the amount of damage absorbed\n\rby a blow "
@@ -806,7 +807,7 @@ void do_oset(struct char_data* ch, const char* argument, int cmd) {
         case ITEM_POTION:
           switch (i) {
             case 0: /* level */
-              if (!*arg3) {
+              if (*arg3 == 0) {
                 send_to_char(
                   "ITEM_POTION: LEVEL\n\r\n\rThis value represents the level "
                   "of the spells contained in the potion.\n\rIt must be a "
@@ -824,7 +825,7 @@ void do_oset(struct char_data* ch, const char* argument, int cmd) {
             case 1: /* spell */
             case 2:
             case 3:
-              if (!*arg3) {
+              if (*arg3 == 0) {
                 send_to_char(
                   "ITEM_POTION: SPELL\n\r\n\rThis value determines which spell "
                   "is performed by quaffing the potion.\n\rYou need not use "
@@ -853,7 +854,7 @@ void do_oset(struct char_data* ch, const char* argument, int cmd) {
         case ITEM_CONTAINER:
           switch (i) {
             case 0: /* capacity */
-              if (!*arg3) {
+              if (*arg3 == 0) {
                 send_to_char(
                   "ITEM_CONTAINER: CAPACITY\n\r\n\rThis value determines the "
                   "maximum weight that the container can hold.\n\r",
@@ -868,7 +869,7 @@ void do_oset(struct char_data* ch, const char* argument, int cmd) {
               send_to_char("Done.\n\r", ch);
               break;
             case 1: /* flags */
-              if (!*arg3) {
+              if (*arg3 == 0) {
                 send_to_char(
                   "ITEM_CONTAINER: FLAGS\n\r\n\rYou may set the following "
                   "flags: (c)losable, (p)ickproof, and (t)rapped.\n\r",
@@ -901,7 +902,7 @@ void do_oset(struct char_data* ch, const char* argument, int cmd) {
               }
               break;
             case 2: /* key */
-              if (!*arg3) {
+              if (*arg3 == 0) {
                 send_to_char(
                   "ITEM_CONTAINER: KEY\n\r\n\rThis value is the virtual object "
                   "number for a key which can open the\n\rcontainer.\n\r",
@@ -922,7 +923,7 @@ void do_oset(struct char_data* ch, const char* argument, int cmd) {
         case ITEM_DRINKCON:
           switch (i) {
             case 0: /* capacity */
-              if (!*arg3) {
+              if (*arg3 == 0) {
                 send_to_char(
                   "ITEM_DRINKCON: CAPACITY\n\r\n\rThis value represents the "
                   "amount of liquid that the drink container\n\rcan hold.\n\r",
@@ -937,7 +938,7 @@ void do_oset(struct char_data* ch, const char* argument, int cmd) {
               send_to_char("Done.\n\r", ch);
               break;
             case 1:
-              if (!*arg3) {
+              if (*arg3 == 0) {
                 send_to_char(
                   "ITEM_DRINKCON: AMOUNT\n\r\n\rThis is the amount of liquid "
                   "left in the container.\n\r",
@@ -959,7 +960,7 @@ void do_oset(struct char_data* ch, const char* argument, int cmd) {
               send_to_char("Done.\n\r", ch);
               break;
             case 2:
-              if (!*arg3) {
+              if (*arg3 == 0) {
                 send_to_char(
                   "ITEM_DRINKCON: TYPE\n\r\n\rThere are a variety of different "
                   "drink types you can use.  Read HELP\n\rITEM_DRINKCON for a "
@@ -968,7 +969,7 @@ void do_oset(struct char_data* ch, const char* argument, int cmd) {
                 return;
               }
               for (i = 0; i < 16; i++) {
-                if (!strncasecmp(arg3, drinknames[i], strlen(arg3))) {
+                if (strncasecmp(arg3, drinknames[i], strlen(arg3)) == 0) {
                   break;
                 }
               }
@@ -983,17 +984,17 @@ void do_oset(struct char_data* ch, const char* argument, int cmd) {
               send_to_char("Done.\n\r", ch);
               break;
             case 3:
-              if (!*arg3) {
+              if (*arg3 == 0) {
                 send_to_char(
                   "ITEM_DRINKCON: POISONED\n\r\n\rSet this value to true if "
                   "you want the drink to be poisoned.\n\r",
                   ch);
                 return;
               }
-              if (!strncasecmp(arg3, "true", strlen(arg3))) {
+              if (strncasecmp(arg3, "true", strlen(arg3)) == 0) {
                 obj->obj_flags.value[3] = 1;
                 send_to_char("Done.\n\r", ch);
-              } else if (!strncasecmp(arg3, "false", strlen(arg3))) {
+              } else if (strncasecmp(arg3, "false", strlen(arg3)) == 0) {
                 obj->obj_flags.value[3] = 0;
                 send_to_char("Done.\n\r", ch);
               } else {
@@ -1014,7 +1015,7 @@ void do_oset(struct char_data* ch, const char* argument, int cmd) {
         case ITEM_FOOD:
           switch (i) {
             case 0:
-              if (!*arg3) {
+              if (*arg3 == 0) {
                 send_to_char(
                   "ITEM_FOOD: AMOUNT\n\r\n\rThis value represents the number "
                   "of game hours which the food will fill\n\ryou for.\n\r",
@@ -1029,17 +1030,17 @@ void do_oset(struct char_data* ch, const char* argument, int cmd) {
               send_to_char("Done.\n\r", ch);
               break;
             case 1:
-              if (!*arg3) {
+              if (*arg3 == 0) {
                 send_to_char(
                   "ITEM_FOOD: POISONED\n\r\n\rSet this value to true if you "
                   "want the drink to be poisoned.\n\r",
                   ch);
                 return;
               }
-              if (!strncasecmp(arg3, "true", strlen(arg3))) {
+              if (strncasecmp(arg3, "true", strlen(arg3)) == 0) {
                 obj->obj_flags.value[3] = 1;
                 send_to_char("Done.\n\r", ch);
-              } else if (!strncasecmp(arg3, "false", strlen(arg3))) {
+              } else if (strncasecmp(arg3, "false", strlen(arg3)) == 0) {
                 obj->obj_flags.value[3] = 0;
                 send_to_char("Done.\n\r", ch);
               } else {
@@ -1060,7 +1061,7 @@ void do_oset(struct char_data* ch, const char* argument, int cmd) {
         case ITEM_MONEY:
           switch (i) {
             case 0:
-              if (!*arg3) {
+              if (*arg3 == 0) {
                 send_to_char(
                   "ITEM_MONEY: AMOUNT\n\r\n\rThe amount of gold contained in a "
                   "\"gold object.\"\n\r",

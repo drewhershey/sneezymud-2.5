@@ -20,7 +20,7 @@ void do_say(struct char_data* ch, const char* argument, int cmd) {
   int i = 0;
   char buf[MAX_INPUT_LENGTH + 40] = "\0\0\0\0";
 
-  if (apply_soundproof(ch)) {
+  if (apply_soundproof(ch) != 0) {
     return;
   }
 
@@ -35,7 +35,7 @@ void do_say(struct char_data* ch, const char* argument, int cmd) {
     return;
   }
 
-  if (!*(argument + i)) {
+  if (*(argument + i) == 0) {
     send_to_char("Yes, but WHAT do you want to say?\n\r", ch);
   } else {
     sprintf(buf, "$n says '%s'", argument + i);
@@ -67,7 +67,7 @@ void do_shout(struct char_data* ch, const char* argument, int cmd) {
     return;
   }
 
-  if (apply_soundproof(ch)) {
+  if (apply_soundproof(ch) != 0) {
     return;
   }
 
@@ -75,23 +75,23 @@ void do_shout(struct char_data* ch, const char* argument, int cmd) {
     ;
   }
 
-  if (ch->master && IS_AFFECTED(ch, AFF_CHARM)) {
+  if ((ch->master != nullptr) && IS_AFFECTED(ch, AFF_CHARM)) {
     send_to_char("I don't think so :-)", ch->master);
     return;
   }
 
-  if (!(*argument)) {
+  if ((*argument) == 0) {
     send_to_char("Shout? Yes! Fine! Shout we must, but WHAT??\n\r", ch);
   } else {
     sprintf(buf1, "You shout '%s'\n\r", argument);
     send_to_char(buf1, ch);
     sprintf(buf1, "$n shouts '%s'", argument);
 
-    for (i = descriptor_list; i; i = i->next) {
-      if (i->character != ch && !i->connected &&
+    for (i = descriptor_list; i != nullptr; i = i->next) {
+      if (i->character != ch && (i->connected == 0) &&
           (IS_NPC(i->character) ||
             (!IS_SET(i->character->specials.act, PLR_NOSHOUT))) &&
-          !check_soundproof(i->character)) {
+          (check_soundproof(i->character) == 0)) {
         act(buf1, 0, ch, nullptr, i->character, TO_VICT);
       }
     }
@@ -110,14 +110,14 @@ void do_grouptell(struct char_data* ch, const char* argument, int cmd) {
     return;
   }
 
-  if (!(k = ch->master)) {
+  if ((k = ch->master) == nullptr) {
     k = ch;
   }
   for (; *argument == ' '; argument++) {
     ;
   }
 
-  if (!(*argument)) {
+  if ((*argument) == 0) {
     send_to_char(
       "Grouptell is a good command, but you need to tell your group "
       "SOMEthing!\n\r",
@@ -130,7 +130,7 @@ void do_grouptell(struct char_data* ch, const char* argument, int cmd) {
 
     act(buf1, 0, ch, nullptr, k, TO_VICT);
 
-    for (f = k->followers; f; f = f->next) {
+    for (f = k->followers; f != nullptr; f = f->next) {
       if IS_AFFECTED (f->follower, AFF_GROUP)
         act(buf1, 0, ch, nullptr, f->follower, TO_VICT);
     }
@@ -145,14 +145,14 @@ void do_commune(struct char_data* ch, const char* argument, int cmd) {
     ;
   }
 
-  if (!(*argument)) {
+  if ((*argument) == 0) {
     send_to_char("Communing among the gods is fine, but WHAT?\n\r", ch);
   } else {
     sprintf(buf1, "You tell the gods: %s\n\r", argument);
     send_to_char(buf1, ch);
 
-    for (i = descriptor_list; i; i = i->next) {
-      if (i->character != ch && !i->connected && !IS_NPC(i->character) &&
+    for (i = descriptor_list; i != nullptr; i = i->next) {
+      if (i->character != ch && (i->connected == 0) && !IS_NPC(i->character) &&
           (GetMaxLevel(i->character) >= 52)) {
         if (IS_SET(i->character->specials.act, PLR_COLOR)) {
           sprintf(buf1, "%s$n: %s%s%s", ANSI_VIOLET, ANSI_CYAN, argument,
@@ -197,15 +197,15 @@ void do_sign(struct char_data* ch, const char* argument, int cmd) {
     ;
   }
 
-  if (!*(argument + i)) {
+  if (*(argument + i) == 0) {
     send_to_char("Yes, but WHAT do you want to sign?\n\r", ch);
   } else {
     rp = real_roomp(ch->in_room);
-    if (!rp) {
+    if (rp == nullptr) {
       return;
     }
 
-    if (!HasHands(ch)) {
+    if (HasHands(ch) == 0) {
       send_to_char("Yeah right... WHAT HANDS!!!!!!!!\n\r", ch);
       return;
     }
@@ -220,8 +220,8 @@ void do_sign(struct char_data* ch, const char* argument, int cmd) {
 
     diff = strlen(buf);
 
-    while (p) {
-      if (ch->skills &&
+    while (p != nullptr) {
+      if ((ch->skills != nullptr) &&
           number(1, 75 + strlen(p)) < ch->skills[SKILL_SIGN].learned) {
         strcat(buf2, p);
       } else {
@@ -241,9 +241,10 @@ void do_sign(struct char_data* ch, const char* argument, int cmd) {
 
     sprintf(buf, "$n signs '%s'", buf2);
 
-    for (t = rp->people; t; t = t->next_in_room) {
+    for (t = rp->people; t != nullptr; t = t->next_in_room) {
       if (t != ch) {
-        if (t->skills && number(1, diff) < t->skills[SKILL_SIGN].learned) {
+        if ((t->skills != nullptr) &&
+            number(1, diff) < t->skills[SKILL_SIGN].learned) {
           act(buf, 0, ch, nullptr, t, TO_VICT);
         } else {
           act("$n makes funny motions with $s hands", 0, ch, nullptr, t,
@@ -271,11 +272,11 @@ void do_send(struct char_data* ch, const char* argument, int cmd) {
 
   radio = ch->equipment[WEAR_RADIO];
 
-  if (!radio) {
+  if (radio == nullptr) {
     send_to_char("You need to be holding a radio to send a message.\n\r", ch);
     return;
   }
-  if (apply_soundproof(ch)) {
+  if (apply_soundproof(ch) != 0) {
     return;
   }
 
@@ -283,25 +284,26 @@ void do_send(struct char_data* ch, const char* argument, int cmd) {
     ;
   }
 
-  if (ch->master && IS_AFFECTED(ch, AFF_CHARM)) {
+  if ((ch->master != nullptr) && IS_AFFECTED(ch, AFF_CHARM)) {
     send_to_char("I don't think so :-)", ch->master);
     return;
   }
 
-  if (!(*argument)) {
+  if ((*argument) == 0) {
     send_to_char("What exactly did you want your message to be?\n\r", ch);
   } else {
     sprintf(buf1, "Your message is : %s\n\r", argument);
     send_to_char(buf1, ch);
     sprintf(buf1, "$n [Channel %d] : %s", radio->obj_flags.value[3], argument);
 
-    for (i = descriptor_list; i; i = i->next) {
-      if (i->character && (i->character != ch) && (i->connected == CON_PLYNG) &&
-          !check_soundproof(i->character) &&
+    for (i = descriptor_list; i != nullptr; i = i->next) {
+      if ((i->character != nullptr) && (i->character != ch) &&
+          (i->connected == CON_PLYNG) &&
+          (check_soundproof(i->character) == 0) &&
           (i->character->in_room != NOWHERE)) {
         radio2 = i->character->equipment[WEAR_RADIO];
 
-        if ((radio2) &&
+        if (((radio2) != nullptr) &&
             (radio->obj_flags.value[3] == radio2->obj_flags.value[3])) {
           act(buf1, 0, ch, nullptr, i->character, TO_VICT);
         }
@@ -323,17 +325,17 @@ void do_tell(struct char_data* ch, const char* argument, int cmd) {
     return;
   }
 
-  if (apply_soundproof(ch)) {
+  if (apply_soundproof(ch) != 0) {
     return;
   }
 
   half_chop(argument, name, message);
 
-  if (!*name || !*message) {
+  if ((*name == 0) || (*message == 0)) {
     send_to_char("Who do you wish to tell what??\n\r", ch);
     return;
   }
-  if (!(vict = get_char_vis(ch, name))) {
+  if ((vict = get_char_vis(ch, name)) == nullptr) {
     send_to_char("No-one by that name here..\n\r", ch);
     return;
   }
@@ -345,16 +347,16 @@ void do_tell(struct char_data* ch, const char* argument, int cmd) {
     act("$E is asleep, shhh.", 0, ch, nullptr, vict, TO_CHAR);
     return;
   }
-  if (IS_NPC(vict) && !(vict->desc)) {
+  if (IS_NPC(vict) && ((vict->desc) == nullptr)) {
     send_to_char("No-one by that name here..\n\r", ch);
     return;
   }
-  if (!vict->desc) {
+  if (vict->desc == nullptr) {
     send_to_char("They can't hear you", ch);
     return;
   }
 
-  if (check_soundproof(vict)) {
+  if (check_soundproof(vict) != 0) {
     send_to_char("Your words dont reach them, must be in a silent zone.\n\r",
       ch);
     return;
@@ -394,22 +396,22 @@ void do_whisper(struct char_data* ch, const char* argument, int cmd) {
     return;
   }
 
-  if (apply_soundproof(ch)) {
+  if (apply_soundproof(ch) != 0) {
     return;
   }
 
   half_chop(argument, name, message);
 
-  if (!*name || !*message) {
+  if ((*name == 0) || (*message == 0)) {
     send_to_char("Who do you want to whisper to.. and what??\n\r", ch);
-  } else if (!(vict = get_char_room_vis(ch, name))) {
+  } else if ((vict = get_char_room_vis(ch, name)) == nullptr) {
     send_to_char("No-one by that name here..\n\r", ch);
   } else if (vict == ch) {
     act("$n whispers quietly to $mself.", 0, ch, nullptr, nullptr, TO_ROOM);
     send_to_char(
       "You can't seem to get your mouth close enough to your ear...\n\r", ch);
   } else {
-    if (check_soundproof(vict)) {
+    if (check_soundproof(vict) != 0) {
       return;
     }
 
@@ -435,21 +437,21 @@ void do_ask(struct char_data* ch, const char* argument, int cmd) {
     return;
   }
 
-  if (apply_soundproof(ch)) {
+  if (apply_soundproof(ch) != 0) {
     return;
   }
 
   half_chop(argument, name, message);
 
-  if (!*name || !*message) {
+  if ((*name == 0) || (*message == 0)) {
     send_to_char("Who do you want to ask something.. and what??\n\r", ch);
-  } else if (!(vict = get_char_room_vis(ch, name))) {
+  } else if ((vict = get_char_room_vis(ch, name)) == nullptr) {
     send_to_char("No-one by that name here..\n\r", ch);
   } else if (vict == ch) {
     act("$n quietly asks $mself a question.", 0, ch, nullptr, nullptr, TO_ROOM);
     send_to_char("You think about it for a while...\n\r", ch);
   } else {
-    if (check_soundproof(vict)) {
+    if (check_soundproof(vict) != 0) {
       return;
     }
 
@@ -474,25 +476,25 @@ void do_write(struct char_data* ch, const char* argument, int cmd) {
 
   argument_interpreter(argument, papername, penname);
 
-  if (!ch->desc) {
+  if (ch->desc == nullptr) {
     return;
   }
 
-  if (!*papername) /* nothing was delivered */ {
+  if (*papername == 0) /* nothing was delivered */ {
     send_to_char("write (on) papername (with) penname.\n\r", ch);
     return;
   }
 
-  if (!*penname) {
+  if (*penname == 0) {
     send_to_char("write (on) papername (with) penname.\n\r", ch);
     return;
   }
-  if (!(paper = get_obj_in_list_vis(ch, papername, ch->carrying))) {
+  if ((paper = get_obj_in_list_vis(ch, papername, ch->carrying)) == nullptr) {
     sprintf(buf, "You have no %s.\n\r", papername);
     send_to_char(buf, ch);
     return;
   }
-  if (!(pen = get_obj_in_list_vis(ch, penname, ch->carrying))) {
+  if ((pen = get_obj_in_list_vis(ch, penname, ch->carrying)) == nullptr) {
     sprintf(buf, "You have no %s.\n\r", papername);
     send_to_char(buf, ch);
     return;
@@ -503,7 +505,7 @@ void do_write(struct char_data* ch, const char* argument, int cmd) {
     act("$p is no good for writing with.", 0, ch, pen, nullptr, TO_CHAR);
   } else if (paper->obj_flags.type_flag != ITEM_NOTE) {
     act("You can't write on $p.", 0, ch, paper, nullptr, TO_CHAR);
-  } else if (paper->action_description) {
+  } else if (paper->action_description != nullptr) {
     send_to_char("There's something written on it already.\n\r", ch);
     return;
   } else {

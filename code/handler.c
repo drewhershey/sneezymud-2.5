@@ -30,7 +30,7 @@ char* fname(char* namelist) {
   static char holder[30];
   char* point = nullptr;
 
-  for (point = holder; isalpha(*namelist); namelist++, point++) {
+  for (point = holder; isalpha(*namelist) != 0; namelist++, point++) {
     *point = *namelist;
   }
 
@@ -46,14 +46,14 @@ static int split_string(char* str, const char* sep, char** argv)
   int argc = 0;
 
   s = strtok(str, sep);
-  if (s) {
+  if (s != nullptr) {
     argv[argc++] = s;
   } else {
     *argv = str;
     return 1;
   }
 
-  while ((s = strtok(nullptr, sep))) {
+  while ((s = strtok(nullptr, sep)) != nullptr) {
     argv[argc++] = s;
   }
   return argc;
@@ -71,7 +71,7 @@ int isname(const char* str, const char* namelist) {
   char names[MAX_INPUT_LENGTH];
   char* s = nullptr;
 
-  if (!str || !namelist) {
+  if ((str == nullptr) || (namelist == nullptr)) {
     return 0;
   }
 
@@ -92,13 +92,13 @@ int isname(const char* str, const char* namelist) {
     }
   }
 
-  if (exact && argc != xargc) {
+  if ((exact != 0) && argc != xargc) {
     return 0;
   }
 
   for (i = 0; i < argc; i++) {
     for (j = 0; j < xargc; j++) {
-      if (xargv[j] && is_abbrev(argv[i], xargv[j])) {
+      if ((xargv[j] != nullptr) && (is_abbrev(argv[i], xargv[j]) != 0)) {
         xargv[j] = nullptr;
         break;
       }
@@ -143,26 +143,26 @@ void affect_modify(struct char_data* ch, signed char loc, long mod, long bitv,
   int diff = 0;
 
   if (loc == APPLY_IMMUNE) {
-    if (add) {
+    if (add != 0) {
       SET_BIT(ch->immune, mod);
     } else {
       REMOVE_BIT(ch->immune, mod);
     }
   } else if (loc == APPLY_SUSC) {
-    if (add) {
+    if (add != 0) {
       SET_BIT(ch->susc, mod);
     } else {
       REMOVE_BIT(ch->susc, mod);
     }
 
   } else if (loc == APPLY_M_IMMUNE) {
-    if (add) {
+    if (add != 0) {
       SET_BIT(ch->M_immune, mod);
     } else {
       REMOVE_BIT(ch->M_immune, mod);
     }
   } else if (loc == APPLY_SPELL) {
-    if (add) {
+    if (add != 0) {
       SET_BIT(ch->specials.affected_by, mod);
     } else {
       REMOVE_BIT(ch->specials.affected_by, mod);
@@ -170,7 +170,7 @@ void affect_modify(struct char_data* ch, signed char loc, long mod, long bitv,
   } else if (loc == APPLY_WEAPON_SPELL) {
     return;
   } else {
-    if (add) {
+    if (add != 0) {
       SET_BIT(ch->specials.affected_by, bitv);
     } else {
       REMOVE_BIT(ch->specials.affected_by, bitv);
@@ -205,7 +205,7 @@ void affect_modify(struct char_data* ch, signed char loc, long mod, long bitv,
       break;
 
     case APPLY_SEX:
-      GET_SEX(ch) = (!(ch->player.sex - 1)) + 1;
+      GET_SEX(ch) = static_cast<int>((ch->player.sex - 1) == 0) + 1;
       break;
 
     case APPLY_CLASS:
@@ -297,73 +297,73 @@ void affect_modify(struct char_data* ch, signed char loc, long mod, long bitv,
     case APPLY_EAT_SPELL:
       break;
     case APPLY_BACKSTAB:
-      if (!ch->skills) {
+      if (ch->skills == nullptr) {
         return;
       }
       ch->skills[SKILL_BACKSTAB].learned += mod;
       break;
     case APPLY_KICK:
-      if (!ch->skills) {
+      if (ch->skills == nullptr) {
         return;
       }
       ch->skills[SKILL_KICK].learned += mod;
       break;
     case APPLY_SNEAK:
-      if (!ch->skills) {
+      if (ch->skills == nullptr) {
         return;
       }
       ch->skills[SKILL_SNEAK].learned += mod;
       break;
     case APPLY_HIDE:
-      if (!ch->skills) {
+      if (ch->skills == nullptr) {
         return;
       }
       ch->skills[SKILL_HIDE].learned += mod;
       break;
     case APPLY_BASH:
-      if (!ch->skills) {
+      if (ch->skills == nullptr) {
         return;
       }
       ch->skills[SKILL_BASH].learned += mod;
       break;
     case APPLY_PICK:
-      if (!ch->skills) {
+      if (ch->skills == nullptr) {
         return;
       }
       ch->skills[SKILL_PICK_LOCK].learned += mod;
       break;
     case APPLY_STEAL:
-      if (!ch->skills) {
+      if (ch->skills == nullptr) {
         return;
       }
       ch->skills[SKILL_STEAL].learned += mod;
       break;
     case APPLY_TRACK:
-      if (!ch->skills) {
+      if (ch->skills == nullptr) {
         return;
       }
       ch->skills[SKILL_HUNT].learned += mod;
       break;
     case APPLY_DEATHSTROKE:
-      if (!ch->skills) {
+      if (ch->skills == nullptr) {
         return;
       }
       ch->skills[SKILL_DEATHSTROKE].learned += mod;
       break;
     case APPLY_DOUBLE_ATTACK:
-      if (!ch->skills) {
+      if (ch->skills == nullptr) {
         return;
       }
       ch->skills[SKILL_DOUBLE_ATTACK].learned += mod;
       break;
     case APPLY_GRAPPLE:
-      if (!ch->skills) {
+      if (ch->skills == nullptr) {
         return;
       }
       ch->skills[SKILL_GRAPPLE].learned += mod;
       break;
     case APPLY_THROW:
-      if (!ch->skills) {
+      if (ch->skills == nullptr) {
         return;
       }
       ch->skills[SKILL_THROW].learned += mod;
@@ -385,7 +385,7 @@ void affect_total(struct char_data* ch) {
   int j = 0;
 
   for (i = 0; i < MAX_WEAR; i++) {
-    if (ch->equipment[i]) {
+    if (ch->equipment[i] != nullptr) {
       for (j = 0; j < MAX_OBJ_AFFECT; j++) {
         affect_modify(ch, ch->equipment[i]->affected[j].location,
           ch->equipment[i]->affected[j].modifier,
@@ -394,14 +394,14 @@ void affect_total(struct char_data* ch) {
     }
   }
 
-  for (af = ch->affected; af; af = af->next) {
+  for (af = ch->affected; af != nullptr; af = af->next) {
     affect_modify(ch, af->location, af->modifier, af->bitvector, 0);
   }
 
   ch->tmpabilities = ch->abilities;
 
   for (i = 0; i < MAX_WEAR; i++) {
-    if (ch->equipment[i]) {
+    if (ch->equipment[i] != nullptr) {
       for (j = 0; j < MAX_OBJ_AFFECT; j++) {
         affect_modify(ch, ch->equipment[i]->affected[j].location,
           ch->equipment[i]->affected[j].modifier,
@@ -410,7 +410,7 @@ void affect_total(struct char_data* ch) {
     }
   }
 
-  for (af = ch->affected; af; af = af->next) {
+  for (af = ch->affected; af != nullptr; af = af->next) {
     affect_modify(ch, af->location, af->modifier, af->bitvector, 1);
   }
 
@@ -479,7 +479,7 @@ void affect_to_char(struct char_data* ch, struct affected_type* af) {
 void affect_remove(struct char_data* ch, struct affected_type* af) {
   struct affected_type* hjp = nullptr;
 
-  if (!ch->affected) {
+  if (ch->affected == nullptr) {
     vlog("affect removed from char without affect");
     vlog(GET_NAME(ch));
     return;
@@ -493,7 +493,7 @@ void affect_remove(struct char_data* ch, struct affected_type* af) {
     /* remove head of list */
     ch->affected = af->next;
   } else {
-    for (hjp = ch->affected; (hjp->next) && (hjp->next != af);
+    for (hjp = ch->affected; ((hjp->next) != nullptr) && (hjp->next != af);
       hjp = hjp->next) {
       ;
     }
@@ -516,7 +516,7 @@ void affect_remove(struct char_data* ch, struct affected_type* af) {
 void affect_from_char(struct char_data* ch, short skill) {
   struct affected_type* next = nullptr;
 
-  for (struct affected_type* hjp = ch->affected; hjp; hjp = next) {
+  for (struct affected_type* hjp = ch->affected; hjp != nullptr; hjp = next) {
     next = hjp->next;
     if (hjp->type == skill) {
       affect_remove(ch, hjp);
@@ -529,7 +529,7 @@ void affect_from_char(struct char_data* ch, short skill) {
 char affected_by_spell(struct char_data* ch, short skill) {
   struct affected_type* hjp = nullptr;
 
-  for (hjp = ch->affected; hjp; hjp = hjp->next) {
+  for (hjp = ch->affected; hjp != nullptr; hjp = hjp->next) {
     if (hjp->type == skill) {
       return 1;
     }
@@ -543,15 +543,15 @@ void affect_join(struct char_data* ch, struct affected_type* af, char avg_dur,
   struct affected_type* hjp = nullptr;
   char found = 0;
 
-  for (hjp = ch->affected; !found && hjp; hjp = hjp->next) {
+  for (hjp = ch->affected; (found == 0) && (hjp != nullptr); hjp = hjp->next) {
     if (hjp->type == af->type) {
       af->duration += hjp->duration;
-      if (avg_dur) {
+      if (avg_dur != 0) {
         af->duration /= 2;
       }
 
       af->modifier += hjp->modifier;
-      if (avg_mod) {
+      if (avg_mod != 0) {
         af->modifier /= 2;
       }
 
@@ -561,7 +561,7 @@ void affect_join(struct char_data* ch, struct affected_type* af, char avg_dur,
       break; /* Exit loop immediately to avoid use-after-free on hjp */
     }
   }
-  if (!found) {
+  if (found == 0) {
     affect_to_char(ch, af);
   }
 }
@@ -577,9 +577,10 @@ void char_from_room(struct char_data* ch) {
     return;
   }
 
-  if (ch->equipment[WEAR_LIGHT]) {
+  if (ch->equipment[WEAR_LIGHT] != nullptr) {
     if (ch->equipment[WEAR_LIGHT]->obj_flags.type_flag == ITEM_LIGHT) {
-      if (ch->equipment[WEAR_LIGHT]->obj_flags.value[2]) { /* Light is ON */
+      if (ch->equipment[WEAR_LIGHT]->obj_flags.value[2] !=
+          0) { /* Light is ON */
         real_roomp(ch->in_room)->light--;
       }
     }
@@ -598,10 +599,11 @@ void char_from_room(struct char_data* ch) {
     rp->people = ch->next_in_room;
 
   } else { /* locate the previous element */
-    for (i = rp->people; i && i->next_in_room != ch; i = i->next_in_room) {
+    for (i = rp->people; (i != nullptr) && i->next_in_room != ch;
+      i = i->next_in_room) {
       ;
     }
-    if (i) {
+    if (i != nullptr) {
       i->next_in_room = ch->next_in_room;
     } else {
       sprintf(buf, "SHIT, %s was not in people list of his room %d!",
@@ -620,10 +622,10 @@ void char_to_room(struct char_data* ch, int room) {
   struct room_data* rp = nullptr;
 
   rp = real_roomp(room);
-  if (!rp) {
+  if (rp == nullptr) {
     room = 0;
     rp = real_roomp(room);
-    if (!rp) {
+    if (rp == nullptr) {
       exit(0);
     }
   }
@@ -631,9 +633,10 @@ void char_to_room(struct char_data* ch, int room) {
   rp->people = ch;
   ch->in_room = room;
 
-  if (ch->equipment[WEAR_LIGHT]) {
+  if (ch->equipment[WEAR_LIGHT] != nullptr) {
     if (ch->equipment[WEAR_LIGHT]->obj_flags.type_flag == ITEM_LIGHT) {
-      if (ch->equipment[WEAR_LIGHT]->obj_flags.value[2]) { /* Light is ON */
+      if (ch->equipment[WEAR_LIGHT]->obj_flags.value[2] !=
+          0) { /* Light is ON */
         rp->light++;
       }
     }
@@ -645,7 +648,7 @@ void obj_to_char(struct obj_data* object, struct char_data* ch) {
   assert(!object->in_obj && !object->carried_by && !object->equipped_by &&
          object->in_room == NOWHERE);
 
-  if (ch->carrying) {
+  if (ch->carrying != nullptr) {
     object->next_content = ch->carrying;
   } else {
     object->next_content = nullptr;
@@ -664,27 +667,27 @@ void obj_to_char(struct obj_data* object, struct char_data* ch) {
 void obj_from_char(struct obj_data* object) {
   struct obj_data* tmp = nullptr;
 
-  if (!object) {
+  if (object == nullptr) {
     vlog("No object to be take from char.");
     abort();
   }
 
-  if (!object->carried_by) {
+  if (object->carried_by == nullptr) {
     vlog("this object is not carried by anyone");
     abort();
   }
 
-  if (!object->carried_by->carrying) {
+  if (object->carried_by->carrying == nullptr) {
     vlog("No one is carrying this object");
     abort();
   }
 
-  if (object->in_obj) {
+  if (object->in_obj != nullptr) {
     vlog("obj_data in more than one place.");
     abort();
   }
 
-  if (object->equipped_by) {
+  if (object->equipped_by != nullptr) {
     vlog("obj_data in more than one place.");
     abort();
   }
@@ -694,11 +697,12 @@ void obj_from_char(struct obj_data* object) {
 
   } else {
     for (tmp = object->carried_by->carrying;
-      tmp && (tmp->next_content != object); tmp = tmp->next_content) {
+      (tmp != nullptr) && (tmp->next_content != object);
+      tmp = tmp->next_content) {
       ; /* locate previous */
     }
 
-    if (!tmp) {
+    if (tmp == nullptr) {
       vlog("Couldn't find object on character");
       abort();
     }
@@ -762,7 +766,7 @@ void equip_char(struct char_data* ch, struct obj_data* obj, int pos) {
   assert(pos >= 0 && pos < MAX_WEAR);
   assert(!(ch->equipment[pos]));
 
-  if (obj->carried_by) {
+  if (obj->carried_by != nullptr) {
     vlog("EQUIP: obj_data is carried_by when equip.");
     abort();
   }
@@ -785,7 +789,7 @@ void equip_char(struct char_data* ch, struct obj_data* obj, int pos) {
       return;
     }
   }
-  if ((GET_ITEM_TYPE(obj) == ITEM_ARMOR) && (HasClass(ch, CLASS_MONK))) {
+  if ((GET_ITEM_TYPE(obj) == ITEM_ARMOR) && ((HasClass(ch, CLASS_MONK)) != 0)) {
     send_to_char("Your monk vows wont let you wear such items.\n\r", ch);
     obj_to_char(obj, ch);
     return;
@@ -904,13 +908,13 @@ int get_number(char** name) {
   char* ppos = nullptr;
   char number[MAX_INPUT_LENGTH] = "";
 
-  if ((ppos = strchr(*name, '.')) && ppos[1]) {
+  if (((ppos = strchr(*name, '.')) != nullptr) && (ppos[1] != 0)) {
     *ppos++ = '\0';
     strcpy(number, *name);
     strcpy(*name, ppos);
 
-    for (i = 0; *(number + i); i++) {
-      if (!isdigit(*(number + i))) {
+    for (i = 0; *(number + i) != 0; i++) {
+      if (isdigit(*(number + i)) == 0) {
         return (0);
       }
     }
@@ -932,12 +936,12 @@ struct obj_data* get_obj_in_list(const char* name, struct obj_data* list) {
   strcpy(tmpname, name);
   tmp = tmpname;
 
-  if (!(number = get_number(&tmp))) {
+  if ((number = get_number(&tmp)) == 0) {
     return (nullptr);
   }
 
-  for (i = list, j = 1; i && (j <= number); i = i->next_content) {
-    if (isname(tmp, i->name)) {
+  for (i = list, j = 1; (i != nullptr) && (j <= number); i = i->next_content) {
+    if (isname(tmp, i->name) != 0) {
       if (j == number) {
         return (i);
       }
@@ -952,7 +956,7 @@ struct obj_data* get_obj_in_list(const char* name, struct obj_data* list) {
 struct obj_data* get_obj_in_list_num(int num, struct obj_data* list) {
   struct obj_data* i = nullptr;
 
-  for (i = list; i; i = i->next_content) {
+  for (i = list; i != nullptr; i = i->next_content) {
     if (i->item_number == num) {
       return (i);
     }
@@ -971,12 +975,12 @@ struct obj_data* get_obj(const char* name) {
 
   strcpy(tmpname, name);
   tmp = tmpname;
-  if (!(number = get_number(&tmp))) {
+  if ((number = get_number(&tmp)) == 0) {
     return (nullptr);
   }
 
-  for (i = object_list, j = 1; i && (j <= number); i = i->next) {
-    if (isname(tmp, i->name)) {
+  for (i = object_list, j = 1; (i != nullptr) && (j <= number); i = i->next) {
+    if (isname(tmp, i->name) != 0) {
       if (j == number) {
         return (i);
       }
@@ -991,7 +995,7 @@ struct obj_data* get_obj(const char* name) {
 struct obj_data* get_obj_num(int nr) {
   struct obj_data* i = nullptr;
 
-  for (i = object_list; i; i = i->next) {
+  for (i = object_list; i != nullptr; i = i->next) {
     if (i->item_number == nr) {
       return (i);
     }
@@ -1010,13 +1014,13 @@ struct char_data* get_char_room(char* name, int room) {
 
   strcpy(tmpname, name);
   tmp = tmpname;
-  if (!(number = get_number(&tmp))) {
+  if ((number = get_number(&tmp)) == 0) {
     return (nullptr);
   }
 
-  for (i = real_roomp(room)->people, j = 1; i && (j <= number);
+  for (i = real_roomp(room)->people, j = 1; (i != nullptr) && (j <= number);
     i = i->next_in_room) {
-    if (isname(tmp, GET_NAME(i))) {
+    if (isname(tmp, GET_NAME(i)) != 0) {
       if (j == number) {
         return (i);
       }
@@ -1037,12 +1041,13 @@ struct char_data* get_char(char* name) {
 
   strcpy(tmpname, name);
   tmp = tmpname;
-  if (!(number = get_number(&tmp))) {
+  if ((number = get_number(&tmp)) == 0) {
     return (nullptr);
   }
 
-  for (i = character_list, j = 1; i && (j <= number); i = i->next) {
-    if (isname(tmp, GET_NAME(i))) {
+  for (i = character_list, j = 1; (i != nullptr) && (j <= number);
+    i = i->next) {
+    if (isname(tmp, GET_NAME(i)) != 0) {
       if (j == number) {
         return (i);
       }
@@ -1057,7 +1062,7 @@ struct char_data* get_char(char* name) {
 struct char_data* get_char_num(int nr) {
   struct char_data* i = nullptr;
 
-  for (i = character_list; i; i = i->next) {
+  for (i = character_list; i != nullptr; i = i->next) {
     if (i->nr == nr) {
       return (i);
     }
@@ -1074,7 +1079,7 @@ void obj_to_room(struct obj_data* object, int room) {
 
   struct room_data* rp = real_roomp(room);
   assert(rp);
-  if (!rp) {
+  if (rp == nullptr) {
     vlog("obj_to_room: bad room");
     return;
   }
@@ -1099,7 +1104,7 @@ void obj_from_room(struct obj_data* object) {
   /* remove object from room */
 
   if (object->in_room <= NOWHERE) {
-    if (object->carried_by || object->equipped_by) {
+    if ((object->carried_by != nullptr) || (object->equipped_by != nullptr)) {
       vlog("Eek.. an object was just taken from a char, instead of a room");
       abort();
     }
@@ -1112,11 +1117,11 @@ void obj_from_room(struct obj_data* object) {
   } else /* locate previous element in list */
   {
     for (i = real_roomp(object->in_room)->contents;
-      i && (i->next_content != object); i = i->next_content) {
+      (i != nullptr) && (i->next_content != object); i = i->next_content) {
       ;
     }
 
-    if (i) {
+    if (i != nullptr) {
       i->next_content = object->next_content;
     } else {
       vlog("Couldn't find object in room");
@@ -1141,21 +1146,21 @@ void obj_to_obj(struct obj_data* obj, struct obj_data* obj_to) {
   obj->carried_by = nullptr;
   obj->equipped_by = nullptr;
 
-  for (tmp_obj = obj->in_obj; tmp_obj;
+  for (tmp_obj = obj->in_obj; tmp_obj != nullptr;
     GET_OBJ_WEIGHT(tmp_obj) += GET_OBJ_WEIGHT(obj), tmp_obj = tmp_obj->in_obj) {
     ;
   }
 
   if (!IS_OBJ_STAT(obj_to, ITEM_HOLDING)) {
     if (GET_ITEM_TYPE(obj) != ITEM_CONTAINER) {
-      for (tmp_obj = obj->in_obj; tmp_obj;
+      for (tmp_obj = obj->in_obj; tmp_obj != nullptr;
         GET_OBJ_VOLUME(tmp_obj) +=
         (GET_OBJ_VOLUME(obj) / vol_mult[obj->obj_flags.material_points]),
           tmp_obj = tmp_obj->in_obj) {
         ;
       }
     } else {
-      for (tmp_obj = obj->in_obj; tmp_obj;
+      for (tmp_obj = obj->in_obj; tmp_obj != nullptr;
         GET_OBJ_VOLUME(tmp_obj) += GET_OBJ_VOLUME(obj),
           tmp_obj = tmp_obj->in_obj) {
         ;
@@ -1171,17 +1176,18 @@ void obj_from_obj(struct obj_data* obj) {
 
   assert(!obj->carried_by && !obj->equipped_by && obj->in_room == NOWHERE);
 
-  if (obj->in_obj) {
+  if (obj->in_obj != nullptr) {
     obj_from = obj->in_obj;
     if (obj == obj_from->contains) { /* head of list */
       obj_from->contains = obj->next_content;
     } else {
-      for (tmp = obj_from->contains; tmp && (tmp->next_content != obj);
+      for (tmp = obj_from->contains;
+        (tmp != nullptr) && (tmp->next_content != obj);
         tmp = tmp->next_content) {
         ; /* locate previous */
       }
 
-      if (!tmp) {
+      if (tmp == nullptr) {
         perror("Fatal error in object structures.");
         abort();
       }
@@ -1190,7 +1196,7 @@ void obj_from_obj(struct obj_data* obj) {
     }
 
     /* Subtract weight from containers container */
-    for (tmp = obj->in_obj; tmp->in_obj; tmp = tmp->in_obj) {
+    for (tmp = obj->in_obj; tmp->in_obj != nullptr; tmp = tmp->in_obj) {
       GET_OBJ_WEIGHT(tmp) -= GET_OBJ_WEIGHT(obj);
       if (!IS_OBJ_STAT(tmp, ITEM_HOLDING)) {
         if (GET_ITEM_TYPE(obj) != ITEM_CONTAINER) {
@@ -1213,7 +1219,7 @@ void obj_from_obj(struct obj_data* obj) {
     }
 
     /* Subtract weight from char that carries the object */
-    if (tmp->carried_by) {
+    if (tmp->carried_by != nullptr) {
       IS_CARRYING_W(tmp->carried_by) -= GET_OBJ_WEIGHT(obj);
       if (!IS_OBJ_STAT(tmp, ITEM_HOLDING)) {
         if (GET_ITEM_TYPE(obj) != ITEM_CONTAINER) {
@@ -1235,7 +1241,7 @@ void obj_from_obj(struct obj_data* obj) {
 
 /* Set all carried_by to point to new owner */
 void object_list_new_owner(struct obj_data* list, struct char_data* ch) {
-  if (list) {
+  if (list != nullptr) {
     object_list_new_owner(list->contains, ch);
     object_list_new_owner(list->next_content, ch);
     list->carried_by = ch;
@@ -1249,9 +1255,9 @@ void extract_obj(struct obj_data* obj) {
 
   if (obj->in_room != NOWHERE) {
     obj_from_room(obj);
-  } else if (obj->carried_by) {
+  } else if (obj->carried_by != nullptr) {
     obj_from_char(obj);
-  } else if (obj->equipped_by) {
+  } else if (obj->equipped_by != nullptr) {
     if (obj->eq_pos > -1) {
       /*
        **  set players equipment slot to 0; that will avoid the garbage items.
@@ -1264,23 +1270,24 @@ void extract_obj(struct obj_data* obj) {
       vlog(obj->name);
       return;
     }
-  } else if (obj->in_obj) {
+  } else if (obj->in_obj != nullptr) {
     temp1 = obj->in_obj;
     if (temp1->contains == obj) { /* head of list */
       temp1->contains = obj->next_content;
     } else {
-      for (temp2 = temp1->contains; temp2 && (temp2->next_content != obj);
+      for (temp2 = temp1->contains;
+        (temp2 != nullptr) && (temp2->next_content != obj);
         temp2 = temp2->next_content) {
         ;
       }
 
-      if (temp2) {
+      if (temp2 != nullptr) {
         temp2->next_content = obj->next_content;
       }
     }
   }
 
-  while (obj->contains) {
+  while (obj->contains != nullptr) {
     struct obj_data* contained = obj->contains;
     obj->contains = contained->next_content;
     contained->in_obj = nullptr; /* Already unlinked from parent */
@@ -1291,12 +1298,12 @@ void extract_obj(struct obj_data* obj) {
   if (object_list == obj) { /* head of list */
     object_list = obj->next;
   } else {
-    for (temp1 = object_list; temp1 && (temp1->next != obj);
+    for (temp1 = object_list; (temp1 != nullptr) && (temp1->next != obj);
       temp1 = temp1->next) {
       ;
     }
 
-    if (temp1) {
+    if (temp1 != nullptr) {
       temp1->next = obj->next;
     } else {
       vlog("Couldn't find object in object list.");
@@ -1316,10 +1323,10 @@ void update_object(struct obj_data* obj, int use) {
   if (obj->obj_flags.decay_time > 0) {
     obj->obj_flags.decay_time -= use;
   }
-  if (obj->contains) {
+  if (obj->contains != nullptr) {
     update_object(obj->contains, use);
   }
-  if (obj->next_content) {
+  if (obj->next_content != nullptr) {
     if (obj->next_content != obj) {
       update_object(obj->next_content, use);
     }
@@ -1331,11 +1338,11 @@ static void die_follower(struct char_data* ch) {
   struct follow_type* j = nullptr;
   struct follow_type* k = nullptr;
 
-  if (ch->master) {
+  if (ch->master != nullptr) {
     stop_follower(ch);
   }
 
-  for (k = ch->followers; k; k = j) {
+  for (k = ch->followers; k != nullptr; k = j) {
     j = k->next;
     stop_follower(k->follower);
   }
@@ -1352,8 +1359,8 @@ void extract_char(struct char_data* ch) {
   int was_in = 0;
   int j = 0;
 
-  if (!IS_NPC(ch) && !ch->desc) {
-    for (t_desc = descriptor_list; t_desc; t_desc = t_desc->next) {
+  if (!IS_NPC(ch) && (ch->desc == nullptr)) {
+    for (t_desc = descriptor_list; t_desc != nullptr; t_desc = t_desc->next) {
       if (t_desc->original == ch) {
         do_return(t_desc->character, "", 0);
       }
@@ -1368,20 +1375,21 @@ void extract_char(struct char_data* ch) {
     char_to_room(ch, 4); /* 4 == all purpose store */
   }
 
-  if (ch->followers || ch->master) {
+  if ((ch->followers != nullptr) || (ch->master != nullptr)) {
     die_follower(ch);
   }
 
-  if (ch->desc) {
+  if (ch->desc != nullptr) {
     /* Forget snooping */
-    if ((ch->desc->snoop.snooping) && (ch->desc->snoop.snooping->desc)) {
+    if (((ch->desc->snoop.snooping) != nullptr) &&
+        ((ch->desc->snoop.snooping->desc) != nullptr)) {
       ch->desc->snoop.snooping->desc->snoop.snoop_by = nullptr;
     }
 
-    if (ch->desc->snoop.snoop_by) {
+    if (ch->desc->snoop.snoop_by != nullptr) {
       send_to_char("Your victim is no longer among us.\n\r",
         ch->desc->snoop.snoop_by);
-      if (ch->desc->snoop.snoop_by->desc) {
+      if (ch->desc->snoop.snoop_by->desc != nullptr) {
         ch->desc->snoop.snoop_by->desc->snoop.snooping = nullptr;
       }
     }
@@ -1389,11 +1397,11 @@ void extract_char(struct char_data* ch) {
     ch->desc->snoop.snooping = ch->desc->snoop.snoop_by = nullptr;
   }
 
-  if (ch->carrying) {
+  if (ch->carrying != nullptr) {
     /* transfer ch's objects to room */
 
     if (!IS_IMMORTAL(ch)) {
-      while (ch->carrying) {
+      while (ch->carrying != nullptr) {
         i = ch->carrying;
         obj_from_char(i);
         obj_to_room(i, ch->in_room);
@@ -1402,7 +1410,7 @@ void extract_char(struct char_data* ch) {
       send_to_char(
         "Here, you dropped some stuff, let me help you get rid of that.\n\r",
         ch);
-      while (ch->carrying) {
+      while (ch->carrying != nullptr) {
         i = ch->carrying;
         obj_from_char(i);
         extract_obj(i);
@@ -1411,7 +1419,7 @@ void extract_char(struct char_data* ch) {
   equipment too
   */
       for (j = 0; j < MAX_WEAR; j++) {
-        if (ch->equipment[j]) {
+        if (ch->equipment[j] != nullptr) {
           extract_obj(unequip_char(ch, j));
         }
       }
@@ -1420,18 +1428,18 @@ void extract_char(struct char_data* ch) {
   } else {
     if (IS_IMMORTAL(ch)) {
       for (j = 0; j < MAX_WEAR; j++) {
-        if (ch->equipment[j]) {
+        if (ch->equipment[j] != nullptr) {
           extract_obj(unequip_char(ch, j));
         }
       }
     }
   }
 
-  if (ch->specials.fighting) {
+  if (ch->specials.fighting != nullptr) {
     stop_fighting(ch);
   }
 
-  for (k = combat_list; k; k = next_char) {
+  for (k = combat_list; k != nullptr; k = next_char) {
     next_char = k->next_fighting;
     if (k->specials.fighting == ch) {
       stop_fighting(k);
@@ -1444,36 +1452,36 @@ void extract_char(struct char_data* ch) {
 
   /* clear equipment_list */
   for (l = 0; l < MAX_WEAR; l++) {
-    if (ch->equipment[l]) {
+    if (ch->equipment[l] != nullptr) {
       obj_to_room(unequip_char(ch, l), was_in);
     }
   }
 
   if (IS_NPC(ch)) {
-    for (k = character_list; k; k = k->next) {
-      if (k->specials.hunting) {
+    for (k = character_list; k != nullptr; k = k->next) {
+      if (k->specials.hunting != nullptr) {
         if (k->specials.hunting == ch) {
           k->specials.hunting = nullptr;
         }
       }
-      if (Hates(k, ch)) {
+      if (Hates(k, ch) != 0) {
         RemHated(k, ch);
       }
-      if (Fears(k, ch)) {
+      if (Fears(k, ch) != 0) {
         RemFeared(k, ch);
       }
     }
   } else {
-    for (k = character_list; k; k = k->next) {
-      if (k->specials.hunting) {
+    for (k = character_list; k != nullptr; k = k->next) {
+      if (k->specials.hunting != nullptr) {
         if (k->specials.hunting == ch) {
           k->specials.hunting = nullptr;
         }
       }
-      if (Hates(k, ch)) {
+      if (Hates(k, ch) != 0) {
         ZeroHatred(k, ch);
       }
-      if (Fears(k, ch)) {
+      if (Fears(k, ch) != 0) {
         ZeroFeared(k, ch);
       }
     }
@@ -1483,10 +1491,10 @@ void extract_char(struct char_data* ch) {
   if (ch == character_list) {
     character_list = ch->next;
   } else {
-    for (k = character_list; (k) && (k->next != ch); k = k->next) {
+    for (k = character_list; ((k) != nullptr) && (k->next != ch); k = k->next) {
       ;
     }
-    if (k) {
+    if (k != nullptr) {
       k->next = ch->next;
     } else {
       vlog(
@@ -1497,8 +1505,8 @@ void extract_char(struct char_data* ch) {
 
   GET_AC(ch) = 100;
 
-  if (ch->desc) {
-    if (ch->desc->original) {
+  if (ch->desc != nullptr) {
+    if (ch->desc->original != nullptr) {
       do_return(ch, "", 0);
     }
     save_char(ch, NOWHERE);
@@ -1515,7 +1523,7 @@ void extract_char(struct char_data* ch) {
     return;
   }
 
-  if (ch->desc) {
+  if (ch->desc != nullptr) {
     ch->desc->connected = CON_SLCT;
     SEND_TO_Q(MENU, ch->desc);
   }
@@ -1535,14 +1543,14 @@ struct char_data* get_char_room_vis(struct char_data* ch, const char* name) {
 
   strcpy(tmpname, name);
   tmp = tmpname;
-  if (!(number = get_number(&tmp))) {
+  if ((number = get_number(&tmp)) == 0) {
     return (nullptr);
   }
 
-  for (i = real_roomp(ch->in_room)->people, j = 1; i && (j <= number);
-    i = i->next_in_room) {
-    if (isname(tmp, GET_NAME(i))) {
-      if (CAN_SEE(ch, i)) {
+  for (i = real_roomp(ch->in_room)->people, j = 1;
+    (i != nullptr) && (j <= number); i = i->next_in_room) {
+    if (isname(tmp, GET_NAME(i)) != 0) {
+      if (CAN_SEE(ch, i) != 0) {
         if (j == number) {
           return (i);
         }
@@ -1568,14 +1576,14 @@ struct char_data* get_char_vis_world(struct char_data* ch, const char* name,
 
   strcpy(tmpname, name);
   tmp = tmpname;
-  if (!(number = get_number(&tmp))) {
+  if ((number = get_number(&tmp)) == 0) {
     return (nullptr);
   }
 
-  j = count ? *count : 1;
-  for (i = character_list; i && (j <= number); i = i->next) {
-    if (isname(tmp, GET_NAME(i))) {
-      if (CAN_SEE(ch, i)) {
+  j = (count != nullptr) ? *count : 1;
+  for (i = character_list; (i != nullptr) && (j <= number); i = i->next) {
+    if (isname(tmp, GET_NAME(i)) != 0) {
+      if (CAN_SEE(ch, i) != 0) {
         if (j == number) {
           return (i);
         }
@@ -1583,7 +1591,7 @@ struct char_data* get_char_vis_world(struct char_data* ch, const char* name,
       }
     }
   }
-  if (count) {
+  if (count != nullptr) {
     *count = j;
   }
   return nullptr;
@@ -1593,7 +1601,7 @@ struct char_data* get_char_vis(struct char_data* ch, const char* name) {
   struct char_data* i = nullptr;
 
   /* check location */
-  if ((i = get_char_room_vis(ch, name))) {
+  if ((i = get_char_room_vis(ch, name)) != nullptr) {
     return (i);
   }
 
@@ -1610,12 +1618,12 @@ struct obj_data* get_obj_in_list_vis(struct char_data* ch, const char* name,
 
   strcpy(tmpname, name);
   tmp = tmpname;
-  if (!(number = get_number(&tmp))) {
+  if ((number = get_number(&tmp)) == 0) {
     return (nullptr);
   }
 
-  for (i = list, j = 1; i && (j <= number); i = i->next_content) {
-    if (isname(tmp, i->name)) {
+  for (i = list, j = 1; (i != nullptr) && (j <= number); i = i->next_content) {
+    if (isname(tmp, i->name) != 0) {
       if (CAN_SEE_OBJ(ch, i)) {
         if (j == number) {
           return (i);
@@ -1637,15 +1645,15 @@ struct obj_data* get_obj_vis_world(struct char_data* ch, const char* name,
 
   strcpy(tmpname, name);
   tmp = tmpname;
-  if (!(number = get_number(&tmp))) {
+  if ((number = get_number(&tmp)) == 0) {
     return (nullptr);
   }
 
-  j = count ? *count : 1;
+  j = (count != nullptr) ? *count : 1;
 
   /* ok.. no luck yet. scan the entire obj list   */
-  for (i = object_list; i && (j <= number); i = i->next) {
-    if (isname(tmp, i->name)) {
+  for (i = object_list; (i != nullptr) && (j <= number); i = i->next) {
+    if (isname(tmp, i->name) != 0) {
       if (CAN_SEE_OBJ(ch, i)) {
         if (j == number) {
           return (i);
@@ -1654,7 +1662,7 @@ struct obj_data* get_obj_vis_world(struct char_data* ch, const char* name,
       }
     }
   }
-  if (count) {
+  if (count != nullptr) {
     *count = j;
   }
   return (nullptr);
@@ -1665,12 +1673,13 @@ struct obj_data* get_obj_vis(struct char_data* ch, const char* name) {
   struct obj_data* i = nullptr;
 
   /* scan items carried */
-  if ((i = get_obj_in_list_vis(ch, name, ch->carrying))) {
+  if ((i = get_obj_in_list_vis(ch, name, ch->carrying)) != nullptr) {
     return (i);
   }
 
   /* scan room */
-  if ((i = get_obj_in_list_vis(ch, name, real_roomp(ch->in_room)->contents))) {
+  if ((i = get_obj_in_list_vis(ch, name, real_roomp(ch->in_room)->contents)) !=
+      nullptr) {
     return (i);
   }
 
@@ -1686,22 +1695,23 @@ struct obj_data* get_obj_vis_accessible(struct char_data* ch, char* name) {
 
   strcpy(tmpname, name);
   tmp = tmpname;
-  if (!(number = get_number(&tmp))) {
+  if ((number = get_number(&tmp)) == 0) {
     return (nullptr);
   }
 
   /* scan items carried */
-  for (i = ch->carrying, j = 1; i && j <= number; i = i->next_content) {
-    if (isname(tmp, i->name) && CAN_SEE_OBJ(ch, i)) {
+  for (i = ch->carrying, j = 1; (i != nullptr) && j <= number;
+    i = i->next_content) {
+    if ((isname(tmp, i->name) != 0) && CAN_SEE_OBJ(ch, i)) {
       if (j == number) {
         return (i);
       }
       j++;
     }
   }
-  for (i = real_roomp(ch->in_room)->contents; i && j <= number;
+  for (i = real_roomp(ch->in_room)->contents; (i != nullptr) && j <= number;
     i = i->next_content) {
-    if (isname(tmp, i->name) && CAN_SEE_OBJ(ch, i)) {
+    if ((isname(tmp, i->name) != 0) && CAN_SEE_OBJ(ch, i)) {
       if (j == number) {
         return (i);
       }
@@ -1798,12 +1808,12 @@ int generic_find(const char* arg, int bitvector, struct char_data* ch,
   found = 0;
 
   /* Eliminate spaces and "ignore" words */
-  while (*arg && !found) {
+  while ((*arg != 0) && (found == 0)) {
     for (; *arg == ' '; arg++) {
       ;
     }
 
-    for (i = 0; (name[i] = *(arg + i)) && (name[i] != ' '); i++) {
+    for (i = 0; ((name[i] = *(arg + i)) != 0) && (name[i] != ' '); i++) {
       ;
     }
     name[i] = 0;
@@ -1813,7 +1823,7 @@ int generic_find(const char* arg, int bitvector, struct char_data* ch,
     }
   }
 
-  if (!name[0]) {
+  if (name[0] == 0) {
     return (0);
   }
 
@@ -1821,50 +1831,51 @@ int generic_find(const char* arg, int bitvector, struct char_data* ch,
   *tar_obj = nullptr;
 
   if (IS_SET(bitvector, FIND_CHAR_ROOM)) { /* Find person in room */
-    if ((*tar_ch = get_char_room_vis(ch, name))) {
+    if ((*tar_ch = get_char_room_vis(ch, name)) != nullptr) {
       return (FIND_CHAR_ROOM);
     }
   }
 
   if (IS_SET(bitvector, FIND_CHAR_WORLD)) {
-    if ((*tar_ch = get_char_vis(ch, name))) {
+    if ((*tar_ch = get_char_vis(ch, name)) != nullptr) {
       return (FIND_CHAR_WORLD);
     }
   }
 
   if (IS_SET(bitvector, FIND_OBJ_EQUIP)) {
-    for (found = 0, i = 0; i < MAX_WEAR && !found; i++) {
-      if (ch->equipment[i] && str_cmp(name, ch->equipment[i]->name) == 0) {
+    for (found = 0, i = 0; i < MAX_WEAR && (found == 0); i++) {
+      if ((ch->equipment[i] != nullptr) &&
+          str_cmp(name, ch->equipment[i]->name) == 0) {
         *tar_obj = ch->equipment[i];
         found = 1;
       }
     }
-    if (found) {
+    if (found != 0) {
       return (FIND_OBJ_EQUIP);
     }
   }
 
   if (IS_SET(bitvector, FIND_OBJ_INV)) {
     if (IS_SET(bitvector, FIND_OBJ_ROOM)) {
-      if ((*tar_obj = get_obj_vis_accessible(ch, name))) {
+      if ((*tar_obj = get_obj_vis_accessible(ch, name)) != nullptr) {
         return (FIND_OBJ_INV);
       }
     } else {
-      if ((*tar_obj = get_obj_in_list_vis(ch, name, ch->carrying))) {
+      if ((*tar_obj = get_obj_in_list_vis(ch, name, ch->carrying)) != nullptr) {
         return (FIND_OBJ_INV);
       }
     }
   }
 
   if (IS_SET(bitvector, FIND_OBJ_ROOM)) {
-    if ((*tar_obj =
-            get_obj_in_list_vis(ch, name, real_roomp(ch->in_room)->contents))) {
+    if ((*tar_obj = get_obj_in_list_vis(ch, name,
+           real_roomp(ch->in_room)->contents)) != nullptr) {
       return (FIND_OBJ_ROOM);
     }
   }
 
   if (IS_SET(bitvector, FIND_OBJ_WORLD)) {
-    if ((*tar_obj = get_obj_vis(ch, name))) {
+    if ((*tar_obj = get_obj_vis(ch, name)) != nullptr) {
       return (FIND_OBJ_WORLD);
     }
   }
