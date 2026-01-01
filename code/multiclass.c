@@ -41,7 +41,7 @@ int CountBits(int char_class) {
 }
 
 int OnlyClass(struct char_data* ch, int char_class) {
-  int i;
+  int i = 0;
 
   for (i = 1; i <= 8; i *= 2) {
     if (GetClassLevel(ch, i) != 0) {
@@ -68,7 +68,7 @@ int HasClass(struct char_data* ch, int char_class) {
 }
 
 int HowManyClasses(struct char_data* ch) {
-  short i;
+  short i = 0;
   short tot = 0;
 
   for (i = 0; i < 8; i++) {
@@ -212,9 +212,9 @@ int BestMagicClass(struct char_data* ch) {
 
 static int get_a_level(struct char_data* ch, int which) {
   signed char ind[4];
-  signed char j;
-  signed char k;
-  signed char i;
+  signed char j = 0;
+  signed char k = 0;
+  signed char i = 0;
 
   for (i = MAGE_LEVEL_IND; i <= THIEF_LEVEL_IND; i++) {
     ind[i] = GET_LEVEL(ch, i);
@@ -242,7 +242,7 @@ static int get_a_level(struct char_data* ch, int which) {
 
 int GetMaxLevel(struct char_data* ch) {
   int max = 0;
-  int i;
+  int i = 0;
 
   for (i = MAGE_LEVEL_IND; i <= RANGER_LEVEL_IND; i++) {
     if (GET_LEVEL(ch, i) > max) {

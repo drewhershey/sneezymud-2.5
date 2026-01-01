@@ -78,7 +78,7 @@ static int is_ok(struct char_data* keeper, struct char_data* ch, int shop_nr) {
 }
 
 static int trade_with(struct obj_data* item, int shop_nr) {
-  int counter;
+  int counter = 0;
 
   if (item->obj_flags.cost < 1) {
     return 0;
@@ -93,7 +93,7 @@ static int trade_with(struct obj_data* item, int shop_nr) {
 }
 
 static int shop_producing(struct obj_data* item, int shop_nr) {
-  int counter;
+  int counter = 0;
 
   if (item->item_number < 0) {
     return 0;
@@ -113,8 +113,8 @@ static void shopping_buy(const char* arg, struct char_data* ch,
   char buf[MAX_STRING_LENGTH];
   char newarg[100];
   int num = 1;
-  struct obj_data* temp1;
-  struct char_data* temp_char;
+  struct obj_data* temp1 = nullptr;
+  struct char_data* temp_char = nullptr;
 
   if (!(is_ok(keeper, ch, shop_nr))) {
     return;
@@ -220,9 +220,9 @@ static void shopping_sell(const char* arg, struct char_data* ch,
   struct char_data* keeper, int shop_nr) {
   char argm[100];
   char buf[MAX_STRING_LENGTH];
-  int cost;
-  struct obj_data* temp1;
-  struct char_data* temp_char;
+  int cost = 0;
+  struct obj_data* temp1 = nullptr;
+  struct char_data* temp_char = nullptr;
 
   if (!(is_ok(keeper, ch, shop_nr))) {
     return;
@@ -319,7 +319,7 @@ static void shopping_value(const char* arg, struct char_data* ch,
   struct char_data* keeper, int shop_nr) {
   char argm[100];
   char buf[MAX_STRING_LENGTH];
-  struct obj_data* temp1;
+  struct obj_data* temp1 = nullptr;
 
   if (!(is_ok(keeper, ch, shop_nr))) {
     return;
@@ -355,8 +355,8 @@ static void shopping_list(struct char_data* ch, struct char_data* keeper,
   char buf[MAX_STRING_LENGTH];
   char buf2[100];
   char buf3[100];
-  struct obj_data* temp1;
-  int found_obj;
+  struct obj_data* temp1 = nullptr;
+  int found_obj = 0;
 
   if (!(is_ok(keeper, ch, shop_nr))) {
     return;
@@ -416,10 +416,10 @@ static void shopping_kill(struct char_data* ch, struct char_data* keeper,
 static int shop_keeper(struct char_data* ch, int cmd, const char* arg) {
   char argm[100];
   char buf[MAX_STRING_LENGTH];
-  struct obj_data* temp1;
-  struct char_data* temp_char;
-  struct char_data* keeper;
-  int shop_nr;
+  struct obj_data* temp1 = nullptr;
+  struct char_data* temp_char = nullptr;
+  struct char_data* keeper = nullptr;
+  int shop_nr = 0;
 
   keeper = nullptr;
 
@@ -496,10 +496,10 @@ static int shop_keeper(struct char_data* ch, int cmd, const char* arg) {
 }
 
 void boot_the_shops(void) {
-  char* buf;
+  char* buf = nullptr;
   int temp = 0;
-  int count;
-  FILE* shop_f;
+  int count = 0;
+  FILE* shop_f = nullptr;
 
   if (!(shop_f = fopen(SHOP_FILE, "r"))) {
     perror("Error in boot shop\n");
@@ -574,7 +574,7 @@ void boot_the_shops(void) {
 }
 
 void assign_the_shopkeepers(void) {
-  int temp1;
+  int temp1 = 0;
 
   for (temp1 = 0; temp1 < number_of_shops; temp1++) {
     mob_index[shop_index[temp1].keeper].func.mob_f = shop_keeper;

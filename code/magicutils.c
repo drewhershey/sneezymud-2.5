@@ -1,3 +1,4 @@
+#include <math.h>
 #include <sys/param.h>
 
 #include "accessors.h"
@@ -7,10 +8,10 @@
 #include "utils.h"
 
 void SwitchStuff(struct char_data* giver, struct char_data* taker) {
-  struct obj_data* obj;
-  struct obj_data* next;
-  float ratio;
-  int j;
+  struct obj_data* obj = nullptr;
+  struct obj_data* next = nullptr;
+  float ratio = NAN;
+  int j = 0;
 
   /*
    *  take all the stuff from the giver, put in on the

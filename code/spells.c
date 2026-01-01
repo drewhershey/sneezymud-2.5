@@ -1,4 +1,5 @@
 #include <assert.h>
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -31,9 +32,9 @@ struct room_data* world = nullptr; /* dyn alloc'ed array of rooms     */
 
 static void spell_burning_hands(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
-  int dam;
-  struct char_data* tmp_victim;
-  struct char_data* temp;
+  int dam = 0;
+  struct char_data* tmp_victim = nullptr;
+  struct char_data* temp = nullptr;
 
   assert(ch);
   assert((level >= 1) && (level <= ABS_MAX_LVL));
@@ -83,7 +84,7 @@ void cast_burning_hands(signed char level, struct char_data* ch,
 
 static void spell_call_lightning(signed char level, struct char_data* ch,
   struct char_data* victim) {
-  int dam;
+  int dam = 0;
 
   assert(victim && ch);
   assert((level >= 1) && (level <= ABS_MAX_LVL));
@@ -144,7 +145,7 @@ void cast_call_lightning(signed char level, struct char_data* ch,
 static void spell_chill_touch(signed char level, struct char_data* ch,
   struct char_data* victim) {
   struct affected_type af;
-  int dam;
+  int dam = 0;
 
   assert(victim && ch);
   assert((level >= 1) && (level <= ABS_MAX_LVL));
@@ -179,7 +180,7 @@ void cast_chill_touch(signed char level, struct char_data* ch, const char* arg,
 
 static void spell_vampiric_touch(signed char level, struct char_data* ch,
   struct char_data* victim) {
-  int hitp;
+  int hitp = 0;
 
   assert(victim && ch);
   assert((level >= 1) && (level < ABS_MAX_LVL));
@@ -238,9 +239,9 @@ void cast_vampiric_touch(signed char level, struct char_data* ch,
 
 static void spell_life_leech(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
-  int hitp;
-  struct char_data* tmp_victim;
-  struct char_data* temp;
+  int hitp = 0;
+  struct char_data* tmp_victim = nullptr;
+  struct char_data* temp = nullptr;
 
   assert(ch);
 
@@ -285,7 +286,7 @@ void cast_life_leech(signed char level, struct char_data* ch, const char* arg,
 
 static void spell_shocking_grasp(signed char level, struct char_data* ch,
   struct char_data* victim) {
-  int dam;
+  int dam = 0;
 
   assert(victim && ch);
   assert((level >= 1) && (level <= ABS_MAX_LVL));
@@ -314,7 +315,7 @@ void cast_shocking_grasp(signed char level, struct char_data* ch,
 
 static void spell_colour_spray(signed char level, struct char_data* ch,
   struct char_data* victim) {
-  int dam;
+  int dam = 0;
 
   assert(victim && ch);
   assert((level >= 1) && (level <= ABS_MAX_LVL));
@@ -354,10 +355,10 @@ void cast_colour_spray(signed char level, struct char_data* ch, const char* arg,
 
 static void spell_earthquake(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
-  int dam;
+  int dam = 0;
 
-  struct char_data* tmp_victim;
-  struct char_data* temp;
+  struct char_data* tmp_victim = nullptr;
+  struct char_data* temp = nullptr;
 
   assert(ch);
   assert((level >= 1) && (level <= ABS_MAX_LVL));
@@ -408,9 +409,9 @@ void cast_earthquake(signed char level, struct char_data* ch, const char* arg,
 /* Drain XP, MANA, HP - caster gains HP and MANA */
 static void spell_energy_drain(signed char level, struct char_data* ch,
   struct char_data* victim) {
-  int dam;
-  int xp;
-  int mana;
+  int dam = 0;
+  int xp = 0;
+  int mana = 0;
 
   assert(victim && ch);
   assert((level >= 1) && (level <= ABS_MAX_LVL));
@@ -481,9 +482,9 @@ void cast_energy_drain(signed char level, struct char_data* ch, const char* arg,
 
 static void spell_fireball(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
-  int dam;
-  struct char_data* tmp_victim;
-  struct char_data* temp;
+  int dam = 0;
+  struct char_data* tmp_victim = nullptr;
+  struct char_data* temp = nullptr;
 
   assert(ch);
   assert((level >= 1) && (level <= ABS_MAX_LVL));
@@ -541,7 +542,7 @@ void cast_fireball(signed char level, struct char_data* ch, const char* arg,
 
 static void spell_harm(signed char level, struct char_data* ch,
   struct char_data* victim) {
-  int dam;
+  int dam = 0;
 
   assert(victim && ch);
   assert((level >= 1) && (level <= ABS_MAX_LVL));
@@ -585,7 +586,7 @@ void cast_harm(signed char level, struct char_data* ch, const char* arg,
 
 static void spell_lightning_bolt(signed char level, struct char_data* ch,
   struct char_data* victim) {
-  int dam;
+  int dam = 0;
 
   assert(victim && ch);
   assert((level >= 1) && (level <= ABS_MAX_LVL));
@@ -626,7 +627,7 @@ void cast_lightning_bolt(signed char level, struct char_data* ch,
 
 static void spell_acid_blast(signed char level, struct char_data* ch,
   struct char_data* victim) {
-  int dam;
+  int dam = 0;
 
   assert(victim && ch);
   assert((level >= 1) && (level <= ABS_MAX_LVL));
@@ -666,9 +667,9 @@ void cast_acid_blast(signed char level, struct char_data* ch, const char* arg,
 
 static void spell_cone_of_cold(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
-  int dam;
-  struct char_data* tmpv;
-  struct char_data* temp;
+  int dam = 0;
+  struct char_data* tmpv = nullptr;
+  struct char_data* temp = nullptr;
 
   assert(ch);
   assert((level >= 1) && (level <= ABS_MAX_LVL));
@@ -716,9 +717,9 @@ void cast_cone_of_cold(signed char level, struct char_data* ch, const char* arg,
 
 static void spell_ice_storm(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
-  int dam;
-  struct char_data* tmpv;
-  struct char_data* temp;
+  int dam = 0;
+  struct char_data* tmpv = nullptr;
+  struct char_data* temp = nullptr;
 
   assert(ch);
   assert((level >= 1) && (level <= ABS_MAX_LVL));
@@ -763,7 +764,7 @@ void cast_ice_storm(signed char level, struct char_data* ch, const char* arg,
 
 static void spell_meteor_swarm(signed char level, struct char_data* ch,
   struct char_data* victim) {
-  int dam;
+  int dam = 0;
 
   assert(victim && ch);
   assert((level >= 1) && (level <= ABS_MAX_LVL));
@@ -803,7 +804,7 @@ void cast_meteor_swarm(signed char level, struct char_data* ch, const char* arg,
 
 static void spell_disintegrate(signed char level, struct char_data* ch,
   struct char_data* victim) {
-  int dam;
+  int dam = 0;
 
   assert(victim && ch);
   assert((level >= 1) && (level <= ABS_MAX_LVL));
@@ -841,7 +842,7 @@ void cast_disintegrate(signed char level, struct char_data* ch, const char* arg,
 
 static void spell_flamestrike(signed char level, struct char_data* ch,
   struct char_data* victim) {
-  int dam;
+  int dam = 0;
 
   assert(victim && ch);
   assert((level >= 1) && (level <= ABS_MAX_LVL));
@@ -881,7 +882,7 @@ void cast_flamestrike(signed char level, struct char_data* ch, const char* arg,
 
 static void spell_magic_missile(signed char level, struct char_data* ch,
   struct char_data* victim) {
-  int dam;
+  int dam = 0;
 
   assert(victim && ch);
   assert((level >= 1) && (level <= ABS_MAX_LVL));
@@ -922,7 +923,7 @@ void cast_magic_missile(signed char level, struct char_data* ch,
 
 static void spell_cause_light(signed char level, struct char_data* ch,
   struct char_data* victim) {
-  int dam;
+  int dam = 0;
 
   assert(ch && victim);
   assert((level >= 1) && (level <= ABS_MAX_LVL));
@@ -957,7 +958,7 @@ void cast_cause_light(signed char level, struct char_data* ch, const char* arg,
 
 static void spell_cause_serious(signed char level, struct char_data* ch,
   struct char_data* victim) {
-  int dam;
+  int dam = 0;
 
   assert(ch && victim);
   assert((level >= 1) && (level <= ABS_MAX_LVL));
@@ -1002,7 +1003,7 @@ void cast_cause_serious(signed char level, struct char_data* ch,
 
 static void spell_cause_critical(signed char level, struct char_data* ch,
   struct char_data* victim) {
-  int dam;
+  int dam = 0;
 
   assert(ch && victim);
   assert((level >= 1) && (level <= ABS_MAX_LVL));
@@ -1052,10 +1053,10 @@ void cast_cause_critic(signed char level, struct char_data* ch, const char* arg,
 
 static void spell_geyser(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
-  int dam;
+  int dam = 0;
 
-  struct char_data* tmpv;
-  struct char_data* temp;
+  struct char_data* tmpv = nullptr;
+  struct char_data* temp = nullptr;
 
   if (ch->in_room < 0) {
     return;
@@ -1099,8 +1100,8 @@ void cast_geyser(signed char level, struct char_data* ch, const char* arg,
 
 static void spell_green_slime(signed char level, struct char_data* ch,
   struct char_data* victim) {
-  int dam;
-  int hpch;
+  int dam = 0;
+  int hpch = 0;
 
   assert(victim && ch);
   assert((level >= 1) && (level <= ABS_MAX_LVL));
@@ -1186,7 +1187,7 @@ static int perform_gestural(struct char_data* ch) {
 }
 
 static int use_component(struct char_data* ch, struct obj_data* o) {
-  int strength;
+  int strength = 0;
 
   if (!o) {
     return 0;
@@ -1212,7 +1213,7 @@ static int use_component(struct char_data* ch, struct obj_data* o) {
 #define DIAMOND_COMPONENT 29
 
 static struct obj_data* find_component(struct char_data* ch, int vnum) {
-  struct obj_data* item;
+  struct obj_data* item = nullptr;
 
   if ((!ch) || !(item = ch->equipment[HOLD])) {
     return nullptr;
@@ -1236,7 +1237,7 @@ static struct obj_data* find_component(struct char_data* ch, int vnum) {
 }
 
 static int num_classes(struct char_data* ch) {
-  int i;
+  int i = 0;
   int x = 0;
 
   for (i = 0; i < 8; i++) {
@@ -1251,9 +1252,9 @@ static int num_classes(struct char_data* ch) {
 #define BASE_CS 10
 
 static int task_check(struct char_data* ch, int difficulty, int modifier) {
-  int cf;
-  int cs;
-  int check;
+  int cf = 0;
+  int cs = 0;
+  int check = 0;
 
   if ((ch) && (IS_IMMORTAL(ch))) {
     return CRITICAL_SUCCESS;
@@ -1298,11 +1299,11 @@ static int task_check(struct char_data* ch, int difficulty, int modifier) {
 
 static void spell_create_golem(struct char_data* ch, struct char_data* victim,
   struct obj_data* obj) {
-  int control;
-  int power;
-  int nc;
+  int control = 0;
+  int power = 0;
+  int nc = 0;
   int modifier = 0;
-  int target;
+  int target = 0;
   struct affected_type af;
   struct char_data* golem = nullptr;
 
@@ -1435,9 +1436,9 @@ static void spell_resurrection(struct char_data* ch, struct char_data* victim,
   struct obj_data* obj) {
   struct char_file_u st;
   struct affected_type af;
-  struct obj_data* obj_object;
-  struct obj_data* next_obj;
-  FILE* fl;
+  struct obj_data* obj_object = nullptr;
+  struct obj_data* next_obj = nullptr;
+  FILE* fl = nullptr;
 
   if (!obj) {
     return;
@@ -1540,12 +1541,12 @@ void cast_resurrection(signed char level, struct char_data* ch, const char* arg,
 
 static void spell_track(signed char level, struct char_data* ch,
   struct char_data* targ, int obj) {
-  struct char_data* scan;
+  struct char_data* scan = nullptr;
   char name[256];
   char buf[256];
   char found = 0;
-  int dist;
-  int code;
+  int dist = 0;
+  int code = 0;
   struct affected_type af;
 
   if (ch != targ) {
@@ -1649,7 +1650,7 @@ void cast_minor_track(signed char level, struct char_data* ch, const char* arg,
 
 static void spell_mana(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
-  int dam;
+  int dam = 0;
 
   assert(ch);
   assert((level >= 1) && (level <= ABS_MAX_LVL));
@@ -1859,8 +1860,8 @@ void cast_vitalize_mana(signed char level, struct char_data* ch,
 
 void spell_astral_walk(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
-  int location;
-  struct room_data* rp;
+  int location = 0;
+  struct room_data* rp = nullptr;
 
   assert(ch && victim);
 
@@ -1910,9 +1911,9 @@ void cast_astral_walk(signed char level, struct char_data* ch, const char* arg,
 }
 
 static void spell_farlook(struct char_data* ch, struct char_data* victim) {
-  short int target;
-  struct char_data* tmpv;
-  struct char_data* temp;
+  short int target = 0;
+  struct char_data* tmpv = nullptr;
+  struct char_data* temp = nullptr;
   char buf[MAX_STRING_LENGTH];
   char buf1[MAX_STRING_LENGTH];
 
@@ -1963,11 +1964,11 @@ void cast_farlook(signed char level, struct char_data* ch, const char* arg,
 }
 
 static void spell_portal(struct char_data* ch, struct char_data* victim) {
-  int location;
+  int location = 0;
   char buf[30000];
-  struct obj_data* tmp_obj;
-  struct obj_data* next_tmp_obj;
-  struct room_data* rp;
+  struct obj_data* tmp_obj = nullptr;
+  struct obj_data* next_tmp_obj = nullptr;
+  struct room_data* rp = nullptr;
 
   assert(ch && victim);
 
@@ -2055,8 +2056,8 @@ void cast_portal(signed char level, struct char_data* ch, const char* arg,
 
 void spell_teleport(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
-  int to_room;
-  struct room_data* room;
+  int to_room = 0;
+  struct room_data* room = nullptr;
 
   assert(ch && victim);
 
@@ -2492,7 +2493,7 @@ static void spell_light(signed char level, struct char_data* ch,
   /*
      creates a ball of light in the hands.
   */
-  struct obj_data* tmp_obj;
+  struct obj_data* tmp_obj = nullptr;
 
   assert(ch);
   assert((level >= 0) && (level <= ABS_MAX_LVL));
@@ -2538,7 +2539,7 @@ void cast_light(signed char level, struct char_data* ch, const char* arg,
 
 static void spell_cont_light(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
-  struct obj_data* tmp_obj;
+  struct obj_data* tmp_obj = nullptr;
 
   assert(ch);
   assert((level >= 0) && (level <= ABS_MAX_LVL));
@@ -2685,7 +2686,7 @@ static void spell_clone(signed char level, struct char_data* ch,
 
 void cast_clone(signed char level, struct char_data* ch, const char* arg,
   int type, struct char_data* tar_ch, struct obj_data* tar_obj) {
-  struct char_data* vict;
+  struct char_data* vict = nullptr;
   char buf[MAX_STRING_LENGTH];
 
   send_to_char("Not *YET* implemented.", ch);
@@ -2804,8 +2805,8 @@ void cast_control_weather(signed char level, struct char_data* ch,
 
 static void spell_create_food(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
-  int foodnum;
-  struct obj_data* tmp_obj;
+  int foodnum = 0;
+  struct obj_data* tmp_obj = nullptr;
 
   assert(ch);
   assert((level >= 0) && (level <= ABS_MAX_LVL));
@@ -2998,7 +2999,7 @@ void cast_flying(signed char level, struct char_data* ch, const char* arg,
 static void spell_fly_group(struct char_data* ch, struct char_data* victim,
   struct obj_data* obj) {
   struct affected_type af;
-  struct char_data* tch;
+  struct char_data* tch = nullptr;
 
   assert(ch);
 
@@ -3045,8 +3046,8 @@ void cast_fly_group(signed char level, struct char_data* ch, const char* arg,
 
 static void spell_heroes_feast(struct char_data* ch, struct char_data* victim,
   struct obj_data* obj) {
-  struct room_data* rp;
-  struct char_data* tch;
+  struct room_data* rp = nullptr;
+  struct char_data* tch = nullptr;
 
   if (real_roomp(ch->in_room) == nullptr) {
     return;
@@ -3085,7 +3086,7 @@ void cast_heroes_feast(signed char level, struct char_data* ch, const char* arg,
 
 static void spell_synostodweomer(struct char_data* ch,
   struct char_data* victim) {
-  int hitp;
+  int hitp = 0;
   assert(victim);
 
   hitp = (GET_HIT(ch) / 2);
@@ -3126,8 +3127,8 @@ void cast_synostodweomer(signed char level, struct char_data* ch,
 
 static void spell_heal_spray(struct char_data* ch, struct char_data* victim,
   struct obj_data* obj) {
-  struct room_data* rp;
-  struct char_data* tch;
+  struct room_data* rp = nullptr;
+  struct char_data* tch = nullptr;
 
   if (real_roomp(ch->in_room) == nullptr) {
     return;
@@ -3194,7 +3195,7 @@ void cast_cure_blind(signed char level, struct char_data* ch, const char* arg,
 }
 
 static void spell_cure_critic(signed char level, struct char_data* victim) {
-  int healpoints;
+  int healpoints = 0;
 
   assert(victim);
   assert((level >= 0) && (level <= ABS_MAX_LVL));
@@ -3245,7 +3246,7 @@ void cast_cure_critic(signed char level, struct char_data* ch, const char* arg,
 }
 
 static void spell_cure_light(signed char level, struct char_data* victim) {
-  int healpoints;
+  int healpoints = 0;
 
   assert(victim);
   assert((level >= 0) && (level <= ABS_MAX_LVL));
@@ -3303,7 +3304,7 @@ void cast_cure_light(signed char level, struct char_data* ch, const char* arg,
 
 static void spell_cure_serious(signed char level, struct char_data* ch,
   struct char_data* victim) {
-  int dam;
+  int dam = 0;
 
   assert(ch && victim);
   assert((level >= 1) && (level <= ABS_MAX_LVL));
@@ -3352,7 +3353,7 @@ void cast_cure_serious(signed char level, struct char_data* ch, const char* arg,
 
 static void spell_refresh(signed char level, struct char_data* ch,
   struct char_data* victim) {
-  int dam;
+  int dam = 0;
 
   assert(ch && victim);
   assert((level >= 1) && (level <= ABS_MAX_LVL));
@@ -3400,7 +3401,7 @@ void cast_refresh(signed char level, struct char_data* ch, const char* arg,
 
 static void spell_second_wind(signed char level, struct char_data* ch,
   struct char_data* victim) {
-  int dam;
+  int dam = 0;
 
   assert(ch && victim);
   assert((level >= 1) && (level <= ABS_MAX_LVL));
@@ -3874,7 +3875,7 @@ void cast_detect_poison(signed char level, struct char_data* ch,
 
 static void spell_dispel_evil(signed char level, struct char_data* ch,
   struct char_data* victim) {
-  int dam;
+  int dam = 0;
 
   assert(ch && victim);
   assert((level >= 1) && (level <= ABS_MAX_LVL));
@@ -3942,7 +3943,7 @@ void cast_dispel_evil(signed char level, struct char_data* ch, const char* arg,
 
 static void spell_dispel_good(signed char level, struct char_data* ch,
   struct char_data* victim) {
-  int dam;
+  int dam = 0;
 
   assert(ch && victim);
   assert((level >= 1) && (level <= ABS_MAX_LVL));
@@ -4072,7 +4073,7 @@ void cast_faerie_fire(signed char level, struct char_data* ch, const char* arg,
 
 static void spell_enchant_weapon(signed char level, struct char_data* ch,
   struct obj_data* obj) {
-  int i;
+  int i = 0;
 
   assert(ch && obj);
   static_assert(MAX_OBJ_AFFECT >= 2, "");
@@ -4251,8 +4252,8 @@ void cast_full_heal(signed char level, struct char_data* ch, const char* arg,
 
 static void spell_invis_group(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
-  struct char_data* tmpv;
-  struct char_data* temp;
+  struct char_data* tmpv = nullptr;
+  struct char_data* temp = nullptr;
   struct affected_type af;
 
   assert(ch);
@@ -4374,10 +4375,10 @@ void cast_invisibility(signed char level, struct char_data* ch, const char* arg,
 
 static void spell_locate_object(signed char level, struct char_data* ch,
   const char* obj) {
-  struct obj_data* i;
+  struct obj_data* i = nullptr;
   char name[256];
   char buf[MAX_STRING_LENGTH];
-  int j;
+  int j = 0;
 
   assert(ch);
 
@@ -4435,7 +4436,7 @@ void cast_locate_object(signed char level, struct char_data* ch,
 }
 
 static char imp_save_spell(struct char_data* ch, short int save_type, int mod) {
-  int save;
+  int save = 0;
 
   /* Positive mod is better for save */
 
@@ -5114,7 +5115,7 @@ void cast_strength(signed char level, struct char_data* ch, const char* arg,
 void cast_ventriloquate(signed char level, struct char_data* ch,
   const char* arg, int type, struct char_data* tar_ch,
   struct obj_data* tar_obj) {
-  struct char_data* tmp_ch;
+  struct char_data* tmp_ch = nullptr;
   char buf1[MAX_STRING_LENGTH];
   char buf2[MAX_STRING_LENGTH];
   char buf3[MAX_STRING_LENGTH];
@@ -5156,10 +5157,10 @@ void cast_ventriloquate(signed char level, struct char_data* ch,
 
 static void spell_word_of_recall(struct char_data* ch,
   struct char_data* victim) {
-  int location;
-  int premove;
+  int location = 0;
+  int premove = 0;
   char found = 0;
-  struct room_data* rp;
+  struct room_data* rp = nullptr;
 
   assert(victim);
 
@@ -5240,12 +5241,12 @@ void cast_word_of_recall(signed char level, struct char_data* ch,
 }
 
 static void raw_summon(struct char_data* v, struct char_data* c) {
-  short int target;
-  struct char_data* tmp;
-  struct obj_data* o;
-  struct obj_data* n;
-  int j;
-  int i;
+  short int target = 0;
+  struct char_data* tmp = nullptr;
+  struct obj_data* o = nullptr;
+  struct obj_data* n = nullptr;
+  int j = 0;
+  int i = 0;
 
   if (IS_NPC(v) && (!IS_SET(v->specials.act, ACT_POLYSELF)) &&
       (GetMaxLevel(v) > GetMaxLevel(c) + 3)) {
@@ -5295,8 +5296,8 @@ static void raw_summon(struct char_data* v, struct char_data* c) {
 
 void spell_summon(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
-  struct char_data* tmp;
-  int count;
+  struct char_data* tmp = nullptr;
+  int count = 0;
   assert(ch && victim);
 
   if (victim->in_room == NOWHERE) {
@@ -5703,9 +5704,9 @@ static void spell_identify(struct char_data* ch, struct char_data* victim,
   struct obj_data* obj) {
   char buf[256];
   char buf2[256];
-  int i;
-  char found;
-  float av_dam;
+  int i = 0;
+  char found = 0;
+  float av_dam = NAN;
 
   assert(ch && (obj || victim));
 
@@ -5890,8 +5891,8 @@ struct breath_potion {
 void cast_dragon_breath(signed char level, struct char_data* ch,
   const char* arg, int type, struct char_data* tar_ch,
   struct obj_data* potion) {
-  struct breath_potion* scan;
-  int i;
+  struct breath_potion* scan = nullptr;
+  int i = 0;
   struct affected_type af;
 
   for (scan = breath_potions;
@@ -5940,15 +5941,15 @@ void cast_dragon_breath(signed char level, struct char_data* ch,
 
 void cast_knock(signed char level, struct char_data* ch, const char* arg,
   int type, struct char_data* tar_ch, struct obj_data* tar_obj) {
-  signed char percent;
-  int door;
-  int other_room;
+  signed char percent = 0;
+  int door = 0;
+  int other_room = 0;
   char dir[MAX_INPUT_LENGTH];
   char buf[MAX_STRING_LENGTH];
   char otype[MAX_INPUT_LENGTH];
-  struct room_direction_data* back;
-  struct obj_data* obj;
-  struct char_data* victim;
+  struct room_direction_data* back = nullptr;
+  struct obj_data* obj = nullptr;
+  struct char_data* victim = nullptr;
 
   switch (type) {
     case SPELL_TYPE_SPELL:
@@ -6019,7 +6020,7 @@ void cast_knock(signed char level, struct char_data* ch, const char* arg,
 
 static void spell_know_alignment(struct char_data* ch,
   struct char_data* victim) {
-  int ap;
+  int ap = 0;
   char buf[200];
   char name[100];
 
@@ -6081,7 +6082,7 @@ void cast_know_alignment(signed char level, struct char_data* ch,
 static void spell_weakness(signed char level, struct char_data* ch,
   struct char_data* victim) {
   struct affected_type af;
-  float modifier;
+  float modifier = NAN;
 
   assert(ch && victim);
 
@@ -6397,14 +6398,14 @@ void cast_dispel_magic(signed char level, struct char_data* ch, const char* arg,
 
 void spell_animate_dead(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* corpse) {
-  struct char_data* mob;
-  struct obj_data* obj_object;
-  struct obj_data* sub_object;
-  struct obj_data* next_obj;
-  struct obj_data* i;
+  struct char_data* mob = nullptr;
+  struct obj_data* obj_object = nullptr;
+  struct obj_data* sub_object = nullptr;
+  struct obj_data* next_obj = nullptr;
+  struct obj_data* i = nullptr;
   char buf[MAX_STRING_LENGTH];
   int r_num = 100; /* virtual # for zombie */
-  int k;
+  int k = 0;
   /*
    some sort of check for corpse hood
   */
@@ -6472,7 +6473,7 @@ void spell_animate_dead(signed char level, struct char_data* ch,
 
 void cast_animate_dead(signed char level, struct char_data* ch, const char* arg,
   int type, struct char_data* tar_ch, struct obj_data* tar_obj) {
-  struct obj_data* i;
+  struct obj_data* i = nullptr;
 
   switch (type) {
     case SPELL_TYPE_SPELL:
@@ -6509,7 +6510,7 @@ void cast_animate_dead(signed char level, struct char_data* ch, const char* arg,
 
 static void spell_succor(struct char_data* ch, struct char_data* victim,
   struct obj_data* obj) {
-  struct obj_data* o;
+  struct obj_data* o = nullptr;
 
   o = read_object(3052, VIRTUAL);
   obj_to_char(o, ch);
@@ -6530,7 +6531,7 @@ void cast_succor(signed char level, struct char_data* ch, const char* arg,
 
 static void spell_well_of_knowledge(struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
-  struct obj_data* o;
+  struct obj_data* o = nullptr;
 
   o = read_object(3050, VIRTUAL);
   obj_to_char(o, ch);
@@ -6708,8 +6709,8 @@ void cast_fear(signed char level, struct char_data* ch, const char* arg,
 
 static void spell_turn(signed char level, struct char_data* ch,
   struct char_data* victim) {
-  int diff;
-  int i;
+  int diff = 0;
+  int i = 0;
 
   assert(ch && victim);
   assert((level >= 1) && (level <= ABS_MAX_LVL));
@@ -6784,7 +6785,7 @@ void cast_turn(signed char level, struct char_data* ch, const char* arg,
 static void spell_faerie_fog(struct char_data* ch, struct char_data* victim,
   struct obj_data* obj) {
   struct affected_type af;
-  struct char_data* tmpv;
+  struct char_data* tmpv = nullptr;
 
   assert(ch);
 
@@ -6834,7 +6835,7 @@ void cast_faerie_fog(signed char level, struct char_data* ch, const char* arg,
 }
 
 static void spell_poly_self(struct char_data* ch, struct char_data* mob) {
-  char* buf;
+  char* buf = nullptr;
 
   /*
    *  Check to make sure that there is no snooping going on.
@@ -6943,7 +6944,7 @@ void cast_poly_self(signed char level, struct char_data* ch, const char* arg,
   int mobn = 0;
   int x = LAST_POLY_MOB;
   int found = 0;
-  struct char_data* mob;
+  struct char_data* mob = nullptr;
 
   one_argument(arg, buffer);
 
@@ -7012,9 +7013,9 @@ void cast_minor_creation(signed char level, struct char_data* ch,
   const char* arg, int type, struct char_data* tar_ch,
   struct obj_data* tar_obj) {
   char buffer[40];
-  int mob;
-  int obj;
-  struct obj_data* o;
+  int mob = 0;
+  int obj = 0;
+  struct obj_data* o = nullptr;
 
   one_argument(arg, buffer);
 
@@ -7112,10 +7113,10 @@ void cast_conjure_elemental(signed char level, struct char_data* ch,
   const char* arg, int type, struct char_data* tar_ch,
   struct obj_data* tar_obj) {
   char buffer[40];
-  int mob;
-  int obj;
-  struct obj_data* sac;
-  struct char_data* el;
+  int mob = 0;
+  int obj = 0;
+  struct obj_data* sac = nullptr;
+  struct char_data* el = nullptr;
 
   one_argument(arg, buffer);
 
@@ -7228,10 +7229,10 @@ static void spell_cacaodemon(struct char_data* ch, struct char_data* victim,
 void cast_cacaodemon(signed char level, struct char_data* ch, const char* arg,
   int type, struct char_data* tar_ch, struct obj_data* tar_obj) {
   char buffer[40];
-  int mob;
-  int obj;
-  struct obj_data* sac;
-  struct char_data* el;
+  int mob = 0;
+  int obj = 0;
+  struct obj_data* sac = nullptr;
+  struct char_data* el = nullptr;
 
   one_argument(arg, buffer);
 
@@ -7298,9 +7299,9 @@ void cast_cacaodemon(signed char level, struct char_data* ch, const char* arg,
 static void spell_create_monster(signed char level, struct char_data* ch,
   struct char_data* victim, struct obj_data* obj) {
   struct affected_type af;
-  struct char_data* mob;
-  int rnum;
-  int chance;
+  struct char_data* mob = nullptr;
+  int rnum = 0;
+  int chance = 0;
 
   /* load in a monster of the correct type, determined by
      level of the spell */

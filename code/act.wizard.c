@@ -60,8 +60,8 @@ static void create_one_room(int loc_nr) {
 void do_demote(struct char_data* ch, const char* argument, int cmd) {
   char person[MAX_STRING_LENGTH];
   char buf[MAX_STRING_LENGTH];
-  struct char_data* victim;
-  int i;
+  struct char_data* victim = nullptr;
+  int i = 0;
   if (IS_NPC(ch)) {
     return;
   }
@@ -96,7 +96,7 @@ static struct StrHeap* init_heap(void) {
 }
 
 void do_imptest(struct char_data* ch, const char* arg, int cmd) {
-  struct char_data* i;
+  struct char_data* i = nullptr;
   struct StrHeap* h = nullptr;
   int x = 0;
 
@@ -118,13 +118,13 @@ void do_imptest(struct char_data* ch, const char* arg, int cmd) {
 }
 
 void do_passwd(struct char_data* ch, const char* argument, int cmdnum) {
-  int player_i;
-  int pos;
+  int player_i = 0;
+  int pos = 0;
   char name[30];
   char npasswd[20];
   char pass[20];
   struct char_file_u tmp_store;
-  FILE* fl;
+  FILE* fl = nullptr;
 
   /*
    *  sets the specified user's password.
@@ -183,12 +183,12 @@ void do_passwd(struct char_data* ch, const char* argument, int cmdnum) {
 
 /* Bamfin and bamfout - courtesy of DM from Epic */
 static void dsearch(char* string, char* tmp) {
-  char* c;
+  char* c = nullptr;
   char buf[255];
   char buf2[255];
   char buf3[255];
-  int i;
-  int j;
+  int i = 0;
+  int j = 0;
 
   i = 0;
   while (i == 0) {
@@ -220,7 +220,7 @@ static void dsearch(char* string, char* tmp) {
 
 void do_bamfin(struct char_data* ch, const char* arg, int cmd) {
   char buf[255];
-  int len;
+  int len = 0;
 
   for (; *arg == ' '; arg++) {
     ; /* pass all those spaces */
@@ -271,7 +271,7 @@ void do_bamfin(struct char_data* ch, const char* arg, int cmd) {
 
 void do_bamfout(struct char_data* ch, const char* arg, int cmd) {
   char buf[255];
-  int len;
+  int len = 0;
 
   if (!*arg) {
     send_to_char("Bamfout <bamf definition>\n\r", ch);
@@ -318,7 +318,7 @@ void do_bamfout(struct char_data* ch, const char* arg, int cmd) {
 
 static FILE* make_zone_file(struct char_data* c) {
   char buf[256];
-  FILE* fp;
+  FILE* fp = nullptr;
 
   sprintf(buf, "zone/%s.zon", GET_NAME(c));
 
@@ -336,7 +336,7 @@ static int mob_vnum(struct char_data* c) {
 }
 
 static void rec_zwrite_obj(FILE* fp, struct obj_data* o) {
-  struct obj_data* t;
+  struct obj_data* t = nullptr;
 
   if (ITEM_TYPE(o) == ITEM_CONTAINER) {
     for (t = o->contains; t; t = t->next_content) {
@@ -350,20 +350,20 @@ static void rec_zwrite_obj(FILE* fp, struct obj_data* o) {
 }
 
 void do_instazone(struct char_data* ch, const char* argument, int cmdnum) {
-  char cmd;
-  char c;
+  char cmd = 0;
+  char c = 0;
   char buf[80];
-  int i;
-  int start_room;
-  int end_room;
-  int j;
-  int arg1;
-  int arg2;
-  int arg3;
-  struct char_data* p;
-  struct obj_data* o;
-  struct room_data* room;
-  FILE* fp;
+  int i = 0;
+  int start_room = 0;
+  int end_room = 0;
+  int j = 0;
+  int arg1 = 0;
+  int arg2 = 0;
+  int arg3 = 0;
+  struct char_data* p = nullptr;
+  struct obj_data* o = nullptr;
+  struct room_data* room = nullptr;
+  FILE* fp = nullptr;
 
   if (IS_NPC(ch)) {
     return;
@@ -473,7 +473,7 @@ void do_instazone(struct char_data* ch, const char* argument, int cmdnum) {
 void do_highfive(struct char_data* ch, const char* argument, int cmd) {
   char buf[80];
   char mess[120];
-  struct char_data* tch;
+  struct char_data* tch = nullptr;
 
   if (argument) {
     only_argument(argument, buf);
@@ -679,13 +679,13 @@ static int room_enter(struct room_data* rb[], int key, struct room_data* rm) {
 }
 
 static void room_load(struct char_data* ch, int start, int end) {
-  FILE* fp;
+  FILE* fp = nullptr;
   int vnum = 0;
   int found = 0;
-  int x;
+  int x = 0;
   char chk[50];
   char buf[80];
-  struct room_data* rp;
+  struct room_data* rp = nullptr;
   struct room_data dummy = {};
 
   sprintf(buf, "areas/%s", ch->player.name);
@@ -741,7 +741,7 @@ static void room_load(struct char_data* ch, int start, int end) {
 }
 
 void do_rload(struct char_data* ch, const char* argument, int cmd) {
-  char i;
+  char i = 0;
   int start = -1;
   int end = -2;
 
@@ -771,16 +771,16 @@ static void room_save(struct char_data* ch, int start, int end) {
   char temp[2048];
   char dots[500];
   char buf[255];
-  int rstart;
-  int rend;
-  int i;
-  int j;
-  int k;
-  int x;
-  struct extra_descr_data* exptr;
-  FILE* fp;
-  struct room_data* rp;
-  struct room_direction_data* rdd;
+  int rstart = 0;
+  int rend = 0;
+  int i = 0;
+  int j = 0;
+  int k = 0;
+  int x = 0;
+  struct extra_descr_data* exptr = nullptr;
+  FILE* fp = nullptr;
+  struct room_data* rp = nullptr;
+  struct room_direction_data* rdd = nullptr;
 
   sprintf(buf, "areas/%s", ch->player.name);
 
@@ -925,7 +925,7 @@ static void room_save(struct char_data* ch, int start, int end) {
 }
 
 void do_rsave(struct char_data* ch, const char* argument, int cmd) {
-  char i;
+  char i = 0;
   char buf[256];
   int start = -1;
   int end = -2;
@@ -952,7 +952,7 @@ void do_rsave(struct char_data* ch, const char* argument, int cmd) {
 }
 
 void do_emote(struct char_data* ch, const char* argument, int cmd) {
-  int i;
+  int i = 0;
   char buf[MAX_INPUT_LENGTH];
 
   if (IS_NPC(ch) && (cmd != 0)) {
@@ -979,7 +979,7 @@ void do_emote(struct char_data* ch, const char* argument, int cmd) {
 void do_flag(struct char_data* ch, const char* argument, int cmd) {
   char buf[80];
   char buf2[80];
-  struct char_data* victim;
+  struct char_data* victim = nullptr;
 
   half_chop(argument, buf, buf2);
 
@@ -1031,7 +1031,7 @@ void do_flag(struct char_data* ch, const char* argument, int cmd) {
 }
 
 void do_echo(struct char_data* ch, const char* argument, int cmd) {
-  int i;
+  int i = 0;
   char buf[MAX_INPUT_LENGTH];
 
   if (IS_NPC(ch)) {
@@ -1050,7 +1050,7 @@ void do_echo(struct char_data* ch, const char* argument, int cmd) {
 }
 
 void do_system(struct char_data* ch, const char* argument, int cmd) {
-  int i;
+  int i = 0;
   char buf[256];
 
   if (IS_NPC(ch)) {
@@ -1070,10 +1070,10 @@ void do_system(struct char_data* ch, const char* argument, int cmd) {
 }
 
 void do_trans(struct char_data* ch, const char* argument, int cmd) {
-  struct descriptor_data* i;
-  struct char_data* victim;
+  struct descriptor_data* i = nullptr;
+  struct char_data* victim = nullptr;
   char buf[100];
-  short int target;
+  short int target = 0;
 
   if (IS_NPC(ch)) {
     return;
@@ -1120,11 +1120,11 @@ void do_trans(struct char_data* ch, const char* argument, int cmd) {
 void do_at(struct char_data* ch, const char* argument, int cmd) {
   char command[MAX_INPUT_LENGTH];
   char loc_str[MAX_INPUT_LENGTH];
-  int loc_nr;
-  int location;
-  int original_loc;
-  struct char_data* target_mob;
-  struct obj_data* target_obj;
+  int loc_nr = 0;
+  int location = 0;
+  int original_loc = 0;
+  struct char_data* target_mob = nullptr;
+  struct obj_data* target_obj = nullptr;
 
   if (IS_NPC(ch)) {
     return;
@@ -1176,13 +1176,13 @@ void do_at(struct char_data* ch, const char* argument, int cmd) {
 
 void do_goto(struct char_data* ch, const char* argument, int cmd) {
   char buf[MAX_INPUT_LENGTH];
-  int loc_nr;
-  int location;
-  int i;
-  struct char_data* target_mob;
-  struct char_data* pers;
-  struct char_data* v;
-  struct obj_data* target_obj;
+  int loc_nr = 0;
+  int location = 0;
+  int i = 0;
+  struct char_data* target_mob = nullptr;
+  struct char_data* pers = nullptr;
+  struct char_data* v = nullptr;
+  struct obj_data* target_obj = nullptr;
 
   if (IS_NPC(ch)) {
     return;
@@ -1305,7 +1305,7 @@ static const char* const room_bits[] = {"DARK", "DEATH", "NO_MOB", "INDOORS",
   "NO_ORDER", "ANARCHY", "HAVE_TO_WALK", "ARENA", "NO-HEAL", "\n"};
 
 void do_stat(struct char_data* ch, const char* argument, int cmd) {
-  struct affected_type* aff;
+  struct affected_type* aff = nullptr;
   char arg1[MAX_STRING_LENGTH];
   char buf[MAX_STRING_LENGTH];
   char buf2[MAX_STRING_LENGTH];
@@ -1313,13 +1313,13 @@ void do_stat(struct char_data* ch, const char* argument, int cmd) {
   struct char_data* k = nullptr;
   struct obj_data* j = nullptr;
   struct obj_data* j2 = nullptr;
-  struct extra_descr_data* desc;
-  struct follow_type* fol;
-  int i;
-  int obj_vnum;
-  int i2;
-  int count;
-  char found;
+  struct extra_descr_data* desc = nullptr;
+  struct follow_type* fol = nullptr;
+  int i = 0;
+  int obj_vnum = 0;
+  int i2 = 0;
+  int count = 0;
+  char found = 0;
 
   if (IS_NPC(ch)) {
     return;
@@ -1918,9 +1918,9 @@ void do_set(struct char_data* ch, const char* argument, int cmd) {
   char field[20];
   char name[20];
   char parmstr[50];
-  struct char_data* mob;
-  int parm;
-  int parm2;
+  struct char_data* mob = nullptr;
+  int parm = 0;
+  int parm2 = 0;
   char buf[256];
 
   if ((GetMaxLevel(ch) < SILLYLORD) || (IS_NPC(ch))) {
@@ -2127,7 +2127,7 @@ void do_shutdown(struct char_data* ch, const char* argument, int cmd) {
 
 void do_snoop(struct char_data* ch, const char* argument, int cmd) {
   static char arg[MAX_STRING_LENGTH];
-  struct char_data* victim;
+  struct char_data* victim = nullptr;
 
   if (!ch->desc) {
     return;
@@ -2193,7 +2193,7 @@ void do_snoop(struct char_data* ch, const char* argument, int cmd) {
 
 void do_switch(struct char_data* ch, const char* argument, int cmd) {
   static char arg[80];
-  struct char_data* victim;
+  struct char_data* victim = nullptr;
 
   if (IS_NPC(ch)) {
     return;
@@ -2234,7 +2234,7 @@ void do_switch(struct char_data* ch, const char* argument, int cmd) {
 
 void do_return(struct char_data* ch, const char* argument, int cmd) {
   struct char_data* mob = nullptr;
-  struct char_data* per;
+  struct char_data* per = nullptr;
 
   if (!ch->desc) {
     return;
@@ -2270,8 +2270,8 @@ void do_return(struct char_data* ch, const char* argument, int cmd) {
 }
 
 void do_force(struct char_data* ch, const char* argument, int cmd) {
-  struct descriptor_data* i;
-  struct char_data* vict;
+  struct descriptor_data* i = nullptr;
+  struct char_data* vict = nullptr;
   char name[100];
   char to_force[100];
   char buf[100];
@@ -2316,11 +2316,11 @@ void do_force(struct char_data* ch, const char* argument, int cmd) {
 }
 
 void do_load(struct char_data* ch, const char* argument, int cmd) {
-  struct char_data* mob;
-  struct obj_data* obj;
+  struct char_data* mob = nullptr;
+  struct obj_data* obj = nullptr;
   char type[100];
   char num[100];
-  int number;
+  int number = 0;
 
   if (IS_NPC(ch)) {
     return;
@@ -2438,8 +2438,8 @@ void do_load(struct char_data* ch, const char* argument, int cmd) {
     act("$n has created $p!", 0, ch, obj, nullptr, TO_ROOM);
     act("You now have $p.", 0, ch, obj, nullptr, TO_CHAR);
   } else if (is_abbrev(type, "room")) {
-    int start;
-    int end;
+    int start = 0;
+    int end = 0;
 
     if (GetMaxLevel(ch) < CREATOR) {
       return;
@@ -2463,8 +2463,8 @@ void do_load(struct char_data* ch, const char* argument, int cmd) {
 }
 
 static void completely_cleanout_room(struct room_data* rp) {
-  struct char_data* ch;
-  struct obj_data* obj;
+  struct char_data* ch = nullptr;
+  struct obj_data* obj = nullptr;
 
   while (rp->people) {
     ch = rp->people;
@@ -2486,8 +2486,8 @@ static void completely_cleanout_room(struct room_data* rp) {
 }
 
 static void purge_one_room(int rnum, struct room_data* rp, const int* range) {
-  struct char_data* ch;
-  struct obj_data* obj;
+  struct char_data* ch = nullptr;
+  struct obj_data* obj = nullptr;
 
   if (rnum == 0 || /* purge the void?  I think not */
       rnum < range[0] || rnum > range[1]) {
@@ -2520,9 +2520,9 @@ static void purge_one_room(int rnum, struct room_data* rp, const int* range) {
 }
 
 void do_link(struct char_data* ch, const char* argument, int cmd) {
-  struct char_data* victim;
-  struct descriptor_data* d;
-  struct descriptor_data* next_d;
+  struct char_data* victim = nullptr;
+  struct descriptor_data* d = nullptr;
+  struct descriptor_data* next_d = nullptr;
   int done = 0;
   char name[100];
 
@@ -2558,10 +2558,10 @@ void do_link(struct char_data* ch, const char* argument, int cmd) {
 
 /* clean a room of all mobiles and objects */
 void do_purge(struct char_data* ch, const char* argument, int cmd) {
-  struct char_data* vict;
-  struct char_data* next_v;
-  struct obj_data* obj;
-  struct obj_data* next_o;
+  struct char_data* vict = nullptr;
+  struct char_data* next_v = nullptr;
+  struct obj_data* obj = nullptr;
+  struct obj_data* next_o = nullptr;
 
   char name[100];
 
@@ -2573,8 +2573,8 @@ void do_purge(struct char_data* ch, const char* argument, int cmd) {
 
   if (*name) { /* argument supplied. destroy single object or char */
     if (strcmp(name, "links") == 0 && GetMaxLevel(ch) >= IMPLEMENTOR) {
-      struct descriptor_data* d;
-      struct descriptor_data* next_d;
+      struct descriptor_data* d = nullptr;
+      struct descriptor_data* next_d = nullptr;
 
       for (d = descriptor_list; d; d = next_d) {
         next_d = d->next;
@@ -2613,8 +2613,8 @@ void do_purge(struct char_data* ch, const char* argument, int cmd) {
       argument = one_argument(argument, name);
       if (0 == str_cmp("room", name)) {
         int range[2];
-        int i;
-        struct room_data* rp;
+        int i = 0;
+        struct room_data* rp = nullptr;
         if (GetMaxLevel(ch) < IMPLEMENTOR) {
           send_to_char("I'm sorry, Dave.  I can't let you do that.\n\r", ch);
           return;
@@ -2683,10 +2683,10 @@ void do_purge(struct char_data* ch, const char* argument, int cmd) {
 
 /* Give pointers to the five abilities */
 static void roll_abilities(struct char_data* ch) {
-  int i;
-  int j;
-  int k;
-  int temp;
+  int i = 0;
+  int j = 0;
+  int k = 0;
+  int temp = 0;
   unsigned char table[MAX_STAT];
   unsigned char rools[4];
   char buf[256];
@@ -2795,7 +2795,7 @@ static void roll_abilities(struct char_data* ch) {
 }
 
 void do_reroll(struct char_data* ch, const char* argument, int cmd) {
-  struct char_data* victim;
+  struct char_data* victim = nullptr;
   char buf[100];
 
   if (IS_NPC(ch)) {
@@ -2831,9 +2831,9 @@ static void start_levels(struct char_data* ch) {
 }
 
 void do_start(struct char_data* ch) {
-  int i;
-  int r_num;
-  struct obj_data* obj;
+  int i = 0;
+  int r_num = 0;
+  struct obj_data* obj = nullptr;
   struct affected_type af;
 
   send_to_char("Welcome to SneezyMUD.  Enjoy the game...\n\r", ch);
@@ -2902,7 +2902,7 @@ void do_start(struct char_data* ch) {
 
 static void gain_exp_regardless(struct char_data* ch, int gain,
   int char_class) {
-  int i;
+  int i = 0;
   char is_altered = 0;
 
   save_char(ch, AUTO_RENT);
@@ -2933,13 +2933,13 @@ static void gain_exp_regardless(struct char_data* ch, int gain,
 }
 
 void do_advance(struct char_data* ch, const char* argument, int cmd) {
-  struct char_data* victim;
+  struct char_data* victim = nullptr;
   char name[100];
   char level[100];
   char char_class_arg[100];
-  int adv;
-  int newlevel;
-  int lin_class;
+  int adv = 0;
+  int newlevel = 0;
+  int lin_class = 0;
 
   if (IS_NPC(ch)) {
     return;
@@ -3073,9 +3073,9 @@ void do_wiznews(struct char_data* ch, const char* argument, int cmd) {
 }
 
 void do_restore(struct char_data* ch, const char* argument, int cmd) {
-  struct char_data* victim;
+  struct char_data* victim = nullptr;
   char buf[100];
-  int i;
+  int i = 0;
 
   if (cmd == 0) {
     return;
@@ -3124,8 +3124,8 @@ void do_restore(struct char_data* ch, const char* argument, int cmd) {
 }
 
 void do_noshout(struct char_data* ch, const char* argument, int cmd) {
-  struct char_data* vict;
-  struct obj_data* dummy;
+  struct char_data* vict = nullptr;
+  struct obj_data* dummy = nullptr;
   char buf[MAX_INPUT_LENGTH];
 
   if (IS_NPC(ch)) {
@@ -3163,8 +3163,8 @@ void do_noshout(struct char_data* ch, const char* argument, int cmd) {
 }
 
 void do_nohassle(struct char_data* ch, const char* argument, int cmd) {
-  struct char_data* vict;
-  struct obj_data* dummy;
+  struct char_data* vict = nullptr;
+  struct obj_data* dummy = nullptr;
   char buf[MAX_INPUT_LENGTH];
 
   if (IS_NPC(ch)) {
@@ -3194,8 +3194,8 @@ void do_nohassle(struct char_data* ch, const char* argument, int cmd) {
 }
 
 void do_stealth(struct char_data* ch, const char* argument, int cmd) {
-  struct char_data* vict;
-  struct obj_data* dummy;
+  struct char_data* vict = nullptr;
+  struct obj_data* dummy = nullptr;
   char buf[MAX_INPUT_LENGTH];
 
   if (IS_NPC(ch)) {
@@ -3227,9 +3227,9 @@ void do_stealth(struct char_data* ch, const char* argument, int cmd) {
 static void print_room(int rnum, struct room_data* rp,
   struct string_block* sb) {
   char buf[MAX_STRING_LENGTH];
-  int dink;
-  int bits;
-  int scan;
+  int dink = 0;
+  int bits = 0;
+  int scan = 0;
 
   if ((rp->sector_type < 0) || (rp->sector_type > 9)) { /* non-optimal */
     rp->sector_type = 0;
@@ -3313,9 +3313,9 @@ static void show_room_zone(int rnum, struct room_data* rp, void* data) {
 
 static void room_iterate(struct room_data* rb[],
   void (*func)(int, struct room_data*, void*), void* cdata) {
-  int i;
+  int i = 0;
   for (i = 0; i < WORLD_SIZE; i++) {
-    struct room_data* temp;
+    struct room_data* temp = nullptr;
 
     temp = room_find(rb, i);
     if (temp) {
@@ -3325,13 +3325,13 @@ static void room_iterate(struct room_data* rb[],
 }
 
 void do_show(struct char_data* ch, const char* argument, int cmd) {
-  int zone;
+  int zone = 0;
   char buf[MAX_STRING_LENGTH];
   char zonenum[MAX_INPUT_LENGTH];
-  struct index_data* which_i;
+  struct index_data* which_i = nullptr;
   int bottom = 0;
   int top = 0;
-  int topi;
+  int topi = 0;
   struct string_block sb;
 
   if (IS_NPC(ch)) {
@@ -3343,7 +3343,7 @@ void do_show(struct char_data* ch, const char* argument, int cmd) {
   init_string_block(&sb);
 
   if (is_abbrev(buf, "zones")) {
-    struct zone_data* zd;
+    struct zone_data* zd = nullptr;
     int bottom = 0;
     append_to_string_block(&sb,
       "# Zone   name                                lifespan age     rooms   "
@@ -3351,7 +3351,7 @@ void do_show(struct char_data* ch, const char* argument, int cmd) {
       "reset\n\r");
 
     for (zone = 0; zone <= top_of_zone_table; zone++) {
-      const char* mode;
+      const char* mode = nullptr;
 
       zd = zone_table + zone;
       switch (zd->reset_mode) {
@@ -3378,8 +3378,8 @@ void do_show(struct char_data* ch, const char* argument, int cmd) {
                (which_i = obj_index, topi = top_of_objt)) ||
              (is_abbrev(buf, "mobiles") &&
                (which_i = mob_index, topi = top_of_mobt))) {
-    int objn;
-    struct index_data* oi;
+    int objn = 0;
+    struct index_data* oi = nullptr;
 
     only_argument(argument, zonenum);
     zone = -1;
@@ -3457,7 +3457,7 @@ static int scan_number(const char* text, int* rval) {
 
 void do_invis(struct char_data* ch, const char* argument, int cmd) {
   char buf[MAX_INPUT_LENGTH];
-  int level;
+  int level = 0;
 
   if (GetMaxLevel(ch) < 51) {
     return;
@@ -3511,7 +3511,7 @@ void do_checklog(struct char_data* ch, const char* arg, int cmd) {
   char string[256];
   char file[256];
   char buf[256];
-  char* s;
+  char* s = nullptr;
   int i = 0;
 
   if (IS_NPC(ch)) {
@@ -3569,7 +3569,7 @@ void do_deathcheck(struct char_data* ch, const char* arg, int cmd) {
   char file[256];
   char player[256];
   char buf[256];
-  char* p;
+  char* p = nullptr;
 
   if (IS_NPC(ch)) {
     return;

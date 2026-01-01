@@ -14,8 +14,8 @@
 #include "structs.h"
 
 void FreeHates(struct char_data* ch) {
-  struct char_list* k;
-  struct char_list* n;
+  struct char_list* k = nullptr;
+  struct char_list* n = nullptr;
 
   for (k = ch->hates.clist; k; k = n) {
     n = k->next;
@@ -25,8 +25,8 @@ void FreeHates(struct char_data* ch) {
 }
 
 void FreeFears(struct char_data* ch) {
-  struct char_list* k;
-  struct char_list* n;
+  struct char_list* k = nullptr;
+  struct char_list* n = nullptr;
 
   for (k = ch->fears.clist; k; k = n) {
     n = k->next;
@@ -36,8 +36,8 @@ void FreeFears(struct char_data* ch) {
 }
 
 int RemHated(struct char_data* ch, struct char_data* pud) {
-  struct char_list* oldpud;
-  struct char_list* t;
+  struct char_list* oldpud = nullptr;
+  struct char_list* t = nullptr;
 
   if (pud) {
     for (oldpud = ch->hates.clist; oldpud; oldpud = oldpud->next) {
@@ -93,7 +93,7 @@ int RemHated(struct char_data* ch, struct char_data* pud) {
 }
 
 int AddHated(struct char_data* ch, struct char_data* pud) {
-  struct char_list* newpud;
+  struct char_list* newpud = nullptr;
 
   if (ch == pud) {
     return 0;
@@ -167,7 +167,7 @@ int AddHatred(struct char_data* ch, int parm_type, int parm) {
 }
 
 int Hates(struct char_data* ch, struct char_data* v) {
-  struct char_list* i;
+  struct char_list* i = nullptr;
 
   if (IS_AFFECTED(ch, AFF_PARALYSIS)) {
     return 0;
@@ -229,7 +229,7 @@ int Hates(struct char_data* ch, struct char_data* v) {
 }
 
 int Fears(struct char_data* ch, struct char_data* v) {
-  struct char_list* i;
+  struct char_list* i = nullptr;
   char buf[255];
 
   if (IS_AFFECTED(ch, AFF_PARALYSIS)) {
@@ -302,9 +302,9 @@ int Fears(struct char_data* ch, struct char_data* v) {
 }
 
 int RemFeared(struct char_data* ch, struct char_data* pud) {
-  struct char_list* oldpud;
-  struct char_list* t;
-  struct char_list* tmp;
+  struct char_list* oldpud = nullptr;
+  struct char_list* t = nullptr;
+  struct char_list* tmp = nullptr;
 
   if (!IS_SET(ch->specials.act, ACT_AFRAID)) {
     return 0;
@@ -362,7 +362,7 @@ int RemFeared(struct char_data* ch, struct char_data* pud) {
 }
 
 int AddFeared(struct char_data* ch, struct char_data* pud) {
-  struct char_list* newpud;
+  struct char_list* newpud = nullptr;
 
   if (pud) {
     CREATE(newpud, struct char_list, 1);
@@ -431,7 +431,7 @@ int AddFears(struct char_data* ch, int parm_type, int parm) {
 }
 
 struct char_data* FindAHatee(struct char_data* ch) {
-  struct char_data* tmp_ch;
+  struct char_data* tmp_ch = nullptr;
 
   if (ch->in_room < 0) {
     return (nullptr);
@@ -453,7 +453,7 @@ struct char_data* FindAHatee(struct char_data* ch) {
 }
 
 struct char_data* FindAFearee(struct char_data* ch) {
-  struct char_data* tmp_ch;
+  struct char_data* tmp_ch = nullptr;
 
   if (ch->in_room < 0) {
     return (nullptr);
@@ -477,7 +477,7 @@ struct char_data* FindAFearee(struct char_data* ch) {
 */
 
 void ZeroHatred(struct char_data* ch, struct char_data* v) {
-  struct char_list* oldpud;
+  struct char_list* oldpud = nullptr;
 
   for (oldpud = ch->hates.clist; oldpud; oldpud = oldpud->next) {
     if (oldpud) {
@@ -491,7 +491,7 @@ void ZeroHatred(struct char_data* ch, struct char_data* v) {
 }
 
 void ZeroFeared(struct char_data* ch, struct char_data* v) {
-  struct char_list* oldpud;
+  struct char_list* oldpud = nullptr;
 
   for (oldpud = ch->fears.clist; oldpud; oldpud = oldpud->next) {
     if (oldpud) {

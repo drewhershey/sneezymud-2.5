@@ -65,14 +65,14 @@ int tics = 0; /* for extern checkpointing */
  ********************************************************************* */
 
 int main(int argc, char** argv) {
-  int port;
-  int a;
+  int port = 0;
+  int a = 0;
   int pos = 1;
   char buf[512];
-  const char* dir;
+  const char* dir = nullptr;
 
   struct rlimit rl;
-  int res;
+  int res = 0;
 
   port = DFLT_PORT;
   dir = DFLT_DIR;
@@ -166,7 +166,7 @@ int main(int argc, char** argv) {
 
 /* Init sockets, run game, and cleanup sockets */
 int run_the_game(int port) {
-  int s;
+  int s = 0;
   PROFILE(extern etext();)
   PROFILE(monstartup((int)2, etext);)
 
@@ -222,18 +222,18 @@ int game_loop(int s) {
   char hitscolor[10];
   char manacolor[10];
   char movescolor[10];
-  struct descriptor_data* point;
-  struct descriptor_data* next_point;
-  int i;
+  struct descriptor_data* point = nullptr;
+  struct descriptor_data* next_point = nullptr;
+  int i = 0;
   int pulse = 0;
-  int prompt_per;
-  int current_hit;
-  int current_mana;
-  int current_moves;
-  int missing_hit;
-  int missing_mana;
-  int missing_moves;
-  struct room_data* rm;
+  int prompt_per = 0;
+  int current_hit = 0;
+  int current_mana = 0;
+  int current_moves = 0;
+  int missing_hit = 0;
+  int missing_mana = 0;
+  int missing_moves = 0;
+  struct room_data* rm = nullptr;
 
   null_time.tv_sec = 0;
   null_time.tv_usec = 0;
@@ -372,7 +372,7 @@ int game_loop(int s) {
         }
 
         /* Check if descriptor still valid (not freed by nanny/etc) */
-        struct descriptor_data* check;
+        struct descriptor_data* check = nullptr;
         int still_valid = 0;
         for (check = descriptor_list; check; check = check->next) {
           if (check == point) {
@@ -735,7 +735,7 @@ int game_loop(int s) {
  ****************************************************************** */
 
 int get_from_q(struct txt_q* queue, char* dest) {
-  struct txt_block* tmp;
+  struct txt_block* tmp = nullptr;
 
   /* Q empty? */
   if (!queue->head) {
@@ -753,7 +753,7 @@ int get_from_q(struct txt_q* queue, char* dest) {
 }
 
 void write_to_q(const char* txt, struct txt_q* queue) {
-  struct txt_block* new_block;
+  struct txt_block* new_block = nullptr;
 
   if (!queue) {
     vlog("Output message to non-existant queue");
@@ -810,11 +810,11 @@ void flush_queues(struct descriptor_data* d) {
  ****************************************************************** */
 
 int init_socket(int port) {
-  int s;
-  char* opt;
+  int s = 0;
+  char* opt = nullptr;
   char hostname[MAX_HOSTNAME + 1];
   struct sockaddr_in sa;
-  struct hostent* hp;
+  struct hostent* hp = nullptr;
   struct linger ld;
 
   memset(&sa, 0, sizeof(struct sockaddr_in));
@@ -854,8 +854,8 @@ int init_socket(int port) {
 int new_connection(int s) {
   struct sockaddr_in isa;
   /* struct sockaddr peer; */
-  int i;
-  int t;
+  int i = 0;
+  int t = 0;
   char buf[100];
 
   i = sizeof(isa);
@@ -872,12 +872,12 @@ int new_connection(int s) {
 
 /* print an internet host address prettily */
 static void printhost(struct in_addr* addr, char* buf) {
-  struct hostent* h;
-  char* s;
-  int n1;
-  int n2;
-  int n3;
-  int n4;
+  struct hostent* h = nullptr;
+  char* s = nullptr;
+  int n1 = 0;
+  int n2 = 0;
+  int n3 = 0;
+  int n4 = 0;
 
   h = gethostbyaddr((const char*)addr, sizeof(*addr), AF_INET);
   s = (h == nullptr) ? nullptr : h->h_name;
@@ -896,12 +896,12 @@ static void printhost(struct in_addr* addr, char* buf) {
 
 /* print an internet host address prettily */
 static void printhostaddr(struct in_addr* addr, char* buf) {
-  struct hostent* h;
-  char* s;
-  int n1;
-  int n2;
-  int n3;
-  int n4;
+  struct hostent* h = nullptr;
+  char* s = nullptr;
+  int n1 = 0;
+  int n2 = 0;
+  int n3 = 0;
+  int n4 = 0;
 
   h = gethostbyaddr((const char*)addr, sizeof(*addr), AF_INET);
   s = (h == nullptr) ? nullptr : h->h_name;
@@ -914,12 +914,12 @@ static void printhostaddr(struct in_addr* addr, char* buf) {
 }
 
 int new_descriptor(int s) {
-  int desc;
-  int a;
-  int size;
-  struct descriptor_data* newd;
+  int desc = 0;
+  int a = 0;
+  int size = 0;
+  struct descriptor_data* newd = nullptr;
   struct sockaddr_in sock;
-  struct hostent* from;
+  struct hostent* from = nullptr;
   char buf[100];
   char tempbuf[255];
   char* temphost[255];
@@ -1006,8 +1006,8 @@ int new_descriptor(int s) {
 int process_output(struct descriptor_data* t) {
   char i[MAX_STRING_LENGTH + 1];
   static char buffer[PACKET_BUFFER_SIZE];
-  char* end_buf;
-  int length;
+  char* end_buf = nullptr;
+  int length = 0;
 
   end_buf = buffer;
 
@@ -1044,9 +1044,9 @@ int process_output(struct descriptor_data* t) {
 }
 
 int write_to_descriptor(int desc, const char* txt) {
-  int sofar;
-  int thisround;
-  int total;
+  int sofar = 0;
+  int thisround = 0;
+  int total = 0;
 
   total = strlen(txt);
   sofar = 0;
@@ -1067,13 +1067,13 @@ int write_to_descriptor(int desc, const char* txt) {
 }
 
 int process_input(struct descriptor_data* t) {
-  int sofar;
-  int thisround;
-  int begin;
-  int squelch;
-  int i;
-  int k;
-  int flag;
+  int sofar = 0;
+  int thisround = 0;
+  int begin = 0;
+  int squelch = 0;
+  int i = 0;
+  int k = 0;
+  int flag = 0;
   char tmp[MAX_INPUT_LENGTH + 2];
   char buffer[MAX_INPUT_LENGTH + 60];
 
@@ -1191,7 +1191,7 @@ void close_sockets(int s) {
 }
 
 void close_socket(struct descriptor_data* d) {
-  struct descriptor_data* tmp;
+  struct descriptor_data* tmp = nullptr;
   char buf[100];
 
   if (!d) {
@@ -1303,7 +1303,7 @@ void coma(int s) {
 void coma(int s) {
   fd_set input_set;
   static struct timeval timeout = {60, 0};
-  int conn;
+  int conn = 0;
 
   vlog("Entering comatose state.");
 
@@ -1379,7 +1379,7 @@ void send_to_char(const char* messg, struct char_data* ch) {
 }
 
 void save_all(void) {
-  struct descriptor_data* i;
+  struct descriptor_data* i = nullptr;
 
   for (i = descriptor_list; i; i = i->next) {
     if (i->character) {
@@ -1389,7 +1389,7 @@ void save_all(void) {
 }
 
 void send_to_all(const char* messg) {
-  struct descriptor_data* i;
+  struct descriptor_data* i = nullptr;
 
   if (messg) {
     for (i = descriptor_list; i; i = i->next) {
@@ -1401,7 +1401,7 @@ void send_to_all(const char* messg) {
 }
 
 void send_to_outdoor(const char* messg) {
-  struct descriptor_data* i;
+  struct descriptor_data* i = nullptr;
 
   if (messg) {
     for (i = descriptor_list; i; i = i->next) {
@@ -1415,7 +1415,7 @@ void send_to_outdoor(const char* messg) {
 }
 
 void send_to_except(const char* messg, struct char_data* ch) {
-  struct descriptor_data* i;
+  struct descriptor_data* i = nullptr;
 
   if (messg) {
     for (i = descriptor_list; i; i = i->next) {
@@ -1439,7 +1439,7 @@ void send_to_room(const char* messg, int room) {
 }
 
 void send_to_room_except(const char* messg, int room, struct char_data* ch) {
-  struct char_data* i;
+  struct char_data* i = nullptr;
 
   if (messg) {
     for (i = real_roomp(room)->people; i; i = i->next_in_room) {
@@ -1452,7 +1452,7 @@ void send_to_room_except(const char* messg, int room, struct char_data* ch) {
 
 void send_to_room_except_two(const char* messg, int room, struct char_data* ch1,
   struct char_data* ch2) {
-  struct char_data* i;
+  struct char_data* i = nullptr;
 
   if (messg) {
     for (i = real_roomp(room)->people; i; i = i->next_in_room) {
@@ -1467,12 +1467,12 @@ void send_to_room_except_two(const char* messg, int room, struct char_data* ch1,
 
 void act(const char* str, int hide_invisible, struct char_data* ch,
   struct obj_data* obj, void* vict_obj, int type) {
-  const char* strp;
-  const char* i;
-  char* point;
-  struct char_data* to;
-  struct char_data* tmp_victim;
-  struct char_data* temp;
+  const char* strp = nullptr;
+  const char* i = nullptr;
+  char* point = nullptr;
+  struct char_data* to = nullptr;
+  struct char_data* tmp_victim = nullptr;
+  struct char_data* temp = nullptr;
   char buf[MAX_STRING_LENGTH];
 
   if (!str) {

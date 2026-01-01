@@ -20,9 +20,9 @@
 #include "utils.h"
 
 void open_door(struct char_data* ch, int dir) {
-  struct room_direction_data* exitp;
-  struct room_direction_data* back;
-  struct room_data* rp;
+  struct room_direction_data* exitp = nullptr;
+  struct room_direction_data* back = nullptr;
+  struct room_data* rp = nullptr;
   char buf[MAX_INPUT_LENGTH];
 
   rp = real_roomp(ch->in_room);
@@ -70,9 +70,9 @@ void open_door(struct char_data* ch, int dir) {
   remove all necessary bits and send messages
 */
 void raw_open_door(struct char_data* ch, int dir) {
-  struct room_direction_data* exitp;
-  struct room_direction_data* back;
-  struct room_data* rp;
+  struct room_direction_data* exitp = nullptr;
+  struct room_direction_data* back = nullptr;
+  struct room_data* rp = nullptr;
   char buf[MAX_INPUT_LENGTH];
 
   rp = real_roomp(ch->in_room);
@@ -110,7 +110,7 @@ static void not_legal_move(struct char_data* ch) {
 
 int ValidMove(struct char_data* ch, int cmd) {
   char tmp[256];
-  struct room_direction_data* exitp;
+  struct room_direction_data* exitp = nullptr;
 
   exitp = EXIT(ch, cmd);
 
@@ -140,7 +140,7 @@ int ValidMove(struct char_data* ch, int cmd) {
     not_legal_move(ch);
     return 0;
   }
-  struct room_data* rp;
+  struct room_data* rp = nullptr;
   rp = real_roomp(exitp->to_room);
   if (IS_SET(rp->room_flags, TUNNEL)) {
     if ((MobCountInRoom(rp->people) > rp->moblim) && (!IS_IMMORTAL(ch))) {
@@ -166,12 +166,12 @@ static const int movement_loss[] = {
 };
 
 static int raw_move(struct char_data* ch, int dir) {
-  int need_movement;
-  struct obj_data* obj;
-  char has_boat;
-  struct room_data* from_here;
-  struct room_data* to_here;
-  struct char_data* pers;
+  int need_movement = 0;
+  struct obj_data* obj = nullptr;
+  char has_boat = 0;
+  struct room_data* from_here = nullptr;
+  struct room_data* to_here = nullptr;
+  struct char_data* pers = nullptr;
 
   if (special(ch, dir + 1, "")) { /* Check for special routines(North is 1)*/
     return 0;
@@ -342,7 +342,7 @@ static int raw_move(struct char_data* ch, int dir) {
 
 // MoveOne and MoveGroup print messages.  Raw move sends success or failure.
 int DisplayMove(struct char_data* ch, int dir, int was_in, int total) {
-  struct char_data* tmp_ch;
+  struct char_data* tmp_ch = nullptr;
   char tmp[256];
 
   for (tmp_ch = real_roomp(was_in)->people; tmp_ch;
@@ -403,8 +403,8 @@ static int display_one_move(struct char_data* ch, int dir, int was_in) {
 
 static int add_to_char_heap(struct char_data* heap[50], int* top, int total[50],
   struct char_data* k) {
-  int found;
-  int i;
+  int found = 0;
+  int i = 0;
 
   if (*top > 50) {
     return 0;
@@ -430,7 +430,7 @@ static int add_to_char_heap(struct char_data* heap[50], int* top, int total[50],
 }
 
 int MoveOne(struct char_data* ch, int dir) {
-  int was_in;
+  int was_in = 0;
 
   was_in = ch->in_room;
   if (raw_move(ch, dir)) { /* no error */
@@ -447,12 +447,12 @@ static int display_group_move(struct char_data* ch, int dir, int was_in,
 
 static void move_group(struct char_data* ch, int dir) {
   struct char_data* heap_ptr[50];
-  int was_in;
-  int i;
-  int heap_top;
+  int was_in = 0;
+  int i = 0;
+  int heap_top = 0;
   int heap_tot[50];
-  struct follow_type* k;
-  struct follow_type* next_dude;
+  struct follow_type* k = nullptr;
+  struct follow_type* next_dude = nullptr;
 
   /*
    *   move the leader. (leader never duplicates)
@@ -522,10 +522,10 @@ void do_move(struct char_data* ch, const char* argument, int cmd) {
 
 int find_door(struct char_data* ch, char* type, char* dir) {
   char buf[MAX_STRING_LENGTH];
-  int door;
+  int door = 0;
   const char* const dirs[] = {"north", "east", "south", "west", "up", "down",
     "\n"};
-  struct room_direction_data* exitp;
+  struct room_direction_data* exitp = nullptr;
 
   if (*dir) { /* a direction was specified */
     if ((door = search_block(dir, dirs, 0)) == -1) { /* Partial Match */
@@ -562,14 +562,14 @@ int find_door(struct char_data* ch, char* type, char* dir) {
 }
 
 void do_open(struct char_data* ch, const char* argument, int cmd) {
-  int door;
+  int door = 0;
   char type[MAX_INPUT_LENGTH];
   char dir[MAX_INPUT_LENGTH];
   char buf[MAX_STRING_LENGTH];
-  struct room_direction_data* back;
-  struct obj_data* obj;
-  struct char_data* victim;
-  struct room_direction_data* exitp;
+  struct room_direction_data* back = nullptr;
+  struct obj_data* obj = nullptr;
+  struct char_data* victim = nullptr;
+  struct room_direction_data* exitp = nullptr;
 
   argument_interpreter(argument, type, dir);
 
@@ -602,7 +602,7 @@ void do_open(struct char_data* ch, const char* argument, int cmd) {
     } else if (IS_SET(exitp->exit_info, EX_LOCKED)) {
       send_to_char("It seems to be locked.\n\r", ch);
     } else {
-      struct room_data* rp;
+      struct room_data* rp = nullptr;
 
       open_door(ch, door);
       send_to_char("Ok.\n\r", ch);
@@ -611,15 +611,15 @@ void do_open(struct char_data* ch, const char* argument, int cmd) {
 }
 
 void do_close(struct char_data* ch, const char* argument, int cmd) {
-  int door;
+  int door = 0;
   char type[MAX_INPUT_LENGTH];
   char dir[MAX_INPUT_LENGTH];
   char buf[MAX_STRING_LENGTH];
-  struct room_direction_data* back;
-  struct room_direction_data* exitp;
-  struct obj_data* obj;
-  struct char_data* victim;
-  struct room_data* rp;
+  struct room_direction_data* back = nullptr;
+  struct room_direction_data* exitp = nullptr;
+  struct obj_data* obj = nullptr;
+  struct char_data* victim = nullptr;
+  struct room_data* rp = nullptr;
 
   argument_interpreter(argument, type, dir);
 
@@ -671,7 +671,7 @@ void do_close(struct char_data* ch, const char* argument, int cmd) {
 }
 
 static int has_key(struct char_data* ch, int key) {
-  struct obj_data* o;
+  struct obj_data* o = nullptr;
 
   for (o = ch->carrying; o; o = o->next_content) {
     if (obj_index[o->item_number].vnum == key) {
@@ -689,14 +689,14 @@ static int has_key(struct char_data* ch, int key) {
 }
 
 void do_lock(struct char_data* ch, const char* argument, int cmd) {
-  int door;
+  int door = 0;
   char type[MAX_INPUT_LENGTH];
   char dir[MAX_INPUT_LENGTH];
-  struct room_direction_data* back;
-  struct room_direction_data* exitp;
-  struct obj_data* obj;
-  struct char_data* victim;
-  struct room_data* rp;
+  struct room_direction_data* back = nullptr;
+  struct room_direction_data* exitp = nullptr;
+  struct obj_data* obj = nullptr;
+  struct char_data* victim = nullptr;
+  struct room_data* rp = nullptr;
 
   argument_interpreter(argument, type, dir);
 
@@ -754,14 +754,14 @@ void do_lock(struct char_data* ch, const char* argument, int cmd) {
 }
 
 void do_unlock(struct char_data* ch, const char* argument, int cmd) {
-  int door;
+  int door = 0;
   char type[MAX_INPUT_LENGTH];
   char dir[MAX_INPUT_LENGTH];
-  struct room_direction_data* back;
-  struct room_direction_data* exitp;
-  struct obj_data* obj;
-  struct char_data* victim;
-  struct room_data* rp;
+  struct room_direction_data* back = nullptr;
+  struct room_direction_data* exitp = nullptr;
+  struct obj_data* obj = nullptr;
+  struct char_data* victim = nullptr;
+  struct room_data* rp = nullptr;
 
   argument_interpreter(argument, type, dir);
 
@@ -817,15 +817,15 @@ void do_unlock(struct char_data* ch, const char* argument, int cmd) {
 }
 
 void do_pick(struct char_data* ch, const char* argument, int cmd) {
-  signed char percent;
-  int door;
+  signed char percent = 0;
+  int door = 0;
   char type[MAX_INPUT_LENGTH];
   char dir[MAX_INPUT_LENGTH];
-  struct room_direction_data* back;
-  struct room_direction_data* exitp;
-  struct obj_data* obj;
-  struct char_data* victim;
-  struct room_data* rp;
+  struct room_direction_data* back = nullptr;
+  struct room_direction_data* exitp = nullptr;
+  struct obj_data* obj = nullptr;
+  struct char_data* victim = nullptr;
+  struct room_data* rp = nullptr;
 
   argument_interpreter(argument, type, dir);
 
@@ -900,12 +900,12 @@ void do_pick(struct char_data* ch, const char* argument, int cmd) {
 }
 
 void do_enter(struct char_data* ch, const char* argument, int cmd) {
-  int door;
-  int location;
+  int door = 0;
+  int location = 0;
   char buf[MAX_INPUT_LENGTH];
   char tmp[MAX_STRING_LENGTH];
-  struct obj_data* obj_object;
-  struct obj_data* next_obj;
+  struct obj_data* obj_object = nullptr;
+  struct obj_data* next_obj = nullptr;
 
   one_argument(argument, buf);
 
@@ -961,9 +961,9 @@ void do_enter(struct char_data* ch, const char* argument, int cmd) {
 }
 
 void do_leave(struct char_data* ch, const char* argument, int cmd) {
-  int door;
-  struct room_direction_data* exitp;
-  struct room_data* rp;
+  int door = 0;
+  struct room_direction_data* exitp = nullptr;
+  struct room_data* rp = nullptr;
 
   if (!IS_SET(RM_FLAGS(ch->in_room), INDOORS)) {
     send_to_char("You are outside.. where do you want to go?\n\r", ch);
@@ -1127,7 +1127,7 @@ void do_sleep(struct char_data* ch, const char* argument, int cmd) {
 }
 
 void do_wake(struct char_data* ch, const char* argument, int cmd) {
-  struct char_data* tmp_char;
+  struct char_data* tmp_char = nullptr;
   char arg[MAX_STRING_LENGTH];
 
   one_argument(argument, arg);
@@ -1192,7 +1192,7 @@ void do_wake(struct char_data* ch, const char* argument, int cmd) {
 
 void do_follow(struct char_data* ch, const char* argument, int cmd) {
   char name[160];
-  struct char_data* leader;
+  struct char_data* leader = nullptr;
 
   only_argument(argument, name);
 

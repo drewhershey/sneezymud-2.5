@@ -57,8 +57,8 @@ struct oset_field_data oset_field[25] = {
 
 static void set_oedesc(struct char_data* ch, struct obj_data* obj,
   char* keywds) {
-  struct extra_descr_data* tmp;
-  struct extra_descr_data* newdesc;
+  struct extra_descr_data* tmp = nullptr;
+  struct extra_descr_data* newdesc = nullptr;
   char buf[256];
 
   if (!*keywds) {
@@ -100,7 +100,7 @@ static void set_mtype(struct char_data* ch, struct obj_data* obj, char* arg) {
   char buf1[256];
   char buf2[256];
   char type[100];
-  int i;
+  int i = 0;
 
   static const char* const obj_type[] = {"", "finger", "neck", "body", "head",
     "legs", "feet", "hands", "arms", "shield", "about", "waiste", "wrist",
@@ -162,8 +162,8 @@ static void set_oflags(struct char_data* ch, struct obj_data* obj, char* arg) {
   char buf2[256];
   char num[100];
   char type[100];
-  int i;
-  int number;
+  int i = 0;
+  int number = 0;
 
   static const char* const obj_type[] = {"ITEM_GLOW            1",
     "ITEM_HUM             2", "ITEM_METAL           4  /* undefined...  */",
@@ -210,8 +210,8 @@ static void set_oflags(struct char_data* ch, struct obj_data* obj, char* arg) {
 static void set_otype(struct char_data* ch, struct obj_data* obj, char* arg) {
   char buf1[256];
   char buf2[256];
-  int type;
-  int i;
+  int type = 0;
+  int i = 0;
 
   static const char* const obj_type[] = {"light", "scroll", "wand", "staff",
     "weapon", "fireweapon", "missile", "treasure", "armor", "potion", "worn",
@@ -246,9 +246,9 @@ static void set_oaffect(struct char_data* ch, struct obj_data* obj,
   const char* arg, int a) {
   char buf1[256];
   char buf2[256];
-  int type;
-  int mod;
-  int i;
+  int type = 0;
+  int mod = 0;
+  int i = 0;
 
   static const char* const oaffects[] = {"strength", "dexterity",
     "intelligence", "wisdom", "constitution", "sex", "class", "level", "age",
@@ -305,16 +305,16 @@ void do_oset(struct char_data* ch, const char* argument, int cmd) {
   char arg3[256];
   char buf[256];
   char buf2[256];
-  int i;
-  int j;
-  int val;
-  int dice;
-  int sides;
-  int dir;
-  int value;
-  int spaces;
-  struct obj_data* obj;
-  struct extra_descr_data* tmpexd;
+  int i = 0;
+  int j = 0;
+  int val = 0;
+  int dice = 0;
+  int sides = 0;
+  int dir = 0;
+  int value = 0;
+  int spaces = 0;
+  struct obj_data* obj = nullptr;
+  struct extra_descr_data* tmpexd = nullptr;
 
   const char* const generic_field[] = {"name", "sdesc", "ldesc", "desc",
     "edesc", "type", "aff1", "aff2", "weight", "cost", "storage", "worn_type",

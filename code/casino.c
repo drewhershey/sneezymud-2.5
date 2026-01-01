@@ -39,10 +39,10 @@ int check_blackjack(struct char_data* ch) {
 
 static void bj_shuffle(int inx, struct char_data* ch) {
   char log_msg[256];
-  int l1;
-  int l2;
-  int l3;
-  int tmp;
+  int l1 = 0;
+  int l2 = 0;
+  int l3 = 0;
+  int tmp = 0;
 
   send_to_char("The ghostly dealer shuffles the deck.\r\n", ch);
 
@@ -78,9 +78,9 @@ static void bj_shuffle(int inx, struct char_data* ch) {
 }
 
 int do_blackjack_enter(struct char_data* ch) {
-  int l1;
-  int l2;
-  int inx;
+  int l1 = 0;
+  int l2 = 0;
+  int inx = 0;
 
   for (l1 = 0, inx = -1; l1 < MAX_BLACKJACK; l1++) {
     if (!strcmp(ch->player.name, bj_data[l1].name)) {
@@ -107,8 +107,8 @@ int do_blackjack_enter(struct char_data* ch) {
 }
 
 static int bj_index(struct char_data* ch) {
-  int l1;
-  int inx;
+  int l1 = 0;
+  int inx = 0;
 
   for (l1 = 0, inx = -1; inx < 0 && l1 < MAX_BLACKJACK; l1++) {
     if (!strcmp(ch->player.name, bj_data[l1].name)) {
@@ -120,7 +120,7 @@ static int bj_index(struct char_data* ch) {
 
 void do_blackjack_exit(struct char_data* ch) {
   char log_msg[80];
-  int inx;
+  int inx = 0;
 
   inx = bj_index(ch);
   if (inx < 0) {
@@ -151,10 +151,10 @@ static void add_suit(char* cat_msg, int card) {
 }
 
 void do_bj_bet(struct char_data* ch, const char* arg, int cmd) {
-  int inx;
-  int bet_amt;
-  int l1;
-  int l2;
+  int inx = 0;
+  int bet_amt = 0;
+  int l1 = 0;
+  int l2 = 0;
   char coin_str[20];
   char log_msg[2048];
 
@@ -244,9 +244,9 @@ void do_bj_bet(struct char_data* ch, const char* arg, int cmd) {
 }
 
 static int best_bj_dealer(int inx) {
-  int l1;
-  int l2;
-  int l3;
+  int l1 = 0;
+  int l2 = 0;
+  int l3 = 0;
   char log_msg[256];
 
   for (l1 = 0, l2 = 0, l3 = 0; l1 < bj_data[inx].nd; l1++) {
@@ -269,9 +269,9 @@ static int best_bj_dealer(int inx) {
 }
 
 static int best_bj_score(int inx) {
-  int l1;
-  int l2;
-  int l3;
+  int l1 = 0;
+  int l2 = 0;
+  int l3 = 0;
   char log_msg[256];
 
   for (l1 = 0, l2 = 0, l3 = 0; l1 < bj_data[inx].np; l1++) {
@@ -294,10 +294,10 @@ static int best_bj_score(int inx) {
 }
 
 void do_stay(struct char_data* ch, const char* arg, int cmd) {
-  int inx;
-  int pbest;
-  int dbest;
-  int l1;
+  int inx = 0;
+  int pbest = 0;
+  int dbest = 0;
+  int l1 = 0;
   char log_msg[2048];
 
   if (check_blackjack(ch)) {
@@ -371,8 +371,8 @@ void do_stay(struct char_data* ch, const char* arg, int cmd) {
 void do_peek(struct char_data* ch, const char* arg, int cmd) {
   char log_msg[2048];
   char tmp[10];
-  int l1;
-  int inx;
+  int l1 = 0;
+  int inx = 0;
 
   if (check_blackjack(ch)) {
     inx = bj_index(ch);
@@ -408,8 +408,8 @@ void do_peek(struct char_data* ch, const char* arg, int cmd) {
 }
 
 static int min_bj_score(int inx) {
-  int l1;
-  int l2;
+  int l1 = 0;
+  int l2 = 0;
   char log_msg[256];
 
   for (l1 = 0, l2 = 0; l1 < bj_data[inx].np; l1++) {
@@ -424,7 +424,7 @@ static int min_bj_score(int inx) {
 }
 
 void do_bj_hit(struct char_data* ch) {
-  int inx;
+  int inx = 0;
   char log_msg[2048];
 
   inx = bj_index(ch);

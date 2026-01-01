@@ -28,7 +28,7 @@ const char* const obj_file_free = "\0\0\0";
 
 char recep_offer(struct char_data* ch, struct char_data* receptionist,
   struct obj_cost* cost) {
-  int i;
+  int i = 0;
   char buf[MAX_INPUT_LENGTH];
 
   cost->total_cost = 100; /* Minimum cost */
@@ -59,7 +59,7 @@ char recep_offer(struct char_data* ch, struct char_data* receptionist,
  * General save/load routines                                              *
  ************************************************************************* */
 static void write_objs(FILE* fl, struct obj_file_u* st, int save) {
-  int i;
+  int i = 0;
   char buf[80];
 
   fwrite(&st->owner, sizeof(st->owner), 1, fl);
@@ -79,9 +79,9 @@ static void write_objs(FILE* fl, struct obj_file_u* st, int save) {
 }
 
 void update_file(struct char_data* ch, struct obj_file_u* st, int save) {
-  FILE* fl;
-  int loc;
-  int t;
+  FILE* fl = nullptr;
+  int loc = 0;
+  int t = 0;
   struct obj_file_u tmp;
   char buf[200];
 
@@ -106,7 +106,7 @@ void update_file(struct char_data* ch, struct obj_file_u* st, int save) {
  ************************************************************************* */
 
 int read_objs(FILE* fl, struct obj_file_u* st) {
-  int i;
+  int i = 0;
 
   if (feof(fl)) {
     fclose(fl);
@@ -165,7 +165,7 @@ int read_objs(FILE* fl, struct obj_file_u* st) {
 }
 
 static void zero_rent_by_name(char* n) {
-  FILE* fl;
+  FILE* fl = nullptr;
   char buf[200];
 
   sprintf(buf, "rent/%s", lower(n));
@@ -184,10 +184,10 @@ static void zero_rent_by_name(char* n) {
 
 /* Puts object in store, at first item which has no -1 */
 static void put_obj_in_store(struct obj_data* obj, struct obj_file_u* st) {
-  int i;
-  int j;
+  int i = 0;
+  int j = 0;
   char found = 0;
-  struct obj_file_elem* oe;
+  struct obj_file_elem* oe = nullptr;
   char buf[256];
 
   if (st->number >= MAX_OBJ_SAVE) {
@@ -243,7 +243,7 @@ static void put_obj_in_store(struct obj_data* obj, struct obj_file_u* st) {
 }
 
 static int contained_weight(struct obj_data* container) {
-  struct obj_data* tmp;
+  struct obj_data* tmp = nullptr;
   int rval = 0;
 
   for (tmp = container->contains; tmp; tmp = tmp->next_content) {
@@ -310,10 +310,10 @@ void obj_to_store(struct obj_data* obj, struct obj_file_u* st,
 /* write the vital data of a player to the player file */
 void save_obj(struct char_data* ch, struct obj_cost* cost, int do_delete) {
   static struct obj_file_u st;
-  FILE* fl;
-  int pos;
-  int i;
-  int j;
+  FILE* fl = nullptr;
+  int pos = 0;
+  int i = 0;
+  int j = 0;
   char found = 0;
 
   st.number = 0;
@@ -345,9 +345,9 @@ void save_obj(struct char_data* ch, struct obj_cost* cost, int do_delete) {
  ************************************************************************* */
 
 static void count_limited_items(struct obj_file_u* st) {
-  int i;
-  int cost_per_day;
-  struct obj_data* obj;
+  int i = 0;
+  int cost_per_day = 0;
+  struct obj_data* obj = nullptr;
 
   if (!st->owner[0]) {
     return; /* don't count empty rent units */
@@ -374,20 +374,20 @@ static void count_limited_items(struct obj_file_u* st) {
 }
 
 void update_obj_file(void) {
-  FILE* fl;
-  FILE* char_file;
+  FILE* fl = nullptr;
+  FILE* char_file = nullptr;
   struct obj_file_u st;
   struct char_file_u ch_st;
   struct char_data tmp_char;
-  int pos;
-  int no_read;
-  int i;
-  int cost_per_day;
-  long days_passed;
-  long secs_lost;
+  int pos = 0;
+  int no_read = 0;
+  int i = 0;
+  int cost_per_day = 0;
+  long days_passed = 0;
+  long secs_lost = 0;
   char buf[MAX_INPUT_LENGTH];
-  struct obj_file_u* lim;
-  struct obj_data* obj;
+  struct obj_file_u* lim = nullptr;
+  struct obj_data* obj = nullptr;
 
   if (!(char_file = fopen(PLAYER_FILE, "r+"))) {
     perror("Opening player file for reading. (reception.c, update_obj_file)");
@@ -474,8 +474,8 @@ int receptionist(struct char_data* ch, int cmd, const char* arg) {
   char buf[240];
   struct obj_cost cost;
   struct char_data* recep = nullptr;
-  struct char_data* temp_char;
-  short int save_room;
+  struct char_data* temp_char = nullptr;
+  short int save_room = 0;
   short int action_tabel[9] = {23, 24, 36, 105, 106, 109, 111, 142, 147};
 
   if (!ch->desc) {
@@ -556,8 +556,8 @@ int receptionist_for_outlaws(struct char_data* ch, int cmd, const char* arg) {
   char buf[240];
   struct obj_cost cost;
   struct char_data* recep = nullptr;
-  struct char_data* temp_char;
-  short int save_room;
+  struct char_data* temp_char = nullptr;
+  short int save_room = 0;
   short int action_tabel[9] = {23, 24, 36, 105, 106, 109, 111, 142, 147};
 
   if (!ch->desc) {

@@ -1,5 +1,6 @@
 #include <arpa/telnet.h>
 #include <ctype.h>
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -375,8 +376,8 @@ const char* const command[] = {
 };
 
 int search_block(const char* arg, const char* const* list, char exact) {
-  int i;
-  int l;
+  int i = 0;
+  int l = 0;
   char lower_arg[MAX_INPUT_LENGTH];
 
   /* Make into lower case, and get length of string */
@@ -407,9 +408,9 @@ int search_block(const char* arg, const char* const* list, char exact) {
 
 int old_search_block(const char* argument, int begin, int length,
   const char* const* list, int mode) {
-  int guess;
-  int found;
-  int search;
+  int guess = 0;
+  int found = 0;
+  int search = 0;
 
   /* If the word contain 0 letters, then a match is already found */
   found = (length < 1);
@@ -440,9 +441,9 @@ int old_search_block(const char* argument, int begin, int length,
 }
 
 void command_interpreter(struct char_data* ch, char* argument) {
-  int look_at;
-  int cmd;
-  int begin;
+  int look_at = 0;
+  int cmd = 0;
+  int begin = 0;
   char buf[200];
 
   REMOVE_BIT(ch->specials.affected_by, AFF_HIDE);
@@ -451,7 +452,7 @@ void command_interpreter(struct char_data* ch, char* argument) {
    *  a bug check.
    */
   if (!IS_NPC(ch)) {
-    int i;
+    int i = 0;
     int found = 0;
     if ((!ch->player.name[0]) || (ch->player.name[0] < ' ')) {
       vlog("Error in character name.  Changed to 'Error'");
@@ -583,9 +584,9 @@ void command_interpreter(struct char_data* ch, char* argument) {
 
 void argument_interpreter(const char* argument, char* first_arg,
   char* second_arg) {
-  int look_at;
-  int found;
-  int begin;
+  int look_at = 0;
+  int found = 0;
+  int begin = 0;
 
   found = begin = 0;
 
@@ -627,7 +628,7 @@ void argument_interpreter(const char* argument, char* first_arg,
 }
 
 int is_number(const char* str) {
-  int look_at;
+  int look_at = 0;
 
   if (*str == '\0') {
     return (0);
@@ -644,9 +645,9 @@ int is_number(const char* str) {
 /* find the first sub-argument of a string, return pointer to first char in
    primary argument, following the sub-arg			            */
 const char* one_argument(const char* argument, char* first_arg) {
-  int found;
-  int begin;
-  int look_at;
+  int found = 0;
+  int begin = 0;
+  int look_at = 0;
 
   found = begin = 0;
 
@@ -721,9 +722,9 @@ void half_chop(const char* string, char* arg1, char* arg2) {
 }
 
 int special(struct char_data* ch, int cmd, const char* arg) {
-  struct obj_data* i;
-  struct char_data* k;
-  int j;
+  struct obj_data* i = nullptr;
+  struct char_data* k = nullptr;
+  int j = 0;
 
   if (ch->in_room == NOWHERE) {
     char_to_room(ch, 2999);
@@ -786,7 +787,7 @@ int special(struct char_data* ch, int cmd, const char* arg) {
 }
 
 void assign_command_pointers(void) {
-  int position;
+  int position = 0;
 
   for (position = 0; position < MAX_CMD_LIST; position++) {
     cmd_info[position].command_pointer = nullptr;
@@ -1119,7 +1120,7 @@ void assign_command_pointers(void) {
 
 /* locate entry in p_table with entry->name == name. -1 mrks failed search */
 int find_name(char* name) {
-  int i;
+  int i = 0;
 
   for (i = 0; i <= top_of_p_table; i++) {
     if (!str_cmp((player_table + i)->name, name)) {
@@ -1131,7 +1132,7 @@ int find_name(char* name) {
 }
 
 int parse_name(const char* arg, char* name) {
-  int i;
+  int i = 0;
 
   /* skip whitespaces */
   for (; isspace(*arg); arg++) {
@@ -1152,11 +1153,11 @@ int parse_name(const char* arg, char* name) {
 }
 
 static void blk_read(struct char_data* ch) {
-  FILE* fl;
+  FILE* fl = nullptr;
   char buf[MAX_STRING_LENGTH] = "";
   char buf2[MAX_STRING_LENGTH] = "";
-  int len;
-  int i;
+  int len = 0;
+  int i = 0;
 
   if (IS_NPC(ch)) {
     return;
@@ -1209,10 +1210,10 @@ static void blk_read(struct char_data* ch) {
 }
 
 static void obj_store_to_char(struct char_data* ch, struct obj_file_u* st) {
-  struct obj_data* obj;
+  struct obj_data* obj = nullptr;
   char buf[256];
-  int i;
-  int j;
+  int i = 0;
+  int j = 0;
 
   for (i = 0; i < st->number; i++) {
     if (st->objects[i].item_number > -1 &&
@@ -1265,12 +1266,12 @@ static void obj_store_to_char(struct char_data* ch, struct obj_file_u* st) {
 }
 
 static void load_char_objs(struct char_data* ch) {
-  FILE* fl;
-  int i;
-  int j;
-  int loc;
+  FILE* fl = nullptr;
+  int i = 0;
+  int j = 0;
+  int loc = 0;
   char found = 0;
-  float timegold;
+  float timegold = NAN;
   struct obj_file_u st;
   char buf[200];
 
@@ -1340,15 +1341,15 @@ void nanny(struct descriptor_data* d, char* arg) {
   char buf[100];
   char buf2[100];
   char recipient[100];
-  char* tmp;
-  int player_i;
+  char* tmp = nullptr;
+  int player_i = 0;
   int index = 0;
   int count = 0;
   int oops = 0;
   char tmp_name[20];
   struct char_file_u tmp_store;
-  struct char_data* tmp_ch;
-  struct descriptor_data* k;
+  struct char_data* tmp_ch = nullptr;
+  struct descriptor_data* k = nullptr;
 
   write(d->descriptor, echo_on, 6);
 

@@ -16,7 +16,7 @@
 
 static void mobile_guardian(struct char_data* ch) {
   struct char_data* targ = nullptr;
-  int i;
+  int i = 0;
   int found = 0;
 
   if (ch->in_room > -1) {
@@ -52,7 +52,7 @@ static void mobile_guardian(struct char_data* ch) {
 
 void mobile_wander(struct char_data* ch) {
   int door = 0;
-  struct room_direction_data* exitp;
+  struct room_direction_data* exitp = nullptr;
   struct room_data* rp = nullptr;
 
   if (!((GET_POS(ch) == POSITION_STANDING) && ((door = number(0, 15)) <= 5) &&
@@ -76,7 +76,7 @@ void mobile_wander(struct char_data* ch) {
 }
 
 static void mob_hunt(struct char_data* ch) {
-  int res, k;
+  int res = 0, k = 0;
 
 #if NOTRACK
   return; /* too much CPU useage for some machines.  */
@@ -136,7 +136,7 @@ static void mob_hunt(struct char_data* ch) {
 static void mob_scavenge(struct char_data* ch) {
   struct obj_data* best_obj = nullptr;
   struct obj_data* obj = nullptr;
-  int max;
+  int max = 0;
 
   if ((real_roomp(ch->in_room))->contents && !number(0, 5)) {
     for (max = 1, best_obj = nullptr, obj = (real_roomp(ch->in_room))->contents;
@@ -181,12 +181,12 @@ static int mob_friend(struct char_data* ch, struct char_data* f) {
 }
 
 static int assist_friend(struct char_data* ch) {
-  struct char_data* damsel;
-  struct char_data* targ;
-  struct char_data* tmp_ch;
-  struct char_data* next;
-  int t;
-  int found;
+  struct char_data* damsel = nullptr;
+  struct char_data* targ = nullptr;
+  struct char_data* tmp_ch = nullptr;
+  struct char_data* next = nullptr;
+  int t = 0;
+  int found = 0;
 
   damsel = nullptr;
   targ = nullptr;
@@ -242,8 +242,8 @@ static int assist_friend(struct char_data* ch) {
 }
 
 void mobile_activity(struct char_data* ch) {
-  struct char_data* tmp_ch;
-  int k;
+  struct char_data* tmp_ch = nullptr;
+  int k = 0;
 
   /* Examine call for special procedure */
 

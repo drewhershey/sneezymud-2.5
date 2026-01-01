@@ -9,7 +9,7 @@
 
 /* ignore trailing spaces and \n */
 static void smart_str_cpy(char* s1, const char* s2) {
-  int i;
+  int i = 0;
 
   i = (int)strlen(s2);
 
@@ -30,7 +30,7 @@ static void smart_str_cpy(char* s1, const char* s2) {
 
 void StringHeap(char* string, struct StrHeap* Heap) {
   unsigned char found = false;
-  int i;
+  int i = 0;
 
   if (!string || !*string) {
     return; /* don't bother adding if null string */
@@ -59,7 +59,7 @@ void StringHeap(char* string, struct StrHeap* Heap) {
 void DisplayStringHeap(struct StrHeap* Heap, struct char_data* ch, int type,
   int destroy) {
   char buf[256];
-  int i;
+  int i = 0;
 
   for (i = 0; i < Heap->uniq; i++) {
     if (type != TO_CHAR) {

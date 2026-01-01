@@ -50,16 +50,16 @@
 
 void do_brew(struct char_data* ch, const char* arg, int cmd) {
   char buf[MAX_STRING_LENGTH];
-  int obj;
-  int sacr;
-  int sacr1;
-  int sacr2;
-  int percent;
-  struct obj_data* obje;
-  struct obj_data* sac;
-  struct obj_data* sac1;
-  struct obj_data* sac2;
-  struct obj_data* next_obj;
+  int obj = 0;
+  int sacr = 0;
+  int sacr1 = 0;
+  int sacr2 = 0;
+  int percent = 0;
+  struct obj_data* obje = nullptr;
+  struct obj_data* sac = nullptr;
+  struct obj_data* sac1 = nullptr;
+  struct obj_data* sac2 = nullptr;
+  struct obj_data* next_obj = nullptr;
   struct affected_type af;
 
   if (!ch->skills) {
@@ -175,12 +175,12 @@ void do_brew(struct char_data* ch, const char* arg, int cmd) {
 }
 
 void do_search(struct char_data* ch, const char* arg, int cmd) {
-  int j;
-  int num;
-  int learned;
+  int j = 0;
+  int num = 0;
+  int learned = 0;
   char buf[256];
-  struct room_data* rp;
-  struct room_direction_data* fdd;
+  struct room_data* rp = nullptr;
+  struct room_direction_data* fdd = nullptr;
   *buf = '\0';
 
   if (!HasClass(ch, CLASS_THIEF)) {
@@ -233,15 +233,15 @@ void do_search(struct char_data* ch, const char* arg, int cmd) {
 
 static void do_set_traps(char* arg, int cmd) {
   char buf[80];
-  struct obj_data* trap;
+  struct obj_data* trap = nullptr;
 }
 
 void do_grapple(struct char_data* ch, const char* arg, int cmd) {
-  struct char_data* victim;
+  struct char_data* victim = nullptr;
   char name[256];
-  signed char percent;
+  signed char percent = 0;
   struct affected_type af;
-  int i;
+  int i = 0;
 
   if (!ch->skills) {
     return;
@@ -334,16 +334,16 @@ void do_grapple(struct char_data* ch, const char* arg, int cmd) {
 
 void do_scribe(struct char_data* ch, const char* arg, int cmd) {
   char buf[MAX_STRING_LENGTH];
-  int obj;
-  int sacr;
-  int pen;
-  int paper;
-  int percent;
-  struct obj_data* obje;
-  struct obj_data* sac;
-  struct obj_data* penw;
-  struct obj_data* paperw;
-  struct obj_data* next_obj;
+  int obj = 0;
+  int sacr = 0;
+  int pen = 0;
+  int paper = 0;
+  int percent = 0;
+  struct obj_data* obje = nullptr;
+  struct obj_data* sac = nullptr;
+  struct obj_data* penw = nullptr;
+  struct obj_data* paperw = nullptr;
+  struct obj_data* next_obj = nullptr;
   struct affected_type af;
 
   if (!ch->skills) {
@@ -437,10 +437,10 @@ void do_scribe(struct char_data* ch, const char* arg, int cmd) {
 
 void do_glance(struct char_data* ch, const char* argument, int cmd) {
   char buffer[MAX_STRING_LENGTH];
-  int bits;
-  int percent;
-  struct char_data* tmp_char;
-  struct obj_data* found_object;
+  int bits = 0;
+  int percent = 0;
+  struct char_data* tmp_char = nullptr;
+  struct obj_data* found_object = nullptr;
 
   tmp_char = nullptr;
   found_object = nullptr;
@@ -489,9 +489,9 @@ void do_glance(struct char_data* ch, const char* argument, int cmd) {
 }
 
 void do_deathstroke(struct char_data* ch, const char* argument, int cmd) {
-  struct char_data* victim;
+  struct char_data* victim = nullptr;
   char name[256];
-  signed char percent;
+  signed char percent = 0;
 
   if (!ch->skills) {
     return;
@@ -589,9 +589,9 @@ void do_deathstroke(struct char_data* ch, const char* argument, int cmd) {
 }
 
 void do_bodyslam(struct char_data* ch, const char* argument, int cmd) {
-  struct char_data* victim;
+  struct char_data* victim = nullptr;
   char name[256];
-  signed char percent;
+  signed char percent = 0;
 
   if (!ch->skills) {
     return;

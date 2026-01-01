@@ -50,7 +50,7 @@ int max_value[] = {255, 255, 10000, 1};
 /* Add user input to the 'current' string (as defined by d->str) */
 
 void string_add(struct descriptor_data* d, char* str) {
-  char* scan;
+  char* scan = nullptr;
   int terminator = 0;
 
   /* determine if this is the terminal string, and truncate if so */
@@ -114,7 +114,7 @@ void string_add(struct descriptor_data* d, char* str) {
 static void quad_arg(const char* arg, int* type, char* name, int* field,
   char* string) {
   char buf[MAX_STRING_LENGTH];
-  int i;
+  int i = 0;
 
   /* determine type */
   arg = one_argument(arg, buf);
@@ -149,12 +149,12 @@ static void quad_arg(const char* arg, int* type, char* name, int* field,
 void do_string(struct char_data* ch, const char* arg, int cmd) {
   char name[MAX_STRING_LENGTH];
   char string[MAX_STRING_LENGTH];
-  struct extra_descr_data* ed;
-  struct extra_descr_data* tmp;
-  int field;
-  int type;
-  struct char_data* mob;
-  struct obj_data* obj;
+  struct extra_descr_data* ed = nullptr;
+  struct extra_descr_data* tmp = nullptr;
+  int field = 0;
+  int type = 0;
+  struct char_data* mob = nullptr;
+  struct obj_data* obj = nullptr;
   if (IS_NPC(ch)) {
     return;
   }
@@ -355,7 +355,7 @@ void do_string(struct char_data* ch, const char* arg, int cmd) {
 
 static void bisect_arg(const char* arg, int* field, char* string) {
   char buf[MAX_INPUT_LENGTH];
-  int i;
+  int i = 0;
 
   /* field name and number */
   arg = one_argument(arg, buf);
@@ -373,27 +373,27 @@ static void bisect_arg(const char* arg, int* field, char* string) {
 }
 
 void do_edit(struct char_data* ch, const char* arg, int cmd) {
-  int field;
-  int dflags;
-  int dir;
-  int exroom;
-  int dkey;
-  int room;
-  int rspeed;
-  int rdir;
-  int tele_room;
-  int tele_time;
-  int tele_look;
-  int moblim;
-  unsigned r_flags;
-  int zone;
-  int s_type;
+  int field = 0;
+  int dflags = 0;
+  int dir = 0;
+  int exroom = 0;
+  int dkey = 0;
+  int room = 0;
+  int rspeed = 0;
+  int rdir = 0;
+  int tele_room = 0;
+  int tele_time = 0;
+  int tele_look = 0;
+  int moblim = 0;
+  unsigned r_flags = 0;
+  int zone = 0;
+  int s_type = 0;
   char name[MAX_INPUT_LENGTH];
   char string[512];
   char buf[132];
-  struct extra_descr_data* ed;
-  struct extra_descr_data* tmp;
-  struct room_data* rp;
+  struct extra_descr_data* ed = nullptr;
+  struct extra_descr_data* tmp = nullptr;
+  struct room_data* rp = nullptr;
 
   rp = real_roomp(ch->in_room);
 
@@ -683,9 +683,9 @@ static void do_setskill(struct char_data* ch, const char* arg, int cmd) {
 /* regarded as ONE word                                              */
 
 static char* one_word(char* argument, char* first_arg) {
-  int found;
-  int begin;
-  int look_at;
+  int found = 0;
+  int begin = 0;
+  int look_at = 0;
 
   found = begin = 0;
 
@@ -744,10 +744,10 @@ int start_page_file(struct descriptor_data* d, const char* fpath,
 /* page_file returns true if something was paged, false if nothing got sent */
 /* if (d->position) comes back < 0 then EOF was hit when outputing file.    */
 int page_file(struct descriptor_data* d, const char* input) {
-  FILE* fp;
+  FILE* fp = nullptr;
   static char buffer[256];
-  int i;
-  int numlines;
+  int i = 0;
+  int numlines = 0;
   int sent_something = 0;
 
   /* see if they have typed a command / abort */
@@ -807,8 +807,8 @@ void page_string(struct descriptor_data* d, char* str, int keep_internal) {
 void show_string(struct descriptor_data* d, const char* input) {
   char buffer[MAX_STRING_LENGTH];
   char buf[MAX_INPUT_LENGTH];
-  char* scan;
-  char* chk;
+  char* scan = nullptr;
+  char* chk = nullptr;
   int lines = 0;
   int toggle = 1;
 
@@ -849,8 +849,8 @@ void show_string(struct descriptor_data* d, const char* input) {
 }
 
 void night_watchman(void) {
-  long tc;
-  struct tm* t_info;
+  long tc = 0;
+  struct tm* t_info = nullptr;
 
   tc = time(nullptr);
   t_info = localtime(&tc);
@@ -870,10 +870,10 @@ void night_watchman(void) {
 }
 
 void check_reboot(void) {
-  long tc;
-  struct tm* t_info;
-  char dummy;
-  FILE* boot;
+  long tc = 0;
+  struct tm* t_info = nullptr;
+  char dummy = 0;
+  FILE* boot = nullptr;
 
   tc = time(nullptr);
   t_info = localtime(&tc);
@@ -915,8 +915,8 @@ void check_reboot(void) {
 #ifdef GR
 
 int workhours(void) {
-  long tc;
-  struct tm* t_info;
+  long tc = 0;
+  struct tm* t_info = nullptr;
 
   tc = time(nullptr);
   t_info = localtime(&tc);
@@ -941,10 +941,10 @@ int load(void) {
       char sl_load2[10]; /* "+2.3 14u\0" */
   } info;
 
-  FILE* fl;
-  int ld;
-  int i;
-  int sum;
+  FILE* fl = nullptr;
+  int ld = 0;
+  int i = 0;
+  int sum = 0;
   static int previous[5];
   static int p_point = -1;
 
@@ -982,7 +982,7 @@ int load(void) {
 
 static char* nogames(void) {
   static char text[200];
-  FILE* fl;
+  FILE* fl = nullptr;
 
   if ((fl = fopen("lib/nogames", "r"))) {
     vlog("/usr/games/nogames exists");

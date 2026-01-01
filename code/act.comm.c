@@ -17,7 +17,7 @@
 #include "utils.h"
 
 void do_say(struct char_data* ch, const char* argument, int cmd) {
-  int i;
+  int i = 0;
   char buf[MAX_INPUT_LENGTH + 40] = "\0\0\0\0";
 
   if (apply_soundproof(ch)) {
@@ -47,7 +47,7 @@ void do_say(struct char_data* ch, const char* argument, int cmd) {
 
 void do_shout(struct char_data* ch, const char* argument, int cmd) {
   char buf1[MAX_INPUT_LENGTH + 40];
-  struct descriptor_data* i;
+  struct descriptor_data* i = nullptr;
 
   if (IS_AFFECTED(ch, AFF_SILENT)) {
     send_to_char("You can't make a sound!\n\r", ch);
@@ -100,8 +100,8 @@ void do_shout(struct char_data* ch, const char* argument, int cmd) {
 
 void do_grouptell(struct char_data* ch, const char* argument, int cmd) {
   static char buf1[MAX_INPUT_LENGTH];
-  struct follow_type* f;
-  struct char_data* k;
+  struct follow_type* f = nullptr;
+  struct char_data* k = nullptr;
 
   if (IS_AFFECTED(ch, AFF_SILENT)) {
     send_to_char("You can't make a sound!\n\r", ch);
@@ -139,7 +139,7 @@ void do_grouptell(struct char_data* ch, const char* argument, int cmd) {
 
 void do_commune(struct char_data* ch, const char* argument, int cmd) {
   static char buf1[MAX_INPUT_LENGTH];
-  struct descriptor_data* i;
+  struct descriptor_data* i = nullptr;
 
   for (; *argument == ' '; argument++) {
     ;
@@ -185,13 +185,13 @@ static const char* random_word(void) {
 }
 
 void do_sign(struct char_data* ch, const char* argument, int cmd) {
-  int i;
+  int i = 0;
   char buf[MAX_INPUT_LENGTH + 40];
   char buf2[MAX_INPUT_LENGTH];
-  char* p;
-  int diff;
-  struct char_data* t;
-  struct room_data* rp;
+  char* p = nullptr;
+  int diff = 0;
+  struct char_data* t = nullptr;
+  struct room_data* rp = nullptr;
 
   for (i = 0; *(argument + i) == ' '; i++) {
     ;
@@ -259,9 +259,9 @@ void do_sign(struct char_data* ch, const char* argument, int cmd) {
 
 void do_send(struct char_data* ch, const char* argument, int cmd) {
   char buf1[MAX_INPUT_LENGTH + 40];
-  struct descriptor_data* i;
-  struct obj_data* radio;
-  struct obj_data* radio2;
+  struct descriptor_data* i = nullptr;
+  struct obj_data* radio = nullptr;
+  struct obj_data* radio2 = nullptr;
 
   if (!IS_NPC(ch) &&
       (IS_SET(ch->specials.act, PLR_NOSHOUT) || IS_AFFECTED(ch, AFF_SILENT))) {
@@ -311,7 +311,7 @@ void do_send(struct char_data* ch, const char* argument, int cmd) {
 }
 
 void do_tell(struct char_data* ch, const char* argument, int cmd) {
-  struct char_data* vict;
+  struct char_data* vict = nullptr;
   char name[100];
   char message[MAX_INPUT_LENGTH + 20];
   char buf[MAX_INPUT_LENGTH + 20];
@@ -382,7 +382,7 @@ void do_tell(struct char_data* ch, const char* argument, int cmd) {
 }
 
 void do_whisper(struct char_data* ch, const char* argument, int cmd) {
-  struct char_data* vict;
+  struct char_data* vict = nullptr;
   char name[100];
   char message[MAX_INPUT_LENGTH];
   char buf[MAX_INPUT_LENGTH];
@@ -423,7 +423,7 @@ void do_whisper(struct char_data* ch, const char* argument, int cmd) {
 }
 
 void do_ask(struct char_data* ch, const char* argument, int cmd) {
-  struct char_data* vict;
+  struct char_data* vict = nullptr;
   char name[100];
   char message[MAX_INPUT_LENGTH];
   char buf[MAX_INPUT_LENGTH];

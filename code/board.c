@@ -27,9 +27,9 @@ void InitBoards(void) {
 }
 
 void InitABoard(struct obj_data* obj) {
-  struct Board* new_board;
-  struct Board* tmp;
-  int i;
+  struct Board* new_board = nullptr;
+  struct Board* tmp = nullptr;
+  int i = 0;
 
   if (board_list) {
     /*
@@ -85,8 +85,8 @@ void OpenBoardFile(struct Board* b) {
 }
 
 struct Board* FindBoardInRoom(int room) {
-  struct obj_data* o;
-  struct Board* nb;
+  struct obj_data* o = nullptr;
+  struct Board* nb = nullptr;
 
   if (!real_roomp(room)) {
     return (nullptr);
@@ -106,7 +106,7 @@ struct Board* FindBoardInRoom(int room) {
 }
 
 int board(struct char_data* ch, int cmd, const char* arg, struct obj_data* me) {
-  struct Board* nb;
+  struct Board* nb = nullptr;
 
   if (!ch) {
     return 0;
@@ -139,8 +139,8 @@ int board(struct char_data* ch, int cmd, const char* arg, struct obj_data* me) {
 
 void board_write_msg(struct char_data* ch, const char* arg, struct Board* b) {
   static char buf[100];
-  long ot;
-  char* otmstr;
+  long ot = 0;
+  char* otmstr = nullptr;
 
   if (b->msg_num > MAX_MSGS - 1) {
     send_to_char("The board is full already.\n\r", ch);
@@ -194,8 +194,8 @@ void board_write_msg(struct char_data* ch, const char* arg, struct Board* b) {
 }
 
 int board_remove_msg(struct char_data* ch, const char* arg, struct Board* b) {
-  int ind;
-  int msg;
+  int ind = 0;
+  int msg = 0;
   char buf[256];
   char number[MAX_INPUT_LENGTH];
 
@@ -242,8 +242,8 @@ int board_remove_msg(struct char_data* ch, const char* arg, struct Board* b) {
 }
 
 void board_save_board(struct Board* b) {
-  int ind;
-  int len;
+  int ind = 0;
+  int len = 0;
 
   if (!b) {
     return;
@@ -277,7 +277,7 @@ void board_save_board(struct Board* b) {
 }
 
 void board_load_board(struct Board* b) {
-  int ind;
+  int ind = 0;
   int len = 0;
 
   OpenBoardFile(b);
@@ -315,7 +315,7 @@ void board_load_board(struct Board* b) {
 }
 
 void board_reset_board(struct Board* b) {
-  int ind;
+  int ind = 0;
 
   for (ind = 0; ind < MAX_MSGS; ind++) {
     if (b->head[ind]) {
@@ -339,7 +339,7 @@ int board_display_msg(struct char_data* ch, const char* arg, struct Board* b) {
   char buf[512];
   char number[MAX_INPUT_LENGTH];
   char buffer[MAX_STRING_LENGTH];
-  int msg;
+  int msg = 0;
 
   one_argument(arg, number);
   if (!*number || !isdigit(*number)) {
@@ -371,7 +371,7 @@ int board_display_msg(struct char_data* ch, const char* arg, struct Board* b) {
 void board_fix_long_desc(struct Board* b) {}
 
 int board_show_board(struct char_data* ch, const char* arg, struct Board* b) {
-  int i;
+  int i = 0;
   char buf[MAX_STRING_LENGTH];
   char tmp[MAX_INPUT_LENGTH];
 

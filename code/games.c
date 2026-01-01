@@ -18,7 +18,7 @@
 #include "utils.h"
 
 static const char* choose_first_fruit(void) {
-  int num;
+  int num = 0;
   static const char* fruits[8] = {
     "cherry",
     "lime",
@@ -44,7 +44,7 @@ static const char* choose_first_fruit(void) {
 }
 
 static const char* choose_second_fruit(void) {
-  int num;
+  int num = 0;
   static const char* fruits[8] = {
     "cherry",
     "lime",
@@ -69,7 +69,7 @@ static const char* choose_second_fruit(void) {
 }
 
 static const char* choose_third_fruit(void) {
-  int num;
+  int num = 0;
   static const char* fruits[8] = {
     "cherry",
     "lime",
@@ -94,8 +94,8 @@ static const char* choose_third_fruit(void) {
 }
 
 static void lose_dice(struct char_data* ch) {
-  struct obj_data* dice;
-  struct char_data* crap_man;
+  struct obj_data* dice = nullptr;
+  struct char_data* crap_man = nullptr;
 
   dice = ch->equipment[HOLD];
 
@@ -109,8 +109,8 @@ static void lose_dice(struct char_data* ch) {
 }
 
 static void get_dice(struct char_data* ch) {
-  struct obj_data* dice;
-  struct char_data* crap_man;
+  struct obj_data* dice = nullptr;
+  struct char_data* crap_man = nullptr;
   char buf[80];
 
   crap_man = FindMobInRoomWithFunction(ch->in_room, craps_table_man);
@@ -137,7 +137,7 @@ static void get_dice(struct char_data* ch) {
 }
 
 static int check_for_dice_held(struct char_data* ch) {
-  struct obj_data* dice;
+  struct obj_data* dice = nullptr;
 
   dice = get_obj_in_list_vis(ch, "qwert", ch->equipment[HOLD]);
 
@@ -148,7 +148,7 @@ static int check_for_dice_held(struct char_data* ch) {
 }
 
 static int check_for_dice_in_inv(struct char_data* ch) {
-  struct obj_data* dice;
+  struct obj_data* dice = nullptr;
 
   dice = get_obj_in_list_vis(ch, "qwert", ch->carrying);
 
@@ -159,8 +159,8 @@ static int check_for_dice_in_inv(struct char_data* ch) {
 }
 
 static int check_pointroll() {
-  struct char_data* tmp_char;
-  struct char_data* temp;
+  struct char_data* tmp_char = nullptr;
+  struct char_data* temp = nullptr;
 
   for (tmp_char = character_list; tmp_char; tmp_char = temp) {
     temp = tmp_char->next;
@@ -179,8 +179,8 @@ int check_slots(struct char_data* ch) {
 }
 
 int check_slot_player(struct char_data* ch) {
-  struct char_data* better;
-  struct char_data* temp;
+  struct char_data* better = nullptr;
+  struct char_data* temp = nullptr;
 
   for (better = character_list; better; better = temp) {
     temp = better->next;
@@ -197,9 +197,9 @@ void do_bet(struct char_data* ch, const char* arg, int cmd) {
   char buf[255];
   char amount[15];
   char craps[255];
-  int num;
-  int number;
-  int opt;
+  int num = 0;
+  int number = 0;
+  int opt = 0;
 
   half_chop(arg, amount, craps);
 
@@ -351,13 +351,13 @@ void do_bet(struct char_data* ch, const char* arg, int cmd) {
 
 static void spin_slot(struct char_data* ch) {
   char buf[255];
-  const char* fruit1;
-  const char* fruit2;
-  const char* fruit3;
-  struct obj_data* coins;
-  struct obj_data* slot;
-  int bits;
-  struct char_data* tmp_char;
+  const char* fruit1 = nullptr;
+  const char* fruit2 = nullptr;
+  const char* fruit3 = nullptr;
+  struct obj_data* coins = nullptr;
+  struct obj_data* slot = nullptr;
+  int bits = 0;
+  struct char_data* tmp_char = nullptr;
 
   send_to_char("You stick your coins in the machine.\n\r", ch);
   send_to_char("You pull the arm of the slot machine.\n\r", ch);
@@ -439,7 +439,7 @@ static void spin_slot(struct char_data* ch) {
 }
 
 static int can_bet_craps(struct char_data* ch) {
-  struct char_data* crap_man;
+  struct char_data* crap_man = nullptr;
   char buf[80];
 
   crap_man = FindMobInRoomWithFunction(ch->in_room, craps_table_man);
@@ -460,8 +460,8 @@ static int can_bet_craps(struct char_data* ch) {
 }
 
 static void check_craps(struct char_data* ch, int diceroll) {
-  struct char_data* better;
-  struct char_data* temp;
+  struct char_data* better = nullptr;
+  struct char_data* temp = nullptr;
   char buf[255];
 
   if (diceroll != 2) {
@@ -498,8 +498,8 @@ static void check_craps(struct char_data* ch, int diceroll) {
 }
 
 static void check_seven(struct char_data* ch, int diceroll) {
-  struct char_data* better;
-  struct char_data* temp;
+  struct char_data* better = nullptr;
+  struct char_data* temp = nullptr;
 
   if (diceroll != 7) {
     return;
@@ -546,8 +546,8 @@ static void check_seven(struct char_data* ch, int diceroll) {
 }
 
 static void check_eleven(struct char_data* ch, int diceroll) {
-  struct char_data* better;
-  struct char_data* temp;
+  struct char_data* better = nullptr;
+  struct char_data* temp = nullptr;
   char buf[255];
 
   if (diceroll != 11) {
@@ -673,7 +673,7 @@ static void check_oneroll_seven(struct char_data* better, int diceroll) {
 }
 
 static void check_field(struct char_data* better, int diceroll) {
-  struct char_data* crap_man;
+  struct char_data* crap_man = nullptr;
   char buf[100];
 
   crap_man = FindMobInRoomWithFunction(better->in_room, craps_table_man);
@@ -701,8 +701,8 @@ static void check_field(struct char_data* better, int diceroll) {
 }
 
 static void check_onerolls(struct char_data* ch, int diceroll) {
-  struct char_data* better;
-  struct char_data* temp;
+  struct char_data* better = nullptr;
+  struct char_data* temp = nullptr;
 
   for (better = character_list; better; better = temp) {
     temp = better->next;
@@ -747,8 +747,8 @@ static void set_point(struct char_data* ch, int diceroll) {
 }
 
 static void win_lose_craps(struct char_data* ch, int diceroll) {
-  struct char_data* better;
-  struct char_data* temp;
+  struct char_data* better = nullptr;
+  struct char_data* temp = nullptr;
   char buf[255];
 
   for (better = character_list; better; better = temp) {
@@ -776,13 +776,13 @@ static void win_lose_craps(struct char_data* ch, int diceroll) {
 }
 
 static void roll_dice(struct char_data* ch) {
-  int die_one;
-  int die_two;
-  int dice_roll;
+  int die_one = 0;
+  int die_two = 0;
+  int dice_roll = 0;
   char buf[255];
-  struct char_data* better;
-  struct char_data* temp;
-  struct char_data* table_man;
+  struct char_data* better = nullptr;
+  struct char_data* temp = nullptr;
+  struct char_data* table_man = nullptr;
 
   if (!check_for_dice_held(ch)) {
     send_to_char("You dont have control of the dice!\n\r", ch);
@@ -857,9 +857,9 @@ void do_play(struct char_data* ch, const char* arg, int cmd) {
   char buf[255];
   char game[255];
   char options[255];
-  struct obj_data* slot;
-  int option;
-  int opt;
+  struct obj_data* slot = nullptr;
+  int option = 0;
+  int opt = 0;
 
   half_chop(arg, game, options);
 
@@ -1010,7 +1010,7 @@ static void clear_bets(struct char_data* ch) {
 }
 
 static int check_for_point(struct char_data* ch) {
-  struct obj_data* i;
+  struct obj_data* i = nullptr;
 
   for (i = object_list; i; i = i->next) {
     if (isname("qwert", i->name)) {
@@ -1046,8 +1046,8 @@ static void check_horn(struct char_data* better, int diceroll) {
 }
 
 static void check_hard_four(struct char_data* better, int diceroll) {
-  struct char_data* tmp_better;
-  struct char_data* temp;
+  struct char_data* tmp_better = nullptr;
+  struct char_data* temp = nullptr;
   char buf[255];
 }
 
@@ -1062,12 +1062,12 @@ static void check_hardrolls(struct char_data* better, int diceroll) {}
 #define DICE 9002
 
 int craps_table_man(struct char_data* ch, int cmd, const char* arg) {
-  struct char_data* crap_man;
+  struct char_data* crap_man = nullptr;
   char buf[255];
   char amount[255];
   char options[255];
   char dice[255];
-  int bits;
+  int bits = 0;
 
   if (cmd) {
     if ((cmd != 0) && (cmd != 1) && (cmd != 2) && (cmd != 3) && (cmd != 4) &&

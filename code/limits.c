@@ -17,7 +17,7 @@
 #include "utils.h"
 
 static char* class_titles(struct char_data* ch) {
-  int i;
+  int i = 0;
   int count = 0;
   static char buf[256];
 
@@ -64,7 +64,7 @@ static int graf(int age, int p0, int p1, int p2, int p3, int p4, int p5,
 /* The three MAX functions define a characters Effective maximum */
 /* Which is NOT the same as the ch->points.max_xxxx !!!          */
 int mana_limit(struct char_data* ch) {
-  int max;
+  int max = 0;
 
   max = 100;
 
@@ -89,7 +89,7 @@ int mana_limit(struct char_data* ch) {
 }
 
 int hit_limit(struct char_data* ch) {
-  int max;
+  int max = 0;
 
   if (!IS_NPC(ch)) {
     max = (ch->points.max_hit) + (graf(age(ch).year, 2, 4, 17, 14, 8, 4, 3));
@@ -105,7 +105,7 @@ int hit_limit(struct char_data* ch) {
 }
 
 int move_limit(struct char_data* ch) {
-  int max;
+  int max = 0;
 
   if (!IS_NPC(ch)) {
     max = 100 + age(ch).year + GET_CON(ch) + GetTotLevel(ch);
@@ -132,7 +132,7 @@ int move_limit(struct char_data* ch) {
 
 /* manapoint gain pr. game hour */
 int mana_gain(struct char_data* ch) {
-  int gain;
+  int gain = 0;
 
   if (IS_NPC(ch)) {
     /* Neat and fast */
@@ -180,7 +180,7 @@ int mana_gain(struct char_data* ch) {
 }
 
 int hit_gain(struct char_data* ch) {
-  int gain;
+  int gain = 0;
 
   if (IS_NPC(ch)) {
     if (GetMaxLevel(ch) == 70) {
@@ -228,7 +228,7 @@ int hit_gain(struct char_data* ch) {
 }
 
 int move_gain(struct char_data* ch) {
-  int gain;
+  int gain = 0;
 
   if (IS_NPC(ch)) {
     return (GetTotLevel(ch));
@@ -273,8 +273,8 @@ int move_gain(struct char_data* ch) {
 
 /* Gain maximum in various points */
 void advance_level(struct char_data* ch, int char_class) {
-  int add_hp;
-  int i;
+  int add_hp = 0;
+  int i = 0;
 
   if (GET_LEVEL(ch, char_class) > 0 &&
       GET_EXP(ch) < titles[char_class][GET_LEVEL(ch, char_class) + 1].exp) {
@@ -379,8 +379,8 @@ void advance_level(struct char_data* ch, int char_class) {
 */
 
 static void drop_level(struct char_data* ch, int char_class) {
-  int add_hp;
-  int lin_class;
+  int add_hp = 0;
+  int lin_class = 0;
 
   if (GetMaxLevel(ch) >= LOW_IMMORTAL) {
     return;
@@ -482,7 +482,7 @@ void set_title(struct char_data* ch) {
 }
 
 void gain_exp(struct char_data* ch, int gain) {
-  int i;
+  int i = 0;
   char is_altered = 0;
   char buf[256];
 
@@ -548,7 +548,7 @@ void gain_exp(struct char_data* ch, int gain) {
 }
 
 void gain_condition(struct char_data* ch, int condition, int value) {
-  char intoxicated;
+  char intoxicated = 0;
 
   if (GET_COND(ch, condition) == -1) { /* No change */
     return;

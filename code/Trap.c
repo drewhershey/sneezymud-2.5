@@ -25,7 +25,7 @@ static const int trap_dir[] = {TRAP_EFF_NORTH, TRAP_EFF_EAST, TRAP_EFF_SOUTH,
   TRAP_EFF_WEST, TRAP_EFF_UP, TRAP_EFF_DOWN};
 
 int CheckForMoveTrap(struct char_data* ch, int dir) {
-  struct obj_data* i;
+  struct obj_data* i = nullptr;
 
   for (i = real_roomp(ch->in_room)->contents; i; i = i->next_content) {
     if ((ITEM_TYPE(i) == ITEM_TRAP) &&
@@ -55,10 +55,10 @@ int CheckForGetTrap(struct char_data* ch, struct obj_data* i) {
 }
 
 int TriggerTrap(struct char_data* ch, struct obj_data* i) {
-  int adj;
-  int fireperc;
-  int roll;
-  struct char_data* v;
+  int adj = 0;
+  int fireperc = 0;
+  int roll = 0;
+  struct char_data* v = nullptr;
 
   if (ITEM_TYPE(i) == ITEM_TRAP) {
     if (i->obj_flags.value[TRAP_CHARGES]) {
@@ -101,7 +101,7 @@ void FindTrapDamage(struct char_data* v, struct obj_data* i) {
 
 void TrapDamage(struct char_data* v, int damtype, int amnt,
   struct obj_data* t) {
-  struct char_data* tmp_ch;
+  struct char_data* tmp_ch = nullptr;
   char buf[132];
 
   amnt = SkipImmortals(v, amnt);
@@ -208,7 +208,7 @@ void TrapDam(struct char_data* v, int damtype, int amnt, struct obj_data* t) {
 }
 
 void TrapTeleport(struct char_data* v) {
-  int to_room;
+  int to_room = 0;
 
   if (saves_spell(v, SAVING_SPELL)) {
     send_to_char("You feel strange, but the effect fades.\n\r", v);

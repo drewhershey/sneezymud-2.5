@@ -102,8 +102,8 @@ void another_hour(int mode) {
 }
 
 void weather_change(void) {
-  int diff;
-  int change;
+  int diff = 0;
+  int change = 0;
 
   if ((time_info.month >= 9) && (time_info.month <= 16)) {
     diff = (weather_info.pressure > 985 ? -2 : 2);

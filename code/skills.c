@@ -25,8 +25,8 @@
 #include "utils.h"
 
 static int remove_trap(struct char_data* ch, struct obj_data* trap) {
-  int num;
-  int charges;
+  int num = 0;
+  int charges = 0;
 
   if (ITEM_TYPE(trap) != ITEM_TRAP) {
     send_to_char("I don't think thats a trap\n\r", ch);
@@ -51,10 +51,10 @@ static int remove_trap(struct char_data* ch, struct obj_data* trap) {
 
 void do_disarm(struct char_data* ch, const char* argument, int cmd) {
   char name[30];
-  int percent;
-  struct char_data* victim;
-  struct obj_data* w;
-  struct obj_data* trap;
+  int percent = 0;
+  struct char_data* victim = nullptr;
+  struct obj_data* w = nullptr;
+  struct obj_data* trap = nullptr;
 
   if (!ch->skills) {
     return;
@@ -202,7 +202,7 @@ void do_disarm(struct char_data* ch, const char* argument, int cmd) {
 */
 
 static int named_mobile_in_room(int room, struct hunting_data* c_data) {
-  struct char_data* scan;
+  struct char_data* scan = nullptr;
 
   for (scan = real_roomp(room)->people; scan; scan = scan->next_in_room) {
     if (isname(c_data->name, scan->player.name)) {
@@ -219,7 +219,7 @@ void do_track(struct char_data* ch, const char* argument, int cmd) {
   char found = 0;
   // int dist, code;
 
-  struct char_data* scan;
+  struct char_data* scan = nullptr;
 
 #if defined(NOTRACK) && NOTRACK
   send_to_char("Sorry, tracking is disabled. Try again after reboot.\n\r", ch);
@@ -354,7 +354,7 @@ int go_direction(struct char_data* ch, int dir) {
 
 int track(struct char_data* ch, struct char_data* vict) {
   char buf[256];
-  int code;
+  int code = 0;
 
   if ((!ch) || (!vict)) {
     return (-1);
@@ -386,7 +386,7 @@ int track(struct char_data* ch, struct char_data* vict) {
 
 int dir_track(struct char_data* ch, struct char_data* vict) {
   char buf[256];
-  int code;
+  int code = 0;
 
   if ((!ch) || (!vict)) {
     return (-1);
@@ -443,9 +443,9 @@ static int hash_enter(struct hash_header* ht, int key, void* data) {
 }
 
 static void destroy_hash_table(struct hash_header* ht, void (*gman)(void*)) {
-  int i;
-  struct hash_link* scan;
-  struct hash_link* temp;
+  int i = 0;
+  struct hash_link* scan = nullptr;
+  struct hash_link* temp = nullptr;
 
   for (i = 0; i < ht->table_size; i++) {
     for (scan = ht->buckets[i]; scan;) {
@@ -461,17 +461,17 @@ static void destroy_hash_table(struct hash_header* ht, void (*gman)(void*)) {
 
 int find_path(int in_room, const struct find_path_data* data, int depth,
   int in_zone) {
-  struct room_q* tmp_q;
-  struct room_q* q_head;
-  struct room_q* q_tail;
+  struct room_q* tmp_q = nullptr;
+  struct room_q* q_head = nullptr;
+  struct room_q* q_tail = nullptr;
   struct hash_header x_room;
-  int i;
-  int tmp_room;
+  int i = 0;
+  int tmp_room = 0;
   int count = 0;
-  struct room_data* herep;
-  struct room_data* therep;
+  struct room_data* herep = nullptr;
+  struct room_data* therep = nullptr;
 
-  struct room_direction_data* exitp;
+  struct room_direction_data* exitp = nullptr;
 
   assert(data && data->type == FIND_TARGET_ROOM && data->fn.is_target_room_fn);
 
@@ -543,7 +543,7 @@ int find_path(int in_room, const struct find_path_data* data, int depth,
               }
               return (i);
             } /* else return the ancestor */
-            int i;
+            int i = 0;
 
             i = (intptr_t)hash_find(&x_room, tmp_room);
             if (x_room.buckets) { /* junk left over from a previous track */
@@ -568,9 +568,9 @@ int find_path(int in_room, const struct find_path_data* data, int depth,
 }
 
 void do_headbutt(struct char_data* ch, const char* argument, int cmd) {
-  struct char_data* victim;
+  struct char_data* victim = nullptr;
   char name[256];
-  signed char percent;
+  signed char percent = 0;
 
   if (!ch->skills) {
     return;
@@ -627,9 +627,9 @@ void do_headbutt(struct char_data* ch, const char* argument, int cmd) {
 }
 
 void do_subterfuge(struct char_data* ch, const char* arg, int cmd) {
-  struct char_data* npc;
+  struct char_data* npc = nullptr;
   char name[MAX_STRING_LENGTH];
-  signed char percent;
+  signed char percent = 0;
 
   if (GET_POS(ch) == POSITION_FIGHTING) {
     send_to_char("No way!! You simply can NOT concentrate!\n\r", ch);
@@ -670,7 +670,7 @@ void do_subterfuge(struct char_data* ch, const char* arg, int cmd) {
 
 void do_swim(struct char_data* ch, const char* arg, int cmd) {
   struct affected_type af;
-  signed char percent;
+  signed char percent = 0;
 
   send_to_char("Ok, you'll try to swim for a while.\n\r", ch);
 
@@ -758,8 +758,8 @@ static void slam_into_wall(struct char_data* ch,
 
 static void raw_unlock_door(struct char_data* ch,
   struct room_direction_data* exitp, int door) {
-  struct room_data* rp;
-  struct room_direction_data* back;
+  struct room_data* rp = nullptr;
+  struct room_direction_data* back = nullptr;
   char buf[128];
 
   REMOVE_BIT(exitp->exit_info, EX_LOCKED);
@@ -779,11 +779,11 @@ static void raw_unlock_door(struct char_data* ch,
   skill to allow fighters to break down doors
 */
 void do_doorbash(struct char_data* ch, const char* arg, int cmd) {
-  int dir;
-  int ok;
-  struct room_direction_data* exitp;
-  int was_in;
-  int roll;
+  int dir = 0;
+  int ok = 0;
+  struct room_direction_data* exitp = nullptr;
+  int was_in = 0;
+  int roll = 0;
 
   char buf[256];
   char type[128];
@@ -909,7 +909,7 @@ void do_doorbash(struct char_data* ch, const char* arg, int cmd) {
 
 void do_spy(struct char_data* ch, const char* arg, int cmd) {
   struct affected_type af;
-  signed char percent;
+  signed char percent = 0;
 
   send_to_char("Ok, you'll try to be 007\n\r", ch);
 
@@ -953,12 +953,12 @@ void do_spy(struct char_data* ch, const char* arg, int cmd) {
 }
 
 void do_throw(struct char_data* ch, const char* arg, int cmd) {
-  struct char_data* victim;
+  struct char_data* victim = nullptr;
   char name[256];
   char obje[100];
   char buf[256];
-  signed char percent;
-  int dr;
+  signed char percent = 0;
+  int dr = 0;
   const char* const keyword[] = {"north", "east", "south", "west", "up", "down",
     "\n"};
 
@@ -1020,8 +1020,8 @@ void do_throw(struct char_data* ch, const char* arg, int cmd) {
 }
 
 void do_feign_death(struct char_data* ch, const char* arg, int cmd) {
-  struct room_data* rp;
-  struct char_data* t;
+  struct room_data* rp = nullptr;
+  struct char_data* t = nullptr;
 
   if (!ch->skills) {
     return;

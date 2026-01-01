@@ -27,7 +27,7 @@ position_list_type* free_list = nullptr; /* list of free positions in file */
 long file_end_pos = 0;                   /* length of file */
 
 static void push_free_list(long pos) {
-  position_list_type* new_pos;
+  position_list_type* new_pos = nullptr;
 
   new_pos = (position_list_type*)malloc(sizeof(position_list_type));
   new_pos->position = pos;
@@ -36,8 +36,8 @@ static void push_free_list(long pos) {
 }
 
 static long pop_free_list(void) {
-  position_list_type* old_pos;
-  long return_value;
+  position_list_type* old_pos = nullptr;
+  long return_value = 0;
 
   if ((old_pos = free_list) != nullptr) {
     return_value = free_list->position;
@@ -49,7 +49,7 @@ static long pop_free_list(void) {
 }
 
 static mail_index_type* find_char_in_index(char* searchee) {
-  mail_index_type* temp_rec;
+  mail_index_type* temp_rec = nullptr;
 
   if (!*searchee) {
     vlog("Mail system -- non fatal error #1.");
@@ -66,7 +66,7 @@ static mail_index_type* find_char_in_index(char* searchee) {
 }
 
 static void write_to_file(void* buf, int size, long filepos) {
-  FILE* mail_file;
+  FILE* mail_file = nullptr;
 
   mail_file = fopen(MAIL_FILE, "r+b");
   if (!mail_file) {
@@ -92,7 +92,7 @@ static void write_to_file(void* buf, int size, long filepos) {
 }
 
 static void read_from_file(void* buf, int size, long filepos) {
-  FILE* mail_file;
+  FILE* mail_file = nullptr;
 
   mail_file = fopen(MAIL_FILE, "r+b");
   if (!mail_file) {
@@ -114,11 +114,11 @@ static void read_from_file(void* buf, int size, long filepos) {
 }
 
 static void index_mail(char* raw_name_to_index, long pos) {
-  mail_index_type* new_index;
-  position_list_type* new_position;
+  mail_index_type* new_index = nullptr;
+  position_list_type* new_position = nullptr;
   char name_to_index[100]; /* I'm paranoid.  so sue me. */
-  char* src;
-  int i;
+  char* src = nullptr;
+  int i = 0;
 
   if (!raw_name_to_index || !*raw_name_to_index) {
     vlog("Mail system -- non-fatal error #4.");
@@ -158,7 +158,7 @@ static void index_mail(char* raw_name_to_index, long pos) {
 /* scan_file is called once during boot-up.  It scans through the mail file
    and indexes all entries currently in the mail file. */
 int scan_file(void) {
-  FILE* mail_file;
+  FILE* mail_file = nullptr;
   header_block_type next_block;
   int total_messages = 0;
   long block_num = 0;
@@ -217,10 +217,10 @@ int has_mail(char* recipient) {
 void store_mail(char* to, char* from, char* message_pointer) {
   header_block_type header;
   data_block_type data;
-  long last_address;
-  long target_address;
+  long last_address = 0;
+  long target_address = 0;
   char* msg_txt = message_pointer;
-  char* tmp;
+  char* tmp = nullptr;
   int bytes_written = 0;
   int total_length = strlen(message_pointer);
 
@@ -319,15 +319,15 @@ header (i.e. the text handed to the player)
 char* read_delete(char* recipient, char* recipient_formatted) {
   header_block_type header = {};
   data_block_type data = {};
-  mail_index_type* mail_pointer;
-  mail_index_type* prev_mail;
-  position_list_type* position_pointer;
-  long mail_address;
-  long following_block;
-  char* message;
-  char* tmstr;
+  mail_index_type* mail_pointer = nullptr;
+  mail_index_type* prev_mail = nullptr;
+  position_list_type* position_pointer = nullptr;
+  long mail_address = 0;
+  long following_block = 0;
+  char* message = nullptr;
+  char* tmstr = nullptr;
   char buf[200];
-  size_t string_size;
+  size_t string_size = 0;
 
   if (!*recipient || !*recipient_formatted) {
     vlog("Mail system -- non-fatal error #6.");
@@ -427,10 +427,10 @@ char* read_delete(char* recipient, char* recipient_formatted) {
 **************************************************************/
 
 static void postmaster_send_mail(struct char_data* ch, const char* arg) {
-  struct char_data* mailman;
+  struct char_data* mailman = nullptr;
   char buf[200];
   char recipient[100] = "";
-  char* tmp;
+  char* tmp = nullptr;
 
   mailman = FindMobInRoomWithFunction(ch->in_room, postmaster);
 
@@ -491,10 +491,10 @@ static void postmaster_send_mail(struct char_data* ch, const char* arg) {
 
 static void postmaster_check_mail(struct char_data* ch, int cmd,
   const char* arg) {
-  struct char_data* mailman;
+  struct char_data* mailman = nullptr;
   char buf[200];
   char recipient[100] = "";
-  char* tmp;
+  char* tmp = nullptr;
 
   mailman = FindMobInRoomWithFunction(ch->in_room, postmaster);
 
@@ -520,11 +520,11 @@ static void postmaster_check_mail(struct char_data* ch, int cmd,
 
 static void postmaster_receive_mail(struct char_data* ch, int cmd,
   const char* arg) {
-  struct char_data* mailman;
+  struct char_data* mailman = nullptr;
   char buf[200];
   char recipient[100] = "";
-  char* tmp;
-  struct obj_data* tmp_obj;
+  char* tmp = nullptr;
+  struct obj_data* tmp_obj = nullptr;
 
   mailman = FindMobInRoomWithFunction(ch->in_room, postmaster);
 

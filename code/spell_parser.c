@@ -234,8 +234,8 @@ const signed char saving_throws[8][5][ABS_MAX_LVL] = {
 };
 
 static void obj_from_corpse(struct obj_data* c) {
-  struct obj_data* jj;
-  struct obj_data* next_thing;
+  struct obj_data* jj = nullptr;
+  struct obj_data* next_thing = nullptr;
 
   for (jj = c->contains; jj; jj = next_thing) {
     next_thing = jj->next_content; /* Next in inventory */
@@ -264,7 +264,7 @@ static void obj_from_corpse(struct obj_data* c) {
 }
 
 static int is_single_class(struct char_data* ch) {
-  int i;
+  int i = 0;
 
   for (i = 1; i <= 8; i *= 2) {
     if (OnlyClass(ch, i)) {
@@ -275,7 +275,7 @@ static int is_single_class(struct char_data* ch) {
 }
 
 static void update_char_objects(struct char_data* ch) {
-  int i;
+  int i = 0;
 
   if (ch->equipment[WEAR_LIGHT]) {
     if (ch->equipment[WEAR_LIGHT]->obj_flags.type_flag == ITEM_LIGHT) {
@@ -297,7 +297,7 @@ static void update_char_objects(struct char_data* ch) {
 }
 
 static void check_idling(struct char_data* ch) {
-  int save_room;
+  int save_room = 0;
 
   if (ch->specials.timer == 10) {
     if (ch->specials.was_in_room == NOWHERE && ch->in_room != NOWHERE &&
@@ -550,7 +550,7 @@ static const char* const spell_wear_off_room_msg[] = {"RESERVED DB.C",
   "\n"};
 
 static void check_decharm(struct char_data* ch) {
-  struct char_data* m;
+  struct char_data* m = nullptr;
 
   if (!ch->master) {
     return;
@@ -564,7 +564,7 @@ static void check_decharm(struct char_data* ch) {
 }
 
 static void check_drowning(struct char_data* ch) {
-  struct room_data* rp;
+  struct room_data* rp = nullptr;
   char buf[256];
 
   if (IS_AFFECTED(ch, AFF_WATERBREATH)) {
@@ -624,15 +624,15 @@ static void spell_wear_off(int s, struct char_data* ch) {
 void affect_update(int pulse) {
   static struct affected_type* af;
   static struct affected_type* next_af_dude;
-  struct char_data* i;
-  struct obj_data* j;
-  struct obj_data* next_thing;
-  struct char_data* next_char;
-  struct room_data* rp;
+  struct char_data* i = nullptr;
+  struct obj_data* j = nullptr;
+  struct obj_data* next_thing = nullptr;
+  struct char_data* next_char = nullptr;
+  struct room_data* rp = nullptr;
   int dead = 0;
-  int room;
-  int cost;
-  int k;
+  int room = 0;
+  int cost = 0;
+  int k = 0;
   char buf[200];
 
   for (i = character_list; i; i = next_char) {
@@ -872,7 +872,7 @@ static void clone_obj(struct obj_data* obj) {}
 /* Check if making CH follow VICTIM will create an illegal */
 /* Follow "Loop/circle"                                    */
 char circle_follow(struct char_data* ch, struct char_data* victim) {
-  struct char_data* k;
+  struct char_data* k = nullptr;
 
   for (k = victim; k; k = k->master) {
     if (k == ch) {
@@ -886,8 +886,8 @@ char circle_follow(struct char_data* ch, struct char_data* victim) {
 /* Called when stop following persons, or stopping charm */
 /* This will NOT do if a character quits/dies!!          */
 void stop_follower(struct char_data* ch) {
-  struct follow_type* j;
-  struct follow_type* k;
+  struct follow_type* j = nullptr;
+  struct follow_type* k = nullptr;
 
   if (!ch->master) {
     return;
@@ -934,7 +934,7 @@ void stop_follower(struct char_data* ch) {
 /* Do NOT call this before having checked if a circle of followers */
 /* will arise. CH will follow leader                               */
 void add_follower(struct char_data* ch, struct char_data* leader) {
-  struct follow_type* k;
+  struct follow_type* k = nullptr;
 
   assert(!ch->master);
 
@@ -958,9 +958,9 @@ static void say_spell(struct char_data* ch, int si) {
   char splwd[MAX_BUF_LENGTH];
   char buf2[MAX_STRING_LENGTH];
 
-  int j;
-  int offs;
-  struct char_data* temp_char;
+  int j = 0;
+  int offs = 0;
+  struct char_data* temp_char = nullptr;
 
   struct syllable {
       char org[10];
@@ -1016,7 +1016,7 @@ static void say_spell(struct char_data* ch, int si) {
 }
 
 char saves_spell(struct char_data* ch, short int save_type) {
-  int save;
+  int save = 0;
 
   /* Negative apply_saving_throw makes saving throw better! */
 
@@ -1045,7 +1045,7 @@ static const char* skip_spaces(const char* string) {
 }
 
 int can_do_verbal(struct char_data* ch) {
-  struct room_data* rp;
+  struct room_data* rp = nullptr;
 
   return (ch && !IS_AFFECTED(ch, AFF_SILENT) &&
           (rp = (real_roomp(ch->in_room))) &&
@@ -1071,14 +1071,14 @@ static int spell_level(struct char_data* ch, int sn) {
 
 /* Assumes that *argument does start with first letter of chopped string */
 void do_cast(struct char_data* ch, const char* argument, int cmd) {
-  struct obj_data* tar_obj;
-  struct char_data* tar_char;
+  struct obj_data* tar_obj = nullptr;
+  struct char_data* tar_char = nullptr;
   char name[MAX_INPUT_LENGTH];
   char spell_name[MAX_INPUT_LENGTH];
-  int qend;
-  int spl;
-  int i;
-  char target_ok;
+  int qend = 0;
+  int spl = 0;
+  int i = 0;
+  char target_ok = 0;
 
   if (IS_NPC(ch) && (!IS_SET(ch->specials.act, ACT_POLYSELF))) {
     return;
@@ -1429,7 +1429,7 @@ void do_cast(struct char_data* ch, const char* argument, int cmd) {
 }
 
 void assign_spell_pointers(void) {
-  int i;
+  int i = 0;
 
   for (i = 0; i < MAX_SPL_LIST; i++) {
     spell_info[i].spell_pointer = nullptr;

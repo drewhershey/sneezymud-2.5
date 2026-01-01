@@ -61,7 +61,7 @@ static void get(struct char_data* ch, struct obj_data* obj_object,
 }
 
 static int check_for_inside_trap(struct char_data* ch, struct obj_data* i) {
-  struct obj_data* t;
+  struct obj_data* t = nullptr;
 
   for (t = i->contains; t; t = t->next_content) {
     if ((ITEM_TYPE(t) == ITEM_TRAP) &&
@@ -81,15 +81,15 @@ void do_get(struct char_data* ch, const char* argument, int cmd) {
   char arg1[MAX_STRING_LENGTH];
   char arg2[MAX_STRING_LENGTH];
   char buffer[MAX_STRING_LENGTH];
-  struct obj_data* sub_object;
-  struct obj_data* obj_object;
-  struct obj_data* next_obj;
+  struct obj_data* sub_object = nullptr;
+  struct obj_data* obj_object = nullptr;
+  struct obj_data* next_obj = nullptr;
   char found = 0;
   char fail = 0;
   int type = 3;
   char newarg[100];
-  int num;
-  int p;
+  int num = 0;
+  int p = 0;
 
   argument_interpreter(argument, arg1, arg2);
 
@@ -407,15 +407,15 @@ void do_get(struct char_data* ch, const char* argument, int cmd) {
 
 void do_drop(struct char_data* ch, const char* argument, int cmd) {
   char arg[MAX_INPUT_LENGTH];
-  int amount;
+  int amount = 0;
   char buffer[MAX_STRING_LENGTH];
-  struct obj_data* tmp_object;
-  struct obj_data* next_obj;
+  struct obj_data* tmp_object = nullptr;
+  struct obj_data* next_obj = nullptr;
   char test = 0;
   char newarg[100];
-  const char* s;
-  int num;
-  int p;
+  const char* s = nullptr;
+  int num = 0;
+  int p = 0;
 
   s = one_argument(argument, arg);
   if (is_number(arg)) {
@@ -528,14 +528,14 @@ void do_put(struct char_data* ch, const char* argument, int cmd) {
   char arg2[128];
   struct obj_data* obj_object = nullptr;
   struct obj_data* sub_object = nullptr;
-  struct obj_data* vol_object;
-  struct obj_data* next_obj;
+  struct obj_data* vol_object = nullptr;
+  struct obj_data* next_obj = nullptr;
   struct char_data* tmp_char = nullptr;
-  int bits;
-  int volume;
+  int bits = 0;
+  int volume = 0;
   char newarg[100];
-  int num;
-  int p;
+  int num = 0;
+  int p = 0;
 
   argument_interpreter(argument, arg1, arg2);
 
@@ -671,11 +671,11 @@ void do_give(struct char_data* ch, const char* argument, int cmd) {
   char buf[132];
   char arg[80];
   char newarg[100];
-  int amount;
-  int num;
-  int p;
+  int amount = 0;
+  int num = 0;
+  int p = 0;
   struct char_data* vict = nullptr;
-  struct obj_data* obj;
+  struct obj_data* obj = nullptr;
 
   argument = one_argument(argument, obj_name);
   if (is_number(obj_name)) {

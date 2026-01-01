@@ -69,7 +69,7 @@ struct room_data* room_find(struct room_data* room_db[], int key) {
 }
 
 int room_remove(struct room_data* rb[], int key) {
-  struct room_data* tmp;
+  struct room_data* tmp = nullptr;
 
   tmp = room_find(rb, key);
 

@@ -1,4 +1,5 @@
 #include <assert.h>
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -30,7 +31,7 @@
 /* Structures */
 
 struct message_list fight_messages[MAX_MESSAGES];
-struct char_data* combat_list = nullptr;  /* head of l-list of fighting chars  */
+struct char_data* combat_list = nullptr; /* head of l-list of fighting chars  */
 struct char_data* missile_list = nullptr; /* head of l-list of fighting chars */
 struct char_data* combat_next_dude = nullptr;  /* Next dude global trick  */
 struct char_data* missile_next_dude = nullptr; /* Next dude global trick */
@@ -146,10 +147,10 @@ static void appear(struct char_data* ch) {
 }
 
 void load_messages(void) {
-  FILE* f1;
-  int i;
+  FILE* f1 = nullptr;
+  int i = 0;
   int type = 0;
-  struct message_type* messages;
+  struct message_type* messages = nullptr;
   char chk[100] = "";
 
   if (!(f1 = fopen(MESS_FILE, "r"))) {
@@ -225,7 +226,7 @@ void update_pos(struct char_data* victim) {
 }
 
 int check_peaceful(struct char_data* ch, const char* msg) {
-  struct room_data* rp;
+  struct room_data* rp = nullptr;
 
   rp = real_roomp(ch->in_room);
   if (rp && rp->room_flags & PEACEFUL) {
@@ -337,11 +338,11 @@ static const int corpse_volume[] = {
 };
 
 void make_corpse(struct char_data* ch) {
-  struct obj_data* corpse;
-  struct obj_data* o;
-  struct obj_data* money;
+  struct obj_data* corpse = nullptr;
+  struct obj_data* o = nullptr;
+  struct obj_data* money = nullptr;
   char buf[MAX_INPUT_LENGTH];
-  int i;
+  int i = 0;
   int a_dead_body = 0;
 
   CREATE(corpse, struct obj_data, 1);
@@ -461,8 +462,8 @@ void change_alignment(struct char_data* ch, struct char_data* victim) {
 }
 
 void death_cry(struct char_data* ch) {
-  int door;
-  int was_in;
+  int door = 0;
+  int was_in = 0;
 
   if (ch->in_room == -1) {
     return;
@@ -517,7 +518,7 @@ void raw_kill(struct char_data* ch) {
 }
 
 static void delete_hatreds(struct char_data* ch) {
-  struct char_data* i;
+  struct char_data* i = nullptr;
 
   for (i = character_list; i; i = i->next) {
     if (Hates(i, ch)) {
@@ -527,7 +528,7 @@ static void delete_hatreds(struct char_data* ch) {
 }
 
 static void delete_fears(struct char_data* ch) {
-  struct char_data* i;
+  struct char_data* i = nullptr;
 
   for (i = character_list; i; i = i->next) {
     if (Fears(i, ch)) {
@@ -537,7 +538,7 @@ static void delete_fears(struct char_data* ch) {
 }
 
 void die(struct char_data* ch) {
-  struct char_data* pers;
+  struct char_data* pers = nullptr;
 
   if (IS_NPC(ch) && (IS_SET(ch->specials.act, ACT_POLYSELF))) {
     /*
@@ -579,12 +580,12 @@ void die(struct char_data* ch) {
 
 void group_gain(struct char_data* ch, struct char_data* victim) {
   char buf[256];
-  int no_members;
-  int share;
-  struct char_data* k;
-  struct follow_type* f;
-  int total;
-  int exp_shown;
+  int no_members = 0;
+  int share = 0;
+  struct char_data* k = nullptr;
+  struct follow_type* f = nullptr;
+  int total = 0;
+  int exp_shown = 0;
 
   if (!(k = ch->master)) {
     k = ch;
@@ -649,7 +650,7 @@ void group_gain(struct char_data* ch, struct char_data* victim) {
 static char* replace_string(const char* str, const char* weapon,
   const char* weapon_s) {
   static char buf[256];
-  char* cp;
+  char* cp = nullptr;
 
   cp = buf;
 
@@ -682,12 +683,12 @@ static char* replace_string(const char* str, const char* weapon,
 
 static void dam_message(int dam, struct char_data* ch, struct char_data* victim,
   int w_type) {
-  struct obj_data* wield;
-  struct char_data* tmp_victim;
-  struct char_data* temp;
-  char* buf;
-  int snum;
-  int numb;
+  struct obj_data* wield = nullptr;
+  struct char_data* tmp_victim = nullptr;
+  struct char_data* temp = nullptr;
+  char* buf = nullptr;
+  int snum = 0;
+  int numb = 0;
 
   static struct dam_weapon_type {
       const char* to_room;
@@ -785,7 +786,7 @@ static void dam_message(int dam, struct char_data* ch, struct char_data* victim,
 }
 
 static int dam_check_deny(struct char_data* ch, int type) {
-  struct room_data* rp;
+  struct room_data* rp = nullptr;
   char buf[MAX_INPUT_LENGTH];
 
   rp = real_roomp(ch->in_room);
@@ -888,7 +889,7 @@ int DoDamage(struct char_data* ch, struct char_data* v, int dam, int type) {
 
 static int brittle_check(struct char_data* ch, int dam) {
   char buf[200];
-  struct obj_data* obj;
+  struct obj_data* obj = nullptr;
 
   if (dam <= 0) {
     return 0;
@@ -908,12 +909,12 @@ static int brittle_check(struct char_data* ch, int dam) {
 
 int DamageMessages(struct char_data* ch, struct char_data* v, int dam,
   int attacktype) {
-  int nr;
-  int max_hit;
-  int i;
-  int j;
-  int exp;
-  struct message_type* messages;
+  int nr = 0;
+  int max_hit = 0;
+  int i = 0;
+  int j = 0;
+  int exp = 0;
+  struct message_type* messages = nullptr;
   char buf[MAX_INPUT_LENGTH];
 
   if ((attacktype >= TYPE_HIT) && (attacktype <= TYPE_SMITE)) {
@@ -1038,7 +1039,7 @@ int DamageMessages(struct char_data* ch, struct char_data* v, int dam,
 }
 
 int DamageEpilog(struct char_data* ch, struct char_data* victim) {
-  int exp;
+  int exp = 0;
   char buf[256];
 
   if (IS_PC(victim) && !(victim->desc)) {
@@ -1171,7 +1172,7 @@ int damage(struct char_data* ch, struct char_data* victim, int damage,
 }
 
 static int getw_type(struct obj_data* wielded) {
-  int w_type;
+  int w_type = 0;
 
   switch (wielded->obj_flags.value[3]) {
     case 0:
@@ -1219,7 +1220,7 @@ static int getw_type(struct obj_data* wielded) {
 }
 
 static int get_weapon_type(struct char_data* ch, struct obj_data** wielded) {
-  int w_type;
+  int w_type = 0;
 
   if (ch->equipment[WIELD] &&
       (ch->equipment[WIELD]->obj_flags.type_flag == ITEM_WEAPON)) {
@@ -1239,7 +1240,7 @@ static int get_weapon_type(struct char_data* ch, struct obj_data** wielded) {
 }
 
 static int hit_check_deny(struct char_data* ch, struct char_data* victim) {
-  struct room_data* rp;
+  struct room_data* rp = nullptr;
   char buf[256];
 
   rp = real_roomp(ch->in_room);
@@ -1340,7 +1341,7 @@ static const int thaco[8][ABS_MAX_LVL] = {
 };
 
 int CalcThaco(struct char_data* ch) {
-  int calc_thaco;
+  int calc_thaco = 0;
 
   /* Calculate the raw armor including magic armor */
   /* The lower AC, the better                      */
@@ -1359,8 +1360,8 @@ int CalcThaco(struct char_data* ch) {
 }
 
 int HitOrMiss(struct char_data* ch, struct char_data* victim, int calc_thaco) {
-  int diceroll;
-  int victim_ac;
+  int diceroll = 0;
+  int victim_ac = 0;
 
   diceroll = number(1, 20);
 
@@ -1389,8 +1390,8 @@ static int miss_victim(struct char_data* ch, struct char_data* v, int type,
 
 static int get_weapon_dam(struct char_data* ch, struct char_data* v,
   struct obj_data* wielded) {
-  int dam;
-  struct obj_data* obj;
+  int dam = 0;
+  struct obj_data* obj = nullptr;
 
   dam = str_app[STRENGTH_APPLY_INDEX(ch)].todam;
   dam += GET_DAMROLL(ch);
@@ -1447,8 +1448,8 @@ static int monk_dodge(struct char_data* ch, struct char_data* v, int* dam) {
 }
 
 static int weapon_spell(struct char_data* c, struct char_data* v, int type) {
-  int j;
-  int num;
+  int j = 0;
+  int num = 0;
 
   if ((c->in_room == v->in_room) && (GET_POS(v) != POSITION_DEAD)) {
     if ((c->equipment[WIELD]) &&
@@ -1501,7 +1502,7 @@ static const signed char backstab_mult[ABS_MAX_LVL] = {
 static int hit_victim(struct char_data* ch, struct char_data* v, int dam,
   int type, int w_type,
   int (*dam_func)(struct char_data*, struct char_data*, int, int)) {
-  int dead;
+  int dead = 0;
 
   if (type == SKILL_BACKSTAB) {
     if (OnlyClass(ch, CLASS_THIEF)) {
@@ -1540,7 +1541,7 @@ static int hit_victim(struct char_data* ch, struct char_data* v, int dam,
 }
 
 static int get_form_type(struct char_data* ch) {
-  int num;
+  int num = 0;
 
   num = number(1, 100);
   switch (GET_RACE(ch)) {
@@ -1608,10 +1609,10 @@ static int get_form_type(struct char_data* ch) {
 
 void root_hit(struct char_data* ch, struct char_data* victim, int type,
   int (*dam_func)(struct char_data*, struct char_data*, int, int)) {
-  int w_type;
-  int thaco;
-  int dam;
-  int i;
+  int w_type = 0;
+  int thaco = 0;
+  int dam = 0;
+  int i = 0;
   struct obj_data* wielded = nullptr; /* this is rather important. */
 
   if (IS_AFFECTED(ch, AFF_GRAPPLE)) {
@@ -1666,9 +1667,9 @@ void hit(struct char_data* ch, struct char_data* victim, int type) {
 }
 
 static void develop_hatred(struct char_data* ch, struct char_data* v) {
-  int diff;
-  int patience;
-  int var;
+  int diff = 0;
+  int patience = 0;
+  int var = 0;
 
   if (Hates(ch, v)) {
     return;
@@ -1698,16 +1699,16 @@ static void develop_hatred(struct char_data* ch, struct char_data* v) {
 
 /* control the fights going on */
 void perform_violence(int pulse) {
-  struct char_data* ch;
-  struct char_data* vict;
-  int i;
-  int t;
-  int found;
-  int perc;
-  float x;
+  struct char_data* ch = nullptr;
+  struct char_data* vict = nullptr;
+  int i = 0;
+  int t = 0;
+  int found = 0;
+  int perc = 0;
+  float x = NAN;
 
   for (ch = combat_list; ch; ch = combat_next_dude) {
-    struct room_data* rp;
+    struct room_data* rp = nullptr;
 
     combat_next_dude = ch->next_fighting;
     assert(ch->specials.fighting);
@@ -1717,7 +1718,7 @@ void perform_violence(int pulse) {
       stop_fighting(ch);
     } else {
       if (IS_NPC(ch)) {
-        struct char_data* rec;
+        struct char_data* rec = nullptr;
         develop_hatred(ch, ch->specials.fighting);
         rec = ch->specials.fighting;
         while (rec->master) {
@@ -1833,7 +1834,7 @@ void perform_violence(int pulse) {
 }
 
 struct char_data* FindVictim(struct char_data* ch) {
-  struct char_data* tmp_ch;
+  struct char_data* tmp_ch = nullptr;
   unsigned char found = 0U;
   unsigned short ftot = 0;
   unsigned short ttot = 0;
@@ -1844,7 +1845,7 @@ struct char_data* FindVictim(struct char_data* ch) {
   unsigned short ptot = 0;
   unsigned short ktot = 0;
   unsigned short rtot = 0;
-  int total;
+  int total = 0;
   unsigned short fjump = 0;
   unsigned short njump = 0;
   unsigned short cjump = 0;
@@ -1853,7 +1854,7 @@ struct char_data* FindVictim(struct char_data* ch) {
   unsigned short ajump = 0;
   unsigned short pjump = 0;
   unsigned short kjump = 0;
-  unsigned short rjump;
+  unsigned short rjump = 0;
 
   if (ch->in_room < 0) {
     return (nullptr);
@@ -2017,7 +2018,7 @@ struct char_data* FindVictim(struct char_data* ch) {
 }
 
 struct char_data* FindAnyVictim(struct char_data* ch) {
-  struct char_data* tmp_ch;
+  struct char_data* tmp_ch = nullptr;
   unsigned char found = 0U;
   unsigned short ftot = 0;
   unsigned short ttot = 0;
@@ -2028,7 +2029,7 @@ struct char_data* FindAnyVictim(struct char_data* ch) {
   unsigned short ptot = 0;
   unsigned short ktot = 0;
   unsigned short rtot = 0;
-  int total;
+  int total = 0;
   unsigned short fjump = 0;
   unsigned short njump = 0;
   unsigned short cjump = 0;
@@ -2188,10 +2189,10 @@ struct char_data* FindAnyVictim(struct char_data* ch) {
 
 static int break_life_saver_obj(struct char_data* ch) {
   int found = 0;
-  int i;
-  int j;
+  int i = 0;
+  int j = 0;
   char buf[200];
-  struct obj_data* o;
+  struct obj_data* o = nullptr;
 
   /*
    *  check eq for object with the effect
@@ -2222,7 +2223,7 @@ static int break_life_saver_obj(struct char_data* ch) {
 }
 
 int PreProcDam(struct char_data* ch, int type, int dam) {
-  unsigned our_bit;
+  unsigned our_bit = 0;
 
   /*
     long, intricate list, with the various bits and the various spells and
@@ -2310,9 +2311,9 @@ int PreProcDam(struct char_data* ch, int type, int dam) {
 }
 
 int WeaponCheck(struct char_data* ch, struct char_data* v, int type, int dam) {
-  int immunity;
-  int total;
-  int j;
+  int immunity = 0;
+  int total = 0;
+  int j = 0;
 
   immunity = -1;
   if (IS_SET(v->M_immune, IMM_NONMAG)) {
@@ -2410,14 +2411,14 @@ int SkipImmortals(struct char_data* v, int amnt) {
 }
 
 struct char_data* FindAnAttacker(struct char_data* ch) {
-  struct char_data* tmp_ch;
+  struct char_data* tmp_ch = nullptr;
   unsigned char found = 0U;
   unsigned short ftot = 0;
   unsigned short ttot = 0;
   unsigned short ctot = 0;
   unsigned short ntot = 0;
   unsigned short mtot = 0;
-  int total;
+  int total = 0;
   unsigned short fjump = 0;
   unsigned short njump = 0;
   unsigned short cjump = 0;
@@ -2531,7 +2532,7 @@ struct char_data* FindAnAttacker(struct char_data* ch) {
 }
 
 struct char_data* FindMetaVictim(struct char_data* ch) {
-  struct char_data* tmp_ch;
+  struct char_data* tmp_ch = nullptr;
   unsigned char found = 0U;
   unsigned short total = 0;
 

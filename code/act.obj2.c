@@ -24,8 +24,8 @@
 #include "utils.h"
 
 void weight_change_object(struct obj_data* obj, int weight) {
-  struct obj_data* tmp_obj;
-  struct char_data* tmp_ch;
+  struct obj_data* tmp_obj = nullptr;
+  struct char_data* tmp_ch = nullptr;
 
   if (GET_OBJ_WEIGHT(obj) + weight < 1) {
     weight = 0 - (GET_OBJ_WEIGHT(obj) - 1);
@@ -47,8 +47,8 @@ void weight_change_object(struct obj_data* obj, int weight) {
 }
 
 void name_from_drinkcon(struct obj_data* obj) {
-  int i;
-  char* new_name;
+  int i = 0;
+  char* new_name = nullptr;
 
   for (i = 0; (*((obj->name) + i) != ' ') && (*((obj->name) + i) != '\0');
     i++) {
@@ -63,7 +63,7 @@ void name_from_drinkcon(struct obj_data* obj) {
 }
 
 void name_to_drinkcon(struct obj_data* obj, int type) {
-  char* new_name;
+  char* new_name = nullptr;
 
   CREATE(new_name, char, strlen(obj->name) + strlen(drinknames[type]) + 2);
   sprintf(new_name, "%s %s", drinknames[type], obj->name);
@@ -93,9 +93,9 @@ static const int drink_aff[][3] = {
 
 void do_drink(struct char_data* ch, const char* argument, int cmd) {
   char buf[255];
-  struct obj_data* temp;
+  struct obj_data* temp = nullptr;
   struct affected_type af;
-  int amount;
+  int amount = 0;
 
   only_argument(argument, buf);
 
@@ -208,9 +208,9 @@ void do_drink(struct char_data* ch, const char* argument, int cmd) {
 
 void do_eat(struct char_data* ch, const char* argument, int cmd) {
   char buf[100];
-  int j;
-  int num;
-  struct obj_data* temp;
+  int j = 0;
+  int num = 0;
+  struct obj_data* temp = nullptr;
   struct affected_type af;
 
   one_argument(argument, buf);
@@ -273,9 +273,9 @@ void do_pour(struct char_data* ch, const char* argument, int cmd) {
   char arg1[132];
   char arg2[132];
   char buf[256];
-  struct obj_data* from_obj;
-  struct obj_data* to_obj;
-  int temp;
+  struct obj_data* from_obj = nullptr;
+  struct obj_data* to_obj = nullptr;
+  int temp = 0;
 
   argument_interpreter(argument, arg1, arg2);
 
@@ -380,7 +380,7 @@ void do_sip(struct char_data* ch, const char* argument, int cmd) {
   struct affected_type af;
   char arg[MAX_STRING_LENGTH];
   char buf[MAX_STRING_LENGTH];
-  struct obj_data* temp;
+  struct obj_data* temp = nullptr;
 
   one_argument(argument, arg);
 
@@ -466,7 +466,7 @@ void do_sip(struct char_data* ch, const char* argument, int cmd) {
 void do_taste(struct char_data* ch, const char* argument, int cmd) {
   struct affected_type af;
   char arg[80];
-  struct obj_data* temp;
+  struct obj_data* temp = nullptr;
 
   one_argument(argument, arg);
 
@@ -582,7 +582,7 @@ static void perform_wear(struct char_data* ch, struct obj_data* obj_object,
 }
 
 static int is_restricted(int Mask, int Class) {
-  int i;
+  int i = 0;
 
   if (IS_SET(Class, CLASS_MONK)) {
     if (Mask != 0) {
@@ -646,7 +646,7 @@ static int get_item_class_restrictions(struct obj_data* obj) {
 static void wear(struct char_data* ch, struct obj_data* obj_object,
   int keyword) {
   char buffer[MAX_STRING_LENGTH];
-  int bit_mask;
+  int bit_mask = 0;
 
   if (!IS_IMMORTAL(ch)) {
     bit_mask = get_item_class_restrictions(obj_object);
@@ -982,9 +982,9 @@ void do_wear(struct char_data* ch, const char* argument, int cmd) {
   char arg2[MAX_INPUT_LENGTH];
   char buf[256];
   char buffer[MAX_INPUT_LENGTH];
-  struct obj_data* obj_object;
-  struct obj_data* next_obj;
-  int keyword;
+  struct obj_data* obj_object = nullptr;
+  struct obj_data* next_obj = nullptr;
+  int keyword = 0;
   static const char* const keywords[] = {"finger", "neck", "body", "head",
     "legs", "feet", "hands", "arms", "about", "waist", "wrist", "shield", "\n"};
 
@@ -1132,7 +1132,7 @@ void do_wield(struct char_data* ch, const char* argument, int cmd) {
   char arg1[MAX_INPUT_LENGTH];
   char arg2[MAX_INPUT_LENGTH];
   char buffer[MAX_INPUT_LENGTH];
-  struct obj_data* obj_object;
+  struct obj_data* obj_object = nullptr;
   int keyword = 12;
 
   argument_interpreter(argument, arg1, arg2);
@@ -1153,7 +1153,7 @@ void do_grab(struct char_data* ch, const char* argument, int cmd) {
   char arg1[128];
   char arg2[128];
   char buffer[256];
-  struct obj_data* obj_object;
+  struct obj_data* obj_object = nullptr;
 
   argument_interpreter(argument, arg1, arg2);
 
@@ -1191,13 +1191,13 @@ static struct obj_data* get_object_in_equip_vis(struct char_data* ch, char* arg,
 
 void do_remove(struct char_data* ch, const char* argument, int cmd) {
   char arg1[128];
-  char* t;
-  char* p;
+  char* t = nullptr;
+  char* p = nullptr;
   char buffer[256];
   int rem_list[20];
-  int num_equip;
+  int num_equip = 0;
   struct obj_data* obj_object = nullptr;
-  int j;
+  int j = 0;
 
   one_argument(argument, arg1);
 

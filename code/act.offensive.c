@@ -24,9 +24,9 @@
 
 void do_hit(struct char_data* ch, const char* argument, int cmd) {
   char arg[80];
-  struct char_data* victim;
-  int ch_level;
-  int vict_level;
+  struct char_data* victim = nullptr;
+  int ch_level = 0;
+  int vict_level = 0;
 
   if (check_blackjack(ch)) {
     do_bj_hit(ch);
@@ -101,7 +101,7 @@ void do_hit(struct char_data* ch, const char* argument, int cmd) {
 
 void do_kill(struct char_data* ch, const char* argument, int cmd) {
   static char arg[MAX_INPUT_LENGTH];
-  struct char_data* victim;
+  struct char_data* victim = nullptr;
 
   if (check_peaceful(ch, "You feel to peaceful to contemplate violence!\n\r")) {
     return;
@@ -132,9 +132,9 @@ void do_kill(struct char_data* ch, const char* argument, int cmd) {
 }
 
 void do_backstab(struct char_data* ch, const char* argument, int cmd) {
-  struct char_data* victim;
+  struct char_data* victim = nullptr;
   char name[256];
-  signed char percent;
+  signed char percent = 0;
   signed char base = 0;
 
   if (check_peaceful(ch, "Naughty, naughty.  None of that here.\n\r")) {
@@ -219,7 +219,7 @@ void do_backstab(struct char_data* ch, const char* argument, int cmd) {
 }
 
 static int check_no_order(struct char_data* ch, const char* msg) {
-  struct room_data* rp;
+  struct room_data* rp = nullptr;
 
   rp = real_roomp(ch->in_room);
   if (rp && rp->room_flags & NO_ORDER) {
@@ -234,9 +234,9 @@ void do_order(struct char_data* ch, const char* argument, int cmd) {
   char message[256];
   char buf[256];
   char found = 0;
-  int org_room;
-  struct char_data* victim;
-  struct follow_type* k;
+  int org_room = 0;
+  struct char_data* victim = nullptr;
+  struct follow_type* k = nullptr;
 
   if (apply_soundproof(ch)) {
     return;
@@ -303,14 +303,14 @@ void do_order(struct char_data* ch, const char* argument, int cmd) {
 }
 
 void do_flee(struct char_data* ch, const char* argument, int cmd) {
-  struct obj_data* weapon;
-  int i;
-  int lev_check;
-  int attempt;
+  struct obj_data* weapon = nullptr;
+  int i = 0;
+  int lev_check = 0;
+  int attempt = 0;
   int loose = 0;
-  int die;
-  int percent;
-  int losedie;
+  int die = 0;
+  int percent = 0;
+  int losedie = 0;
 
   if (IS_AFFECTED(ch, AFF_PARALYSIS)) {
     return;
@@ -382,8 +382,8 @@ void do_flee(struct char_data* ch, const char* argument, int cmd) {
     attempt = number(0, 5); /* Select a random direction */
     if (CAN_GO(ch, attempt) &&
         !IS_SET(real_roomp(EXIT(ch, attempt)->to_room)->room_flags, DEATH)) {
-      int panic;
-      int j;
+      int panic = 0;
+      int j = 0;
 
       if (!ch->skills || (number(1, 101) > ch->skills[SKILL_RETREAT].learned)) {
         act("$n panics, and attempts to flee.", 1, ch, nullptr, nullptr,
@@ -468,9 +468,9 @@ void do_flee(struct char_data* ch, const char* argument, int cmd) {
 }
 
 void do_bash(struct char_data* ch, const char* argument, int cmd) {
-  struct char_data* victim;
+  struct char_data* victim = nullptr;
   char name[256];
-  signed char percent;
+  signed char percent = 0;
 
   if (!ch->skills) {
     return;
@@ -540,9 +540,9 @@ void do_bash(struct char_data* ch, const char* argument, int cmd) {
 }
 
 void do_rescue(struct char_data* ch, const char* argument, int cmd) {
-  struct char_data* victim;
-  struct char_data* tmp_ch;
-  int percent;
+  struct char_data* victim = nullptr;
+  struct char_data* tmp_ch = nullptr;
+  int percent = 0;
   char victim_name[240];
 
   if (!ch->skills) {
@@ -625,8 +625,8 @@ void do_rescue(struct char_data* ch, const char* argument, int cmd) {
 }
 
 void do_assist(struct char_data* ch, const char* argument, int cmd) {
-  struct char_data* victim;
-  struct char_data* tmp_ch;
+  struct char_data* victim = nullptr;
+  struct char_data* tmp_ch = nullptr;
   char victim_name[240];
 
   if (check_peaceful(ch, "Noone should need assistance here.\n\r")) {
@@ -680,10 +680,10 @@ void do_assist(struct char_data* ch, const char* argument, int cmd) {
 }
 
 void do_kick(struct char_data* ch, const char* argument, int cmd) {
-  struct char_data* victim;
+  struct char_data* victim = nullptr;
   char name[256];
-  signed char percent;
-  int dam;
+  signed char percent = 0;
+  int dam = 0;
 
   if (!ch->skills) {
     return;
@@ -763,7 +763,7 @@ void do_wimpy(struct char_data* ch, const char* arg, int cmd) {
 static int bow_missile_damage(struct char_data* ch, struct char_data* victim,
   int olddam, int attacktype) {
   int dam = 0;
-  struct obj_data* bow;
+  struct obj_data* bow = nullptr;
 
   if (!DamDetailsOk(ch, victim, dam, attacktype)) {
     return 0;
@@ -799,7 +799,7 @@ static void bow_hit(struct char_data* ch, struct char_data* victim, int type) {
 }
 
 static void fire(struct char_data* ch, struct char_data* victim) {
-  struct obj_data* bow;
+  struct obj_data* bow = nullptr;
   int tohit = 0;
   int todam = 0;
 
@@ -820,7 +820,7 @@ static void fire(struct char_data* ch, struct char_data* victim) {
 
 void do_fire(struct char_data* ch, const char* argument, int cmd) {
   char arg[80];
-  struct char_data* victim;
+  struct char_data* victim = nullptr;
 
   if (check_peaceful(ch,
         "You feel too peaceful to contemplate violence.\n\r")) {
@@ -855,7 +855,7 @@ void do_fire(struct char_data* ch, const char* argument, int cmd) {
 static int gun_missile_damage(struct char_data* ch, struct char_data* victim,
   int olddam, int attacktype) {
   int dam = 0;
-  struct obj_data* gun;
+  struct obj_data* gun = nullptr;
 
   if (!DamDetailsOk(ch, victim, dam, attacktype)) {
     return 0;
@@ -905,7 +905,7 @@ static void missile_hit(struct char_data* ch, struct char_data* victim,
 }
 
 static void shoot(struct char_data* ch, struct char_data* victim) {
-  struct obj_data* gun;
+  struct obj_data* gun = nullptr;
   int tohit = 0;
   int todam = 0;
 
@@ -934,7 +934,7 @@ static void shoot(struct char_data* ch, struct char_data* victim) {
 
 void do_shoot(struct char_data* ch, const char* argument, int cmd) {
   char arg[80];
-  struct char_data* victim;
+  struct char_data* victim = nullptr;
 
   if (check_peaceful(ch,
         "You feel too peaceful to contemplate violence.\n\r")) {
@@ -974,9 +974,9 @@ void do_shoot(struct char_data* ch, const char* argument, int cmd) {
 }
 
 void do_springleap(struct char_data* ch, const char* argument, int cmd) {
-  struct char_data* victim;
+  struct char_data* victim = nullptr;
   char name[256];
-  signed char percent;
+  signed char percent = 0;
 
   if (!ch->skills) {
     return;
@@ -1055,9 +1055,9 @@ void do_springleap(struct char_data* ch, const char* argument, int cmd) {
 }
 
 void do_quivering_palm(struct char_data* ch, const char* arg, int cmd) {
-  struct char_data* victim;
+  struct char_data* victim = nullptr;
   struct affected_type af;
-  signed char percent;
+  signed char percent = 0;
   char name[256];
 
   if (!ch->skills) {

@@ -27,10 +27,10 @@ int RecGetObjRoom(struct obj_data* obj) {
 }
 
 void MakeNoise(int room, const char* local_snd, const char* distant_snd) {
-  int door;
-  struct char_data* ch;
-  struct room_data* rp;
-  struct room_data* orp;
+  int door = 0;
+  struct char_data* ch = nullptr;
+  struct room_data* rp = nullptr;
+  struct room_data* orp = nullptr;
 
   rp = real_roomp(room);
 
@@ -55,10 +55,10 @@ void MakeNoise(int room, const char* local_snd, const char* distant_snd) {
 }
 
 void MakeSound(int pulse) {
-  int room;
+  int room = 0;
   char buffer[128];
-  struct obj_data* obj;
-  struct char_data* ch;
+  struct obj_data* obj = nullptr;
+  struct char_data* ch = nullptr;
 
   /*
    *  objects

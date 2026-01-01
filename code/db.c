@@ -80,7 +80,7 @@ struct time_info_data time_info;  /* the infomation about the time   */
 struct weather_data weather_info; /* the infomation about the weather */
 
 static void print_limited_items(void) {
-  int i;
+  int i = 0;
   char buf[200];
 
   for (i = 0; i <= top_of_objt; i++) {
@@ -97,7 +97,7 @@ static void print_limited_items(void) {
 
 /* body of the booting system */
 void boot_db(void) {
-  int i;
+  int i = 0;
 
   vlog("Boot db -- BEGIN.");
 
@@ -173,9 +173,9 @@ void boot_db(void) {
 #endif
 
   for (i = 0; i <= top_of_zone_table; i++) {
-    char* s;
-    int d;
-    int e;
+    char* s = nullptr;
+    int d = 0;
+    int e = 0;
     s = zone_table[i].name;
     d = (i ? (zone_table[i - 1].top + 1) : 0);
     e = zone_table[i].top;
@@ -280,8 +280,8 @@ void reset_time(void) {
 
 /* update the time file */
 void update_time(void) {
-  FILE* f1;
-  long current_time;
+  FILE* f1 = nullptr;
+  long current_time = 0;
 
   return;
 
@@ -307,10 +307,10 @@ void update_time(void) {
 /* generate index table for the player file */
 void build_player_index(void) {
   int nr = -1;
-  int i;
+  int i = 0;
   int pc = 0;
   struct char_file_u dummy;
-  FILE* fl;
+  FILE* fl = nullptr;
 
   if (!(fl = fopen(PLAYER_FILE, "rb+"))) {
     perror("build player index");
@@ -406,9 +406,9 @@ struct index_data* generate_indices(FILE* fl, int* top) {
 }
 
 void cleanout_room(struct room_data* rp) {
-  int i;
-  struct extra_descr_data* exptr;
-  struct extra_descr_data* nptr;
+  int i = 0;
+  struct extra_descr_data* exptr = nullptr;
+  struct extra_descr_data* nptr = nullptr;
 
   free(rp->name);
   free(rp->description);
@@ -521,7 +521,7 @@ void load_one_room(FILE* fl, struct room_data* rp) {
   }
 
   char chk[MAX_STRING_LENGTH];
-  int result;
+  int result = 0;
   while ((result = fscanf(fl, " %4095s \n", &chk[0])) != EOF) {
     if (result != 1) {
       vlogf("Error reading room line at file position %ld", ftell(fl));
@@ -536,7 +536,7 @@ void load_one_room(FILE* fl, struct room_data* rp) {
 
       // extra description field
       case 'E': {
-        struct extra_descr_data* new_descr;
+        struct extra_descr_data* new_descr = nullptr;
         CREATE(new_descr, struct extra_descr_data, 1);
 
         new_descr->keyword = fread_string(fl);
@@ -584,7 +584,7 @@ void boot_world(void) {
   }
 
   int virtual_nr = -1;
-  int result;
+  int result = 0;
   while ((result = fscanf(fl, " #%d\n", &virtual_nr)) != EOF) {
     if (result != 1) {
       vlogf("Error reading room number at file position %ld", ftell(fl));
@@ -640,9 +640,9 @@ struct room_data* allocate_room(int room_number) {
   }
 
 void renum_zone_table(void) {
-  int zone;
-  int comm;
-  struct reset_com* cmd;
+  int zone = 0;
+  int comm = 0;
+  struct reset_com* cmd = nullptr;
   char buf[256];
 
   for (zone = 0; zone <= top_of_zone_table; zone++) {
@@ -703,14 +703,14 @@ void renum_zone_table(void) {
 
 /* load the zone table and command tables */
 void boot_zones(void) {
-  FILE* fl;
+  FILE* fl = nullptr;
   int zon = 0;
   int cmd_no = 0;
-  int expand;
+  int expand = 0;
   int tmp = 0;
   int bc = 100;
   int cc = 20;
-  char* check;
+  char* check = nullptr;
   char buf[81];
 
   if (!(fl = fopen(ZONE_FILE, "r"))) {
@@ -1268,13 +1268,13 @@ struct char_data* read_mobile(int nr, int type) {
 
 /* read an object from OBJ_FILE */
 struct obj_data* read_object(int nr, int type) {
-  struct obj_data* obj;
-  int tmp;
-  int i;
-  long bc;
+  struct obj_data* obj = nullptr;
+  int tmp = 0;
+  int i = 0;
+  long bc = 0;
   char chk[50];
   char buf[100];
-  struct extra_descr_data* new_descr;
+  struct extra_descr_data* new_descr = nullptr;
 
   i = nr;
   if (type == VIRTUAL) {
@@ -1407,10 +1407,10 @@ struct obj_data* read_object(int nr, int type) {
 
 /* update zone ages, queue for reset if necessary, and dequeue when possible */
 void zone_update(void) {
-  int i;
-  struct reset_q_element* update_u;
-  struct reset_q_element* temp;
-  struct reset_q_element* tmp2;
+  int i = 0;
+  struct reset_q_element* update_u = nullptr;
+  struct reset_q_element* temp = nullptr;
+  struct reset_q_element* tmp2 = nullptr;
 
   /* enqueue zones */
 
@@ -1478,14 +1478,14 @@ void zone_update(void) {
 
 /* execute the reset command table of a given zone */
 void reset_zone(int zone) {
-  int cmd_no;
+  int cmd_no = 0;
   int last_cmd = 1;
   char buf[256];
-  struct char_data* mob;
-  struct char_data* master;
-  struct obj_data* obj;
-  struct obj_data* obj_to;
-  struct room_data* rp;
+  struct char_data* mob = nullptr;
+  struct char_data* master = nullptr;
+  struct obj_data* obj = nullptr;
+  struct obj_data* obj_to = nullptr;
+  struct room_data* rp = nullptr;
 
   mob = nullptr;
 
@@ -1638,7 +1638,7 @@ void reset_zone(int zone) {
 
 /* for use in reset_zone; return true if zone 'nr' is free of PC's  */
 int is_empty(int zone_nr) {
-  struct descriptor_data* i;
+  struct descriptor_data* i = nullptr;
 
   for (i = descriptor_list; i; i = i->next) {
     if (!i->connected) {
@@ -1657,8 +1657,8 @@ int is_empty(int zone_nr) {
 
 /* Load a char, true if loaded, false if not */
 int load_char(char* name, struct char_file_u* char_element) {
-  FILE* fl;
-  int player_i;
+  FILE* fl = nullptr;
+  int player_i = 0;
 
   if ((player_i = find_name(name)) >= 0) {
     if (!(fl = fopen(PLAYER_FILE, "r"))) {
@@ -1682,7 +1682,7 @@ int load_char(char* name, struct char_file_u* char_element) {
 
 /* copy data from the file structure to a char struct */
 void store_to_char(struct char_file_u* st, struct char_data* ch) {
-  int i;
+  int i = 0;
 
   GET_SEX(ch) = st->sex;
   ch->player.char_class = st->char_class;
@@ -1775,8 +1775,8 @@ void store_to_char(struct char_file_u* st, struct char_data* ch) {
 
 /* copy vital data from a players char-structure to the file structure */
 void char_to_store(struct char_data* ch, struct char_file_u* st) {
-  int i;
-  struct affected_type* af;
+  int i = 0;
+  struct affected_type* af = nullptr;
   struct obj_data* char_eq[MAX_WEAR];
 
   /* Unaffect everything a character can be affected by */
@@ -1898,7 +1898,7 @@ void char_to_store(struct char_data* ch, struct char_file_u* st) {
 
 /* create a new entry in the in-memory index table for the player file */
 int create_entry(char* name) {
-  int i;
+  int i = 0;
 
   if (top_of_p_table == -1) {
     CREATE(player_table, struct player_index_element, 1);
@@ -1926,10 +1926,10 @@ int create_entry(char* name) {
 /* write the vital data of a player to the player file */
 void save_char(struct char_data* ch, short int load_room) {
   struct char_file_u st;
-  FILE* fl;
+  FILE* fl = nullptr;
   char mode[4];
-  int expand;
-  struct char_data* tmp;
+  int expand = 0;
+  struct char_data* tmp = nullptr;
 
   if (IS_NPC(ch) && !(IS_SET(ch->specials.act, ACT_POLYSELF))) {
     return;
@@ -2065,7 +2065,7 @@ char* fread_string(FILE* fl) {
 
 /* release memory allocated for a char struct */
 void free_char(struct char_data* ch) {
-  struct affected_type* af;
+  struct affected_type* af = nullptr;
 
   free(GET_NAME(ch));
 
@@ -2091,7 +2091,7 @@ void free_char(struct char_data* ch) {
     free(ch->player.distant_snds);
   }
 
-  struct affected_type* next_af;
+  struct affected_type* next_af = nullptr;
   for (af = ch->affected; af; af = next_af) {
     next_af = af->next;
     affect_remove(ch, af);
@@ -2108,8 +2108,8 @@ void free_char(struct char_data* ch) {
 
 /* release memory allocated for an obj struct */
 void free_obj(struct obj_data* obj) {
-  struct extra_descr_data* curr;
-  struct extra_descr_data* next_one;
+  struct extra_descr_data* curr = nullptr;
+  struct extra_descr_data* next_one = nullptr;
 
   free(obj->name);
   if (obj->description && *obj->description) {
@@ -2138,7 +2138,7 @@ void free_obj(struct obj_data* obj) {
 
 /* read contents of a text file, and place in buf */
 int file_to_string(const char* name, char* buf) {
-  FILE* fl;
+  FILE* fl = nullptr;
   char tmp[100];
 
   *buf = '\0';
@@ -2172,7 +2172,7 @@ int file_to_string(const char* name, char* buf) {
 }
 
 static void clear_dead_bit(struct char_data* ch) {
-  FILE* fl;
+  FILE* fl = nullptr;
   struct char_file_u st;
 
   fl = fopen(PLAYER_FILE, "r+");
@@ -2200,11 +2200,11 @@ static void clear_dead_bit(struct char_data* ch) {
 void reset_char(struct char_data* ch) {
   char buf[100];
   char recipient[100];
-  char* tmp;
-  struct affected_type* af;
+  char* tmp = nullptr;
+  struct affected_type* af = nullptr;
 
-  int i;
-  int j;
+  int i = 0;
+  int j = 0;
 
   for (i = 0; i < MAX_WEAR; i++) { /* Initializing */
     ch->equipment[i] = nullptr;
@@ -2404,7 +2404,7 @@ void clear_object(struct obj_data* obj) {
 
 /* initialize a new character only if class is set */
 void init_char(struct char_data* ch) {
-  int i;
+  int i = 0;
 
   /* *** if this is our first player --- he be God *** */
 
@@ -2536,9 +2536,9 @@ struct room_data* real_roomp(int vnum) {
 
 /* returns the real number of the monster with given virtual number */
 int real_mobile(int vnum) {
-  int bot;
-  int top;
-  int mid;
+  int bot = 0;
+  int top = 0;
+  int mid = 0;
 
   bot = 0;
   top = top_of_mobt;
@@ -2563,9 +2563,9 @@ int real_mobile(int vnum) {
 
 /* returns the real number of the object with given virtual number */
 int real_object(int vnum) {
-  int bot;
-  int top;
-  int mid;
+  int bot = 0;
+  int top = 0;
+  int mid = 0;
 
   bot = 0;
   top = top_of_objt;

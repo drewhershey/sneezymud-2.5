@@ -1,5 +1,6 @@
 #include <assert.h>
 #include <ctype.h>
+#include <math.h>
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -141,7 +142,7 @@ void LearnFromMistake(struct char_data* ch, int sknum, int silent, int max) {
 }
 
 int exit_ok(struct room_direction_data* exit, struct room_data** rpp) {
-  struct room_data* rp;
+  struct room_data* rp = nullptr;
   if (rpp == nullptr) {
     rpp = &rp;
   }
@@ -202,7 +203,7 @@ int number(int from, int to) {
 
 /* simulates dice roll */
 int dice(int number, int size) {
-  int r;
+  int r = 0;
   int sum = 0;
 
   assert(size >= 0);
@@ -220,8 +221,8 @@ int dice(int number, int size) {
 /* returns: 0 if equal, 1 if arg1 > arg2, -1 if arg1 < arg2  */
 /* scan 'till found different or end of both                 */
 int str_cmp(const char* arg1, const char* arg2) {
-  int chk;
-  int i;
+  int chk = 0;
+  int i = 0;
 
   if ((!arg2) || (!arg1)) {
     return (1);
@@ -240,10 +241,10 @@ int str_cmp(const char* arg1, const char* arg2) {
 
 /* writes a string to the log */
 void vlog(const char* str) {
-  long ct;
-  char* tmstr;
+  long ct = 0;
+  char* tmstr = nullptr;
   static char buf[500];
-  struct descriptor_data* i;
+  struct descriptor_data* i = nullptr;
 
   ct = time(nullptr);
   tmstr = asctime(localtime(&ct));
@@ -262,8 +263,8 @@ void vlog(const char* str) {
 }
 
 void slog(const char* str) {
-  long ct;
-  char* tmstr;
+  long ct = 0;
+  char* tmstr = nullptr;
 
   ct = time(nullptr);
   tmstr = asctime(localtime(&ct));
@@ -272,7 +273,7 @@ void slog(const char* str) {
 }
 
 void sprintbit(unsigned long vektor, const char* const* names, char* result) {
-  long nr;
+  long nr = 0;
 
   *result = '\0';
 
@@ -298,7 +299,7 @@ void sprintbit(unsigned long vektor, const char* const* names, char* result) {
 }
 
 void sprinttype(int type, const char* const* names, char* result) {
-  int nr;
+  int nr = 0;
 
   for (nr = 0; (*names[nr] != '\n'); nr++) {
     ;
@@ -312,7 +313,7 @@ void sprinttype(int type, const char* const* names, char* result) {
 
 /* Calculate the MUD time passed over the last t2-t1 centuries (secs) */
 struct time_info_data mud_time_passed(time_t t2, time_t t1) {
-  long secs;
+  long secs = 0;
   struct time_info_data now;
 
   secs = (long)(t2 - t1);
@@ -393,7 +394,7 @@ char getall(char* name, char* newname) {
   char arg[40] = "\0\0\0";
   char tmpname[80] = "\0\0\0\0\0";
   char otname[80] = "\0";
-  char prd;
+  char prd = 0;
 
   sscanf(name, "%s ", otname); /* reads up to first space */
   if (strlen(otname) < 5) {
@@ -430,7 +431,7 @@ int getabunch(const char* name, char* newname) {
     return 0;
   }
 
-  char* endptr;
+  char* endptr = nullptr;
   size_t num = strtoul(name, &endptr, 10);
 
   if (endptr == name || *endptr != '*' || *(endptr + 1) == '\0' ||
@@ -442,9 +443,9 @@ int getabunch(const char* name, char* newname) {
 }
 
 int DetermineExp(struct char_data* mob, int exp_flags) {
-  int base;
-  int phit;
-  int sab;
+  int base = 0;
+  int phit = 0;
+  int sab = 0;
   char buf[200];
 
   /*
@@ -654,14 +655,14 @@ int DetermineExp(struct char_data* mob, int exp_flags) {
 }
 
 void down_river(int pulse) {
-  struct char_data* ch;
-  struct char_data* tmp;
-  struct obj_data* obj_object;
-  struct obj_data* next_obj;
-  int rd;
-  int orig_room;
+  struct char_data* ch = nullptr;
+  struct char_data* tmp = nullptr;
+  struct obj_data* obj_object = nullptr;
+  struct obj_data* next_obj = nullptr;
+  int rd = 0;
+  int orig_room = 0;
   char buf[80];
-  struct room_data* rp;
+  struct room_data* rp = nullptr;
 
   if (pulse < 0) {
     return;
@@ -910,8 +911,8 @@ int IsExtraPlanar(struct char_data* ch) {
 }
 
 void SetHunting(struct char_data* ch, struct char_data* tch) {
-  int persist;
-  int dist;
+  int persist = 0;
+  int dist = 0;
   char buf[256];
 
 #if defined(NOTRACK) && NOTRACK
@@ -946,9 +947,9 @@ void SetHunting(struct char_data* ch, struct char_data* tch) {
 
 void CallForGuard(struct char_data* ch, struct char_data* vict, int lev,
   int area) {
-  struct char_data* i;
-  int type1;
-  int type2;
+  struct char_data* i = nullptr;
+  int type1 = 0;
+  int type2 = 0;
 
   switch (area) {
     case MIDGAARD:
@@ -1009,16 +1010,16 @@ void CallForGuard(struct char_data* ch, struct char_data* vict, int lev,
 }
 
 void Teleport(int pulse) {
-  struct char_data* ch;
-  struct char_data* tmp;
-  struct char_data* pers;
-  struct obj_data* obj_object;
-  struct obj_data* temp_obj;
+  struct char_data* ch = nullptr;
+  struct char_data* tmp = nullptr;
+  struct char_data* pers = nullptr;
+  struct obj_data* obj_object = nullptr;
+  struct obj_data* temp_obj = nullptr;
   char buf[20];
   char* tmp_desc = nullptr;
-  int orig_room;
-  struct room_data* rp;
-  struct room_data* dest;
+  int orig_room = 0;
+  struct room_data* rp = nullptr;
+  struct room_data* dest = nullptr;
 
   if (pulse < 0) {
     return;
@@ -1108,7 +1109,7 @@ void Teleport(int pulse) {
 
 int RecCompObjNum(struct obj_data* o, int obj_num) {
   int total = 0;
-  struct obj_data* i;
+  struct obj_data* i = nullptr;
 
   if (obj_index[o->item_number].vnum == obj_num) {
     total = 1;
@@ -1190,18 +1191,18 @@ void TeleportPulseStuff(int pulse) {
     Teleport(pulse);
     */
 
-  struct char_data* ch;
-  struct char_data* next;
-  struct char_data* tmp;
-  struct char_data* pers;
+  struct char_data* ch = nullptr;
+  struct char_data* next = nullptr;
+  struct char_data* tmp = nullptr;
+  struct char_data* pers = nullptr;
   int tick = 0;
-  int tm;
-  int orig_room;
-  struct room_data* rp;
-  struct room_data* dest;
-  struct obj_data* obj_object;
-  struct obj_data* temp_obj;
-  char* tmp_desc;
+  int tm = 0;
+  int orig_room = 0;
+  struct room_data* rp = nullptr;
+  struct room_data* dest = nullptr;
+  struct obj_data* obj_object = nullptr;
+  struct obj_data* temp_obj = nullptr;
+  char* tmp_desc = nullptr;
 
   tmp_desc = nullptr;
 
@@ -1312,15 +1313,15 @@ void RiverPulseStuff(int pulse) {
     MakeSound();
     */
 
-  struct char_data* ch;
-  struct char_data* tmp;
-  struct obj_data* obj_object;
-  struct obj_data* next_obj;
-  int rd;
-  int orig_room;
+  struct char_data* ch = nullptr;
+  struct char_data* tmp = nullptr;
+  struct obj_data* obj_object = nullptr;
+  struct obj_data* next_obj = nullptr;
+  int rd = 0;
+  int orig_room = 0;
   char buf[80];
   char buffer[100];
-  struct room_data* rp;
+  struct room_data* rp = nullptr;
 
   if (pulse < 0) {
     return;
@@ -1411,7 +1412,7 @@ void RiverPulseStuff(int pulse) {
 **  Apply soundproof is for ch making noise
 */
 int apply_soundproof(struct char_data* ch) {
-  struct room_data* rp;
+  struct room_data* rp = nullptr;
 
   rp = real_roomp(ch->in_room);
 
@@ -1430,7 +1431,7 @@ int apply_soundproof(struct char_data* ch) {
 **  check_soundproof is for others making noise
 */
 int check_soundproof(struct char_data* ch) {
-  struct room_data* rp;
+  struct room_data* rp = nullptr;
 
   rp = real_roomp(ch->in_room);
 
@@ -1445,8 +1446,8 @@ int check_soundproof(struct char_data* ch) {
 }
 
 int MobCountInRoom(struct char_data* list) {
-  int i;
-  struct char_data* tmp;
+  int i = 0;
+  struct char_data* tmp = nullptr;
 
   for (i = 0, tmp = list; tmp; tmp = tmp->next_in_room, i++) {
     ;
@@ -1510,10 +1511,10 @@ char* lower(char* s) {
 
 int GetApprox(int num, int perc) {
   /* perc = 0 - 100 */
-  int adj;
-  int r;
-  float fnum;
-  float fadj;
+  int adj = 0;
+  int r = 0;
+  float fnum = NAN;
+  float fadj = NAN;
 
   adj = 100 - perc;
   if (adj < 0) {

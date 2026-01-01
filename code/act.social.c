@@ -47,7 +47,7 @@ static int list_top = -1;
 
 static char* fread_action(FILE* fl) {
   char buf[MAX_STRING_LENGTH];
-  char* rslt;
+  char* rslt = nullptr;
 
   for (;;) {
     fgets(buf, MAX_STRING_LENGTH, fl);
@@ -67,7 +67,7 @@ static char* fread_action(FILE* fl) {
 }
 
 void boot_social_messages(void) {
-  FILE* fl;
+  FILE* fl = nullptr;
   int tmp = -1;
   int hide = 0;
   int min_pos = 0;
@@ -122,9 +122,9 @@ void boot_social_messages(void) {
 }
 
 static int find_action(int cmd) {
-  int bot;
-  int top;
-  int mid;
+  int bot = 0;
+  int top = 0;
+  int mid = 0;
 
   bot = 0;
   top = list_top;
@@ -152,12 +152,12 @@ static int find_action(int cmd) {
 }
 
 void do_action(struct char_data* ch, const char* argument, int cmd) {
-  int act_nr;
+  int act_nr = 0;
   char buf[MAX_INPUT_LENGTH];
   char tmp[MAX_STRING_LENGTH];
-  struct social_messg* action;
-  struct char_data* i;
-  struct char_data* vict;
+  struct social_messg* action = nullptr;
+  struct char_data* i = nullptr;
+  struct char_data* vict = nullptr;
 
   if ((act_nr = find_action(cmd)) < 0) {
     send_to_char("That action is not supported.\n\r", ch);
@@ -203,7 +203,7 @@ void do_action(struct char_data* ch, const char* argument, int cmd) {
 void do_insult(struct char_data* ch, const char* argument, int cmd) {
   static char buf[100];
   static char arg[MAX_STRING_LENGTH];
-  struct char_data* victim;
+  struct char_data* victim = nullptr;
 
   only_argument(argument, arg);
 
@@ -257,10 +257,10 @@ void do_insult(struct char_data* ch, const char* argument, int cmd) {
 }
 
 void boot_pose_messages(void) {
-  FILE* fl;
-  signed char counter;
-  int tmp;
-  signed char char_class;
+  FILE* fl = nullptr;
+  signed char counter = 0;
+  int tmp = 0;
+  signed char char_class = 0;
 
   if (!(fl = fopen(POSEMESS_FILE, "r"))) {
     perror("boot_pose_messages");
@@ -282,8 +282,8 @@ void boot_pose_messages(void) {
 }
 
 void do_pose(struct char_data* ch, const char* argument, int cmd) {
-  signed char to_pose;
-  signed char counter;
+  signed char to_pose = 0;
+  signed char counter = 0;
 
   send_to_char("Sorry Buggy command.\n\r", ch);
   return;
