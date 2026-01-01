@@ -1138,7 +1138,7 @@ void do_wield(struct char_data* ch, const char* argument, int cmd) {
   char arg2[MAX_INPUT_LENGTH];
   char buffer[MAX_INPUT_LENGTH];
   struct obj_data* obj_object = nullptr;
-  int keyword = 12;
+  const int keyword = 12;
 
   argument_interpreter(argument, arg1, arg2);
   if (*arg1 != 0) {

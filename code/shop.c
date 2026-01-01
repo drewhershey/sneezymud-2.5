@@ -114,7 +114,6 @@ static void shopping_buy(const char* arg, struct char_data* ch,
   char newarg[100];
   int num = 1;
   struct obj_data* temp1 = nullptr;
-  struct char_data* temp_char = nullptr;
 
   if ((is_ok(keeper, ch, shop_nr)) == 0) {
     return;
@@ -222,7 +221,6 @@ static void shopping_sell(const char* arg, struct char_data* ch,
   char buf[MAX_STRING_LENGTH];
   int cost = 0;
   struct obj_data* temp1 = nullptr;
-  struct char_data* temp_char = nullptr;
 
   if ((is_ok(keeper, ch, shop_nr)) == 0) {
     return;
@@ -416,8 +414,6 @@ static void shopping_kill(struct char_data* ch, struct char_data* keeper,
 
 static int shop_keeper(struct char_data* ch, int cmd, const char* arg) {
   char argm[100];
-  char buf[MAX_STRING_LENGTH];
-  struct obj_data* temp1 = nullptr;
   struct char_data* temp_char = nullptr;
   struct char_data* keeper = nullptr;
   int shop_nr = 0;

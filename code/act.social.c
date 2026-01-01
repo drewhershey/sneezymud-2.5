@@ -154,9 +154,7 @@ static int find_action(int cmd) {
 void do_action(struct char_data* ch, const char* argument, int cmd) {
   int act_nr = 0;
   char buf[MAX_INPUT_LENGTH];
-  char tmp[MAX_STRING_LENGTH];
   struct social_messg* action = nullptr;
-  struct char_data* i = nullptr;
   struct char_data* vict = nullptr;
 
   if ((act_nr = find_action(cmd)) < 0) {
@@ -259,7 +257,6 @@ void do_insult(struct char_data* ch, const char* argument, int cmd) {
 void boot_pose_messages(void) {
   FILE* fl = nullptr;
   signed char counter = 0;
-  int tmp = 0;
   signed char char_class = 0;
 
   if ((fl = fopen(POSEMESS_FILE, "r")) == nullptr) {

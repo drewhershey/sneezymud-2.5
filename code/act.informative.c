@@ -70,11 +70,9 @@ void do_whozone(struct char_data* ch, const char* argument, int cmd) {
 
 void do_who(struct char_data* ch, const char* argument, int cmd) {
   struct char_data* k = nullptr;
-  struct descriptor_data* d = nullptr;
   char buf[256];
   char buf2[256];
   struct char_data* person = nullptr;
-  struct string_block sb{};
   int listed = 0;
   int count = 0;
   int lcount = 0;
@@ -2289,8 +2287,6 @@ void do_levels(struct char_data* ch, const char* argument, int cmd) {
   int i = 0;
   int char_class = 0;
   char buf[MAX_STRING_LENGTH];
-  char buf2[MAX_STRING_LENGTH];
-  struct string_block sb{};
 
   *buf = '\0';
   /*

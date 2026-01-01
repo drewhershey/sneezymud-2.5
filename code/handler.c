@@ -83,7 +83,7 @@ int isname(const char* str, const char* namelist) {
 
   if (argc > 0) {
     s = argv[argc - 1];
-    size_t len = strlen(s);
+    const size_t len = strlen(s);
     if (len > 0) {
       if (s[len - 1] == '.') {
         exact = 1;
@@ -138,9 +138,7 @@ void destroy_string_block(struct string_block* sb) {
 
 void affect_modify(struct char_data* ch, signed char loc, long mod, long bitv,
   char add) {
-  int maxabil = 0;
   int i = 0;
-  int diff = 0;
 
   if (loc == APPLY_IMMUNE) {
     if (add != 0) {
@@ -178,7 +176,7 @@ void affect_modify(struct char_data* ch, signed char loc, long mod, long bitv,
     }
   }
 
-  maxabil = (IS_NPC(ch) ? 25 : 18);
+  int maxabil = (IS_NPC(ch) ? 25 : 18);
 
   switch (loc) {
     case APPLY_NONE:
@@ -746,7 +744,7 @@ static int apply_ac(struct char_data* ch, int eq_pos) {
 }
 
 static int give_min_str_to_wield(struct obj_data* obj, struct char_data* ch) {
-  int str = 0;
+  const int str = 0;
 
   GET_STR(ch) = 16; /* nice, semi-reasonable start */
   /*
@@ -1351,7 +1349,6 @@ static void die_follower(struct char_data* ch) {
 /* Extract a ch completely from the world, and leave his stuff behind */
 void extract_char(struct char_data* ch) {
   struct obj_data* i = nullptr;
-  struct obj_data* o = nullptr;
   struct char_data* k = nullptr;
   struct char_data* next_char = nullptr;
   struct descriptor_data* t_desc = nullptr;

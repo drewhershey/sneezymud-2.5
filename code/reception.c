@@ -19,16 +19,12 @@
 #include "compat_types.h"
 #include "spec_procs.h"
 
-const char* const obj_save_file = "pcobjs.obj";
-const char* const obj_file_free = "\0\0\0";
-
 /* ************************************************************************
  * Routines used for the "Offer"                                           *
  ************************************************************************* */
 
 char recep_offer(struct char_data* ch, struct char_data* receptionist,
   struct obj_cost* cost) {
-  int i = 0;
   char buf[MAX_INPUT_LENGTH];
 
   cost->total_cost = 100; /* Minimum cost */
@@ -80,9 +76,6 @@ static void write_objs(FILE* fl, struct obj_file_u* st, int save) {
 
 void update_file(struct char_data* ch, struct obj_file_u* st, int save) {
   FILE* fl = nullptr;
-  int loc = 0;
-  int t = 0;
-  struct obj_file_u tmp{};
   char buf[200];
 
   sprintf(buf, "rent/%s", lower(ch->player.name));
@@ -184,9 +177,7 @@ static void zero_rent_by_name(char* n) {
 
 /* Puts object in store, at first item which has no -1 */
 static void put_obj_in_store(struct obj_data* obj, struct obj_file_u* st) {
-  int i = 0;
   int j = 0;
-  char found = 0;
   struct obj_file_elem* oe = nullptr;
   char buf[256];
 
@@ -255,8 +246,6 @@ static int contained_weight(struct obj_data* container) {
 /* Destroy inventory after transferring it to "store inventory" */
 void obj_to_store(struct obj_data* obj, struct obj_file_u* st,
   struct char_data* ch, int do_delete) {
-  static char buf[240];
-
   if (obj == nullptr) {
     return;
   }
@@ -294,7 +283,7 @@ void obj_to_store(struct obj_data* obj, struct obj_file_u* st,
       extract_obj(obj);
     }
   } else {
-    int weight = contained_weight(obj);
+    const int weight = contained_weight(obj);
     GET_OBJ_WEIGHT(obj) -= weight;
     put_obj_in_store(obj, st);
     GET_OBJ_WEIGHT(obj) += weight;
@@ -310,11 +299,7 @@ void obj_to_store(struct obj_data* obj, struct obj_file_u* st,
 /* write the vital data of a player to the player file */
 void save_obj(struct char_data* ch, struct obj_cost* cost, int do_delete) {
   static struct obj_file_u st;
-  FILE* fl = nullptr;
-  int pos = 0;
   int i = 0;
-  int j = 0;
-  char found = 0;
 
   st.number = 0;
   st.gold_left = GET_GOLD(ch);
@@ -378,16 +363,10 @@ void update_obj_file(void) {
   FILE* char_file = nullptr;
   struct obj_file_u st{};
   struct char_file_u ch_st{};
-  struct char_data tmp_char{};
-  int pos = 0;
-  int no_read = 0;
   int i = 0;
-  int cost_per_day = 0;
   long days_passed = 0;
   long secs_lost = 0;
   char buf[MAX_INPUT_LENGTH];
-  struct obj_file_u* lim = nullptr;
-  struct obj_data* obj = nullptr;
 
   if ((char_file = fopen(PLAYER_FILE, "r+")) == nullptr) {
     perror("Opening player file for reading. (reception.c, update_obj_file)");
@@ -476,7 +455,7 @@ int receptionist(struct char_data* ch, int cmd, const char* arg) {
   struct char_data* recep = nullptr;
   struct char_data* temp_char = nullptr;
   short int save_room = 0;
-  short int action_tabel[9] = {23, 24, 36, 105, 106, 109, 111, 142, 147};
+  const short int action_tabel[9] = {23, 24, 36, 105, 106, 109, 111, 142, 147};
 
   if (ch->desc == nullptr) {
     return 0; /* You've forgot false - NPC couldn't leave */
@@ -559,7 +538,7 @@ int receptionist_for_outlaws(struct char_data* ch, int cmd, const char* arg) {
   struct char_data* recep = nullptr;
   struct char_data* temp_char = nullptr;
   short int save_room = 0;
-  short int action_tabel[9] = {23, 24, 36, 105, 106, 109, 111, 142, 147};
+  const short int action_tabel[9] = {23, 24, 36, 105, 106, 109, 111, 142, 147};
 
   if (ch->desc == nullptr) {
     return 0; /* You've forgot false - NPC couldn't leave */

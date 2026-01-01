@@ -434,7 +434,7 @@ int getabunch(const char* name, char* newname) {
   }
 
   char* endptr = nullptr;
-  size_t num = strtoul(name, &endptr, 10);
+  const size_t num = strtoul(name, &endptr, 10);
 
   if (endptr == name || *endptr != '*' || *(endptr + 1) == '\0' ||
       strcpy(newname, endptr + 1) == nullptr) {
@@ -448,7 +448,6 @@ int DetermineExp(struct char_data* mob, int exp_flags) {
   int base = 0;
   int phit = 0;
   int sab = 0;
-  char buf[200];
 
   /*
   reads in the monster, and adds the flags together
@@ -1018,8 +1017,6 @@ void Teleport(int pulse) {
   struct char_data* pers = nullptr;
   struct obj_data* obj_object = nullptr;
   struct obj_data* temp_obj = nullptr;
-  char buf[20];
-  char* tmp_desc = nullptr;
   int orig_room = 0;
   struct room_data* rp = nullptr;
   struct room_data* dest = nullptr;

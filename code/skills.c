@@ -26,7 +26,6 @@
 
 static int remove_trap(struct char_data* ch, struct obj_data* trap) {
   int num = 0;
-  int charges = 0;
 
   if (ITEM_TYPE(trap) != ITEM_TRAP) {
     send_to_char("I don't think thats a trap\n\r", ch);
@@ -285,10 +284,10 @@ void do_track(struct char_data* ch, const char* argument, int cmd) {
     .victim = &ch->specials.hunting,
   };
 
-  struct find_path_data hunt_mob_data = {
+  const struct find_path_data hunt_mob_data = {
     .type = FIND_MOB_IN_ROOM,
-    .fn_data.data = &huntd,
-    .fn.mob_in_room_fn = named_mobile_in_room,
+    .fn = {.mob_in_room_fn = named_mobile_in_room},
+    .fn_data = {.data = &huntd},
   };
 
   const int in_zone =
@@ -961,7 +960,6 @@ void do_throw(struct char_data* ch, const char* arg, int cmd) {
   struct char_data* victim = nullptr;
   char name[256];
   char obje[100];
-  char buf[256];
   signed char percent = 0;
   int dr = 0;
   const char* const keyword[] = {"north", "east", "south", "west", "up", "down",

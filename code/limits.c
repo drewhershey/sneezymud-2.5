@@ -487,7 +487,6 @@ void set_title(struct char_data* ch) {
 
 void gain_exp(struct char_data* ch, int gain) {
   int i = 0;
-  char is_altered = 0;
   char buf[256];
 
   save_char(ch, AUTO_RENT);

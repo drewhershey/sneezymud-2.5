@@ -222,7 +222,7 @@ void store_mail(char* to, char* from, char* message_pointer) {
   char* msg_txt = message_pointer;
   char* tmp = nullptr;
   int bytes_written = 0;
-  int total_length = strlen(message_pointer);
+  const int total_length = strlen(message_pointer);
 
   static_assert(sizeof(header_block_type) == sizeof(data_block_type), "");
   static_assert(sizeof(header_block_type) == BLOCK_SIZE, "");
@@ -380,7 +380,7 @@ char* read_delete(char* recipient, char* recipient_formatted) {
     return nullptr;
   }
 
-  time_t mail_time_converted = COMPAT_TO_TIME(header.mail_time);
+  const time_t mail_time_converted = COMPAT_TO_TIME(header.mail_time);
   tmstr = asctime(localtime(&mail_time_converted));
   *(tmstr + strlen(tmstr) - 1) = '\0';
 

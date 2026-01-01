@@ -198,8 +198,6 @@ void do_bet(struct char_data* ch, const char* arg, int cmd) {
   char amount[15];
   char craps[255];
   int num = 0;
-  int number = 0;
-  int opt = 0;
 
   half_chop(arg, amount, craps);
 
@@ -440,7 +438,6 @@ static void spin_slot(struct char_data* ch) {
 
 static int can_bet_craps(struct char_data* ch) {
   struct char_data* crap_man = nullptr;
-  char buf[80];
 
   crap_man = FindMobInRoomWithFunction(ch->in_room, craps_table_man);
 
@@ -462,7 +459,6 @@ static int can_bet_craps(struct char_data* ch) {
 static void check_craps(struct char_data* ch, int diceroll) {
   struct char_data* better = nullptr;
   struct char_data* temp = nullptr;
-  char buf[255];
 
   if (diceroll != 2) {
     if (diceroll != 3) {
@@ -548,7 +544,6 @@ static void check_seven(struct char_data* ch, int diceroll) {
 static void check_eleven(struct char_data* ch, int diceroll) {
   struct char_data* better = nullptr;
   struct char_data* temp = nullptr;
-  char buf[255];
 
   if (diceroll != 11) {
     return;
@@ -582,8 +577,6 @@ static void check_eleven(struct char_data* ch, int diceroll) {
 }
 
 static void check_two(struct char_data* better, int diceroll) {
-  char buf[255];
-
   if (diceroll == 2) {
     send_to_char("Two hit!. Nice bet!\n\r", better);
     GET_GOLD(better) += 31 * better->bet.two;
@@ -597,8 +590,6 @@ static void check_two(struct char_data* better, int diceroll) {
 }
 
 static void check_three(struct char_data* better, int diceroll) {
-  char buf[255];
-
   if (diceroll == 3) {
     send_to_char("Three hit! Nice bet!\n\r", better);
     GET_GOLD(better) += 16 * better->bet.three;
@@ -612,8 +603,6 @@ static void check_three(struct char_data* better, int diceroll) {
 }
 
 static void check_oneroll_eleven(struct char_data* better, int diceroll) {
-  char buf[255];
-
   if (diceroll == 11) {
     send_to_char("Eleven hit! Nice bet!\n\r", better);
     GET_GOLD(better) += 16 * better->bet.eleven;
@@ -627,8 +616,6 @@ static void check_oneroll_eleven(struct char_data* better, int diceroll) {
 }
 
 static void check_twelve(struct char_data* better, int diceroll) {
-  char buf[255];
-
   if (diceroll == 12) {
     send_to_char("Twelve hit! Nice bet!\n\r", better);
     GET_GOLD(better) += 31 * better->bet.twelve;
@@ -640,8 +627,6 @@ static void check_twelve(struct char_data* better, int diceroll) {
 }
 
 static void check_oneroll_craps(struct char_data* better, int diceroll) {
-  char buf[255];
-
   if (diceroll == 3) {
     send_to_char("Three hit! Your bet on craps hit!\n\r", better);
     REMOVE_BIT(better->bet_opt.one_roll, CRAPS);
@@ -780,8 +765,6 @@ static void roll_dice(struct char_data* ch) {
   int die_two = 0;
   int dice_roll = 0;
   char buf[255];
-  struct char_data* better = nullptr;
-  struct char_data* temp = nullptr;
   struct char_data* table_man = nullptr;
 
   if (check_for_dice_held(ch) == 0) {
@@ -853,13 +836,9 @@ static void roll_dice(struct char_data* ch) {
 }
 
 void do_play(struct char_data* ch, const char* arg, int cmd) {
-  char bet[255];
-  char buf[255];
   char game[255];
   char options[255];
-  struct obj_data* slot = nullptr;
   int option = 0;
-  int opt = 0;
 
   half_chop(arg, game, options);
 
@@ -1046,9 +1025,6 @@ static void check_horn(struct char_data* better, int diceroll) {
 }
 
 static void check_hard_four(struct char_data* better, int diceroll) {
-  struct char_data* tmp_better = nullptr;
-  struct char_data* temp = nullptr;
-  char buf[255];
 }
 
 static void check_hard_six(struct char_data* better, int diceroll) {}
@@ -1067,7 +1043,6 @@ int craps_table_man(struct char_data* ch, int cmd, const char* arg) {
   char amount[255];
   char options[255];
   char dice[255];
-  int bits = 0;
 
   if (cmd != 0) {
     if ((cmd != 0) && (cmd != 1) && (cmd != 2) && (cmd != 3) && (cmd != 4) &&

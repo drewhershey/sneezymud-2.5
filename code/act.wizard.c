@@ -60,9 +60,7 @@ static void create_one_room(int loc_nr) {
 
 void do_demote(struct char_data* ch, const char* argument, int cmd) {
   char person[MAX_STRING_LENGTH];
-  char buf[MAX_STRING_LENGTH];
   struct char_data* victim = nullptr;
-  int i = 0;
   if (IS_NPC(ch)) {
     return;
   }
@@ -684,7 +682,6 @@ static void room_load(struct char_data* ch, int start, int end) {
   int vnum = 0;
   int found = 0;
   int x = 0;
-  char chk[50];
   char buf[80];
   struct room_data* rp = nullptr;
   struct room_data dummy = {};
@@ -768,7 +765,6 @@ void do_rload(struct char_data* ch, const char* argument, int cmd) {
 }
 
 static void room_save(struct char_data* ch, int start, int end) {
-  char fn[80];
   char temp[2048];
   char dots[500];
   char buf[255];
@@ -927,7 +923,6 @@ static void room_save(struct char_data* ch, int start, int end) {
 
 void do_rsave(struct char_data* ch, const char* argument, int cmd) {
   char i = 0;
-  char buf[256];
   int start = -1;
   int end = -2;
 
@@ -2533,7 +2528,6 @@ static void purge_one_room(int rnum, struct room_data* rp, const int* range) {
 }
 
 void do_link(struct char_data* ch, const char* argument, int cmd) {
-  struct char_data* victim = nullptr;
   struct descriptor_data* d = nullptr;
   struct descriptor_data* next_d = nullptr;
   int done = 0;
@@ -2704,7 +2698,6 @@ static void roll_abilities(struct char_data* ch) {
   int temp = 0;
   unsigned char table[MAX_STAT];
   unsigned char rools[4];
-  char buf[256];
 
   for (i = 0; i < MAX_STAT; table[i++] = 0) {
     ;
@@ -2810,9 +2803,6 @@ static void roll_abilities(struct char_data* ch) {
 }
 
 void do_reroll(struct char_data* ch, const char* argument, int cmd) {
-  struct char_data* victim = nullptr;
-  char buf[100];
-
   if (IS_NPC(ch)) {
     return;
   }
@@ -2846,10 +2836,8 @@ static void start_levels(struct char_data* ch) {
 }
 
 void do_start(struct char_data* ch) {
-  int i = 0;
   int r_num = 0;
   struct obj_data* obj = nullptr;
-  struct affected_type af{};
 
   send_to_char("Welcome to SneezyMUD.  Enjoy the game...\n\r", ch);
   *(ch->player.title) = '0';

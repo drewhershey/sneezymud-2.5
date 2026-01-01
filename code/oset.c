@@ -60,7 +60,6 @@ static void set_oedesc(struct char_data* ch, struct obj_data* obj,
   char* keywds) {
   struct extra_descr_data* tmp = nullptr;
   struct extra_descr_data* newdesc = nullptr;
-  char buf[256];
 
   if (*keywds == 0) {
     send_to_char("You must give a list of keywords.\n\r", ch);
@@ -98,8 +97,6 @@ static void set_oedesc(struct char_data* ch, struct obj_data* obj,
 }
 
 static void set_mtype(struct char_data* ch, struct obj_data* obj, char* arg) {
-  char buf1[256];
-  char buf2[256];
   char type[100];
   int i = 0;
 
@@ -159,10 +156,7 @@ static void set_mtype(struct char_data* ch, struct obj_data* obj, char* arg) {
 }
 
 static void set_oflags(struct char_data* ch, struct obj_data* obj, char* arg) {
-  char buf1[256];
-  char buf2[256];
   char num[100];
-  char type[100];
   int i = 0;
   int number = 0;
 
@@ -209,8 +203,6 @@ static void set_oflags(struct char_data* ch, struct obj_data* obj, char* arg) {
 }
 
 static void set_otype(struct char_data* ch, struct obj_data* obj, char* arg) {
-  char buf1[256];
-  char buf2[256];
   int type = 0;
   int i = 0;
 
@@ -311,8 +303,6 @@ void do_oset(struct char_data* ch, const char* argument, int cmd) {
   int val = 0;
   int dice = 0;
   int sides = 0;
-  int dir = 0;
-  int value = 0;
   int spaces = 0;
   struct obj_data* obj = nullptr;
   struct extra_descr_data* tmpexd = nullptr;

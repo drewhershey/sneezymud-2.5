@@ -571,8 +571,6 @@ void do_open(struct char_data* ch, const char* argument, int cmd) {
   int door = 0;
   char type[MAX_INPUT_LENGTH];
   char dir[MAX_INPUT_LENGTH];
-  char buf[MAX_STRING_LENGTH];
-  struct room_direction_data* back = nullptr;
   struct obj_data* obj = nullptr;
   struct char_data* victim = nullptr;
   struct room_direction_data* exitp = nullptr;
@@ -608,8 +606,6 @@ void do_open(struct char_data* ch, const char* argument, int cmd) {
     } else if (IS_SET(exitp->exit_info, EX_LOCKED)) {
       send_to_char("It seems to be locked.\n\r", ch);
     } else {
-      struct room_data* rp = nullptr;
-
       open_door(ch, door);
       send_to_char("Ok.\n\r", ch);
     }
@@ -915,7 +911,6 @@ void do_enter(struct char_data* ch, const char* argument, int cmd) {
   char buf[MAX_INPUT_LENGTH];
   char tmp[MAX_STRING_LENGTH];
   struct obj_data* obj_object = nullptr;
-  struct obj_data* next_obj = nullptr;
 
   one_argument(argument, buf);
 

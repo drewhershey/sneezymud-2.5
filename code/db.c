@@ -197,7 +197,7 @@ void boot_db(void) {
 /* reset the time in the game from file */
 void reset_time(void) {
   char buf[80];
-  long beginning_of_time = 650336715;
+  static constexpr long beginning_of_time = 650336715;
 
   time_info = mud_time_passed(time(nullptr), beginning_of_time);
 
@@ -859,7 +859,7 @@ static char is_valid_position(signed char pos) {
 
 /* read a mobile from MOB_FILE */
 struct char_data* read_mobile(int nr, int type) {
-  int original_nr = nr;
+  const int original_nr = nr;
 
   if (type == VIRTUAL) {
     nr = real_mobile(nr);
@@ -2209,7 +2209,6 @@ void reset_char(struct char_data* ch) {
   struct affected_type* af = nullptr;
 
   int i = 0;
-  int j = 0;
 
   for (i = 0; i < MAX_WEAR; i++) { /* Initializing */
     ch->equipment[i] = nullptr;

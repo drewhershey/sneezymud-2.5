@@ -10,7 +10,6 @@
 void SwitchStuff(struct char_data* giver, struct char_data* taker) {
   struct obj_data* obj = nullptr;
   struct obj_data* next = nullptr;
-  float ratio = NAN;
   int j = 0;
 
   /*

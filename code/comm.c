@@ -66,13 +66,9 @@ int tics = 0; /* for extern checkpointing */
 
 int main(int argc, char** argv) {
   int port = 0;
-  int a = 0;
   int pos = 1;
   char buf[512];
   const char* dir = nullptr;
-
-  struct rlimit rl{};
-  int res = 0;
 
   port = DFLT_PORT;
   dir = DFLT_DIR;
@@ -217,7 +213,6 @@ int game_loop(int s) {
   char promptbuf[80];
   char movebuf[80];
   char buf[80];
-  char tempbuf[80];
   char buf2[80];
   char hitscolor[10];
   char manacolor[10];
@@ -532,7 +527,7 @@ int game_loop(int s) {
                 /* Add wait state indicator if character is locked out */
                 if (point->wait > 1) {
                   char wait_buf[32];
-                  double wait_seconds = (double)(point->wait - 1) / 4.0;
+                  const double wait_seconds = (double)(point->wait - 1) / 4.0;
                   (void)snprintf(wait_buf, sizeof(wait_buf),
                     "%s[Wait:%.1fs]%s ", ANSI_ORANGE, wait_seconds, ANSI_WHITE);
                   strcat(promptbuf, wait_buf);
@@ -571,7 +566,7 @@ int game_loop(int s) {
                 /* Add wait state indicator if character is locked out */
                 if (point->wait > 1) {
                   char wait_buf[32];
-                  double wait_seconds = (double)(point->wait - 1) / 4.0;
+                  const double wait_seconds = (double)(point->wait - 1) / 4.0;
                   (void)snprintf(wait_buf, sizeof(wait_buf),
                     "%s[Wait:%.1fs]%s ", ANSI_ORANGE, wait_seconds,
                     ANSI_NORMAL);
@@ -601,7 +596,7 @@ int game_loop(int s) {
                 /* Add wait state indicator if character is locked out */
                 if (point->wait > 1) {
                   char wait_buf[32];
-                  double wait_seconds = (double)(point->wait - 1) / 4.0;
+                  const double wait_seconds = (double)(point->wait - 1) / 4.0;
                   (void)snprintf(wait_buf, sizeof(wait_buf),
                     "%s[Wait:%.1fs]%s ", ANSI_ORANGE, wait_seconds,
                     ANSI_NORMAL);
@@ -629,7 +624,7 @@ int game_loop(int s) {
                 /* Add wait state indicator if character is locked out */
                 if (point->wait > 1) {
                   char wait_buf[32];
-                  double wait_seconds = (double)(point->wait - 1) / 4.0;
+                  const double wait_seconds = (double)(point->wait - 1) / 4.0;
                   (void)snprintf(wait_buf, sizeof(wait_buf),
                     "%s[Wait:%.1fs]%s ", ANSI_ORANGE, wait_seconds,
                     ANSI_NORMAL);
@@ -859,7 +854,6 @@ int new_connection(int s) {
   /* struct sockaddr peer; */
   int i = 0;
   int t = 0;
-  char buf[100];
 
   i = sizeof(isa);
   getsockname(s, (struct sockaddr*)&isa, (socklen_t*)&i);
@@ -918,15 +912,10 @@ static void printhostaddr(struct in_addr* addr, char* buf) {
 
 int new_descriptor(int s) {
   int desc = 0;
-  int a = 0;
   int size = 0;
   struct descriptor_data* newd = nullptr;
   struct sockaddr_in sock{};
-  struct hostent* from = nullptr;
-  char buf[100];
   char tempbuf[255];
-  char* temphost[255];
-  char* temphostaddr[255];
 
   if ((desc = new_connection(s)) < 0) {
     return (-1);
@@ -1479,8 +1468,6 @@ void act(const char* str, int hide_invisible, struct char_data* ch,
   const char* i = nullptr;
   char* point = nullptr;
   struct char_data* to = nullptr;
-  struct char_data* tmp_victim = nullptr;
-  struct char_data* temp = nullptr;
   char buf[MAX_STRING_LENGTH];
 
   if (str == nullptr) {

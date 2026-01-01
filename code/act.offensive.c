@@ -26,8 +26,6 @@
 void do_hit(struct char_data* ch, const char* argument, int cmd) {
   char arg[80];
   struct char_data* victim = nullptr;
-  int ch_level = 0;
-  int vict_level = 0;
 
   if (check_blackjack(ch) != 0) {
     do_bj_hit(ch);
@@ -308,14 +306,12 @@ void do_order(struct char_data* ch, const char* argument, int cmd) {
 }
 
 void do_flee(struct char_data* ch, const char* argument, int cmd) {
-  struct obj_data* weapon = nullptr;
   int i = 0;
   int lev_check = 0;
   int attempt = 0;
   int loose = 0;
   int die = 0;
   int percent = 0;
-  int losedie = 0;
 
   if (IS_AFFECTED(ch, AFF_PARALYSIS)) {
     return;
@@ -388,7 +384,6 @@ void do_flee(struct char_data* ch, const char* argument, int cmd) {
     if (CAN_GO(ch, attempt) &&
         !IS_SET(real_roomp(EXIT(ch, attempt)->to_room)->room_flags, DEATH)) {
       int panic = 0;
-      int j = 0;
 
       if ((ch->skills == nullptr) ||
           (number(1, 101) > ch->skills[SKILL_RETREAT].learned)) {
@@ -807,8 +802,6 @@ static void bow_hit(struct char_data* ch, struct char_data* victim, int type) {
 
 static void fire(struct char_data* ch, struct char_data* victim) {
   struct obj_data* bow = nullptr;
-  int tohit = 0;
-  int todam = 0;
 
   bow = ch->equipment[HOLD];
 
@@ -913,8 +906,6 @@ static void missile_hit(struct char_data* ch, struct char_data* victim,
 
 static void shoot(struct char_data* ch, struct char_data* victim) {
   struct obj_data* gun = nullptr;
-  int tohit = 0;
-  int todam = 0;
 
   gun = ch->equipment[HOLD];
 

@@ -1272,11 +1272,7 @@ static void obj_store_to_char(struct char_data* ch, struct obj_file_u* st) {
 
 static void load_char_objs(struct char_data* ch) {
   FILE* fl = nullptr;
-  int i = 0;
-  int j = 0;
-  int loc = 0;
   char found = 0;
-  float timegold = NAN;
   struct obj_file_u st{};
   char buf[200];
 
@@ -1321,11 +1317,9 @@ static void load_char_objs(struct char_data* ch) {
       st.last_update + 6 * SECS_PER_REAL_HOUR > time(nullptr)) {
     found = 1;
   } else {
-    char buf[MAX_STRING_LENGTH];
     if (ch->in_room == NOWHERE) {
       vlog("Char reconnecting after autorent");
     }
-    timegold = 0;
     found = 1;
   }
 
@@ -1344,13 +1338,8 @@ static void load_char_objs(struct char_data* ch) {
 /* deal with newcomers and other non-playing sockets */
 void nanny(struct descriptor_data* d, char* arg) {
   char buf[100];
-  char buf2[100];
-  char recipient[100];
-  char* tmp = nullptr;
   int player_i = 0;
   int index = 0;
-  int count = 0;
-  int oops = 0;
   char tmp_name[20];
   struct char_file_u tmp_store{};
   struct char_data* tmp_ch = nullptr;
@@ -1778,8 +1767,6 @@ void nanny(struct descriptor_data* d, char* arg) {
         ;
       }
       d->character->player.char_class = 0;
-      count = 0;
-      oops = 0;
       switch (*arg) {
         case '1': {
           d->character->player.char_class = CLASS_WARRIOR;
@@ -1869,12 +1856,10 @@ void nanny(struct descriptor_data* d, char* arg) {
         case '?': {
           SEND_TO_Q(CLASSHELP, d);
           STATE(d) = CON_QCLASS;
-          oops = 1;
         } break;
         default:
           SEND_TO_Q("Please enter either (1-9) or (A-I)\n\r", d);
           STATE(d) = CON_QCLASS;
-          oops = 1;
           break;
       }
 #if PLAYER_AUTH

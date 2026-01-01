@@ -529,11 +529,8 @@ void do_put(struct char_data* ch, const char* argument, int cmd) {
   char arg2[128];
   struct obj_data* obj_object = nullptr;
   struct obj_data* sub_object = nullptr;
-  struct obj_data* vol_object = nullptr;
-  struct obj_data* next_obj = nullptr;
   struct char_data* tmp_char = nullptr;
   int bits = 0;
-  int volume = 0;
   char newarg[100];
   int num = 0;
   int p = 0;

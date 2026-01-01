@@ -685,8 +685,6 @@ static char* replace_string(const char* str, const char* weapon,
 static void dam_message(int dam, struct char_data* ch, struct char_data* victim,
   int w_type) {
   struct obj_data* wield = nullptr;
-  struct char_data* tmp_victim = nullptr;
-  struct char_data* temp = nullptr;
   char* buf = nullptr;
   int snum = 0;
   int numb = 0;
@@ -914,7 +912,6 @@ int DamageMessages(struct char_data* ch, struct char_data* v, int dam,
   int max_hit = 0;
   int i = 0;
   int j = 0;
-  int exp = 0;
   struct message_type* messages = nullptr;
   char buf[MAX_INPUT_LENGTH];
 
@@ -1613,7 +1610,6 @@ void root_hit(struct char_data* ch, struct char_data* victim, int type,
   int w_type = 0;
   int thaco = 0;
   int dam = 0;
-  int i = 0;
   struct obj_data* wielded = nullptr; /* this is rather important. */
 
   if (IS_AFFECTED(ch, AFF_GRAPPLE)) {
@@ -1702,9 +1698,6 @@ static void develop_hatred(struct char_data* ch, struct char_data* v) {
 void perform_violence(int pulse) {
   struct char_data* ch = nullptr;
   struct char_data* vict = nullptr;
-  int i = 0;
-  int t = 0;
-  int found = 0;
   int perc = 0;
   float x = NAN;
 

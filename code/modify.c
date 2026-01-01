@@ -115,7 +115,6 @@ void string_add(struct descriptor_data* d, char* str) {
 static void quad_arg(const char* arg, int* type, char* name, int* field,
   char* string) {
   char buf[MAX_STRING_LENGTH];
-  int i = 0;
 
   /* determine type */
   arg = one_argument(arg, buf);
@@ -356,7 +355,6 @@ void do_string(struct char_data* ch, const char* arg, int cmd) {
 
 static void bisect_arg(const char* arg, int* field, char* string) {
   char buf[MAX_INPUT_LENGTH];
-  int i = 0;
 
   /* field name and number */
   arg = one_argument(arg, buf);
@@ -379,7 +377,6 @@ void do_edit(struct char_data* ch, const char* arg, int cmd) {
   int dir = 0;
   int exroom = 0;
   int dkey = 0;
-  int room = 0;
   int rspeed = 0;
   int rdir = 0;
   int tele_room = 0;
@@ -387,11 +384,8 @@ void do_edit(struct char_data* ch, const char* arg, int cmd) {
   int tele_look = 0;
   int moblim = 0;
   unsigned r_flags = 0;
-  int zone = 0;
   int s_type = 0;
-  char name[MAX_INPUT_LENGTH];
   char string[512];
-  char buf[132];
   struct extra_descr_data* ed = nullptr;
   struct extra_descr_data* tmp = nullptr;
   struct room_data* rp = nullptr;
@@ -945,7 +939,6 @@ int load(void) {
   } info{};
 
   FILE* fl = nullptr;
-  int ld = 0;
   int i = 0;
   int sum = 0;
   static int previous[5];

@@ -28,8 +28,6 @@
 void do_gain(struct char_data* ch, const char* argument, int cmd) {}
 
 void do_guard(struct char_data* ch, const char* argument, int cmd) {
-  char comm[100];
-
   if (!IS_NPC(ch) || IS_SET(ch->specials.act, ACT_POLYSELF)) {
     send_to_char("Sorry. you can't just put your brain on autopilot!\n\r", ch);
     return;
@@ -327,9 +325,7 @@ struct blk_save {
 
 static void blk_save(struct char_data* ch) {
   FILE* fl = nullptr;
-  struct blk_save* blk = nullptr;
   char buf[MAX_STRING_LENGTH];
-  char buf2[MAX_STRING_LENGTH];
 
   if (IS_NPC(ch)) {
     return;
@@ -355,11 +351,7 @@ static void blk_save(struct char_data* ch) {
 static void save_obj_for_save(struct char_data* ch, struct obj_cost* cost,
   int do_delete) {
   static struct obj_file_u st;
-  FILE* fl = nullptr;
-  int pos = 0;
   int i = 0;
-  int j = 0;
-  char found = 0;
 
   st.number = 0;
   st.gold_left = GET_GOLD(ch);
@@ -388,10 +380,8 @@ static void save_obj_for_save(struct char_data* ch, struct obj_cost* cost,
 void do_save(struct char_data* ch, const char* argument, int cmd) {
   struct obj_cost cost{};
   struct char_data* tmp = nullptr;
-  struct obj_data* tmp_obj = nullptr;
   struct obj_data* tl = nullptr;
   struct obj_data* teq[MAX_WEAR];
-  struct obj_data* eq[MAX_WEAR];
   struct obj_data* o = nullptr;
   int i = 0;
 
@@ -544,8 +534,6 @@ void do_bload(struct char_data* ch, const char* arg, int cmd) {
   struct obj_data* arrow = nullptr;
   char arrow_name[240];
   char obj_name[240];
-  char buf[240];
-  int percent = 0;
 
   arg = one_argument(arg, obj_name);
   only_argument(arg, arrow_name);
@@ -588,7 +576,6 @@ void do_reload(struct char_data* ch, const char* argument, int cmd) {
   char shells_name[240];
   char obj_name[240];
   char buf[240];
-  int percent = 0;
 
   argument = one_argument(argument, obj_name);
   only_argument(argument, shells_name);
@@ -1213,7 +1200,6 @@ void do_channel(struct char_data* ch, const char* argument, int cmd) {
 }
 
 void do_prompt(struct char_data* ch, const char* arg, int cmd) {
-  char tmp_name[20];
   char buf[80];
 
   if (IS_NPC(ch)) {

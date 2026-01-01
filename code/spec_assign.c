@@ -810,7 +810,7 @@ void assign_mobiles(void) {
   char buf[MAX_STRING_LENGTH];
 
   for (size_t i = 0; i < num_mob_specials; ++i) {
-    int rnum = real_mobile(mob_specials[i].vnum);
+    const int rnum = real_mobile(mob_specials[i].vnum);
 
     if (rnum < 0) {
       sprintf(buf, "mobile_assign: Mobile %d not found in database.",
@@ -849,7 +849,7 @@ static const size_t num_obj_specials =
 /* assign special procedures to objects */
 void assign_objects(void) {
   for (size_t i = 0; i < num_obj_specials; ++i) {
-    int rnum = real_object(obj_specials[i].vnum);
+    const int rnum = real_object(obj_specials[i].vnum);
 
     if (rnum < 0) {
       vlogf("object_assign: Object %d not found in database.",
