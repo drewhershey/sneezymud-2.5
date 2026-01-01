@@ -123,7 +123,7 @@ struct zone_data {
 
 /* element in monster and object index-tables   */
 struct index_data {
-    int vnum; /* virtual number of this mob/obj           */
+    int vnum;    /* virtual number of this mob/obj           */
     long pos;    /* file position of this field              */
     int number;  /* number of existing units of this mob/obj	*/
     ProcFn func; /* special procedure for this mob/obj       */

@@ -30,7 +30,7 @@ static void get(struct char_data* ch, struct obj_data* obj_object,
       act("You get $p from $P.", 0, ch, obj_object, sub_object, TO_CHAR);
       act("$n gets $p from $P.", 1, ch, obj_object, sub_object, TO_ROOM);
     } else {
-      act("$P must be opened first.", 1, ch, 0, sub_object, TO_CHAR);
+      act("$P must be opened first.", 1, ch, nullptr, sub_object, TO_CHAR);
       return;
     }
   } else {
@@ -41,8 +41,8 @@ static void get(struct char_data* ch, struct obj_data* obj_object,
 
     obj_from_room(obj_object);
     obj_to_char(obj_object, ch);
-    act("You get $p.", 0, ch, obj_object, 0, TO_CHAR);
-    act("$n gets $p.", 1, ch, obj_object, 0, TO_ROOM);
+    act("You get $p.", 0, ch, obj_object, nullptr, TO_CHAR);
+    act("$n gets $p.", 1, ch, obj_object, nullptr, TO_ROOM);
   }
   if ((obj_object->obj_flags.type_flag == ITEM_MONEY) &&
       (obj_object->obj_flags.value[0] >= 1)) {
@@ -127,7 +127,7 @@ void do_get(struct char_data* ch, const char* argument, int cmd) {
     } break;
       /* get all */
     case 1: {
-      sub_object = 0;
+      sub_object = nullptr;
       found = 0;
       fail = 0;
       for (obj_object = real_roomp(ch->in_room)->contents; obj_object;
@@ -150,7 +150,7 @@ void do_get(struct char_data* ch, const char* argument, int cmd) {
                   found = 1;
                 } else {
                   act("You wouldnt know how to use the $o if you took it!", 0,
-                    ch, obj_object, 0, TO_CHAR);
+                    ch, obj_object, nullptr, TO_CHAR);
                   fail = 1;
                 }
               } else {
@@ -181,7 +181,7 @@ void do_get(struct char_data* ch, const char* argument, int cmd) {
     } break;
       /* get ??? (something) */
     case 2: {
-      sub_object = 0;
+      sub_object = nullptr;
       found = 0;
       fail = 0;
       if (getall(arg1, newarg)) {
@@ -208,7 +208,7 @@ void do_get(struct char_data* ch, const char* argument, int cmd) {
                   found = 1;
                 } else {
                   act("You wouldn't know how to use the $o if you took it!", 0,
-                    ch, obj_object, 0, TO_CHAR);
+                    ch, obj_object, nullptr, TO_CHAR);
                   fail = 1;
                   num = 0;
                 }
@@ -273,7 +273,7 @@ void do_get(struct char_data* ch, const char* argument, int cmd) {
                       found = 1;
                     } else {
                       act("You wouldn't know how to use the $o if you took it!",
-                        0, ch, obj_object, 0, TO_CHAR);
+                        0, ch, obj_object, nullptr, TO_CHAR);
                       fail = 1;
                     }
                   } else {
@@ -353,7 +353,7 @@ void do_get(struct char_data* ch, const char* argument, int cmd) {
                       found = 1;
                     } else {
                       act("You wouldn't know how to use the $o if you took it!",
-                        0, ch, obj_object, 0, TO_CHAR);
+                        0, ch, obj_object, nullptr, TO_CHAR);
                       fail = 1;
                       num = 0;
                     }
@@ -439,7 +439,7 @@ void do_drop(struct char_data* ch, const char* argument, int cmd) {
       return;
     }
 
-    act("$n drops some gold.", 0, ch, 0, 0, TO_ROOM);
+    act("$n drops some gold.", 0, ch, nullptr, nullptr, TO_ROOM);
     tmp_object = create_money(amount);
     obj_to_room(tmp_object, ch->in_room);
     GET_GOLD(ch) -= amount;
@@ -458,7 +458,7 @@ void do_drop(struct char_data* ch, const char* argument, int cmd) {
           } else {
             send_to_char("You drop something.\n\r", ch);
           }
-          act("$n drops $p.", 1, ch, tmp_object, 0, TO_ROOM);
+          act("$n drops $p.", 1, ch, tmp_object, nullptr, TO_ROOM);
           obj_from_char(tmp_object);
           obj_to_room(tmp_object, ch->in_room);
           test = 1;
@@ -495,7 +495,7 @@ void do_drop(struct char_data* ch, const char* argument, int cmd) {
           if (!IS_SET(tmp_object->obj_flags.extra_flags, ITEM_NODROP)) {
             sprintf(buffer, "You drop %s.\n\r", tmp_object->short_description);
             send_to_char(buffer, ch);
-            act("$n drops $p.", 1, ch, tmp_object, 0, TO_ROOM);
+            act("$n drops $p.", 1, ch, tmp_object, nullptr, TO_ROOM);
             obj_from_char(tmp_object);
             obj_to_room(tmp_object, ch->in_room);
           } else {
@@ -710,7 +710,7 @@ void do_give(struct char_data* ch, const char* argument, int cmd) {
     send_to_char("Ok.\n\r", ch);
     sprintf(buf, "%s gives you %d gold coins.\n\r", PERS(ch, vict), amount);
     send_to_char(buf, vict);
-    act("$n gives some gold to $N.", 1, ch, 0, vict, TO_NOTVICT);
+    act("$n gives some gold to $N.", 1, ch, nullptr, vict, TO_NOTVICT);
     if (IS_NPC(ch) || (GetMaxLevel(ch) < DEMIGOD)) {
       GET_GOLD(ch) -= amount;
     }
@@ -766,11 +766,11 @@ void do_give(struct char_data* ch, const char* argument, int cmd) {
       return;
     }
     if ((obj->obj_flags.volume + IS_CARRYING_N(vict)) > CAN_CARRY_N(vict)) {
-      act("$N seems to have $S hands full.", 0, ch, 0, vict, TO_CHAR);
+      act("$N seems to have $S hands full.", 0, ch, nullptr, vict, TO_CHAR);
       return;
     }
     if (obj->obj_flags.weight + IS_CARRYING_W(vict) > CAN_CARRY_W(vict)) {
-      act("$E can't carry that much weight.", 0, ch, 0, vict, TO_CHAR);
+      act("$E can't carry that much weight.", 0, ch, nullptr, vict, TO_CHAR);
       return;
     }
     obj_from_char(obj);

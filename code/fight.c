@@ -30,10 +30,10 @@
 /* Structures */
 
 struct message_list fight_messages[MAX_MESSAGES];
-struct char_data* combat_list = 0;  /* head of l-list of fighting chars    */
-struct char_data* missile_list = 0; /* head of l-list of fighting chars    */
-struct char_data* combat_next_dude = 0;  /* Next dude global trick           */
-struct char_data* missile_next_dude = 0; /* Next dude global trick           */
+struct char_data* combat_list = nullptr;  /* head of l-list of fighting chars  */
+struct char_data* missile_list = nullptr; /* head of l-list of fighting chars */
+struct char_data* combat_next_dude = nullptr;  /* Next dude global trick  */
+struct char_data* missile_next_dude = nullptr; /* Next dude global trick */
 
 struct attack_hit_type {
     const char* const singular;
@@ -136,7 +136,7 @@ void setKillerFlag(struct char_data* ch, struct char_data* victim) {
 }
 
 static void appear(struct char_data* ch) {
-  act("$n slowly fade into existence.", 0, ch, 0, 0, TO_ROOM);
+  act("$n slowly fade into existence.", 0, ch, nullptr, nullptr, TO_ROOM);
 
   if (affected_by_spell(ch, SPELL_INVISIBLE)) {
     affect_from_char(ch, SPELL_INVISIBLE);
@@ -160,7 +160,7 @@ void load_messages(void) {
   for (i = 0; i < MAX_MESSAGES; i++) {
     fight_messages[i].a_type = 0;
     fight_messages[i].number_of_attacks = 0;
-    fight_messages[i].msg = 0;
+    fight_messages[i].msg = nullptr;
   }
 
   (void)fscanf(f1, " %s \n", chk);
@@ -409,7 +409,7 @@ void make_corpse(struct char_data* ch) {
     }
   }
 
-  ch->carrying = 0;
+  ch->carrying = nullptr;
   IS_CARRYING_N(ch) = 0;
   IS_CARRYING_W(ch) = 0;
 
@@ -425,8 +425,8 @@ void make_corpse(struct char_data* ch) {
       corpse->char_vnum = 100;
     }
   }
-  corpse->carried_by = 0;
-  corpse->equipped_by = 0;
+  corpse->carried_by = nullptr;
+  corpse->equipped_by = nullptr;
 
   corpse->next = object_list;
   object_list = corpse;
@@ -435,7 +435,7 @@ void make_corpse(struct char_data* ch) {
     o->in_obj = corpse;
   }
 
-  object_list_new_owner(corpse, 0);
+  object_list_new_owner(corpse, nullptr);
 
   obj_to_room(corpse, ch->in_room);
 }
@@ -468,14 +468,15 @@ void death_cry(struct char_data* ch) {
     return;
   }
 
-  act("Your blood freezes as you hear $n's death cry.", 0, ch, 0, 0, TO_ROOM);
+  act("Your blood freezes as you hear $n's death cry.", 0, ch, nullptr, nullptr,
+    TO_ROOM);
   was_in = ch->in_room;
 
   for (door = 0; door <= 5; door++) {
     if (CAN_GO(ch, door)) {
       ch->in_room = (real_roomp(was_in))->dir_option[door]->to_room;
-      act("Your blood freezes as you hear someones death cry.", 0, ch, 0, 0,
-        TO_ROOM);
+      act("Your blood freezes as you hear someones death cry.", 0, ch, nullptr,
+        nullptr, TO_ROOM);
       ch->in_room = was_in;
     }
   }
@@ -490,7 +491,7 @@ void raw_kill(struct char_data* ch) {
   /*
     remove the problem with poison, and other spells
     */
-  spell_dispel_magic(IMPLEMENTOR, ch, ch, 0);
+  spell_dispel_magic(IMPLEMENTOR, ch, ch, nullptr);
 
   if (IS_SET(ch->specials.act, PLR_KILLER)) {
     REMOVE_BIT(ch->specials.act, PLR_KILLER);
@@ -625,7 +626,7 @@ void group_gain(struct char_data* ch, struct char_data* victim) {
     exp_shown = share * GetMaxLevel(k);
 
     sprintf(buf, "You receive your share of %d experience.", exp_shown);
-    act(buf, 0, k, 0, 0, TO_CHAR);
+    act(buf, 0, k, nullptr, nullptr, TO_CHAR);
     gain_exp(k, exp_shown);
     change_alignment(k, victim);
   }
@@ -637,7 +638,7 @@ void group_gain(struct char_data* ch, struct char_data* victim) {
       exp_shown = share * GetMaxLevel(f->follower);
 
       sprintf(buf, "You receive your share of %d experience.", exp_shown);
-      act(buf, 0, f->follower, 0, 0, TO_CHAR);
+      act(buf, 0, f->follower, nullptr, nullptr, TO_CHAR);
       gain_exp(f->follower, exp_shown);
 
       change_alignment(f->follower, victim);
@@ -970,26 +971,26 @@ int DamageMessages(struct char_data* ch, struct char_data* v, int dam,
   }
   switch (GET_POS(v)) {
     case POSITION_MORTALLYW:
-      act("$n is mortally wounded, and will die soon, if not aided.", 1, v, 0,
-        0, TO_ROOM);
-      act("You are mortally wounded, and will die soon, if not aided.", 0, v, 0,
-        0, TO_CHAR);
+      act("$n is mortally wounded, and will die soon, if not aided.", 1, v,
+        nullptr, nullptr, TO_ROOM);
+      act("You are mortally wounded, and will die soon, if not aided.", 0, v,
+        nullptr, nullptr, TO_CHAR);
       break;
     case POSITION_INCAP:
-      act("$n is incapacitated and will slowly die, if not aided.", 1, v, 0, 0,
-        TO_ROOM);
+      act("$n is incapacitated and will slowly die, if not aided.", 1, v,
+        nullptr, nullptr, TO_ROOM);
       act("You are incapacitated and you will slowly die, if not aided.", 0, v,
-        0, 0, TO_CHAR);
+        nullptr, nullptr, TO_CHAR);
       break;
     case POSITION_STUNNED:
       act("$n is stunned, but will probably regain consciousness again.", 1, v,
-        0, 0, TO_ROOM);
+        nullptr, nullptr, TO_ROOM);
       act("You're stunned, but you will probably regain consciousness again.",
-        0, v, 0, 0, TO_CHAR);
+        0, v, nullptr, nullptr, TO_CHAR);
       break;
     case POSITION_DEAD:
-      act("$n is dead! R.I.P.", 1, v, 0, 0, TO_ROOM);
-      act("You are dead!  Sorry...", 0, v, 0, 0, TO_CHAR);
+      act("$n is dead! R.I.P.", 1, v, nullptr, nullptr, TO_ROOM);
+      act("You are dead!  Sorry...", 0, v, nullptr, nullptr, TO_CHAR);
       break;
 
     default: /* >= POSITION SLEEPING */
@@ -997,7 +998,7 @@ int DamageMessages(struct char_data* ch, struct char_data* v, int dam,
       max_hit = hit_limit(v);
 
       if (dam > (max_hit / 5)) {
-        act("That really did HURT!", 0, v, 0, 0, TO_CHAR);
+        act("That really did HURT!", 0, v, nullptr, nullptr, TO_CHAR);
       }
 
       if (GET_HIT(v) < (hit_limit(v) / 6)) {
@@ -1018,7 +1019,7 @@ int DamageMessages(struct char_data* ch, struct char_data* v, int dam,
         } else {
           if (dam > 0) {
             act("You wish that your wounds would stop BLEEDING that much!", 0,
-              v, 0, 0, TO_CHAR);
+              v, nullptr, nullptr, TO_CHAR);
           }
         }
         if (IS_NPC(v) && (IS_SET(v->specials.act, ACT_WIMPY))) {
@@ -1042,7 +1043,8 @@ int DamageEpilog(struct char_data* ch, struct char_data* victim) {
 
   if (IS_PC(victim) && !(victim->desc)) {
     do_flee(victim, "", 0);
-    act("$n is rescued by divine forces.", 0, victim, 0, 0, TO_ROOM);
+    act("$n is rescued by divine forces.", 0, victim, nullptr, nullptr,
+      TO_ROOM);
     victim->specials.was_in_room = victim->in_room;
     if (victim->in_room != NOWHERE) {
       char_from_room(victim);
@@ -1103,7 +1105,7 @@ int DamageEpilog(struct char_data* ch, struct char_data* victim) {
     /*
      *  if the victim is dead, return true.
      */
-    victim = 0;
+    victim = nullptr;
     return 1;
   }
   return 0;
@@ -1231,7 +1233,7 @@ static int get_weapon_type(struct char_data* ch, struct obj_data** wielded) {
       w_type = TYPE_HIT;
     }
 
-    *wielded = 0; /* no weapon */
+    *wielded = nullptr; /* no weapon */
   }
   return (w_type);
 }
@@ -1403,8 +1405,8 @@ static int get_weapon_dam(struct char_data* ch, struct char_data* v,
     if (wielded->obj_flags.value[2] > 0) {
       dam += dice(wielded->obj_flags.value[1], wielded->obj_flags.value[2]);
     } else {
-      act("$p snaps into peices!", 1, ch, wielded, 0, TO_CHAR);
-      act("$p snaps into peices!", 1, ch, wielded, 0, TO_ROOM);
+      act("$p snaps into peices!", 1, ch, wielded, nullptr, TO_CHAR);
+      act("$p snaps into peices!", 1, ch, wielded, nullptr, TO_ROOM);
       if ((obj = unequip_char(ch, WIELD)) != nullptr) {
         dam += 1;
       }
@@ -1434,9 +1436,9 @@ static int monk_dodge(struct char_data* ch, struct char_data* v, int* dam) {
   if (number(1, 20000) <
       v->skills[SKILL_DODGE].learned * GET_LEVEL(ch, MONK_LEVEL_IND)) {
     *dam = 0;
-    act("You dodge the attack", 0, ch, 0, v, TO_VICT);
-    act("$N dodges the attack", 0, ch, 0, v, TO_CHAR);
-    act("$N dodges $n's attack", 0, ch, 0, v, TO_NOTVICT);
+    act("You dodge the attack", 0, ch, nullptr, v, TO_VICT);
+    act("$N dodges the attack", 0, ch, nullptr, v, TO_CHAR);
+    act("$N dodges $n's attack", 0, ch, nullptr, v, TO_NOTVICT);
   } else {
     *dam -= GET_LEVEL(ch, MONK_LEVEL_IND) / 10;
   }
@@ -1454,7 +1456,8 @@ static int weapon_spell(struct char_data* c, struct char_data* v, int type) {
       for (j = 0; j < MAX_OBJ_AFFECT; j++) {
         if (c->equipment[WIELD]->affected[j].location == APPLY_WEAPON_SPELL) {
           num = c->equipment[WIELD]->affected[j].modifier;
-          ((*spell_info[num].spell_pointer)(6, c, "", SPELL_TYPE_WAND, v, 0));
+          ((*spell_info[num].spell_pointer)(6, c, "", SPELL_TYPE_WAND, v,
+            nullptr));
         }
       }
     }
@@ -1609,7 +1612,7 @@ void root_hit(struct char_data* ch, struct char_data* victim, int type,
   int thaco;
   int dam;
   int i;
-  struct obj_data* wielded = 0; /* this is rather important. */
+  struct obj_data* wielded = nullptr; /* this is rather important. */
 
   if (IS_AFFECTED(ch, AFF_GRAPPLE)) {
     REMOVE_BIT(ch->specials.affected_by, AFF_GRAPPLE);
@@ -1853,7 +1856,7 @@ struct char_data* FindVictim(struct char_data* ch) {
   unsigned short rjump;
 
   if (ch->in_room < 0) {
-    return (0);
+    return (nullptr);
   }
 
   for (tmp_ch = (real_roomp(ch->in_room))->people; tmp_ch;
@@ -1897,7 +1900,7 @@ struct char_data* FindVictim(struct char_data* ch) {
   /* if no legal enemies have been found, return 0 */
 
   if (!found) {
-    return (0);
+    return (nullptr);
   }
 
   /*
@@ -2010,7 +2013,7 @@ struct char_data* FindVictim(struct char_data* ch) {
     return (ch->specials.fighting);
   }
 
-  return (0);
+  return (nullptr);
 }
 
 struct char_data* FindAnyVictim(struct char_data* ch) {
@@ -2036,7 +2039,7 @@ struct char_data* FindAnyVictim(struct char_data* ch) {
   unsigned short rjump = 0;
   unsigned short pjump = 0;
   if (ch->in_room < 0) {
-    return (0);
+    return (nullptr);
   }
 
   for (tmp_ch = (real_roomp(ch->in_room))->people; tmp_ch;
@@ -2075,7 +2078,7 @@ struct char_data* FindAnyVictim(struct char_data* ch) {
   /* if no legal enemies have been found, return 0 */
 
   if (!found) {
-    return (0);
+    return (nullptr);
   }
 
   /*
@@ -2180,7 +2183,7 @@ struct char_data* FindAnyVictim(struct char_data* ch) {
     return (ch->specials.fighting);
   }
 
-  return (0);
+  return (nullptr);
 }
 
 static int break_life_saver_obj(struct char_data* ch) {
@@ -2422,7 +2425,7 @@ struct char_data* FindAnAttacker(struct char_data* ch) {
   unsigned short tjump = 0;
 
   if (ch->in_room < 0) {
-    return (0);
+    return (nullptr);
   }
 
   for (tmp_ch = (real_roomp(ch->in_room))->people; tmp_ch;
@@ -2450,7 +2453,7 @@ struct char_data* FindAnAttacker(struct char_data* ch) {
   /* if no legal enemies have been found, return 0 */
 
   if (!found) {
-    return (0);
+    return (nullptr);
   }
 
   /*
@@ -2524,7 +2527,7 @@ struct char_data* FindAnAttacker(struct char_data* ch) {
     return (ch->specials.fighting);
   }
 
-  return (0);
+  return (nullptr);
 }
 
 struct char_data* FindMetaVictim(struct char_data* ch) {
@@ -2533,7 +2536,7 @@ struct char_data* FindMetaVictim(struct char_data* ch) {
   unsigned short total = 0;
 
   if (ch->in_room < 0) {
-    return (0);
+    return (nullptr);
   }
 
   for (tmp_ch = (real_roomp(ch->in_room))->people; tmp_ch;
@@ -2552,7 +2555,7 @@ struct char_data* FindMetaVictim(struct char_data* ch) {
   /* if no legal enemies have been found, return 0 */
 
   if (!found) {
-    return (0);
+    return (nullptr);
   }
 
   total = number(1, total);
@@ -2574,5 +2577,5 @@ struct char_data* FindMetaVictim(struct char_data* ch) {
     return (ch->specials.fighting);
   }
 
-  return (0);
+  return (nullptr);
 }

@@ -23,7 +23,7 @@ void InitBoards(void) {
   /*
    **  this is called at the very beginning, like shopkeepers
    */
-  board_list = 0;
+  board_list = nullptr;
 }
 
 void InitABoard(struct obj_data* obj) {
@@ -166,7 +166,7 @@ void board_write_msg(struct char_data* ch, const char* arg, struct Board* b) {
 
   board_kludge_char = ch;
 
-  ot = time(0);
+  ot = time(nullptr);
   otmstr = asctime(localtime(&ot));
   *(otmstr + strlen(otmstr) - 1) = '\0';
   sprintf(buf, "%s", otmstr);
@@ -185,7 +185,7 @@ void board_write_msg(struct char_data* ch, const char* arg, struct Board* b) {
   b->msgs[b->msg_num] = nullptr;
 
   send_to_char("Write your message. Terminate with an @.\n\r\n\r", ch);
-  act("$n starts to write a message.", 1, ch, 0, 0, TO_ROOM);
+  act("$n starts to write a message.", 1, ch, nullptr, nullptr, TO_ROOM);
 
   ch->desc->str = &b->msgs[b->msg_num];
   ch->desc->max_str = MAX_MESSAGE_LENGTH;
@@ -235,7 +235,7 @@ int board_remove_msg(struct char_data* ch, const char* arg, struct Board* b) {
   b->msg_num--;
   send_to_char("Message removed.\n\r", ch);
   sprintf(buf, "$n just removed message %d.", msg);
-  act(buf, 0, ch, 0, 0, TO_ROOM);
+  act(buf, 0, ch, nullptr, nullptr, TO_ROOM);
   board_save_board(b);
 
   return (1);
@@ -358,7 +358,7 @@ int board_display_msg(struct char_data* ch, const char* arg, struct Board* b) {
   }
 
   sprintf(buf, "$n reads message %d titled : %s.", msg, b->head[msg - 1]);
-  act(buf, 1, ch, 0, 0, TO_ROOM);
+  act(buf, 1, ch, nullptr, nullptr, TO_ROOM);
 
   /* Bad news */
 
@@ -386,7 +386,7 @@ int board_show_board(struct char_data* ch, const char* arg, struct Board* b) {
     return (0);
   }
 
-  act("$n studies the board.", 1, ch, 0, 0, TO_ROOM);
+  act("$n studies the board.", 1, ch, nullptr, nullptr, TO_ROOM);
 
   strcpy(buf,
     "This is a bulletin board. Usage: READ/REMOVE <messg #>, WRITE "

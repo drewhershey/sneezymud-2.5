@@ -47,6 +47,6 @@ void signal_setup(void) {
   interval.tv_usec = 0;
   itime.it_interval = interval;
   itime.it_value = interval;
-  setitimer(ITIMER_VIRTUAL, &itime, 0);
+  setitimer(ITIMER_VIRTUAL, &itime, nullptr);
   signal(SIGVTALRM, checkpointing);
 }

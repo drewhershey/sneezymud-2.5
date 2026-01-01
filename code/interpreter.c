@@ -483,7 +483,7 @@ void command_interpreter(struct char_data* ch, char* argument) {
      **  what about trans/flee?  board_kludge_board (later)
      */
     board_save_board(FindBoardInRoom(ch->in_room));
-    board_kludge_char = 0;
+    board_kludge_char = nullptr;
   }
 
   /* Find first non blank */
@@ -512,7 +512,7 @@ void command_interpreter(struct char_data* ch, char* argument) {
     return;
   }
 
-  if (cmd > 0 && (cmd_info[cmd].command_pointer != 0)) {
+  if (cmd > 0 && (cmd_info[cmd].command_pointer != nullptr)) {
     if (!IS_AFFECTED(ch, AFF_BREWING)) {
       if ((!IS_AFFECTED(ch, AFF_PARALYSIS)) ||
           (cmd_info[cmd].minimum_position <= POSITION_STUNNED)) {
@@ -573,7 +573,7 @@ void command_interpreter(struct char_data* ch, char* argument) {
       ch);
     return;
   }
-  if (cmd > 0 && (cmd_info[cmd].command_pointer == 0)) {
+  if (cmd > 0 && (cmd_info[cmd].command_pointer == nullptr)) {
     send_to_char("Sorry, but that command has yet to be implemented...\n\r",
       ch);
   } else {
@@ -789,7 +789,7 @@ void assign_command_pointers(void) {
   int position;
 
   for (position = 0; position < MAX_CMD_LIST; position++) {
-    cmd_info[position].command_pointer = 0;
+    cmd_info[position].command_pointer = nullptr;
   }
 
   COMMANDO(1, POSITION_STANDING, do_move, 0);
@@ -1303,16 +1303,16 @@ static void load_char_objs(struct char_data* ch) {
     removed, including bad ones.
   */
 
-  if (st.last_update + 12 * SECS_PER_REAL_HOUR < time(0)) {
+  if (st.last_update + 12 * SECS_PER_REAL_HOUR < time(nullptr)) {
     RestoreChar(ch);
   }
 
-  if (st.last_update + 24 * SECS_PER_REAL_HOUR < time(0)) {
+  if (st.last_update + 24 * SECS_PER_REAL_HOUR < time(nullptr)) {
     RemAllAffects(ch);
   }
 
   if (ch->in_room == NOWHERE &&
-      st.last_update + 6 * SECS_PER_REAL_HOUR > time(0)) {
+      st.last_update + 6 * SECS_PER_REAL_HOUR > time(nullptr)) {
     found = 1;
   } else {
     char buf[MAX_STRING_LENGTH];
@@ -1569,13 +1569,13 @@ void nanny(struct descriptor_data* d, char* arg) {
 
             if (tmp_ch->orig) {
               tmp_ch->desc->original = tmp_ch->orig;
-              tmp_ch->orig = 0;
+              tmp_ch->orig = nullptr;
             }
             STATE(d) = CON_PLYNG;
 
             d->screen_size = 24;
 
-            act("$n has reconnected.", 1, tmp_ch, 0, 0, TO_ROOM);
+            act("$n has reconnected.", 1, tmp_ch, nullptr, nullptr, TO_ROOM);
             sprintf(buf, "%s[%s] has reconnected.", GET_NAME(d->character),
               d->host);
             vlog(buf);
@@ -1948,7 +1948,8 @@ void nanny(struct descriptor_data* d, char* arg) {
               plr_tick_count = 0;
             }
 
-            act("$n has entered the game.", 1, d->character, 0, 0, TO_ROOM);
+            act("$n has entered the game.", 1, d->character, nullptr, nullptr,
+              TO_ROOM);
             STATE(d) = CON_PLYNG;
             if (!GetMaxLevel(d->character)) {
               do_start(d->character);
@@ -1981,7 +1982,8 @@ void nanny(struct descriptor_data* d, char* arg) {
               plr_tick_count = 0;
             }
 
-            act("$n has entered the game.", 1, d->character, 0, 0, TO_ROOM);
+            act("$n has entered the game.", 1, d->character, nullptr, nullptr,
+              TO_ROOM);
             STATE(d) = CON_PLYNG;
             if (!GetMaxLevel(d->character)) {
               do_start(d->character);
@@ -2014,7 +2016,8 @@ void nanny(struct descriptor_data* d, char* arg) {
                 plr_tick_count = 0;
               }
 
-              act("$n has entered the game.", 1, d->character, 0, 0, TO_ROOM);
+              act("$n has entered the game.", 1, d->character, nullptr, nullptr,
+                TO_ROOM);
               STATE(d) = CON_PLYNG;
               if (!GetMaxLevel(d->character)) {
                 do_start(d->character);
@@ -2052,7 +2055,8 @@ void nanny(struct descriptor_data* d, char* arg) {
                 plr_tick_count = 0;
               }
 
-              act("$n has entered the game.", 1, d->character, 0, 0, TO_ROOM);
+              act("$n has entered the game.", 1, d->character, nullptr, nullptr,
+                TO_ROOM);
               STATE(d) = CON_PLYNG;
               if (!GetMaxLevel(d->character)) {
                 do_start(d->character);
@@ -2090,7 +2094,8 @@ void nanny(struct descriptor_data* d, char* arg) {
                 plr_tick_count = 0;
               }
 
-              act("$n has entered the game.", 1, d->character, 0, 0, TO_ROOM);
+              act("$n has entered the game.", 1, d->character, nullptr, nullptr,
+                TO_ROOM);
               STATE(d) = CON_PLYNG;
               if (!GetMaxLevel(d->character)) {
                 do_start(d->character);
@@ -2164,7 +2169,8 @@ void nanny(struct descriptor_data* d, char* arg) {
             plr_tick_count = 0;
           }
 
-          act("$n has entered the game.", 1, d->character, 0, 0, TO_ROOM);
+          act("$n has entered the game.", 1, d->character, nullptr, nullptr,
+            TO_ROOM);
           STATE(d) = CON_PLYNG;
           if (!GetMaxLevel(d->character)) {
             do_start(d->character);
@@ -2182,7 +2188,7 @@ void nanny(struct descriptor_data* d, char* arg) {
             SEND_TO_Q("Old description :\n\r", d);
             SEND_TO_Q(d->character->player.description, d);
             free(d->character->player.description);
-            d->character->player.description = 0;
+            d->character->player.description = nullptr;
           }
           d->str = &d->character->player.description;
           d->max_str = 240;

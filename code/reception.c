@@ -43,7 +43,7 @@ char recep_offer(struct char_data* ch, struct char_data* receptionist,
     if (receptionist) {
       sprintf(buf, "$n tells you 'Sorry, but I can't store more than %d items.",
         MAX_OBJ_SAVE);
-      act(buf, 0, receptionist, 0, ch, TO_VICT);
+      act(buf, 0, receptionist, nullptr, ch, TO_VICT);
     }
     return 0;
   }
@@ -319,7 +319,7 @@ void save_obj(struct char_data* ch, struct obj_cost* cost, int do_delete) {
   st.number = 0;
   st.gold_left = GET_GOLD(ch);
   st.total_cost = cost->total_cost;
-  st.last_update = time(0);
+  st.last_update = time(nullptr);
   st.minimum_stay = 0; /* XXX where does this belong? */
 
   for (i = 0; i < MAX_WEAR; i++) {
@@ -334,7 +334,7 @@ void save_obj(struct char_data* ch, struct obj_cost* cost, int do_delete) {
 
   obj_to_store(ch->carrying, &st, ch, do_delete);
   if (do_delete) {
-    ch->carrying = 0;
+    ch->carrying = nullptr;
   }
 
   update_file(ch, &st, 1);
@@ -405,8 +405,8 @@ void update_obj_file(void) {
         } else {
           sprintf(buf, "   Processing %s[%d].", st.owner, i);
           vlog(buf);
-          days_passed = ((time(0) - st.last_update) / SECS_PER_REAL_DAY);
-          secs_lost = ((time(0) - st.last_update) % SECS_PER_REAL_DAY);
+          days_passed = ((time(nullptr) - st.last_update) / SECS_PER_REAL_DAY);
+          secs_lost = ((time(nullptr) - st.last_update) % SECS_PER_REAL_DAY);
 
           fseek(char_file,
             (long)(player_table[i].nr * sizeof(struct char_file_u)), 0);
@@ -414,7 +414,7 @@ void update_obj_file(void) {
 
           if (ch_st.load_room == AUTO_RENT) { /* this person was autorented */
             ch_st.load_room = NOWHERE;
-            st.last_update = time(0);
+            st.last_update = time(nullptr);
 
 #if LIMITED_ITEMS
             count_limited_items(&st);
@@ -443,7 +443,7 @@ void update_obj_file(void) {
                 sprintf(buf, "   Updating %s", st.owner);
                 vlog(buf);
                 st.gold_left -= (st.total_cost * days_passed);
-                st.last_update = time(0) - secs_lost;
+                st.last_update = time(nullptr) - secs_lost;
                 rewind(fl);
                 write_objs(fl, &st, 0);
                 fclose(fl);
@@ -473,7 +473,7 @@ void update_obj_file(void) {
 int receptionist(struct char_data* ch, int cmd, const char* arg) {
   char buf[240];
   struct obj_cost cost;
-  struct char_data* recep = 0;
+  struct char_data* recep = nullptr;
   struct char_data* temp_char;
   short int save_room;
   short int action_tabel[9] = {23, 24, 36, 105, 106, 109, 111, 142, 147};
@@ -513,28 +513,29 @@ int receptionist(struct char_data* ch, int cmd, const char* arg) {
   }
 
   if (!AWAKE(recep)) {
-    act("$e isn't able to talk to you...", 0, recep, 0, ch, TO_VICT);
+    act("$e isn't able to talk to you...", 0, recep, nullptr, ch, TO_VICT);
     return 1;
   }
 
   if (IS_SET(ch->specials.act, PLR_KILLER) ||
       (IS_SET(ch->specials.act, PLR_OUTLAW))) {
     sprintf(buf, "$n tells you 'Sorry, but we don't harbor criminals.");
-    act(buf, 0, recep, 0, ch, TO_VICT);
+    act(buf, 0, recep, nullptr, ch, TO_VICT);
     return 1;
   }
 
   if (!CAN_SEE(recep, ch)) {
-    act("$n says, 'I don't deal with people I can't see!'", 0, recep, 0, 0,
-      TO_ROOM);
+    act("$n says, 'I don't deal with people I can't see!'", 0, recep, nullptr,
+      nullptr, TO_ROOM);
     return 1;
   }
 
   if (cmd == 92) { /* Rent  */
     if (recep_offer(ch, recep, &cost)) {
       act("$n stores your stuff in the safe, and helps you into your chamber.",
-        0, recep, 0, ch, TO_VICT);
-      act("$n helps $N into $S private chamber.", 0, recep, 0, ch, TO_NOTVICT);
+        0, recep, nullptr, ch, TO_VICT);
+      act("$n helps $N into $S private chamber.", 0, recep, nullptr, ch,
+        TO_NOTVICT);
 
       save_obj(ch, &cost, 1);
       save_room = ch->in_room;
@@ -545,7 +546,7 @@ int receptionist(struct char_data* ch, int cmd, const char* arg) {
 
   } else { /* Offer */
     recep_offer(ch, recep, &cost);
-    act("$N gives $n an offer.", 0, ch, 0, recep, TO_ROOM);
+    act("$N gives $n an offer.", 0, ch, nullptr, recep, TO_ROOM);
   }
 
   return 1;
@@ -554,7 +555,7 @@ int receptionist(struct char_data* ch, int cmd, const char* arg) {
 int receptionist_for_outlaws(struct char_data* ch, int cmd, const char* arg) {
   char buf[240];
   struct obj_cost cost;
-  struct char_data* recep = 0;
+  struct char_data* recep = nullptr;
   struct char_data* temp_char;
   short int save_room;
   short int action_tabel[9] = {23, 24, 36, 105, 106, 109, 111, 142, 147};
@@ -594,12 +595,13 @@ int receptionist_for_outlaws(struct char_data* ch, int cmd, const char* arg) {
   }
 
   if (!AWAKE(recep)) {
-    act("$e isn't able to talk to you...", 0, recep, 0, ch, TO_VICT);
+    act("$e isn't able to talk to you...", 0, recep, nullptr, ch, TO_VICT);
     return 1;
   }
 
   if (!CAN_SEE(recep, ch)) {
-    act("$n says, 'I don't deal with people I can't see!'", 0, recep, 0, 0
+    act("$n says, 'I don't deal with people I can't see!'", 0, recep, nullptr,
+      nullptr
 
       ,
       TO_ROOM);
@@ -611,11 +613,12 @@ int receptionist_for_outlaws(struct char_data* ch, int cmd, const char* arg) {
       if (IS_SET(ch->specials.act, PLR_KILLER) ||
           (IS_SET(ch->specials.act, PLR_OUTLAW))) {
         sprintf(buf, "$n tells you 'Hurry, before the cops catch you!'");
-        act(buf, 0, recep, 0, ch, TO_VICT);
+        act(buf, 0, recep, nullptr, ch, TO_VICT);
       }
       act("$n stores your stuff in the safe, and helps you into your chamber.",
-        0, recep, 0, ch, TO_VICT);
-      act("$n helps $N into $S private chamber.", 0, recep, 0, ch, TO_NOTVICT);
+        0, recep, nullptr, ch, TO_VICT);
+      act("$n helps $N into $S private chamber.", 0, recep, nullptr, ch,
+        TO_NOTVICT);
 
       save_obj(ch, &cost, 1);
       save_room = ch->in_room;
@@ -626,7 +629,7 @@ int receptionist_for_outlaws(struct char_data* ch, int cmd, const char* arg) {
 
   } else { /* Offer */
     recep_offer(ch, recep, &cost);
-    act("$N gives $n an offer.", 0, ch, 0, recep, TO_ROOM);
+    act("$N gives $n an offer.", 0, ch, nullptr, recep, TO_ROOM);
   }
 
   return 1;

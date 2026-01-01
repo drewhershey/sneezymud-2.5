@@ -37,9 +37,10 @@ static void mobile_guardian(struct char_data* ch) {
 
       if (!SameRace(targ, ch)) {
         if (IsHumanoid(ch)) {
-          act("$n screams 'I must protect my master!'", 0, ch, 0, 0, TO_ROOM);
+          act("$n screams 'I must protect my master!'", 0, ch, nullptr, nullptr,
+            TO_ROOM);
         } else {
-          act("$n growls angrily!", 0, ch, 0, 0, TO_ROOM);
+          act("$n growls angrily!", 0, ch, nullptr, nullptr, TO_ROOM);
         }
         if (CAN_SEE(ch, targ)) {
           hit(ch, targ, 0);
@@ -93,13 +94,14 @@ static void mob_hunt(struct char_data* ch) {
             if (check_peaceful(ch,
                   "You'd love to tear your quarry to bits, but you just "
                   "CAN'T\n\r")) {
-              act("$n fumes at $N", 1, ch, 0, ch->specials.hunting, TO_ROOM);
+              act("$n fumes at $N", 1, ch, nullptr, ch->specials.hunting,
+                TO_ROOM);
             } else {
               if (IsHumanoid(ch)) {
-                act("$n screams 'Time to die, $N'", 1, ch, 0,
+                act("$n screams 'Time to die, $N'", 1, ch, nullptr,
                   ch->specials.hunting, TO_ROOM);
               } else if (IsAnimal(ch)) {
-                act("$n growls.", 1, ch, 0, 0, TO_ROOM);
+                act("$n growls.", 1, ch, nullptr, nullptr, TO_ROOM);
               }
               hit(ch, ch->specials.hunting, 0);
               return;
@@ -108,7 +110,7 @@ static void mob_hunt(struct char_data* ch) {
         }
       }
       REMOVE_BIT(ch->specials.act, ACT_HUNTING);
-      ch->specials.hunting = 0;
+      ch->specials.hunting = nullptr;
       ch->hunt_dist = 0;
     }
   } else if (ch->specials.hunting) {
@@ -122,7 +124,7 @@ static void mob_hunt(struct char_data* ch) {
         go_direction(ch, res);
       } else {
         ch->persist = 0;
-        ch->specials.hunting = 0;
+        ch->specials.hunting = nullptr;
         ch->hunt_dist = 0;
       }
     }
@@ -132,13 +134,13 @@ static void mob_hunt(struct char_data* ch) {
 }
 
 static void mob_scavenge(struct char_data* ch) {
-  struct obj_data* best_obj = 0;
-  struct obj_data* obj = 0;
+  struct obj_data* best_obj = nullptr;
+  struct obj_data* obj = nullptr;
   int max;
 
   if ((real_roomp(ch->in_room))->contents && !number(0, 5)) {
-    for (max = 1, best_obj = 0, obj = (real_roomp(ch->in_room))->contents; obj;
-      obj = obj->next_content) {
+    for (max = 1, best_obj = nullptr, obj = (real_roomp(ch->in_room))->contents;
+      obj; obj = obj->next_content) {
       if (CAN_GET_OBJ(ch, obj)) {
         if (obj->obj_flags.cost > max) {
           best_obj = obj;
@@ -154,7 +156,7 @@ static void mob_scavenge(struct char_data* ch) {
 
       obj_from_room(best_obj);
       obj_to_char(best_obj, ch);
-      act("$n gets $p.", 0, ch, best_obj, 0, TO_ROOM);
+      act("$n gets $p.", 0, ch, best_obj, nullptr, TO_ROOM);
     }
   }
 }
@@ -186,8 +188,8 @@ static int assist_friend(struct char_data* ch) {
   int t;
   int found;
 
-  damsel = 0;
-  targ = 0;
+  damsel = nullptr;
+  targ = nullptr;
 
   if (check_peaceful(ch, "")) {
     return 0;
@@ -290,12 +292,13 @@ void mobile_activity(struct char_data* ch) {
             act(
               "$n growls '$N, would you care to step outside where we can "
               "settle this?'",
-              1, ch, 0, tmp_ch, TO_ROOM);
+              1, ch, nullptr, tmp_ch, TO_ROOM);
           } else {
             if (IsHumanoid(ch)) {
-              act("$n screams 'I'm gonna kill you!'", 1, ch, 0, 0, TO_ROOM);
+              act("$n screams 'I'm gonna kill you!'", 1, ch, nullptr, nullptr,
+                TO_ROOM);
             } else if (IsAnimal(ch)) {
-              act("$n growls", 1, ch, 0, 0, TO_ROOM);
+              act("$n growls", 1, ch, nullptr, nullptr, TO_ROOM);
             }
             hit(ch, tmp_ch, 0);
           }
@@ -322,12 +325,13 @@ void mobile_activity(struct char_data* ch) {
                 act(
                   "$n growls '$N, would you care to step outside where we can "
                   "settle this?'",
-                  1, ch, 0, tmp_ch, TO_ROOM);
+                  1, ch, nullptr, tmp_ch, TO_ROOM);
               } else {
                 if (IsHumanoid(ch)) {
-                  act("$n screams 'I'm gonna get you!'", 1, ch, 0, 0, TO_ROOM);
+                  act("$n screams 'I'm gonna get you!'", 1, ch, nullptr,
+                    nullptr, TO_ROOM);
                 } else if (IsAnimal(ch)) {
-                  act("$n growls", 1, ch, 0, 0, TO_ROOM);
+                  act("$n growls", 1, ch, nullptr, nullptr, TO_ROOM);
                 }
                 hit(ch, tmp_ch, 0);
               }
@@ -342,7 +346,7 @@ void mobile_activity(struct char_data* ch) {
         if (tmp_ch) {
           if (check_peaceful(ch,
                 "You can't seem to exercise your violent tendencies.\n\r")) {
-            act("$n growls impotently", 1, ch, 0, 0, TO_ROOM);
+            act("$n growls impotently", 1, ch, nullptr, nullptr, TO_ROOM);
             return;
           }
           hit(ch, tmp_ch, 0);
@@ -356,7 +360,7 @@ void mobile_activity(struct char_data* ch) {
         if (tmp_ch) {
           if (check_peaceful(ch,
                 "You can't seem to exercise your violent tendencies.\n\r")) {
-            act("$n growls impotently", 1, ch, 0, 0, TO_ROOM);
+            act("$n growls impotently", 1, ch, nullptr, nullptr, TO_ROOM);
             return;
           }
           hit(ch, tmp_ch, 0);

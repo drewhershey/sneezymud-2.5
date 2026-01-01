@@ -124,7 +124,7 @@ int main(int argc, char** argv) {
     }
   }
 
-  Uptime = time(0);
+  Uptime = time(nullptr);
 
   sprintf(buf, "Running game on port %d.", port);
   vlog(buf);
@@ -240,7 +240,7 @@ int game_loop(int s) {
 
   opt_time.tv_usec = OPT_USEC; /* Init time values */
   opt_time.tv_sec = 0;
-  gettimeofday(&last_time, (struct timezone*)0);
+  gettimeofday(&last_time, (struct timezone*)nullptr);
 
   maxdesc = s;
   /* !! Change if more needed !! */
@@ -272,7 +272,7 @@ int game_loop(int s) {
     }
 
     /* check out the time */
-    gettimeofday(&now, (struct timezone*)0);
+    gettimeofday(&now, (struct timezone*)nullptr);
     timespent = timediff(&now, &last_time);
     timeout = timediff(&opt_time, &timespent);
     last_time.tv_sec = now.tv_sec + timeout.tv_sec;
@@ -293,7 +293,8 @@ int game_loop(int s) {
       return (-1);
     }
 
-    if (select(0, (fd_set*)0, (fd_set*)0, (fd_set*)0, &timeout) < 0) {
+    if (select(0, (fd_set*)nullptr, (fd_set*)nullptr, (fd_set*)nullptr,
+          &timeout) < 0) {
       perror("Select sleep");
     }
 
@@ -346,7 +347,8 @@ int game_loop(int s) {
               point->character->specials.was_in_room);
           }
           point->character->specials.was_in_room = NOWHERE;
-          act("$n has returned.", 1, point->character, 0, 0, TO_ROOM);
+          act("$n has returned.", 1, point->character, nullptr, nullptr,
+            TO_ROOM);
         }
 
         point->wait = 1;
@@ -977,19 +979,19 @@ int new_descriptor(int s) {
   newd->wait = 1;
   newd->prompt_mode = 0;
   *newd->buf = '\0';
-  newd->str = 0;
-  newd->showstr_head = 0;
-  newd->showstr_point = 0;
+  newd->str = nullptr;
+  newd->showstr_head = nullptr;
+  newd->showstr_point = nullptr;
   newd->pagedfile = nullptr;
   newd->position = 0;
   *newd->last_input = '\0';
   newd->output.head = nullptr;
   newd->input.head = nullptr;
   newd->next = descriptor_list;
-  newd->character = 0;
-  newd->original = 0;
-  newd->snoop.snooping = 0;
-  newd->snoop.snoop_by = 0;
+  newd->character = nullptr;
+  newd->original = nullptr;
+  newd->snoop.snooping = nullptr;
+  newd->snoop.snoop_by = nullptr;
 
   /* prepend to list */
 
@@ -1204,18 +1206,18 @@ void close_socket(struct descriptor_data* d) {
 
   /* Forget snooping */
   if (d->snoop.snooping) {
-    d->snoop.snooping->desc->snoop.snoop_by = 0;
+    d->snoop.snooping->desc->snoop.snoop_by = nullptr;
   }
 
   if (d->snoop.snoop_by) {
     send_to_char("Your victim is no longer among us.\n\r", d->snoop.snoop_by);
-    d->snoop.snoop_by->desc->snoop.snooping = 0;
+    d->snoop.snoop_by->desc->snoop.snooping = nullptr;
   }
 
   if (d->character) {
     if (d->connected == CON_PLYNG) {
       do_save(d->character, "", 0);
-      act("$n has lost $s link.", 1, d->character, 0, 0, TO_ROOM);
+      act("$n has lost $s link.", 1, d->character, nullptr, nullptr, TO_ROOM);
       sprintf(buf, "Closing link to: %s.", GET_NAME(d->character));
       vlog(buf);
       if (IS_NPC(d->character)) {
@@ -1223,7 +1225,7 @@ void close_socket(struct descriptor_data* d) {
           d->character->orig = d->character->desc->original;
         }
       }
-      d->character->desc = 0;
+      d->character->desc = nullptr;
       d->character->invis_level =
         LOW_IMMORTAL; /* set the invis level to LOW_IMMORTAL */
     } else {
@@ -1325,7 +1327,7 @@ void coma(int s) {
 
   do {
     FD_SET(s, &input_set);
-    if (select(64, &input_set, 0, 0, &timeout) < 0) {
+    if (select(64, &input_set, nullptr, nullptr, &timeout) < 0) {
       perror("coma select");
       exit(1);
     }

@@ -50,7 +50,7 @@ struct char_data* character_list = nullptr; /* global l-list of chars */
 struct zone_data* zone_table; /* table of reset data             */
 int top_of_zone_table = 0;
 
-struct player_index_element* player_table = 0; /* index to player file   */
+struct player_index_element* player_table = nullptr; /* index to player file */
 int top_of_p_table = 0; /* ref to top of table             */
 int top_of_p_file = 0;
 long total_bc = 0;
@@ -189,7 +189,7 @@ void boot_db(void) {
     reset_zone(i);
   }
 
-  reset_q.head = reset_q.tail = 0;
+  reset_q.head = reset_q.tail = nullptr;
 
   vlog("Boot db -- DONE.");
 }
@@ -199,7 +199,7 @@ void reset_time(void) {
   char buf[80];
   long beginning_of_time = 650336715;
 
-  time_info = mud_time_passed(time(0), beginning_of_time);
+  time_info = mud_time_passed(time(nullptr), beginning_of_time);
 
   moontype = time_info.day;
 
@@ -290,7 +290,7 @@ void update_time(void) {
     exit(0);
   }
 
-  current_time = time(0);
+  current_time = time(nullptr);
   vlog("Time update.");
 
   fprintf(f1, "#\n");
@@ -1003,9 +1003,9 @@ struct char_data* read_mobile(int nr, int type) {
 
     mob->player.char_class = 0;
 
-    mob->player.time.birth = time(0);
+    mob->player.time.birth = time(nullptr);
     mob->player.time.played = 0;
-    mob->player.time.logon = time(0);
+    mob->player.time.logon = time(nullptr);
     mob->player.weight = 200;
     mob->player.height = 198;
 
@@ -1129,9 +1129,9 @@ struct char_data* read_mobile(int nr, int type) {
     }
 
     mob->player.char_class = 0;
-    mob->player.time.birth = time(0);
+    mob->player.time.birth = time(nullptr);
     mob->player.time.played = 0;
-    mob->player.time.logon = time(0);
+    mob->player.time.logon = time(nullptr);
     mob->player.weight = 200;
     mob->player.height = 198;
 
@@ -1199,9 +1199,9 @@ struct char_data* read_mobile(int nr, int type) {
 
     int unk_1 = 0;
     fscanf(mob_f, " %d ", &unk_1);
-    mob->player.time.birth = time(0);
+    mob->player.time.birth = time(nullptr);
     mob->player.time.played = 0;
-    mob->player.time.logon = time(0);
+    mob->player.time.logon = time(nullptr);
 
     fscanf(mob_f, " %hhu ", &mob->player.weight);
     fscanf(mob_f, " %hhu \n", &mob->player.height);
@@ -1230,7 +1230,7 @@ struct char_data* read_mobile(int nr, int type) {
 
   /* Initialisering Ok */
   for (int i = 0; i < MAX_WEAR; ++i) {
-    mob->equipment[i] = 0;
+    mob->equipment[i] = nullptr;
   }
 
   mob->nr = (short)nr;
@@ -1282,7 +1282,7 @@ struct obj_data* read_object(int nr, int type) {
   }
   if (nr < 0 || nr > top_of_objt) {
     sprintf(buf, "Object (V) %d does not exist in database.", i);
-    return (0);
+    return (nullptr);
   }
 
   fseek(obj_f, obj_index[nr].pos, 0);
@@ -1346,7 +1346,7 @@ struct obj_data* read_object(int nr, int type) {
 
   /* *** extra descriptions *** */
 
-  obj->ex_description = 0;
+  obj->ex_description = nullptr;
 
   while (fscanf(obj_f, " %s \n", chk), *chk == 'E') {
     CREATE(new_descr, struct extra_descr_data, 1);
@@ -1378,12 +1378,12 @@ struct obj_data* read_object(int nr, int type) {
   }
 
   obj->in_room = NOWHERE;
-  obj->next_content = 0;
-  obj->carried_by = 0;
-  obj->equipped_by = 0;
+  obj->next_content = nullptr;
+  obj->carried_by = nullptr;
+  obj->equipped_by = nullptr;
   obj->eq_pos = -1;
-  obj->in_obj = 0;
-  obj->contains = 0;
+  obj->in_obj = nullptr;
+  obj->contains = nullptr;
   obj->item_number = nr;
 
   obj->next = object_list;
@@ -1424,7 +1424,7 @@ void zone_update(void) {
       CREATE(update_u, struct reset_q_element, 1);
 
       update_u->zone_to_reset = i;
-      update_u->next = 0;
+      update_u->next = nullptr;
 
       if (!reset_q.head) {
         reset_q.head = reset_q.tail = update_u;
@@ -1446,7 +1446,7 @@ void zone_update(void) {
     over the short run
     */
       update_u->zone_to_reset = 0;
-      update_u->next = 0;
+      update_u->next = nullptr;
     }
     tmp2 = update_u->next;
 
@@ -1487,7 +1487,7 @@ void reset_zone(int zone) {
   struct obj_data* obj_to;
   struct room_data* rp;
 
-  mob = 0;
+  mob = nullptr;
 
   for (cmd_no = 0;; cmd_no++) {
     if (ZCMD.command == 'S') {
@@ -1693,28 +1693,28 @@ void store_to_char(struct char_file_u* st, struct char_data* ch) {
 
   GET_RACE(ch) = st->race;
 
-  ch->player.short_descr = 0;
-  ch->player.long_descr = 0;
+  ch->player.short_descr = nullptr;
+  ch->player.long_descr = nullptr;
 
   if (*st->title) {
     CREATE(ch->player.title, char, strlen(st->title) + 1);
     strcpy(ch->player.title, st->title);
   } else {
-    GET_TITLE(ch) = 0;
+    GET_TITLE(ch) = nullptr;
   }
 
   if (*st->description) {
     CREATE(ch->player.description, char, strlen(st->description) + 1);
     strcpy(ch->player.description, st->description);
   } else {
-    ch->player.description = 0;
+    ch->player.description = nullptr;
   }
 
   ch->player.hometown = st->hometown;
 
   ch->player.time.birth = st->birth;
   ch->player.time.played = st->played;
-  ch->player.time.logon = time(0);
+  ch->player.time.logon = time(nullptr);
 
   for (i = 0; i <= MAX_TOUNGE - 1; i++) {
     ch->player.talks[i] = st->talks[i];
@@ -1785,7 +1785,7 @@ void char_to_store(struct char_data* ch, struct char_file_u* st) {
     if (ch->equipment[i]) {
       char_eq[i] = unequip_char_for_save(ch, i);
     } else {
-      char_eq[i] = 0;
+      char_eq[i] = nullptr;
     }
   }
 
@@ -1820,11 +1820,11 @@ void char_to_store(struct char_data* ch, struct char_file_u* st) {
 
   st->birth = ch->player.time.birth;
   st->played = ch->player.time.played;
-  st->played += (long)(time(0) - ch->player.time.logon);
-  st->last_logon = time(0);
+  st->played += (long)(time(nullptr) - ch->player.time.logon);
+  st->last_logon = time(nullptr);
 
   ch->player.time.played = st->played;
-  ch->player.time.logon = time(0);
+  ch->player.time.logon = time(nullptr);
 
   st->hometown = ch->player.hometown;
   st->weight = GET_WEIGHT(ch);
@@ -1948,7 +1948,7 @@ void save_char(struct char_data* ch, short int load_room) {
     if (!ch->desc) {
       return;
     }
-    tmp = 0;
+    tmp = nullptr;
   }
 
   if ((expand = (ch->desc->pos > top_of_p_file))) {
@@ -2207,10 +2207,10 @@ void reset_char(struct char_data* ch) {
   int j;
 
   for (i = 0; i < MAX_WEAR; i++) { /* Initializing */
-    ch->equipment[i] = 0;
+    ch->equipment[i] = nullptr;
   }
 
-  spell_dispel_magic(IMPLEMENTOR, ch, ch, 0);
+  spell_dispel_magic(IMPLEMENTOR, ch, ch, nullptr);
 
   if (IS_SET(ch->specials.act, PLR_MAILING)) {
     REMOVE_BIT(ch->specials.act, PLR_MAILING);
@@ -2234,10 +2234,10 @@ void reset_char(struct char_data* ch) {
     GET_EXP(ch) = 200000000;
   }
 
-  ch->followers = 0;
-  ch->master = 0;
-  ch->carrying = 0;
-  ch->next = 0;
+  ch->followers = nullptr;
+  ch->master = nullptr;
+  ch->carrying = nullptr;
+  ch->next = nullptr;
 
   ch->immune = 0;
   ch->M_immune = 0;
@@ -2277,8 +2277,8 @@ void reset_char(struct char_data* ch) {
   ch->hunt_dist = 0;
   ch->hatefield = 0;
   ch->fearfield = 0;
-  ch->hates.clist = 0;
-  ch->fears.clist = 0;
+  ch->hates.clist = nullptr;
+  ch->fears.clist = nullptr;
 
   /* AC adjustment */
   GET_AC(ch) += dex_app[GET_DEX(ch)].defensive;
@@ -2289,9 +2289,9 @@ void reset_char(struct char_data* ch) {
   GET_HITROLL(ch) = 0;
   GET_DAMROLL(ch) = 0;
 
-  ch->next_fighting = 0;
-  ch->next_in_room = 0;
-  ch->specials.fighting = 0;
+  ch->next_fighting = nullptr;
+  ch->next_in_room = nullptr;
+  ch->specials.fighting = nullptr;
   ch->specials.position = POSITION_STANDING;
   ch->specials.default_pos = POSITION_STANDING;
   ch->specials.carry_weight = 0;
@@ -2418,15 +2418,15 @@ void init_char(struct char_data* ch) {
 
   set_title(ch);
 
-  ch->player.short_descr = 0;
-  ch->player.long_descr = 0;
-  ch->player.description = 0;
+  ch->player.short_descr = nullptr;
+  ch->player.long_descr = nullptr;
+  ch->player.description = nullptr;
 
   ch->player.hometown = number(1, 4);
 
-  ch->player.time.birth = time(0);
+  ch->player.time.birth = time(nullptr);
   ch->player.time.played = 0;
-  ch->player.time.logon = time(0);
+  ch->player.time.logon = time(nullptr);
 
   for (i = 0; i < MAX_TOUNGE; i++) {
     ch->player.talks[i] = 0;

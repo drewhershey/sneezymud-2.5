@@ -391,7 +391,7 @@ static void show_mult_obj_to_char(struct obj_data* object, struct char_data* ch,
         strcat(buffer, object->action_description);
         page_string(ch->desc, buffer, 1);
       } else {
-        act("It's blank.", 0, ch, 0, 0, TO_CHAR);
+        act("It's blank.", 0, ch, nullptr, nullptr, TO_CHAR);
       }
       return;
     }
@@ -711,26 +711,27 @@ static void show_char_to_char(struct char_data* i, struct char_data* ch,
     }
 
     if (IS_AFFECTED(i, AFF_SANCTUARY)) {
-      act(".....$n glows with a bright light!", 0, i, 0, ch, TO_VICT);
+      act(".....$n glows with a bright light!", 0, i, nullptr, ch, TO_VICT);
     }
     if (affected_by_spell(i, SPELL_FIRESHIELD)) {
-      act(".....$n glows with a red light!", 0, i, 0, ch, TO_VICT);
+      act(".....$n glows with a red light!", 0, i, nullptr, ch, TO_VICT);
     }
     if (IS_AFFECTED(i, AFF_FLYING)) {
-      act(".....$n is hovering above the ground!", 0, i, 0, ch, TO_VICT);
+      act(".....$n is hovering above the ground!", 0, i, nullptr, ch, TO_VICT);
     }
     if (IS_AFFECTED(i, AFF_BREWING)) {
-      act(".....$n is brewing a potion!", 0, i, 0, ch, TO_VICT);
+      act(".....$n is brewing a potion!", 0, i, nullptr, ch, TO_VICT);
     }
     if (check_slots(i) && GET_POS(i) == POSITION_SITTING) {
-      act(".....$n is sitting at the slot machine!", 0, i, 0, ch, TO_VICT);
+      act(".....$n is sitting at the slot machine!", 0, i, nullptr, ch,
+        TO_VICT);
     }
 
   } else if (mode == 1) {
     if (i->player.description) {
       send_to_char(i->player.description, ch);
     } else {
-      act("You see nothing special about $m.", 0, i, 0, ch, TO_VICT);
+      act("You see nothing special about $m.", 0, i, nullptr, ch, TO_VICT);
     }
 
     /* Show a character to another */
@@ -776,7 +777,7 @@ static void show_char_to_char(struct char_data* i, struct char_data* ch,
       }
     }
     if (found) {
-      act("\n\r$n is using:", 0, i, 0, ch, TO_VICT);
+      act("\n\r$n is using:", 0, i, nullptr, ch, TO_VICT);
       for (j = 0; j < MAX_WEAR; j++) {
         if (i->equipment[j]) {
           if (CAN_SEE_OBJ(ch, i->equipment[j])) {
@@ -812,7 +813,7 @@ static void show_char_to_char(struct char_data* i, struct char_data* ch,
 
   } else if (mode == 2) {
     /* Lists inventory */
-    act("$n is carrying:", 0, i, 0, ch, TO_VICT);
+    act("$n is carrying:", 0, i, nullptr, ch, TO_VICT);
     list_obj_in_heap(i->carrying, ch);
   }
 }
@@ -951,20 +952,20 @@ static void show_mult_char_to_char(struct char_data* i, struct char_data* ch,
     }
 
     if (IS_AFFECTED(i, AFF_SANCTUARY)) {
-      act("$n glows with a bright light!", 0, i, 0, ch, TO_VICT);
+      act("$n glows with a bright light!", 0, i, nullptr, ch, TO_VICT);
     }
     if (affected_by_spell(i, SPELL_FIRESHIELD)) {
-      act("$n glows with a red light!", 0, i, 0, ch, TO_VICT);
+      act("$n glows with a red light!", 0, i, nullptr, ch, TO_VICT);
     }
     if (affected_by_spell(i, SPELL_FLY)) {
-      act("$n is hovering above the ground!", 0, i, 0, ch, TO_VICT);
+      act("$n is hovering above the ground!", 0, i, nullptr, ch, TO_VICT);
     }
 
   } else if (mode == 1) {
     if (i->player.description) {
       send_to_char(i->player.description, ch);
     } else {
-      act("You see nothing special about $m.", 0, i, 0, ch, TO_VICT);
+      act("You see nothing special about $m.", 0, i, nullptr, ch, TO_VICT);
     }
 
     /* Show a character to another */
@@ -1010,7 +1011,7 @@ static void show_mult_char_to_char(struct char_data* i, struct char_data* ch,
       }
     }
     if (found) {
-      act("\n\r$n is using:", 0, i, 0, ch, TO_VICT);
+      act("\n\r$n is using:", 0, i, nullptr, ch, TO_VICT);
       for (j = 0; j < MAX_WEAR; j++) {
         if (i->equipment[j]) {
           if (CAN_SEE_OBJ(ch, i->equipment[j])) {
@@ -1037,7 +1038,7 @@ static void show_mult_char_to_char(struct char_data* i, struct char_data* ch,
 
   } else if (mode == 2) {
     /* Lists inventory */
-    act("$n is carrying:", 0, i, 0, ch, TO_VICT);
+    act("$n is carrying:", 0, i, nullptr, ch, TO_VICT);
     list_obj_in_heap(i->carrying, ch);
   }
 }
@@ -1143,8 +1144,8 @@ static void read_book(struct char_data* ch, struct obj_data* o, char* arg) {
     return;
   }
 
-  act("With curious eyes, you begin to read $p...", 1, ch, o, 0, TO_CHAR);
-  act("$n begins reading $p...", 1, ch, o, 0, TO_ROOM);
+  act("With curious eyes, you begin to read $p...", 1, ch, o, nullptr, TO_CHAR);
+  act("$n begins reading $p...", 1, ch, o, nullptr, TO_ROOM);
 
   vnum = obj_index[o->item_number].vnum;
   /* in next sscanf, buf eats 'words' like 'sect', 'section', 'chapter'... */
@@ -1214,9 +1215,9 @@ void do_look(struct char_data* ch, const char* argument, int cmd) {
     }
 
     found = 0;
-    tmp_object = 0;
-    tmp_char = 0;
-    tmp_desc = 0;
+    tmp_object = nullptr;
+    tmp_char = nullptr;
+    tmp_desc = nullptr;
 
     switch (keyword_no) {
         /* look <dir> */
@@ -1259,7 +1260,7 @@ void do_look(struct char_data* ch, const char* argument, int cmd) {
             send_to_char(buffer, ch);
 
             sprintf(buffer, "$n looks %swards.", dirs[keyword_no]);
-            act(buffer, 0, ch, 0, 0, TO_ROOM);
+            act(buffer, 0, ch, nullptr, nullptr, TO_ROOM);
 
             rp = real_roomp(exitp->to_room);
             if (!rp) {
@@ -1285,7 +1286,7 @@ void do_look(struct char_data* ch, const char* argument, int cmd) {
           if (bits) { /* Found something */
             if (GET_ITEM_TYPE(tmp_object) == ITEM_DRINKCON) {
               if (tmp_object->obj_flags.value[1] <= 0) {
-                act("It is empty.", 0, ch, 0, 0, TO_CHAR);
+                act("It is empty.", 0, ch, nullptr, nullptr, TO_CHAR);
               } else {
                 temp = ((tmp_object->obj_flags.value[1] * 3) /
                         tmp_object->obj_flags.value[0]);
@@ -1331,8 +1332,8 @@ void do_look(struct char_data* ch, const char* argument, int cmd) {
           if (tmp_char) {
             show_char_to_char(tmp_char, ch, 1);
             if (ch != tmp_char) {
-              act("$n looks at you.", 1, ch, 0, tmp_char, TO_VICT);
-              act("$n looks at $N.", 1, ch, 0, tmp_char, TO_NOTVICT);
+              act("$n looks at you.", 1, ch, nullptr, tmp_char, TO_VICT);
+              act("$n looks at $N.", 1, ch, nullptr, tmp_char, TO_NOTVICT);
             }
             return;
           }
@@ -1455,7 +1456,7 @@ void do_look(struct char_data* ch, const char* argument, int cmd) {
             if (ch->specials.hunting) {
               res = track(ch, ch->specials.hunting);
               if (!res) {
-                ch->specials.hunting = 0;
+                ch->specials.hunting = nullptr;
                 ch->hunt_dist = 0;
                 REMOVE_BIT(ch->specials.act, PLR_HUNTING);
               }
@@ -1469,7 +1470,7 @@ void do_look(struct char_data* ch, const char* argument, int cmd) {
             if (ch->specials.hunting) {
               res = track(ch, ch->specials.hunting);
               if (!res) {
-                ch->specials.hunting = 0;
+                ch->specials.hunting = nullptr;
                 ch->hunt_dist = 0;
                 REMOVE_BIT(ch->specials.act, ACT_HUNTING);
               }
@@ -1501,7 +1502,7 @@ void do_look(struct char_data* ch, const char* argument, int cmd) {
             if (ch->specials.hunting) {
               res = track(ch, ch->specials.hunting);
               if (!res) {
-                ch->specials.hunting = 0;
+                ch->specials.hunting = nullptr;
                 ch->hunt_dist = 0;
                 REMOVE_BIT(ch->specials.act, PLR_HUNTING);
               }
@@ -1515,7 +1516,7 @@ void do_look(struct char_data* ch, const char* argument, int cmd) {
             if (ch->specials.hunting) {
               res = track(ch, ch->specials.hunting);
               if (!res) {
-                ch->specials.hunting = 0;
+                ch->specials.hunting = nullptr;
                 ch->hunt_dist = 0;
                 REMOVE_BIT(ch->specials.act, ACT_HUNTING);
               }
@@ -1554,7 +1555,7 @@ void do_look(struct char_data* ch, const char* argument, int cmd) {
             if (ch->specials.hunting) {
               res = track(ch, ch->specials.hunting);
               if (!res) {
-                ch->specials.hunting = 0;
+                ch->specials.hunting = nullptr;
                 ch->hunt_dist = 0;
                 REMOVE_BIT(ch->specials.act, PLR_HUNTING);
               }
@@ -1568,7 +1569,7 @@ void do_look(struct char_data* ch, const char* argument, int cmd) {
             if (ch->specials.hunting) {
               res = track(ch, ch->specials.hunting);
               if (!res) {
-                ch->specials.hunting = 0;
+                ch->specials.hunting = nullptr;
                 ch->hunt_dist = 0;
                 REMOVE_BIT(ch->specials.act, ACT_HUNTING);
               }
@@ -1757,7 +1758,7 @@ void do_score(struct char_data* ch, const char* argument, int cmd) {
   send_to_char(buf, ch);
 
   playing_time = real_time_passed(
-    (time(0) - ch->player.time.logon) + ch->player.time.played, 0);
+    (time(nullptr) - ch->player.time.logon) + ch->player.time.played, 0);
   sprintf(buf, "You have been playing for %d days and %d hours.\n\r",
     playing_time.day, playing_time.hours);
   send_to_char(buf, ch);
@@ -1786,7 +1787,7 @@ void do_score(struct char_data* ch, const char* argument, int cmd) {
       break;
     case POSITION_FIGHTING:
       if (ch->specials.fighting) {
-        act("You are fighting $N.\n\r", 0, ch, 0, ch->specials.fighting,
+        act("You are fighting $N.\n\r", 0, ch, nullptr, ch->specials.fighting,
           TO_CHAR);
       } else {
         send_to_char("You are fighting thin air.\n\r", ch);
@@ -2410,8 +2411,8 @@ void do_consider(struct char_data* ch, const char* argument, int cmd) {
     return;
   }
 
-  act("$n looks at $N", 0, ch, 0, victim, TO_NOTVICT);
-  act("$n looks at you", 0, ch, 0, victim, TO_VICT);
+  act("$n looks at $N", 0, ch, nullptr, victim, TO_NOTVICT);
+  act("$n looks at you", 0, ch, nullptr, victim, TO_VICT);
 
   diff = GetMaxLevel(victim) - GetMaxLevel(ch);
   if (diff <= -10) {
@@ -2453,35 +2454,37 @@ void do_consider(struct char_data* ch, const char* argument, int cmd) {
     if (IsAnimal(victim) && ch->skills[SKILL_CONS_ANIMAL].learned) {
       skill = SKILL_CONS_ANIMAL;
       learn = ch->skills[skill].learned;
-      act("$N seems to be an animal", 0, ch, 0, victim, TO_CHAR);
+      act("$N seems to be an animal", 0, ch, nullptr, victim, TO_CHAR);
     }
     if (IsVeggie(victim) && ch->skills[SKILL_CONS_VEGGIE].learned) {
       if (!skill) {
         skill = SKILL_CONS_VEGGIE;
       }
       learn = MAX(learn, ch->skills[SKILL_CONS_VEGGIE].learned);
-      act("$N seems to be an ambulatory vegetable", 0, ch, 0, victim, TO_CHAR);
+      act("$N seems to be an ambulatory vegetable", 0, ch, nullptr, victim,
+        TO_CHAR);
     }
     if (IsDiabolic(victim) && ch->skills[SKILL_CONS_DEMON].learned) {
       if (!skill) {
         skill = SKILL_CONS_DEMON;
       }
       learn = MAX(learn, ch->skills[SKILL_CONS_DEMON].learned);
-      act("$N seems to be a demon!", 0, ch, 0, victim, TO_CHAR);
+      act("$N seems to be a demon!", 0, ch, nullptr, victim, TO_CHAR);
     }
     if (IsReptile(victim) && ch->skills[SKILL_CONS_REPTILE].learned) {
       if (!skill) {
         skill = SKILL_CONS_REPTILE;
       }
       learn = MAX(learn, ch->skills[SKILL_CONS_REPTILE].learned);
-      act("$N seems to be a reptilian creature", 0, ch, 0, victim, TO_CHAR);
+      act("$N seems to be a reptilian creature", 0, ch, nullptr, victim,
+        TO_CHAR);
     }
     if (IsUndead(victim) && ch->skills[SKILL_CONS_UNDEAD].learned) {
       if (!skill) {
         skill = SKILL_CONS_UNDEAD;
       }
       learn = MAX(learn, ch->skills[SKILL_CONS_UNDEAD].learned);
-      act("$N seems to be undead", 0, ch, 0, victim, TO_CHAR);
+      act("$N seems to be undead", 0, ch, nullptr, victim, TO_CHAR);
     }
 
     if (IsGiantish(victim) && ch->skills[SKILL_CONS_GIANT].learned) {
@@ -2489,21 +2492,24 @@ void do_consider(struct char_data* ch, const char* argument, int cmd) {
         skill = SKILL_CONS_GIANT;
       }
       learn = MAX(learn, ch->skills[SKILL_CONS_GIANT].learned);
-      act("$N seems to be a giantish creature", 0, ch, 0, victim, TO_CHAR);
+      act("$N seems to be a giantish creature", 0, ch, nullptr, victim,
+        TO_CHAR);
     }
     if (IsPerson(victim) && ch->skills[SKILL_CONS_PEOPLE].learned) {
       if (!skill) {
         skill = SKILL_CONS_PEOPLE;
       }
       learn = MAX(learn, ch->skills[SKILL_CONS_PEOPLE].learned);
-      act("$N seems to be a human or demi-human", 0, ch, 0, victim, TO_CHAR);
+      act("$N seems to be a human or demi-human", 0, ch, nullptr, victim,
+        TO_CHAR);
     }
     if (IsOther(victim) && ch->skills[SKILL_CONS_OTHER].learned) {
       if (!skill) {
         skill = SKILL_CONS_OTHER;
       }
       learn = MAX(learn, ch->skills[SKILL_CONS_OTHER].learned / 2);
-      act("$N seems to be a monster you know about", 0, ch, 0, victim, TO_CHAR);
+      act("$N seems to be a monster you know about", 0, ch, nullptr, victim,
+        TO_CHAR);
     }
 
     if (learn > 95) {
@@ -2606,7 +2612,7 @@ void do_world(struct char_data* ch, const char* argument, int cmd) {
   sprintf(buf, "Start time was: %s (CST)\n\r", otmstr);
   send_to_char(buf, ch);
 
-  ct = time(0);
+  ct = time(nullptr);
   tmstr = asctime(localtime(&ct));
   *(tmstr + strlen(tmstr) - 1) = '\0';
   sprintf(buf, "Current time is: %s (CST)\n\r", tmstr);

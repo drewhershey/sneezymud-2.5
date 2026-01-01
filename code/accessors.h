@@ -35,7 +35,7 @@ int isname(const char* str, const char* namelist);
 #define GET_WIMPY(ch) ((ch)->wimpy)
 
 #define GET_CLASS_TITLE(ch, char_class, lev)                            \
-  ((ch)->player.sex                                                \
+  ((ch)->player.sex                                                     \
       ? (((ch)->player.sex == 1) ? titles[(char_class)][(lev)].title_m  \
                                  : titles[(char_class)][(lev)].title_f) \
       : titles[(char_class)][(lev)].title_m)
@@ -211,15 +211,11 @@ static inline int GET_MAX_MANA(struct char_data* ch) {
 #define OUTSIDE(ch) (!IS_SET(real_roomp((ch)->in_room)->room_flags, INDOORS))
 #define IS_IMMORTAL(ch) (!IS_NPC(ch) && (GetMaxLevel(ch) >= 52))
 
-#define IS_POLICE(ch)                        \
-  ((mob_index[(ch)->nr].vnum == 3060) ||  \
-    (mob_index[(ch)->nr].vnum == 3069) || \
-    (mob_index[(ch)->nr].vnum == 14) ||   \
-    (mob_index[(ch)->nr].vnum == 15) ||   \
-    (mob_index[(ch)->nr].vnum == 16) ||   \
-    (mob_index[(ch)->nr].vnum == 17) ||   \
-    (mob_index[(ch)->nr].vnum == 18) ||   \
-    (mob_index[(ch)->nr].vnum == 19) ||   \
+#define IS_POLICE(ch)                                                          \
+  ((mob_index[(ch)->nr].vnum == 3060) || (mob_index[(ch)->nr].vnum == 3069) || \
+    (mob_index[(ch)->nr].vnum == 14) || (mob_index[(ch)->nr].vnum == 15) ||    \
+    (mob_index[(ch)->nr].vnum == 16) || (mob_index[(ch)->nr].vnum == 17) ||    \
+    (mob_index[(ch)->nr].vnum == 18) || (mob_index[(ch)->nr].vnum == 19) ||    \
     (mob_index[(ch)->nr].vnum == 3067))
 
 #define IS_CORPSE(obj) \

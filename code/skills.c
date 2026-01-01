@@ -39,12 +39,12 @@ static int remove_trap(struct char_data* ch, struct obj_data* trap) {
   num = number(1, 101);
   if (num < ch->skills[SKILL_REMOVE_TRAP].learned) {
     send_to_char("Click.\n\r", ch);
-    act("$n disarms $p", 0, ch, trap, 0, TO_ROOM);
+    act("$n disarms $p", 0, ch, trap, nullptr, TO_ROOM);
     GET_TRAP_CHARGES(trap) = 0;
     return 1;
   }
   send_to_char("Click. (whoops)\n\r", ch);
-  act("$n tries to disarm $p", 0, ch, trap, 0, TO_ROOM);
+  act("$n tries to disarm $p", 0, ch, trap, nullptr, TO_ROOM);
   TriggerTrap(ch, trap);
   return 1;
 }
@@ -106,9 +106,10 @@ void do_disarm(struct char_data* ch, const char* argument, int cmd) {
   }
 
   if (GetMaxLevel(victim) > BestFightingClass(ch)) {
-    act("You try to disarm $N, but fail miserably.", 1, ch, 0, victim, TO_CHAR);
-    act("$n does a nifty fighting move, but then falls on $s butt.", 1, ch, 0,
-      0, TO_ROOM);
+    act("You try to disarm $N, but fail miserably.", 1, ch, nullptr, victim,
+      TO_CHAR);
+    act("$n does a nifty fighting move, but then falls on $s butt.", 1, ch,
+      nullptr, nullptr, TO_ROOM);
     GET_POS(ch) = POSITION_SITTING;
     if ((IS_NPC(victim)) && (GET_POS(victim) > POSITION_SLEEPING) &&
         (!victim->specials.fighting)) {
@@ -156,9 +157,10 @@ void do_disarm(struct char_data* ch, const char* argument, int cmd) {
     /*
      *   failure.
      */
-    act("You try to disarm $N, but fail miserably.", 1, ch, 0, victim, TO_CHAR);
-    act("$n does a nifty fighting move, but then falls on $s butt.", 1, ch, 0,
-      0, TO_ROOM);
+    act("You try to disarm $N, but fail miserably.", 1, ch, nullptr, victim,
+      TO_CHAR);
+    act("$n does a nifty fighting move, but then falls on $s butt.", 1, ch,
+      nullptr, nullptr, TO_ROOM);
     GET_POS(ch) = POSITION_SITTING;
     if ((IS_NPC(victim)) && (GET_POS(victim) > POSITION_SLEEPING) &&
         (!victim->specials.fighting)) {
@@ -172,7 +174,8 @@ void do_disarm(struct char_data* ch, const char* argument, int cmd) {
      */
     if (victim->equipment[WIELD]) {
       w = unequip_char(victim, WIELD);
-      act("$n makes an impressive fighting move.", 1, ch, 0, 0, TO_ROOM);
+      act("$n makes an impressive fighting move.", 1, ch, nullptr, nullptr,
+        TO_ROOM);
       act("You send $p flying from $N's grasp.", 1, ch, w, victim, TO_CHAR);
       act("$p flies from your grasp.", 1, ch, w, victim, TO_VICT);
       /*
@@ -180,10 +183,10 @@ void do_disarm(struct char_data* ch, const char* argument, int cmd) {
       */
       obj_to_room(w, victim->in_room);
     } else {
-      act("You try to disarm $N, but $E doesn't have a weapon.", 1, ch, 0,
+      act("You try to disarm $N, but $E doesn't have a weapon.", 1, ch, nullptr,
         victim, TO_CHAR);
       act("$n makes an impressive fighting move, but does little more.", 1, ch,
-        0, 0, TO_ROOM);
+        nullptr, nullptr, TO_ROOM);
     }
     if ((IS_NPC(victim)) && (GET_POS(victim) > POSITION_SLEEPING) &&
         (!victim->specials.fighting)) {
@@ -274,7 +277,7 @@ void do_track(struct char_data* ch, const char* argument, int cmd) {
   }
 
   ch->hunt_dist = (short)dist;
-  ch->specials.hunting = 0;
+  ch->specials.hunting = nullptr;
 
   struct hunting_data huntd = {
     .name = name,
@@ -305,7 +308,7 @@ void do_track(struct char_data* ch, const char* argument, int cmd) {
     sprintf(buf, "You see traces of your quarry to the %s\n\r", dirs[code]);
     send_to_char(buf, ch);
   } else {
-    ch->specials.hunting = 0;
+    ch->specials.hunting = nullptr;
     send_to_char("It's too dark in here to track...\n\r", ch);
   }
 }
@@ -493,7 +496,7 @@ int find_path(int in_room, const struct find_path_data* data, int depth,
   q_head = (struct room_q*)malloc(sizeof(struct room_q));
   q_tail = q_head;
   q_tail->room_nr = in_room;
-  q_tail->next_q = 0;
+  q_tail->next_q = nullptr;
 
   while (q_head) {
     herep = real_roomp(q_head->room_nr);
@@ -516,7 +519,7 @@ int find_path(int in_room, const struct find_path_data* data, int depth,
 
               tmp_q = (struct room_q*)malloc(sizeof(struct room_q));
               tmp_q->room_nr = tmp_room;
-              tmp_q->next_q = 0;
+              tmp_q->next_q = nullptr;
               q_tail->next_q = tmp_q;
               q_tail = tmp_q;
 
@@ -745,7 +748,7 @@ static void slam_into_wall(struct char_data* ch,
   send_to_char(buf, ch);
   send_to_char("OUCH!  That REALLY Hurt!\n\r", ch);
   sprintf(buf, "$n crashes against the %s with no effect\n\r", doorname);
-  act(buf, 0, ch, 0, 0, TO_ROOM);
+  act(buf, 0, ch, nullptr, nullptr, TO_ROOM);
   GET_HIT(ch) -= number(1, 10) * 2;
   if (GET_HIT(ch) < 0) {
     GET_HIT(ch) = 0;
@@ -804,7 +807,7 @@ void do_doorbash(struct char_data* ch, const char* arg, int cmd) {
   if ((dir = find_door(ch, type, direction)) >= 0) {
     ok = 1;
   } else {
-    act("$n looks around, bewildered.", 0, ch, 0, 0, TO_ROOM);
+    act("$n looks around, bewildered.", 0, ch, nullptr, nullptr, TO_ROOM);
     return;
   }
 
@@ -828,7 +831,7 @@ void do_doorbash(struct char_data* ch, const char* arg, int cmd) {
   }
 
   sprintf(buf, "$n charges %swards", dirs[dir]);
-  act(buf, 0, ch, 0, 0, TO_ROOM);
+  act(buf, 0, ch, nullptr, nullptr, TO_ROOM);
   sprintf(buf, "You charge %swards\n\r", dirs[dir]);
   send_to_char(buf, ch);
 
@@ -867,7 +870,7 @@ void do_doorbash(struct char_data* ch, const char* arg, int cmd) {
           */
         sprintf(buf, "$n slams into the %s, and it bursts open!",
           fname(exitp->keyword));
-        act(buf, 0, ch, 0, 0, TO_ROOM);
+        act(buf, 0, ch, nullptr, nullptr, TO_ROOM);
         sprintf(buf, "You slam into the %s, and it bursts open!\n\r",
           fname(exitp->keyword));
         send_to_char(buf, ch);
@@ -989,9 +992,10 @@ void do_throw(struct char_data* ch, const char* arg, int cmd) {
       }
 
       if (percent > ch->skills[SKILL_THROW].learned) {
-        act("You try to throw $N to no avail!", 1, ch, 0, victim, TO_CHAR);
-        act("$n tries to pick up $N and throw him and has no luck.", 1, ch, 0,
-          victim, TO_ROOM);
+        act("You try to throw $N to no avail!", 1, ch, nullptr, victim,
+          TO_CHAR);
+        act("$n tries to pick up $N and throw him and has no luck.", 1, ch,
+          nullptr, victim, TO_ROOM);
         set_fighting(victim, ch);
         WAIT_STATE(ch, PULSE_VIOLENCE * 2);
         return;
@@ -1041,7 +1045,7 @@ void do_feign_death(struct char_data* ch, const char* arg, int cmd) {
   send_to_char("You try to fake your own demise\n\r", ch);
 
   death_cry(ch);
-  act("$n is dead! R.I.P.", 0, ch, 0, 0, TO_ROOM);
+  act("$n is dead! R.I.P.", 0, ch, nullptr, nullptr, TO_ROOM);
 
   if (number(1, 101) < ch->skills[SKILL_FEIGN_DEATH].learned) {
     stop_fighting(ch);

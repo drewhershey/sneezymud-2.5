@@ -62,12 +62,12 @@ struct char_list {
 
 typedef struct {
     struct char_list* clist;
-    int sex;   /*number 1=male,2=female,3=both,4=neut,5=m&n,6=f&n,7=all*/
-    int race;  /*number */
+    int sex;        /*number 1=male,2=female,3=both,4=neut,5=m&n,6=f&n,7=all*/
+    int race;       /*number */
     int char_class; /* 1=m,2=c,4=f,8=t */
-    int vnum;  /* # */
-    int evil;  /* align < evil = attack */
-    int good;  /* align > good = attack */
+    int vnum;       /* # */
+    int evil;       /* align < evil = attack */
+    int good;       /* align > good = attack */
 } Opinion;
 
 struct extra_descr_data {
@@ -203,21 +203,21 @@ struct time_data {
 };
 
 struct char_player_data {
-    char* name;             /* PC / NPC s name (kill ...  )         */
-    char* short_descr;      /* for 'actions'                        */
-    char* long_descr;       /* for 'look'.. Only here for testing   */
-    char* description;      /* Extra descriptions                   */
-    char* title;            /* PC / NPC s title                     */
-    char* sounds;           /* Sound that the monster makes (in room) */
-    char* distant_snds;     /* Sound that the monster makes (other) */
-    signed char sex;        /* PC / NPC s sex                       */
-    unsigned char char_class;    /* PC s class or NPC alignment          */
-    signed char level[8];   /* PC / NPC s level                     */
-    int hometown;           /* PC s Hometown (zone)                 */
-    char talks[MAX_TOUNGE]; /* PC s Tounges 0 for NPC           */
-    struct time_data time;  /* PC s AGE in days                 */
-    unsigned char weight;   /* PC / NPC s weight                    */
-    unsigned char height;   /* PC / NPC s height                    */
+    char* name;               /* PC / NPC s name (kill ...  )         */
+    char* short_descr;        /* for 'actions'                        */
+    char* long_descr;         /* for 'look'.. Only here for testing   */
+    char* description;        /* Extra descriptions                   */
+    char* title;              /* PC / NPC s title                     */
+    char* sounds;             /* Sound that the monster makes (in room) */
+    char* distant_snds;       /* Sound that the monster makes (other) */
+    signed char sex;          /* PC / NPC s sex                       */
+    unsigned char char_class; /* PC s class or NPC alignment          */
+    signed char level[8];     /* PC / NPC s level                     */
+    int hometown;             /* PC s Hometown (zone)                 */
+    char talks[MAX_TOUNGE];   /* PC s Tounges 0 for NPC           */
+    struct time_data time;    /* PC s AGE in days                 */
+    unsigned char weight;     /* PC / NPC s weight                    */
+    unsigned char height;     /* PC / NPC s height                    */
 };
 
 /* Used in CHAR_FILE_U *DO*NOT*CHANGE* */

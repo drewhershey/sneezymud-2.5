@@ -245,7 +245,7 @@ void vlog(const char* str) {
   static char buf[500];
   struct descriptor_data* i;
 
-  ct = time(0);
+  ct = time(nullptr);
   tmstr = asctime(localtime(&ct));
   *(tmstr + strlen(tmstr) - 1) = '\0';
   fprintf(stderr, "%s :: %s\n", tmstr, str);
@@ -265,7 +265,7 @@ void slog(const char* str) {
   long ct;
   char* tmstr;
 
-  ct = time(0);
+  ct = time(nullptr);
   tmstr = asctime(localtime(&ct));
   *(tmstr + strlen(tmstr) - 1) = '\0';
   fprintf(stderr, "%s :: %s\n", tmstr, str);
@@ -334,7 +334,7 @@ struct time_info_data mud_time_passed(time_t t2, time_t t1) {
 struct time_info_data age(struct char_data* ch) {
   struct time_info_data player_age;
 
-  player_age = mud_time_passed(time(0), ch->player.time.birth);
+  player_age = mud_time_passed(time(nullptr), ch->player.time.birth);
 
   player_age.year += 17; /* All players start at 17 */
 
@@ -700,7 +700,8 @@ void down_river(int pulse) {
                     send_to_char(buf, ch);
                     orig_room = ch->in_room;
                     char_from_room(ch);
-                    char_to_room(ch, (real_roomp(orig_room))->dir_option[rd]->to_room);
+                    char_to_room(ch,
+                      (real_roomp(orig_room))->dir_option[rd]->to_room);
                     do_look(ch, "\0", 15);
 
                     if (IS_SET(RM_FLAGS(ch->in_room), DEATH) &&
@@ -1144,7 +1145,7 @@ void RestoreChar(struct char_data* ch) {
 }
 
 void RemAllAffects(struct char_data* ch) {
-  spell_dispel_magic(IMPLEMENTOR, ch, ch, 0);
+  spell_dispel_magic(IMPLEMENTOR, ch, ch, nullptr);
 }
 
 int ObjLevelCheck(struct obj_data* obj, struct char_data* ch) {
@@ -1360,7 +1361,8 @@ void RiverPulseStuff(int pulse) {
                     send_to_char(buf, ch);
                     orig_room = ch->in_room;
                     char_from_room(ch);
-                    char_to_room(ch, (real_roomp(orig_room))->dir_option[rd]->to_room);
+                    char_to_room(ch,
+                      (real_roomp(orig_room))->dir_option[rd]->to_room);
                     do_look(ch, "\0", 15);
 
                     if (IS_SET(RM_FLAGS(ch->in_room), DEATH) &&
@@ -1463,7 +1465,7 @@ void SpaceForSkills(struct char_data* ch) {
   ch->skills =
     (struct char_skill_data*)calloc(MAX_SKILLS, sizeof(struct char_skill_data));
 
-  if (ch->skills == 0) {
+  if (ch->skills == nullptr) {
     abort();
   }
 }

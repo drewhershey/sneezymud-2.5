@@ -72,7 +72,7 @@ static void set_oedesc(struct char_data* ch, struct obj_data* obj,
   }
 
   CREATE(newdesc, struct extra_descr_data, 1);
-  newdesc->description = (char*)0;
+  newdesc->description = (char*)nullptr;
 
   if (!tmp) {
     newdesc->next = obj->ex_description;
@@ -87,12 +87,12 @@ static void set_oedesc(struct char_data* ch, struct obj_data* obj,
 
   if (newdesc->description) {
     free(newdesc->description);
-    newdesc->description = (char*)0;
+    newdesc->description = (char*)nullptr;
   }
 
   send_to_char("Enter a new description.  Terminate with a '~'\n\r", ch);
   ch->desc->str = &newdesc->description;
-  newdesc->description = 0;
+  newdesc->description = nullptr;
   ch->desc->max_str = 1000;
 }
 

@@ -127,7 +127,7 @@ void do_brew(struct char_data* ch, const char* arg, int cmd) {
             return;
           }
           send_to_char("You start to brew your potion.\n\r", ch);
-          act("$n starts to brew a potion.", 1, ch, 0, 0, TO_ROOM);
+          act("$n starts to brew a potion.", 1, ch, nullptr, nullptr, TO_ROOM);
 
           if (!IS_IMMORTAL(ch)) {
             af.type = SKILL_BREW;
@@ -197,11 +197,13 @@ void do_search(struct char_data* ch, const char* arg, int cmd) {
 
       if (j < 4) {
         sprintf(buf, "$n searches the %s wall for secret doors.", exits[j]);
-        act(buf, 0, ch, 0, 0, TO_ROOM);
+        act(buf, 0, ch, nullptr, nullptr, TO_ROOM);
       } else if (j < 5) {
-        act("$n searches the ceiling for secret doors.", 0, ch, 0, 0, TO_ROOM);
+        act("$n searches the ceiling for secret doors.", 0, ch, nullptr,
+          nullptr, TO_ROOM);
       } else {
-        act("$n searches the floor for secret doors.", 0, ch, 0, 0, TO_ROOM);
+        act("$n searches the floor for secret doors.", 0, ch, nullptr, nullptr,
+          TO_ROOM);
       }
 
       learned = ((GET_DEX(ch) + GET_INT(ch) + GET_LEVEL(ch, THIEF_LEVEL_IND) +
@@ -213,9 +215,10 @@ void do_search(struct char_data* ch, const char* arg, int cmd) {
         send_to_char(buf, ch);
         sprintf(buf, "$n exclaims 'Look %s! A SECRET door named %s!\n\r",
           exits[j], fname(fdd->keyword));
-        act(buf, 0, ch, 0, 0, TO_ROOM);
+        act(buf, 0, ch, nullptr, nullptr, TO_ROOM);
         send_to_char("You are totally exhausted from your searching!\n\r", ch);
-        act("$n is totally exhausted from $s search.", 0, ch, 0, 0, TO_ROOM);
+        act("$n is totally exhausted from $s search.", 0, ch, nullptr, nullptr,
+          TO_ROOM);
         GET_MOVE(ch) = MAX(0, (GET_MOVE(ch) - 75));
         return;
       }
@@ -223,7 +226,8 @@ void do_search(struct char_data* ch, const char* arg, int cmd) {
   }
   send_to_char("No secret doors in this room.\n\r", ch);
   send_to_char("You are totally exhausted from your searching!\n\r", ch);
-  act("$n is totally exhausted from $s search.", 0, ch, 0, 0, TO_ROOM);
+  act("$n is totally exhausted from $s search.", 0, ch, nullptr, nullptr,
+    TO_ROOM);
   GET_MOVE(ch) = MAX(0, (GET_MOVE(ch) - 75));
 }
 
@@ -276,9 +280,9 @@ void do_grapple(struct char_data* ch, const char* arg, int cmd) {
   if (percent < ch->skills[SKILL_GRAPPLE].learned) {
     send_to_char("You tie your opponent up, with an excellent maneuver.\n\r",
       ch);
-    act("$n wrestles $N to the ground with an excellent maneuver.", 1, ch, 0,
-      victim, TO_NOTVICT);
-    act("$n wrestles you to the ground.", 1, ch, 0, 0, TO_VICT);
+    act("$n wrestles $N to the ground with an excellent maneuver.", 1, ch,
+      nullptr, victim, TO_NOTVICT);
+    act("$n wrestles you to the ground.", 1, ch, nullptr, nullptr, TO_VICT);
 
     SET_BIT(ch->specials.affected_by, AFF_GRAPPLE);
     SET_BIT(victim->specials.affected_by, AFF_GRAPPLE);
@@ -292,7 +296,7 @@ void do_grapple(struct char_data* ch, const char* arg, int cmd) {
     if (victim->specials.fighting) {
       stop_fighting(victim);
     }
-    act("$N now turns $S attention to $n!", 1, ch, 0, victim, TO_ROOM);
+    act("$N now turns $S attention to $n!", 1, ch, nullptr, victim, TO_ROOM);
     set_fighting(victim, ch);
 
   } else {
@@ -300,9 +304,9 @@ void do_grapple(struct char_data* ch, const char* arg, int cmd) {
     GET_POS(ch) = POSITION_SITTING;
     WAIT_STATE(ch, 3 * PULSE_VIOLENCE);
     act("You try to wrestle $N to the ground, but end up falling on your butt.",
-      1, ch, 0, victim, TO_CHAR);
-    act("$n makes a nice wrestling move, but falls on his butt.", 1, ch, 0, 0,
-      TO_ROOM);
+      1, ch, nullptr, victim, TO_CHAR);
+    act("$n makes a nice wrestling move, but falls on his butt.", 1, ch,
+      nullptr, nullptr, TO_ROOM);
 
     if (ch->specials.fighting) {
       stop_fighting(ch);
@@ -310,7 +314,7 @@ void do_grapple(struct char_data* ch, const char* arg, int cmd) {
     if (victim->specials.fighting) {
       stop_fighting(victim);
     }
-    act("$N turns $S attention to $n", 1, ch, 0, victim, TO_ROOM);
+    act("$N turns $S attention to $n", 1, ch, nullptr, victim, TO_ROOM);
     set_fighting(victim, ch);
   }
 }
@@ -392,7 +396,7 @@ void do_scribe(struct char_data* ch, const char* arg, int cmd) {
             return;
           }
           send_to_char("You start to write your scroll.\n\r", ch);
-          act("$n starts to write a scroll.", 1, ch, 0, 0, TO_ROOM);
+          act("$n starts to write a scroll.", 1, ch, nullptr, nullptr, TO_ROOM);
 
           if (!IS_IMMORTAL(ch)) {
             af.type = SKILL_SCRIBE;
@@ -438,8 +442,8 @@ void do_glance(struct char_data* ch, const char* argument, int cmd) {
   struct char_data* tmp_char;
   struct obj_data* found_object;
 
-  tmp_char = 0;
-  found_object = 0;
+  tmp_char = nullptr;
+  found_object = nullptr;
   if (*argument) {
     bits = generic_find(argument,
       FIND_OBJ_INV | FIND_OBJ_ROOM | FIND_OBJ_EQUIP | FIND_CHAR_ROOM, ch,
@@ -580,7 +584,7 @@ void do_deathstroke(struct char_data* ch, const char* argument, int cmd) {
   if (victim->specials.fighting) {
     stop_fighting(victim);
   }
-  act("$N turns $S attention to $n.", 1, ch, 0, victim, TO_ROOM);
+  act("$N turns $S attention to $n.", 1, ch, nullptr, victim, TO_ROOM);
   set_fighting(victim, ch);
 }
 

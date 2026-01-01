@@ -612,7 +612,7 @@ void char_from_room(struct char_data* ch) {
   }
 
   ch->in_room = NOWHERE;
-  ch->next_in_room = 0;
+  ch->next_in_room = nullptr;
 }
 
 /* place a character in a room */
@@ -648,14 +648,14 @@ void obj_to_char(struct obj_data* object, struct char_data* ch) {
   if (ch->carrying) {
     object->next_content = ch->carrying;
   } else {
-    object->next_content = 0;
+    object->next_content = nullptr;
   }
 
   ch->carrying = object;
   object->carried_by = ch;
   object->in_room = NOWHERE;
-  object->equipped_by = 0;
-  object->in_obj = 0;
+  object->equipped_by = nullptr;
+  object->in_obj = nullptr;
   IS_CARRYING_W(ch) += GET_OBJ_WEIGHT(object);
   IS_CARRYING_N(ch) += GET_OBJ_VOLUME(object);
 }
@@ -708,10 +708,10 @@ void obj_from_char(struct obj_data* object) {
 
   IS_CARRYING_W(object->carried_by) -= GET_OBJ_WEIGHT(object);
   IS_CARRYING_N(object->carried_by) -= GET_OBJ_VOLUME(object);
-  object->carried_by = 0;
-  object->equipped_by = 0; /* should be unnecessary, but, why risk it */
-  object->next_content = 0;
-  object->in_obj = 0;
+  object->carried_by = nullptr;
+  object->equipped_by = nullptr; /* should be unnecessary, but, why risk it */
+  object->next_content = nullptr;
+  object->in_obj = nullptr;
 }
 
 /* Return the effect of a piece of armor in position eq_pos */
@@ -777,9 +777,10 @@ void equip_char(struct char_data* ch, struct obj_data* obj, int pos) {
       (IS_OBJ_STAT(obj, ITEM_ANTI_GOOD) && IS_GOOD(ch)) ||
       (IS_OBJ_STAT(obj, ITEM_ANTI_NEUTRAL) && IS_NEUTRAL(ch))) {
     if (ch->in_room != NOWHERE) {
-      act("You are zapped by $p and instantly drop it.", 0, ch, obj, 0,
+      act("You are zapped by $p and instantly drop it.", 0, ch, obj, nullptr,
         TO_CHAR);
-      act("$n is zapped by $p and instantly drops it.", 0, ch, obj, 0, TO_ROOM);
+      act("$n is zapped by $p and instantly drops it.", 0, ch, obj, nullptr,
+        TO_ROOM);
       obj_to_room(obj, ch->in_room);
       return;
     }
@@ -797,12 +798,13 @@ void equip_char(struct char_data* ch, struct obj_data* obj, int pos) {
       (IS_OBJ_STAT(obj, ITEM_LEVEL35) && (GetMaxLevel(ch) < 35)) ||
       (IS_OBJ_STAT(obj, ITEM_LEVEL40) && (GetMaxLevel(ch) < 40))) {
     if (ch->in_room != NOWHERE) {
-      act("You do not know how to use the $p.", 0, ch, obj, 0, TO_CHAR);
+      act("You do not know how to use the $p.", 0, ch, obj, nullptr, TO_CHAR);
       send_to_char(
         "Maybe a little more experience will help you understand!\n\r", ch);
-      act("You are zapped by $p and instantly drop it.", 0, ch, obj, 0,
+      act("You are zapped by $p and instantly drop it.", 0, ch, obj, nullptr,
         TO_CHAR);
-      act("$n is zapped by $p and instantly drops it.", 0, ch, obj, 0, TO_ROOM);
+      act("$n is zapped by $p and instantly drops it.", 0, ch, obj, nullptr,
+        TO_ROOM);
       obj_to_room(obj, ch->in_room);
       return;
     }
@@ -848,8 +850,8 @@ struct obj_data* unequip_char(struct char_data* ch, int pos) {
     GET_AC(ch) += apply_ac(ch, pos);
   }
 
-  ch->equipment[pos] = 0;
-  obj->equipped_by = 0;
+  ch->equipment[pos] = nullptr;
+  obj->equipped_by = nullptr;
   obj->eq_pos = -1;
 
   for (j = 0; j < MAX_OBJ_AFFECT; j++) {
@@ -883,8 +885,8 @@ struct obj_data* unequip_char_for_save(struct char_data* ch, int pos) {
     GET_AC(ch) += apply_ac(ch, pos);
   }
 
-  ch->equipment[pos] = 0;
-  obj->equipped_by = 0;
+  ch->equipment[pos] = nullptr;
+  obj->equipped_by = nullptr;
   obj->eq_pos = -1;
 
   for (j = 0; j < MAX_OBJ_AFFECT; j++) {
@@ -931,7 +933,7 @@ struct obj_data* get_obj_in_list(const char* name, struct obj_data* list) {
   tmp = tmpname;
 
   if (!(number = get_number(&tmp))) {
-    return (0);
+    return (nullptr);
   }
 
   for (i = list, j = 1; i && (j <= number); i = i->next_content) {
@@ -943,7 +945,7 @@ struct obj_data* get_obj_in_list(const char* name, struct obj_data* list) {
     }
   }
 
-  return (0);
+  return (nullptr);
 }
 
 /* Search a given list for an object number, and return a ptr to that obj */
@@ -956,7 +958,7 @@ struct obj_data* get_obj_in_list_num(int num, struct obj_data* list) {
     }
   }
 
-  return (0);
+  return (nullptr);
 }
 
 /*search the entire world for an object, and return a pointer  */
@@ -970,7 +972,7 @@ struct obj_data* get_obj(const char* name) {
   strcpy(tmpname, name);
   tmp = tmpname;
   if (!(number = get_number(&tmp))) {
-    return (0);
+    return (nullptr);
   }
 
   for (i = object_list, j = 1; i && (j <= number); i = i->next) {
@@ -982,7 +984,7 @@ struct obj_data* get_obj(const char* name) {
     }
   }
 
-  return (0);
+  return (nullptr);
 }
 
 /*search the entire world for an object number, and return a pointer  */
@@ -995,7 +997,7 @@ struct obj_data* get_obj_num(int nr) {
     }
   }
 
-  return (0);
+  return (nullptr);
 }
 
 /* search a room for a char, and return a pointer if found..  */
@@ -1009,7 +1011,7 @@ struct char_data* get_char_room(char* name, int room) {
   strcpy(tmpname, name);
   tmp = tmpname;
   if (!(number = get_number(&tmp))) {
-    return (0);
+    return (nullptr);
   }
 
   for (i = real_roomp(room)->people, j = 1; i && (j <= number);
@@ -1022,7 +1024,7 @@ struct char_data* get_char_room(char* name, int room) {
     }
   }
 
-  return (0);
+  return (nullptr);
 }
 
 /* search all over the world for a char, and return a pointer if found */
@@ -1036,7 +1038,7 @@ struct char_data* get_char(char* name) {
   strcpy(tmpname, name);
   tmp = tmpname;
   if (!(number = get_number(&tmp))) {
-    return (0);
+    return (nullptr);
   }
 
   for (i = character_list, j = 1; i && (j <= number); i = i->next) {
@@ -1048,7 +1050,7 @@ struct char_data* get_char(char* name) {
     }
   }
 
-  return (0);
+  return (nullptr);
 }
 
 /* search all over the world for a char num, and return a pointer if found */
@@ -1061,7 +1063,7 @@ struct char_data* get_char_num(int nr) {
     }
   }
 
-  return (0);
+  return (nullptr);
 }
 
 /* put an object in a room */
@@ -1086,8 +1088,8 @@ void obj_to_room(struct obj_data* object, int room) {
   object->next_content = rp->contents;
   rp->contents = object;
   object->in_room = room;
-  object->carried_by = 0;
-  object->equipped_by = 0; /* should be unnecessary */
+  object->carried_by = nullptr;
+  object->equipped_by = nullptr; /* should be unnecessary */
 }
 
 /* Take an object from a room */
@@ -1123,7 +1125,7 @@ void obj_from_room(struct obj_data* object) {
   }
 
   object->in_room = NOWHERE;
-  object->next_content = 0;
+  object->next_content = nullptr;
 }
 
 /* put an object in an object (quaint)  */
@@ -1136,8 +1138,8 @@ void obj_to_obj(struct obj_data* obj, struct obj_data* obj_to) {
   /*
     (jdb)  hopefully this will fix the object problem
     */
-  obj->carried_by = 0;
-  obj->equipped_by = 0;
+  obj->carried_by = nullptr;
+  obj->equipped_by = nullptr;
 
   for (tmp_obj = obj->in_obj; tmp_obj;
     GET_OBJ_WEIGHT(tmp_obj) += GET_OBJ_WEIGHT(obj), tmp_obj = tmp_obj->in_obj) {
@@ -1223,8 +1225,8 @@ void obj_from_obj(struct obj_data* obj) {
       }
     }
 
-    obj->in_obj = 0;
-    obj->next_content = 0;
+    obj->in_obj = nullptr;
+    obj->next_content = nullptr;
   } else {
     perror("Trying to object from object when in no object.");
     abort();
@@ -1254,7 +1256,7 @@ void extract_obj(struct obj_data* obj) {
       /*
        **  set players equipment slot to 0; that will avoid the garbage items.
        */
-      obj->equipped_by->equipment[obj->eq_pos] = 0;
+      obj->equipped_by->equipment[obj->eq_pos] = nullptr;
 
     } else {
       vlog("Extract on equipped item in slot -1 on:");
@@ -1373,18 +1375,18 @@ void extract_char(struct char_data* ch) {
   if (ch->desc) {
     /* Forget snooping */
     if ((ch->desc->snoop.snooping) && (ch->desc->snoop.snooping->desc)) {
-      ch->desc->snoop.snooping->desc->snoop.snoop_by = 0;
+      ch->desc->snoop.snooping->desc->snoop.snoop_by = nullptr;
     }
 
     if (ch->desc->snoop.snoop_by) {
       send_to_char("Your victim is no longer among us.\n\r",
         ch->desc->snoop.snoop_by);
       if (ch->desc->snoop.snoop_by->desc) {
-        ch->desc->snoop.snoop_by->desc->snoop.snooping = 0;
+        ch->desc->snoop.snoop_by->desc->snoop.snooping = nullptr;
       }
     }
 
-    ch->desc->snoop.snooping = ch->desc->snoop.snoop_by = 0;
+    ch->desc->snoop.snooping = ch->desc->snoop.snoop_by = nullptr;
   }
 
   if (ch->carrying) {
@@ -1451,7 +1453,7 @@ void extract_char(struct char_data* ch) {
     for (k = character_list; k; k = k->next) {
       if (k->specials.hunting) {
         if (k->specials.hunting == ch) {
-          k->specials.hunting = 0;
+          k->specials.hunting = nullptr;
         }
       }
       if (Hates(k, ch)) {
@@ -1465,7 +1467,7 @@ void extract_char(struct char_data* ch) {
     for (k = character_list; k; k = k->next) {
       if (k->specials.hunting) {
         if (k->specials.hunting == ch) {
-          k->specials.hunting = 0;
+          k->specials.hunting = nullptr;
         }
       }
       if (Hates(k, ch)) {
@@ -1534,7 +1536,7 @@ struct char_data* get_char_room_vis(struct char_data* ch, const char* name) {
   strcpy(tmpname, name);
   tmp = tmpname;
   if (!(number = get_number(&tmp))) {
-    return (0);
+    return (nullptr);
   }
 
   for (i = real_roomp(ch->in_room)->people, j = 1; i && (j <= number);
@@ -1549,7 +1551,7 @@ struct char_data* get_char_room_vis(struct char_data* ch, const char* name) {
     }
   }
 
-  return (0);
+  return (nullptr);
 }
 
 /* get a character from anywhere in the world, doesn't care much about
@@ -1567,7 +1569,7 @@ struct char_data* get_char_vis_world(struct char_data* ch, const char* name,
   strcpy(tmpname, name);
   tmp = tmpname;
   if (!(number = get_number(&tmp))) {
-    return (0);
+    return (nullptr);
   }
 
   j = count ? *count : 1;
@@ -1584,7 +1586,7 @@ struct char_data* get_char_vis_world(struct char_data* ch, const char* name,
   if (count) {
     *count = j;
   }
-  return 0;
+  return nullptr;
 }
 
 struct char_data* get_char_vis(struct char_data* ch, const char* name) {
@@ -1609,7 +1611,7 @@ struct obj_data* get_obj_in_list_vis(struct char_data* ch, const char* name,
   strcpy(tmpname, name);
   tmp = tmpname;
   if (!(number = get_number(&tmp))) {
-    return (0);
+    return (nullptr);
   }
 
   for (i = list, j = 1; i && (j <= number); i = i->next_content) {
@@ -1622,7 +1624,7 @@ struct obj_data* get_obj_in_list_vis(struct char_data* ch, const char* name,
       }
     }
   }
-  return (0);
+  return (nullptr);
 }
 
 struct obj_data* get_obj_vis_world(struct char_data* ch, const char* name,
@@ -1636,7 +1638,7 @@ struct obj_data* get_obj_vis_world(struct char_data* ch, const char* name,
   strcpy(tmpname, name);
   tmp = tmpname;
   if (!(number = get_number(&tmp))) {
-    return (0);
+    return (nullptr);
   }
 
   j = count ? *count : 1;
@@ -1655,7 +1657,7 @@ struct obj_data* get_obj_vis_world(struct char_data* ch, const char* name,
   if (count) {
     *count = j;
   }
-  return (0);
+  return (nullptr);
 }
 
 /*search the entire world for an object, and return a pointer  */
@@ -1685,7 +1687,7 @@ struct obj_data* get_obj_vis_accessible(struct char_data* ch, char* name) {
   strcpy(tmpname, name);
   tmp = tmpname;
   if (!(number = get_number(&tmp))) {
-    return (0);
+    return (nullptr);
   }
 
   /* scan items carried */
@@ -1706,7 +1708,7 @@ struct obj_data* get_obj_vis_accessible(struct char_data* ch, char* name) {
       j++;
     }
   }
-  return 0;
+  return nullptr;
 }
 
 struct obj_data* create_money(int amount) {
@@ -1755,7 +1757,7 @@ struct obj_data* create_money(int amount) {
     }
   }
 
-  new_descr->next = 0;
+  new_descr->next = nullptr;
   obj->ex_description = new_descr;
 
   obj->obj_flags.type_flag = ITEM_MONEY;
@@ -1815,8 +1817,8 @@ int generic_find(const char* arg, int bitvector, struct char_data* ch,
     return (0);
   }
 
-  *tar_ch = 0;
-  *tar_obj = 0;
+  *tar_ch = nullptr;
+  *tar_obj = nullptr;
 
   if (IS_SET(bitvector, FIND_CHAR_ROOM)) { /* Find person in room */
     if ((*tar_ch = get_char_room_vis(ch, name))) {

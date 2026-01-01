@@ -179,7 +179,7 @@ static void shopping_buy(const char* arg, struct char_data* ch,
     return;
   }
 
-  act("$n buys $p.", 0, ch, temp1, 0, TO_ROOM);
+  act("$n buys $p.", 0, ch, temp1, nullptr, TO_ROOM);
 
   sprintf(buf, shop_index[shop_nr].message_buy, GET_NAME(ch),
     (int)(num * (temp1->obj_flags.cost * shop_index[shop_nr].profit_buy)));
@@ -280,7 +280,7 @@ static void shopping_sell(const char* arg, struct char_data* ch,
 
   temp1->obj_flags.cost = cost;
 
-  act("$n sells $p.", 0, ch, temp1, 0, TO_ROOM);
+  act("$n sells $p.", 0, ch, temp1, nullptr, TO_ROOM);
 
   sprintf(buf, shop_index[shop_nr].message_sell, GET_NAME(ch),
     (int)(temp1->obj_flags.cost * shop_index[shop_nr].profit_sell));
@@ -421,7 +421,7 @@ static int shop_keeper(struct char_data* ch, int cmd, const char* arg) {
   struct char_data* keeper;
   int shop_nr;
 
-  keeper = 0;
+  keeper = nullptr;
 
   for (temp_char = real_roomp(ch->in_room)->people; (!keeper) && (temp_char);
     temp_char = temp_char->next_in_room) {
@@ -484,11 +484,12 @@ static int shop_keeper(struct char_data* ch, int cmd, const char* arg) {
     }
   } else if ((cmd == 84) || (cmd == 207) ||
              (cmd == 172)) { /* Cast, recite, use */
-    act("$N tells you 'No magic here - kid!'.", 0, ch, 0, keeper, TO_CHAR);
+    act("$N tells you 'No magic here - kid!'.", 0, ch, nullptr, keeper,
+      TO_CHAR);
     return 1;
   } else if (cmd == 73) { /* Quit added by brutius to make jail better */
-    act("$N tells you 'Sorry you can't quit in a shop.'.", 0, ch, 0, keeper,
-      TO_CHAR);
+    act("$N tells you 'Sorry you can't quit in a shop.'.", 0, ch, nullptr,
+      keeper, TO_CHAR);
     return 1;
   }
   return 0;

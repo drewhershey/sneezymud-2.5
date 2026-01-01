@@ -255,7 +255,7 @@ static void obj_from_corpse(struct obj_data* c) {
       **  hmm..  it isn't in the object it says it is in.
       **  don't extract it.
       */
-      c->contains = 0;
+      c->contains = nullptr;
       vlog("Memory lost in ObjFromCorpse.");
       return;
     }
@@ -307,7 +307,7 @@ static void check_idling(struct char_data* ch) {
         stop_fighting(ch->specials.fighting);
         stop_fighting(ch);
       }
-      act("$n disappears into the void.", 1, ch, 0, 0, TO_ROOM);
+      act("$n disappears into the void.", 1, ch, nullptr, nullptr, TO_ROOM);
       send_to_char("You have been idle, and are pulled into a void.\n\r", ch);
       char_from_room(ch);
       char_to_room(ch, 0); /* Into room number 0 */
@@ -324,7 +324,7 @@ static void check_idling(struct char_data* ch) {
       if (ch->desc) {
         close_socket(ch->desc);
       }
-      ch->desc = 0;
+      ch->desc = nullptr;
 
       save_obj(ch, &cost, 1);
       save_room = ch->in_room;
@@ -435,7 +435,7 @@ static void spell_wear_off_soon(int s, struct char_data* ch) {
   }
 
   if (spell_wear_off_soon_room_msg[s] && *spell_wear_off_soon_room_msg[s]) {
-    act(spell_wear_off_soon_room_msg[s], 0, ch, 0, 0, TO_ROOM);
+    act(spell_wear_off_soon_room_msg[s], 0, ch, nullptr, nullptr, TO_ROOM);
   }
 }
 
@@ -581,7 +581,7 @@ static void check_drowning(struct char_data* ch) {
     send_to_char("PANIC!  You're drowning!!!!!!\n\r", ch);
     act(
       "$n flails $s hands and turns a deeper shade of blue as $e is drowning.",
-      0, ch, 0, 0, TO_ROOM);
+      0, ch, nullptr, nullptr, TO_ROOM);
     if (!IS_IMMORTAL(ch)) {
       GET_HIT(ch) -= number(1, 300);
       GET_MOVE(ch) -= number(10, 200);
@@ -609,7 +609,7 @@ static void spell_wear_off(int s, struct char_data* ch) {
   }
 
   if (spell_wear_off_room_msg[s] && *spell_wear_off_room_msg[s]) {
-    act(spell_wear_off_room_msg[s], 0, ch, 0, 0, TO_ROOM);
+    act(spell_wear_off_room_msg[s], 0, ch, nullptr, nullptr, TO_ROOM);
   }
 
   if (s == SPELL_CHARM_PERSON || s == SPELL_CHARM_MONSTER) {
@@ -662,7 +662,7 @@ void affect_update(int pulse) {
         } else if (af->type >= FIRST_BREATH_WEAPON &&
                    af->type <= LAST_BREATH_WEAPON) {
           bweapons[af->type - FIRST_BREATH_WEAPON](-af->modifier / 2, i, "",
-            SPELL_TYPE_SPELL, i, 0);
+            SPELL_TYPE_SPELL, i, nullptr);
           if (!i->affected) {
             /* oops, you're dead :) */
             dead = 1;
@@ -788,20 +788,20 @@ void affect_update(int pulse) {
         if (j->name && !strncmp(j->name, "portal", 6)) { /* PORTALS */
           if ((j->in_room != NOWHERE) && (real_roomp(j->in_room)->people)) {
             act("$p flickers out of view.", 1, real_roomp(j->in_room)->people,
-              j, 0, TO_ROOM);
+              j, nullptr, TO_ROOM);
             act("$p flickers out of view.", 1, real_roomp(j->in_room)->people,
-              j, 0, TO_CHAR);
+              j, nullptr, TO_CHAR);
           }
         } else if (j->name && !strncmp(j->name, "corpse", 6)) { /* CORPSES */
           if (j->carried_by) {
-            act("$p biodegrades in your hands.", 0, j->carried_by, j, 0,
+            act("$p biodegrades in your hands.", 0, j->carried_by, j, nullptr,
               TO_CHAR);
           } else if ((j->in_room != NOWHERE) &&
                      (real_roomp(j->in_room)->people)) {
             act("$p dissolves into a fertile soil.", 1,
-              real_roomp(j->in_room)->people, j, 0, TO_ROOM);
+              real_roomp(j->in_room)->people, j, nullptr, TO_ROOM);
             act("$p dissolves into a fertile soil.", 1,
-              real_roomp(j->in_room)->people, j, 0, TO_CHAR);
+              real_roomp(j->in_room)->people, j, nullptr, TO_CHAR);
           }
           obj_from_corpse(j);
           continue; /* Skip rest of loop - object has been freed */
@@ -809,14 +809,14 @@ void affect_update(int pulse) {
         /* FOOD */
         else if (GET_ITEM_TYPE(j) == ITEM_FOOD) {
           if (j->carried_by && !j->in_obj) {
-            act("$p spoils in your inventory.", 0, j->carried_by, j, 0,
+            act("$p spoils in your inventory.", 0, j->carried_by, j, nullptr,
               TO_CHAR);
           } else if ((j->in_room != NOWHERE) &&
                      (real_roomp(j->in_room)->people)) {
             act("$p totally rots, and is gone.", 1,
-              real_roomp(j->in_room)->people, j, 0, TO_ROOM);
+              real_roomp(j->in_room)->people, j, nullptr, TO_ROOM);
             act("$p totally rots, and is gone.", 1,
-              real_roomp(j->in_room)->people, j, 0, TO_CHAR);
+              real_roomp(j->in_room)->people, j, nullptr, TO_CHAR);
           } else if (j->in_obj && j->in_obj->carried_by) {
             sprintf(buf, "%s rots in %s, and leaves a filthy residue.\n\r",
               j->short_description, j->in_obj->short_description);
@@ -825,11 +825,12 @@ void affect_update(int pulse) {
         } else {
           if (j->equipped_by) { /* Worn in equipment */ /* EVERYTHING ELSE that
                                                          DECAYS */
-            act("$p decays into nothing.", 0, j->equipped_by, j, 0, TO_CHAR);
+            act("$p decays into nothing.", 0, j->equipped_by, j, nullptr,
+              TO_CHAR);
           }
           if (j->carried_by &&
               !j->in_obj) { /*  In inverntory but not in a bag */
-            act("$p biodegrades in your hands.", 0, j->carried_by, j, 0,
+            act("$p biodegrades in your hands.", 0, j->carried_by, j, nullptr,
               TO_CHAR);
           }
         }
@@ -893,17 +894,18 @@ void stop_follower(struct char_data* ch) {
   }
 
   if (IS_AFFECTED(ch, AFF_CHARM)) {
-    act("You realize that $N is a jerk!", 0, ch, 0, ch->master, TO_CHAR);
-    act("$n realizes that $N is a jerk!", 0, ch, 0, ch->master, TO_NOTVICT);
-    act("$n hates your guts!", 0, ch, 0, ch->master, TO_VICT);
+    act("You realize that $N is a jerk!", 0, ch, nullptr, ch->master, TO_CHAR);
+    act("$n realizes that $N is a jerk!", 0, ch, nullptr, ch->master,
+      TO_NOTVICT);
+    act("$n hates your guts!", 0, ch, nullptr, ch->master, TO_VICT);
     if (affected_by_spell(ch, SPELL_CHARM_PERSON)) {
       affect_from_char(ch, SPELL_CHARM_PERSON);
     }
   } else {
-    act("You stop following $N.", 0, ch, 0, ch->master, TO_CHAR);
+    act("You stop following $N.", 0, ch, nullptr, ch->master, TO_CHAR);
     if (!IS_SET(ch->specials.act, PLR_STEALTH)) {
-      act("$n stops following $N.", 0, ch, 0, ch->master, TO_NOTVICT);
-      act("$n stops following you.", 0, ch, 0, ch->master, TO_VICT);
+      act("$n stops following $N.", 0, ch, nullptr, ch->master, TO_NOTVICT);
+      act("$n stops following you.", 0, ch, nullptr, ch->master, TO_VICT);
     }
   }
 
@@ -925,7 +927,7 @@ void stop_follower(struct char_data* ch) {
     }
   }
 
-  ch->master = 0;
+  ch->master = nullptr;
   REMOVE_BIT(ch->specials.affected_by, AFF_CHARM | AFF_GROUP);
 }
 
@@ -944,10 +946,10 @@ void add_follower(struct char_data* ch, struct char_data* leader) {
   k->next = leader->followers;
   leader->followers = k;
 
-  act("You now follow $N.", 0, ch, 0, leader, TO_CHAR);
+  act("You now follow $N.", 0, ch, nullptr, leader, TO_CHAR);
   if (!IS_SET(ch->specials.act, PLR_STEALTH)) {
-    act("$n starts following you.", 1, ch, 0, leader, TO_VICT);
-    act("$n now follows $N.", 1, ch, 0, leader, TO_NOTVICT);
+    act("$n starts following you.", 1, ch, nullptr, leader, TO_VICT);
+    act("$n now follows $N.", 1, ch, nullptr, leader, TO_NOTVICT);
   }
 }
 
@@ -1005,9 +1007,9 @@ static void say_spell(struct char_data* ch, int si) {
       **  Remove-For-Multi-Class
       */
       if (ch->player.char_class == temp_char->player.char_class) {
-        act(buf, 0, ch, 0, temp_char, TO_VICT);
+        act(buf, 0, ch, nullptr, temp_char, TO_VICT);
       } else {
-        act(buf2, 0, ch, 0, temp_char, TO_VICT);
+        act(buf2, 0, ch, nullptr, temp_char, TO_VICT);
       }
     }
   }
@@ -1200,8 +1202,8 @@ void do_cast(struct char_data* ch, const char* argument, int cmd) {
       /* **************** Locate targets **************** */
 
       target_ok = 0;
-      tar_char = 0;
-      tar_obj = 0;
+      tar_char = nullptr;
+      tar_obj = nullptr;
 
       if (IS_SET(spell_info[spl].targets, TAR_VIOLENT) &&
           check_peaceful(ch, "Impolite magic is banned here.")) {
@@ -1372,7 +1374,7 @@ void do_cast(struct char_data* ch, const char* argument, int cmd) {
         WAIT_STATE(ch, spell_info[spl].beats);
       }
 
-      if ((spell_info[spl].spell_pointer == 0) && spl > 0) {
+      if ((spell_info[spl].spell_pointer == nullptr) && spl > 0) {
         send_to_char("Sorry, this magic has not yet been implemented :(\n\r",
           ch);
       } else {
@@ -1385,7 +1387,7 @@ void do_cast(struct char_data* ch, const char* argument, int cmd) {
           if (tar_char) {
             if (IS_PC(tar_char) && (tar_char != ch)) {
               act("$N tries to harm you by casting a malicious spell.", 0,
-                tar_char, 0, ch, TO_CHAR);
+                tar_char, nullptr, ch, TO_CHAR);
               if (!IS_SET(ch->specials.act, PLR_KILLER) &&
                   !IS_SET(tar_char->specials.act, PLR_OUTLAW) &&
                   !IS_SET(tar_char->specials.act, PLR_KILLER)) {
@@ -1430,7 +1432,7 @@ void assign_spell_pointers(void) {
   int i;
 
   for (i = 0; i < MAX_SPL_LIST; i++) {
-    spell_info[i].spell_pointer = 0;
+    spell_info[i].spell_pointer = nullptr;
   }
 
   /* From spells1.c */

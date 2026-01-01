@@ -69,8 +69,8 @@ int TriggerTrap(struct char_data* ch, struct obj_data* i) {
 
       if (!IS_NPC(ch)) {
         if (roll < fireperc) { /* trap is sprung */
-          act("You hear a strange noise...", 1, ch, 0, 0, TO_ROOM);
-          act("You hear a strange noise...", 1, ch, 0, 0, TO_CHAR);
+          act("You hear a strange noise...", 1, ch, nullptr, nullptr, TO_ROOM);
+          act("You hear a strange noise...", 1, ch, nullptr, nullptr, TO_CHAR);
           GET_TRAP_CHARGES(i) -= 1;
           if (IS_SET(GET_TRAP_EFF(i), TRAP_EFF_ROOM)) {
             for (v = real_roomp(ch->in_room)->people; v; v = v->next_in_room) {
@@ -189,14 +189,14 @@ void TrapDam(struct char_data* v, int damtype, int amnt, struct obj_data* t) {
   if ((damtype != TRAP_DAM_TELEPORT) && (damtype != TRAP_DAM_SLEEP)) {
     if (amnt > 0) {
       sprintf(buf, "$n is %s by $p!", desc);
-      act(buf, 1, v, t, 0, TO_ROOM);
+      act(buf, 1, v, t, nullptr, TO_ROOM);
       sprintf(buf, "You are %s by $p!", desc);
-      act(buf, 1, v, t, 0, TO_CHAR);
+      act(buf, 1, v, t, nullptr, TO_CHAR);
     } else {
       sprintf(buf, "$n is almost %s by $p!", desc);
-      act(buf, 1, v, t, 0, TO_ROOM);
+      act(buf, 1, v, t, nullptr, TO_ROOM);
       sprintf(buf, "You are almost %s by $p!", desc);
-      act(buf, 1, v, t, 0, TO_CHAR);
+      act(buf, 1, v, t, nullptr, TO_CHAR);
     }
   }
 
@@ -219,10 +219,10 @@ void TrapTeleport(struct char_data* v) {
     to_room = number(0, top_of_world);
   } while (IS_SET(real_roomp(to_room)->room_flags, PRIVATE));
 
-  act("$n slowly fade out of existence.", 0, v, 0, 0, TO_ROOM);
+  act("$n slowly fade out of existence.", 0, v, nullptr, nullptr, TO_ROOM);
   char_from_room(v);
   char_to_room(v, to_room);
-  act("$n slowly fade in to existence.", 0, v, 0, 0, TO_ROOM);
+  act("$n slowly fade in to existence.", 0, v, nullptr, nullptr, TO_ROOM);
 
   do_look(v, "", 0);
 
@@ -246,8 +246,8 @@ void TrapSleep(struct char_data* v) {
     affect_join(v, &af, 0, 0);
 
     if (GET_POS(v) > POSITION_SLEEPING) {
-      act("You feel very sleepy ..... zzzzzz", 0, v, 0, 0, TO_CHAR);
-      act("$n goes to sleep.", 1, v, 0, 0, TO_ROOM);
+      act("You feel very sleepy ..... zzzzzz", 0, v, nullptr, nullptr, TO_CHAR);
+      act("$n goes to sleep.", 1, v, nullptr, nullptr, TO_ROOM);
       GET_POS(v) = POSITION_SLEEPING;
     }
   } else {
@@ -258,26 +258,26 @@ void TrapSleep(struct char_data* v) {
 void InformMess(struct char_data* v) {
   switch (GET_POS(v)) {
     case POSITION_MORTALLYW:
-      act("$n is mortally wounded, and will die soon, if not aided.", 1, v, 0,
-        0, TO_ROOM);
-      act("You are mortally wounded, and will die soon, if not aided.", 0, v, 0,
-        0, TO_CHAR);
+      act("$n is mortally wounded, and will die soon, if not aided.", 1, v,
+        nullptr, nullptr, TO_ROOM);
+      act("You are mortally wounded, and will die soon, if not aided.", 0, v,
+        nullptr, nullptr, TO_CHAR);
       break;
     case POSITION_INCAP:
-      act("$n is incapacitated and will slowly die, if not aided.", 1, v, 0, 0,
-        TO_ROOM);
+      act("$n is incapacitated and will slowly die, if not aided.", 1, v,
+        nullptr, nullptr, TO_ROOM);
       act("You are incapacitated and you will slowly die, if not aided.", 0, v,
-        0, 0, TO_CHAR);
+        nullptr, nullptr, TO_CHAR);
       break;
     case POSITION_STUNNED:
-      act("$n is stunned, but will probably regain consciousness.", 1, v, 0, 0,
-        TO_ROOM);
+      act("$n is stunned, but will probably regain consciousness.", 1, v,
+        nullptr, nullptr, TO_ROOM);
       act("You're stunned, but you will probably regain consciousness.", 0, v,
-        0, 0, TO_CHAR);
+        nullptr, nullptr, TO_CHAR);
       break;
     case POSITION_DEAD:
-      act("$n is dead! R.I.P.", 1, v, 0, 0, TO_ROOM);
-      act("You are dead!  Sorry...", 0, v, 0, 0, TO_CHAR);
+      act("$n is dead! R.I.P.", 1, v, nullptr, nullptr, TO_ROOM);
+      act("You are dead!  Sorry...", 0, v, nullptr, nullptr, TO_CHAR);
       break;
     default: /* >= POSITION SLEEPING */
       break;

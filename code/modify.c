@@ -98,7 +98,7 @@ void string_add(struct descriptor_data* d, char* str) {
         REMOVE_BIT(d->character->specials.act, PLR_MAILING);
       }
     }
-    d->str = 0;
+    d->str = nullptr;
     if (d->connected == CON_EXDSCR) {
       SEND_TO_Q(MENU, d);
       d->connected = CON_SLCT;
@@ -275,7 +275,7 @@ void do_string(struct char_data* ch, const char* arg, int cmd) {
             obj->ex_description = ed;
             CREATE(ed->keyword, char, strlen(string) + 1);
             strcpy(ed->keyword, string);
-            ed->description = 0;
+            ed->description = nullptr;
             ch->desc->str = &ed->description;
             send_to_char("New field.\n\r", ch);
             break;
@@ -283,7 +283,7 @@ void do_string(struct char_data* ch, const char* arg, int cmd) {
           if (!str_cmp(ed->keyword, string)) /* the field exists */
           {
             free(ed->description);
-            ed->description = 0;
+            ed->description = nullptr;
             ch->desc->str = &ed->description;
             send_to_char("Modifying description.\n\r", ch);
             break;
@@ -344,11 +344,11 @@ void do_string(struct char_data* ch, const char* arg, int cmd) {
     }
     CREATE(*ch->desc->str, char, strlen(string) + 1);
     strcpy(*ch->desc->str, string);
-    ch->desc->str = 0;
+    ch->desc->str = nullptr;
     send_to_char("Ok.\n\r", ch);
   } else { /* there was no string. enter string mode */
     send_to_char("Enter string. terminate with '@'.\n\r", ch);
-    *ch->desc->str = 0;
+    *ch->desc->str = nullptr;
     ch->desc->max_str = length[field - 1];
   }
 }
@@ -476,7 +476,7 @@ void do_edit(struct char_data* ch, const char* arg, int cmd) {
         } else {
           send_to_char("Deleting exit.\n\r", ch);
           free(rp->dir_option[dir]);
-          rp->dir_option[dir] = 0;
+          rp->dir_option[dir] = nullptr;
           return;
         }
       } else if (real_roomp(exroom) == nullptr) {
@@ -543,7 +543,7 @@ void do_edit(struct char_data* ch, const char* arg, int cmd) {
           rp->ex_description = ed;
           CREATE(ed->keyword, char, strlen(string) + 1);
           strcpy(ed->keyword, string);
-          ed->description = 0;
+          ed->description = nullptr;
           ch->desc->str = &ed->description;
           send_to_char("New field.\n\r", ch);
           break;
@@ -551,7 +551,7 @@ void do_edit(struct char_data* ch, const char* arg, int cmd) {
         if (!str_cmp(ed->keyword, string)) {
           /* the field exists */
           free(ed->description);
-          ed->description = 0;
+          ed->description = nullptr;
           ch->desc->str = &ed->description;
           send_to_char("Modifying description.\n\r", ch);
           break;
@@ -659,11 +659,11 @@ void do_edit(struct char_data* ch, const char* arg, int cmd) {
     }
     CREATE(*ch->desc->str, char, strlen(string) + 1);
     strcpy(*ch->desc->str, string);
-    ch->desc->str = 0;
+    ch->desc->str = nullptr;
     send_to_char("Ok.\n\r", ch);
   } else { /* there was no string. enter string mode */
     send_to_char("Enter string. terminate with '@'.\n\r", ch);
-    *ch->desc->str = 0;
+    *ch->desc->str = nullptr;
     ch->desc->max_str = room_length[field - 1];
   }
 }
@@ -817,9 +817,9 @@ void show_string(struct descriptor_data* d, const char* input) {
   if (*buf) {
     if (d->showstr_head) {
       free(d->showstr_head);
-      d->showstr_head = 0;
+      d->showstr_head = nullptr;
     }
-    d->showstr_point = 0;
+    d->showstr_point = nullptr;
     return;
   }
 
@@ -839,9 +839,9 @@ void show_string(struct descriptor_data* d, const char* input) {
       if (!*chk) {
         if (d->showstr_head) {
           free(d->showstr_head);
-          d->showstr_head = 0;
+          d->showstr_head = nullptr;
         }
-        d->showstr_point = 0;
+        d->showstr_point = nullptr;
       }
       return;
     }
@@ -852,7 +852,7 @@ void night_watchman(void) {
   long tc;
   struct tm* t_info;
 
-  tc = time(0);
+  tc = time(nullptr);
   t_info = localtime(&tc);
 
   if ((t_info->tm_hour == 8) && (t_info->tm_wday > 0) &&
@@ -875,7 +875,7 @@ void check_reboot(void) {
   char dummy;
   FILE* boot;
 
-  tc = time(0);
+  tc = time(nullptr);
   t_info = localtime(&tc);
 
   if ((t_info->tm_hour + 1) == REBOOT_AT && t_info->tm_min > 30) {
@@ -918,7 +918,7 @@ int workhours(void) {
   long tc;
   struct tm* t_info;
 
-  tc = time(0);
+  tc = time(nullptr);
   t_info = localtime(&tc);
 
   return ((t_info->tm_wday > 0) && (t_info->tm_wday < 6) &&
@@ -990,12 +990,12 @@ static char* nogames(void) {
     (void)fclose(fl);
     return (text);
   }
-  return (0);
+  return (nullptr);
 }
 
 /* emulate the game regulator */
 void gr(int s) {
-  char* txt = 0;
+  char* txt = nullptr;
   char buf[1024];
   int ld = 0;
   static const char* warnings[3] = {

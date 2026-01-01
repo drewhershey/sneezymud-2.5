@@ -48,7 +48,7 @@ int RemHated(struct char_data* ch, struct char_data* pud) {
         if (oldpud->op_ch == pud) {
           t = oldpud;
           if (ch->hates.clist == t) {
-            ch->hates.clist = 0;
+            ch->hates.clist = nullptr;
             free(t);
             break;
           }
@@ -64,7 +64,7 @@ int RemHated(struct char_data* ch, struct char_data* pud) {
         if (!strcmp(oldpud->name, GET_NAME(pud))) {
           t = oldpud;
           if (ch->hates.clist == t) {
-            ch->hates.clist = 0;
+            ch->hates.clist = nullptr;
             free(t);
             break;
           }
@@ -310,10 +310,10 @@ int RemFeared(struct char_data* ch, struct char_data* pud) {
     return 0;
   }
 
-  if (pud && (ch->fears.clist != 0)) {
+  if (pud && (ch->fears.clist != nullptr)) {
     tmp = ch->fears.clist;
-    for (oldpud = ch->fears.clist; (oldpud != 0); oldpud = tmp) {
-      if (oldpud == 0) {
+    for (oldpud = ch->fears.clist; (oldpud != nullptr); oldpud = tmp) {
+      if (oldpud == nullptr) {
         return 0;
       }
       tmp = oldpud->next;
@@ -321,7 +321,7 @@ int RemFeared(struct char_data* ch, struct char_data* pud) {
         if (oldpud->op_ch == pud) {
           t = oldpud;
           if (ch->fears.clist == t) {
-            ch->fears.clist = 0;
+            ch->fears.clist = nullptr;
             free(t);
             break;
           }
@@ -337,7 +337,7 @@ int RemFeared(struct char_data* ch, struct char_data* pud) {
         if (!strcmp(oldpud->name, GET_NAME(pud))) {
           t = oldpud;
           if (ch->fears.clist == t) {
-            ch->fears.clist = 0;
+            ch->fears.clist = nullptr;
             free(t);
             break;
           }
@@ -434,7 +434,7 @@ struct char_data* FindAHatee(struct char_data* ch) {
   struct char_data* tmp_ch;
 
   if (ch->in_room < 0) {
-    return (0);
+    return (nullptr);
   }
 
   for (tmp_ch = real_roomp(ch->in_room)->people; tmp_ch;
@@ -445,18 +445,18 @@ struct char_data* FindAHatee(struct char_data* ch) {
           return (tmp_ch);
         }
         RemHated(ch, tmp_ch);
-        return (0);
+        return (nullptr);
       }
     }
   }
-  return (0);
+  return (nullptr);
 }
 
 struct char_data* FindAFearee(struct char_data* ch) {
   struct char_data* tmp_ch;
 
   if (ch->in_room < 0) {
-    return (0);
+    return (nullptr);
   }
 
   for (tmp_ch = real_roomp(ch->in_room)->people; tmp_ch;
@@ -467,7 +467,7 @@ struct char_data* FindAFearee(struct char_data* ch) {
       }
     }
   }
-  return (0);
+  return (nullptr);
 }
 
 /*
@@ -483,7 +483,7 @@ void ZeroHatred(struct char_data* ch, struct char_data* v) {
     if (oldpud) {
       if (oldpud->op_ch) {
         if (oldpud->op_ch == v) {
-          oldpud->op_ch = 0;
+          oldpud->op_ch = nullptr;
         }
       }
     }
@@ -497,7 +497,7 @@ void ZeroFeared(struct char_data* ch, struct char_data* v) {
     if (oldpud) {
       if (oldpud->op_ch) {
         if (oldpud->op_ch == v) {
-          oldpud->op_ch = 0;
+          oldpud->op_ch = nullptr;
         }
       }
     }

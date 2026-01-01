@@ -82,10 +82,10 @@ void do_demote(struct char_data* ch, const char* argument, int cmd) {
 }
 
 static struct StrHeap* init_heap(void) {
-  struct StrHeap* heap = 0;
+  struct StrHeap* heap = nullptr;
 
   heap = (struct StrHeap*)malloc(sizeof(struct StrHeap));
-  heap->str = 0;
+  heap->str = nullptr;
   /*
      Heap->str = (struct StrHeapList *)malloc(sizeof(struct StrHeapList));
      Heap->str[0].string=0;
@@ -97,7 +97,7 @@ static struct StrHeap* init_heap(void) {
 
 void do_imptest(struct char_data* ch, const char* arg, int cmd) {
   struct char_data* i;
-  struct StrHeap* h = 0;
+  struct StrHeap* h = nullptr;
   int x = 0;
 
   if (strcmp(arg, " test test test") != 0) { /* don't use this command on the */
@@ -240,7 +240,7 @@ void do_bamfin(struct char_data* ch, const char* arg, int cmd) {
   if (!strcmp(arg, "def")) {
     REMOVE_BIT(ch->poof.pmask, BIT_POOF_IN);
     free(ch->poof.poofin);
-    ch->poof.poofin = 0;
+    ch->poof.poofin = nullptr;
     send_to_char("Ok.\n\r", ch);
     return;
   }
@@ -289,7 +289,7 @@ void do_bamfout(struct char_data* ch, const char* arg, int cmd) {
   if (!strcmp(arg, "def")) {
     REMOVE_BIT(ch->poof.pmask, BIT_POOF_OUT);
     free(ch->poof.poofout);
-    ch->poof.poofout = 0;
+    ch->poof.poofout = nullptr;
     send_to_char("Ok.\n\r", ch);
     return;
   }
@@ -325,7 +325,7 @@ static FILE* make_zone_file(struct char_data* c) {
   if ((fp = fopen(buf, "w")) != nullptr) {
     return (fp);
   }
-  return (0);
+  return (nullptr);
 }
 
 static int mob_vnum(struct char_data* c) {
@@ -477,16 +477,16 @@ void do_highfive(struct char_data* ch, const char* argument, int cmd) {
 
   if (argument) {
     only_argument(argument, buf);
-    if ((tch = get_char_room_vis(ch, buf)) != 0) {
+    if ((tch = get_char_room_vis(ch, buf)) != nullptr) {
       if ((GetMaxLevel(tch) >= DEMIGOD) && (!IS_NPC(tch)) &&
           (GetMaxLevel(ch) >= DEMIGOD) && (!IS_NPC(ch))) {
         sprintf(mess, "Time stops for a moment as %s and %s high five.\n\r",
           ch->player.name, tch->player.name);
         send_to_all(mess);
       } else {
-        act("$n gives you a high five", 1, ch, 0, tch, TO_VICT);
-        act("You give a hearty high five to $N", 1, ch, 0, tch, TO_CHAR);
-        act("$n and $N do a high five.", 1, ch, 0, tch, TO_NOTVICT);
+        act("$n gives you a high five", 1, ch, nullptr, tch, TO_VICT);
+        act("You give a hearty high five to $N", 1, ch, nullptr, tch, TO_CHAR);
+        act("$n and $N do a high five.", 1, ch, nullptr, tch, TO_NOTVICT);
       }
     } else {
       sprintf(buf, "I don't see anyone here like that.\n\r");
@@ -704,7 +704,7 @@ static void room_load(struct char_data* ch, int start, int end) {
         found = 1;
       }
 
-      if ((rp = real_roomp(vnum)) == 0) { /* empty room */
+      if ((rp = real_roomp(vnum)) == nullptr) { /* empty room */
         rp = (struct room_data*)malloc(sizeof(struct room_data));
         memset(rp, 0, sizeof(struct room_data));
         room_enter(room_db, vnum, rp);
@@ -971,8 +971,8 @@ void do_emote(struct char_data* ch, const char* argument, int cmd) {
     send_to_char("Yes.. But what?\n\r", ch);
   } else {
     sprintf(buf, "$n %s", argument + i);
-    act(buf, 0, ch, 0, 0, TO_ROOM);
-    act(buf, 0, ch, 0, 0, TO_CHAR);
+    act(buf, 0, ch, nullptr, nullptr, TO_ROOM);
+    act(buf, 0, ch, nullptr, nullptr, TO_CHAR);
   }
 }
 
@@ -997,26 +997,30 @@ void do_flag(struct char_data* ch, const char* argument, int cmd) {
     } else if (is_abbrev(buf2, "killer")) {
       if (IS_SET(victim->specials.act, PLR_KILLER)) {
         REMOVE_BIT(victim->specials.act, PLR_KILLER);
-        act("You just removed $N's killer flag", 0, ch, 0, victim, TO_CHAR);
+        act("You just removed $N's killer flag", 0, ch, nullptr, victim,
+          TO_CHAR);
       } else {
         SET_BIT(victim->specials.act, PLR_KILLER);
-        act("You just set $N's killer flag", 0, ch, 0, victim, TO_CHAR);
+        act("You just set $N's killer flag", 0, ch, nullptr, victim, TO_CHAR);
       }
     } else if (is_abbrev(buf2, "outlaw")) {
       if (IS_SET(victim->specials.act, PLR_OUTLAW)) {
         REMOVE_BIT(victim->specials.act, PLR_OUTLAW);
-        act("You just removed $N's outlaw flag", 0, ch, 0, victim, TO_CHAR);
+        act("You just removed $N's outlaw flag", 0, ch, nullptr, victim,
+          TO_CHAR);
       } else {
         SET_BIT(victim->specials.act, PLR_OUTLAW);
-        act("You just set $N's outlaw flag.", 0, ch, 0, victim, TO_CHAR);
+        act("You just set $N's outlaw flag.", 0, ch, nullptr, victim, TO_CHAR);
       }
     } else if (is_abbrev(buf2, "banished")) {
       if (IS_SET(victim->specials.act, PLR_BANISHED)) {
         REMOVE_BIT(victim->specials.act, PLR_BANISHED);
-        act("You just removed $N's banished flag", 0, ch, 0, victim, TO_CHAR);
+        act("You just removed $N's banished flag", 0, ch, nullptr, victim,
+          TO_CHAR);
       } else {
         SET_BIT(victim->specials.act, PLR_BANISHED);
-        act("You just set $N's banished flag.", 0, ch, 0, victim, TO_CHAR);
+        act("You just set $N's banished flag.", 0, ch, nullptr, victim,
+          TO_CHAR);
       }
     } else {
       send_to_char("Syntax: flag <player> <flag> (killer,outlaw,banished)\n\r",
@@ -1082,12 +1086,14 @@ void do_trans(struct char_data* ch, const char* argument, int cmd) {
     if (!(victim = get_char_vis_world(ch, buf, nullptr))) {
       send_to_char("No-one by that name around.\n\r", ch);
     } else {
-      act("$n disappears in a cloud of mushrooms.", 0, victim, 0, 0, TO_ROOM);
+      act("$n disappears in a cloud of mushrooms.", 0, victim, nullptr, nullptr,
+        TO_ROOM);
       target = ch->in_room;
       char_from_room(victim);
       char_to_room(victim, target);
-      act("$n arrives from a puff of smoke.", 0, victim, 0, 0, TO_ROOM);
-      act("$n has transferred you!", 0, ch, 0, victim, TO_VICT);
+      act("$n arrives from a puff of smoke.", 0, victim, nullptr, nullptr,
+        TO_ROOM);
+      act("$n has transferred you!", 0, ch, nullptr, victim, TO_VICT);
       do_look(victim, "", 15);
       send_to_char("Ok.\n\r", ch);
     }
@@ -1095,12 +1101,14 @@ void do_trans(struct char_data* ch, const char* argument, int cmd) {
     for (i = descriptor_list; i; i = i->next) {
       if (i->character != ch && !i->connected) {
         victim = i->character;
-        act("$n disappears in a cloud of mushrooms.", 0, victim, 0, 0, TO_ROOM);
+        act("$n disappears in a cloud of mushrooms.", 0, victim, nullptr,
+          nullptr, TO_ROOM);
         target = ch->in_room;
         char_from_room(victim);
         char_to_room(victim, target);
-        act("$n arrives from a puff of smoke.", 0, victim, 0, 0, TO_ROOM);
-        act("$n has transferred you!", 0, ch, 0, victim, TO_VICT);
+        act("$n arrives from a puff of smoke.", 0, victim, nullptr, nullptr,
+          TO_ROOM);
+        act("$n has transferred you!", 0, ch, nullptr, victim, TO_VICT);
         do_look(victim, "", 15);
       }
     }
@@ -1240,17 +1248,19 @@ void do_goto(struct char_data* ch, const char* argument, int cmd) {
     for (v = real_roomp(ch->in_room)->people; v; v = v->next_in_room) {
       if ((ch != v) && (GetMaxLevel(v) >= LOW_IMMORTAL)) {
         if (!IS_SET(ch->poof.pmask, BIT_POOF_OUT) || !ch->poof.poofout) {
-          act("$n disappears in a cloud of mushrooms.", 0, ch, 0, v, TO_VICT);
+          act("$n disappears in a cloud of mushrooms.", 0, ch, nullptr, v,
+            TO_VICT);
         } else {
-          act(ch->poof.poofout, 0, ch, 0, v, TO_VICT);
+          act(ch->poof.poofout, 0, ch, nullptr, v, TO_VICT);
         }
       }
     }
   } else {
     if (!IS_SET(ch->poof.pmask, BIT_POOF_OUT) || !ch->poof.poofout) {
-      act("$n disappears in a cloud of mushrooms.", 0, ch, 0, 0, TO_ROOM);
+      act("$n disappears in a cloud of mushrooms.", 0, ch, nullptr, nullptr,
+        TO_ROOM);
     } else if (*ch->poof.poofout != '!') {
-      act(ch->poof.poofout, 0, ch, 0, 0, TO_ROOM);
+      act(ch->poof.poofout, 0, ch, nullptr, nullptr, TO_ROOM);
     } else {
       command_interpreter(ch, (ch->poof.poofout + 1));
     }
@@ -1266,18 +1276,19 @@ void do_goto(struct char_data* ch, const char* argument, int cmd) {
     for (v = real_roomp(ch->in_room)->people; v; v = v->next_in_room) {
       if ((ch != v) && (GetMaxLevel(v) >= LOW_IMMORTAL)) {
         if (!IS_SET(ch->poof.pmask, BIT_POOF_IN) || !ch->poof.poofin) {
-          act("$n appears with an explosion of rose-petals.", 0, ch, 0, v,
+          act("$n appears with an explosion of rose-petals.", 0, ch, nullptr, v,
             TO_VICT);
         } else {
-          act(ch->poof.poofin, 0, ch, 0, v, TO_VICT);
+          act(ch->poof.poofin, 0, ch, nullptr, v, TO_VICT);
         }
       }
     }
   } else {
     if (!IS_SET(ch->poof.pmask, BIT_POOF_IN) || !ch->poof.poofin) {
-      act("$n appears with an explosion of rose-petals.", 0, ch, 0, 0, TO_ROOM);
+      act("$n appears with an explosion of rose-petals.", 0, ch, nullptr,
+        nullptr, TO_ROOM);
     } else if (*ch->poof.poofin != '!') {
-      act(ch->poof.poofin, 0, ch, 0, 0, TO_ROOM);
+      act(ch->poof.poofin, 0, ch, nullptr, nullptr, TO_ROOM);
     } else {
       command_interpreter(ch, (ch->poof.poofin + 1));
     }
@@ -1298,10 +1309,10 @@ void do_stat(struct char_data* ch, const char* argument, int cmd) {
   char arg1[MAX_STRING_LENGTH];
   char buf[MAX_STRING_LENGTH];
   char buf2[MAX_STRING_LENGTH];
-  struct room_data* rm = 0;
-  struct char_data* k = 0;
-  struct obj_data* j = 0;
-  struct obj_data* j2 = 0;
+  struct room_data* rm = nullptr;
+  struct char_data* k = nullptr;
+  struct obj_data* j = nullptr;
+  struct obj_data* j2 = nullptr;
   struct extra_descr_data* desc;
   struct follow_type* fol;
   int i;
@@ -1609,7 +1620,7 @@ void do_stat(struct char_data* ch, const char* argument, int cmd) {
     send_to_char(buf, ch);
     send_to_char("Followers are:\n\r", ch);
     for (fol = k->followers; fol; fol = fol->next) {
-      act("    $N", 0, ch, 0, fol->follower, TO_CHAR);
+      act("    $N", 0, ch, nullptr, fol->follower, TO_CHAR);
     }
 
     static const char* const immunity_names[] = {"FIRE", "COLD", "ELECTRICITY",
@@ -2146,14 +2157,14 @@ void do_snoop(struct char_data* ch, const char* argument, int cmd) {
     send_to_char("Ok, you just snoop yourself.\n\r", ch);
     if (ch->desc->snoop.snooping) {
       if (ch->desc->snoop.snooping->desc) {
-        ch->desc->snoop.snooping->desc->snoop.snoop_by = 0;
+        ch->desc->snoop.snooping->desc->snoop.snoop_by = nullptr;
       } else {
         char buf[MAX_STRING_LENGTH];
         sprintf(buf, "caught %s snooping %s who didn't have a descriptor!",
           ch->player.name, ch->desc->snoop.snooping->player.name);
         vlog(buf);
       }
-      ch->desc->snoop.snooping = 0;
+      ch->desc->snoop.snooping = nullptr;
     }
     return;
   }
@@ -2172,7 +2183,7 @@ void do_snoop(struct char_data* ch, const char* argument, int cmd) {
 
   if (ch->desc->snoop.snooping) {
     if (ch->desc->snoop.snooping->desc) {
-      ch->desc->snoop.snooping->desc->snoop.snoop_by = 0;
+      ch->desc->snoop.snooping->desc->snoop.snoop_by = nullptr;
     }
   }
 
@@ -2215,7 +2226,7 @@ void do_switch(struct char_data* ch, const char* argument, int cmd) {
         ch->desc->original = ch;
 
         victim->desc = ch->desc;
-        ch->desc = 0;
+        ch->desc = nullptr;
       }
     }
   }
@@ -2239,7 +2250,7 @@ void do_return(struct char_data* ch, const char* argument, int cmd) {
     mob = ch;
     per = ch->desc->original;
 
-    act("$n turns liquid, and reforms as $N", 1, mob, 0, per, TO_ROOM);
+    act("$n turns liquid, and reforms as $N", 1, mob, nullptr, per, TO_ROOM);
 
     char_from_room(per);
     char_to_room(per, mob->in_room);
@@ -2248,10 +2259,10 @@ void do_return(struct char_data* ch, const char* argument, int cmd) {
   }
 
   ch->desc->character = ch->desc->original;
-  ch->desc->original = 0;
+  ch->desc->original = nullptr;
 
   ch->desc->character->desc = ch->desc;
-  ch->desc = 0;
+  ch->desc = nullptr;
 
   if (IS_SET(ch->specials.act, ACT_POLYSELF) && cmd) {
     extract_char(mob);
@@ -2281,7 +2292,7 @@ void do_force(struct char_data* ch, const char* argument, int cmd) {
         send_to_char("Oh no you don't!!\n\r", ch);
       } else {
         sprintf(buf, "$n has forced you to '%s'.", to_force);
-        act(buf, 0, ch, 0, vict, TO_VICT);
+        act(buf, 0, ch, nullptr, vict, TO_VICT);
         send_to_char("Ok.\n\r", ch);
         command_interpreter(vict, to_force);
       }
@@ -2295,7 +2306,7 @@ void do_force(struct char_data* ch, const char* argument, int cmd) {
           send_to_char("Oh no you don't!!\n\r", ch);
         } else {
           sprintf(buf, "$n has forced you to '%s'.", to_force);
-          act(buf, 0, ch, 0, vict, TO_VICT);
+          act(buf, 0, ch, nullptr, vict, TO_VICT);
           command_interpreter(vict, to_force);
         }
       }
@@ -2347,10 +2358,10 @@ void do_load(struct char_data* ch, const char* argument, int cmd) {
     mob = read_mobile(number, REAL);
     char_to_room(mob, ch->in_room);
 
-    act("$n makes a quaint, magical gesture with one hand.", 1, ch, 0, 0,
-      TO_ROOM);
-    act("$n has summoned $N from the ether!", 0, ch, 0, mob, TO_ROOM);
-    act("You bring forth $N from the the cosmic ether.", 0, ch, 0, mob,
+    act("$n makes a quaint, magical gesture with one hand.", 1, ch, nullptr,
+      nullptr, TO_ROOM);
+    act("$n has summoned $N from the ether!", 0, ch, nullptr, mob, TO_ROOM);
+    act("You bring forth $N from the the cosmic ether.", 0, ch, nullptr, mob,
       TO_CHAR);
 
   } else if (is_abbrev(type, "object")) {
@@ -2422,9 +2433,10 @@ void do_load(struct char_data* ch, const char* argument, int cmd) {
 
     obj = read_object(number, REAL);
     obj_to_char(obj, ch);
-    act("$n makes a strange magical gesture.", 1, ch, 0, 0, TO_ROOM);
-    act("$n has created $p!", 0, ch, obj, 0, TO_ROOM);
-    act("You now have $p.", 0, ch, obj, 0, TO_CHAR);
+    act("$n makes a strange magical gesture.", 1, ch, nullptr, nullptr,
+      TO_ROOM);
+    act("$n has created $p!", 0, ch, obj, nullptr, TO_ROOM);
+    act("You now have $p.", 0, ch, obj, nullptr, TO_CHAR);
   } else if (is_abbrev(type, "room")) {
     int start;
     int end;
@@ -2493,7 +2505,7 @@ static void purge_one_room(int rnum, struct room_data* rp, const int* range) {
     char_from_room(ch);
     char_to_room(ch, 0); /* send character to the void */
     do_look(ch, "", 15);
-    act("$n tumbles into the Void.", 1, ch, 0, 0, TO_ROOM);
+    act("$n tumbles into the Void.", 1, ch, nullptr, nullptr, TO_ROOM);
   }
 
   while (rp->contents) {
@@ -2580,14 +2592,14 @@ void do_purge(struct char_data* ch, const char* argument, int cmd) {
         return;
       }
 
-      act("$n disintegrates $N.", 0, ch, 0, vict, TO_NOTVICT);
+      act("$n disintegrates $N.", 0, ch, nullptr, vict, TO_NOTVICT);
 
       if (IS_NPC(vict) || (!IS_SET(ch->specials.act, ACT_POLYSELF))) {
         extract_char(vict);
       } else {
         if (vict->desc) {
           close_socket(vict->desc);
-          vict->desc = 0;
+          vict->desc = nullptr;
           extract_char(vict);
         } else {
           extract_char(vict);
@@ -2595,7 +2607,7 @@ void do_purge(struct char_data* ch, const char* argument, int cmd) {
       }
     } else if ((obj = get_obj_in_list_vis(ch, name,
                   real_roomp(ch->in_room)->contents))) {
-      act("$n destroys $p.", 0, ch, obj, 0, TO_ROOM);
+      act("$n destroys $p.", 0, ch, obj, nullptr, TO_ROOM);
       extract_obj(obj);
     } else {
       argument = one_argument(argument, name);
@@ -2629,7 +2641,7 @@ void do_purge(struct char_data* ch, const char* argument, int cmd) {
           return;
         }
         for (i = range[0]; i <= range[1]; i++) {
-          if ((rp = real_roomp(i)) != 0) {
+          if ((rp = real_roomp(i)) != nullptr) {
             purge_one_room(i, rp, range);
           }
         }
@@ -2652,7 +2664,7 @@ void do_purge(struct char_data* ch, const char* argument, int cmd) {
     act(
       "$n gestures... You are surrounded by thousands of tiny scrubbing "
       "bubbles!",
-      0, ch, 0, 0, TO_ROOM);
+      0, ch, nullptr, nullptr, TO_ROOM);
     send_to_room("The world seems a little cleaner.\n\r", ch->in_room);
 
     for (vict = real_roomp(ch->in_room)->people; vict; vict = next_v) {
@@ -2885,10 +2897,11 @@ void do_start(struct char_data* ch) {
   GET_COND(ch, DRUNK) = 0;
 
   ch->player.time.played = 0;
-  ch->player.time.logon = time(0);
+  ch->player.time.logon = time(nullptr);
 }
 
-static void gain_exp_regardless(struct char_data* ch, int gain, int char_class) {
+static void gain_exp_regardless(struct char_data* ch, int gain,
+  int char_class) {
   int i;
   char is_altered = 0;
 
@@ -2897,8 +2910,8 @@ static void gain_exp_regardless(struct char_data* ch, int gain, int char_class) 
     if (gain > 0) {
       GET_EXP(ch) += gain;
 
-      for (i = 0; (i < ABS_MAX_LVL) && (titles[char_class][i].exp <= GET_EXP(ch));
-        i++) {
+      for (i = 0;
+        (i < ABS_MAX_LVL) && (titles[char_class][i].exp <= GET_EXP(ch)); i++) {
         if (i > GET_LEVEL(ch, char_class)) {
           send_to_char("You raise a level\n\r", ch);
           GET_LEVEL(ch, char_class) = i;
@@ -3032,7 +3045,7 @@ void do_advance(struct char_data* ch, const char* argument, int cmd) {
     " body dissolves\n\rinto the elements of time and space itself.\n\rSudde"
     "nly a silent explosion of light snaps\n\ryou back to reality. You fee"
     "l slightly\n\rdifferent.",
-    0, ch, 0, victim, TO_VICT);
+    0, ch, nullptr, victim, TO_VICT);
 
   if (GET_LEVEL(victim, lin_class) == 0) {
     do_start(victim);
@@ -3106,7 +3119,7 @@ void do_restore(struct char_data* ch, const char* argument, int cmd) {
     }
     update_pos(victim);
     send_to_char("Done.\n\r", ch);
-    act("You have been fully healed by $N!", 0, victim, 0, ch, TO_CHAR);
+    act("You have been fully healed by $N!", 0, victim, nullptr, ch, TO_CHAR);
   }
 }
 
@@ -3134,7 +3147,7 @@ void do_noshout(struct char_data* ch, const char* argument, int cmd) {
   } else if (IS_NPC(vict)) {
     send_to_char("Can't do that to a beast.\n\r", ch);
   } else if (GetMaxLevel(vict) >= GetMaxLevel(ch)) {
-    act("$E might object to that.. better not.", 0, ch, 0, vict, TO_CHAR);
+    act("$E might object to that.. better not.", 0, ch, nullptr, vict, TO_CHAR);
   } else if (IS_SET(vict->specials.act, PLR_NOSHOUT) &&
              (GetMaxLevel(ch) >= SAINT)) {
     send_to_char("You can shout again.\n\r", vict);
@@ -3173,7 +3186,7 @@ void do_nohassle(struct char_data* ch, const char* argument, int cmd) {
   } else if (IS_NPC(vict)) {
     send_to_char("Can't do that to a beast.\n\r", ch);
   } else if (GetMaxLevel(vict) > GetMaxLevel(ch)) {
-    act("$E might object to that.. better not.", 0, ch, 0, vict, TO_CHAR);
+    act("$E might object to that.. better not.", 0, ch, nullptr, vict, TO_CHAR);
   } else {
     send_to_char("The implementor won't let you set this on mortals...\n\r",
       ch);
@@ -3204,7 +3217,7 @@ void do_stealth(struct char_data* ch, const char* argument, int cmd) {
   } else if (IS_NPC(vict)) {
     send_to_char("Can't do that to a beast.\n\r", ch);
   } else if (GetMaxLevel(vict) > GetMaxLevel(ch)) {
-    act("$E might object to that.. better not.", 0, ch, 0, vict, TO_CHAR);
+    act("$E might object to that.. better not.", 0, ch, nullptr, vict, TO_CHAR);
   } else {
     send_to_char("The implementor won't let you set this on mortals...\n\r",
       ch);
@@ -3390,8 +3403,7 @@ void do_show(struct char_data* ch, const char* argument, int cmd) {
         continue; /* optimize later*/
       }
 
-      sprintf(buf, "%5d %4d %3d  %s\n\r", oi->vnum, objn, oi->number,
-        oi->name);
+      sprintf(buf, "%5d %4d %3d  %s\n\r", oi->vnum, objn, oi->number, oi->name);
       append_to_string_block(&sb, buf);
     }
 

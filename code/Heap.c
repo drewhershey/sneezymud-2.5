@@ -79,7 +79,7 @@ void DisplayStringHeap(struct StrHeap* Heap, struct char_data* ch, int type,
       send_to_char(buf, ch);
     } else {
       if (ch->in_room > -1) {
-        act(buf, false, ch, 0, 0, TO_ROOM);
+        act(buf, false, ch, nullptr, nullptr, TO_ROOM);
       }
     }
 

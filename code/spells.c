@@ -41,8 +41,8 @@ static void spell_burning_hands(signed char level, struct char_data* ch,
   dam = dice(1, 6) + level + 1;
 
   send_to_char("Searing flame fans out in front of you!\n\r", ch);
-  act("$n sends a fan of flame shooting from the fingertips!\n\r", 0, ch, 0, 0,
-    TO_ROOM);
+  act("$n sends a fan of flame shooting from the fingertips!\n\r", 0, ch,
+    nullptr, nullptr, TO_ROOM);
 
   for (tmp_victim = real_roomp(ch->in_room)->people; tmp_victim;
     tmp_victim = tmp_victim->next_in_room) {
@@ -51,14 +51,14 @@ static void spell_burning_hands(signed char level, struct char_data* ch,
         return;
       }
       if (!in_group(ch, tmp_victim)) {
-        act("You are seared by the burning flame!\n\r", 0, ch, 0, tmp_victim,
-          TO_VICT);
+        act("You are seared by the burning flame!\n\r", 0, ch, nullptr,
+          tmp_victim, TO_VICT);
         if (saves_spell(tmp_victim, SAVING_SPELL)) {
           dam >>= 1;
         }
         MissileDamage(ch, tmp_victim, dam, SPELL_BURNING_HANDS);
       } else {
-        act("You are able to avoid the flames!\n\r", 0, ch, 0, tmp_victim,
+        act("You are able to avoid the flames!\n\r", 0, ch, nullptr, tmp_victim,
           TO_VICT);
       }
     }
@@ -73,7 +73,7 @@ void cast_burning_hands(signed char level, struct char_data* ch,
     case SPELL_TYPE_SPELL:
     case SPELL_TYPE_STAFF:
     case SPELL_TYPE_SCROLL:
-      spell_burning_hands(level, ch, 0, 0);
+      spell_burning_hands(level, ch, nullptr, nullptr);
       break;
     default:
       vlog("Serious screw-up in burning hands!");
@@ -264,7 +264,7 @@ static void spell_life_leech(signed char level, struct char_data* ch,
 
       } else {
         act("You dodge your groupmembers attempt to leech your life!!!\n\r", 0,
-          ch, 0, tmp_victim, TO_VICT);
+          ch, nullptr, tmp_victim, TO_VICT);
       }
       WAIT_STATE(ch, 2 * PULSE_VIOLENCE);
     }
@@ -275,7 +275,7 @@ void cast_life_leech(signed char level, struct char_data* ch, const char* arg,
   int type, struct char_data* victim, struct obj_data* tar_obj) {
   switch (type) {
     case SPELL_TYPE_SPELL:
-      spell_life_leech(level, ch, 0, 0);
+      spell_life_leech(level, ch, nullptr, nullptr);
       break;
     default:
       vlog("Serious screw-up in life leech!");
@@ -365,7 +365,8 @@ static void spell_earthquake(signed char level, struct char_data* ch,
   dam = dice(1, 4) + level + 1;
 
   send_to_char("The earth trembles beneath your feet!\n\r", ch);
-  act("$n makes the earth tremble and shiver\n\r", 0, ch, 0, 0, TO_ROOM);
+  act("$n makes the earth tremble and shiver\n\r", 0, ch, nullptr, nullptr,
+    TO_ROOM);
 
   for (tmp_victim = character_list; tmp_victim; tmp_victim = temp) {
     temp = tmp_victim->next;
@@ -373,13 +374,13 @@ static void spell_earthquake(signed char level, struct char_data* ch,
       if (!in_group(ch, tmp_victim)) {
         if ((GetMaxLevel(tmp_victim) < LOW_IMMORTAL) || (IS_NPC(tmp_victim))) {
           MissileDamage(ch, tmp_victim, dam, SPELL_EARTHQUAKE);
-          act("You fall and hurt yourself!!\n\r", 0, ch, 0, tmp_victim,
+          act("You fall and hurt yourself!!\n\r", 0, ch, nullptr, tmp_victim,
             TO_VICT);
         }
 
       } else {
-        act("You almost fall and hurt yourself!!\n\r", 0, ch, 0, tmp_victim,
-          TO_VICT);
+        act("You almost fall and hurt yourself!!\n\r", 0, ch, nullptr,
+          tmp_victim, TO_VICT);
       }
     } else {
       if (real_roomp(ch->in_room)->zone ==
@@ -396,7 +397,7 @@ void cast_earthquake(signed char level, struct char_data* ch, const char* arg,
     case SPELL_TYPE_SPELL:
     case SPELL_TYPE_SCROLL:
     case SPELL_TYPE_STAFF:
-      spell_earthquake(level, ch, 0, 0);
+      spell_earthquake(level, ch, nullptr, nullptr);
       break;
     default:
       vlog("Serious screw-up in earthquake!");
@@ -509,7 +510,8 @@ static void spell_fireball(signed char level, struct char_data* ch,
         MissileDamage(ch, tmp_victim, dam, SPELL_FIREBALL);
 
       } else {
-        act("You dodge the mass of flame!!\n\r", 0, ch, 0, tmp_victim, TO_VICT);
+        act("You dodge the mass of flame!!\n\r", 0, ch, nullptr, tmp_victim,
+          TO_VICT);
       }
     } else {
       if (tmp_victim->in_room != NOWHERE) {
@@ -529,7 +531,7 @@ void cast_fireball(signed char level, struct char_data* ch, const char* arg,
     case SPELL_TYPE_SPELL:
     case SPELL_TYPE_SCROLL:
     case SPELL_TYPE_STAFF:
-      spell_fireball(level, ch, 0, 0);
+      spell_fireball(level, ch, nullptr, nullptr);
       break;
     default:
       vlog("Serious screw-up in fireball");
@@ -674,8 +676,8 @@ static void spell_cone_of_cold(signed char level, struct char_data* ch,
   dam = dice(level, 3) + level + 1;
 
   send_to_char("A cone of freezing air fans out before you\n\r", ch);
-  act("$n sends a cone of ice shooting from the fingertips!\n\r", 0, ch, 0, 0,
-    TO_ROOM);
+  act("$n sends a cone of ice shooting from the fingertips!\n\r", 0, ch,
+    nullptr, nullptr, TO_ROOM);
 
   for (tmpv = real_roomp(ch->in_room)->people; tmpv;
     tmpv = tmpv->next_in_room) {
@@ -684,13 +686,14 @@ static void spell_cone_of_cold(signed char level, struct char_data* ch,
         return;
       }
       if (!in_group(ch, tmpv)) {
-        act("You are chilled to the bone!\n\r", 0, ch, 0, tmpv, TO_VICT);
+        act("You are chilled to the bone!\n\r", 0, ch, nullptr, tmpv, TO_VICT);
         if (saves_spell(tmpv, SAVING_SPELL)) {
           dam >>= 1;
         }
         MissileDamage(ch, tmpv, dam, SPELL_CONE_OF_COLD);
       } else {
-        act("You are able to avoid the cone!\n\r", 0, ch, 0, tmpv, TO_VICT);
+        act("You are able to avoid the cone!\n\r", 0, ch, nullptr, tmpv,
+          TO_VICT);
       }
     }
   }
@@ -702,7 +705,7 @@ void cast_cone_of_cold(signed char level, struct char_data* ch, const char* arg,
     case SPELL_TYPE_SPELL:
     case SPELL_TYPE_SCROLL:
     case SPELL_TYPE_WAND:
-      spell_cone_of_cold(level, ch, 0, 0);
+      spell_cone_of_cold(level, ch, nullptr, nullptr);
       break;
 
     default:
@@ -723,20 +726,21 @@ static void spell_ice_storm(signed char level, struct char_data* ch,
   dam = dice(3, 10);
 
   send_to_char("You conjure a storm of ice.\n\r", ch);
-  act("$n conjures an ice storm!\n\r", 0, ch, 0, 0, TO_ROOM);
+  act("$n conjures an ice storm!\n\r", 0, ch, nullptr, nullptr, TO_ROOM);
 
   for (tmpv = real_roomp(ch->in_room)->people; tmpv;
     tmpv = tmpv->next_in_room) {
     if ((ch->in_room == tmpv->in_room) && (ch != tmpv)) {
       if (!in_group(ch, tmpv)) {
-        act("You are blasted by the storm!\n\r", 0, ch, 0, tmpv, TO_VICT);
+        act("You are blasted by the storm!\n\r", 0, ch, nullptr, tmpv, TO_VICT);
         if (saves_spell(tmpv, SAVING_SPELL)) {
           dam >>= 1;
         }
 
         MissileDamage(ch, tmpv, dam, SPELL_ICE_STORM);
       } else {
-        act("You are able to dodge the storm!\n\r", 0, ch, 0, tmpv, TO_VICT);
+        act("You are able to dodge the storm!\n\r", 0, ch, nullptr, tmpv,
+          TO_VICT);
       }
     }
   }
@@ -748,7 +752,7 @@ void cast_ice_storm(signed char level, struct char_data* ch, const char* arg,
     case SPELL_TYPE_SPELL:
     case SPELL_TYPE_SCROLL:
     case SPELL_TYPE_WAND:
-      spell_ice_storm(level, ch, 0, 0);
+      spell_ice_storm(level, ch, nullptr, nullptr);
       break;
 
     default:
@@ -1058,7 +1062,8 @@ static void spell_geyser(signed char level, struct char_data* ch,
   }
   dam = dice(level, 3);
 
-  act("The Geyser erupts in a huge column of steam!\n\r", 0, ch, 0, 0, TO_ROOM);
+  act("The Geyser erupts in a huge column of steam!\n\r", 0, ch, nullptr,
+    nullptr, TO_ROOM);
 
   for (tmpv = real_roomp(ch->in_room)->people; tmpv; tmpv = temp) {
     temp = tmpv->next_in_room;
@@ -1067,11 +1072,11 @@ static void spell_geyser(signed char level, struct char_data* ch,
         if (MissileDamage(ch, tmpv, dam, SPELL_GEYSER)) {
           return;
         }
-        act("You are seared by the boiling water!!\n\r", 0, ch, 0, tmpv,
+        act("You are seared by the boiling water!!\n\r", 0, ch, nullptr, tmpv,
           TO_VICT);
       } else {
-        act("You are almost seared by the boiling water!!\n\r", 0, ch, 0, tmpv,
-          TO_VICT);
+        act("You are almost seared by the boiling water!!\n\r", 0, ch, nullptr,
+          tmpv, TO_VICT);
       }
     }
   }
@@ -1084,7 +1089,7 @@ void cast_geyser(signed char level, struct char_data* ch, const char* arg,
     case SPELL_TYPE_SCROLL:
     case SPELL_TYPE_WAND:
     case SPELL_TYPE_STAFF:
-      spell_geyser(level, ch, 0, 0);
+      spell_geyser(level, ch, nullptr, nullptr);
       break;
     default:
       vlog("Serious screw-up in geyser!");
@@ -1146,7 +1151,7 @@ static int enforce_verbal(struct char_data* ch) {
   }
 
   if (!can_do_verbal(ch)) {
-    act("$n opens his mouth as if to say something.", 1, ch, 0, nullptr,
+    act("$n opens his mouth as if to say something.", 1, ch, nullptr, nullptr,
       TO_ROOM);
     send_to_char("You are unable to chant the mantra!\n\r", ch);
     return 0;
@@ -1174,8 +1179,8 @@ static int perform_gestural(struct char_data* ch) {
     return 0;
   }
 
-  act("$n traces a magical rune in the air with his hands.", 1, ch, 0, nullptr,
-    TO_ROOM);
+  act("$n traces a magical rune in the air with his hands.", 1, ch, nullptr,
+    nullptr, TO_ROOM);
   send_to_char("You trace a rune in the air with your hands.\n\r", ch);
   return 1;
 }
@@ -1220,8 +1225,8 @@ static struct obj_data* find_component(struct char_data* ch, int vnum) {
 
   if (ITEM_TYPE(item) == ITEM_SPELLBAG) {
     for (item = item->contains; item; item = item->next_content) {
-      if (((item->item_number >= 0) ? obj_index[item->item_number].vnum
-                                    : 0) == vnum) {
+      if (((item->item_number >= 0) ? obj_index[item->item_number].vnum : 0) ==
+          vnum) {
         return item;
       }
     }
@@ -1328,8 +1333,8 @@ static void spell_create_golem(struct char_data* ch, struct char_data* victim,
     target = DIAMOND_GOLEM;
   } else {
     send_to_char("You have nothing to create the golem with!\n\r", ch);
-    act("$n looks around stupidly, as if trying to find something.", 1, ch, 0,
-      golem, TO_ROOM);
+    act("$n looks around stupidly, as if trying to find something.", 1, ch,
+      nullptr, golem, TO_ROOM);
     return;
   }
 
@@ -1344,7 +1349,7 @@ static void spell_create_golem(struct char_data* ch, struct char_data* victim,
   golem->points.exp = 0;
 
   char_to_room(golem, ch->in_room);
-  act("$n arrives in a puff of blue smoke!", 1, golem, 0, ch, TO_ROOM);
+  act("$n arrives in a puff of blue smoke!", 1, golem, nullptr, ch, TO_ROOM);
 
   /* spell requires high INT and WIS  */
   modifier += (GET_WIS(ch) > 17) + (GET_WIS(ch) > 16) + (GET_WIS(ch) > 15) +
@@ -1361,10 +1366,10 @@ static void spell_create_golem(struct char_data* ch, struct char_data* victim,
   }
 
   if ((control = task_check(ch, control, modifier)) == CRITICAL_FAILURE) {
-    act("$n loses control of the magic he has unleashed!", 1, ch, 0, golem,
-      TO_ROOM);
-    act("You lose control of the magic you have unleased!", 1, ch, 0, golem,
-      TO_CHAR);
+    act("$n loses control of the magic he has unleashed!", 1, ch, nullptr,
+      golem, TO_ROOM);
+    act("You lose control of the magic you have unleased!", 1, ch, nullptr,
+      golem, TO_CHAR);
     hit(golem, ch, TYPE_UNDEFINED);
   } else { /* golem has permanent charm */
     if (golem->master) {
@@ -1377,7 +1382,7 @@ static void spell_create_golem(struct char_data* ch, struct char_data* victim,
     af.bitvector = AFF_CHARM;
     affect_to_char(golem, &af);
     if (control == CRITICAL_SUCCESS) {
-      act("$n beams with pride.  $N flexes.", 1, ch, 0, golem, TO_ROOM);
+      act("$n beams with pride.  $N flexes.", 1, ch, nullptr, golem, TO_ROOM);
       send_to_char("You have created an unusually strong golem!\n\r", ch);
       GET_HIT(golem) = golem->points.max_hit = (int)(GET_MAX_HIT(golem) * 1.5);
     }
@@ -1391,7 +1396,7 @@ void cast_create_golem(signed char level, struct char_data* ch, const char* arg,
   int type, struct char_data* victim, struct obj_data* tar_obj) {
   switch (type) {
     case SPELL_TYPE_SPELL:
-      spell_create_golem(ch, victim, 0);
+      spell_create_golem(ch, victim, nullptr);
       break;
     default:
       vlog("Create golem called in a non-spell way (not defined!)");
@@ -1466,15 +1471,16 @@ static void spell_resurrection(struct char_data* ch, struct char_data* victim,
         return;
       }
 
-      act("With mystic power, $n resurrects a corpse.", 1, ch, 0, 0, TO_ROOM);
-      act("$N slowly rises from the ground.", 0, ch, 0, victim, TO_ROOM);
+      act("With mystic power, $n resurrects a corpse.", 1, ch, nullptr, nullptr,
+        TO_ROOM);
+      act("$N slowly rises from the ground.", 0, ch, nullptr, victim, TO_ROOM);
 
       /*
    should be charmed and follower ch
    */
 
       if (IsImmune(victim, IMM_CHARM) || IsResist(victim, IMM_CHARM)) {
-        act("$N says 'Thank you'", 0, ch, 0, victim, TO_ROOM);
+        act("$N says 'Thank you'", 0, ch, nullptr, victim, TO_ROOM);
       } else {
         af.type = SPELL_CHARM_PERSON;
         af.duration = 36;
@@ -1518,13 +1524,13 @@ void cast_resurrection(signed char level, struct char_data* ch, const char* arg,
       if (!tar_obj) {
         return;
       }
-      spell_resurrection(ch, 0, tar_obj);
+      spell_resurrection(ch, nullptr, tar_obj);
       break;
     case SPELL_TYPE_STAFF:
       if (!tar_obj) {
         return;
       }
-      spell_resurrection(ch, 0, tar_obj);
+      spell_resurrection(ch, nullptr, tar_obj);
       break;
     default:
       vlog("Serious problem in 'resurrection'");
@@ -1548,8 +1554,8 @@ static void spell_track(signed char level, struct char_data* ch,
     send_to_char("You feel your awareness grow!\n\r", ch);
   }
 
-  act("$N's eyes take on an emerald hue for just a moment.", 0, ch, 0, targ,
-    TO_ROOM);
+  act("$N's eyes take on an emerald hue for just a moment.", 0, ch, nullptr,
+    targ, TO_ROOM);
 
   if (!obj) {
     af.type = SPELL_MINOR_TRACK;
@@ -1662,19 +1668,19 @@ void cast_mana(signed char level, struct char_data* ch, const char* arg,
   int type, struct char_data* tar_ch, struct obj_data* tar_obj) {
   switch (type) {
     case SPELL_TYPE_POTION:
-      spell_mana(level, ch, ch, 0);
+      spell_mana(level, ch, ch, nullptr);
       break;
     case SPELL_TYPE_WAND:
       if (!tar_ch) {
         tar_ch = ch;
       }
-      spell_mana(level, ch, tar_ch, 0);
+      spell_mana(level, ch, tar_ch, nullptr);
       break;
     case SPELL_TYPE_STAFF:
       for (tar_ch = real_roomp(ch->in_room)->people; tar_ch;
         tar_ch = tar_ch->next_in_room) {
         if (tar_ch != ch) {
-          spell_mana(level, ch, tar_ch, 0);
+          spell_mana(level, ch, tar_ch, nullptr);
         }
       }
       [[fallthrough]];
@@ -1714,7 +1720,7 @@ void cast_armor(signed char level, struct char_data* ch, const char* arg,
         return;
       }
       if (ch != tar_ch) {
-        act("$N is protected.", 0, ch, 0, tar_ch, TO_CHAR);
+        act("$N is protected.", 0, ch, nullptr, tar_ch, TO_CHAR);
       }
 
       spell_armor(level, ch, tar_ch);
@@ -1759,8 +1765,10 @@ static void spell_stone_skin(signed char level, struct char_data* ch,
   assert(ch);
 
   if (!affected_by_spell(ch, SPELL_STONE_SKIN)) {
-    act("$n's skin turns grey and granite-like.", 1, ch, 0, 0, TO_ROOM);
-    act("Your skin turns to a stone-like substance.", 1, ch, 0, 0, TO_CHAR);
+    act("$n's skin turns grey and granite-like.", 1, ch, nullptr, nullptr,
+      TO_ROOM);
+    act("Your skin turns to a stone-like substance.", 1, ch, nullptr, nullptr,
+      TO_CHAR);
 
     af.type = SPELL_STONE_SKIN;
     af.duration = level;
@@ -1788,13 +1796,13 @@ void cast_stone_skin(signed char level, struct char_data* ch, const char* arg,
         send_to_char("Nothing seems to happen.\n\r", ch);
         return;
       }
-      spell_stone_skin(level, ch, ch, 0);
+      spell_stone_skin(level, ch, ch, nullptr);
       break;
     case SPELL_TYPE_POTION:
       if (affected_by_spell(ch, SPELL_STONE_SKIN)) {
         return;
       }
-      spell_stone_skin(level, ch, ch, 0);
+      spell_stone_skin(level, ch, ch, nullptr);
       break;
     case SPELL_TYPE_SCROLL:
       if (tar_obj) {
@@ -1803,7 +1811,7 @@ void cast_stone_skin(signed char level, struct char_data* ch, const char* arg,
       if (affected_by_spell(ch, SPELL_STONE_SKIN)) {
         return;
       }
-      spell_stone_skin(level, ch, ch, 0);
+      spell_stone_skin(level, ch, ch, nullptr);
       break;
     case SPELL_TYPE_WAND:
       if (tar_obj) {
@@ -1812,7 +1820,7 @@ void cast_stone_skin(signed char level, struct char_data* ch, const char* arg,
       if (affected_by_spell(ch, SPELL_STONE_SKIN)) {
         return;
       }
-      spell_stone_skin(level, ch, ch, 0);
+      spell_stone_skin(level, ch, ch, nullptr);
       break;
     default:
       vlog("Serious screw-up in stone_skin!");
@@ -1830,16 +1838,16 @@ void cast_vitalize_mana(signed char level, struct char_data* ch,
   struct obj_data* tar_obj) {
   switch (type) {
     case SPELL_TYPE_SPELL:
-      spell_vitalize_mana(ch, tar_ch, 0);
+      spell_vitalize_mana(ch, tar_ch, nullptr);
       break;
     case SPELL_TYPE_POTION:
-      spell_vitalize_mana(ch, ch, 0);
+      spell_vitalize_mana(ch, ch, nullptr);
       break;
     case SPELL_TYPE_STAFF:
       for (tar_ch = world[ch->in_room].people; tar_ch;
         tar_ch = tar_ch->next_in_room) {
         if (tar_ch != ch) {
-          spell_vitalize_mana(ch, tar_ch, 0);
+          spell_vitalize_mana(ch, tar_ch, nullptr);
         }
       }
       break;
@@ -1871,12 +1879,12 @@ void spell_astral_walk(signed char level, struct char_data* ch,
     send_to_char("You failed.\n\r", ch);
     return;
   }
-  act("$n opens a door to another dimension and steps through!", 0, ch, 0, 0,
-    TO_ROOM);
+  act("$n opens a door to another dimension and steps through!", 0, ch, nullptr,
+    nullptr, TO_ROOM);
   char_from_room(ch);
   char_to_room(ch, location);
   act("You are blinded for a moment as $n appears in a flash of light!", 0, ch,
-    0, 0, TO_ROOM);
+    nullptr, nullptr, TO_ROOM);
   do_look(ch, "", 15);
 }
 
@@ -1891,7 +1899,7 @@ void cast_astral_walk(signed char level, struct char_data* ch, const char* arg,
       if (!tar_ch) {
         send_to_char("Yes, but who do you wish to walk to?\n", ch);
       } else {
-        spell_astral_walk(level, ch, tar_ch, 0);
+        spell_astral_walk(level, ch, tar_ch, nullptr);
       }
       break;
 
@@ -1921,8 +1929,8 @@ static void spell_farlook(struct char_data* ch, struct char_data* victim) {
   strcpy(buf1,
     "$n conjures up a large cloud which shimmers, and\n\r"
     "then ... turns transparent and shows ...\n\r");
-  act(buf, 0, ch, 0, 0, TO_CHAR);
-  act(buf1, 0, ch, 0, 0, TO_ROOM);
+  act(buf, 0, ch, nullptr, nullptr, TO_CHAR);
+  act(buf1, 0, ch, nullptr, nullptr, TO_ROOM);
 
   sprintf(buf1, "%d look", target);
   for (tmpv = character_list; tmpv; tmpv = temp) {
@@ -2021,9 +2029,9 @@ static void spell_portal(struct char_data* ch, struct char_data* victim) {
   obj_to_room(next_tmp_obj, victim->in_room);
 
   next_tmp_obj->item_number = -1;
-  act("$p suddenly appears out of a swirling mist.", 1, ch, tmp_obj, 0,
+  act("$p suddenly appears out of a swirling mist.", 1, ch, tmp_obj, nullptr,
     TO_ROOM);
-  act("$p suddenly appears out of a swirling mist.", 1, ch, tmp_obj, 0,
+  act("$p suddenly appears out of a swirling mist.", 1, ch, tmp_obj, nullptr,
     TO_CHAR);
 }
 
@@ -2072,16 +2080,16 @@ void spell_teleport(signed char level, struct char_data* ch,
     room = real_roomp(to_room);
     if (room) {
       if (IS_SET(room->room_flags, PRIVATE)) {
-        room = 0;
+        room = nullptr;
       }
     }
 
   } while (!room);
 
-  act("$n slowly fade out of existence.", 0, ch, 0, 0, TO_ROOM);
+  act("$n slowly fade out of existence.", 0, ch, nullptr, nullptr, TO_ROOM);
   char_from_room(ch);
   char_to_room(ch, to_room);
-  act("$n slowly fade in to existence.", 0, ch, 0, 0, TO_ROOM);
+  act("$n slowly fade in to existence.", 0, ch, nullptr, nullptr, TO_ROOM);
 
   do_look(ch, "", 0);
 
@@ -2102,21 +2110,21 @@ void cast_teleport(signed char level, struct char_data* ch, const char* arg,
       if (!tar_ch) {
         tar_ch = ch;
       }
-      spell_teleport(level, ch, tar_ch, 0);
+      spell_teleport(level, ch, tar_ch, nullptr);
       break;
 
     case SPELL_TYPE_WAND:
       if (!tar_ch) {
         tar_ch = ch;
       }
-      spell_teleport(level, ch, tar_ch, 0);
+      spell_teleport(level, ch, tar_ch, nullptr);
       break;
 
     case SPELL_TYPE_STAFF:
       for (tar_ch = real_roomp(ch->in_room)->people; tar_ch;
         tar_ch = tar_ch->next_in_room) {
         if (tar_ch != ch) {
-          spell_teleport(level, ch, tar_ch, 0);
+          spell_teleport(level, ch, tar_ch, nullptr);
         }
       }
       break;
@@ -2139,7 +2147,7 @@ static void spell_bless(signed char level, struct char_data* ch,
         (GET_POS(ch) != POSITION_FIGHTING) &&
         !IS_OBJ_STAT(obj, ITEM_ANTI_GOOD)) {
       SET_BIT(obj->obj_flags.extra_flags, ITEM_BLESS);
-      act("$p briefly glows.", 0, ch, obj, 0, TO_CHAR);
+      act("$p briefly glows.", 0, ch, obj, nullptr, TO_CHAR);
     }
   } else {
     if ((GET_POS(victim) != POSITION_FIGHTING) &&
@@ -2170,7 +2178,7 @@ void cast_bless(signed char level, struct char_data* ch, const char* arg,
           send_to_char("Nothing seems to happen.\n\r", ch);
           return;
         }
-        spell_bless(level, ch, 0, tar_obj);
+        spell_bless(level, ch, nullptr, tar_obj);
 
       } else { /* Then it is a PC | NPC */
 
@@ -2179,7 +2187,7 @@ void cast_bless(signed char level, struct char_data* ch, const char* arg,
           send_to_char("Nothing seems to happen.\n\r", ch);
           return;
         }
-        spell_bless(level, ch, tar_ch, 0);
+        spell_bless(level, ch, tar_ch, nullptr);
       }
       break;
     case SPELL_TYPE_POTION:
@@ -2187,14 +2195,14 @@ void cast_bless(signed char level, struct char_data* ch, const char* arg,
           (GET_POS(ch) == POSITION_FIGHTING)) {
         return;
       }
-      spell_bless(level, ch, ch, 0);
+      spell_bless(level, ch, ch, nullptr);
       break;
     case SPELL_TYPE_SCROLL:
       if (tar_obj) { /* It's an object */
         if (IS_SET(tar_obj->obj_flags.extra_flags, ITEM_BLESS)) {
           return;
         }
-        spell_bless(level, ch, 0, tar_obj);
+        spell_bless(level, ch, nullptr, tar_obj);
 
       } else { /* Then it is a PC | NPC */
 
@@ -2206,7 +2214,7 @@ void cast_bless(signed char level, struct char_data* ch, const char* arg,
             (GET_POS(tar_ch) == POSITION_FIGHTING)) {
           return;
         }
-        spell_bless(level, ch, tar_ch, 0);
+        spell_bless(level, ch, tar_ch, nullptr);
       }
       break;
     case SPELL_TYPE_WAND:
@@ -2214,7 +2222,7 @@ void cast_bless(signed char level, struct char_data* ch, const char* arg,
         if (IS_SET(tar_obj->obj_flags.extra_flags, ITEM_BLESS)) {
           return;
         }
-        spell_bless(level, ch, 0, tar_obj);
+        spell_bless(level, ch, nullptr, tar_obj);
 
       } else { /* Then it is a PC | NPC */
 
@@ -2222,7 +2230,7 @@ void cast_bless(signed char level, struct char_data* ch, const char* arg,
             (GET_POS(tar_ch) == POSITION_FIGHTING)) {
           return;
         }
-        spell_bless(level, ch, tar_ch, 0);
+        spell_bless(level, ch, tar_ch, nullptr);
       }
       break;
     default:
@@ -2240,10 +2248,10 @@ static void spell_infravision(signed char level, struct char_data* ch,
   if (!IS_AFFECTED(victim, AFF_INFRAVISION)) {
     if (ch != victim) {
       send_to_char("Your eyes glow red.\n\r", victim);
-      act("$n's eyes glow red.\n\r", 0, victim, 0, 0, TO_ROOM);
+      act("$n's eyes glow red.\n\r", 0, victim, nullptr, nullptr, TO_ROOM);
     } else {
       send_to_char("Your eyes glow red.\n\r", ch);
-      act("$n's eyes glow red.\n\r", 0, ch, 0, 0, TO_ROOM);
+      act("$n's eyes glow red.\n\r", 0, ch, nullptr, nullptr, TO_ROOM);
     }
 
     af.type = SPELL_INFRAVISION;
@@ -2319,10 +2327,11 @@ static void spell_true_seeing(signed char level, struct char_data* ch,
   if (!IS_AFFECTED(victim, AFF_TRUE_SIGHT)) {
     if (ch != victim) {
       send_to_char("Your eyes glow silver for a moment.\n\r", victim);
-      act("$n's eyes take on a silvery hue.\n\r", 0, victim, 0, 0, TO_ROOM);
+      act("$n's eyes take on a silvery hue.\n\r", 0, victim, nullptr, nullptr,
+        TO_ROOM);
     } else {
       send_to_char("Your eyes glow silver.\n\r", ch);
-      act("$n's eyes glow silver.\n\r", 0, ch, 0, 0, TO_ROOM);
+      act("$n's eyes glow silver.\n\r", 0, ch, nullptr, nullptr, TO_ROOM);
     }
 
     af.type = SPELL_TRUE_SIGHT;
@@ -2401,7 +2410,7 @@ static void spell_blindness(signed char level, struct char_data* ch,
     return;
   }
 
-  act("$n seems to be blinded!", 1, victim, 0, 0, TO_ROOM);
+  act("$n seems to be blinded!", 1, victim, nullptr, nullptr, TO_ROOM);
   send_to_char("You have been blinded!\n\r", victim);
 
   af.type = SPELL_BLINDNESS;
@@ -2497,29 +2506,29 @@ static void spell_light(signed char level, struct char_data* ch,
     return;
   }
 
-  act("$n twiddles $s thumbs and $p suddenly appears.", 1, ch, tmp_obj, 0,
+  act("$n twiddles $s thumbs and $p suddenly appears.", 1, ch, tmp_obj, nullptr,
     TO_ROOM);
-  act("You twiddle your thumbs and $p suddenly appears.", 1, ch, tmp_obj, 0,
-    TO_CHAR);
+  act("You twiddle your thumbs and $p suddenly appears.", 1, ch, tmp_obj,
+    nullptr, TO_CHAR);
 }
 
 void cast_light(signed char level, struct char_data* ch, const char* arg,
   int type, struct char_data* tar_ch, struct obj_data* tar_obj) {
   switch (type) {
     case SPELL_TYPE_SPELL:
-      spell_light(level, ch, ch, 0);
+      spell_light(level, ch, ch, nullptr);
       break;
     case SPELL_TYPE_SCROLL:
       if (tar_obj) {
         return;
       }
-      spell_light(level, ch, ch, 0);
+      spell_light(level, ch, ch, nullptr);
       break;
     case SPELL_TYPE_WAND:
       if (tar_obj) {
         return;
       }
-      spell_light(level, ch, ch, 0);
+      spell_light(level, ch, ch, nullptr);
       break;
     default:
       vlog("Serious screw-up in light!");
@@ -2542,29 +2551,29 @@ static void spell_cont_light(signed char level, struct char_data* ch,
     return;
   }
 
-  act("$n twiddles $s thumbs and $p suddenly appears.", 1, ch, tmp_obj, 0,
+  act("$n twiddles $s thumbs and $p suddenly appears.", 1, ch, tmp_obj, nullptr,
     TO_ROOM);
-  act("You twiddle your thumbs and $p suddenly appears.", 1, ch, tmp_obj, 0,
-    TO_CHAR);
+  act("You twiddle your thumbs and $p suddenly appears.", 1, ch, tmp_obj,
+    nullptr, TO_CHAR);
 }
 
 void cast_cont_light(signed char level, struct char_data* ch, const char* arg,
   int type, struct char_data* tar_ch, struct obj_data* tar_obj) {
   switch (type) {
     case SPELL_TYPE_SPELL:
-      spell_cont_light(level, ch, ch, 0);
+      spell_cont_light(level, ch, ch, nullptr);
       break;
     case SPELL_TYPE_SCROLL:
       if (tar_obj) {
         return;
       }
-      spell_cont_light(level, ch, ch, 0);
+      spell_cont_light(level, ch, ch, nullptr);
       break;
     case SPELL_TYPE_WAND:
       if (tar_obj) {
         return;
       }
-      spell_cont_light(level, ch, ch, 0);
+      spell_cont_light(level, ch, ch, nullptr);
       break;
     default:
       vlog("Serious screw-up in continual light!");
@@ -2833,16 +2842,16 @@ static void spell_create_food(signed char level, struct char_data* ch,
 
   tmp_obj->item_number = -1;
 
-  act("$p suddenly appears.", 1, ch, tmp_obj, 0, TO_ROOM);
-  act("$p suddenly appears.", 1, ch, tmp_obj, 0, TO_CHAR);
+  act("$p suddenly appears.", 1, ch, tmp_obj, nullptr, TO_ROOM);
+  act("$p suddenly appears.", 1, ch, tmp_obj, nullptr, TO_CHAR);
 }
 
 void cast_create_food(signed char level, struct char_data* ch, const char* arg,
   int type, struct char_data* tar_ch, struct obj_data* tar_obj) {
   switch (type) {
     case SPELL_TYPE_SPELL:
-      act("$n magically creates a mushroom.", 0, ch, 0, 0, TO_ROOM);
-      spell_create_food(level, ch, 0, 0);
+      act("$n magically creates a mushroom.", 0, ch, nullptr, nullptr, TO_ROOM);
+      spell_create_food(level, ch, nullptr, nullptr);
       break;
     case SPELL_TYPE_SCROLL:
       if (tar_obj) {
@@ -2851,7 +2860,7 @@ void cast_create_food(signed char level, struct char_data* ch, const char* arg,
       if (tar_ch) {
         return;
       }
-      spell_create_food(level, ch, 0, 0);
+      spell_create_food(level, ch, nullptr, nullptr);
       break;
     default:
       vlog("Serious screw-up in create food!");
@@ -2886,7 +2895,7 @@ static void spell_create_water(signed char level, struct char_data* ch,
 
         name_from_drinkcon(obj);
         name_to_drinkcon(obj, LIQ_WATER);
-        act("$p is partially filled.", 0, ch, obj, 0, TO_CHAR);
+        act("$p is partially filled.", 0, ch, obj, nullptr, TO_CHAR);
       }
     }
   }
@@ -2913,11 +2922,11 @@ static void spell_water_breath(struct char_data* ch, struct char_data* victim) {
 
   assert(ch && victim);
 
-  act("You feel fishy!", 1, ch, 0, victim, TO_VICT);
+  act("You feel fishy!", 1, ch, nullptr, victim, TO_VICT);
   if (victim != ch) {
-    act("$N makes a face like a fish.", 1, ch, 0, victim, TO_CHAR);
+    act("$N makes a face like a fish.", 1, ch, nullptr, victim, TO_CHAR);
   }
-  act("$N makes a face like a fish.", 1, ch, 0, victim, TO_NOTVICT);
+  act("$N makes a face like a fish.", 1, ch, nullptr, victim, TO_NOTVICT);
 
   af.type = SPELL_WATER_BREATH;
   af.duration = 6;
@@ -2951,13 +2960,13 @@ static void spell_fly(struct char_data* ch, struct char_data* victim) {
 
   assert(ch && victim);
 
-  act("You feel lighter than air!", 1, ch, 0, victim, TO_VICT);
+  act("You feel lighter than air!", 1, ch, nullptr, victim, TO_VICT);
   if (victim != ch) {
-    act("$N's feet rise off the ground.", 1, ch, 0, victim, TO_CHAR);
+    act("$N's feet rise off the ground.", 1, ch, nullptr, victim, TO_CHAR);
   } else {
     send_to_char("Your feet rise up off the ground.\n\r", ch);
   }
-  act("$N's feet rise off the ground.", 1, ch, 0, victim, TO_NOTVICT);
+  act("$N's feet rise off the ground.", 1, ch, nullptr, victim, TO_NOTVICT);
 
   af.type = SPELL_FLY;
   af.duration = GET_LEVEL(ch, BestMagicClass(ch)) + 3;
@@ -2999,13 +3008,13 @@ static void spell_fly_group(struct char_data* ch, struct char_data* victim,
 
   for (tch = real_roomp(ch->in_room)->people; tch; tch = tch->next_in_room) {
     if (in_group(ch, tch)) {
-      act("You feel lighter than air!", 1, ch, 0, tch, TO_VICT);
+      act("You feel lighter than air!", 1, ch, nullptr, tch, TO_VICT);
       if (tch != ch) {
-        act("$N's feet rise off the ground.", 1, ch, 0, tch, TO_CHAR);
+        act("$N's feet rise off the ground.", 1, ch, nullptr, tch, TO_CHAR);
       } else {
         send_to_char("Your feet rise up off the ground.", ch);
       }
-      act("$N's feet rise off the ground.", 1, ch, 0, tch, TO_NOTVICT);
+      act("$N's feet rise off the ground.", 1, ch, nullptr, tch, TO_NOTVICT);
 
       af.type = SPELL_FLY;
       af.duration = GET_LEVEL(ch, BestMagicClass(ch)) + 3;
@@ -3023,7 +3032,7 @@ void cast_fly_group(signed char level, struct char_data* ch, const char* arg,
     case SPELL_TYPE_SPELL:
     case SPELL_TYPE_WAND:
     case SPELL_TYPE_STAFF:
-      spell_fly_group(ch, 0, 0);
+      spell_fly_group(ch, nullptr, nullptr);
       break;
     case SPELL_TYPE_POTION:
       spell_fly(ch, tar_ch);
@@ -3066,7 +3075,7 @@ void cast_heroes_feast(signed char level, struct char_data* ch, const char* arg,
     case SPELL_TYPE_SPELL:
     case SPELL_TYPE_WAND:
     case SPELL_TYPE_STAFF:
-      spell_heroes_feast(ch, 0, 0);
+      spell_heroes_feast(ch, nullptr, nullptr);
       break;
     default:
       vlog("Serious screw-up in heroes feast");
@@ -3142,7 +3151,7 @@ void cast_heal_spray(signed char level, struct char_data* ch, const char* arg,
     case SPELL_TYPE_SPELL:
     case SPELL_TYPE_WAND:
     case SPELL_TYPE_STAFF:
-      spell_heal_spray(ch, 0, 0);
+      spell_heal_spray(ch, nullptr, nullptr);
       break;
     default:
       vlog("Serious screw-up in heal spray!");
@@ -3448,16 +3457,16 @@ static void spell_shield(signed char level, struct char_data* ch,
   assert(victim && ch);
 
   if (!affected_by_spell(victim, SPELL_SHIELD)) {
-    act("$N is surrounded by a strong force shield.", 1, ch, 0, victim,
+    act("$N is surrounded by a strong force shield.", 1, ch, nullptr, victim,
       TO_NOTVICT);
     if (ch != victim) {
-      act("$N is surrounded by a strong force shield.", 1, ch, 0, victim,
+      act("$N is surrounded by a strong force shield.", 1, ch, nullptr, victim,
         TO_CHAR);
-      act("You are surrounded by a strong force shield.", 1, ch, 0, victim,
-        TO_VICT);
+      act("You are surrounded by a strong force shield.", 1, ch, nullptr,
+        victim, TO_VICT);
     } else {
-      act("You are surrounded by a strong force shield.", 1, ch, 0, victim,
-        TO_VICT);
+      act("You are surrounded by a strong force shield.", 1, ch, nullptr,
+        victim, TO_VICT);
     }
 
     af.type = SPELL_SHIELD;
@@ -3513,7 +3522,7 @@ static void spell_curse(signed char level, struct char_data* ch,
     if (obj->obj_flags.type_flag == ITEM_WEAPON) {
       obj->obj_flags.value[2]--;
     }
-    act("$p glows red.", 0, ch, obj, 0, TO_CHAR);
+    act("$p glows red.", 0, ch, obj, nullptr, TO_CHAR);
   } else {
     if (saves_spell(victim, SAVING_SPELL) ||
         affected_by_spell(victim, SPELL_CURSE)) {
@@ -3531,8 +3540,8 @@ static void spell_curse(signed char level, struct char_data* ch,
     af.modifier = 1; /* Make worse */
     affect_to_char(victim, &af);
 
-    act("$n briefly reveal a red aura!", 0, victim, 0, 0, TO_ROOM);
-    act("You feel very uncomfortable.", 0, victim, 0, 0, TO_CHAR);
+    act("$n briefly reveal a red aura!", 0, victim, nullptr, nullptr, TO_ROOM);
+    act("You feel very uncomfortable.", 0, victim, nullptr, nullptr, TO_CHAR);
     if (IS_NPC(victim) && !victim->specials.fighting) {
       set_fighting(victim, ch);
     }
@@ -3546,39 +3555,39 @@ void cast_curse(signed char level, struct char_data* ch, const char* arg,
   switch (type) {
     case SPELL_TYPE_SPELL:
       if (tar_obj) { /* It is an object */
-        spell_curse(level, ch, 0, tar_obj);
+        spell_curse(level, ch, nullptr, tar_obj);
       } else { /* Then it is a PC | NPC */
-        spell_curse(level, ch, tar_ch, 0);
+        spell_curse(level, ch, tar_ch, nullptr);
       }
       break;
     case SPELL_TYPE_POTION:
-      spell_curse(level, ch, ch, 0);
+      spell_curse(level, ch, ch, nullptr);
       break;
     case SPELL_TYPE_SCROLL:
       if (tar_obj) { /* It is an object */
-        spell_curse(level, ch, 0, tar_obj);
+        spell_curse(level, ch, nullptr, tar_obj);
       } else { /* Then it is a PC | NPC */
         if (!tar_ch) {
           tar_ch = ch;
         }
-        spell_curse(level, ch, tar_ch, 0);
+        spell_curse(level, ch, tar_ch, nullptr);
       }
       break;
     case SPELL_TYPE_WAND:
       if (tar_obj) { /* It is an object */
-        spell_curse(level, ch, 0, tar_obj);
+        spell_curse(level, ch, nullptr, tar_obj);
       } else { /* Then it is a PC | NPC */
         if (!tar_ch) {
           tar_ch = ch;
         }
-        spell_curse(level, ch, tar_ch, 0);
+        spell_curse(level, ch, tar_ch, nullptr);
       }
       break;
     case SPELL_TYPE_STAFF:
       for (tar_ch = real_roomp(ch->in_room)->people; tar_ch;
         tar_ch = tar_ch->next_in_room) {
         if (tar_ch != ch) {
-          spell_curse(level, ch, tar_ch, 0);
+          spell_curse(level, ch, tar_ch, nullptr);
         }
       }
       break;
@@ -3596,13 +3605,14 @@ static void spell_dispel_invisible(struct char_data* ch,
 
   if (obj) {
     if (IS_SET(obj->obj_flags.extra_flags, ITEM_INVISIBLE)) {
-      act("$p fades into visibility.", 0, ch, obj, 0, TO_CHAR);
-      act("$p fades into visibility.", 1, ch, obj, 0, TO_ROOM);
+      act("$p fades into visibility.", 0, ch, obj, nullptr, TO_CHAR);
+      act("$p fades into visibility.", 1, ch, obj, nullptr, TO_ROOM);
       obj->obj_flags.extra_flags -= ITEM_INVISIBLE;
     }
   } else {
     if (affected_by_spell(victim, SPELL_INVISIBLE)) {
-      act("$n slowly fades into existance.", 1, victim, 0, 0, TO_ROOM);
+      act("$n slowly fades into existance.", 1, victim, nullptr, nullptr,
+        TO_ROOM);
       send_to_char("You turn visible.\n\r", ch);
       affect_from_char(ch, SPELL_INVISIBLE);
       if (IS_SET(ch->specials.affected_by, AFF_INVISIBLE)) {
@@ -3620,13 +3630,13 @@ void cast_dispel_invisible(signed char level, struct char_data* ch,
   switch (type) {
     case SPELL_TYPE_SPELL:
       if (tar_obj) {
-        spell_dispel_invisible(ch, 0, tar_obj);
+        spell_dispel_invisible(ch, nullptr, tar_obj);
       } else {
-        spell_dispel_invisible(ch, tar_ch, 0);
+        spell_dispel_invisible(ch, tar_ch, nullptr);
       }
       break;
     case SPELL_TYPE_POTION:
-      spell_dispel_invisible(ch, ch, 0);
+      spell_dispel_invisible(ch, ch, nullptr);
       break;
     default:
       sprintf(buf, "Serious fuck up in dispel invisible!\n\r", ch);
@@ -3653,7 +3663,7 @@ static void spell_detect_evil(signed char level, struct char_data* victim) {
 
   affect_to_char(victim, &af);
 
-  act("$n's eyes briefly glow white", 0, victim, 0, 0, TO_ROOM);
+  act("$n's eyes briefly glow white", 0, victim, nullptr, nullptr, TO_ROOM);
   send_to_char("Your eyes tingle.\n\r", victim);
 }
 
@@ -3707,7 +3717,7 @@ static void spell_detect_invisibility(signed char level, struct char_data* ch,
   af.bitvector = AFF_DETECT_INVISIBLE;
 
   affect_to_char(victim, &af);
-  act("$n's eyes briefly glow yellow", 0, victim, 0, 0, TO_ROOM);
+  act("$n's eyes briefly glow yellow", 0, victim, nullptr, nullptr, TO_ROOM);
   send_to_char("Your eyes tingle.\n\r", victim);
 }
 
@@ -3820,15 +3830,15 @@ static void spell_detect_poison(struct char_data* ch, struct char_data* victim,
         send_to_char("You feel healthy.\n\r", ch);
       }
     } else if (IS_AFFECTED(victim, AFF_POISON)) {
-      act("You sense that $E is poisoned.", 0, ch, 0, victim, TO_CHAR);
+      act("You sense that $E is poisoned.", 0, ch, nullptr, victim, TO_CHAR);
     } else {
-      act("You sense that $E is poisoned", 0, ch, 0, victim, TO_CHAR);
+      act("You sense that $E is poisoned", 0, ch, nullptr, victim, TO_CHAR);
     }
   } else { /* It's an object */
     if ((obj->obj_flags.type_flag == ITEM_DRINKCON) ||
         (obj->obj_flags.type_flag == ITEM_FOOD)) {
       if (obj->obj_flags.value[3]) {
-        act("Poisonous fumes are revealed.", 0, ch, 0, 0, TO_CHAR);
+        act("Poisonous fumes are revealed.", 0, ch, nullptr, nullptr, TO_CHAR);
       } else {
         send_to_char("It looks very delicious.\n\r", ch);
       }
@@ -3844,17 +3854,17 @@ void cast_detect_poison(signed char level, struct char_data* ch,
       spell_detect_poison(ch, tar_ch, tar_obj);
       break;
     case SPELL_TYPE_POTION:
-      spell_detect_poison(ch, ch, 0);
+      spell_detect_poison(ch, ch, nullptr);
       break;
     case SPELL_TYPE_SCROLL:
       if (tar_obj) {
-        spell_detect_poison(ch, 0, tar_obj);
+        spell_detect_poison(ch, nullptr, tar_obj);
         return;
       }
       if (!tar_ch) {
         tar_ch = ch;
       }
-      spell_detect_poison(ch, tar_ch, 0);
+      spell_detect_poison(ch, tar_ch, nullptr);
       break;
     default:
       vlog("Serious screw-up in detect poison!");
@@ -3874,21 +3884,21 @@ static void spell_dispel_evil(signed char level, struct char_data* ch,
       victim = ch;
     } else {
       if (IS_GOOD(victim)) {
-        act("Good protects $N.", 0, ch, 0, victim, TO_CHAR);
+        act("Good protects $N.", 0, ch, nullptr, victim, TO_CHAR);
         return;
       }
     }
     if (!saves_spell(victim, SAVING_SPELL)) {
-      act("$n forces $N from this plane.", 1, ch, 0, victim, TO_ROOM);
-      act("You force $N from this plane.", 1, ch, 0, victim, TO_CHAR);
-      act("$n forces you from this plane.", 1, ch, 0, victim, TO_VICT);
+      act("$n forces $N from this plane.", 1, ch, nullptr, victim, TO_ROOM);
+      act("You force $N from this plane.", 1, ch, nullptr, victim, TO_CHAR);
+      act("$n forces you from this plane.", 1, ch, nullptr, victim, TO_VICT);
       gain_exp(ch, MIN(GET_EXP(victim) / 2, 50000));
       extract_char(victim);
     }
   } else {
-    act("$N laughs at you.", 1, ch, 0, victim, TO_CHAR);
-    act("$N laughs at $n.", 1, ch, 0, victim, TO_NOTVICT);
-    act("You laugh at $n.", 1, ch, 0, victim, TO_VICT);
+    act("$N laughs at you.", 1, ch, nullptr, victim, TO_CHAR);
+    act("$N laughs at $n.", 1, ch, nullptr, victim, TO_NOTVICT);
+    act("You laugh at $n.", 1, ch, nullptr, victim, TO_VICT);
   }
 }
 
@@ -3941,21 +3951,21 @@ static void spell_dispel_good(signed char level, struct char_data* ch,
     if (IS_GOOD(ch)) {
       victim = ch;
     } else if (IS_EVIL(victim)) {
-      act("Evil protects $N.", 0, ch, 0, victim, TO_CHAR);
+      act("Evil protects $N.", 0, ch, nullptr, victim, TO_CHAR);
       return;
     }
 
     if (!saves_spell(victim, SAVING_SPELL)) {
-      act("$n forces $N from this plane.", 1, ch, 0, victim, TO_NOTVICT);
-      act("You force $N from this plane.", 1, ch, 0, victim, TO_CHAR);
-      act("$n forces you from this plane.", 1, ch, 0, victim, TO_VICT);
+      act("$n forces $N from this plane.", 1, ch, nullptr, victim, TO_NOTVICT);
+      act("You force $N from this plane.", 1, ch, nullptr, victim, TO_CHAR);
+      act("$n forces you from this plane.", 1, ch, nullptr, victim, TO_VICT);
       gain_exp(ch, MIN(GET_EXP(victim) / 2, 50000));
       extract_char(victim);
     }
   } else {
-    act("$N laughs at you.", 1, ch, 0, victim, TO_CHAR);
-    act("$N laughs at $n.", 1, ch, 0, victim, TO_NOTVICT);
-    act("You laugh at $n.", 1, ch, 0, victim, TO_VICT);
+    act("$N laughs at you.", 1, ch, nullptr, victim, TO_CHAR);
+    act("$N laughs at $n.", 1, ch, nullptr, victim, TO_NOTVICT);
+    act("You laugh at $n.", 1, ch, nullptr, victim, TO_VICT);
   }
 }
 
@@ -4008,10 +4018,10 @@ static void spell_faerie_fire(signed char level, struct char_data* ch,
     return;
   }
 
-  act("$n points at $N.", 1, ch, 0, victim, TO_ROOM);
-  act("You point at $N.", 1, ch, 0, victim, TO_CHAR);
-  act("$N is surrounded by a pink outline", 1, ch, 0, victim, TO_ROOM);
-  act("$N is surrounded by a pink outline", 1, ch, 0, victim, TO_CHAR);
+  act("$n points at $N.", 1, ch, nullptr, victim, TO_ROOM);
+  act("You point at $N.", 1, ch, nullptr, victim, TO_CHAR);
+  act("$N is surrounded by a pink outline", 1, ch, nullptr, victim, TO_ROOM);
+  act("$N is surrounded by a pink outline", 1, ch, nullptr, victim, TO_CHAR);
 
   af.type = SPELL_FAERIE_FIRE;
   af.duration = level;
@@ -4103,12 +4113,12 @@ static void spell_enchant_weapon(signed char level, struct char_data* ch,
 
     if (IS_GOOD(ch)) {
       SET_BIT(obj->obj_flags.extra_flags, ITEM_ANTI_EVIL);
-      act("$p glows blue.", 0, ch, obj, 0, TO_CHAR);
+      act("$p glows blue.", 0, ch, obj, nullptr, TO_CHAR);
     } else if (IS_EVIL(ch)) {
       SET_BIT(obj->obj_flags.extra_flags, ITEM_ANTI_GOOD);
-      act("$p glows red.", 0, ch, obj, 0, TO_CHAR);
+      act("$p glows red.", 0, ch, obj, nullptr, TO_CHAR);
     } else {
-      act("$p glows yellow.", 0, ch, obj, 0, TO_CHAR);
+      act("$p glows yellow.", 0, ch, obj, nullptr, TO_CHAR);
     }
   }
 }
@@ -4171,8 +4181,8 @@ void cast_heal(signed char level, struct char_data* ch, const char* arg,
   int type, struct char_data* tar_ch, struct obj_data* tar_obj) {
   switch (type) {
     case SPELL_TYPE_SPELL:
-      act("$n heals $N.", 0, ch, 0, tar_ch, TO_NOTVICT);
-      act("You heal $N.", 0, ch, 0, tar_ch, TO_CHAR);
+      act("$n heals $N.", 0, ch, nullptr, tar_ch, TO_NOTVICT);
+      act("You heal $N.", 0, ch, nullptr, tar_ch, TO_CHAR);
       spell_heal(level, tar_ch);
       break;
     case SPELL_TYPE_POTION:
@@ -4218,8 +4228,8 @@ void cast_full_heal(signed char level, struct char_data* ch, const char* arg,
   int type, struct char_data* tar_ch, struct obj_data* tar_obj) {
   switch (type) {
     case SPELL_TYPE_SPELL:
-      act("$n heals $N.", 0, ch, 0, tar_ch, TO_NOTVICT);
-      act("You heal $N.", 0, ch, 0, tar_ch, TO_CHAR);
+      act("$n heals $N.", 0, ch, nullptr, tar_ch, TO_NOTVICT);
+      act("You heal $N.", 0, ch, nullptr, tar_ch, TO_CHAR);
       spell_full_heal(level, tar_ch);
       break;
     case SPELL_TYPE_POTION:
@@ -4253,7 +4263,8 @@ static void spell_invis_group(signed char level, struct char_data* ch,
     if ((ch->in_room == tmpv->in_room) && (ch != tmpv)) {
       if (in_group(ch, tmpv)) {
         if (!affected_by_spell(tmpv, SPELL_INVISIBLE)) {
-          act("$n slowly fades out of existence.", 1, tmpv, 0, 0, TO_ROOM);
+          act("$n slowly fades out of existence.", 1, tmpv, nullptr, nullptr,
+            TO_ROOM);
           send_to_char("You vanish.\n\r", tmpv);
 
           af.type = SPELL_INVISIBLE;
@@ -4276,13 +4287,14 @@ static void spell_invisibility(struct char_data* ch, struct char_data* victim,
 
   if (obj) {
     if (!IS_SET(obj->obj_flags.extra_flags, ITEM_INVISIBLE)) {
-      act("$p turns invisible.", 0, ch, obj, 0, TO_CHAR);
-      act("$p turns invisible.", 1, ch, obj, 0, TO_ROOM);
+      act("$p turns invisible.", 0, ch, obj, nullptr, TO_CHAR);
+      act("$p turns invisible.", 1, ch, obj, nullptr, TO_ROOM);
       SET_BIT(obj->obj_flags.extra_flags, ITEM_INVISIBLE);
     }
   } else { /* Then it is a PC | NPC */
     if (!affected_by_spell(victim, SPELL_INVISIBLE)) {
-      act("$n slowly fades out of existence.", 1, victim, 0, 0, TO_ROOM);
+      act("$n slowly fades out of existence.", 1, victim, nullptr, nullptr,
+        TO_ROOM);
       send_to_char("You vanish.\n\r", victim);
 
       af.type = SPELL_INVISIBLE;
@@ -4303,25 +4315,25 @@ void cast_invisibility(signed char level, struct char_data* ch, const char* arg,
         if (IS_SET(tar_obj->obj_flags.extra_flags, ITEM_INVISIBLE)) {
           send_to_char("Nothing new seems to happen.\n\r", ch);
         } else {
-          spell_invisibility(ch, 0, tar_obj);
+          spell_invisibility(ch, nullptr, tar_obj);
         }
       } else { /* tar_ch */
         if (IS_AFFECTED(tar_ch, AFF_INVISIBLE)) {
           send_to_char("Nothing new seems to happen.\n\r", ch);
         } else {
-          spell_invisibility(ch, tar_ch, 0);
+          spell_invisibility(ch, tar_ch, nullptr);
         }
       }
       break;
     case SPELL_TYPE_POTION:
       if (!IS_AFFECTED(ch, AFF_INVISIBLE)) {
-        spell_invisibility(ch, ch, 0);
+        spell_invisibility(ch, ch, nullptr);
       }
       break;
     case SPELL_TYPE_SCROLL:
       if (tar_obj) {
         if (!(IS_SET(tar_obj->obj_flags.extra_flags, ITEM_INVISIBLE))) {
-          spell_invisibility(ch, 0, tar_obj);
+          spell_invisibility(ch, nullptr, tar_obj);
         }
       } else { /* tar_ch */
         if (!tar_ch) {
@@ -4329,18 +4341,18 @@ void cast_invisibility(signed char level, struct char_data* ch, const char* arg,
         }
 
         if (!(IS_AFFECTED(tar_ch, AFF_INVISIBLE))) {
-          spell_invisibility(ch, tar_ch, 0);
+          spell_invisibility(ch, tar_ch, nullptr);
         }
       }
       break;
     case SPELL_TYPE_WAND:
       if (tar_obj) {
         if (!(IS_SET(tar_obj->obj_flags.extra_flags, ITEM_INVISIBLE))) {
-          spell_invisibility(ch, 0, tar_obj);
+          spell_invisibility(ch, nullptr, tar_obj);
         }
       } else { /* tar_ch */
         if (!(IS_AFFECTED(tar_ch, AFF_INVISIBLE))) {
-          spell_invisibility(ch, tar_ch, 0);
+          spell_invisibility(ch, tar_ch, nullptr);
         }
       }
       break;
@@ -4349,7 +4361,7 @@ void cast_invisibility(signed char level, struct char_data* ch, const char* arg,
         tar_ch = tar_ch->next_in_room) {
         if (tar_ch != ch) {
           if (!(IS_AFFECTED(tar_ch, AFF_INVISIBLE))) {
-            spell_invisibility(ch, tar_ch, 0);
+            spell_invisibility(ch, tar_ch, nullptr);
           }
         }
       }
@@ -4477,7 +4489,8 @@ static void spell_poison(signed char level, struct char_data* ch,
         }
       } else {
         if (!imp_save_spell(victim, SAVING_PARA, 0)) {
-          act("Deadly poison fills your veins.", 1, ch, 0, 0, TO_CHAR);
+          act("Deadly poison fills your veins.", 1, ch, nullptr, nullptr,
+            TO_CHAR);
           damage(victim, victim, MAX(100, GET_HIT(victim) * 2), SPELL_POISON);
         } else {
           return;
@@ -4515,13 +4528,13 @@ void cast_poison(signed char level, struct char_data* ch, const char* arg,
       spell_poison(level, ch, tar_ch, tar_obj);
       break;
     case SPELL_TYPE_POTION:
-      spell_poison(level, ch, ch, 0);
+      spell_poison(level, ch, ch, nullptr);
       break;
     case SPELL_TYPE_STAFF:
       for (tar_ch = real_roomp(ch->in_room)->people; tar_ch;
         tar_ch = tar_ch->next_in_room) {
         if (tar_ch != ch) {
-          spell_poison(level, ch, tar_ch, 0);
+          spell_poison(level, ch, tar_ch, nullptr);
         }
       }
       break;
@@ -4538,7 +4551,7 @@ static void spell_protection_from_evil(struct char_data* ch,
   assert(victim);
 
   if (IS_EVIL(victim)) {
-    act("$N's evilness disallows use of this spell.", 0, ch, 0, victim,
+    act("$N's evilness disallows use of this spell.", 0, ch, nullptr, victim,
       TO_CHAR);
     return;
   }
@@ -4594,7 +4607,7 @@ static void spell_protection_from_good(struct char_data* ch,
   assert(victim);
 
   if (IS_GOOD(victim)) {
-    act("$N is to holy for that spell.", 0, ch, 0, victim, TO_CHAR);
+    act("$N is to holy for that spell.", 0, ch, nullptr, victim, TO_CHAR);
     return;
   }
 
@@ -4649,13 +4662,14 @@ static void spell_remove_curse(struct char_data* ch, struct char_data* victim,
 
   if (obj) {
     if (IS_SET(obj->obj_flags.extra_flags, ITEM_NODROP)) {
-      act("$p briefly glows blue.", 1, ch, obj, 0, TO_CHAR);
+      act("$p briefly glows blue.", 1, ch, obj, nullptr, TO_CHAR);
       REMOVE_BIT(obj->obj_flags.extra_flags, ITEM_NODROP);
     }
   } else { /* Then it is a PC | NPC */
     if (affected_by_spell(victim, SPELL_CURSE)) {
-      act("$n briefly glows red, then blue.", 0, victim, 0, 0, TO_ROOM);
-      act("You feel better.", 0, victim, 0, 0, TO_CHAR);
+      act("$n briefly glows red, then blue.", 0, victim, nullptr, nullptr,
+        TO_ROOM);
+      act("You feel better.", 0, victim, nullptr, nullptr, TO_CHAR);
       affect_from_char(victim, SPELL_CURSE);
     }
   }
@@ -4668,23 +4682,23 @@ void cast_remove_curse(signed char level, struct char_data* ch, const char* arg,
       spell_remove_curse(ch, tar_ch, tar_obj);
       break;
     case SPELL_TYPE_POTION:
-      spell_remove_curse(ch, ch, 0);
+      spell_remove_curse(ch, ch, nullptr);
       break;
     case SPELL_TYPE_SCROLL:
       if (tar_obj) {
-        spell_remove_curse(ch, 0, tar_obj);
+        spell_remove_curse(ch, nullptr, tar_obj);
         return;
       }
       if (!tar_ch) {
         tar_ch = ch;
       }
-      spell_remove_curse(ch, tar_ch, 0);
+      spell_remove_curse(ch, tar_ch, nullptr);
       break;
     case SPELL_TYPE_STAFF:
       for (tar_ch = real_roomp(ch->in_room)->people; tar_ch;
         tar_ch = tar_ch->next_in_room) {
         if (tar_ch != ch) {
-          spell_remove_curse(ch, tar_ch, 0);
+          spell_remove_curse(ch, tar_ch, nullptr);
         }
       }
       break;
@@ -4701,14 +4715,15 @@ static void spell_remove_poison(struct char_data* ch, struct char_data* victim,
   if (victim) {
     if (affected_by_spell(victim, SPELL_POISON)) {
       affect_from_char(victim, SPELL_POISON);
-      act("A warm feeling runs through your body.", 0, victim, 0, 0, TO_CHAR);
-      act("$N looks better.", 0, ch, 0, victim, TO_ROOM);
+      act("A warm feeling runs through your body.", 0, victim, nullptr, nullptr,
+        TO_CHAR);
+      act("$N looks better.", 0, ch, nullptr, victim, TO_ROOM);
     }
   } else {
     if ((obj->obj_flags.type_flag == ITEM_DRINKCON) ||
         (obj->obj_flags.type_flag == ITEM_FOOD)) {
       obj->obj_flags.value[3] = 0;
-      act("The $p steams briefly.", 0, ch, obj, 0, TO_CHAR);
+      act("The $p steams briefly.", 0, ch, obj, nullptr, TO_CHAR);
     }
   }
 }
@@ -4721,13 +4736,13 @@ void cast_remove_poison(signed char level, struct char_data* ch,
       spell_remove_poison(ch, tar_ch, tar_obj);
       break;
     case SPELL_TYPE_POTION:
-      spell_remove_poison(ch, ch, 0);
+      spell_remove_poison(ch, ch, nullptr);
       break;
     case SPELL_TYPE_STAFF:
       for (tar_ch = real_roomp(ch->in_room)->people; tar_ch;
         tar_ch = tar_ch->next_in_room) {
         if (tar_ch != ch) {
-          spell_remove_poison(ch, tar_ch, 0);
+          spell_remove_poison(ch, tar_ch, nullptr);
         }
       }
       break;
@@ -4743,8 +4758,9 @@ static void spell_remove_paralysis(struct char_data* ch,
 
   if (affected_by_spell(victim, SPELL_PARALYSIS)) {
     affect_from_char(victim, SPELL_PARALYSIS);
-    act("A warm feeling runs through your body.", 0, victim, 0, 0, TO_CHAR);
-    act("$N looks better.", 0, ch, 0, victim, TO_ROOM);
+    act("A warm feeling runs through your body.", 0, victim, nullptr, nullptr,
+      TO_CHAR);
+    act("$N looks better.", 0, ch, nullptr, victim, TO_ROOM);
   }
 }
 
@@ -4783,8 +4799,9 @@ static void spell_sanctuary(signed char level, struct char_data* victim) {
 
   if ((!affected_by_spell(victim, SPELL_SANCTUARY)) &&
       (!IS_AFFECTED(victim, AFF_SANCTUARY))) {
-    act("$n is surrounded by a white aura.", 1, victim, 0, 0, TO_ROOM);
-    act("You start glowing.", 1, victim, 0, 0, TO_CHAR);
+    act("$n is surrounded by a white aura.", 1, victim, nullptr, nullptr,
+      TO_ROOM);
+    act("You start glowing.", 1, victim, nullptr, nullptr, TO_CHAR);
 
     af.type = SPELL_SANCTUARY;
     af.duration = (level < LOW_IMMORTAL) ? 3 : level;
@@ -4841,8 +4858,8 @@ static void spell_silence(signed char level, struct char_data* ch,
 
   if ((!affected_by_spell(victim, SPELL_SILENCE)) &&
       (!IS_AFFECTED(victim, AFF_SILENT))) {
-    act("$n has been muzzled!", 1, victim, 0, 0, TO_ROOM);
-    act("You have been muzzled!", 1, victim, 0, 0, TO_CHAR);
+    act("$n has been muzzled!", 1, victim, nullptr, nullptr, TO_ROOM);
+    act("You have been muzzled!", 1, victim, nullptr, nullptr, TO_CHAR);
 
     af.type = SPELL_SILENCE;
     af.duration = level;
@@ -4891,8 +4908,9 @@ static void spell_fireshield(struct char_data* victim) {
   struct affected_type af;
 
   if (!affected_by_spell(victim, SPELL_FIRESHIELD)) {
-    act("$n is surrounded by a glowing red aura.", 1, victim, 0, 0, TO_ROOM);
-    act("You start glowing red.", 1, victim, 0, 0, TO_CHAR);
+    act("$n is surrounded by a glowing red aura.", 1, victim, nullptr, nullptr,
+      TO_ROOM);
+    act("You start glowing red.", 1, victim, nullptr, nullptr, TO_CHAR);
 
     af.type = SPELL_FIRESHIELD;
     af.duration = 3;
@@ -4981,8 +4999,9 @@ static void spell_sleep(signed char level, struct char_data* ch,
   affect_join(victim, &af, 0, 0);
 
   if (GET_POS(victim) > POSITION_SLEEPING) {
-    act("You feel very sleepy ..... zzzzzz", 0, victim, 0, 0, TO_CHAR);
-    act("$n go to sleep.", 1, victim, 0, 0, TO_ROOM);
+    act("You feel very sleepy ..... zzzzzz", 0, victim, nullptr, nullptr,
+      TO_CHAR);
+    act("$n go to sleep.", 1, victim, nullptr, nullptr, TO_ROOM);
     GET_POS(victim) = POSITION_SLEEPING;
   }
 }
@@ -5032,8 +5051,8 @@ static void spell_strength(signed char level, struct char_data* ch,
   assert(victim);
 
   if (!affected_by_spell(victim, SPELL_STRENGTH)) {
-    act("You feel stronger.", 0, victim, 0, 0, TO_CHAR);
-    act("$n seems stronger!\n\r", 0, victim, 0, 0, TO_ROOM);
+    act("You feel stronger.", 0, victim, nullptr, nullptr, TO_CHAR);
+    act("$n seems stronger!\n\r", 0, victim, nullptr, nullptr, TO_ROOM);
     af.type = SPELL_STRENGTH;
     af.duration = 2 * level;
     if (IS_NPC(victim)) {
@@ -5055,7 +5074,7 @@ static void spell_strength(signed char level, struct char_data* ch,
     af.bitvector = 0;
     affect_to_char(victim, &af);
   } else {
-    act("Nothing seems to happen.", 0, ch, 0, 0, TO_CHAR);
+    act("Nothing seems to happen.", 0, ch, nullptr, nullptr, TO_CHAR);
   }
 }
 
@@ -5170,10 +5189,11 @@ static void spell_word_of_recall(struct char_data* ch,
 
   /* a location has been found. */
 
-  act("$n disappears.", 1, victim, 0, 0, TO_ROOM);
+  act("$n disappears.", 1, victim, nullptr, nullptr, TO_ROOM);
   char_from_room(victim);
   char_to_room(victim, location);
-  act("$n appears in the middle of the room.", 1, victim, 0, 0, TO_ROOM);
+  act("$n appears in the middle of the room.", 1, victim, nullptr, nullptr,
+    TO_ROOM);
   do_look(victim, "", 15);
   GET_MOVE(victim) -= 100;
   GET_MOVE(victim) = MAX(0, GET_MOVE(victim));
@@ -5229,7 +5249,7 @@ static void raw_summon(struct char_data* v, struct char_data* c) {
 
   if (IS_NPC(v) && (!IS_SET(v->specials.act, ACT_POLYSELF)) &&
       (GetMaxLevel(v) > GetMaxLevel(c) + 3)) {
-    act("$N struggles, and all of $S items are destroyed!", 1, c, 0, v,
+    act("$N struggles, and all of $S items are destroyed!", 1, c, nullptr, v,
       TO_CHAR);
     /* remove objects from victim */
     for (j = 0; j < MAX_WEAR; j++) {
@@ -5248,21 +5268,21 @@ static void raw_summon(struct char_data* v, struct char_data* c) {
     WAIT_STATE(c, PULSE_VIOLENCE * 6);
   }
 
-  act("$n disappears suddenly.", 1, v, 0, 0, TO_ROOM);
+  act("$n disappears suddenly.", 1, v, nullptr, nullptr, TO_ROOM);
   target = c->in_room;
   char_from_room(v);
   char_to_room(v, target);
 
-  act("$n arrives suddenly.", 1, v, 0, 0, TO_ROOM);
-  act("$n has summoned you!", 0, c, 0, v, TO_VICT);
+  act("$n arrives suddenly.", 1, v, nullptr, nullptr, TO_ROOM);
+  act("$n has summoned you!", 0, c, nullptr, v, TO_VICT);
   do_look(v, "", 15);
 
   for (tmp = real_roomp(v->in_room)->people; tmp; tmp = tmp->next_in_room) {
     if (IS_NPC(tmp) && !(IS_SET(tmp->specials.act, ACT_POLYSELF)) &&
         ((IS_SET(tmp->specials.act, ACT_AGGRESSIVE) ||
           (IS_SET(tmp->specials.act, ACT_META_AGG))))) {
-      act("$n growls at you", 1, tmp, 0, c, TO_VICT);
-      act("$n growls at $N", 1, tmp, 0, c, TO_NOTVICT);
+      act("$n growls at you", 1, tmp, nullptr, c, TO_VICT);
+      act("$n growls at $N", 1, tmp, nullptr, c, TO_NOTVICT);
       i = number(0, 6);
       if (i == 0) {
         if (CAN_SEE(tmp, c)) {
@@ -5321,7 +5341,7 @@ void cast_summon(signed char level, struct char_data* ch, const char* arg,
   int type, struct char_data* tar_ch, struct obj_data* tar_obj) {
   switch (type) {
     case SPELL_TYPE_SPELL:
-      spell_summon(level, ch, tar_ch, 0);
+      spell_summon(level, ch, tar_ch, nullptr);
       break;
     default:
       vlog("Serious screw-up in summon!");
@@ -5407,7 +5427,7 @@ static void spell_charm_person(struct char_data* ch, struct char_data* victim) {
     af.bitvector = AFF_CHARM;
     affect_to_char(victim, &af);
 
-    act("Isn't $n just such a nice fellow?", 0, ch, 0, victim, TO_VICT);
+    act("Isn't $n just such a nice fellow?", 0, ch, nullptr, victim, TO_VICT);
   }
 }
 
@@ -5500,7 +5520,7 @@ static void spell_charm_monster(struct char_data* ch,
     af.bitvector = AFF_CHARM;
     affect_to_char(victim, &af);
 
-    act("Isn't $n just such a nice fellow?", 0, ch, 0, victim, TO_VICT);
+    act("Isn't $n just such a nice fellow?", 0, ch, nullptr, victim, TO_VICT);
   }
 }
 
@@ -5598,7 +5618,7 @@ static void spell_control_undead(struct char_data* ch,
     af.bitvector = AFF_CHARM;
     affect_to_char(victim, &af);
 
-    act("Isn't $n just such a nice fellow?", 0, ch, 0, victim, TO_VICT);
+    act("Isn't $n just such a nice fellow?", 0, ch, nullptr, victim, TO_VICT);
   }
 }
 
@@ -5875,8 +5895,7 @@ void cast_dragon_breath(signed char level, struct char_data* ch,
   struct affected_type af;
 
   for (scan = breath_potions;
-    scan->vnum && scan->vnum != obj_index[potion->item_number].vnum;
-    scan++) {
+    scan->vnum && scan->vnum != obj_index[potion->item_number].vnum; scan++) {
     ;
   }
   if (scan->vnum == 0) {
@@ -5897,15 +5916,15 @@ void cast_dragon_breath(signed char level, struct char_data* ch,
           "You are too weak to stomach the potion and spew it all over the "
           "floor.\n\r",
           ch);
-        act("$n gags and pukes glowing goop all over the floor.", 0, ch, 0, ch,
-          TO_NOTVICT);
+        act("$n gags and pukes glowing goop all over the floor.", 0, ch,
+          nullptr, ch, TO_NOTVICT);
         break;
       }
       if (level > MIN(GET_CON(ch) - 1, GetMaxLevel(ch))) {
         send_to_char(
           "!GACK! You are too weak to handle the full power of the potion.\n\r",
           ch);
-        act("$n gags and flops around on the floor a bit.", 0, ch, 0, ch,
+        act("$n gags and flops around on the floor a bit.", 0, ch, nullptr, ch,
           TO_NOTVICT);
         level = MIN(GET_CON(ch) - 1, GetMaxLevel(ch));
       }
@@ -5918,8 +5937,6 @@ void cast_dragon_breath(signed char level, struct char_data* ch,
     }
   }
 }
-
-
 
 void cast_knock(signed char level, struct char_data* ch, const char* arg,
   int type, struct char_data* tar_ch, struct obj_data* tar_obj) {
@@ -5958,7 +5975,7 @@ void cast_knock(signed char level, struct char_data* ch, const char* arg,
         } else {
           REMOVE_BIT(obj->obj_flags.value[1], CONT_LOCKED);
           sprintf(buf, "<Click>\n\r");
-          act("$n magically opens $p", 0, ch, obj, 0, TO_ROOM);
+          act("$n magically opens $p", 0, ch, obj, nullptr, TO_ROOM);
         }
         send_to_char(buf, ch);
         return;
@@ -5977,10 +5994,11 @@ void cast_knock(signed char level, struct char_data* ch, const char* arg,
         } else {
           REMOVE_BIT(EXIT(ch, door)->exit_info, EX_LOCKED);
           if (EXIT(ch, door)->keyword) {
-            act("$n magically opens the lock of the $F.", 0, ch, 0,
+            act("$n magically opens the lock of the $F.", 0, ch, nullptr,
               EXIT(ch, door)->keyword, TO_ROOM);
           } else {
-            act("$n magically opens the lock.", 1, ch, 0, 0, TO_ROOM);
+            act("$n magically opens the lock.", 1, ch, nullptr, nullptr,
+              TO_ROOM);
           }
           send_to_char("The lock quickly yields to your skills.\n\r", ch);
           if ((other_room = EXIT(ch, door)->to_room) != NOWHERE) {
@@ -6070,8 +6088,8 @@ static void spell_weakness(signed char level, struct char_data* ch,
   if (!affected_by_spell(victim, SPELL_WEAKNESS)) {
     if (!saves_spell(victim, SAVING_SPELL)) {
       modifier = (77.0 - level) / 100.0;
-      act("You feel weaker.", 0, victim, 0, 0, TO_VICT);
-      act("$n seems weaker.", 0, victim, 0, 0, TO_ROOM);
+      act("You feel weaker.", 0, victim, nullptr, nullptr, TO_VICT);
+      act("$n seems weaker.", 0, victim, nullptr, nullptr, TO_ROOM);
 
       af.type = SPELL_WEAKNESS;
       af.duration = (int)level / 2;
@@ -6164,7 +6182,8 @@ void spell_dispel_magic(signed char level, struct char_data* ch,
     if (yes || !saves_spell(victim, SAVING_SPELL)) {
       affect_from_char(victim, SPELL_SANCTUARY);
       send_to_char("You don't feel so invulnerable anymore.\n\r", victim);
-      act("The white glow around $n's body fades.", 0, victim, 0, 0, TO_ROOM);
+      act("The white glow around $n's body fades.", 0, victim, nullptr, nullptr,
+        TO_ROOM);
     }
     /*
      *  aggressive Act.
@@ -6178,7 +6197,8 @@ void spell_dispel_magic(signed char level, struct char_data* ch,
     if (yes || !saves_spell(victim, SAVING_SPELL)) {
       REMOVE_BIT(victim->specials.affected_by, AFF_SANCTUARY);
       send_to_char("You don't feel so invulnerable anymore.\n\r", victim);
-      act("The white glow around $n's body fades.", 0, victim, 0, 0, TO_ROOM);
+      act("The white glow around $n's body fades.", 0, victim, nullptr, nullptr,
+        TO_ROOM);
     }
     /*
      *  aggressive Act.
@@ -6287,14 +6307,16 @@ void spell_dispel_magic(signed char level, struct char_data* ch,
     if (yes || !saves_spell(victim, SAVING_SPELL)) {
       affect_from_char(victim, SPELL_FIRESHIELD);
       send_to_char("You don't feel so firey anymore.\n\r", victim);
-      act("The red glow around $n's body fades.", 1, ch, 0, 0, TO_ROOM);
+      act("The red glow around $n's body fades.", 1, ch, nullptr, nullptr,
+        TO_ROOM);
     }
   }
   if (affected_by_spell(victim, SPELL_FAERIE_FIRE)) {
     if (yes || !saves_spell(victim, SAVING_SPELL)) {
       affect_from_char(victim, SPELL_FAERIE_FIRE);
       send_to_char("You don't feel so pink anymore.\n\r", victim);
-      act("The pink glow around $n's body fades.", 1, ch, 0, 0, TO_ROOM);
+      act("The pink glow around $n's body fades.", 1, ch, nullptr, nullptr,
+        TO_ROOM);
     }
   }
   if (affected_by_spell(victim, SPELL_MINOR_TRACK)) {
@@ -6345,7 +6367,7 @@ void cast_dispel_magic(signed char level, struct char_data* ch, const char* arg,
       spell_dispel_magic(level, ch, tar_ch, tar_obj);
       break;
     case SPELL_TYPE_POTION:
-      spell_dispel_magic(level, ch, ch, 0);
+      spell_dispel_magic(level, ch, ch, nullptr);
       break;
     case SPELL_TYPE_SCROLL:
       /*
@@ -6357,13 +6379,13 @@ void cast_dispel_magic(signed char level, struct char_data* ch, const char* arg,
       if (!tar_ch) {
         tar_ch = ch;
       }
-      spell_dispel_magic(level, ch, tar_ch, 0);
+      spell_dispel_magic(level, ch, tar_ch, nullptr);
       break;
     case SPELL_TYPE_STAFF:
       for (tar_ch = real_roomp(ch->in_room)->people; tar_ch;
         tar_ch = tar_ch->next_in_room) {
         if (tar_ch != ch) {
-          spell_dispel_magic(level, ch, tar_ch, 0);
+          spell_dispel_magic(level, ch, tar_ch, nullptr);
         }
       }
       break;
@@ -6394,8 +6416,9 @@ void spell_animate_dead(signed char level, struct char_data* ch,
   mob = read_mobile(r_num, VIRTUAL);
   char_to_room(mob, ch->in_room);
 
-  act("With mystic power, $n animates a corpse.", 1, ch, 0, 0, TO_ROOM);
-  act("$N slowly rises from the ground.", 0, ch, 0, mob, TO_ROOM);
+  act("With mystic power, $n animates a corpse.", 1, ch, nullptr, nullptr,
+    TO_ROOM);
+  act("$N slowly rises from the ground.", 0, ch, nullptr, mob, TO_ROOM);
 
   /*
     zombie should be charmed and follower ch
@@ -6457,7 +6480,7 @@ void cast_animate_dead(signed char level, struct char_data* ch, const char* arg,
     case SPELL_TYPE_WAND:
       if (tar_obj) {
         if (IS_CORPSE(tar_obj)) {
-          spell_animate_dead(level, ch, 0, tar_obj);
+          spell_animate_dead(level, ch, nullptr, tar_obj);
         } else {
           send_to_char("That's not a corpse!\n\r", ch);
           return;
@@ -6474,7 +6497,7 @@ void cast_animate_dead(signed char level, struct char_data* ch, const char* arg,
     case SPELL_TYPE_STAFF:
       for (i = real_roomp(ch->in_room)->contents; i; i = i->next_content) {
         if (IS_CORPSE(i)) {
-          spell_animate_dead(level, ch, 0, i);
+          spell_animate_dead(level, ch, nullptr, i);
         }
       }
       break;
@@ -6491,8 +6514,8 @@ static void spell_succor(struct char_data* ch, struct char_data* victim,
   o = read_object(3052, VIRTUAL);
   obj_to_char(o, ch);
 
-  act("$n waves $s hand, and creates $p", 1, ch, o, 0, TO_ROOM);
-  act("You wave your hand and create $p.", 1, ch, o, 0, TO_CHAR);
+  act("$n waves $s hand, and creates $p", 1, ch, o, nullptr, TO_ROOM);
+  act("You wave your hand and create $p.", 1, ch, o, nullptr, TO_CHAR);
 }
 
 void cast_succor(signed char level, struct char_data* ch, const char* arg,
@@ -6501,7 +6524,7 @@ void cast_succor(signed char level, struct char_data* ch, const char* arg,
     case SPELL_TYPE_SPELL:
     case SPELL_TYPE_WAND:
     case SPELL_TYPE_STAFF:
-      spell_succor(ch, 0, 0);
+      spell_succor(ch, nullptr, nullptr);
   }
 }
 
@@ -6512,8 +6535,8 @@ static void spell_well_of_knowledge(struct char_data* ch,
   o = read_object(3050, VIRTUAL);
   obj_to_char(o, ch);
 
-  act("$n waves $s hand, and creates $p", 1, ch, o, 0, TO_ROOM);
-  act("You wave your hand and create $p.", 1, ch, o, 0, TO_CHAR);
+  act("$n waves $s hand, and creates $p", 1, ch, o, nullptr, TO_ROOM);
+  act("You wave your hand and create $p.", 1, ch, o, nullptr, TO_CHAR);
 }
 
 void cast_well_of_knowledge(signed char level, struct char_data* ch,
@@ -6523,7 +6546,7 @@ void cast_well_of_knowledge(signed char level, struct char_data* ch,
     case SPELL_TYPE_SPELL:
     case SPELL_TYPE_WAND:
     case SPELL_TYPE_STAFF:
-      spell_well_of_knowledge(ch, 0, 0);
+      spell_well_of_knowledge(ch, nullptr, nullptr);
   }
 }
 
@@ -6570,8 +6593,8 @@ static void spell_paralyze(struct char_data* ch, struct char_data* victim) {
     af.bitvector = AFF_PARALYSIS;
     affect_join(victim, &af, 0, 0);
 
-    act("Your limbs freeze in place", 0, victim, 0, 0, TO_CHAR);
-    act("$n is paralyzed!", 1, victim, 0, 0, TO_ROOM);
+    act("Your limbs freeze in place", 0, victim, nullptr, nullptr, TO_CHAR);
+    act("$n is paralyzed!", 1, victim, nullptr, nullptr, TO_ROOM);
     GET_POS(victim) = POSITION_STUNNED;
 
   } else {
@@ -6694,28 +6717,29 @@ static void spell_turn(signed char level, struct char_data* ch,
   if (IsUndead(victim)) {
     diff = level - GetTotLevel(victim);
     if (diff <= 0) {
-      act("You are powerless to affect $N", 1, ch, 0, victim, TO_CHAR);
+      act("You are powerless to affect $N", 1, ch, nullptr, victim, TO_CHAR);
       return;
     }
     for (i = 1; i <= diff; i++) {
       if (!saves_spell(victim, SAVING_SPELL)) {
-        act("$n forces $N from this room.", 1, ch, 0, victim, TO_NOTVICT);
-        act("You force $N from this room.", 1, ch, 0, victim, TO_CHAR);
-        act("$n forces you from this room.", 1, ch, 0, victim, TO_VICT);
+        act("$n forces $N from this room.", 1, ch, nullptr, victim, TO_NOTVICT);
+        act("You force $N from this room.", 1, ch, nullptr, victim, TO_CHAR);
+        act("$n forces you from this room.", 1, ch, nullptr, victim, TO_VICT);
         do_flee(victim, "", 0);
         break;
       }
     }
     if (i < diff) {
-      act("You laugh at $n.", 1, ch, 0, victim, TO_VICT);
-      act("$N laughs at $n.", 1, ch, 0, victim, TO_NOTVICT);
-      act("$N laughs at you.", 1, ch, 0, victim, TO_CHAR);
+      act("You laugh at $n.", 1, ch, nullptr, victim, TO_VICT);
+      act("$N laughs at $n.", 1, ch, nullptr, victim, TO_NOTVICT);
+      act("$N laughs at you.", 1, ch, nullptr, victim, TO_CHAR);
     }
 
   } else {
-    act("$n just tried to turn you, what a moron!", 1, ch, 0, victim, TO_VICT);
-    act("$N thinks $n is really strange.", 1, ch, 0, victim, TO_NOTVICT);
-    act("Um... $N isn't undead...", 1, ch, 0, victim, TO_CHAR);
+    act("$n just tried to turn you, what a moron!", 1, ch, nullptr, victim,
+      TO_VICT);
+    act("$N thinks $n is really strange.", 1, ch, nullptr, victim, TO_NOTVICT);
+    act("Um... $N isn't undead...", 1, ch, nullptr, victim, TO_CHAR);
   }
 }
 
@@ -6765,9 +6789,9 @@ static void spell_faerie_fog(struct char_data* ch, struct char_data* victim,
   assert(ch);
 
   act("$n snaps $s fingers, and a cloud of purple smoke billows forth", 1, ch,
-    0, 0, TO_ROOM);
+    nullptr, nullptr, TO_ROOM);
   act("You snap your fingers, and a cloud of purple smoke billows forth", 1, ch,
-    0, 0, TO_CHAR);
+    nullptr, nullptr, TO_CHAR);
 
   for (tmpv = real_roomp(ch->in_room)->people; tmpv;
     tmpv = tmpv->next_in_room) {
@@ -6779,15 +6803,15 @@ static void spell_faerie_fog(struct char_data* ch, struct char_data* victim,
         if (IS_AFFECTED(tmpv, AFF_INVISIBLE)) {
           if (saves_spell(tmpv, SAVING_SPELL)) {
             REMOVE_BIT(tmpv->specials.affected_by, AFF_INVISIBLE);
-            act("$n is briefly revealed, but dissapears again.", 1, tmpv, 0, 0,
-              TO_ROOM);
-            act("You are briefly revealed, but dissapear again.", 1, tmpv, 0, 0,
-              TO_CHAR);
+            act("$n is briefly revealed, but dissapears again.", 1, tmpv,
+              nullptr, nullptr, TO_ROOM);
+            act("You are briefly revealed, but dissapear again.", 1, tmpv,
+              nullptr, nullptr, TO_CHAR);
             SET_BIT(tmpv->specials.affected_by, AFF_INVISIBLE);
           } else {
             REMOVE_BIT(tmpv->specials.affected_by, AFF_INVISIBLE);
-            act("$n is revealed!", 1, tmpv, 0, 0, TO_ROOM);
-            act("You are revealed!", 1, tmpv, 0, 0, TO_CHAR);
+            act("$n is revealed!", 1, tmpv, nullptr, nullptr, TO_ROOM);
+            act("You are revealed!", 1, tmpv, nullptr, nullptr, TO_CHAR);
           }
         }
       }
@@ -6801,7 +6825,7 @@ void cast_faerie_fog(signed char level, struct char_data* ch, const char* arg,
     case SPELL_TYPE_SPELL:
     case SPELL_TYPE_STAFF:
     case SPELL_TYPE_SCROLL:
-      spell_faerie_fog(ch, 0, 0);
+      spell_faerie_fog(ch, nullptr, nullptr);
       break;
     default:
       vlog("Serious screw-up in faerie fog!");
@@ -6842,10 +6866,10 @@ static void spell_poly_self(struct char_data* ch, struct char_data* mob) {
     do_terminal(ch, "none", 0);
   }
 
-  act("$n's flesh melts and flows into the shape of $N", 1, ch, 0, mob,
+  act("$n's flesh melts and flows into the shape of $N", 1, ch, nullptr, mob,
     TO_ROOM);
 
-  act("Your flesh melts and flows into the shape of $N", 1, ch, 0, mob,
+  act("Your flesh melts and flows into the shape of $N", 1, ch, nullptr, mob,
     TO_CHAR);
 
   char_from_room(ch);
@@ -6866,7 +6890,7 @@ static void spell_poly_self(struct char_data* ch, struct char_data* mob) {
   ch->desc->original = ch;
 
   mob->desc = ch->desc;
-  ch->desc = 0;
+  ch->desc = nullptr;
 
   SET_BIT(mob->specials.act, ACT_POLYSELF);
   SET_BIT(mob->specials.act, ACT_NICE_THIEF);
@@ -6976,10 +7000,10 @@ void cast_poly_self(signed char level, struct char_data* ch, const char* arg,
 static void spell_minor_create(struct char_data* ch, struct obj_data* obj) {
   assert(ch && obj);
 
-  act("$n claps $s hands together.", 1, ch, 0, 0, TO_ROOM);
-  act("You clap your hands together.", 1, ch, 0, 0, TO_CHAR);
-  act("In a flash of light, $p appears.", 1, ch, obj, 0, TO_ROOM);
-  act("In a flash of light, $p appears.", 1, ch, obj, 0, TO_CHAR);
+  act("$n claps $s hands together.", 1, ch, nullptr, nullptr, TO_ROOM);
+  act("You clap your hands together.", 1, ch, nullptr, nullptr, TO_CHAR);
+  act("In a flash of light, $p appears.", 1, ch, obj, nullptr, TO_ROOM);
+  act("In a flash of light, $p appears.", 1, ch, obj, nullptr, TO_CHAR);
 
   obj_to_room(obj, ch->in_room);
 }
@@ -7057,14 +7081,16 @@ static void spell_conjure_elemental(struct char_data* ch,
   **     air   : clear stone
   */
 
-  act("$n gestures, and a cloud of smoke appears", 1, ch, 0, 0, TO_ROOM);
-  act("$n gestures, and a cloud of smoke appears", 1, ch, 0, 0, TO_CHAR);
-  act("$p explodes with a loud BANG!", 1, ch, obj, 0, TO_ROOM);
-  act("$p explodes with a loud BANG!", 1, ch, obj, 0, TO_CHAR);
+  act("$n gestures, and a cloud of smoke appears", 1, ch, nullptr, nullptr,
+    TO_ROOM);
+  act("$n gestures, and a cloud of smoke appears", 1, ch, nullptr, nullptr,
+    TO_CHAR);
+  act("$p explodes with a loud BANG!", 1, ch, obj, nullptr, TO_ROOM);
+  act("$p explodes with a loud BANG!", 1, ch, obj, nullptr, TO_CHAR);
   obj_from_char(obj);
   extract_obj(obj);
   char_to_room(victim, ch->in_room);
-  act("Out of the smoke, $N emerges", 1, ch, 0, victim, TO_NOTVICT);
+  act("Out of the smoke, $N emerges", 1, ch, nullptr, victim, TO_NOTVICT);
 
   /* charm them for a while */
   if (victim->master) {
@@ -7162,15 +7188,17 @@ static void spell_cacaodemon(struct char_data* ch, struct char_data* victim,
 
   assert(ch && victim && obj);
 
-  act("$n gestures, and a black cloud of smoke appears", 1, ch, 0, 0, TO_ROOM);
-  act("$n gestures, and a black cloud of smoke appears", 1, ch, 0, 0, TO_CHAR);
-  act("$p bursts into flame and disintegrates!", 1, ch, obj, 0, TO_ROOM);
-  act("$p bursts into flame and disintegrates!", 1, ch, obj, 0, TO_CHAR);
+  act("$n gestures, and a black cloud of smoke appears", 1, ch, nullptr,
+    nullptr, TO_ROOM);
+  act("$n gestures, and a black cloud of smoke appears", 1, ch, nullptr,
+    nullptr, TO_CHAR);
+  act("$p bursts into flame and disintegrates!", 1, ch, obj, nullptr, TO_ROOM);
+  act("$p bursts into flame and disintegrates!", 1, ch, obj, nullptr, TO_CHAR);
   obj_from_char(obj);
   extract_obj(obj);
   char_to_room(victim, ch->in_room);
 
-  act("With an evil laugh, $N emerges from the smoke", 1, ch, 0, victim,
+  act("With an evil laugh, $N emerges from the smoke", 1, ch, nullptr, victim,
     TO_NOTVICT);
 
   /* charm them for a while */
@@ -7304,8 +7332,8 @@ static void spell_create_monster(signed char level, struct char_data* ch,
 
   char_to_room(mob, ch->in_room);
 
-  act("$n waves $s hand, and $N appears!", 1, ch, 0, mob, TO_ROOM);
-  act("You wave your hand, and $N appears!", 1, ch, 0, mob, TO_CHAR);
+  act("$n waves $s hand, and $N appears!", 1, ch, nullptr, mob, TO_ROOM);
+  act("You wave your hand, and $N appears!", 1, ch, nullptr, mob, TO_CHAR);
 
   /* charm them for a while */
   if (mob->master) {
@@ -7350,7 +7378,7 @@ void cast_mon_sum1(signed char level, struct char_data* ch, const char* arg,
     case SPELL_TYPE_SCROLL:
     case SPELL_TYPE_WAND:
     case SPELL_TYPE_STAFF:
-      spell_create_monster(5, ch, 0, 0);
+      spell_create_monster(5, ch, nullptr, nullptr);
       break;
     default:
       vlog("Serious screw-up in monster_summoning_1");
@@ -7365,7 +7393,7 @@ void cast_mon_sum2(signed char level, struct char_data* ch, const char* arg,
     case SPELL_TYPE_SCROLL:
     case SPELL_TYPE_WAND:
     case SPELL_TYPE_STAFF:
-      spell_create_monster(7, ch, 0, 0);
+      spell_create_monster(7, ch, nullptr, nullptr);
       break;
     default:
       vlog("Serious screw-up in monster_summoning_1");
@@ -7380,7 +7408,7 @@ void cast_mon_sum3(signed char level, struct char_data* ch, const char* arg,
     case SPELL_TYPE_SCROLL:
     case SPELL_TYPE_WAND:
     case SPELL_TYPE_STAFF:
-      spell_create_monster(9, ch, 0, 0);
+      spell_create_monster(9, ch, nullptr, nullptr);
       break;
     default:
       vlog("Serious screw-up in monster_summoning_1");
@@ -7395,7 +7423,7 @@ void cast_mon_sum4(signed char level, struct char_data* ch, const char* arg,
     case SPELL_TYPE_SCROLL:
     case SPELL_TYPE_WAND:
     case SPELL_TYPE_STAFF:
-      spell_create_monster(11, ch, 0, 0);
+      spell_create_monster(11, ch, nullptr, nullptr);
       break;
     default:
       vlog("Serious screw-up in monster_summoning_1");
@@ -7410,7 +7438,7 @@ void cast_mon_sum5(signed char level, struct char_data* ch, const char* arg,
     case SPELL_TYPE_SCROLL:
     case SPELL_TYPE_WAND:
     case SPELL_TYPE_STAFF:
-      spell_create_monster(13, ch, 0, 0);
+      spell_create_monster(13, ch, nullptr, nullptr);
       break;
     default:
       vlog("Serious screw-up in monster_summoning_1");
@@ -7425,7 +7453,7 @@ void cast_mon_sum6(signed char level, struct char_data* ch, const char* arg,
     case SPELL_TYPE_SCROLL:
     case SPELL_TYPE_WAND:
     case SPELL_TYPE_STAFF:
-      spell_create_monster(15, ch, 0, 0);
+      spell_create_monster(15, ch, nullptr, nullptr);
       break;
     default:
       vlog("Serious screw-up in monster_summoning_1");
@@ -7440,7 +7468,7 @@ void cast_mon_sum7(signed char level, struct char_data* ch, const char* arg,
     case SPELL_TYPE_SCROLL:
     case SPELL_TYPE_WAND:
     case SPELL_TYPE_STAFF:
-      spell_create_monster(17, ch, 0, 0);
+      spell_create_monster(17, ch, nullptr, nullptr);
       break;
     default:
       vlog("Serious screw-up in monster_summoning_1");

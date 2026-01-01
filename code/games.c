@@ -381,7 +381,7 @@ static void spin_slot(struct char_data* ch) {
   strcat(buf, "\n\r");
   send_to_char(buf, ch);
   sprintf(buf, "$n spins a [%-10s %-10s %-10s]", fruit1, fruit2, fruit3);
-  act(buf, 0, ch, 0, 0, TO_ROOM);
+  act(buf, 0, ch, nullptr, nullptr, TO_ROOM);
 
   bits = generic_find("slot", FIND_OBJ_ROOM, ch, &tmp_char, &slot);
 

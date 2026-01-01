@@ -13,7 +13,8 @@ void init_hash_table(struct hash_header* ht, int rec_size, int table_size) {
   ht->table_size = table_size;
   ht->buckets =
     (struct hash_link**)calloc((size_t)table_size, sizeof(struct hash_link*));
-  ht->keylist = (int*)malloc(sizeof(*ht->keylist) * (size_t)(ht->klistsize = 128));
+  ht->keylist =
+    (int*)malloc(sizeof(*ht->keylist) * (size_t)(ht->klistsize = 128));
   ht->klistlen = 0;
 }
 
@@ -64,7 +65,7 @@ void* hash_find(struct hash_header* ht, int key) {
 /* room_data array functions */
 
 struct room_data* room_find(struct room_data* room_db[], int key) {
-  return ((key < WORLD_SIZE && key > -1) ? room_db[key] : 0);
+  return ((key < WORLD_SIZE && key > -1) ? room_db[key] : nullptr);
 }
 
 int room_remove(struct room_data* rb[], int key) {
@@ -73,7 +74,7 @@ int room_remove(struct room_data* rb[], int key) {
   tmp = room_find(rb, key);
 
   if (tmp) {
-    rb[key] = 0;
+    rb[key] = nullptr;
     free(tmp);
   }
   return (0);
