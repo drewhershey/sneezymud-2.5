@@ -380,7 +380,8 @@ char* read_delete(char* recipient, char* recipient_formatted) {
     return 0;
   }
 
-  tmstr = asctime(localtime(&header.mail_time));
+  time_t mail_time_converted = COMPAT_TO_TIME(header.mail_time);
+  tmstr = asctime(localtime(&mail_time_converted));
   *(tmstr + strlen(tmstr) - 1) = '\0';
 
   sprintf(buf,

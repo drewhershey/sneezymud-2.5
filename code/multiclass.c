@@ -5,47 +5,47 @@
 #include "structs.h"
 #include "utils.h"
 
-int GetClassLevel(struct char_data* ch, int class) {
-  if (IS_SET(ch->player.class, class)) {
-    return (GET_LEVEL(ch, CountBits(class) - 1));
+int GetClassLevel(struct char_data* ch, int char_class) {
+  if (IS_SET(ch->player.char_class, char_class)) {
+    return (GET_LEVEL(ch, CountBits(char_class) - 1));
   }
   return (0);
 }
 
-int CountBits(int class) {
-  if (class == 1) {
+int CountBits(int char_class) {
+  if (char_class == 1) {
     return (1);
   }
-  if (class == 2) {
+  if (char_class == 2) {
     return (2);
   }
-  if (class == 4) {
+  if (char_class == 4) {
     return (3);
   }
-  if (class == 8) {
+  if (char_class == 8) {
     return (4);
   }
-  if (class == 16) {
+  if (char_class == 16) {
     return (5);
   }
-  if (class == 32) {
+  if (char_class == 32) {
     return (6);
   }
-  if (class == 64) {
+  if (char_class == 64) {
     return (7);
   }
-  if (class == 128) {
+  if (char_class == 128) {
     return (8);
   }
   return 0;
 }
 
-int OnlyClass(struct char_data* ch, int class) {
+int OnlyClass(struct char_data* ch, int char_class) {
   int i;
 
   for (i = 1; i <= 8; i *= 2) {
     if (GetClassLevel(ch, i) != 0) {
-      if (i != class) {
+      if (i != char_class) {
         return 0;
       }
     }
@@ -53,14 +53,14 @@ int OnlyClass(struct char_data* ch, int class) {
   return 1;
 }
 
-int HasClass(struct char_data* ch, int class) {
+int HasClass(struct char_data* ch, int char_class) {
   if (!IS_PC(ch)) {
-    if (!IS_SET(class, CLASS_MONK)) {
+    if (!IS_SET(char_class, CLASS_MONK)) {
       return 1;
     }
   }
 
-  if (IS_SET(ch->player.class, class)) {
+  if (IS_SET(ch->player.char_class, char_class)) {
     return 1;
   }
 
@@ -79,35 +79,35 @@ int HowManyClasses(struct char_data* ch) {
   if (tot) {
     return (tot);
   }
-  if (IS_SET(ch->player.class, CLASS_MAGIC_USER)) {
+  if (IS_SET(ch->player.char_class, CLASS_MAGIC_USER)) {
     tot++;
   }
 
-  if (IS_SET(ch->player.class, CLASS_WARRIOR)) {
+  if (IS_SET(ch->player.char_class, CLASS_WARRIOR)) {
     tot++;
   }
 
-  if (IS_SET(ch->player.class, CLASS_THIEF)) {
+  if (IS_SET(ch->player.char_class, CLASS_THIEF)) {
     tot++;
   }
 
-  if (IS_SET(ch->player.class, CLASS_CLERIC)) {
+  if (IS_SET(ch->player.char_class, CLASS_CLERIC)) {
     tot++;
   }
 
-  if (IS_SET(ch->player.class, CLASS_ANTIPALADIN)) {
+  if (IS_SET(ch->player.char_class, CLASS_ANTIPALADIN)) {
     tot++;
   }
 
-  if (IS_SET(ch->player.class, CLASS_PALADIN)) {
+  if (IS_SET(ch->player.char_class, CLASS_PALADIN)) {
     tot++;
   }
 
-  if (IS_SET(ch->player.class, CLASS_RANGER)) {
+  if (IS_SET(ch->player.char_class, CLASS_RANGER)) {
     tot++;
   }
 
-  if (IS_SET(ch->player.class, CLASS_MONK)) {
+  if (IS_SET(ch->player.char_class, CLASS_MONK)) {
     tot++;
   }
 
@@ -241,8 +241,8 @@ static int get_a_level(struct char_data* ch, int which) {
 }
 
 int GetMaxLevel(struct char_data* ch) {
-  register int max = 0;
-  register int i;
+  int max = 0;
+  int i;
 
   for (i = MAGE_LEVEL_IND; i <= RANGER_LEVEL_IND; i++) {
     if (GET_LEVEL(ch, i) > max) {

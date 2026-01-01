@@ -36,7 +36,8 @@ typedef struct {
     perror("allocation failure");
     abort();
   }
-  return (alloc_result){.ptr = ptr, .count = count, .size = size};
+  alloc_result result = {ptr, count, size};
+  return result;
 }
 
 #define create(type, count) (type*)alloc_or_die(count, sizeof(type)).ptr

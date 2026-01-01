@@ -64,7 +64,7 @@ typedef struct {
     struct char_list* clist;
     int sex;   /*number 1=male,2=female,3=both,4=neut,5=m&n,6=f&n,7=all*/
     int race;  /*number */
-    int class; /* 1=m,2=c,4=f,8=t */
+    int char_class; /* 1=m,2=c,4=f,8=t */
     int vnum;  /* # */
     int evil;  /* align < evil = attack */
     int good;  /* align > good = attack */
@@ -211,7 +211,7 @@ struct char_player_data {
     char* sounds;           /* Sound that the monster makes (in room) */
     char* distant_snds;     /* Sound that the monster makes (other) */
     signed char sex;        /* PC / NPC s sex                       */
-    unsigned char class;    /* PC s class or NPC alignment          */
+    unsigned char char_class;    /* PC s class or NPC alignment          */
     signed char level[8];   /* PC / NPC s level                     */
     int hometown;           /* PC s Hometown (zone)                 */
     char talks[MAX_TOUNGE]; /* PC s Tounges 0 for NPC           */
@@ -443,7 +443,7 @@ struct weather_data {
 
 struct char_file_u {
     signed char sex;
-    unsigned char class;
+    unsigned char char_class;
     signed char level[8];
     compat_time birth; /* Time of birth of character (32-bit for compat) */
     int played;        /* Number of secs played in total */

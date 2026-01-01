@@ -624,8 +624,8 @@ static void spell_wear_off(int s, struct char_data* ch) {
 void affect_update(int pulse) {
   static struct affected_type* af;
   static struct affected_type* next_af_dude;
-  register struct char_data* i;
-  register struct obj_data* j;
+  struct char_data* i;
+  struct obj_data* j;
   struct obj_data* next_thing;
   struct char_data* next_char;
   struct room_data* rp;
@@ -962,7 +962,7 @@ static void say_spell(struct char_data* ch, int si) {
 
   struct syllable {
       char org[10];
-      char new[10];
+      char replacement[10];
   };
 
   struct syllable syls[] = {{" ", " "}, {"ar", "abra"}, {"au", "kada"},
@@ -985,7 +985,7 @@ static void say_spell(struct char_data* ch, int si) {
   while (*(splwd + offs)) {
     for (j = 0; *(syls[j].org); j++) {
       if (strncmp(syls[j].org, splwd + offs, strlen(syls[j].org)) == 0) {
-        strcat(buf, syls[j].new);
+        strcat(buf, syls[j].replacement);
         if (strlen(syls[j].org)) {
           offs += strlen(syls[j].org);
         } else {
@@ -1004,7 +1004,7 @@ static void say_spell(struct char_data* ch, int si) {
       /*
       **  Remove-For-Multi-Class
       */
-      if (ch->player.class == temp_char->player.class) {
+      if (ch->player.char_class == temp_char->player.char_class) {
         act(buf, 0, ch, 0, temp_char, TO_VICT);
       } else {
         act(buf2, 0, ch, 0, temp_char, TO_VICT);
@@ -1277,7 +1277,7 @@ void do_cast(struct char_data* ch, const char* argument, int cmd) {
           }
 
           if (!target_ok && IS_SET(spell_info[spl].targets, TAR_NAME)) {
-            tar_obj = (void*)name;
+            tar_obj = (struct obj_data*)name;
             target_ok = 1;
           }
 

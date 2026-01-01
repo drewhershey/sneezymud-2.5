@@ -807,8 +807,8 @@ void page_string(struct descriptor_data* d, char* str, int keep_internal) {
 void show_string(struct descriptor_data* d, const char* input) {
   char buffer[MAX_STRING_LENGTH];
   char buf[MAX_INPUT_LENGTH];
-  register char* scan;
-  register char* chk;
+  char* scan;
+  char* chk;
   int lines = 0;
   int toggle = 1;
 

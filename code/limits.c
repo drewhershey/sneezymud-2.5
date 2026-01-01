@@ -272,18 +272,18 @@ int move_gain(struct char_data* ch) {
 }
 
 /* Gain maximum in various points */
-void advance_level(struct char_data* ch, int class) {
+void advance_level(struct char_data* ch, int char_class) {
   int add_hp;
   int i;
 
-  if (GET_LEVEL(ch, class) > 0 &&
-      GET_EXP(ch) < titles[class][GET_LEVEL(ch, class) + 1].exp) {
+  if (GET_LEVEL(ch, char_class) > 0 &&
+      GET_EXP(ch) < titles[char_class][GET_LEVEL(ch, char_class) + 1].exp) {
     /*  they can't advance here */
     vlog("Bad advance_level");
     return;
   }
 
-  GET_LEVEL(ch, class) += 1;
+  GET_LEVEL(ch, char_class) += 1;
 
   if ((OnlyClass(ch, CLASS_WARRIOR)) || (con_app[GET_CON(ch)].hitp < 0)) {
     add_hp = con_app[GET_CON(ch)].hitp;
@@ -291,7 +291,7 @@ void advance_level(struct char_data* ch, int class) {
     add_hp = (con_app[GET_CON(ch)].hitp / HowManyClasses(ch));
   }
 
-  switch (class) {
+  switch (char_class) {
     case MAGE_LEVEL_IND: {
       if (GET_LEVEL(ch, MAGE_LEVEL_IND) < 12) {
         add_hp += number(1, 5);
@@ -378,7 +378,7 @@ void advance_level(struct char_data* ch, int class) {
 ** Damn tricky for multi-class...
 */
 
-static void drop_level(struct char_data* ch, int class) {
+static void drop_level(struct char_data* ch, int char_class) {
   int add_hp;
   int lin_class;
 
@@ -391,7 +391,7 @@ static void drop_level(struct char_data* ch, int class) {
 
   add_hp = con_app[GET_CON(ch)].hitp;
 
-  switch (class) {
+  switch (char_class) {
     case CLASS_MAGIC_USER: {
       lin_class = MAGE_LEVEL_IND;
       if (GET_LEVEL(ch, MAGE_LEVEL_IND) < 12) {

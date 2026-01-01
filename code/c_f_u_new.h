@@ -14,7 +14,7 @@
 
 struct char_file_u_new {
     signed char sex;
-    unsigned char class;
+    unsigned char char_class;
     signed char level[12];
     time_t birth; /* Time of birth of character     */
     int played;   /* Number of secs played in total */

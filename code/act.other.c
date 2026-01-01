@@ -353,7 +353,7 @@ static void blk_save(struct char_data* ch) {
 
 /* write the vital data of a player to the player file */
 static void save_obj_for_save(struct char_data* ch, struct obj_cost* cost,
-  int delete) {
+  int do_delete) {
   static struct obj_file_u st;
   FILE* fl;
   int pos;
@@ -369,16 +369,16 @@ static void save_obj_for_save(struct char_data* ch, struct obj_cost* cost,
 
   for (i = 0; i < MAX_WEAR; i++) {
     if (ch->equipment[i]) {
-      if (delete) {
-        obj_to_store(unequip_char(ch, i), &st, ch, delete);
+      if (do_delete) {
+        obj_to_store(unequip_char(ch, i), &st, ch, do_delete);
       } else {
-        obj_to_store(ch->equipment[i], &st, ch, delete);
+        obj_to_store(ch->equipment[i], &st, ch, do_delete);
       }
     }
   }
 
-  obj_to_store(ch->carrying, &st, ch, delete);
-  if (delete) {
+  obj_to_store(ch->carrying, &st, ch, do_delete);
+  if (do_delete) {
     ch->carrying = 0;
   }
 

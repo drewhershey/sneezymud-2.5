@@ -9,7 +9,7 @@
 
 /* Forward declarations */
 int CAN_SEE(struct char_data* s, struct char_data* o);
-struct room_data* real_roomp(int virtual);
+struct room_data* real_roomp(int vnum);
 char* fname(char* namelist);
 int isname(const char* str, const char* namelist);
 
@@ -34,11 +34,11 @@ int isname(const char* str, const char* namelist);
 #define GET_LEVEL(ch, i) ((ch)->player.level[(i)])
 #define GET_WIMPY(ch) ((ch)->wimpy)
 
-#define GET_CLASS_TITLE(ch, class, lev)                            \
+#define GET_CLASS_TITLE(ch, char_class, lev)                            \
   ((ch)->player.sex                                                \
-      ? (((ch)->player.sex == 1) ? titles[(class)][(lev)].title_m  \
-                                 : titles[(class)][(lev)].title_f) \
-      : titles[(class)][(lev)].title_m)
+      ? (((ch)->player.sex == 1) ? titles[(char_class)][(lev)].title_m  \
+                                 : titles[(char_class)][(lev)].title_f) \
+      : titles[(char_class)][(lev)].title_m)
 
 /* Requirement/quality descriptors */
 #define GET_REQ(i)                                                        \
@@ -90,7 +90,7 @@ int isname(const char* str, const char* namelist);
 /* Basic character info */
 #define GET_NAME(ch) ((ch)->player.name)
 #define GET_TITLE(ch) ((ch)->player.title)
-#define GET_CLASS(ch) ((ch)->player.class)
+#define GET_CLASS(ch) ((ch)->player.char_class)
 #define GET_HOME(ch) ((ch)->player.hometown)
 #define GET_AGE(ch) (age(ch).year)
 #define GET_POINT(ch) ((ch)->point_roll)
@@ -212,15 +212,15 @@ static inline int GET_MAX_MANA(struct char_data* ch) {
 #define IS_IMMORTAL(ch) (!IS_NPC(ch) && (GetMaxLevel(ch) >= 52))
 
 #define IS_POLICE(ch)                        \
-  ((mob_index[(ch)->nr].virtual == 3060) ||  \
-    (mob_index[(ch)->nr].virtual == 3069) || \
-    (mob_index[(ch)->nr].virtual == 14) ||   \
-    (mob_index[(ch)->nr].virtual == 15) ||   \
-    (mob_index[(ch)->nr].virtual == 16) ||   \
-    (mob_index[(ch)->nr].virtual == 17) ||   \
-    (mob_index[(ch)->nr].virtual == 18) ||   \
-    (mob_index[(ch)->nr].virtual == 19) ||   \
-    (mob_index[(ch)->nr].virtual == 3067))
+  ((mob_index[(ch)->nr].vnum == 3060) ||  \
+    (mob_index[(ch)->nr].vnum == 3069) || \
+    (mob_index[(ch)->nr].vnum == 14) ||   \
+    (mob_index[(ch)->nr].vnum == 15) ||   \
+    (mob_index[(ch)->nr].vnum == 16) ||   \
+    (mob_index[(ch)->nr].vnum == 17) ||   \
+    (mob_index[(ch)->nr].vnum == 18) ||   \
+    (mob_index[(ch)->nr].vnum == 19) ||   \
+    (mob_index[(ch)->nr].vnum == 3067))
 
 #define IS_CORPSE(obj) \
   (GET_ITEM_TYPE((obj)) == ITEM_CONTAINER && isname("corpse", (obj)->name))

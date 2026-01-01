@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-CodeChecker analysis tooling for SneezyMUD 2.5 (C23).
+CodeChecker analysis tooling for SneezyMUD 2.5 (C++20).
 
 Runs clangsa (path-sensitive cross-translation-unit static analysis) plus critical AST checks
 that duplicate .clang-tidy WarningsAsErrors as a safety net.
@@ -64,24 +64,33 @@ PROJECT_GLOB_PATTERN = "*/code/*"
 # a safety net in case they're not addressed during development.
 #
 # Sync with .clang-tidy if changes are needed (should be rare).
-#
-# Note: C-specific checks only - removed C++ checks like exception-escape,
-# dangling-handle, string-constructor, use-after-move, virtual-near-miss, etc.
 CRITICAL_TIDY_CHECKS: list[str] = [
     "bugprone-assert-side-effect",
     "bugprone-bool-pointer-implicit-conversion",
+    "bugprone-dangling-handle",
+    "bugprone-exception-escape",
+    "bugprone-inaccurate-erase",
     "bugprone-infinite-loop",
     "bugprone-integer-division",
     "bugprone-misplaced-widening-cast",
     "bugprone-multi-level-implicit-pointer-conversion",
     "bugprone-not-null-terminated-result",
+    "bugprone-parent-virtual-call",
     "bugprone-signal-handler",
+    "bugprone-signed-char-misuse",
     "bugprone-sizeof-expression",
+    "bugprone-string-constructor",
     "bugprone-suspicious-memset-usage",
     "bugprone-suspicious-semicolon",
     "bugprone-suspicious-string-compare",
     "bugprone-swapped-arguments",
+    "bugprone-throw-keyword-missing",
+    "bugprone-undelegated-constructor",
     "bugprone-undefined-memory-manipulation",
+    "bugprone-unhandled-self-assignment",
+    "bugprone-unused-raii",
+    "bugprone-use-after-move",
+    "bugprone-virtual-near-miss",
 ]
 
 # Additional clang-tidy checks to run during analysis.
@@ -97,9 +106,6 @@ ADDITIONAL_TIDY_CHECKS: list[str] = [
 #
 # All clangsa checks still run and appear in full output; this list only
 # controls what the 'critical' command flags as PR-blocking.
-#
-# Note: C-specific checks only - removed C++ checks like cplusplus.* and
-# alpha.cplusplus.* (NewDelete, Move, SmartPtr, etc.)
 CRITICAL_SA_CHECKS: list[str] = [
     # Core checks - null deref, UB, uninitialized memory
     "core.CallAndMessage",
@@ -111,6 +117,11 @@ CRITICAL_SA_CHECKS: list[str] = [
     "core.uninitialized.Assign",
     "core.uninitialized.Branch",
     "core.uninitialized.UndefReturn",
+    # C++ checks - memory safety
+    "cplusplus.InnerPointer",
+    "cplusplus.Move",
+    "cplusplus.NewDelete",
+    "cplusplus.NewDeleteLeaks",
     # Unix/POSIX - resource misuse that causes crashes
     "unix.Errno",
     "unix.Malloc",
@@ -124,7 +135,9 @@ CRITICAL_SA_CHECKS: list[str] = [
     # Security - insecure APIs that cause corruption
     "security.FloatLoopCounter",
     "security.insecureAPI.vfork",
-    # VA list - misuse causes crashes (C-specific)
+    # Opt-in checks - real crashes/corruption
+    "optin.cplusplus.UninitializedObject",
+    # VA list - misuse causes crashes
     "valist.CopyToSelf",
     "valist.Uninitialized",
     "valist.Unterminated",
@@ -137,6 +150,11 @@ CRITICAL_SA_CHECKS: list[str] = [
     "alpha.core.PointerSub",
     "alpha.core.SizeofPtr",
     "alpha.core.StackAddressAsyncEscape",
+    "alpha.cplusplus.DeleteWithNonVirtualDtor",
+    "alpha.cplusplus.InvalidatedIterator",
+    "alpha.cplusplus.IteratorRange",
+    "alpha.cplusplus.MismatchedIterator",
+    "alpha.cplusplus.SmartPtr",
     "alpha.security.ArrayBound",
     "alpha.security.ArrayBoundV2",
     "alpha.security.MallocOverflow",
@@ -150,6 +168,7 @@ CRITICAL_SA_CHECKS: list[str] = [
     "alpha.unix.cstring.BufferOverlap",
     "alpha.unix.cstring.NotNullTerminated",
     "alpha.unix.cstring.OutOfBounds",
+    "alpha.unix.cstring.UninitializedRead",
 ]
 
 CRITICAL_CHECKERS: set[str] = set(CRITICAL_TIDY_CHECKS + CRITICAL_SA_CHECKS)
@@ -665,7 +684,7 @@ def main() -> int:
     require_python_version((3, 10))
 
     parser = argparse.ArgumentParser(
-        description="CodeChecker analysis tooling for SneezyMUD 2.5 (C23)",
+        description="CodeChecker analysis tooling for SneezyMUD 2.5 (C++20)",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog=__doc__,
     )

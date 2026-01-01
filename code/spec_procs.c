@@ -122,15 +122,15 @@ char* how_good(int percent) {
   return (buf);
 }
 
-static int gain_level(struct char_data* ch, int class) {
+static int gain_level(struct char_data* ch, int char_class) {
   char buf[255];
 
-  if (GET_EXP(ch) >= titles[class][GET_LEVEL(ch, class) + 1].exp) {
+  if (GET_EXP(ch) >= titles[char_class][GET_LEVEL(ch, char_class) + 1].exp) {
     send_to_char("You raise a level\n\r", ch);
     sprintf(buf, "%s just raised a level! Congratulate them!\n\r",
       GET_NAME(ch));
     send_to_all(buf);
-    advance_level(ch, class);
+    advance_level(ch, char_class);
     set_title(ch);
 
   } else {
@@ -2098,7 +2098,7 @@ int andy_wilcox(struct char_data* ch, int cmd, const char* arg) {
         return 1;
       }
       for (scan = sold_here; scan->container >= 0; scan++) {
-        if (scan->container == obj_index[temp1->item_number].virtual) {
+        if (scan->container == obj_index[temp1->item_number].vnum) {
           break;
         }
       }
@@ -2593,15 +2593,15 @@ static void exec_social(struct char_data* npc, char* cmd, int next_line,
       return;
 
     case 'e':
-      act(cmd + 1, 0, npc, *thing, *thing, TO_ROOM);
+      act(cmd + 1, 0, npc, (struct obj_data*)*thing, *thing, TO_ROOM);
       break;
 
     case 'E':
-      act(cmd + 1, 0, npc, 0, *thing, TO_VICT);
+      act(cmd + 1, 0, npc, nullptr, *thing, TO_VICT);
       break;
 
     case 'B':
-      act(cmd + 1, 0, npc, 0, *thing, TO_NOTVICT);
+      act(cmd + 1, 0, npc, nullptr, *thing, TO_NOTVICT);
       break;
 
     case 'm':
@@ -3227,7 +3227,7 @@ static struct breath_victim* choose_victims(struct char_data* ch,
 
   for (cons = real_roomp(ch->in_room)->people; cons;
     cons = cons->next_in_room) {
-    temp = malloc(sizeof(*temp));
+    temp = (struct breath_victim*)malloc(sizeof(*temp));
     temp->ch = cons;
     temp->next = head;
     head = temp;
@@ -3420,7 +3420,7 @@ int BreathWeapon(struct char_data* ch, int cmd, const char* arg) {
   const struct breather* mob = nullptr;
   const struct breather* scan = breath_monsters;
   while (scan->vnum >= 0) {
-    if (scan->vnum == mob_index[ch->nr].virtual) {
+    if (scan->vnum == mob_index[ch->nr].vnum) {
       mob = scan;
       break;
     }
@@ -3556,7 +3556,7 @@ void do_breath(struct char_data* ch, const char* argument, int cmd) {
   if (!weapon && IS_NPC(ch)) {
     const struct breather* scan = breath_monsters;
     while (scan->vnum >= 0) {
-      if (scan->vnum == mob_index[ch->nr].virtual) {
+      if (scan->vnum == mob_index[ch->nr].vnum) {
         int count = 0;
         while (count < MAX_BREATHS && scan->breaths[count]) {
           count++;
@@ -3847,7 +3847,7 @@ int magic_user(struct char_data* ch, int cmd, const char* arg) {
   }
 
   if (!ch->specials.fighting && !IS_PC(ch)) {
-    SET_BIT(ch->player.class, CLASS_MAGIC_USER);
+    SET_BIT(ch->player.char_class, CLASS_MAGIC_USER);
     if (GetMaxLevel(ch) < 25) {
       return 0;
     }
@@ -4393,7 +4393,7 @@ int cleric(struct char_data* ch, int cmd, const char* arg) {
  ******************************************************************** */
 
 static int check_for_blocked_move(struct char_data* ch, int cmd, int room,
-  int dir, int class) {
+  int dir, int char_class) {
   char buf[256];
   char buf2[256];
 
@@ -4410,7 +4410,7 @@ static int check_for_blocked_move(struct char_data* ch, int cmd, int room,
   }
 
   if ((ch->in_room == room) && (cmd == dir + 1)) {
-    if (!HasClass(ch, class)) {
+    if (!HasClass(ch, char_class)) {
       act(buf2, 0, ch, 0, 0, TO_ROOM);
       send_to_char(buf, ch);
       return 1;
@@ -4756,7 +4756,7 @@ int puff(struct char_data* ch, int cmd, const char* arg) {
     default:
       return (0);
   }
-  unreachable();
+  __builtin_unreachable();
 }
 
 int regenerator(struct char_data* ch, int cmd, const char* arg) {
@@ -4912,13 +4912,13 @@ int AbbarachDragon(struct char_data* ch, int cmd, const char* arg) {
 }
 
 int fido(struct char_data* ch, int cmd, const char* arg) {
-  register struct obj_data* i;
-  register struct obj_data* temp;
-  register struct obj_data* next_obj;
-  register struct obj_data* next_r_obj;
-  register struct char_data* v;
-  register struct char_data* next;
-  register struct room_data* rp;
+  struct obj_data* i;
+  struct obj_data* temp;
+  struct obj_data* next_obj;
+  struct obj_data* next_r_obj;
+  struct char_data* v;
+  struct char_data* next;
+  struct room_data* rp;
   char found = 0;
 
   if (cmd || !AWAKE(ch)) {
@@ -4931,7 +4931,7 @@ int fido(struct char_data* ch, int cmd, const char* arg) {
 
   for (v = rp->people; (v && (!found)); v = next) {
     next = v->next_in_room;
-    if ((IS_NPC(v)) && (mob_index[v->nr].virtual == 100) &&
+    if ((IS_NPC(v)) && (mob_index[v->nr].vnum == 100) &&
         CAN_SEE(ch, v)) { /* is a zombie */
       if (v->specials.fighting) {
         stop_fighting(v);
@@ -5583,7 +5583,7 @@ int Ringwraith(struct char_data* ch, int cmd, const char* arg) {
 
   /* does our ringwraith have his state info? */
   if (!ch->act_ptr) {
-    ch->act_ptr = malloc(sizeof(struct mob_act_data));
+    ch->act_ptr = (struct mob_act_data*)malloc(sizeof(struct mob_act_data));
     if (!ch->act_ptr) {
       vlog("Unable to allocate memory for act_ptr in Ringwraith proc");
       return 0;
@@ -7182,12 +7182,13 @@ int juggernaut(struct char_data* ch, int cmd, const char* arg) {
 
 static void blow_char(struct char_data* ch) {
   struct room_data* rp;
-  int or;
+  int orig_room;
   int num;
 
   num = number(1, 20);
 
   rp = real_roomp(ch->in_room);
+  (void)rp;
   char_from_room(ch);
   char_to_room(ch, (3001 + num));
   do_look(ch, "\0", 15);
@@ -7196,7 +7197,7 @@ static void blow_char(struct char_data* ch) {
 static void bouncer_throw(struct char_data* ch) {
   struct room_data* rp;
   struct room_data* rp2;
-  int or;
+  int orig_room;
 
   rp = real_roomp(ch->in_room);
   rp2 = real_roomp((ch->in_room) - 1);
@@ -7207,9 +7208,9 @@ static void bouncer_throw(struct char_data* ch) {
       ch);
     act("The bouncer picks up $n and hurls $m toward the door.", 0, ch, 0, 0,
       TO_ROOM);
-    or = ch->in_room;
+    orig_room = ch->in_room;
     char_from_room(ch);
-    char_to_room(ch, (or - 1));
+    char_to_room(ch, (orig_room - 1));
     do_look(ch, "\0", 15);
   }
 }
@@ -8164,10 +8165,11 @@ int StatTeller(struct char_data* ch, int cmd, const char* arg) {
 
 void ThrowChar(struct char_data* ch, struct char_data* v, int dir) {
   struct room_data* rp;
-  int or;
+  int orig_room;
   int dam;
   char buf[200];
 
+  (void)dam;
   rp = real_roomp(v->in_room);
   if (rp && rp->dir_option[dir] && rp->dir_option[dir]->to_room &&
       (EXIT(v, dir)->to_room != NOWHERE)) {
@@ -8182,9 +8184,9 @@ void ThrowChar(struct char_data* ch, struct char_data* v, int dir) {
       (IS_NPC(ch) ? ch->player.short_descr : GET_NAME(ch)), dirs[dir]);
     send_to_char(buf, v);
     act("$N is thrown out of the room by $n.\n\r", 1, ch, 0, v, TO_NOTVICT);
-    or = v->in_room;
+    orig_room = v->in_room;
     char_from_room(v);
-    char_to_room(v, (real_roomp(or))->dir_option[dir]->to_room);
+    char_to_room(v, (real_roomp(orig_room))->dir_option[dir]->to_room);
     do_look(v, "\0", 15);
     WAIT_STATE(v, PULSE_VIOLENCE);
   } else {
@@ -8960,7 +8962,7 @@ int lattimore(struct char_data* ch, int cmd, const char* arg) {
       break;
     default:
       /* What he really wants */
-      if (obj_index[obj->item_number].virtual == crow_bar) {
+      if (obj_index[obj->item_number].vnum == crow_bar) {
         act("$n takes $p and jumps up and down in joy.", 1, latt, obj, 0,
           TO_ROOM);
 
@@ -9577,7 +9579,7 @@ static int valik(struct char_data* ch, int cmd, const char* arg) {
         /* Take it, in either case */
         obj_from_char(obj);
         obj_to_char(obj, vict);
-        if (obj_index[obj->item_number].virtual == SHIELD) {
+        if (obj_index[obj->item_number].vnum == SHIELD) {
           if (!check_soundproof(ch)) {
             act("$N says 'The Shield of Lorces!'", 0, ch, 0, vict, TO_CHAR);
             act("$N says 'You may now undertake the first quest.'", 0, ch, 0,
@@ -9613,7 +9615,7 @@ static int valik(struct char_data* ch, int cmd, const char* arg) {
       break;
     case VALIK_QONE:
       if (gave_this_click) {
-        if (obj_index[obj->item_number].virtual == RING) {
+        if (obj_index[obj->item_number].vnum == RING) {
           if (!check_soundproof(ch)) {
             act("$N says 'You have brought me the ring of Tlanic.'", 0, ch, 0,
               vict, TO_CHAR);
@@ -9636,7 +9638,7 @@ static int valik(struct char_data* ch, int cmd, const char* arg) {
       break;
     case VALIK_QTWO:
       if (gave_this_click) {
-        if (obj_index[obj->item_number].virtual == CHALICE) {
+        if (obj_index[obj->item_number].vnum == CHALICE) {
           if (!check_soundproof(ch)) {
             act("$N says 'You have brought me the chalice of Evistar.'", 0, ch,
               0, vict, TO_CHAR);
@@ -9659,7 +9661,7 @@ static int valik(struct char_data* ch, int cmd, const char* arg) {
       break;
     case VALIK_QTHREE:
       if (gave_this_click) {
-        if (obj_index[obj->item_number].virtual == CIRCLET) {
+        if (obj_index[obj->item_number].vnum == CIRCLET) {
           if (!check_soundproof(ch)) {
             act("$N says 'You have brought me the circlet of C*zarnak.'", 0, ch,
               0, vict, TO_CHAR);
@@ -9705,7 +9707,7 @@ static int valik(struct char_data* ch, int cmd, const char* arg) {
       return 1;
       break;
     case VALIK_QFOUR:
-      if (obj_index[vict->equipment[WEAR_NECK_1]->item_number].virtual ==
+      if (obj_index[vict->equipment[WEAR_NECK_1]->item_number].vnum ==
           quest_necklace) {
         for (i = 0; i < quest_lines[(*((int*)vict->act_ptr)) - 2]; ++i) {
           do_say(vict, necklace[i], 0);
@@ -9832,7 +9834,7 @@ int guardian(struct char_data* ch, int cmd, const char* arg) {
     act("You give $p to $N.", 1, ch, obj, g, TO_CHAR);
     act("$n gives $p to $N.", 1, ch, obj, g, TO_ROOM);
 
-    if (obj_index[obj->item_number].virtual != quest_necklace) {
+    if (obj_index[obj->item_number].vnum != quest_necklace) {
       act("$n refuses to accept $p.", 1, g, obj, 0, TO_ROOM);
       return 0;
     }
@@ -10167,7 +10169,7 @@ static void monk_move(struct char_data* ch) {
   if (!ch->skills) {
     SpaceForSkills(ch);
     ch->skills[SKILL_DODGE].learned = GetMaxLevel(ch) + 50;
-    SET_BIT(ch->player.class, CLASS_MONK);
+    SET_BIT(ch->player.char_class, CLASS_MONK);
   }
 
   if (!ch->specials.fighting) {
@@ -10878,8 +10880,8 @@ int Magic_Fountain(struct char_data* ch, int cmd, const char* arg) {
 }
 
 static void invert(const char* arg1, char* arg2) {
-  register int i = 0;
-  register int len = strlen(arg1) - 1;
+  int i = 0;
+  int len = strlen(arg1) - 1;
 
   while (i <= len) {
     *(arg2 + i) = *(arg1 + (len - i));
@@ -11194,16 +11196,16 @@ int RepairGuy(struct char_data* ch, int cmd, const char* arg) {
           }
         }
       } else {
-        struct obj_data* new;
+        struct obj_data* new_obj;
 
         /* weapon repair.  expensive!   */
         cost = obj->obj_flags.cost;
-        new = read_object(obj->item_number, REAL);
+        new_obj = read_object(obj->item_number, REAL);
         if (obj->obj_flags.value[2]) {
           cost /= obj->obj_flags.value[2];
         }
 
-        cost *= (new->obj_flags.value[2] - obj->obj_flags.value[2]);
+        cost *= (new_obj->obj_flags.value[2] - obj->obj_flags.value[2]);
 
         if (cost > GET_GOLD(ch)) {
           if (check_soundproof(ch)) {
@@ -11226,8 +11228,8 @@ int RepairGuy(struct char_data* ch, int cmd, const char* arg) {
           act("$N fiddles with $p.", 1, ch, obj, vict, TO_ROOM);
           act("$N fiddles with $p.", 1, ch, obj, vict, TO_CHAR);
 
-          obj->obj_flags.value[2] = new->obj_flags.value[2];
-          extract_obj(new);
+          obj->obj_flags.value[2] = new_obj->obj_flags.value[2];
+          extract_obj(new_obj);
 
           if (check_soundproof(ch)) {
             act("$N smiles broadly.", 1, ch, 0, vict, TO_ROOM);
@@ -11665,7 +11667,7 @@ static int make_quest(struct char_data* ch, struct char_data* gm, int Class,
       return 0;
     }
     if (vict == gm) {
-      if (obj_index[obj->item_number].virtual ==
+      if (obj_index[obj->item_number].vnum ==
           QuestList[Class][GET_LEVEL(ch, Class)].item) {
         act("$n graciously takes your gift of $p", 0, gm, obj, ch, TO_VICT);
         obj_from_char(obj);

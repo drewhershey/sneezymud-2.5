@@ -26,7 +26,7 @@ int number(int from, int to);
 
 #define NUMBER(from, to)                                   \
   ({                                                       \
-    typeof(from) _result;                                  \
+    decltype(from) _result;                                \
     if ((to) - (from) + 1)                                 \
       _result = ((rand() % ((to) - (from) + 1)) + (from)); \
     else                                                   \
@@ -38,8 +38,8 @@ int dice(int number, int size);
 
 #define DICE(number, size)               \
   ({                                     \
-    typeof(number) _sum = 0;             \
-    typeof(number) _r;                   \
+    decltype(number) _sum = 0;           \
+    decltype(number) _r;                 \
     assert((size) >= 0);                 \
     if ((size) == 0)                     \
       _sum;                              \
@@ -178,9 +178,9 @@ const char* DescMoves(float a);
 const char* ac_for_score(int a);
 void name_from_drinkcon(struct obj_data* obj);
 void name_to_drinkcon(struct obj_data* obj, int type);
-void save_obj(struct char_data* ch, struct obj_cost* cost, int delete);
+void save_obj(struct char_data* ch, struct obj_cost* cost, int do_delete);
 void obj_to_store(struct obj_data* obj, struct obj_file_u* st,
-  struct char_data* ch, int delete);
+  struct char_data* ch, int do_delete);
 void update_file(struct char_data* ch, struct obj_file_u* st, int save);
 int ValidMove(struct char_data* ch, int cmd);
 void raw_kill(struct char_data* ch);

@@ -751,26 +751,26 @@ int get_from_q(struct txt_q* queue, char* dest) {
 }
 
 void write_to_q(const char* txt, struct txt_q* queue) {
-  struct txt_block* new;
+  struct txt_block* new_block;
 
   if (!queue) {
     vlog("Output message to non-existant queue");
     return;
   }
 
-  CREATE(new, struct txt_block, 1);
-  CREATE(new->text, char, strlen(txt) + 1);
+  CREATE(new_block, struct txt_block, 1);
+  CREATE(new_block->text, char, strlen(txt) + 1);
 
-  strcpy(new->text, txt);
+  strcpy(new_block->text, txt);
 
-  new->next = nullptr;
+  new_block->next = nullptr;
 
   /* Q empty? */
   if (!queue->head) {
-    queue->head = queue->tail = new;
+    queue->head = queue->tail = new_block;
   } else {
-    queue->tail->next = new;
-    queue->tail = new;
+    queue->tail->next = new_block;
+    queue->tail = new_block;
   }
 }
 
@@ -840,7 +840,7 @@ int init_socket(int port) {
     perror("setsockopt LINGER");
     exit(1);
   }
-  if (bind(s, &sa, sizeof(sa)) < 0) {
+  if (bind(s, (struct sockaddr*)&sa, sizeof(sa)) < 0) {
     perror("bind");
     close(s);
     exit(1);
@@ -857,9 +857,9 @@ int new_connection(int s) {
   char buf[100];
 
   i = sizeof(isa);
-  getsockname(s, &isa, &i);
+  getsockname(s, (struct sockaddr*)&isa, (socklen_t*)&i);
 
-  if ((t = accept(s, &isa, &i)) < 0) {
+  if ((t = accept(s, (struct sockaddr*)&isa, (socklen_t*)&i)) < 0) {
     perror("Accept");
     return (-1);
   }
@@ -943,7 +943,7 @@ int new_descriptor(int s) {
 
   /* find info */
   size = sizeof(sock);
-  if (getpeername(desc, (struct sockaddr*)&sock, &size) < 0) {
+  if (getpeername(desc, (struct sockaddr*)&sock, (socklen_t*)&size) < 0) {
     perror("getpeername");
     *newd->host = '\0';
   } else {
@@ -1465,9 +1465,9 @@ void send_to_room_except_two(const char* messg, int room, struct char_data* ch1,
 
 void act(const char* str, int hide_invisible, struct char_data* ch,
   struct obj_data* obj, void* vict_obj, int type) {
-  register const char* strp;
-  register const char* i;
-  register char* point;
+  const char* strp;
+  const char* i;
+  char* point;
   struct char_data* to;
   struct char_data* tmp_victim;
   struct char_data* temp;

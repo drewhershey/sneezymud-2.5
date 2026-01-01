@@ -24,7 +24,7 @@ struct social_type {
 
 /* Shared helper functions - declared here, defined in spec_procs_common.c */
 void make_head(struct char_data* ch);
-int gain_level(struct char_data* ch, int class);
+int gain_level(struct char_data* ch, int char_class);
 
 int check_nomagic(struct char_data* ch, char* msg_ch, char* msg_rm);
 int num_charmed_followers_in_room(struct char_data* ch);

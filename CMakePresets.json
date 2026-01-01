@@ -21,8 +21,10 @@
       "inherits": "base",
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Debug",
-        "CMAKE_C_COMPILER": "clang",
-        "ENABLE_SANITIZERS": "ON"
+        "CMAKE_CXX_COMPILER": "clang++",
+        "SNEEZY_ENABLE_ASAN": "ON",
+        "SNEEZY_ENABLE_UBSAN": "ON",
+        "SNEEZY_ENABLE_LSAN": "ON"
       }
     },
     {
@@ -31,8 +33,10 @@
       "inherits": "base",
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Release",
-        "CMAKE_C_COMPILER": "clang",
-        "ENABLE_SANITIZERS": "ON"
+        "CMAKE_CXX_COMPILER": "clang++",
+        "SNEEZY_ENABLE_ASAN": "ON",
+        "SNEEZY_ENABLE_UBSAN": "ON",
+        "SNEEZY_ENABLE_LSAN": "ON"
       }
     },
     {
@@ -43,8 +47,10 @@
       "inherits": "base",
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Debug",
-        "CMAKE_C_COMPILER": "clang",
-        "ENABLE_SANITIZERS": "OFF"
+        "CMAKE_CXX_COMPILER": "clang++",
+        "SNEEZY_ENABLE_ASAN": "OFF",
+        "SNEEZY_ENABLE_UBSAN": "OFF",
+        "SNEEZY_ENABLE_LSAN": "OFF"
       }
     }
   ],

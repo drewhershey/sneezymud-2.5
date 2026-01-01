@@ -155,7 +155,7 @@ int exit_ok(struct room_direction_data* exit, struct room_data** rpp) {
 
 int ObjVnum(struct obj_data* o) {
   if (o->item_number >= 0) {
-    return (obj_index[o->item_number].virtual);
+    return (obj_index[o->item_number].vnum);
   }
   return (-1);
 }
@@ -659,7 +659,7 @@ void down_river(int pulse) {
   struct obj_data* obj_object;
   struct obj_data* next_obj;
   int rd;
-  int or;
+  int orig_room;
   char buf[80];
   struct room_data* rp;
 
@@ -698,9 +698,9 @@ void down_river(int pulse) {
                     }
                     sprintf(buf, "You drift %s...\n\r", dirs[rd]);
                     send_to_char(buf, ch);
-                    or = ch->in_room;
+                    orig_room = ch->in_room;
                     char_from_room(ch);
-                    char_to_room(ch, (real_roomp(or))->dir_option[rd]->to_room);
+                    char_to_room(ch, (real_roomp(orig_room))->dir_option[rd]->to_room);
                     do_look(ch, "\0", 15);
 
                     if (IS_SET(RM_FLAGS(ch->in_room), DEATH) &&
@@ -983,7 +983,7 @@ void CallForGuard(struct char_data* ch, struct char_data* vict, int lev,
   for (i = character_list; i && lev > 0; i = i->next) {
     if (IS_NPC(i) && (i != ch)) {
       if (!i->specials.fighting) {
-        if (mob_index[i->nr].virtual == type1) {
+        if (mob_index[i->nr].vnum == type1) {
           if (number(1, 6) == 1) {
             if (!IS_SET(i->specials.act, ACT_HUNTING)) {
               if (vict) {
@@ -992,7 +992,7 @@ void CallForGuard(struct char_data* ch, struct char_data* vict, int lev,
               }
             }
           }
-        } else if (mob_index[i->nr].virtual == type2) {
+        } else if (mob_index[i->nr].vnum == type2) {
           if (number(1, 6) == 1) {
             if (!IS_SET(i->specials.act, ACT_HUNTING)) {
               if (vict) {
@@ -1015,7 +1015,7 @@ void Teleport(int pulse) {
   struct obj_data* temp_obj;
   char buf[20];
   char* tmp_desc = nullptr;
-  int or;
+  int orig_room;
   struct room_data* rp;
   struct room_data* dest;
 
@@ -1056,7 +1056,7 @@ void Teleport(int pulse) {
           break; /* we've run out of NPCs */
         }
 
-        or = tmp->in_room;
+        orig_room = tmp->in_room;
         char_from_room(tmp); /* the list of people in the room has changed */
         char_to_room(tmp, rp->tele_targ);
         if (IS_SET(dest->room_flags, DEATH)) {
@@ -1077,7 +1077,7 @@ void Teleport(int pulse) {
           extract_char(tmp);
         }
       }
-      or = ch->in_room;
+      orig_room = ch->in_room;
       char_from_room(ch);
       char_to_room(ch, rp->tele_targ);
       if (rp->tele_look) {
@@ -1109,7 +1109,7 @@ int RecCompObjNum(struct obj_data* o, int obj_num) {
   int total = 0;
   struct obj_data* i;
 
-  if (obj_index[o->item_number].virtual == obj_num) {
+  if (obj_index[o->item_number].vnum == obj_num) {
     total = 1;
   }
 
@@ -1161,7 +1161,7 @@ int ObjLevelCheck(struct obj_data* obj, struct char_data* ch) {
 }
 
 /* static void check_mobile_activity(int pulse) {
-  register struct char_data* ch;
+  struct char_data* ch;
   int tick, tm;
 
   tm = pulse % PULSE_MOBILE;  // this is dependent on P_M = 3*P_T
@@ -1189,13 +1189,13 @@ void TeleportPulseStuff(int pulse) {
     Teleport(pulse);
     */
 
-  register struct char_data* ch;
+  struct char_data* ch;
   struct char_data* next;
   struct char_data* tmp;
   struct char_data* pers;
   int tick = 0;
   int tm;
-  int or;
+  int orig_room;
   struct room_data* rp;
   struct room_data* dest;
   struct obj_data* obj_object;
@@ -1250,7 +1250,7 @@ void TeleportPulseStuff(int pulse) {
             break; /* we've run out of NPCs */
           }
 
-          or = tmp->in_room;
+          orig_room = tmp->in_room;
           char_from_room(tmp); /* the list of people in the room has changed */
           char_to_room(tmp, rp->tele_targ);
           if (IS_SET(dest->room_flags, DEATH)) {
@@ -1271,11 +1271,11 @@ void TeleportPulseStuff(int pulse) {
             extract_char(tmp);
           }
         }
-        or = ch->in_room;
+        orig_room = ch->in_room;
         char_from_room(ch);
         char_to_room(ch, rp->tele_targ);
         tmp_desc =
-          find_ex_description("_tele_", real_roomp(or)->ex_description);
+          find_ex_description("_tele_", real_roomp(orig_room)->ex_description);
         if (tmp_desc) {
           page_string(ch->desc, tmp_desc, 1);
         }
@@ -1311,12 +1311,12 @@ void RiverPulseStuff(int pulse) {
     MakeSound();
     */
 
-  register struct char_data* ch;
+  struct char_data* ch;
   struct char_data* tmp;
-  register struct obj_data* obj_object;
+  struct obj_data* obj_object;
   struct obj_data* next_obj;
   int rd;
-  int or;
+  int orig_room;
   char buf[80];
   char buffer[100];
   struct room_data* rp;
@@ -1358,9 +1358,9 @@ void RiverPulseStuff(int pulse) {
                     }
                     sprintf(buf, "You drift %s...\n\r", dirs[rd]);
                     send_to_char(buf, ch);
-                    or = ch->in_room;
+                    orig_room = ch->in_room;
                     char_from_room(ch);
-                    char_to_room(ch, (real_roomp(or))->dir_option[rd]->to_room);
+                    char_to_room(ch, (real_roomp(orig_room))->dir_option[rd]->to_room);
                     do_look(ch, "\0", 15);
 
                     if (IS_SET(RM_FLAGS(ch->in_room), DEATH) &&
@@ -1502,35 +1502,9 @@ char* lower(char* s) {
   return (c);
 }
 
-char* strstr(const char* s1, const char* s2) {
-  char* cp;
-  int i;
-  int j = strlen(s1) - strlen(s2);
-  int k = strlen(s2);
+// Removed custom strstr - using standard library version
 
-  if (j < 0) {
-    return nullptr;
-  }
-  for (i = 0; i <= j && strncmp(s1++, s2, k) != 0; i++) {
-    ;
-  }
-  return (i > j) ? nullptr : (char*)(s1 - 1);
-}
-
-char* strcasestr(const char* s1, const char* s2) {
-  char* cp;
-  int i;
-  int j = strlen(s1) - strlen(s2);
-  int k = strlen(s2);
-
-  if (j < 0) {
-    return nullptr;
-  }
-  for (i = 0; i <= j && strncasecmp(s1++, s2, k) != 0; i++) {
-    ;
-  }
-  return (i > j) ? nullptr : (char*)(s1 - 1);
-}
+// Removed custom strcasestr - using POSIX version from glibc
 
 int GetApprox(int num, int perc) {
   /* perc = 0 - 100 */

@@ -96,7 +96,7 @@ int do_blackjack_enter(struct char_data* ch) {
     return 0;
   }
 
-  srand((time_info.hours * time_info.day) % (int)(ch));
+  srand((unsigned int)((time_info.hours * time_info.day) % (intptr_t)(ch)));
   send_to_char("You move up to the blackjack table.\n\r", ch);
   bj_data[inx].inuse = 1;
   strcpy(bj_data[inx].name, ch->player.name);

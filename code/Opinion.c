@@ -149,7 +149,7 @@ int AddHatred(struct char_data* ch, int parm_type, int parm) {
       if (!IS_SET(ch->hatefield, HATE_CLASS)) {
         SET_BIT(ch->hatefield, HATE_CLASS);
       }
-      ch->hates.class = parm;
+      ch->hates.char_class = parm;
       break;
     case OP_VNUM:
       if (!IS_SET(ch->hatefield, HATE_VNUM)) {
@@ -216,12 +216,12 @@ int Hates(struct char_data* ch, struct char_data* v) {
     }
   }
   if (IS_SET(ch->hatefield, HATE_CLASS)) {
-    if (HasClass(v, ch->hates.class)) {
+    if (HasClass(v, ch->hates.char_class)) {
       return 1;
     }
   }
   if (IS_SET(ch->hatefield, HATE_VNUM)) {
-    if (ch->hates.vnum == mob_index[v->nr].virtual) {
+    if (ch->hates.vnum == mob_index[v->nr].vnum) {
       return 1;
     }
   }
@@ -287,14 +287,14 @@ int Fears(struct char_data* ch, struct char_data* v) {
     }
   }
   if (IS_SET(ch->fearfield, FEAR_CLASS)) {
-    if (HasClass(v, ch->hates.class)) {
+    if (HasClass(v, ch->hates.char_class)) {
       return 1;
     }
   }
   if (IS_SET(ch->fearfield, FEAR_VNUM)) {
     sprintf(buf, "you fear %i \n\r", ch->fears.vnum);
     send_to_char(buf, ch);
-    if (ch->fears.vnum == mob_index[v->nr].virtual) {
+    if (ch->fears.vnum == mob_index[v->nr].vnum) {
       return 1;
     }
   }
@@ -415,7 +415,7 @@ int AddFears(struct char_data* ch, int parm_type, int parm) {
       if (!IS_SET(ch->fearfield, FEAR_CLASS)) {
         SET_BIT(ch->fearfield, FEAR_CLASS);
       }
-      ch->fears.class = parm;
+      ch->fears.char_class = parm;
       break;
     case OP_VNUM:
       if (!IS_SET(ch->fearfield, FEAR_VNUM)) {

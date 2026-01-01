@@ -639,7 +639,7 @@ static void wear(struct char_data* ch, struct obj_data* obj_object,
 
   if (!IS_IMMORTAL(ch)) {
     bit_mask = get_item_class_restrictions(obj_object);
-    if (is_restricted(bit_mask, ch->player.class) &&
+    if (is_restricted(bit_mask, ch->player.char_class) &&
         (!IS_NPC(ch) || IS_SET(ch->specials.act, ACT_POLYSELF))) {
       send_to_char("You are forbidden to do that.\n\r", ch);
       return;

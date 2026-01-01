@@ -50,10 +50,10 @@ void clear_char(struct char_data* ch);
 void clear_object(struct obj_data* obj);
 void reset_char(struct char_data* ch);
 void free_char(struct char_data* ch);
-[[nodiscard]] struct room_data* real_roomp(int virtual);
+[[nodiscard]] struct room_data* real_roomp(int vnum);
 [[nodiscard]] char* fread_string(FILE* fl);
-[[nodiscard]] int real_object(int virtual);
-[[nodiscard]] int real_mobile(int virtual);
+[[nodiscard]] int real_object(int vnum);
+[[nodiscard]] int real_mobile(int vnum);
 void boot_zones(void);
 [[nodiscard]] struct room_data* allocate_room(int room_number);
 void boot_world(void);
@@ -123,7 +123,7 @@ struct zone_data {
 
 /* element in monster and object index-tables   */
 struct index_data {
-    int virtual; /* virtual number of this mob/obj           */
+    int vnum; /* virtual number of this mob/obj           */
     long pos;    /* file position of this field              */
     int number;  /* number of existing units of this mob/obj	*/
     ProcFn func; /* special procedure for this mob/obj       */

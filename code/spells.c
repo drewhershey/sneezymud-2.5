@@ -1213,14 +1213,14 @@ static struct obj_data* find_component(struct char_data* ch, int vnum) {
     return nullptr;
   }
 
-  if (((item->item_number >= 0) ? obj_index[item->item_number].virtual : 0) ==
+  if (((item->item_number >= 0) ? obj_index[item->item_number].vnum : 0) ==
       vnum) {
     return item;
   }
 
   if (ITEM_TYPE(item) == ITEM_SPELLBAG) {
     for (item = item->contains; item; item = item->next_content) {
-      if (((item->item_number >= 0) ? obj_index[item->item_number].virtual
+      if (((item->item_number >= 0) ? obj_index[item->item_number].vnum
                                     : 0) == vnum) {
         return item;
       }
@@ -5875,7 +5875,7 @@ void cast_dragon_breath(signed char level, struct char_data* ch,
   struct affected_type af;
 
   for (scan = breath_potions;
-    scan->vnum && scan->vnum != obj_index[potion->item_number].virtual;
+    scan->vnum && scan->vnum != obj_index[potion->item_number].vnum;
     scan++) {
     ;
   }
@@ -5883,7 +5883,7 @@ void cast_dragon_breath(signed char level, struct char_data* ch,
     char buf[MAX_STRING_LENGTH];
     send_to_char("Hey, this potion isn't in my list!\n\r", ch);
     sprintf(buf, "unlisted breath potion %s %d", potion->short_description,
-      obj_index[potion->item_number].virtual);
+      obj_index[potion->item_number].vnum);
     vlog(buf);
     return;
   }
@@ -6439,7 +6439,7 @@ void spell_animate_dead(signed char level, struct char_data* ch,
   mob->player.sex = 0;
 
   GET_RACE(mob) = RACE_UNDEAD;
-  mob->player.class = ch->player.class;
+  mob->player.char_class = ch->player.char_class;
 
   /*
     get rid of corpse
@@ -7234,7 +7234,7 @@ void cast_cacaodemon(signed char level, struct char_data* ch, const char* arg,
     return;
   }
 
-  if (obj_index[ch->equipment[WIELD]->item_number].virtual != obj) {
+  if (obj_index[ch->equipment[WIELD]->item_number].vnum != obj) {
     send_to_char(" You must be wielding the correct item\n\r", ch);
     return;
   }

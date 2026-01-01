@@ -2,10 +2,10 @@
 
 struct char_data;
 
-int GetClassLevel(struct char_data* ch, int class);
-int CountBits(int class);
-int OnlyClass(struct char_data* ch, int class);
-int HasClass(struct char_data* ch, int class);
+int GetClassLevel(struct char_data* ch, int char_class);
+int CountBits(int char_class);
+int OnlyClass(struct char_data* ch, int char_class);
+int HasClass(struct char_data* ch, int char_class);
 int HowManyClasses(struct char_data* ch);
 int BestFightingClass(struct char_data* ch);
 int BestThiefClass(struct char_data* ch);

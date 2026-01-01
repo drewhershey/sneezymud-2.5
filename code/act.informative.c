@@ -1146,7 +1146,7 @@ static void read_book(struct char_data* ch, struct obj_data* o, char* arg) {
   act("With curious eyes, you begin to read $p...", 1, ch, o, 0, TO_CHAR);
   act("$n begins reading $p...", 1, ch, o, 0, TO_ROOM);
 
-  vnum = obj_index[o->item_number].virtual;
+  vnum = obj_index[o->item_number].vnum;
   /* in next sscanf, buf eats 'words' like 'sect', 'section', 'chapter'... */
   sscanf(arg, "%s %d of ", buf, &section);
   if (section) {
@@ -2151,8 +2151,8 @@ void do_where(struct char_data* ch, const char* argument, int cmd) {
   char name[MAX_INPUT_LENGTH];
   char buf[MAX_STRING_LENGTH];
   char* nameonly;
-  register struct char_data* i;
-  register struct obj_data* k;
+  struct char_data* i;
+  struct obj_data* k;
   struct descriptor_data* d;
   int number;
   int count;
@@ -2252,7 +2252,7 @@ void do_where(struct char_data* ch, const char* argument, int cmd) {
 
 void do_levels(struct char_data* ch, const char* argument, int cmd) {
   int i;
-  int class;
+  int char_class;
   char buf[MAX_STRING_LENGTH];
   char buf2[MAX_STRING_LENGTH];
   struct string_block sb;
@@ -2274,37 +2274,37 @@ void do_levels(struct char_data* ch, const char* argument, int cmd) {
   switch (*argument) {
     case 'C':
     case 'c':
-      class = CLERIC_LEVEL_IND;
+      char_class = CLERIC_LEVEL_IND;
       break;
     case 'F':
     case 'f':
     case 'W':
     case 'w':
-      class = WARRIOR_LEVEL_IND;
+      char_class = WARRIOR_LEVEL_IND;
       break;
     case 'M':
     case 'm':
-      class = MAGE_LEVEL_IND;
+      char_class = MAGE_LEVEL_IND;
       break;
     case 'T':
     case 't':
-      class = THIEF_LEVEL_IND;
+      char_class = THIEF_LEVEL_IND;
       break;
     case 'A':
     case 'a':
-      class = ANTIPALADIN_LEVEL_IND;
+      char_class = ANTIPALADIN_LEVEL_IND;
       break;
     case 'R':
     case 'r':
-      class = RANGER_LEVEL_IND;
+      char_class = RANGER_LEVEL_IND;
       break;
     case 'p':
     case 'P':
-      class = PALADIN_LEVEL_IND;
+      char_class = PALADIN_LEVEL_IND;
       break;
     case 'K':
     case 'k':
-      class = MONK_LEVEL_IND;
+      char_class = MONK_LEVEL_IND;
       break;
     default:
       sprintf(buf, "I don't recognize %s\n\r", argument);
@@ -2314,9 +2314,9 @@ void do_levels(struct char_data* ch, const char* argument, int cmd) {
   }
 
   for (i = 1; i <= 50; i++) {
-    sprintf(buf, "[%2d] %9d : %s\n\r", i, titles[class][i].exp,
-      (GET_SEX(ch) == SEX_FEMALE ? titles[class][i].title_f
-                                 : titles[class][i].title_m));
+    sprintf(buf, "[%2d] %9d : %s\n\r", i, titles[char_class][i].exp,
+      (GET_SEX(ch) == SEX_FEMALE ? titles[char_class][i].title_f
+                                 : titles[char_class][i].title_m));
     send_to_char(buf, ch);
   }
 }

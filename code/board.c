@@ -27,7 +27,7 @@ void InitBoards(void) {
 }
 
 void InitABoard(struct obj_data* obj) {
-  struct Board* new;
+  struct Board* new_board;
   struct Board* tmp;
   int i;
 
@@ -46,33 +46,33 @@ void InitABoard(struct obj_data* obj) {
     }
   }
 
-  new = (struct Board*)malloc(sizeof(*new));
-  if (!new) {
+  new_board = (struct Board*)malloc(sizeof(*new_board));
+  if (!new_board) {
     perror("InitABoard(malloc)");
     exit(0);
   }
 
   for (i = 0; i < MAX_MSGS; ++i) {
-    new->head[i] = nullptr;
+    new_board->head[i] = nullptr;
   }
   for (i = 0; i < MAX_MSGS; ++i) {
-    new->msgs[i] = nullptr;
+    new_board->msgs[i] = nullptr;
   }
 
-  new->msg_num = 0;
-  new->Rnum = obj->item_number;
+  new_board->msg_num = 0;
+  new_board->Rnum = obj->item_number;
 
-  sprintf(new->filename, "%d.messages", obj_index[obj->item_number].virtual);
+  sprintf(new_board->filename, "%d.messages", obj_index[obj->item_number].vnum);
 
-  board_load_board(new);
+  board_load_board(new_board);
 
   /*
-   **  add our new board to the beginning of the list
+   **  add our new_board board to the beginning of the list
    */
 
   tmp = board_list;
-  new->next = tmp;
-  board_list = new;
+  new_board->next = tmp;
+  board_list = new_board;
 }
 
 void OpenBoardFile(struct Board* b) {

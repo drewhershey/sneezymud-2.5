@@ -11,5 +11,5 @@ int move_gain(struct char_data* ch);
 void gain_condition(struct char_data* ch, int condition, int value);
 void ClassSpecificStuff(struct char_data* ch);
 void gain_exp(struct char_data* ch, int gain);
-void advance_level(struct char_data* ch, int class);
+void advance_level(struct char_data* ch, int char_class);
 void set_title(struct char_data* ch);

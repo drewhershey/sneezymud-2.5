@@ -43,8 +43,8 @@
 
 struct command_info cmd_info[MAX_CMD_LIST];
 
-char echo_on[] = {IAC, WONT, TELOPT_ECHO, '\r', '\n', '\0'};
-char echo_off[] = {IAC, WILL, TELOPT_ECHO, '\0'};
+unsigned char echo_on[] = {IAC, WONT, TELOPT_ECHO, '\r', '\n', '\0'};
+unsigned char echo_off[] = {IAC, WILL, TELOPT_ECHO, '\0'};
 int WizLock;
 int Silence = 0;
 int plr_tick_count = 0;
@@ -375,8 +375,8 @@ const char* const command[] = {
 };
 
 int search_block(const char* arg, const char* const* list, char exact) {
-  register int i;
-  register int l;
+  int i;
+  int l;
   char lower_arg[MAX_INPUT_LENGTH];
 
   /* Make into lower case, and get length of string */
@@ -721,8 +721,8 @@ void half_chop(const char* string, char* arg1, char* arg2) {
 }
 
 int special(struct char_data* ch, int cmd, const char* arg) {
-  register struct obj_data* i;
-  register struct char_data* k;
+  struct obj_data* i;
+  struct char_data* k;
   int j;
 
   if (ch->in_room == NOWHERE) {
@@ -1769,92 +1769,92 @@ void nanny(struct descriptor_data* d, char* arg) {
       for (; isspace(*arg); arg++) {
         ;
       }
-      d->character->player.class = 0;
+      d->character->player.char_class = 0;
       count = 0;
       oops = 0;
       switch (*arg) {
         case '1': {
-          d->character->player.class = CLASS_WARRIOR;
+          d->character->player.char_class = CLASS_WARRIOR;
           STATE(d) = CON_RMOTD;
         } break;
         case '2': {
-          d->character->player.class = CLASS_CLERIC;
+          d->character->player.char_class = CLASS_CLERIC;
           STATE(d) = CON_RMOTD;
         } break;
         case '3': {
-          d->character->player.class = CLASS_MAGIC_USER;
+          d->character->player.char_class = CLASS_MAGIC_USER;
           STATE(d) = CON_RMOTD;
         } break;
         case '4': {
-          d->character->player.class = CLASS_THIEF;
+          d->character->player.char_class = CLASS_THIEF;
           STATE(d) = CON_RMOTD;
         } break;
         case '5': {
-          d->character->player.class = CLASS_WARRIOR + CLASS_THIEF;
+          d->character->player.char_class = CLASS_WARRIOR + CLASS_THIEF;
           STATE(d) = CON_RMOTD;
         } break;
         case '6': {
-          d->character->player.class = CLASS_WARRIOR + CLASS_CLERIC;
+          d->character->player.char_class = CLASS_WARRIOR + CLASS_CLERIC;
           STATE(d) = CON_RMOTD;
         } break;
         case '7': {
-          d->character->player.class = CLASS_MAGIC_USER + CLASS_THIEF;
+          d->character->player.char_class = CLASS_MAGIC_USER + CLASS_THIEF;
           STATE(d) = CON_RMOTD;
         } break;
         case '8': {
-          d->character->player.class = CLASS_MAGIC_USER + CLASS_WARRIOR;
+          d->character->player.char_class = CLASS_MAGIC_USER + CLASS_WARRIOR;
           STATE(d) = CON_RMOTD;
         } break;
         case '9': {
-          d->character->player.class = CLASS_CLERIC + CLASS_THIEF;
+          d->character->player.char_class = CLASS_CLERIC + CLASS_THIEF;
           STATE(d) = CON_RMOTD;
         } break;
         case 'a':
         case 'A': {
-          d->character->player.class = CLASS_ANTIPALADIN;
+          d->character->player.char_class = CLASS_ANTIPALADIN;
           STATE(d) = CON_RMOTD;
         } break;
         case 'b':
         case 'B': {
-          d->character->player.class = CLASS_PALADIN;
+          d->character->player.char_class = CLASS_PALADIN;
           STATE(d) = CON_RMOTD;
         } break;
         case 'c':
         case 'C': {
-          d->character->player.class = CLASS_MONK;
+          d->character->player.char_class = CLASS_MONK;
           STATE(d) = CON_RMOTD;
         } break;
         case 'd':
         case 'D': {
-          d->character->player.class = CLASS_RANGER;
+          d->character->player.char_class = CLASS_RANGER;
           STATE(d) = CON_RMOTD;
         } break;
         case 'e':
         case 'E': {
-          d->character->player.class = CLASS_MAGIC_USER + CLASS_CLERIC;
+          d->character->player.char_class = CLASS_MAGIC_USER + CLASS_CLERIC;
           STATE(d) = CON_RMOTD;
         } break;
         case 'f':
         case 'F': {
-          d->character->player.class =
+          d->character->player.char_class =
             CLASS_WARRIOR + CLASS_THIEF + CLASS_CLERIC;
           STATE(d) = CON_RMOTD;
         } break;
         case 'g':
         case 'G': {
-          d->character->player.class =
+          d->character->player.char_class =
             CLASS_MAGIC_USER + CLASS_CLERIC + CLASS_THIEF;
           STATE(d) = CON_RMOTD;
         } break;
         case 'h':
         case 'H': {
-          d->character->player.class =
+          d->character->player.char_class =
             CLASS_MAGIC_USER + CLASS_CLERIC + CLASS_WARRIOR;
           STATE(d) = CON_RMOTD;
         } break;
         case 'i':
         case 'I': {
-          d->character->player.class =
+          d->character->player.char_class =
             CLASS_MAGIC_USER + CLASS_THIEF + CLASS_WARRIOR;
           STATE(d) = CON_RMOTD;
         } break;

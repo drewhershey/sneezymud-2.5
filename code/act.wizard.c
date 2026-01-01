@@ -330,7 +330,7 @@ static FILE* make_zone_file(struct char_data* c) {
 
 static int mob_vnum(struct char_data* c) {
   if (IS_NPC(c)) {
-    return (mob_index[c->nr].virtual);
+    return (mob_index[c->nr].vnum);
   }
   return (0);
 }
@@ -705,7 +705,7 @@ static void room_load(struct char_data* ch, int start, int end) {
       }
 
       if ((rp = real_roomp(vnum)) == 0) { /* empty room */
-        rp = malloc(sizeof(struct room_data));
+        rp = (struct room_data*)malloc(sizeof(struct room_data));
         memset(rp, 0, sizeof(struct room_data));
         room_enter(room_db, vnum, rp);
         send_to_char("+", ch);
@@ -1305,7 +1305,7 @@ void do_stat(struct char_data* ch, const char* argument, int cmd) {
   struct extra_descr_data* desc;
   struct follow_type* fol;
   int i;
-  int virtual;
+  int obj_vnum;
   int i2;
   int count;
   char found;
@@ -1426,7 +1426,7 @@ void do_stat(struct char_data* ch, const char* argument, int cmd) {
     strcat(buf, buf2);
     send_to_char(buf, ch);
     if (IS_MOB(k)) {
-      sprintf(buf, "V-Number [%d]\n\r", mob_index[k->nr].virtual);
+      sprintf(buf, "V-Number [%d]\n\r", mob_index[k->nr].vnum);
       send_to_char(buf, ch);
     }
 
@@ -1452,13 +1452,13 @@ void do_stat(struct char_data* ch, const char* argument, int cmd) {
       static const char* const npc_class_types[] = {"Normal", "Undead", "\n"};
 
       strcpy(buf, "Monster Class: ");
-      sprinttype(k->player.class, npc_class_types, buf2);
+      sprinttype(k->player.char_class, npc_class_types, buf2);
     } else {
       static const char* const pc_class_types[] = {"Magic User", "Cleric",
         "Warrior", "Thief", "Antipaladin", "Paladin", "Monk", "Ranger", "\n"};
 
       strcpy(buf, "Class: ");
-      sprintbit(k->player.class, pc_class_types, buf2);
+      sprintbit(k->player.char_class, pc_class_types, buf2);
     }
     strcat(buf, buf2);
 
@@ -1635,7 +1635,7 @@ void do_stat(struct char_data* ch, const char* argument, int cmd) {
     send_to_char("Race: ", ch);
     sprinttype((k->race), RaceName, buf2);
     send_to_char(buf2, ch);
-    sprintf(buf, "  Action pointer: %d\n\r", (int)k->act_ptr);
+    sprintf(buf, "  Action pointer: %p\n\r", (void*)k->act_ptr);
     send_to_char(buf, ch);
 
     if (IS_SET(k->specials.act, PLR_ANSI)) {
@@ -1679,10 +1679,10 @@ void do_stat(struct char_data* ch, const char* argument, int cmd) {
   }
   /* stat on object */
   if ((j = get_obj_vis_world(ch, arg1, &count))) {
-    virtual = (j->item_number >= 0) ? obj_index[j->item_number].virtual : 0;
+    obj_vnum = (j->item_number >= 0) ? obj_index[j->item_number].vnum : 0;
     sprintf(buf,
       "Object name: [%s], R-number: [%d], V-number: [%d] Item type: ", j->name,
-      j->item_number, virtual);
+      j->item_number, obj_vnum);
     sprinttype(GET_ITEM_TYPE(j), item_types, buf2);
     strcat(buf, buf2);
     strcat(buf, "\n\r");
@@ -1933,7 +1933,7 @@ void do_set(struct char_data* ch, const char* argument, int cmd) {
     /*
     ** this will do almost nothing. (hopefully);
     */
-    mob->player.class = parm;
+    mob->player.char_class = parm;
   } else if (!strcmp(field, "exp")) {
     sscanf(parmstr, "%d", &parm);
     GET_EXP(mob) = parm;
@@ -2375,7 +2375,7 @@ void do_load(struct char_data* ch, const char* argument, int cmd) {
     }
 
     if (GetMaxLevel(ch) < BRUTIUS) {
-      switch (obj_index[number].virtual) {
+      switch (obj_index[number].vnum) {
         case 5021:
           send_to_char(
             "no.  No more bows!  And don't kill the worm either!\n\r", ch);
@@ -2601,7 +2601,7 @@ void do_purge(struct char_data* ch, const char* argument, int cmd) {
       argument = one_argument(argument, name);
       if (0 == str_cmp("room", name)) {
         int range[2];
-        register int i;
+        int i;
         struct room_data* rp;
         if (GetMaxLevel(ch) < IMPLEMENTOR) {
           send_to_char("I'm sorry, Dave.  I can't let you do that.\n\r", ch);
@@ -2792,28 +2792,28 @@ void do_reroll(struct char_data* ch, const char* argument, int cmd) {
 }
 
 static void start_levels(struct char_data* ch) {
-  if (IS_SET(ch->player.class, CLASS_MAGIC_USER)) {
+  if (IS_SET(ch->player.char_class, CLASS_MAGIC_USER)) {
     advance_level(ch, MAGE_LEVEL_IND);
   }
-  if (IS_SET(ch->player.class, CLASS_CLERIC)) {
+  if (IS_SET(ch->player.char_class, CLASS_CLERIC)) {
     advance_level(ch, CLERIC_LEVEL_IND);
   }
-  if (IS_SET(ch->player.class, CLASS_WARRIOR)) {
+  if (IS_SET(ch->player.char_class, CLASS_WARRIOR)) {
     advance_level(ch, WARRIOR_LEVEL_IND);
   }
-  if (IS_SET(ch->player.class, CLASS_THIEF)) {
+  if (IS_SET(ch->player.char_class, CLASS_THIEF)) {
     advance_level(ch, THIEF_LEVEL_IND);
   }
-  if (IS_SET(ch->player.class, CLASS_ANTIPALADIN)) {
+  if (IS_SET(ch->player.char_class, CLASS_ANTIPALADIN)) {
     advance_level(ch, ANTIPALADIN_LEVEL_IND);
   }
-  if (IS_SET(ch->player.class, CLASS_RANGER)) {
+  if (IS_SET(ch->player.char_class, CLASS_RANGER)) {
     advance_level(ch, RANGER_LEVEL_IND);
   }
-  if (IS_SET(ch->player.class, CLASS_MONK)) {
+  if (IS_SET(ch->player.char_class, CLASS_MONK)) {
     advance_level(ch, MONK_LEVEL_IND);
   }
-  if (IS_SET(ch->player.class, CLASS_PALADIN)) {
+  if (IS_SET(ch->player.char_class, CLASS_PALADIN)) {
     advance_level(ch, PALADIN_LEVEL_IND);
   }
 }
@@ -2859,7 +2859,7 @@ void do_start(struct char_data* ch) {
     obj_to_char(obj, ch); /*radio*/
   }
 
-  if (IS_SET(ch->player.class, CLASS_THIEF)) {
+  if (IS_SET(ch->player.char_class, CLASS_THIEF)) {
     ch->skills[SKILL_DETECT_SECRET].learned = 5;
     ch->skills[SKILL_SNEAK].learned = 10;
     ch->skills[SKILL_HIDE].learned = 5;
@@ -2868,10 +2868,10 @@ void do_start(struct char_data* ch) {
     ch->skills[SKILL_PICK_LOCK].learned = 10;
   }
 
-  if (IS_SET(ch->player.class, CLASS_ANTIPALADIN)) {
+  if (IS_SET(ch->player.char_class, CLASS_ANTIPALADIN)) {
     GET_ALIGNMENT(ch) = -1000;
   }
-  if (IS_SET(ch->player.class, CLASS_PALADIN)) {
+  if (IS_SET(ch->player.char_class, CLASS_PALADIN)) {
     GET_ALIGNMENT(ch) = 1000;
   }
 
@@ -2888,7 +2888,7 @@ void do_start(struct char_data* ch) {
   ch->player.time.logon = time(0);
 }
 
-static void gain_exp_regardless(struct char_data* ch, int gain, int class) {
+static void gain_exp_regardless(struct char_data* ch, int gain, int char_class) {
   int i;
   char is_altered = 0;
 
@@ -2897,12 +2897,12 @@ static void gain_exp_regardless(struct char_data* ch, int gain, int class) {
     if (gain > 0) {
       GET_EXP(ch) += gain;
 
-      for (i = 0; (i < ABS_MAX_LVL) && (titles[class][i].exp <= GET_EXP(ch));
+      for (i = 0; (i < ABS_MAX_LVL) && (titles[char_class][i].exp <= GET_EXP(ch));
         i++) {
-        if (i > GET_LEVEL(ch, class)) {
+        if (i > GET_LEVEL(ch, char_class)) {
           send_to_char("You raise a level\n\r", ch);
-          GET_LEVEL(ch, class) = i;
-          advance_level(ch, class);
+          GET_LEVEL(ch, char_class) = i;
+          advance_level(ch, char_class);
           is_altered = 1;
         }
       }
@@ -2923,7 +2923,7 @@ void do_advance(struct char_data* ch, const char* argument, int cmd) {
   struct char_data* victim;
   char name[100];
   char level[100];
-  char class[100];
+  char char_class_arg[100];
   int adv;
   int newlevel;
   int lin_class;
@@ -2949,14 +2949,14 @@ void do_advance(struct char_data* ch, const char* argument, int cmd) {
     return;
   }
 
-  argument = one_argument(argument, class);
+  argument = one_argument(argument, char_class_arg);
 
-  if (!*class) {
+  if (!*char_class_arg) {
     send_to_char("Supply a class: M C W T\n\r", ch);
     return;
   }
 
-  switch (*class) {
+  switch (*char_class_arg) {
     case 'M':
     case 'm':
       lin_class = MAGE_LEVEL_IND;
@@ -3300,7 +3300,7 @@ static void show_room_zone(int rnum, struct room_data* rp, void* data) {
 
 static void room_iterate(struct room_data* rb[],
   void (*func)(int, struct room_data*, void*), void* cdata) {
-  register int i;
+  int i;
   for (i = 0; i < WORLD_SIZE; i++) {
     struct room_data* temp;
 
@@ -3385,12 +3385,12 @@ void do_show(struct char_data* ch, const char* argument, int cmd) {
     for (objn = 0; objn <= topi; objn++) {
       oi = which_i + objn;
 
-      if ((zone >= 0 && (oi->virtual < bottom || oi->virtual > top)) ||
+      if ((zone >= 0 && (oi->vnum < bottom || oi->vnum > top)) ||
           (zone < 0 && !isname(zonenum, oi->name))) {
         continue; /* optimize later*/
       }
 
-      sprintf(buf, "%5d %4d %3d  %s\n\r", oi->virtual, objn, oi->number,
+      sprintf(buf, "%5d %4d %3d  %s\n\r", oi->vnum, objn, oi->number,
         oi->name);
       append_to_string_block(&sb, buf);
     }

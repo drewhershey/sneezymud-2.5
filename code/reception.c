@@ -197,7 +197,7 @@ static void put_obj_in_store(struct obj_data* obj, struct obj_file_u* st) {
 
   oe = st->objects + st->number;
 
-  oe->item_number = obj_index[obj->item_number].virtual;
+  oe->item_number = obj_index[obj->item_number].vnum;
   oe->value[0] = obj->obj_flags.value[0];
   oe->value[1] = obj->obj_flags.value[1];
   oe->value[2] = obj->obj_flags.value[2];
@@ -217,7 +217,7 @@ static void put_obj_in_store(struct obj_data* obj, struct obj_file_u* st) {
   if (obj->name) {
     strcpy(oe->name, obj->name);
   } else {
-    sprintf(buf, "object %d has no name!", obj_index[obj->item_number].virtual);
+    sprintf(buf, "object %d has no name!", obj_index[obj->item_number].vnum);
     vlog(buf);
   }
 
@@ -254,15 +254,15 @@ static int contained_weight(struct obj_data* container) {
 
 /* Destroy inventory after transferring it to "store inventory" */
 void obj_to_store(struct obj_data* obj, struct obj_file_u* st,
-  struct char_data* ch, int delete) {
+  struct char_data* ch, int do_delete) {
   static char buf[240];
 
   if (!obj) {
     return;
   }
 
-  obj_to_store(obj->contains, st, ch, delete);
-  obj_to_store(obj->next_content, st, ch, delete);
+  obj_to_store(obj->contains, st, ch, do_delete);
+  obj_to_store(obj->next_content, st, ch, do_delete);
 
   if ((obj->obj_flags.timer < 0) && (obj->obj_flags.timer != OBJ_NOTIMER)) {
 #if NODUPLICATES
@@ -280,14 +280,14 @@ void obj_to_store(struct obj_data* obj, struct obj_file_u* st,
       obj->short_description);
     send_to_char(buf, ch);
 #endif
-    if (delete) {
+    if (do_delete) {
       if (obj->in_obj) {
         obj_from_obj(obj);
       }
       extract_obj(obj);
     }
   } else if (obj->item_number == -1) {
-    if (delete) {
+    if (do_delete) {
       if (obj->in_obj) {
         obj_from_obj(obj);
       }
@@ -298,7 +298,7 @@ void obj_to_store(struct obj_data* obj, struct obj_file_u* st,
     GET_OBJ_WEIGHT(obj) -= weight;
     put_obj_in_store(obj, st);
     GET_OBJ_WEIGHT(obj) += weight;
-    if (delete) {
+    if (do_delete) {
       if (obj->in_obj) {
         obj_from_obj(obj);
       }
@@ -308,7 +308,7 @@ void obj_to_store(struct obj_data* obj, struct obj_file_u* st,
 }
 
 /* write the vital data of a player to the player file */
-void save_obj(struct char_data* ch, struct obj_cost* cost, int delete) {
+void save_obj(struct char_data* ch, struct obj_cost* cost, int do_delete) {
   static struct obj_file_u st;
   FILE* fl;
   int pos;
@@ -324,16 +324,16 @@ void save_obj(struct char_data* ch, struct obj_cost* cost, int delete) {
 
   for (i = 0; i < MAX_WEAR; i++) {
     if (ch->equipment[i]) {
-      if (delete) {
-        obj_to_store(unequip_char(ch, i), &st, ch, delete);
+      if (do_delete) {
+        obj_to_store(unequip_char(ch, i), &st, ch, do_delete);
       } else {
-        obj_to_store(ch->equipment[i], &st, ch, delete);
+        obj_to_store(ch->equipment[i], &st, ch, do_delete);
       }
     }
   }
 
-  obj_to_store(ch->carrying, &st, ch, delete);
-  if (delete) {
+  obj_to_store(ch->carrying, &st, ch, do_delete);
+  if (do_delete) {
     ch->carrying = 0;
   }
 

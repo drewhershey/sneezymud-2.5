@@ -243,11 +243,11 @@ void do_track(struct char_data* ch, const char* argument, int cmd) {
     dist = (unsigned char)(ch->skills[SKILL_HUNT].learned);
   }
 
-  if (IS_SET(ch->player.class, CLASS_THIEF)) {
+  if (IS_SET(ch->player.char_class, CLASS_THIEF)) {
     dist *= 3;
-  } else if (IS_SET(ch->player.class, CLASS_WARRIOR)) {
+  } else if (IS_SET(ch->player.char_class, CLASS_WARRIOR)) {
     dist *= 2;
-  } else if (IS_SET(ch->player.class, CLASS_MAGIC_USER)) {
+  } else if (IS_SET(ch->player.char_class, CLASS_MAGIC_USER)) {
     dist += GET_LEVEL(ch, MAGE_LEVEL_IND);
   }
 
@@ -522,7 +522,7 @@ int find_path(int in_room, const struct find_path_data* data, int depth,
 
               /* ancestor for first layer is the direction */
               hash_enter(&x_room, tmp_room,
-                ((int)hash_find(&x_room, q_head->room_nr) == -1)
+                ((intptr_t)hash_find(&x_room, q_head->room_nr) == -1)
                   ? (void*)(i + 1)
                   : hash_find(&x_room, q_head->room_nr));
             }
@@ -534,7 +534,7 @@ int find_path(int in_room, const struct find_path_data* data, int depth,
               free(q_head);
             }
             /* return direction if first layer */
-            if ((int)hash_find(&x_room, tmp_room) == -1) {
+            if ((intptr_t)hash_find(&x_room, tmp_room) == -1) {
               if (x_room.buckets) { /* junk left over from a previous track */
                 destroy_hash_table(&x_room, donothing);
               }
@@ -542,7 +542,7 @@ int find_path(int in_room, const struct find_path_data* data, int depth,
             } /* else return the ancestor */
             int i;
 
-            i = (int)hash_find(&x_room, tmp_room);
+            i = (intptr_t)hash_find(&x_room, tmp_room);
             if (x_room.buckets) { /* junk left over from a previous track */
               destroy_hash_table(&x_room, donothing);
             }

@@ -9,13 +9,3 @@ InlayHints:
   Enabled: Yes
   ParameterNames: Yes
   DeducedTypes: Yes
----
-If:
-  PathMatch: .*\.h
-CompileFlags:
-  Add: [-xc-header]
----
-If:
-  PathMatch: .*\.c
-CompileFlags:
-  Add: [-xc]

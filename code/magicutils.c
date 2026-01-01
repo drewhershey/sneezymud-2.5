@@ -56,7 +56,7 @@ void SwitchStuff(struct char_data* giver, struct char_data* taker) {
    */
 
   if (IS_NPC(taker)) {
-    taker->player.class = giver->player.class;
+    taker->player.char_class = giver->player.char_class;
     if (!taker->skills) {
       SpaceForSkills(taker);
     }

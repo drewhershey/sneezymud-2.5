@@ -1,36 +1,43 @@
-# .clang-tidy - clang-tidy configuration for SneezyMUD 2.5 (C23)
+# .clang-tidy - clang-tidy configuration for SneezyMUD 2.5 (C++20)
 # Run with: python3 scripts/analyze.py run
 #
-# Comprehensive C23 checks for legacy codebase refactoring.
-# This is intentionally strict - use it to ensure touched code follows modern best practices.
-# Legacy code will have **many** warnings; fix them incrementally as you work on each file.
+# This is a C codebase compiled as C++20. The checks are tuned to catch real bugs
+# while avoiding excessive noise from C-style patterns that work fine in C++.
 #
-# Requires: clang-tidy 17+ for misc-include-cleaner (Ubuntu 24.04 LTS provides 19 by default)
+# Requires: clang-tidy 17+ for misc-include-cleaner
 #
 # Disabled check explanations:
 #   - Platform/library-specific: abseil, altera, android, boost, darwin, fuchsia, linuxkernel, llvmlibc, mpi, objc, openmp, zircon
-#   - C++ only (not applicable to C): cppcoreguidelines-*, modernize-*, hicpp-*, (most are C++ specific)
-#   - Style preferences: llvm-* (LLVM-specific naming conventions)
-#   - Too noisy for legacy code:
+#   - Style preferences: llvm-* (LLVM-specific), google-* (Google style)
+#   - Would require major refactoring:
+#       cert-err58-cpp (static init order),
+#       cppcoreguidelines-avoid-non-const-global-variables (globals everywhere),
+#       cppcoreguidelines-non-private-member-variables-in-classes (C structs),
+#       misc-non-private-member-variables-in-classes (same)
+#   - Too noisy for legacy C code compiled as C++:
 #       bugprone-easily-swappable-parameters (many false positives in C APIs),
+#       cppcoreguidelines-pro-type-reinterpret-cast (C-style pointer manipulation),
+#       cppcoreguidelines-pro-type-cstyle-cast (C casts everywhere),
+#       cppcoreguidelines-pro-bounds-pointer-arithmetic (idiomatic in C),
+#       cppcoreguidelines-pro-bounds-array-to-pointer-decay (C arrays),
+#       cppcoreguidelines-avoid-c-arrays (this IS a C codebase),
+#       cppcoreguidelines-avoid-magic-numbers (same as readability-magic-numbers),
+#       cppcoreguidelines-owning-memory (no gsl:: in this project),
+#       cppcoreguidelines-no-malloc (intentionally using malloc),
+#       hicpp-* (mostly duplicates cppcoreguidelines, plus hicpp-signed-bitwise is noisy),
+#       modernize-* (would rewrite entire codebase),
 #       readability-function-cognitive-complexity (legacy code has complex functions),
-#       readability-identifier-length (short names like 'i', 'ch' are idiomatic in C),
+#       readability-identifier-length (short names like 'i', 'ch' are idiomatic),
 #       readability-magic-numbers (would flag nearly every number literal),
-#       misc-no-recursion (recursion is used intentionally in some places)
+#       readability-implicit-bool-conversion (C-style boolean usage),
+#       readability-named-parameter (unnamed params common in C),
+#       misc-no-recursion (recursion is used intentionally)
 #   - Security/randomness (intentionally relaxed for game):
-#       cert-msc30-c (warns about rand() - acceptable for non-crypto game RNG),
-#       cert-msc32-c (warns about rand() seeding - acceptable for game)
+#       cert-msc30-c, cert-msc32-c, cert-msc50-cpp, cert-msc51-cpp (rand() acceptable for game RNG)
 #   - Concurrency (no threading in this codebase): concurrency-*
-#
-# C23 Modernization Opportunities:
-#   - Replace NULL with nullptr
-#   - Use [[fallthrough]], [[nodiscard]], [[maybe_unused]] attributes
-#   - Replace _Bool with bool keyword
-#   - Use constexpr for compile-time constants
-#   - Use binary literals (0b) for bit flags
+#   - C++23 only: modernize-use-std-print
 
 ---
-# Ensure we see bugs in all project files
 HeaderFilterRegex: 'code/.*'
 
 Checks: >
@@ -42,10 +49,12 @@ Checks: >
   -android-*,
   -boost-*,
   -bugprone-easily-swappable-parameters,
+  -cert-err58-cpp,
   -cert-msc30-c,
   -cert-msc32-c,
+  -cert-msc50-cpp,
+  -cert-msc51-cpp,
   -concurrency-*,
-  -cppcoreguidelines-*,
   -darwin-*,
   -fuchsia-*,
   -google-*,
@@ -56,36 +65,15 @@ Checks: >
   -llvm-namespace-comment,
   -llvmlibc-*,
   -misc-no-recursion,
-  -modernize-*,
+  -modernize-use-trailing-return-type,
   -mpi-*,
   -objc-*,
   -openmp-*,
-  -readability-avoid-nested-conditional-operator,
-  -readability-function-cognitive-complexity,
-  -readability-function-size,
   -readability-identifier-length,
-  -readability-magic-numbers,
+  -readability-named-parameter,
   -zircon-*,
 
 CheckOptions:
-  # Naming Conventions (match existing C codebase patterns)
-  # - key: readability-identifier-naming.FunctionCase
-  #   value: lower_case
-  # - key: readability-identifier-naming.VariableCase
-  #   value: lower_case
-  # - key: readability-identifier-naming.ParameterCase
-  #   value: lower_case
-  # - key: readability-identifier-naming.MacroDefinitionCase
-  #   value: UPPER_CASE
-  # - key: readability-identifier-naming.EnumConstantCase
-  #   value: UPPER_CASE
-  # - key: readability-identifier-naming.GlobalConstantCase
-  #   value: UPPER_CASE
-  # - key: readability-identifier-naming.StaticConstantCase
-  #   value: UPPER_CASE
-  # - key: readability-identifier-naming.StructCase
-  #   value: lower_case
-
   # Allow short names for loop variables and common idioms
   - key: readability-identifier-length.MinimumVariableNameLength
     value: 1
@@ -98,24 +86,38 @@ CheckOptions:
   - key: readability-function-size.LineThreshold
     value: 500
 
+  # Performance check configuration
+  - key: performance-for-range-copy.WarnOnAllAutoCopies
+    value: true
+  - key: performance-inefficient-string-concatenation.StrictMode
+    value: true
+
 # Production-critical checks surfaced as errors in IDE
-# These are also the checks CodeChecker will run via clang-tidy analyzer for CI blocking
 # Criteria: issues likely to cause crashes, memory/data corruption, or invalid game state
-#
-# Note: Many C++-specific checks from the original list are removed (exception-escape,
-# dangling-handle, string-constructor, use-after-move, virtual-near-miss, etc.)
 WarningsAsErrors: >
   bugprone-assert-side-effect,
   bugprone-bool-pointer-implicit-conversion,
+  bugprone-dangling-handle,
+  bugprone-exception-escape,
+  bugprone-inaccurate-erase,
   bugprone-infinite-loop,
   bugprone-integer-division,
   bugprone-misplaced-widening-cast,
   bugprone-multi-level-implicit-pointer-conversion,
   bugprone-not-null-terminated-result,
+  bugprone-parent-virtual-call,
   bugprone-signal-handler,
+  bugprone-signed-char-misuse,
   bugprone-sizeof-expression,
+  bugprone-string-constructor,
   bugprone-suspicious-memset-usage,
   bugprone-suspicious-semicolon,
   bugprone-suspicious-string-compare,
   bugprone-swapped-arguments,
-  bugprone-undefined-memory-manipulation
+  bugprone-throw-keyword-missing,
+  bugprone-undelegated-constructor,
+  bugprone-undefined-memory-manipulation,
+  bugprone-unhandled-self-assignment,
+  bugprone-unused-raii,
+  bugprone-use-after-move,
+  bugprone-virtual-near-miss

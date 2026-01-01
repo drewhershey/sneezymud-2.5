@@ -85,7 +85,7 @@ static void print_limited_items(void) {
 
   for (i = 0; i <= top_of_objt; i++) {
     if (obj_index[i].number > 0) {
-      sprintf(buf, "item> %d [%d]", obj_index[i].virtual, obj_index[i].number);
+      sprintf(buf, "item> %d [%d]", obj_index[i].vnum, obj_index[i].number);
       vlog(buf);
     }
   }
@@ -383,13 +383,13 @@ struct index_data* generate_indices(FILE* fl, int* top) {
           }
           bc += 50;
         }
-        sscanf(buf, "#%d", &index[i].virtual);
+        sscanf(buf, "#%d", &index[i].vnum);
         index[i].pos = ftell(fl);
         index[i].number = 0;
         index[i].func.mob_f = nullptr;
         index[i].func.obj_f = nullptr;
         index[i].func.room_f = nullptr;
-        index[i].name = (index[i].virtual < 99999) ? fread_string(fl) : "omega";
+        index[i].name = (index[i].vnum < 99999) ? fread_string(fl) : "omega";
         i++;
       } else {
         if (*buf == '$') { /* EOF */
@@ -893,7 +893,7 @@ struct char_data* read_mobile(int nr, int type) {
   fscanf(mob_f, " %ld ", &mob->specials.affected_by);
   fscanf(mob_f, " %d ", &mob->specials.alignment);
 
-  mob->player.class = CLASS_WARRIOR;
+  mob->player.char_class = CLASS_WARRIOR;
 
   char letter = '\0';
   fscanf(mob_f, " %c ", &letter);
@@ -963,7 +963,7 @@ struct char_data* read_mobile(int nr, int type) {
 
     if (fscanf(mob_f, " %hhd ", &position) != 1 ||
         fscanf(mob_f, " %hhd ", &default_pos) != 1) {
-      vlogf("Error reading positions for mob %d", mob_index[nr].virtual);
+      vlogf("Error reading positions for mob %d", mob_index[nr].vnum);
       // Set safe defaults
       position = POSITION_STANDING;
       default_pos = POSITION_STANDING;
@@ -971,7 +971,7 @@ struct char_data* read_mobile(int nr, int type) {
 
     if (!is_valid_position(position) || !is_valid_position(default_pos)) {
       vlogf("Invalid positions %d/%d for mob %d - correcting to STANDING",
-        position, default_pos, mob_index[nr].virtual);
+        position, default_pos, mob_index[nr].vnum);
       position = POSITION_STANDING;
       default_pos = POSITION_STANDING;
     }
@@ -1001,7 +1001,7 @@ struct char_data* read_mobile(int nr, int type) {
 
     fscanf(mob_f, "\n");
 
-    mob->player.class = 0;
+    mob->player.char_class = 0;
 
     mob->player.time.birth = time(0);
     mob->player.time.played = 0;
@@ -1093,7 +1093,7 @@ struct char_data* read_mobile(int nr, int type) {
 
     if (fscanf(mob_f, " %hhd ", &position) != 1 ||
         fscanf(mob_f, " %hhd ", &default_pos) != 1) {
-      vlogf("Error reading positions for mob %d", mob_index[nr].virtual);
+      vlogf("Error reading positions for mob %d", mob_index[nr].vnum);
       // Set safe defaults
       position = POSITION_STANDING;
       default_pos = POSITION_STANDING;
@@ -1101,7 +1101,7 @@ struct char_data* read_mobile(int nr, int type) {
 
     if (!is_valid_position(position) || !is_valid_position(default_pos)) {
       vlogf("Invalid positions %d/%d for mob %d - correcting to STANDING",
-        position, default_pos, mob_index[nr].virtual);
+        position, default_pos, mob_index[nr].vnum);
       position = POSITION_STANDING;
       default_pos = POSITION_STANDING;
     }
@@ -1128,7 +1128,7 @@ struct char_data* read_mobile(int nr, int type) {
       mob->player.distant_snds = nullptr;
     }
 
-    mob->player.class = 0;
+    mob->player.char_class = 0;
     mob->player.time.birth = time(0);
     mob->player.time.played = 0;
     mob->player.time.logon = time(0);
@@ -1178,14 +1178,14 @@ struct char_data* read_mobile(int nr, int type) {
 
     if (fscanf(mob_f, " %hhd ", &position) != 1 ||
         fscanf(mob_f, " %hhd ", &default_pos) != 1) {
-      vlogf("Error reading positions for mob %d", mob_index[nr].virtual);
+      vlogf("Error reading positions for mob %d", mob_index[nr].vnum);
       position = POSITION_STANDING;
       default_pos = POSITION_STANDING;
     }
 
     if (!is_valid_position(position) || !is_valid_position(default_pos)) {
       vlogf("Invalid positions %d/%d for mob %d - correcting to STANDING",
-        position, default_pos, mob_index[nr].virtual);
+        position, default_pos, mob_index[nr].vnum);
       position = POSITION_STANDING;
       default_pos = POSITION_STANDING;
     }
@@ -1194,7 +1194,7 @@ struct char_data* read_mobile(int nr, int type) {
     mob->specials.default_pos = default_pos;
 
     fscanf(mob_f, " %hhd ", &mob->player.sex);
-    fscanf(mob_f, " %hhu ", &mob->player.class);
+    fscanf(mob_f, " %hhu ", &mob->player.char_class);
     fscanf(mob_f, " %hhd ", &GET_LEVEL(mob, WARRIOR_LEVEL_IND));
 
     int unk_1 = 0;
@@ -1397,7 +1397,7 @@ struct obj_data* read_object(int nr, int type) {
 
   obj_count++;
 #if BYTE_COUNT
-  fprintf(stderr, "Object [%d] uses %d bytes\n", obj_index[nr].virtual, bc);
+  fprintf(stderr, "Object [%d] uses %d bytes\n", obj_index[nr].vnum, bc);
 #endif
   total_obc += bc;
   return (obj);
@@ -1685,7 +1685,7 @@ void store_to_char(struct char_file_u* st, struct char_data* ch) {
   int i;
 
   GET_SEX(ch) = st->sex;
-  ch->player.class = st->class;
+  ch->player.char_class = st->char_class;
 
   for (i = MAGE_LEVEL_IND; i <= RANGER_LEVEL_IND; i++) {
     ch->player.level[i] = st->level[i];
@@ -1830,7 +1830,7 @@ void char_to_store(struct char_data* ch, struct char_file_u* st) {
   st->weight = GET_WEIGHT(ch);
   st->height = GET_HEIGHT(ch);
   st->sex = GET_SEX(ch);
-  st->class = ch->player.class;
+  st->char_class = ch->player.char_class;
   for (i = MAGE_LEVEL_IND; i <= RANGER_LEVEL_IND; i++) {
     st->level[i] = ch->player.level[i];
   }
@@ -2108,7 +2108,7 @@ void free_char(struct char_data* ch) {
 
 /* release memory allocated for an obj struct */
 void free_obj(struct obj_data* obj) {
-  struct extra_descr_data* this;
+  struct extra_descr_data* curr;
   struct extra_descr_data* next_one;
 
   free(obj->name);
@@ -2122,15 +2122,15 @@ void free_obj(struct obj_data* obj) {
     free(obj->action_description);
   }
 
-  for (this = obj->ex_description; (this != 0); this = next_one) {
-    next_one = this->next;
-    if (this->keyword) {
-      free(this->keyword);
+  for (curr = obj->ex_description; (curr != nullptr); curr = next_one) {
+    next_one = curr->next;
+    if (curr->keyword) {
+      free(curr->keyword);
     }
-    if (this->description) {
-      free(this->description);
+    if (curr->description) {
+      free(curr->description);
     }
-    free(this);
+    free(curr);
   }
 
   free(obj);
@@ -2263,8 +2263,8 @@ void reset_char(struct char_data* ch) {
     }
   }
 
-  if ((ch->player.class == 3) && (GET_LEVEL(ch, THIEF_LEVEL_IND))) {
-    ch->player.class = 8;
+  if ((ch->player.char_class == 3) && (GET_LEVEL(ch, THIEF_LEVEL_IND))) {
+    ch->player.char_class = 8;
     send_to_char("Setting your class to THIEF only.\n\r", ch);
   }
 
@@ -2530,12 +2530,12 @@ void init_char(struct char_data* ch) {
   }
 }
 
-struct room_data* real_roomp(int virtual) {
-  return (virtual < WORLD_SIZE) && (virtual > -1) ? room_db[virtual] : nullptr;
+struct room_data* real_roomp(int vnum) {
+  return (vnum < WORLD_SIZE) && (vnum > -1) ? room_db[vnum] : nullptr;
 }
 
 /* returns the real number of the monster with given virtual number */
-int real_mobile(int virtual) {
+int real_mobile(int vnum) {
   int bot;
   int top;
   int mid;
@@ -2547,13 +2547,13 @@ int real_mobile(int virtual) {
   for (;;) {
     mid = (bot + top) / 2;
 
-    if ((mob_index + mid)->virtual == virtual) {
+    if ((mob_index + mid)->vnum == vnum) {
       return (mid);
     }
     if (bot >= top) {
       return (-1);
     }
-    if ((mob_index + mid)->virtual > virtual) {
+    if ((mob_index + mid)->vnum > vnum) {
       top = mid - 1;
     } else {
       bot = mid + 1;
@@ -2562,7 +2562,7 @@ int real_mobile(int virtual) {
 }
 
 /* returns the real number of the object with given virtual number */
-int real_object(int virtual) {
+int real_object(int vnum) {
   int bot;
   int top;
   int mid;
@@ -2574,13 +2574,13 @@ int real_object(int virtual) {
   for (;;) {
     mid = (bot + top) / 2;
 
-    if ((obj_index + mid)->virtual == virtual) {
+    if ((obj_index + mid)->vnum == vnum) {
       return (mid);
     }
     if (bot >= top) {
       return (-1);
     }
-    if ((obj_index + mid)->virtual > virtual) {
+    if ((obj_index + mid)->vnum > vnum) {
       top = mid - 1;
     } else {
       bot = mid + 1;

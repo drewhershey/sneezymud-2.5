@@ -149,7 +149,7 @@ dead-code:
 #   3. make analyze-ci               - CI gating (exits non-zero if critical issues)
 #
 # The Python script handles:
-#   - clang-tidy: 15 production-critical AST checks (same as .clang-tidy WarningsAsErrors)
+#   - clang-tidy: production-critical AST checks (same as .clang-tidy WarningsAsErrors)
 #   - clangsa: All checks including experimental alpha (deep mode + CTU)
 #   - Filtering to critical-only issues
 #   - Multiple output formats (html, text, sqlite) - all default to codechecker-report/

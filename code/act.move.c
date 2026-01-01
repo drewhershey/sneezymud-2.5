@@ -674,13 +674,13 @@ static int has_key(struct char_data* ch, int key) {
   struct obj_data* o;
 
   for (o = ch->carrying; o; o = o->next_content) {
-    if (obj_index[o->item_number].virtual == key) {
+    if (obj_index[o->item_number].vnum == key) {
       return (1);
     }
   }
 
   if (ch->equipment[HOLD]) {
-    if (obj_index[ch->equipment[HOLD]->item_number].virtual == key) {
+    if (obj_index[ch->equipment[HOLD]->item_number].vnum == key) {
       return (1);
     }
   }

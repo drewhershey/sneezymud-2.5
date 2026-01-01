@@ -28,7 +28,7 @@
 
 char* fname(char* namelist) {
   static char holder[30];
-  register char* point;
+  char* point;
 
   for (point = holder; isalpha(*namelist); namelist++, point++) {
     *point = *namelist;

@@ -258,7 +258,7 @@ void boot_pose_messages(void) {
   FILE* fl;
   signed char counter;
   int tmp;
-  signed char class;
+  signed char char_class;
 
   if (!(fl = fopen(POSEMESS_FILE, "r"))) {
     perror("boot_pose_messages");
@@ -270,9 +270,9 @@ void boot_pose_messages(void) {
     if (pose_messages[counter].level < 0) {
       break;
     }
-    for (class = 0; class < 4; class ++) {
-      pose_messages[counter].poser_msg[class] = fread_action(fl);
-      pose_messages[counter].room_msg[class] = fread_action(fl);
+    for (char_class = 0; char_class < 4; char_class++) {
+      pose_messages[counter].poser_msg[char_class] = fread_action(fl);
+      pose_messages[counter].room_msg[char_class] = fread_action(fl);
     }
   }
 
