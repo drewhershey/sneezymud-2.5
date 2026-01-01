@@ -146,7 +146,7 @@ static void quad_arg(const char* arg, int* type, char* name, int* field,
 }
 
 /* modification of malloc'ed strings in chars/objects */
-void do_string(struct char_data* ch, const char* arg, int cmd) {
+void do_string(struct char_data* ch, const char* arg, int /*cmd*/) {
   char name[MAX_STRING_LENGTH];
   char string[MAX_STRING_LENGTH];
   struct extra_descr_data* ed = nullptr;
@@ -371,7 +371,7 @@ static void bisect_arg(const char* arg, int* field, char* string) {
   }
 }
 
-void do_edit(struct char_data* ch, const char* arg, int cmd) {
+void do_edit(struct char_data* ch, const char* arg, int /*cmd*/) {
   int field = 0;
   int dflags = 0;
   int dir = 0;
@@ -667,11 +667,6 @@ void do_edit(struct char_data* ch, const char* arg, int cmd) {
 /* **********************************************************************
  *  Modification of character skills                                     *
  ********************************************************************** */
-
-static void do_setskill(struct char_data* ch, const char* arg, int cmd) {
-  send_to_char("This routine is disabled untill it fitts\n\r", ch);
-  send_to_char("The new structures (sorry Quinn) ....Bombman\n\r", ch);
-}
 
 /* db stuff *********************************************** */
 

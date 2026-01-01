@@ -502,7 +502,7 @@ static void move_group(struct char_data* ch, int dir) {
   }
 }
 
-void do_move(struct char_data* ch, const char* argument, int cmd) {
+void do_move(struct char_data* ch, const char* /*argument*/, int cmd) {
   cmd -= 1;
 
   /*
@@ -567,7 +567,7 @@ int find_door(struct char_data* ch, char* type, char* dir) {
   return (-1);
 }
 
-void do_open(struct char_data* ch, const char* argument, int cmd) {
+void do_open(struct char_data* ch, const char* argument, int /*cmd*/) {
   int door = 0;
   char type[MAX_INPUT_LENGTH];
   char dir[MAX_INPUT_LENGTH];
@@ -612,7 +612,7 @@ void do_open(struct char_data* ch, const char* argument, int cmd) {
   }
 }
 
-void do_close(struct char_data* ch, const char* argument, int cmd) {
+void do_close(struct char_data* ch, const char* argument, int /*cmd*/) {
   int door = 0;
   char type[MAX_INPUT_LENGTH];
   char dir[MAX_INPUT_LENGTH];
@@ -691,7 +691,7 @@ static int has_key(struct char_data* ch, int key) {
   return (0);
 }
 
-void do_lock(struct char_data* ch, const char* argument, int cmd) {
+void do_lock(struct char_data* ch, const char* argument, int /*cmd*/) {
   int door = 0;
   char type[MAX_INPUT_LENGTH];
   char dir[MAX_INPUT_LENGTH];
@@ -757,7 +757,7 @@ void do_lock(struct char_data* ch, const char* argument, int cmd) {
   }
 }
 
-void do_unlock(struct char_data* ch, const char* argument, int cmd) {
+void do_unlock(struct char_data* ch, const char* argument, int /*cmd*/) {
   int door = 0;
   char type[MAX_INPUT_LENGTH];
   char dir[MAX_INPUT_LENGTH];
@@ -821,7 +821,7 @@ void do_unlock(struct char_data* ch, const char* argument, int cmd) {
   }
 }
 
-void do_pick(struct char_data* ch, const char* argument, int cmd) {
+void do_pick(struct char_data* ch, const char* argument, int /*cmd*/) {
   signed char percent = 0;
   int door = 0;
   char type[MAX_INPUT_LENGTH];
@@ -905,7 +905,7 @@ void do_pick(struct char_data* ch, const char* argument, int cmd) {
   }
 }
 
-void do_enter(struct char_data* ch, const char* argument, int cmd) {
+void do_enter(struct char_data* ch, const char* argument, int /*cmd*/) {
   int door = 0;
   int location = 0;
   char buf[MAX_INPUT_LENGTH];
@@ -965,7 +965,7 @@ void do_enter(struct char_data* ch, const char* argument, int cmd) {
   }
 }
 
-void do_leave(struct char_data* ch, const char* argument, int cmd) {
+void do_leave(struct char_data* ch, const char* /*argument*/, int /*cmd*/) {
   int door = 0;
   struct room_direction_data* exitp = nullptr;
   struct room_data* rp = nullptr;
@@ -985,7 +985,7 @@ void do_leave(struct char_data* ch, const char* argument, int cmd) {
   }
 }
 
-void do_stand(struct char_data* ch, const char* argument, int cmd) {
+void do_stand(struct char_data* ch, const char* /*argument*/, int /*cmd*/) {
   switch (GET_POS(ch)) {
     case POSITION_STANDING: {
       act("You are already standing.", 0, ch, nullptr, nullptr, TO_CHAR);
@@ -1020,7 +1020,7 @@ void do_stand(struct char_data* ch, const char* argument, int cmd) {
   }
 }
 
-void do_sit(struct char_data* ch, const char* argument, int cmd) {
+void do_sit(struct char_data* ch, const char* /*argument*/, int /*cmd*/) {
   if (check_blackjack(ch) != 0) {
     if (do_blackjack_enter(ch) == 0) {
       return;
@@ -1063,7 +1063,7 @@ void do_sit(struct char_data* ch, const char* argument, int cmd) {
   }
 }
 
-void do_rest(struct char_data* ch, const char* argument, int cmd) {
+void do_rest(struct char_data* ch, const char* /*argument*/, int /*cmd*/) {
   switch (GET_POS(ch)) {
     case POSITION_STANDING: {
       act("You sit down and rest your tired bones.", 0, ch, nullptr, nullptr,
@@ -1099,7 +1099,7 @@ void do_rest(struct char_data* ch, const char* argument, int cmd) {
   }
 }
 
-void do_sleep(struct char_data* ch, const char* argument, int cmd) {
+void do_sleep(struct char_data* ch, const char* /*argument*/, int /*cmd*/) {
   switch (GET_POS(ch)) {
     case POSITION_STANDING:
     case POSITION_RESTING: {
@@ -1131,7 +1131,7 @@ void do_sleep(struct char_data* ch, const char* argument, int cmd) {
   }
 }
 
-void do_wake(struct char_data* ch, const char* argument, int cmd) {
+void do_wake(struct char_data* ch, const char* argument, int /*cmd*/) {
   struct char_data* tmp_char = nullptr;
   char arg[MAX_STRING_LENGTH];
 
@@ -1195,7 +1195,7 @@ void do_wake(struct char_data* ch, const char* argument, int cmd) {
   }
 }
 
-void do_follow(struct char_data* ch, const char* argument, int cmd) {
+void do_follow(struct char_data* ch, const char* argument, int /*cmd*/) {
   char name[160];
   struct char_data* leader = nullptr;
 

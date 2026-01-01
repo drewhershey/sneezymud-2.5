@@ -5,20 +5,20 @@
 #include "comm.h"
 #include "utils.h"
 
-static void shutdown_request(int tmp) {
+static void shutdown_request(int /*tmp*/) {
   vlog("Received USR2 - shutdown request");
   Shutdown = 1;
 }
 
 /* kick out players etc */
-static void hupsig(int tmp) {
+static void hupsig(int /*tmp*/) {
   vlog("Received SIGHUP, SIGINT, or SIGTERM. Shutting down");
   exit(0); /* something more elegant should perhaps be substituted */
 }
 
-static void logsig(int tmp) { vlog("Signal received. Ignoring."); }
+static void logsig(int /*tmp*/) { vlog("Signal received. Ignoring."); }
 
-static void checkpointing(int tmp) {
+static void checkpointing(int /*tmp*/) {
   if (tics == 0) {
     vlog("CHECKPOINT shutdown: tics not updated");
     abort();

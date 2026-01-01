@@ -49,7 +49,7 @@
 #define SAC2_FOR_WIND 29929
 #define SAC3_FOR_WIND 29930
 
-void do_brew(struct char_data* ch, const char* arg, int cmd) {
+void do_brew(struct char_data* ch, const char* arg, int /*cmd*/) {
   char buf[MAX_STRING_LENGTH];
   int obj = 0;
   int sacr = 0;
@@ -174,7 +174,7 @@ void do_brew(struct char_data* ch, const char* arg, int cmd) {
   }
 }
 
-void do_search(struct char_data* ch, const char* arg, int cmd) {
+void do_search(struct char_data* ch, const char* /*arg*/, int /*cmd*/) {
   int j = 0;
   int num = 0;
   int learned = 0;
@@ -231,7 +231,7 @@ void do_search(struct char_data* ch, const char* arg, int cmd) {
   GET_MOVE(ch) = MAX(0, (GET_MOVE(ch) - 75));
 }
 
-void do_grapple(struct char_data* ch, const char* arg, int cmd) {
+void do_grapple(struct char_data* ch, const char* arg, int /*cmd*/) {
   struct char_data* victim = nullptr;
   char name[256];
   signed char percent = 0;
@@ -325,7 +325,7 @@ void do_grapple(struct char_data* ch, const char* arg, int cmd) {
 #define SAC_FOR_WIND 29939
 #define SAC_FOR_TRUE 29940
 
-void do_scribe(struct char_data* ch, const char* arg, int cmd) {
+void do_scribe(struct char_data* ch, const char* arg, int /*cmd*/) {
   char buf[MAX_STRING_LENGTH];
   int obj = 0;
   int sacr = 0;
@@ -427,7 +427,7 @@ void do_scribe(struct char_data* ch, const char* arg, int cmd) {
   }
 }
 
-void do_glance(struct char_data* ch, const char* argument, int cmd) {
+void do_glance(struct char_data* ch, const char* argument, int /*cmd*/) {
   char buffer[MAX_STRING_LENGTH];
   int bits = 0;
   int percent = 0;
@@ -480,7 +480,7 @@ void do_glance(struct char_data* ch, const char* argument, int cmd) {
   }
 }
 
-void do_deathstroke(struct char_data* ch, const char* argument, int cmd) {
+void do_deathstroke(struct char_data* ch, const char* argument, int /*cmd*/) {
   struct char_data* victim = nullptr;
   char name[256];
   signed char percent = 0;
@@ -580,7 +580,7 @@ void do_deathstroke(struct char_data* ch, const char* argument, int cmd) {
   set_fighting(victim, ch);
 }
 
-void do_bodyslam(struct char_data* ch, const char* argument, int cmd) {
+void do_bodyslam(struct char_data* ch, const char* argument, int /*cmd*/) {
   struct char_data* victim = nullptr;
   char name[256];
   signed char percent = 0;

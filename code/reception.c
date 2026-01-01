@@ -449,7 +449,7 @@ void update_obj_file(void) {
  * Routine Receptionist                                                    *
  ************************************************************************* */
 
-int receptionist(struct char_data* ch, int cmd, const char* arg) {
+int receptionist(struct char_data* ch, int cmd, const char* /*arg*/) {
   char buf[240];
   struct obj_cost cost{};
   struct char_data* recep = nullptr;
@@ -532,7 +532,8 @@ int receptionist(struct char_data* ch, int cmd, const char* arg) {
   return 1;
 }
 
-int receptionist_for_outlaws(struct char_data* ch, int cmd, const char* arg) {
+int receptionist_for_outlaws(struct char_data* ch, int cmd,
+  const char* /*arg*/) {
   char buf[240];
   struct obj_cost cost{};
   struct char_data* recep = nullptr;

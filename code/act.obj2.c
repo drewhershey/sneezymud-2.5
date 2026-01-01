@@ -92,7 +92,7 @@ static const int drink_aff[][3] = {
   {0, 0, 0},
 };
 
-void do_drink(struct char_data* ch, const char* argument, int cmd) {
+void do_drink(struct char_data* ch, const char* argument, int /*cmd*/) {
   char buf[255];
   struct obj_data* temp = nullptr;
   struct affected_type af{};
@@ -207,7 +207,7 @@ void do_drink(struct char_data* ch, const char* argument, int cmd) {
   }
 }
 
-void do_eat(struct char_data* ch, const char* argument, int cmd) {
+void do_eat(struct char_data* ch, const char* argument, int /*cmd*/) {
   char buf[100];
   int j = 0;
   int num = 0;
@@ -270,7 +270,7 @@ void do_eat(struct char_data* ch, const char* argument, int cmd) {
   extract_obj(temp);
 }
 
-void do_pour(struct char_data* ch, const char* argument, int cmd) {
+void do_pour(struct char_data* ch, const char* argument, int /*cmd*/) {
   char arg1[132];
   char arg2[132];
   char buf[256];
@@ -377,7 +377,7 @@ void do_pour(struct char_data* ch, const char* argument, int cmd) {
     (to_obj->obj_flags.value[3] != 0) || (from_obj->obj_flags.value[3] != 0));
 }
 
-void do_sip(struct char_data* ch, const char* argument, int cmd) {
+void do_sip(struct char_data* ch, const char* argument, int /*cmd*/) {
   struct affected_type af{};
   char arg[MAX_STRING_LENGTH];
   char buf[MAX_STRING_LENGTH];
@@ -464,7 +464,7 @@ void do_sip(struct char_data* ch, const char* argument, int cmd) {
   }
 }
 
-void do_taste(struct char_data* ch, const char* argument, int cmd) {
+void do_taste(struct char_data* ch, const char* argument, int /*cmd*/) {
   struct affected_type af{};
   char arg[80];
   struct obj_data* temp = nullptr;
@@ -981,7 +981,7 @@ static void wear(struct char_data* ch, struct obj_data* obj_object,
   }
 }
 
-void do_wear(struct char_data* ch, const char* argument, int cmd) {
+void do_wear(struct char_data* ch, const char* argument, int /*cmd*/) {
   char arg1[MAX_INPUT_LENGTH];
   char arg2[MAX_INPUT_LENGTH];
   char buf[256];
@@ -1133,7 +1133,7 @@ void do_wear(struct char_data* ch, const char* argument, int cmd) {
   }
 }
 
-void do_wield(struct char_data* ch, const char* argument, int cmd) {
+void do_wield(struct char_data* ch, const char* argument, int /*cmd*/) {
   char arg1[MAX_INPUT_LENGTH];
   char arg2[MAX_INPUT_LENGTH];
   char buffer[MAX_INPUT_LENGTH];
@@ -1154,7 +1154,7 @@ void do_wield(struct char_data* ch, const char* argument, int cmd) {
   }
 }
 
-void do_grab(struct char_data* ch, const char* argument, int cmd) {
+void do_grab(struct char_data* ch, const char* argument, int /*cmd*/) {
   char arg1[128];
   char arg2[128];
   char buffer[256];
@@ -1194,7 +1194,7 @@ static struct obj_data* get_object_in_equip_vis(struct char_data* ch, char* arg,
   return (nullptr);
 }
 
-void do_remove(struct char_data* ch, const char* argument, int cmd) {
+void do_remove(struct char_data* ch, const char* argument, int /*cmd*/) {
   char arg1[128];
   char* t = nullptr;
   char* p = nullptr;

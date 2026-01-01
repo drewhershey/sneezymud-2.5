@@ -1079,7 +1079,7 @@ static int spell_level(struct char_data* ch, int sn) {
 }
 
 /* Assumes that *argument does start with first letter of chopped string */
-void do_cast(struct char_data* ch, const char* argument, int cmd) {
+void do_cast(struct char_data* ch, const char* argument, int /*cmd*/) {
   struct obj_data* tar_obj = nullptr;
   struct char_data* tar_char = nullptr;
   char name[MAX_INPUT_LENGTH];

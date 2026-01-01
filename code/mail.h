@@ -89,9 +89,9 @@ struct data_block_type_d {
 #pragma pack(pop)
 
 // Have to use macro form of static_assert in headers
-_Static_assert(sizeof(struct header_block_type_d) == 100,
+static_assert(sizeof(struct header_block_type_d) == 100,
   "Header block must be exactly 100 bytes");
-_Static_assert(sizeof(struct data_block_type_d) == 100,
+static_assert(sizeof(struct data_block_type_d) == 100,
   "Data block must be exactly 100 bytes");
 
 typedef struct header_block_type_d header_block_type;

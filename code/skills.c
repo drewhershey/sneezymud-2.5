@@ -213,7 +213,7 @@ static int named_mobile_in_room(int room, struct hunting_data* c_data) {
   return 0;
 }
 
-void do_track(struct char_data* ch, const char* argument, int cmd) {
+void do_track(struct char_data* ch, const char* argument, int /*cmd*/) {
   char name[256];
   char buf[256];
   char found = 0;
@@ -571,7 +571,7 @@ int find_path(int in_room, const struct find_path_data* data, int depth,
   return (-1);
 }
 
-void do_headbutt(struct char_data* ch, const char* argument, int cmd) {
+void do_headbutt(struct char_data* ch, const char* argument, int /*cmd*/) {
   struct char_data* victim = nullptr;
   char name[256];
   signed char percent = 0;
@@ -630,7 +630,7 @@ void do_headbutt(struct char_data* ch, const char* argument, int cmd) {
   WAIT_STATE(ch, PULSE_VIOLENCE * 6);
 }
 
-void do_subterfuge(struct char_data* ch, const char* arg, int cmd) {
+void do_subterfuge(struct char_data* ch, const char* arg, int /*cmd*/) {
   struct char_data* npc = nullptr;
   char name[MAX_STRING_LENGTH];
   signed char percent = 0;
@@ -672,7 +672,7 @@ void do_subterfuge(struct char_data* ch, const char* arg, int cmd) {
   GET_MOVE(ch) = MAX(0, GET_MOVE(ch));
 }
 
-void do_swim(struct char_data* ch, const char* arg, int cmd) {
+void do_swim(struct char_data* ch, const char* /*arg*/, int /*cmd*/) {
   struct affected_type af{};
   signed char percent = 0;
 
@@ -782,7 +782,7 @@ static void raw_unlock_door(struct char_data* ch,
 /*
   skill to allow fighters to break down doors
 */
-void do_doorbash(struct char_data* ch, const char* arg, int cmd) {
+void do_doorbash(struct char_data* ch, const char* arg, int /*cmd*/) {
   int dir = 0;
   int ok = 0;
   struct room_direction_data* exitp = nullptr;
@@ -911,7 +911,7 @@ void do_doorbash(struct char_data* ch, const char* arg, int cmd) {
   }
 }
 
-void do_spy(struct char_data* ch, const char* arg, int cmd) {
+void do_spy(struct char_data* ch, const char* /*arg*/, int /*cmd*/) {
   struct affected_type af{};
   signed char percent = 0;
 
@@ -956,7 +956,7 @@ void do_spy(struct char_data* ch, const char* arg, int cmd) {
   affect_to_char(ch, &af);
 }
 
-void do_throw(struct char_data* ch, const char* arg, int cmd) {
+void do_throw(struct char_data* ch, const char* arg, int /*cmd*/) {
   struct char_data* victim = nullptr;
   char name[256];
   char obje[100];
@@ -1022,7 +1022,7 @@ void do_throw(struct char_data* ch, const char* arg, int cmd) {
   }
 }
 
-void do_feign_death(struct char_data* ch, const char* arg, int cmd) {
+void do_feign_death(struct char_data* ch, const char* /*arg*/, int /*cmd*/) {
   struct room_data* rp = nullptr;
   struct char_data* t = nullptr;
 
@@ -1074,7 +1074,7 @@ void do_feign_death(struct char_data* ch, const char* arg, int cmd) {
   }
 }
 
-void do_first_aid(struct char_data* ch, const char* arg, int cmd) {
+void do_first_aid(struct char_data* ch, const char* /*arg*/, int /*cmd*/) {
   struct affected_type af{};
 
   send_to_char("You attempt to render first aid unto yourself\n\r", ch);
@@ -1104,7 +1104,7 @@ void do_first_aid(struct char_data* ch, const char* arg, int cmd) {
   affect_to_char(ch, &af);
 }
 
-void do_lay_hands(struct char_data* ch, const char* arg, int cmd) {
+void do_lay_hands(struct char_data* ch, const char* /*arg*/, int /*cmd*/) {
   struct affected_type af{};
 
   send_to_char("You attempt to render first aid unto yourself\n\r", ch);

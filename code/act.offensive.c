@@ -23,7 +23,7 @@
 #include "structs.h"
 #include "utils.h"
 
-void do_hit(struct char_data* ch, const char* argument, int cmd) {
+void do_hit(struct char_data* ch, const char* argument, int /*cmd*/) {
   char arg[80];
   struct char_data* victim = nullptr;
 
@@ -99,7 +99,7 @@ void do_hit(struct char_data* ch, const char* argument, int cmd) {
   }
 }
 
-void do_kill(struct char_data* ch, const char* argument, int cmd) {
+void do_kill(struct char_data* ch, const char* argument, int /*cmd*/) {
   static char arg[MAX_INPUT_LENGTH];
   struct char_data* victim = nullptr;
 
@@ -132,7 +132,7 @@ void do_kill(struct char_data* ch, const char* argument, int cmd) {
   }
 }
 
-void do_backstab(struct char_data* ch, const char* argument, int cmd) {
+void do_backstab(struct char_data* ch, const char* argument, int /*cmd*/) {
   struct char_data* victim = nullptr;
   char name[256];
   signed char percent = 0;
@@ -230,7 +230,7 @@ static int check_no_order(struct char_data* ch, const char* msg) {
   return 0;
 }
 
-void do_order(struct char_data* ch, const char* argument, int cmd) {
+void do_order(struct char_data* ch, const char* argument, int /*cmd*/) {
   char name[100];
   char message[256];
   char buf[256];
@@ -305,7 +305,7 @@ void do_order(struct char_data* ch, const char* argument, int cmd) {
   }
 }
 
-void do_flee(struct char_data* ch, const char* argument, int cmd) {
+void do_flee(struct char_data* ch, const char* /*argument*/, int /*cmd*/) {
   int i = 0;
   int lev_check = 0;
   int attempt = 0;
@@ -469,7 +469,7 @@ void do_flee(struct char_data* ch, const char* argument, int cmd) {
   send_to_char("PANIC! You couldn't escape!\n\r", ch);
 }
 
-void do_bash(struct char_data* ch, const char* argument, int cmd) {
+void do_bash(struct char_data* ch, const char* argument, int /*cmd*/) {
   struct char_data* victim = nullptr;
   char name[256];
   signed char percent = 0;
@@ -541,7 +541,7 @@ void do_bash(struct char_data* ch, const char* argument, int cmd) {
   WAIT_STATE(ch, PULSE_VIOLENCE * 2);
 }
 
-void do_rescue(struct char_data* ch, const char* argument, int cmd) {
+void do_rescue(struct char_data* ch, const char* argument, int /*cmd*/) {
   struct char_data* victim = nullptr;
   struct char_data* tmp_ch = nullptr;
   int percent = 0;
@@ -626,7 +626,7 @@ void do_rescue(struct char_data* ch, const char* argument, int cmd) {
   }
 }
 
-void do_assist(struct char_data* ch, const char* argument, int cmd) {
+void do_assist(struct char_data* ch, const char* argument, int /*cmd*/) {
   struct char_data* victim = nullptr;
   struct char_data* tmp_ch = nullptr;
   char victim_name[240];
@@ -681,7 +681,7 @@ void do_assist(struct char_data* ch, const char* argument, int cmd) {
   WAIT_STATE(victim, PULSE_VIOLENCE + 2); /* same as hit */
 }
 
-void do_kick(struct char_data* ch, const char* argument, int cmd) {
+void do_kick(struct char_data* ch, const char* argument, int /*cmd*/) {
   struct char_data* victim = nullptr;
   char name[256];
   signed char percent = 0;
@@ -741,7 +741,7 @@ void do_kick(struct char_data* ch, const char* argument, int cmd) {
   WAIT_STATE(ch, PULSE_VIOLENCE * 3);
 }
 
-void do_wimpy(struct char_data* ch, const char* arg, int cmd) {
+void do_wimpy(struct char_data* ch, const char* /*arg*/, int /*cmd*/) {
   char buff[MAX_STRING_LENGTH];
 
   if (IS_NPC(ch)) {
@@ -763,7 +763,7 @@ void do_wimpy(struct char_data* ch, const char* arg, int cmd) {
 }
 
 static int bow_missile_damage(struct char_data* ch, struct char_data* victim,
-  int olddam, int attacktype) {
+  int /*olddam*/, int attacktype) {
   int dam = 0;
   struct obj_data* bow = nullptr;
 
@@ -818,7 +818,7 @@ static void fire(struct char_data* ch, struct char_data* victim) {
   }
 }
 
-void do_fire(struct char_data* ch, const char* argument, int cmd) {
+void do_fire(struct char_data* ch, const char* argument, int /*cmd*/) {
   char arg[80];
   struct char_data* victim = nullptr;
 
@@ -853,7 +853,7 @@ void do_fire(struct char_data* ch, const char* argument, int cmd) {
 }
 
 static int gun_missile_damage(struct char_data* ch, struct char_data* victim,
-  int olddam, int attacktype) {
+  int /*olddam*/, int attacktype) {
   int dam = 0;
   struct obj_data* gun = nullptr;
 
@@ -930,7 +930,7 @@ static void shoot(struct char_data* ch, struct char_data* victim) {
   }
 }
 
-void do_shoot(struct char_data* ch, const char* argument, int cmd) {
+void do_shoot(struct char_data* ch, const char* argument, int /*cmd*/) {
   char arg[80];
   struct char_data* victim = nullptr;
 
@@ -971,7 +971,7 @@ void do_shoot(struct char_data* ch, const char* argument, int cmd) {
   }
 }
 
-void do_springleap(struct char_data* ch, const char* argument, int cmd) {
+void do_springleap(struct char_data* ch, const char* argument, int /*cmd*/) {
   struct char_data* victim = nullptr;
   char name[256];
   signed char percent = 0;
@@ -1052,7 +1052,7 @@ void do_springleap(struct char_data* ch, const char* argument, int cmd) {
   update_pos(ch);
 }
 
-void do_quivering_palm(struct char_data* ch, const char* arg, int cmd) {
+void do_quivering_palm(struct char_data* ch, const char* arg, int /*cmd*/) {
   struct char_data* victim = nullptr;
   struct affected_type af{};
   signed char percent = 0;

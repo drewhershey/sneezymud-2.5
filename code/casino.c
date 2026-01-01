@@ -149,7 +149,7 @@ static void add_suit(char* cat_msg, int card) {
   }
 }
 
-void do_bj_bet(struct char_data* ch, const char* arg, int cmd) {
+void do_bj_bet(struct char_data* ch, const char* arg, int /*cmd*/) {
   int inx = 0;
   int bet_amt = 0;
   int l1 = 0;
@@ -289,7 +289,7 @@ static int best_bj_score(int inx) {
   return l2;
 }
 
-void do_stay(struct char_data* ch, const char* arg, int cmd) {
+void do_stay(struct char_data* ch, const char* /*arg*/, int /*cmd*/) {
   int inx = 0;
   int pbest = 0;
   int dbest = 0;
@@ -364,7 +364,7 @@ void do_stay(struct char_data* ch, const char* arg, int cmd) {
   }
 }
 
-void do_peek(struct char_data* ch, const char* arg, int cmd) {
+void do_peek(struct char_data* ch, const char* /*arg*/, int /*cmd*/) {
   char log_msg[2048];
   int l1 = 0;
   int inx = 0;

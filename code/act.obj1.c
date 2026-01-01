@@ -77,7 +77,7 @@ static int check_for_inside_trap(struct char_data* ch, struct obj_data* i) {
   TODO: This should return a value indicating success/failure to allow further
   actions to predicate on successfully getting something
  */
-void do_get(struct char_data* ch, const char* argument, int cmd) {
+void do_get(struct char_data* ch, const char* argument, int /*cmd*/) {
   char arg1[MAX_STRING_LENGTH];
   char arg2[MAX_STRING_LENGTH];
   char buffer[MAX_STRING_LENGTH];
@@ -405,7 +405,7 @@ void do_get(struct char_data* ch, const char* argument, int cmd) {
   }
 }
 
-void do_drop(struct char_data* ch, const char* argument, int cmd) {
+void do_drop(struct char_data* ch, const char* argument, int /*cmd*/) {
   char arg[MAX_INPUT_LENGTH];
   int amount = 0;
   char buffer[MAX_STRING_LENGTH];
@@ -523,7 +523,7 @@ void do_drop(struct char_data* ch, const char* argument, int cmd) {
   }
 }
 
-void do_put(struct char_data* ch, const char* argument, int cmd) {
+void do_put(struct char_data* ch, const char* argument, int /*cmd*/) {
   char buffer[256];
   char arg1[128];
   char arg2[128];
@@ -663,7 +663,7 @@ void do_put(struct char_data* ch, const char* argument, int cmd) {
   }
 }
 
-void do_give(struct char_data* ch, const char* argument, int cmd) {
+void do_give(struct char_data* ch, const char* argument, int /*cmd*/) {
   char obj_name[80];
   char vict_name[80];
   char buf[132];

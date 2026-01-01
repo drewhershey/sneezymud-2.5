@@ -802,7 +802,8 @@ static int dam_check_deny(struct char_data* ch, int type) {
   return 0;
 }
 
-int DamDetailsOk(struct char_data* ch, struct char_data* v, int dam, int type) {
+int DamDetailsOk(struct char_data* ch, struct char_data* v, int dam,
+  int /*type*/) {
   if (dam < 0) {
     return 0;
   }
@@ -872,7 +873,7 @@ int DamageTrivia(struct char_data* ch, struct char_data* v, int dam, int type) {
   return (dam);
 }
 
-int DoDamage(struct char_data* ch, struct char_data* v, int dam, int type) {
+int DoDamage(struct char_data* ch, struct char_data* v, int dam, int /*type*/) {
   GET_HIT(v) -= dam;
 
   if (IS_AFFECTED(v, AFF_FIRESHIELD) && !IS_AFFECTED(ch, AFF_FIRESHIELD)) {
@@ -1357,7 +1358,8 @@ int CalcThaco(struct char_data* ch) {
   return (calc_thaco);
 }
 
-int HitOrMiss(struct char_data* ch, struct char_data* victim, int calc_thaco) {
+int HitOrMiss(struct char_data* /*ch*/, struct char_data* victim,
+  int calc_thaco) {
   int diceroll = 0;
   int victim_ac = 0;
 
@@ -1695,7 +1697,7 @@ static void develop_hatred(struct char_data* ch, struct char_data* v) {
 }
 
 /* control the fights going on */
-void perform_violence(int pulse) {
+void perform_violence(int /*pulse*/) {
   struct char_data* ch = nullptr;
   struct char_data* vict = nullptr;
   int perc = 0;

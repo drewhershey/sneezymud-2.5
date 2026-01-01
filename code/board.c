@@ -105,7 +105,8 @@ struct Board* FindBoardInRoom(int room) {
   return (nullptr);
 }
 
-int board(struct char_data* ch, int cmd, const char* arg, struct obj_data* me) {
+int board(struct char_data* ch, int cmd, const char* arg,
+  struct obj_data* /*me*/) {
   struct Board* nb = nullptr;
 
   if (ch == nullptr) {

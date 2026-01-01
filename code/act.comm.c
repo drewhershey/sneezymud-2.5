@@ -17,7 +17,7 @@
 #include "structs.h"
 #include "utils.h"
 
-void do_say(struct char_data* ch, const char* argument, int cmd) {
+void do_say(struct char_data* ch, const char* argument, int /*cmd*/) {
   int i = 0;
   char buf[MAX_INPUT_LENGTH + 40] = "\0\0\0\0";
 
@@ -46,7 +46,7 @@ void do_say(struct char_data* ch, const char* argument, int cmd) {
   }
 }
 
-void do_shout(struct char_data* ch, const char* argument, int cmd) {
+void do_shout(struct char_data* ch, const char* argument, int /*cmd*/) {
   char buf1[MAX_INPUT_LENGTH + 40];
   struct descriptor_data* i = nullptr;
 
@@ -99,7 +99,7 @@ void do_shout(struct char_data* ch, const char* argument, int cmd) {
   }
 }
 
-void do_grouptell(struct char_data* ch, const char* argument, int cmd) {
+void do_grouptell(struct char_data* ch, const char* argument, int /*cmd*/) {
   static char buf1[MAX_INPUT_LENGTH];
   struct follow_type* f = nullptr;
   struct char_data* k = nullptr;
@@ -138,7 +138,7 @@ void do_grouptell(struct char_data* ch, const char* argument, int cmd) {
   }
 }
 
-void do_commune(struct char_data* ch, const char* argument, int cmd) {
+void do_commune(struct char_data* ch, const char* argument, int /*cmd*/) {
   static char buf1[MAX_INPUT_LENGTH];
   struct descriptor_data* i = nullptr;
 
@@ -185,7 +185,7 @@ static const char* random_word(void) {
   return words[number(0, (int)(max_words - 1))];
 }
 
-void do_sign(struct char_data* ch, const char* argument, int cmd) {
+void do_sign(struct char_data* ch, const char* argument, int /*cmd*/) {
   int i = 0;
   char buf[MAX_INPUT_LENGTH + 40];
   char buf2[MAX_INPUT_LENGTH];
@@ -259,7 +259,7 @@ void do_sign(struct char_data* ch, const char* argument, int cmd) {
   }
 }
 
-void do_send(struct char_data* ch, const char* argument, int cmd) {
+void do_send(struct char_data* ch, const char* argument, int /*cmd*/) {
   char buf1[MAX_INPUT_LENGTH + 40];
   struct descriptor_data* i = nullptr;
   struct obj_data* radio = nullptr;
@@ -313,7 +313,7 @@ void do_send(struct char_data* ch, const char* argument, int cmd) {
   }
 }
 
-void do_tell(struct char_data* ch, const char* argument, int cmd) {
+void do_tell(struct char_data* ch, const char* argument, int /*cmd*/) {
   struct char_data* vict = nullptr;
   char name[100];
   char message[MAX_INPUT_LENGTH + 20];
@@ -384,7 +384,7 @@ void do_tell(struct char_data* ch, const char* argument, int cmd) {
   send_to_char(buf, ch);
 }
 
-void do_whisper(struct char_data* ch, const char* argument, int cmd) {
+void do_whisper(struct char_data* ch, const char* argument, int /*cmd*/) {
   struct char_data* vict = nullptr;
   char name[100];
   char message[MAX_INPUT_LENGTH];
@@ -425,7 +425,7 @@ void do_whisper(struct char_data* ch, const char* argument, int cmd) {
   }
 }
 
-void do_ask(struct char_data* ch, const char* argument, int cmd) {
+void do_ask(struct char_data* ch, const char* argument, int /*cmd*/) {
   struct char_data* vict = nullptr;
   char name[100];
   char message[MAX_INPUT_LENGTH];
@@ -468,7 +468,7 @@ void do_ask(struct char_data* ch, const char* argument, int cmd) {
 
 #define MAX_NOTE_LENGTH 1000 /* arbitrary */
 
-void do_write(struct char_data* ch, const char* argument, int cmd) {
+void do_write(struct char_data* ch, const char* argument, int /*cmd*/) {
   struct obj_data* paper = nullptr;
   struct obj_data* pen = nullptr;
   char papername[MAX_INPUT_LENGTH];

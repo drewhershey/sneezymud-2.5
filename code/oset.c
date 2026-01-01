@@ -292,7 +292,7 @@ static void set_oaffect(struct char_data* ch, struct obj_data* obj,
   send_to_char("Done.\n\r", ch);
 }
 
-void do_oset(struct char_data* ch, const char* argument, int cmd) {
+void do_oset(struct char_data* ch, const char* argument, int /*cmd*/) {
   char arg1[256];
   char arg2[256];
   char arg3[256];

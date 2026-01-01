@@ -58,7 +58,7 @@ static void create_one_room(int loc_nr) {
   rp->description = strdup("Empty\n");
 }
 
-void do_demote(struct char_data* ch, const char* argument, int cmd) {
+void do_demote(struct char_data* ch, const char* argument, int /*cmd*/) {
   char person[MAX_STRING_LENGTH];
   struct char_data* victim = nullptr;
   if (IS_NPC(ch)) {
@@ -94,7 +94,7 @@ static struct StrHeap* init_heap(void) {
   return (heap);
 }
 
-void do_imptest(struct char_data* ch, const char* arg, int cmd) {
+void do_imptest(struct char_data* ch, const char* arg, int /*cmd*/) {
   struct char_data* i = nullptr;
   struct StrHeap* h = nullptr;
   int x = 0;
@@ -116,7 +116,7 @@ void do_imptest(struct char_data* ch, const char* arg, int cmd) {
   DisplayStringHeap(h, ch, TO_CHAR, 1);
 }
 
-void do_passwd(struct char_data* ch, const char* argument, int cmdnum) {
+void do_passwd(struct char_data* ch, const char* argument, int /*cmdnum*/) {
   int player_i = 0;
   int pos = 0;
   char name[30];
@@ -217,7 +217,7 @@ static void dsearch(char* string, char* tmp) {
   }
 }
 
-void do_bamfin(struct char_data* ch, const char* arg, int cmd) {
+void do_bamfin(struct char_data* ch, const char* arg, int /*cmd*/) {
   char buf[255];
   int len = 0;
 
@@ -268,7 +268,7 @@ void do_bamfin(struct char_data* ch, const char* arg, int cmd) {
   send_to_char("Ok.\n\r", ch);
 }
 
-void do_bamfout(struct char_data* ch, const char* arg, int cmd) {
+void do_bamfout(struct char_data* ch, const char* arg, int /*cmd*/) {
   char buf[255];
   int len = 0;
 
@@ -348,7 +348,7 @@ static void rec_zwrite_obj(FILE* fp, struct obj_data* o) {
   }
 }
 
-void do_instazone(struct char_data* ch, const char* argument, int cmdnum) {
+void do_instazone(struct char_data* ch, const char* argument, int /*cmdnum*/) {
   char cmd = 0;
   char c = 0;
   char buf[80];
@@ -469,7 +469,7 @@ void do_instazone(struct char_data* ch, const char* argument, int cmdnum) {
   fclose(fp);
 }
 
-void do_highfive(struct char_data* ch, const char* argument, int cmd) {
+void do_highfive(struct char_data* ch, const char* argument, int /*cmd*/) {
   char buf[80];
   char mess[120];
   struct char_data* tch = nullptr;
@@ -494,7 +494,7 @@ void do_highfive(struct char_data* ch, const char* argument, int cmd) {
   }
 }
 
-void do_silence(struct char_data* ch, const char* argument, int cmd) {
+void do_silence(struct char_data* ch, const char* /*argument*/, int /*cmd*/) {
   char buf[255];
   if ((GetMaxLevel(ch) < DEMIGOD) || (IS_NPC(ch))) {
     send_to_char("You cannot Silence.\n\r", ch);
@@ -514,7 +514,7 @@ void do_silence(struct char_data* ch, const char* argument, int cmd) {
   }
 }
 
-void do_wizlock(struct char_data* ch, const char* argument, int cmd) {
+void do_wizlock(struct char_data* ch, const char* /*argument*/, int /*cmd*/) {
 #if SITELOCK
   char* test;
   int a, length, b;
@@ -738,7 +738,7 @@ static void room_load(struct char_data* ch, int start, int end) {
   }
 }
 
-void do_rload(struct char_data* ch, const char* argument, int cmd) {
+void do_rload(struct char_data* ch, const char* argument, int /*cmd*/) {
   char i = 0;
   int start = -1;
   int end = -2;
@@ -921,7 +921,7 @@ static void room_save(struct char_data* ch, int start, int end) {
   send_to_char("\n\rDone\n\r", ch);
 }
 
-void do_rsave(struct char_data* ch, const char* argument, int cmd) {
+void do_rsave(struct char_data* ch, const char* argument, int /*cmd*/) {
   char i = 0;
   int start = -1;
   int end = -2;
@@ -972,7 +972,7 @@ void do_emote(struct char_data* ch, const char* argument, int cmd) {
   }
 }
 
-void do_flag(struct char_data* ch, const char* argument, int cmd) {
+void do_flag(struct char_data* ch, const char* argument, int /*cmd*/) {
   char buf[80];
   char buf2[80];
   struct char_data* victim = nullptr;
@@ -1026,7 +1026,7 @@ void do_flag(struct char_data* ch, const char* argument, int cmd) {
   }
 }
 
-void do_echo(struct char_data* ch, const char* argument, int cmd) {
+void do_echo(struct char_data* ch, const char* argument, int /*cmd*/) {
   int i = 0;
   char buf[MAX_INPUT_LENGTH];
 
@@ -1045,7 +1045,7 @@ void do_echo(struct char_data* ch, const char* argument, int cmd) {
   }
 }
 
-void do_system(struct char_data* ch, const char* argument, int cmd) {
+void do_system(struct char_data* ch, const char* argument, int /*cmd*/) {
   int i = 0;
   char buf[256];
 
@@ -1065,7 +1065,7 @@ void do_system(struct char_data* ch, const char* argument, int cmd) {
   }
 }
 
-void do_trans(struct char_data* ch, const char* argument, int cmd) {
+void do_trans(struct char_data* ch, const char* argument, int /*cmd*/) {
   struct descriptor_data* i = nullptr;
   struct char_data* victim = nullptr;
   char buf[100];
@@ -1113,7 +1113,7 @@ void do_trans(struct char_data* ch, const char* argument, int cmd) {
   }
 }
 
-void do_at(struct char_data* ch, const char* argument, int cmd) {
+void do_at(struct char_data* ch, const char* argument, int /*cmd*/) {
   char command[MAX_INPUT_LENGTH];
   char loc_str[MAX_INPUT_LENGTH];
   int loc_nr = 0;
@@ -1171,7 +1171,7 @@ void do_at(struct char_data* ch, const char* argument, int cmd) {
   }
 }
 
-void do_goto(struct char_data* ch, const char* argument, int cmd) {
+void do_goto(struct char_data* ch, const char* argument, int /*cmd*/) {
   char buf[MAX_INPUT_LENGTH];
   int loc_nr = 0;
   int location = 0;
@@ -1306,7 +1306,7 @@ static const char* const room_bits[] = {"DARK", "DEATH", "NO_MOB", "INDOORS",
   "PEACEFUL", "NOSTEAL", "NO_SUM", "NO_MAGIC", "TUNNEL", "PRIVATE", "SILENCE",
   "NO_ORDER", "ANARCHY", "HAVE_TO_WALK", "ARENA", "NO-HEAL", "\n"};
 
-void do_stat(struct char_data* ch, const char* argument, int cmd) {
+void do_stat(struct char_data* ch, const char* argument, int /*cmd*/) {
   struct affected_type* aff = nullptr;
   char arg1[MAX_STRING_LENGTH];
   char buf[MAX_STRING_LENGTH];
@@ -1921,7 +1921,7 @@ send_to_char(buf, ch);
   send_to_char("No mobile or object by that name in the world\n\r", ch);
 }
 
-void do_set(struct char_data* ch, const char* argument, int cmd) {
+void do_set(struct char_data* ch, const char* argument, int /*cmd*/) {
   char field[20];
   char name[20];
   char parmstr[50];
@@ -2103,11 +2103,11 @@ void do_set(struct char_data* ch, const char* argument, int cmd) {
   }
 }
 
-void do_shutdow(struct char_data* ch, const char* argument, int cmd) {
+void do_shutdow(struct char_data* ch, const char* /*argument*/, int /*cmd*/) {
   send_to_char("If you want to shut something down - say so!\n\r", ch);
 }
 
-void do_shutdown(struct char_data* ch, const char* argument, int cmd) {
+void do_shutdown(struct char_data* ch, const char* argument, int /*cmd*/) {
   char buf[100];
   char arg[MAX_INPUT_LENGTH];
 
@@ -2132,7 +2132,7 @@ void do_shutdown(struct char_data* ch, const char* argument, int cmd) {
   }
 }
 
-void do_snoop(struct char_data* ch, const char* argument, int cmd) {
+void do_snoop(struct char_data* ch, const char* argument, int /*cmd*/) {
   static char arg[MAX_STRING_LENGTH];
   struct char_data* victim = nullptr;
 
@@ -2198,7 +2198,7 @@ void do_snoop(struct char_data* ch, const char* argument, int cmd) {
   victim->desc->snoop.snoop_by = ch;
 }
 
-void do_switch(struct char_data* ch, const char* argument, int cmd) {
+void do_switch(struct char_data* ch, const char* argument, int /*cmd*/) {
   static char arg[80];
   struct char_data* victim = nullptr;
 
@@ -2240,7 +2240,7 @@ void do_switch(struct char_data* ch, const char* argument, int cmd) {
   }
 }
 
-void do_return(struct char_data* ch, const char* argument, int cmd) {
+void do_return(struct char_data* ch, const char* /*argument*/, int cmd) {
   struct char_data* mob = nullptr;
   struct char_data* per = nullptr;
 
@@ -2323,7 +2323,7 @@ void do_force(struct char_data* ch, const char* argument, int cmd) {
   }
 }
 
-void do_load(struct char_data* ch, const char* argument, int cmd) {
+void do_load(struct char_data* ch, const char* argument, int /*cmd*/) {
   struct char_data* mob = nullptr;
   struct obj_data* obj = nullptr;
   char type[100];
@@ -2527,7 +2527,7 @@ static void purge_one_room(int rnum, struct room_data* rp, const int* range) {
   room_count--;
 }
 
-void do_link(struct char_data* ch, const char* argument, int cmd) {
+void do_link(struct char_data* ch, const char* argument, int /*cmd*/) {
   struct descriptor_data* d = nullptr;
   struct descriptor_data* next_d = nullptr;
   int done = 0;
@@ -2564,7 +2564,7 @@ void do_link(struct char_data* ch, const char* argument, int cmd) {
 }
 
 /* clean a room of all mobiles and objects */
-void do_purge(struct char_data* ch, const char* argument, int cmd) {
+void do_purge(struct char_data* ch, const char* argument, int /*cmd*/) {
   struct char_data* vict = nullptr;
   struct char_data* next_v = nullptr;
   struct obj_data* obj = nullptr;
@@ -2802,7 +2802,7 @@ static void roll_abilities(struct char_data* ch) {
   ch->tmpabilities = ch->abilities;
 }
 
-void do_reroll(struct char_data* ch, const char* argument, int cmd) {
+void do_reroll(struct char_data* ch, const char* /*argument*/, int /*cmd*/) {
   if (IS_NPC(ch)) {
     return;
   }
@@ -2935,7 +2935,7 @@ static void gain_exp_regardless(struct char_data* ch, int gain,
   }
 }
 
-void do_advance(struct char_data* ch, const char* argument, int cmd) {
+void do_advance(struct char_data* ch, const char* argument, int /*cmd*/) {
   struct char_data* victim = nullptr;
   char name[100];
   char level[100];
@@ -3067,7 +3067,7 @@ void do_advance(struct char_data* ch, const char* argument, int cmd) {
   }
 }
 
-void do_wiznews(struct char_data* ch, const char* argument, int cmd) {
+void do_wiznews(struct char_data* ch, const char* /*argument*/, int cmd) {
   if ((cmd == 0) || (ch->desc == nullptr) || ((ch->desc->connected) != 0)) {
     return;
   }
@@ -3126,7 +3126,7 @@ void do_restore(struct char_data* ch, const char* argument, int cmd) {
   }
 }
 
-void do_noshout(struct char_data* ch, const char* argument, int cmd) {
+void do_noshout(struct char_data* ch, const char* argument, int /*cmd*/) {
   struct char_data* vict = nullptr;
   struct obj_data* dummy = nullptr;
   char buf[MAX_INPUT_LENGTH];
@@ -3165,7 +3165,7 @@ void do_noshout(struct char_data* ch, const char* argument, int cmd) {
   }
 }
 
-void do_nohassle(struct char_data* ch, const char* argument, int cmd) {
+void do_nohassle(struct char_data* ch, const char* argument, int /*cmd*/) {
   struct char_data* vict = nullptr;
   struct obj_data* dummy = nullptr;
   char buf[MAX_INPUT_LENGTH];
@@ -3196,7 +3196,7 @@ void do_nohassle(struct char_data* ch, const char* argument, int cmd) {
   }
 }
 
-void do_stealth(struct char_data* ch, const char* argument, int cmd) {
+void do_stealth(struct char_data* ch, const char* argument, int /*cmd*/) {
   struct char_data* vict = nullptr;
   struct obj_data* dummy = nullptr;
   char buf[MAX_INPUT_LENGTH];
@@ -3328,7 +3328,7 @@ static void room_iterate(struct room_data* rb[],
   }
 }
 
-void do_show(struct char_data* ch, const char* argument, int cmd) {
+void do_show(struct char_data* ch, const char* argument, int /*cmd*/) {
   int zone = 0;
   char buf[MAX_STRING_LENGTH];
   char zonenum[MAX_INPUT_LENGTH];
@@ -3459,7 +3459,7 @@ static int scan_number(const char* text, int* rval) {
   return 1;
 }
 
-void do_invis(struct char_data* ch, const char* argument, int cmd) {
+void do_invis(struct char_data* ch, const char* argument, int /*cmd*/) {
   char buf[MAX_INPUT_LENGTH];
   int level = 0;
 
@@ -3493,7 +3493,7 @@ static int safe_to_be_in_system(char* cp) {
   return static_cast<int>(strpbrk(cp, "\"';`") == nullptr);
 }
 
-void do_loglist(struct char_data* ch, const char* arg, int cmd) {
+void do_loglist(struct char_data* ch, const char* /*arg*/, int /*cmd*/) {
   char buf[256];
 
   if (IS_NPC(ch)) {
@@ -3511,7 +3511,7 @@ void do_loglist(struct char_data* ch, const char* arg, int cmd) {
   start_page_file(ch->desc, buf, "No logs could be found.\n\r");
 }
 
-void do_checklog(struct char_data* ch, const char* arg, int cmd) {
+void do_checklog(struct char_data* ch, const char* arg, int /*cmd*/) {
   char string[256];
   char file[256];
   char buf[256];
@@ -3569,7 +3569,7 @@ void do_checklog(struct char_data* ch, const char* arg, int cmd) {
   start_page_file(ch->desc, buf, "Your search-string was not found.\n\r");
 }
 
-void do_deathcheck(struct char_data* ch, const char* arg, int cmd) {
+void do_deathcheck(struct char_data* ch, const char* arg, int /*cmd*/) {
   char file[256];
   char player[256];
   char buf[256];
