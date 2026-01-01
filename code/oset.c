@@ -6,6 +6,7 @@
 
 #include "bit_ops.h"
 #include "comm.h"
+#include "commands.h"
 #include "constants.h"
 #include "handler.h"
 #include "interpreter.h"

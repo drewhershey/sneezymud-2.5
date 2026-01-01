@@ -4,6 +4,7 @@
 
 #include "accessors.h"
 #include "comm.h"
+#include "commands.h"
 #include "db.h"
 #include "games.h"
 #include "interpreter.h"

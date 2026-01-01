@@ -6,6 +6,7 @@
 #include "bit_ops.h"
 #include "character_flags.h"
 #include "comm.h"
+#include "commands.h"
 #include "constants.h"
 #include "db.h"
 #include "game_constants.h"
