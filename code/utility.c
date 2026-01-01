@@ -316,7 +316,7 @@ void sprinttype(int type, const char* const* names, char* result) {
 /* Calculate the MUD time passed over the last t2-t1 centuries (secs) */
 struct time_info_data mud_time_passed(time_t t2, time_t t1) {
   long secs = 0;
-  struct time_info_data now;
+  struct time_info_data now{};
 
   secs = (long)(t2 - t1);
 
@@ -335,7 +335,7 @@ struct time_info_data mud_time_passed(time_t t2, time_t t1) {
 }
 
 struct time_info_data age(struct char_data* ch) {
-  struct time_info_data player_age;
+  struct time_info_data player_age{};
 
   player_age = mud_time_passed(time(nullptr), ch->player.time.birth);
 

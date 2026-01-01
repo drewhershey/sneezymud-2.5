@@ -309,7 +309,7 @@ void build_player_index(void) {
   int nr = -1;
   int i = 0;
   int pc = 0;
-  struct char_file_u dummy;
+  struct char_file_u dummy{};
   FILE* fl = nullptr;
 
   if ((fl = fopen(PLAYER_FILE, "rb+")) == nullptr) {
@@ -1764,7 +1764,7 @@ void store_to_char(struct char_file_u* st, struct char_data* ch) {
   for (i = 0; i < MAX_AFFECT; i++) {
     if (st->affected[i].type != 0) {
       /* Convert from file format to runtime format */
-      struct affected_type af;
+      struct affected_type af{};
       af.type = st->affected[i].type;
       af.duration = st->affected[i].duration;
       af.modifier = st->affected[i].modifier;
@@ -1930,7 +1930,7 @@ int create_entry(char* name) {
 
 /* write the vital data of a player to the player file */
 void save_char(struct char_data* ch, short int load_room) {
-  struct char_file_u st;
+  struct char_file_u st{};
   FILE* fl = nullptr;
   char mode[4];
   int expand = 0;
@@ -2178,7 +2178,7 @@ int file_to_string(const char* name, char* buf) {
 
 static void clear_dead_bit(struct char_data* ch) {
   FILE* fl = nullptr;
-  struct char_file_u st;
+  struct char_file_u st{};
 
   fl = fopen(PLAYER_FILE, "r+");
   if (fl == nullptr) {

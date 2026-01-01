@@ -1277,7 +1277,7 @@ static void load_char_objs(struct char_data* ch) {
   int loc = 0;
   char found = 0;
   float timegold = NAN;
-  struct obj_file_u st;
+  struct obj_file_u st{};
   char buf[200];
 
   sprintf(buf, "rent/%s", lower(ch->player.name));
@@ -1352,7 +1352,7 @@ void nanny(struct descriptor_data* d, char* arg) {
   int count = 0;
   int oops = 0;
   char tmp_name[20];
-  struct char_file_u tmp_store;
+  struct char_file_u tmp_store{};
   struct char_data* tmp_ch = nullptr;
   struct descriptor_data* k = nullptr;
 

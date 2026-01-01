@@ -28,8 +28,8 @@ static void checkpointing(int tmp) {
 }
 
 void signal_setup(void) {
-  struct itimerval itime;
-  struct timeval interval;
+  struct itimerval itime{};
+  struct timeval interval{};
 
   signal(SIGUSR2, shutdown_request);
 

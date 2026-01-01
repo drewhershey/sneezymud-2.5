@@ -313,7 +313,7 @@ static void check_idling(struct char_data* ch) {
       char_to_room(ch, 0); /* Into room number 0 */
     }
   } else if (ch->specials.timer == 60) {
-    struct obj_cost cost;
+    struct obj_cost cost{};
     if (ch->in_room != 3) {
       if (ch->in_room != NOWHERE) {
         char_from_room(ch);

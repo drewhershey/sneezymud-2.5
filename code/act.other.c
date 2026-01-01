@@ -386,7 +386,7 @@ static void save_obj_for_save(struct char_data* ch, struct obj_cost* cost,
 }
 
 void do_save(struct char_data* ch, const char* argument, int cmd) {
-  struct obj_cost cost;
+  struct obj_cost cost{};
   struct char_data* tmp = nullptr;
   struct obj_data* tmp_obj = nullptr;
   struct obj_data* tl = nullptr;
@@ -465,7 +465,7 @@ void do_not_here(struct char_data* ch, const char* argument, int cmd) {
 }
 
 void do_sneak(struct char_data* ch, const char* argument, int cmd) {
-  struct affected_type af;
+  struct affected_type af{};
   signed char percent = 0;
 
   if (IS_AFFECTED(ch, AFF_SNEAK)) {

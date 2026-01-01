@@ -71,7 +71,7 @@ int main(int argc, char** argv) {
   char buf[512];
   const char* dir = nullptr;
 
-  struct rlimit rl;
+  struct rlimit rl{};
   int res = 0;
 
   port = DFLT_PORT;
@@ -137,7 +137,7 @@ int main(int argc, char** argv) {
   sprintf(buf, "Using %s as data directory.", dir);
   vlog(buf);
 
-  struct timespec ts;
+  struct timespec ts{};
   if (timespec_get(&ts, TIME_UTC) == 0) {
     perror("timespec_get failed, couldn't seed random number generator");
     exit(0);
@@ -207,11 +207,11 @@ int game_loop(int s) {
   fd_set input_set;
   fd_set output_set;
   fd_set exc_set;
-  struct timeval last_time;
-  struct timeval now;
-  struct timeval timespent;
-  struct timeval timeout;
-  struct timeval null_time;
+  struct timeval last_time{};
+  struct timeval now{};
+  struct timeval timespent{};
+  struct timeval timeout{};
+  struct timeval null_time{};
   static struct timeval opt_time;
   char comm[MAX_INPUT_LENGTH];
   char promptbuf[80];
@@ -780,8 +780,8 @@ void write_to_q(const char* txt, struct txt_q* queue) {
 }
 
 struct timeval timediff(struct timeval* a, struct timeval* b) {
-  struct timeval rslt;
-  struct timeval tmp;
+  struct timeval rslt{};
+  struct timeval tmp{};
 
   tmp = *a;
 
@@ -816,9 +816,9 @@ int init_socket(int port) {
   int s = 0;
   char* opt = nullptr;
   char hostname[MAX_HOSTNAME + 1];
-  struct sockaddr_in sa;
+  struct sockaddr_in sa{};
   struct hostent* hp = nullptr;
-  struct linger ld;
+  struct linger ld{};
 
   memset(&sa, 0, sizeof(struct sockaddr_in));
   gethostname(hostname, MAX_HOSTNAME);
@@ -855,7 +855,7 @@ int init_socket(int port) {
 }
 
 int new_connection(int s) {
-  struct sockaddr_in isa;
+  struct sockaddr_in isa{};
   /* struct sockaddr peer; */
   int i = 0;
   int t = 0;
@@ -921,7 +921,7 @@ int new_descriptor(int s) {
   int a = 0;
   int size = 0;
   struct descriptor_data* newd = nullptr;
-  struct sockaddr_in sock;
+  struct sockaddr_in sock{};
   struct hostent* from = nullptr;
   char buf[100];
   char tempbuf[255];

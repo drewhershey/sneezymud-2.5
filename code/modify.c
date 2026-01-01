@@ -942,7 +942,7 @@ int load(void) {
       char sl_time[8];   /* "11:10\0" */
       char sl_load1[6];  /* "12.0\0" */
       char sl_load2[10]; /* "+2.3 14u\0" */
-  } info;
+  } info{};
 
   FILE* fl = nullptr;
   int ld = 0;

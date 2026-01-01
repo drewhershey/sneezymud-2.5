@@ -1063,7 +1063,7 @@ void do_springleap(struct char_data* ch, const char* argument, int cmd) {
 
 void do_quivering_palm(struct char_data* ch, const char* arg, int cmd) {
   struct char_data* victim = nullptr;
-  struct affected_type af;
+  struct affected_type af{};
   signed char percent = 0;
   char name[256];
 

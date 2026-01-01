@@ -237,7 +237,7 @@ void TrapTeleport(struct char_data* v) {
 }
 
 void TrapSleep(struct char_data* v) {
-  struct affected_type af;
+  struct affected_type af{};
 
   if (saves_spell(v, SAVING_SPELL) == 0) {
     af.type = SPELL_SLEEP;

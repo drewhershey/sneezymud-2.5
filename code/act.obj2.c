@@ -95,7 +95,7 @@ static const int drink_aff[][3] = {
 void do_drink(struct char_data* ch, const char* argument, int cmd) {
   char buf[255];
   struct obj_data* temp = nullptr;
-  struct affected_type af;
+  struct affected_type af{};
   int amount = 0;
 
   only_argument(argument, buf);
@@ -212,7 +212,7 @@ void do_eat(struct char_data* ch, const char* argument, int cmd) {
   int j = 0;
   int num = 0;
   struct obj_data* temp = nullptr;
-  struct affected_type af;
+  struct affected_type af{};
 
   one_argument(argument, buf);
 
@@ -378,7 +378,7 @@ void do_pour(struct char_data* ch, const char* argument, int cmd) {
 }
 
 void do_sip(struct char_data* ch, const char* argument, int cmd) {
-  struct affected_type af;
+  struct affected_type af{};
   char arg[MAX_STRING_LENGTH];
   char buf[MAX_STRING_LENGTH];
   struct obj_data* temp = nullptr;
@@ -465,7 +465,7 @@ void do_sip(struct char_data* ch, const char* argument, int cmd) {
 }
 
 void do_taste(struct char_data* ch, const char* argument, int cmd) {
-  struct affected_type af;
+  struct affected_type af{};
   char arg[80];
   struct obj_data* temp = nullptr;
 

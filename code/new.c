@@ -61,7 +61,7 @@ void do_brew(struct char_data* ch, const char* arg, int cmd) {
   struct obj_data* sac1 = nullptr;
   struct obj_data* sac2 = nullptr;
   struct obj_data* next_obj = nullptr;
-  struct affected_type af;
+  struct affected_type af{};
 
   if (ch->skills == nullptr) {
     return;
@@ -241,7 +241,7 @@ void do_grapple(struct char_data* ch, const char* arg, int cmd) {
   struct char_data* victim = nullptr;
   char name[256];
   signed char percent = 0;
-  struct affected_type af;
+  struct affected_type af{};
   int i = 0;
 
   if (ch->skills == nullptr) {
@@ -345,7 +345,7 @@ void do_scribe(struct char_data* ch, const char* arg, int cmd) {
   struct obj_data* penw = nullptr;
   struct obj_data* paperw = nullptr;
   struct obj_data* next_obj = nullptr;
-  struct affected_type af;
+  struct affected_type af{};
 
   if (ch->skills == nullptr) {
     return;

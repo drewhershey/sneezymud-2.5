@@ -124,7 +124,7 @@ void do_passwd(struct char_data* ch, const char* argument, int cmdnum) {
   char name[30];
   char npasswd[20];
   char pass[20];
-  struct char_file_u tmp_store;
+  struct char_file_u tmp_store{};
   FILE* fl = nullptr;
 
   /*
@@ -2849,7 +2849,7 @@ void do_start(struct char_data* ch) {
   int i = 0;
   int r_num = 0;
   struct obj_data* obj = nullptr;
-  struct affected_type af;
+  struct affected_type af{};
 
   send_to_char("Welcome to SneezyMUD.  Enjoy the game...\n\r", ch);
   *(ch->player.title) = '0';
@@ -3348,7 +3348,7 @@ void do_show(struct char_data* ch, const char* argument, int cmd) {
   int bottom = 0;
   int top = 0;
   int topi = 0;
-  struct string_block sb;
+  struct string_block sb{};
 
   if (IS_NPC(ch)) {
     return;
@@ -3438,7 +3438,7 @@ void do_show(struct char_data* ch, const char* argument, int cmd) {
       append_to_string_block(&sb, "I need a zone number with this command\n\r");
 
     } else {
-      struct show_room_zone_struct srzs;
+      struct show_room_zone_struct srzs{};
 
       srzs.bottom = (zone != 0) ? (zone_table[zone - 1].top + 1) : 0;
       srzs.top = zone_table[zone].top;

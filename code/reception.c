@@ -82,7 +82,7 @@ void update_file(struct char_data* ch, struct obj_file_u* st, int save) {
   FILE* fl = nullptr;
   int loc = 0;
   int t = 0;
-  struct obj_file_u tmp;
+  struct obj_file_u tmp{};
   char buf[200];
 
   sprintf(buf, "rent/%s", lower(ch->player.name));
@@ -376,9 +376,9 @@ static void count_limited_items(struct obj_file_u* st) {
 void update_obj_file(void) {
   FILE* fl = nullptr;
   FILE* char_file = nullptr;
-  struct obj_file_u st;
-  struct char_file_u ch_st;
-  struct char_data tmp_char;
+  struct obj_file_u st{};
+  struct char_file_u ch_st{};
+  struct char_data tmp_char{};
   int pos = 0;
   int no_read = 0;
   int i = 0;
@@ -472,7 +472,7 @@ void update_obj_file(void) {
 
 int receptionist(struct char_data* ch, int cmd, const char* arg) {
   char buf[240];
-  struct obj_cost cost;
+  struct obj_cost cost{};
   struct char_data* recep = nullptr;
   struct char_data* temp_char = nullptr;
   short int save_room = 0;
@@ -555,7 +555,7 @@ int receptionist(struct char_data* ch, int cmd, const char* arg) {
 
 int receptionist_for_outlaws(struct char_data* ch, int cmd, const char* arg) {
   char buf[240];
-  struct obj_cost cost;
+  struct obj_cost cost{};
   struct char_data* recep = nullptr;
   struct char_data* temp_char = nullptr;
   short int save_room = 0;

@@ -2259,7 +2259,7 @@ int eric_johnson(struct char_data* ch, int cmd, const char* arg) {
         TO_VICT);
       damage(eric, target, dice(2, 4), TYPE_HIT);
       if (saves_spell(target, SAVING_SPELL) == 0) {
-        struct affected_type af;
+        struct affected_type af{};
         af.type = SPELL_SLEEP;
         af.duration = 2;
         af.modifier = 0;
@@ -5726,7 +5726,7 @@ int Ringwraith(struct char_data* ch, int cmd, const char* arg) {
   rnum = room_of_object(ring);
 
   if (rnum != ch->in_room) {
-    struct find_path_data fpd;
+    struct find_path_data fpd{};
     fpd.type = FIND_TARGET_ROOM;
     fpd.fn_data.target_room = rnum;
     fpd.fn.is_target_room_fn = is_target_room_p;
@@ -6627,7 +6627,7 @@ int mirror_room(struct char_data* ch, int cmd, const char* arg) {
 int House(struct char_data* ch, int cmd, const char* arg) {
   char buf[100];
   struct char_data* mob = nullptr;
-  struct obj_cost cost;
+  struct obj_cost cost{};
   int i = 0;
   int count = 0;
 
@@ -7336,7 +7336,7 @@ static void bouncer_throw(struct char_data* ch) {
 
 int prof_x(struct char_data* ch, int cmd, const char* arg) {
   struct char_data* victim = nullptr;
-  struct affected_type af;
+  struct affected_type af{};
   int num = 0;
   char buf[200];
 

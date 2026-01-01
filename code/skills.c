@@ -466,7 +466,7 @@ int find_path(int in_room, const struct find_path_data* data, int depth,
   struct room_q* tmp_q = nullptr;
   struct room_q* q_head = nullptr;
   struct room_q* q_tail = nullptr;
-  struct hash_header x_room;
+  struct hash_header x_room{};
   int i = 0;
   int tmp_room = 0;
   int count = 0;
@@ -674,7 +674,7 @@ void do_subterfuge(struct char_data* ch, const char* arg, int cmd) {
 }
 
 void do_swim(struct char_data* ch, const char* arg, int cmd) {
-  struct affected_type af;
+  struct affected_type af{};
   signed char percent = 0;
 
   send_to_char("Ok, you'll try to swim for a while.\n\r", ch);
@@ -913,7 +913,7 @@ void do_doorbash(struct char_data* ch, const char* arg, int cmd) {
 }
 
 void do_spy(struct char_data* ch, const char* arg, int cmd) {
-  struct affected_type af;
+  struct affected_type af{};
   signed char percent = 0;
 
   send_to_char("Ok, you'll try to be 007\n\r", ch);
@@ -1077,7 +1077,7 @@ void do_feign_death(struct char_data* ch, const char* arg, int cmd) {
 }
 
 void do_first_aid(struct char_data* ch, const char* arg, int cmd) {
-  struct affected_type af;
+  struct affected_type af{};
 
   send_to_char("You attempt to render first aid unto yourself\n\r", ch);
 
@@ -1107,7 +1107,7 @@ void do_first_aid(struct char_data* ch, const char* arg, int cmd) {
 }
 
 void do_lay_hands(struct char_data* ch, const char* arg, int cmd) {
-  struct affected_type af;
+  struct affected_type af{};
 
   send_to_char("You attempt to render first aid unto yourself\n\r", ch);
 
