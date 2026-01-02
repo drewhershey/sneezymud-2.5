@@ -178,8 +178,6 @@ void affect_modify(struct char_data* ch, signed char loc, long mod, long bitv,
     }
   }
 
-  int maxabil = (IS_NPC(ch) ? 25 : 18);
-
   switch (loc) {
     case APPLY_NONE:
       break;

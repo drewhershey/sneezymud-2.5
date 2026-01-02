@@ -1480,7 +1480,7 @@ void act(const char* str, int hide_invisible, struct char_data* ch,
   for (; to != nullptr; to = to->next_in_room) {
     if ((to->desc != nullptr) && ((to != ch) || (type == TO_CHAR)) &&
         ((CAN_SEE(to, ch) != 0) || (hide_invisible == 0)) &&
-        !((type == TO_NOTVICT) && (to == (struct char_data*)vict_obj))) {
+        ((type != TO_NOTVICT) || (to != (struct char_data*)vict_obj))) {
       for (strp = str, point = buf;;) {
         if (*strp == '$') {
           switch (*(++strp)) {

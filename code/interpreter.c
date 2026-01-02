@@ -1535,8 +1535,7 @@ void nanny(struct descriptor_data* d, char* arg) {
       if (*arg == 0) {
         close_socket(d);
       } else {
-        if (false && strncmp(crypt(arg, d->pwd), d->pwd, 10) !=
-                       0) {  // TEMP: password check disabled
+        if (strncmp(crypt(arg, d->pwd), d->pwd, 10) != 0) {
           SEND_TO_Q("Wrong password.\n\r", d);
           if (d->max_str > 3) {
             close_socket(d);

@@ -422,8 +422,8 @@ void do_flee(struct char_data* ch, const char* /*argument*/, int /*cmd*/) {
         }
 
         if (IS_NPC(ch) &&
-            !(IS_SET(ch->specials.act, ACT_POLYSELF) && (ch->desc == nullptr) &&
-              !(IS_SET(ch->specials.act, ACT_AGGRESSIVE)))) {
+            (!IS_SET(ch->specials.act, ACT_POLYSELF) || (ch->desc != nullptr) ||
+              (IS_SET(ch->specials.act, ACT_AGGRESSIVE)))) {
           AddFeared(ch, ch->specials.fighting);
         } else {
           percent = 100 * (float)GET_HIT(ch->specials.fighting) /
