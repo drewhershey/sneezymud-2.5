@@ -1712,10 +1712,10 @@ static struct time_info_data real_time_passed(time_t t2, time_t t1) {
   secs = (long)(t2 - t1);
 
   now.hours = (secs / SECS_PER_REAL_HOUR) % 24; /* 0..23 hours */
-  secs -= SECS_PER_REAL_HOUR * now.hours;
+  secs -= static_cast<long>(SECS_PER_REAL_HOUR * now.hours);
 
   now.day = (secs / SECS_PER_REAL_DAY); /* 0..34 days  */
-  secs -= SECS_PER_REAL_DAY * now.day;
+  secs -= static_cast<long>(SECS_PER_REAL_DAY * now.day);
 
   now.month = -1;
   now.year = -1;

@@ -323,13 +323,13 @@ struct time_info_data mud_time_passed(time_t t2, time_t t1) {
   secs = (long)(t2 - t1);
 
   now.hours = (secs / SECS_PER_MUD_HOUR) % 24; /* 0..23 hours */
-  secs -= SECS_PER_MUD_HOUR * now.hours;
+  secs -= static_cast<long>(SECS_PER_MUD_HOUR * now.hours);
 
   now.day = (secs / SECS_PER_MUD_DAY) % 35; /* 0..34 days  */
-  secs -= SECS_PER_MUD_DAY * now.day;
+  secs -= static_cast<long>(SECS_PER_MUD_DAY * now.day);
 
   now.month = (secs / SECS_PER_MUD_MONTH) % 17; /* 0..16 months */
-  secs -= SECS_PER_MUD_MONTH * now.month;
+  secs -= static_cast<long>(SECS_PER_MUD_MONTH * now.month);
 
   now.year = (secs / SECS_PER_MUD_YEAR); /* 0..XX? years */
 

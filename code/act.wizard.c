@@ -6,6 +6,7 @@
 #include <time.h>
 
 #include <algorithm>
+#include <utility>
 
 #include "accessors.h"
 #include "bit_ops.h"
@@ -2043,7 +2044,7 @@ void do_set(struct char_data* ch, const char* argument, int /*cmd*/) {
     mob->specials.spells_to_learn = parm;
   } else if (strcmp(field, "age") == 0) {
     sscanf(parmstr, "%d", &parm);
-    mob->player.time.birth -= SECS_PER_MUD_YEAR * parm;
+    mob->player.time.birth -= static_cast<time_t>(SECS_PER_MUD_YEAR * parm);
 
   } else if (strcmp(field, "str") == 0) {
     sscanf(parmstr, "%d", &parm);
@@ -2713,9 +2714,11 @@ static void roll_abilities(struct char_data* ch) {
     temp = rools[0] + rools[1] + rools[2] + rools[3] -
            MIN(rools[0], MIN(rools[1], MIN(rools[2], rools[3])));
 
-    for (k = 0; k < MAX_STAT; k++)
-      if (table[k] < temp)
+    for (k = 0; k < MAX_STAT; k++) {
+      if (std::cmp_less(table[k], temp)) {
         SWITCH(temp, table[k]);
+      }
+    }
   }
 
   for (i = 0; i < MAX_STAT; i++) {
@@ -3259,14 +3262,14 @@ static void print_room(int rnum, struct room_data* rp,
 }
 
 static void print_death_room(int rnum, struct room_data* rp, void* data) {
-  struct string_block* sb = (struct string_block*)data;
+  auto* sb = (struct string_block*)data;
   if ((rp != nullptr) && ((rp->room_flags & DEATH) != 0)) {
     print_room(rnum, rp, sb);
   }
 }
 
 static void print_private_room(int rnum, struct room_data* rp, void* data) {
-  struct string_block* sb = (struct string_block*)data;
+  auto* sb = (struct string_block*)data;
   if ((rp != nullptr) && ((rp->room_flags & PRIVATE) != 0)) {
     print_room(rnum, rp, sb);
   }
@@ -3280,7 +3283,7 @@ struct show_room_zone_struct {
 };
 
 static void show_room_zone(int rnum, struct room_data* rp, void* data) {
-  struct show_room_zone_struct* srzs = (struct show_room_zone_struct*)data;
+  auto* srzs = (struct show_room_zone_struct*)data;
   char buf[MAX_STRING_LENGTH];
 
   if ((rp == nullptr) || rp->number < srzs->bottom || rp->number > srzs->top) {

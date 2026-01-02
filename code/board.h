@@ -30,4 +30,4 @@ int board_remove_msg(struct char_data* ch, const char* arg, struct Board* b);
 void board_write_msg(struct char_data* ch, const char* arg, struct Board* b);
 void OpenBoardFile(struct Board* b);
 void InitABoard(struct obj_data* obj);
-void InitBoards(void);
+void InitBoards();

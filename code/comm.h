@@ -50,10 +50,10 @@ void close_socket(struct descriptor_data* d);
 struct timeval timediff(struct timeval* a, struct timeval* b);
 void flush_queues(struct descriptor_data* d);
 void nonblock(int s);
-void save_all(void);
+void save_all();
 struct char_data* make_char(char* name, struct descriptor_data* desc);
-void boot_db(void);
-void zone_update(void);
+void boot_db();
+void zone_update();
 void affect_update(int pulse); /* In spell_parser.c */
 void free_char(struct char_data* ch);
 void string_add(struct descriptor_data* d, char* str);
@@ -61,18 +61,18 @@ void perform_violence(int pulse);
 void stop_fighting(struct char_data* ch);
 void show_string(struct descriptor_data* d, const char* input);
 void gr(int s);
-void station(void);
+void station();
 void down_river(int pulse);
 void Teleport(int pulse);
 void MakeSound(int pulse);
 void TeleportPulseStuff(int pulse);
 void RiverPulseStuff(int pulse);
 char* find_ex_description(const char* word, struct extra_descr_data* list);
-extern int load(void);
+extern int load();
 void coma(int s);
-void check_reboot(void);
-void signal_setup(void);
-extern int workhours(void);
+void check_reboot();
+void signal_setup();
+extern int workhours();
 
 void act(const char* str, int hide_invisible, struct char_data* ch,
   struct obj_data* obj, void* vict_obj, int type);

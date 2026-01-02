@@ -39,7 +39,7 @@
 ***************************************************************************
 **   DONT TOUCH DEFINES BELOW   */
 
-int scan_file(void);
+int scan_file();
 int has_mail(char* recipient);
 void store_mail(char* to, char* from, char* message_pointer);
 char* read_delete(char* recipient, char* recipient_formatted);

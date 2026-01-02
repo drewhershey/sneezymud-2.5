@@ -95,10 +95,10 @@ void slog(const char* str);
 /* Weather and time */
 void weather_and_time(int mode);
 void another_hour(int mode);
-void weather_change(void);
+void weather_change();
 void GetMonth(int month);
 void ChangeWeather(int change);
-void night_watchman(void);
+void night_watchman();
 
 /* Object utilities */
 void SwitchStuff(struct char_data* giver, struct char_data* taker);

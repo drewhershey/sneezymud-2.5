@@ -2,6 +2,10 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <cstddef>
+#include <cstdint>
+#include <utility>
+
 #include "accessors.h"
 #include "comm.h"
 #include "commands.h"
@@ -95,7 +99,9 @@ int do_blackjack_enter(struct char_data* ch) {
     return 0;
   }
 
-  srand((unsigned int)((time_info.hours * time_info.day) % (intptr_t)(ch)));
+  srand(
+    (unsigned int)((static_cast<intptr_t>(time_info.hours * time_info.day)) %
+                   (intptr_t)(ch)));
   send_to_char("You move up to the blackjack table.\n\r", ch);
   bj_data[inx].inuse = 1;
   strcpy(bj_data[inx].name, ch->player.name);
@@ -246,7 +252,7 @@ static int best_bj_dealer(int inx) {
   int l2 = 0;
   int l3 = 0;
 
-  for (l1 = 0, l2 = 0, l3 = 0; l1 < bj_data[inx].nd; l1++) {
+  for (l1 = 0, l2 = 0, l3 = 0; std::cmp_less(l1, bj_data[inx].nd); l1++) {
     if ((bj_data[inx].dealer[l1] & 0x0f) > 10) {
       l2 += 10;
     } else {
@@ -270,7 +276,7 @@ static int best_bj_score(int inx) {
   int l2 = 0;
   int l3 = 0;
 
-  for (l1 = 0, l2 = 0, l3 = 0; l1 < bj_data[inx].np; l1++) {
+  for (l1 = 0, l2 = 0, l3 = 0; std::cmp_less(l1, bj_data[inx].np); l1++) {
     if ((bj_data[inx].hand[l1] & 0x0f) > 10) {
       l2 += 10;
     } else {
@@ -330,14 +336,14 @@ void do_stay(struct char_data* ch, const char* /*arg*/, int /*cmd*/) {
     }
 
     strcpy(log_msg, "Your final hand:\n\r");
-    for (l1 = 0; l1 < bj_data[inx].np; l1++) {
+    for (l1 = 0; std::cmp_less(l1, bj_data[inx].np); l1++) {
       strcat(log_msg, card_names[bj_data[inx].hand[l1] & 0x0F]);
       add_suit(log_msg, bj_data[inx].hand[l1]);
       strcat(log_msg, "\r\n");
     }
 
     strcat(log_msg, "\n\rThe dealer final hand:\n\r");
-    for (l1 = 0; l1 < bj_data[inx].nd; l1++) {
+    for (l1 = 0; std::cmp_less(l1, bj_data[inx].nd); l1++) {
       strcat(log_msg, card_names[bj_data[inx].dealer[l1] & 0x0F]);
       add_suit(log_msg, bj_data[inx].dealer[l1]);
       strcat(log_msg, "\r\n");
@@ -381,7 +387,7 @@ void do_peek(struct char_data* ch, const char* /*arg*/, int /*cmd*/) {
     }
 
     strcpy(log_msg, "You peek at your hand:\n\r");
-    for (l1 = 0; l1 < bj_data[inx].np; l1++) {
+    for (l1 = 0; std::cmp_less(l1, bj_data[inx].np); l1++) {
       strcat(log_msg, card_names[bj_data[inx].hand[l1] & 0x0F]);
       add_suit(log_msg, bj_data[inx].hand[l1]);
       if (l1 == 0) {
@@ -406,7 +412,7 @@ static int min_bj_score(int inx) {
   int l1 = 0;
   int l2 = 0;
 
-  for (l1 = 0, l2 = 0; l1 < bj_data[inx].np; l1++) {
+  for (l1 = 0, l2 = 0; std::cmp_less(l1, bj_data[inx].np); l1++) {
     if ((bj_data[inx].hand[l1] & 0x0f) > 10) {
       l2 += 10;
     } else {

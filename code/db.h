@@ -40,10 +40,10 @@
 
 /* public procedures in db.c */
 
-void boot_db(void);
+void boot_db();
 void save_char(struct char_data* ch, short int load_room);
 int create_entry(char* name);
-void zone_update(void);
+void zone_update();
 void init_char(struct char_data* ch);
 [[nodiscard]] int load_char(char* name, struct char_file_u* char_element);
 void clear_char(struct char_data* ch);
@@ -54,26 +54,26 @@ void free_char(struct char_data* ch);
 [[nodiscard]] char* fread_string(FILE* fl);
 [[nodiscard]] int real_object(int vnum);
 [[nodiscard]] int real_mobile(int vnum);
-void boot_zones(void);
+void boot_zones();
 [[nodiscard]] struct room_data* allocate_room(int room_number);
-void boot_world(void);
+void boot_world();
 struct index_data* generate_indices(FILE* fl, int* top);
-void build_player_index(void);
+void build_player_index();
 void char_to_store(struct char_data* ch, struct char_file_u* st);
 void store_to_char(struct char_file_u* st, struct char_data* ch);
 int is_empty(int zone_nr);
 void reset_zone(int zone);
 int file_to_string(const char* name, char* buf);
-void renum_zone_table(void);
-void reset_time(void);
+void renum_zone_table();
+void reset_time();
 struct obj_data* unequip_char_for_save(struct char_data* ch, int pos);
-void load_messages(void);
-void assign_command_pointers(void);
-void assign_spell_pointers(void);
-void boot_social_messages(void);
-void boot_pose_messages(void);
-void change_char_file(void); /* In reception.c */
-void update_obj_file(void);
+void load_messages();
+void assign_command_pointers();
+void assign_spell_pointers();
+void boot_social_messages();
+void boot_pose_messages();
+void change_char_file(); /* In reception.c */
+void update_obj_file();
 int DetermineExp(struct char_data* mob, int exp_flags);
 
 #define REAL 0
@@ -182,10 +182,10 @@ extern struct zone_data* zone_table;
 
 void cleanout_room(struct room_data* rp);
 void load_one_room(FILE* fl, struct room_data* rp);
-void update_time(void);
+void update_time();
 void free_obj(struct obj_data* obj);
-extern void assign_mobiles(void);
-extern void assign_objects(void);
-extern void assign_rooms(void);
-extern void boot_the_shops(void);
-extern void assign_the_shopkeepers(void);
+extern void assign_mobiles();
+extern void assign_objects();
+extern void assign_rooms();
+extern void boot_the_shops();
+extern void assign_the_shopkeepers();
