@@ -1016,7 +1016,7 @@ static void say_spell(struct char_data* ch, int si) {
     for (j = 0; *(syls[j].org) != 0; j++) {
       if (strncmp(syls[j].org, splwd + offs, strlen(syls[j].org)) == 0) {
         strcat(buf, syls[j].replacement);
-        if (strlen(syls[j].org) != 0u) {
+        if (strlen(syls[j].org) != 0U) {
           offs += strlen(syls[j].org);
         } else {
           ++offs;

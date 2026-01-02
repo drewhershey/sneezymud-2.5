@@ -83,7 +83,7 @@ int RemHated(struct char_data* ch, struct char_data* pud) {
   if (ch->hates.clist == nullptr) {
     REMOVE_BIT(ch->hatefield, HATE_CHAR);
   }
-  if (ch->hatefield == 0u) {
+  if (ch->hatefield == 0U) {
     if (!IS_PC(ch)) {
       REMOVE_BIT(ch->specials.act, ACT_HATEFUL);
     }
@@ -355,7 +355,7 @@ int RemFeared(struct char_data* ch, struct char_data* pud) {
   if (ch->fears.clist == nullptr) {
     REMOVE_BIT(ch->fearfield, FEAR_CHAR);
   }
-  if (ch->fearfield == 0u) {
+  if (ch->fearfield == 0U) {
     REMOVE_BIT(ch->specials.act, ACT_AFRAID);
   }
   return (((pud) != nullptr) ? 1 : 0);

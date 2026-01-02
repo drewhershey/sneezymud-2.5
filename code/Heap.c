@@ -29,20 +29,20 @@ static void smart_str_cpy(char* s1, const char* s2) {
 }
 
 void StringHeap(char* string, struct StrHeap* Heap) {
-  unsigned char found = 0u;
+  unsigned char found = 0U;
   int i = 0;
 
   if ((string == nullptr) || (*string == 0)) {
     return; /* don't bother adding if null string */
   }
 
-  for (i = 0; i < Heap->uniq && (found == 0u); i++) {
+  for (i = 0; i < Heap->uniq && (found == 0U); i++) {
     if (strcmp(string, Heap->str[i].string) == 0) {
       Heap->str[i].total++;
-      found = 1u;
+      found = 1U;
     }
   }
-  if (found == 0u) {
+  if (found == 0U) {
     if (Heap->str != nullptr) {
       /* increase size by 1 */
       RECREATE(Heap->str, struct StrHeapList, (size_t)(Heap->uniq + 1));

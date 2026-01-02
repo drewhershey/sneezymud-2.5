@@ -281,7 +281,7 @@ void sprintbit(unsigned long vektor, const char* const* names, char* result) {
 
   *result = '\0';
 
-  for (nr = 0; vektor != 0u; vektor >>= 1) {
+  for (nr = 0; vektor != 0U; vektor >>= 1) {
     if (IS_SET(1, vektor)) {
       if (*names[nr] == '\n') {
         strcat(result, "UNDEFINED");

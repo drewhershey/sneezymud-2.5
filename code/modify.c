@@ -944,7 +944,7 @@ int load() {
     slow_death = 1;
     return (-1);
   }
-  if (fread(&info, sizeof(info), 1, fl) == 0u) {
+  if (fread(&info, sizeof(info), 1, fl) == 0U) {
     perror("fread sysline (dying)");
     (void)fclose(fl);
     slow_death = 1;

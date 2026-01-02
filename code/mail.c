@@ -176,7 +176,7 @@ int scan_file() {
     return 1;
   }
 
-  while (fread(&next_block, sizeof(header_block_type), 1, mail_file) != 0u) {
+  while (fread(&next_block, sizeof(header_block_type), 1, mail_file) != 0U) {
     if (next_block.block_type == HEADER_BLOCK) {
       index_mail(next_block.to, block_num * BLOCK_SIZE);
       total_messages++;

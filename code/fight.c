@@ -1908,7 +1908,7 @@ struct char_data* FindVictim(struct char_data* ch) {
 
   /* if no legal enemies have been found, return 0 */
 
-  if (found == 0u) {
+  if (found == 0U) {
     return (nullptr);
   }
 
@@ -2086,7 +2086,7 @@ struct char_data* FindAnyVictim(struct char_data* ch) {
 
   /* if no legal enemies have been found, return 0 */
 
-  if (found == 0u) {
+  if (found == 0U) {
     return (nullptr);
   }
 
@@ -2461,7 +2461,7 @@ struct char_data* FindAnAttacker(struct char_data* ch) {
 
   /* if no legal enemies have been found, return 0 */
 
-  if (found == 0u) {
+  if (found == 0U) {
     return (nullptr);
   }
 
@@ -2563,7 +2563,7 @@ struct char_data* FindMetaVictim(struct char_data* ch) {
 
   /* if no legal enemies have been found, return 0 */
 
-  if (found == 0u) {
+  if (found == 0U) {
     return (nullptr);
   }
 
