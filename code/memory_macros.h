@@ -32,7 +32,7 @@ using alloc_result = struct {
 [[nodiscard]] static inline alloc_result alloc_or_die(size_t count,
   size_t size) {
   void* ptr = calloc(count, size);
-  if (!ptr) {
+  if (ptr == nullptr) {
     perror("allocation failure");
     abort();
   }

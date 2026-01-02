@@ -8540,8 +8540,8 @@ int nodrop(struct char_data* ch, int cmd, const char* arg,
     for (i = real_roomp(ch->in_room)->contents, j = 1;
       (i != nullptr) && (j <= num); i = i->next_content) {
       if (i->item_number >= 0) {
-        if (do_all || isname(name, i->name)) {
-          if (do_all || j == num) {
+        if ((do_all != 0) || (isname(name, i->name) != 0)) {
+          if ((do_all != 0) || j == num) {
             if (obj_index[i->item_number].func.obj_f == nodrop) {
               obj = i;
               break;
@@ -8564,8 +8564,8 @@ int nodrop(struct char_data* ch, int cmd, const char* arg,
   for (i = ch->carrying, j = 1; (i != nullptr) && (j <= num);
     i = i->next_content) {
     if (i->item_number >= 0) {
-      if (do_all || isname(name, i->name)) {
-        if (do_all || j == num) {
+      if ((do_all != 0) || (isname(name, i->name) != 0)) {
+        if ((do_all != 0) || j == num) {
           if (obj_index[i->item_number].func.obj_f == nodrop) {
             obj = i;
             break;
@@ -9503,7 +9503,7 @@ int ghostsoldier(struct char_data* ch, int cmd, const char* /*arg*/) {
   max_good = -1001;
   good = nullptr;
 
-  for (tch = real_roomp(ch->in_room)->people; tch; tch = tch->next_in_room) {
+  for (tch = real_roomp(ch->in_room)->people; tch != nullptr; tch = tch->next_in_room) {
     if (!(mob_index[tch->nr].func.mob_f ==
           ghostsoldier) && /* Another ghost soldier? */
         !(mob_index[tch->nr].func.mob_f == keystone) && /* The ghost captain? */
