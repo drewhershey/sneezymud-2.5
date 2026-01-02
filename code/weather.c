@@ -103,7 +103,7 @@ void another_hour(int mode) {
   }
 }
 
-void weather_change(void) {
+void weather_change() {
   int diff = 0;
   int change = 0;
 

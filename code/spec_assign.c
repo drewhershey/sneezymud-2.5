@@ -806,7 +806,7 @@ static const size_t num_mob_specials =
   sizeof(mob_specials) / sizeof(mob_specials[0]);
 
 /* assign special procedures to mobiles */
-void assign_mobiles(void) {
+void assign_mobiles() {
   char buf[MAX_STRING_LENGTH];
 
   for (size_t i = 0; i < num_mob_specials; ++i) {
@@ -847,7 +847,7 @@ static const size_t num_obj_specials =
   sizeof(obj_specials) / sizeof(obj_specials[0]);
 
 /* assign special procedures to objects */
-void assign_objects(void) {
+void assign_objects() {
   for (size_t i = 0; i < num_obj_specials; ++i) {
     const int rnum = real_object(obj_specials[i].vnum);
 
@@ -920,7 +920,7 @@ static const size_t num_room_specials =
   sizeof(room_specials) / sizeof(room_specials[0]);
 
 /* assign special procedures to rooms */
-void assign_rooms(void) {
+void assign_rooms() {
   for (size_t i = 0; i < num_room_specials; ++i) {
     struct room_data* rp = real_roomp(room_specials[i].vnum);
 

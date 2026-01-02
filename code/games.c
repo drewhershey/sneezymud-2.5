@@ -17,7 +17,7 @@
 #include "structs.h"
 #include "utils.h"
 
-static const char* choose_first_fruit(void) {
+static const char* choose_first_fruit() {
   int num = 0;
   static const char* fruits[8] = {
     "cherry",
@@ -43,7 +43,7 @@ static const char* choose_first_fruit(void) {
   return (fruits[0]);
 }
 
-static const char* choose_second_fruit(void) {
+static const char* choose_second_fruit() {
   int num = 0;
   static const char* fruits[8] = {
     "cherry",
@@ -68,7 +68,7 @@ static const char* choose_second_fruit(void) {
   return (fruits[0]);
 }
 
-static const char* choose_third_fruit(void) {
+static const char* choose_third_fruit() {
   int num = 0;
   static const char* fruits[8] = {
     "cherry",

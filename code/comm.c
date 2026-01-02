@@ -1362,7 +1362,7 @@ void send_to_char(const char* messg, struct char_data* ch) {
   }
 }
 
-void save_all(void) {
+void save_all() {
   struct descriptor_data* i = nullptr;
 
   for (i = descriptor_list; i != nullptr; i = i->next) {

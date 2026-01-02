@@ -19,7 +19,7 @@
 struct char_data* board_kludge_char;
 struct Board* board_list;
 
-void InitBoards(void) {
+void InitBoards() {
   /*
    **  this is called at the very beginning, like shopkeepers
    */

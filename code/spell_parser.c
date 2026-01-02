@@ -1448,7 +1448,7 @@ void do_cast(struct char_data* ch, const char* argument, int /*cmd*/) {
   }
 }
 
-void assign_spell_pointers(void) {
+void assign_spell_pointers() {
   int i = 0;
 
   for (i = 0; i < MAX_SPL_LIST; i++) {

@@ -358,7 +358,7 @@ static void count_limited_items(struct obj_file_u* st) {
   }
 }
 
-void update_obj_file(void) {
+void update_obj_file() {
   FILE* fl = nullptr;
   FILE* char_file = nullptr;
   struct obj_file_u st{};

@@ -81,7 +81,7 @@ int top_of_objt = 0; /* top of object index table       */
 struct time_info_data time_info;  /* the infomation about the time   */
 struct weather_data weather_info; /* the infomation about the weather */
 
-static void print_limited_items(void) {
+static void print_limited_items() {
   int i = 0;
   char buf[200];
 
@@ -98,7 +98,7 @@ static void print_limited_items(void) {
  *********************************************************************** */
 
 /* body of the booting system */
-void boot_db(void) {
+void boot_db() {
   int i = 0;
 
   vlog("Boot db -- BEGIN.");
@@ -197,7 +197,7 @@ void boot_db(void) {
 }
 
 /* reset the time in the game from file */
-void reset_time(void) {
+void reset_time() {
   char buf[80];
   static constexpr long beginning_of_time = 650336715;
 
@@ -281,7 +281,7 @@ void reset_time(void) {
 }
 
 /* update the time file */
-void update_time(void) {
+void update_time() {
   FILE* f1 = nullptr;
   long current_time = 0;
 
@@ -307,7 +307,7 @@ void update_time(void) {
 }
 
 /* generate index table for the player file */
-void build_player_index(void) {
+void build_player_index() {
   int nr = -1;
   int i = 0;
   int pc = 0;
@@ -575,7 +575,7 @@ void load_one_room(FILE* fl, struct room_data* rp) {
 }
 
 /* load the rooms */
-void boot_world(void) {
+void boot_world() {
   memset((void*)room_db, 0, sizeof(struct room_data*) * WORLD_SIZE);
 
   assert(!character_list && !object_list);
@@ -641,7 +641,7 @@ struct room_data* allocate_room(int room_number) {
     vlog(buf);                                                       \
   }
 
-void renum_zone_table(void) {
+void renum_zone_table() {
   int zone = 0;
   int comm = 0;
   struct reset_com* cmd = nullptr;
@@ -704,7 +704,7 @@ void renum_zone_table(void) {
 }
 
 /* load the zone table and command tables */
-void boot_zones(void) {
+void boot_zones() {
   FILE* fl = nullptr;
   int zon = 0;
   int cmd_no = 0;
@@ -1411,7 +1411,7 @@ struct obj_data* read_object(int nr, int type) {
 #define ZO_DEAD 999
 
 /* update zone ages, queue for reset if necessary, and dequeue when possible */
-void zone_update(void) {
+void zone_update() {
   int i = 0;
   struct reset_q_element* update_u = nullptr;
   struct reset_q_element* temp = nullptr;

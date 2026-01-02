@@ -12333,7 +12333,7 @@ int loremaster(struct char_data* ch, int cmd, const char* arg) {
   return 0;
 }
 
-void station(void) {
+void station() {
   int t = 0;
   const int i = 0;
   struct obj_data* obj = nullptr;

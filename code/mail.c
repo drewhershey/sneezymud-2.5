@@ -35,7 +35,7 @@ static void push_free_list(long pos) {
   free_list = new_pos;
 }
 
-static long pop_free_list(void) {
+static long pop_free_list() {
   position_list_type* old_pos = nullptr;
   long return_value = 0;
 
@@ -157,7 +157,7 @@ static void index_mail(char* raw_name_to_index, long pos) {
 /* SCAN_FILE */
 /* scan_file is called once during boot-up.  It scans through the mail file
    and indexes all entries currently in the mail file. */
-int scan_file(void) {
+int scan_file() {
   FILE* mail_file = nullptr;
   header_block_type next_block;
   int total_messages = 0;

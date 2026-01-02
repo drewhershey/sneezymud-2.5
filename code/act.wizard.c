@@ -82,7 +82,7 @@ void do_demote(struct char_data* ch, const char* argument, int /*cmd*/) {
   ch->player.time.birth -= SECS_PER_MUD_YEAR;
 }
 
-static struct StrHeap* init_heap(void) {
+static struct StrHeap* init_heap() {
   struct StrHeap* heap = nullptr;
 
   heap = (struct StrHeap*)malloc(sizeof(struct StrHeap));

@@ -840,7 +840,7 @@ void show_string(struct descriptor_data* d, const char* input) {
   }
 }
 
-void night_watchman(void) {
+void night_watchman() {
   long tc = 0;
   struct tm* t_info = nullptr;
 
@@ -861,7 +861,7 @@ void night_watchman(void) {
   }
 }
 
-void check_reboot(void) {
+void check_reboot() {
   long tc = 0;
   struct tm* t_info = nullptr;
   char dummy = 0;
@@ -906,7 +906,7 @@ void check_reboot(void) {
 #define NEW
 #ifdef GR
 
-int workhours(void) {
+int workhours() {
   long tc = 0;
   struct tm* t_info = nullptr;
 
@@ -925,7 +925,7 @@ int workhours(void) {
  * to harness man's desire to play. Who needs a friggin' degree, anyhow?
  */
 
-int load(void) {
+int load() {
   struct syslinfo {
       char sl_date[12];  /* "Tue Sep 16\0" */
       char sl_time[8];   /* "11:10\0" */
@@ -971,7 +971,7 @@ int load(void) {
   return (sum / 5);
 }
 
-static char* nogames(void) {
+static char* nogames() {
   static char text[200];
   FILE* fl = nullptr;
 

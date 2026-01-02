@@ -791,7 +791,7 @@ int special(struct char_data* ch, int cmd, const char* arg) {
   return (0);
 }
 
-void assign_command_pointers(void) {
+void assign_command_pointers() {
   int position = 0;
 
   for (position = 0; position < MAX_CMD_LIST; position++) {

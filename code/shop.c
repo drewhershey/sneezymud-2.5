@@ -493,7 +493,7 @@ static int shop_keeper(struct char_data* ch, int cmd, const char* arg) {
   return 0;
 }
 
-void boot_the_shops(void) {
+void boot_the_shops() {
   char* buf = nullptr;
   int temp = 0;
   int count = 0;
@@ -572,7 +572,7 @@ void boot_the_shops(void) {
   fclose(shop_f);
 }
 
-void assign_the_shopkeepers(void) {
+void assign_the_shopkeepers() {
   int temp1 = 0;
 
   for (temp1 = 0; temp1 < number_of_shops; temp1++) {

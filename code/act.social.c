@@ -66,7 +66,7 @@ static char* fread_action(FILE* fl) {
   }
 }
 
-void boot_social_messages(void) {
+void boot_social_messages() {
   FILE* fl = nullptr;
   int tmp = -1;
   int hide = 0;
@@ -254,7 +254,7 @@ void do_insult(struct char_data* ch, const char* argument, int /*cmd*/) {
   }
 }
 
-void boot_pose_messages(void) {
+void boot_pose_messages() {
   FILE* fl = nullptr;
   signed char counter = 0;
   signed char char_class = 0;

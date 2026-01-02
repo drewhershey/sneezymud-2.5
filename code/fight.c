@@ -149,7 +149,7 @@ static void appear(struct char_data* ch) {
   REMOVE_BIT(ch->specials.affected_by, AFF_INVISIBLE);
 }
 
-void load_messages(void) {
+void load_messages() {
   FILE* f1 = nullptr;
   int i = 0;
   int type = 0;

@@ -27,7 +27,7 @@ static void checkpointing(int /*tmp*/) {
   }
 }
 
-void signal_setup(void) {
+void signal_setup() {
   struct itimerval itime{};
   struct timeval interval{};
 
