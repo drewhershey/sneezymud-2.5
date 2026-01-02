@@ -1016,9 +1016,8 @@ struct char_data* read_mobile(int nr, int type) {
       GET_COND(mob, i) = -1;
     }
 
-    for (int i = 0; i < 5; i++) {
-      mob->specials.apply_saving_throw[i] =
-        (short)(20 - (GET_LEVEL(mob, WARRIOR_LEVEL_IND) / 2));
+    for (short& i : mob->specials.apply_saving_throw) {
+      i = (short)(20 - (GET_LEVEL(mob, WARRIOR_LEVEL_IND) / 2));
     }
   } else if (letter == 'A' || letter == 'N' || letter == 'B' || letter == 'L') {
     if (letter == 'A' || letter == 'B' || letter == 'L') {
@@ -1143,9 +1142,8 @@ struct char_data* read_mobile(int nr, int type) {
       GET_COND(mob, i) = -1;
     }
 
-    for (int i = 0; i < 5; ++i) {
-      mob->specials.apply_saving_throw[i] =
-        (short)(20 - (GET_LEVEL(mob, WARRIOR_LEVEL_IND) / 2));
+    for (short& i : mob->specials.apply_saving_throw) {
+      i = (short)(20 - (GET_LEVEL(mob, WARRIOR_LEVEL_IND) / 2));
     }
   } else { /* The old monsters are down below here */
 
@@ -1216,8 +1214,8 @@ struct char_data* read_mobile(int nr, int type) {
     }
     fscanf(mob_f, " \n ");
 
-    for (int i = 0; i < 5; i++) {
-      fscanf(mob_f, " %hd ", &mob->specials.apply_saving_throw[i]);
+    for (short& i : mob->specials.apply_saving_throw) {
+      fscanf(mob_f, " %hd ", &i);
     }
 
     fscanf(mob_f, " \n ");
@@ -1234,8 +1232,8 @@ struct char_data* read_mobile(int nr, int type) {
   mob->tmpabilities = mob->abilities;
 
   /* Initialisering Ok */
-  for (int i = 0; i < MAX_WEAR; ++i) {
-    mob->equipment[i] = nullptr;
+  for (auto& i : mob->equipment) {
+    i = nullptr;
   }
 
   mob->nr = (short)nr;

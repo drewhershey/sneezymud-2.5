@@ -809,15 +809,15 @@ static const size_t num_mob_specials =
 void assign_mobiles() {
   char buf[MAX_STRING_LENGTH];
 
-  for (size_t i = 0; i < num_mob_specials; ++i) {
-    const int rnum = real_mobile(mob_specials[i].vnum);
+  for (auto mob_special : mob_specials) {
+    const int rnum = real_mobile(mob_special.vnum);
 
     if (rnum < 0) {
       sprintf(buf, "mobile_assign: Mobile %d not found in database.",
-        mob_specials[i].vnum);
+        mob_special.vnum);
       vlog(buf);
     } else {
-      mob_index[rnum].func.mob_f = mob_specials[i].proc;
+      mob_index[rnum].func.mob_f = mob_special.proc;
     }
   }
 
@@ -848,14 +848,14 @@ static const size_t num_obj_specials =
 
 /* assign special procedures to objects */
 void assign_objects() {
-  for (size_t i = 0; i < num_obj_specials; ++i) {
-    const int rnum = real_object(obj_specials[i].vnum);
+  for (auto obj_special : obj_specials) {
+    const int rnum = real_object(obj_special.vnum);
 
     if (rnum < 0) {
       vlogf("object_assign: Object %d not found in database.",
-        obj_specials[i].vnum);
+        obj_special.vnum);
     } else {
-      obj_index[rnum].func.obj_f = obj_specials[i].proc;
+      obj_index[rnum].func.obj_f = obj_special.proc;
     }
   }
 
@@ -921,11 +921,11 @@ static const size_t num_room_specials =
 
 /* assign special procedures to rooms */
 void assign_rooms() {
-  for (size_t i = 0; i < num_room_specials; ++i) {
-    struct room_data* rp = real_roomp(room_specials[i].vnum);
+  for (auto room_special : room_specials) {
+    struct room_data* rp = real_roomp(room_special.vnum);
 
     if (rp != nullptr) {
-      rp->funct = room_specials[i].proc;
+      rp->funct = room_special.proc;
     } else {
       vlog("assign_rooms: unknown room");
     }

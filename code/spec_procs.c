@@ -3286,8 +3286,8 @@ static void free_victims(struct breath_victim* head) {
   }
 }
 
-using breath_fn = void (*)(signed char level, struct char_data* caster, int type,
-  struct char_data* tar_ch);
+using breath_fn = void (*)(signed char level, struct char_data* caster,
+  int type, struct char_data* tar_ch);
 
 int breath_weapon(struct char_data* ch, struct char_data* target,
   int /*mana_cost*/, breath_fn func) {
