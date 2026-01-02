@@ -1416,18 +1416,44 @@ struct PolyType {
     int number;
 };
 
-const struct PolyType poly_list[40] = {{"goblin", 4, 201}, {"parrot", 4, 9001},
-  {"frog", 4, 215}, {"gnoll", 6, 211}, {"parrot", 6, 9010}, {"lizard", 6, 224},
-  {"ogre", 8, 4113}, {"parrot", 8, 9011}, {"wolf", 8, 3094}, {"spider", 9, 227},
-  {"beast", 9, 242}, {"minotaur", 9, 247}, {"snake", 10, 249},
-  {"bull", 10, 1008}, {"warg", 10, 6100}, {"sapling", 12, 1421},
-  {"ogre-maji", 12, 257}, {"black", 12, 230}, {"troll", 14, 4101},
-  {"crocodile", 14, 259}, {"mindflayer", 14, 7202}, {"giant", 16, 261},
-  {"bear", 16, 9024}, {"blue", 16, 233}, {"enfan", 18, 21001},
-  {"lamia", 18, 5201}, {"drider", 18, 5011}, {"wyvern", 20, 3415},
-  {"mindflayer", 20, 7201}, {"spider", 20, 20010}, {"snog", 22, 27008},
-  {"roc", 22, 3724}, {"giant", 24, 9406}, {"white", 26, 243},
-  {"master", 28, 7200}, {"mulichort", 35, 15830}, {"beholder", 40, 5200}};
+const struct PolyType poly_list[40] = {
+  {.name = "goblin", .level = 4, .number = 201},
+  {.name = "parrot", .level = 4, .number = 9001},
+  {.name = "frog", .level = 4, .number = 215},
+  {.name = "gnoll", .level = 6, .number = 211},
+  {.name = "parrot", .level = 6, .number = 9010},
+  {.name = "lizard", .level = 6, .number = 224},
+  {.name = "ogre", .level = 8, .number = 4113},
+  {.name = "parrot", .level = 8, .number = 9011},
+  {.name = "wolf", .level = 8, .number = 3094},
+  {.name = "spider", .level = 9, .number = 227},
+  {.name = "beast", .level = 9, .number = 242},
+  {.name = "minotaur", .level = 9, .number = 247},
+  {.name = "snake", .level = 10, .number = 249},
+  {.name = "bull", .level = 10, .number = 1008},
+  {.name = "warg", .level = 10, .number = 6100},
+  {.name = "sapling", .level = 12, .number = 1421},
+  {.name = "ogre-maji", .level = 12, .number = 257},
+  {.name = "black", .level = 12, .number = 230},
+  {.name = "troll", .level = 14, .number = 4101},
+  {.name = "crocodile", .level = 14, .number = 259},
+  {.name = "mindflayer", .level = 14, .number = 7202},
+  {.name = "giant", .level = 16, .number = 261},
+  {.name = "bear", .level = 16, .number = 9024},
+  {.name = "blue", .level = 16, .number = 233},
+  {.name = "enfan", .level = 18, .number = 21001},
+  {.name = "lamia", .level = 18, .number = 5201},
+  {.name = "drider", .level = 18, .number = 5011},
+  {.name = "wyvern", .level = 20, .number = 3415},
+  {.name = "mindflayer", .level = 20, .number = 7201},
+  {.name = "spider", .level = 20, .number = 20010},
+  {.name = "snog", .level = 22, .number = 27008},
+  {.name = "roc", .level = 22, .number = 3724},
+  {.name = "giant", .level = 24, .number = 9406},
+  {.name = "white", .level = 26, .number = 243},
+  {.name = "master", .level = 28, .number = 7200},
+  {.name = "mulichort", .level = 35, .number = 15830},
+  {.name = "beholder", .level = 40, .number = 5200}};
 
 #define LAST_POLY_MOB 36
 
@@ -5888,12 +5914,12 @@ struct breath_potion {
     int vnum;
     int spell[MAX_BREATHS];
 } breath_potions[] = {
-  {3970, {201, 0}},
-  {3971, {202, 0}},
-  {3972, {203, 0}},
-  {3973, {204, 0}},
-  {3974, {205, 0}},
-  {0},
+  {.vnum = 3970, .spell = {201, 0}},
+  {.vnum = 3971, .spell = {202, 0}},
+  {.vnum = 3972, .spell = {203, 0}},
+  {.vnum = 3973, .spell = {204, 0}},
+  {.vnum = 3974, .spell = {205, 0}},
+  {.vnum = 0},
 };
 
 void cast_dragon_breath(signed char level, struct char_data* ch,

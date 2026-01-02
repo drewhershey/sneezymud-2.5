@@ -975,17 +975,37 @@ static void say_spell(struct char_data* ch, int si) {
       char replacement[10];
   };
 
-  struct syllable syls[] = {{" ", " "}, {"ar", "abra"}, {"au", "kada"},
-    {"bless", "fido"}, {"blind", "nose"}, {"bur", "mosa"}, {"cu", "judi"},
-    {"ca", "jedi"}, {"de", "oculo"}, {"en", "unso"}, {"light", "dies"},
-    {"lo", "hi"}, {"mor", "zak"}, {"move", "sido"}, {"ness", "lacri"},
-    {"ning", "illa"}, {"per", "duda"}, {"ra", "gru"}, {"re", "candus"},
-    {"son", "sabru"}, {"se", "or"}, {"tect", "infra"}, {"tri", "cula"},
-    {"ven", "nofo"}, {"a", "a"}, {"b", "b"}, {"c", "q"}, {"d", "e"}, {"e", "z"},
-    {"f", "y"}, {"g", "o"}, {"h", "p"}, {"i", "u"}, {"j", "y"}, {"k", "t"},
-    {"l", "r"}, {"m", "w"}, {"n", "i"}, {"o", "a"}, {"p", "s"}, {"q", "d"},
-    {"r", "f"}, {"s", "g"}, {"t", "h"}, {"u", "j"}, {"v", "z"}, {"w", "x"},
-    {"x", "n"}, {"y", "l"}, {"z", "k"}, {"", ""}};
+  struct syllable syls[] = {{.org = " ", .replacement = " "},
+    {.org = "ar", .replacement = "abra"}, {.org = "au", .replacement = "kada"},
+    {.org = "bless", .replacement = "fido"},
+    {.org = "blind", .replacement = "nose"},
+    {.org = "bur", .replacement = "mosa"}, {.org = "cu", .replacement = "judi"},
+    {.org = "ca", .replacement = "jedi"}, {.org = "de", .replacement = "oculo"},
+    {.org = "en", .replacement = "unso"},
+    {.org = "light", .replacement = "dies"}, {.org = "lo", .replacement = "hi"},
+    {.org = "mor", .replacement = "zak"},
+    {.org = "move", .replacement = "sido"},
+    {.org = "ness", .replacement = "lacri"},
+    {.org = "ning", .replacement = "illa"},
+    {.org = "per", .replacement = "duda"}, {.org = "ra", .replacement = "gru"},
+    {.org = "re", .replacement = "candus"},
+    {.org = "son", .replacement = "sabru"}, {.org = "se", .replacement = "or"},
+    {.org = "tect", .replacement = "infra"},
+    {.org = "tri", .replacement = "cula"},
+    {.org = "ven", .replacement = "nofo"}, {.org = "a", .replacement = "a"},
+    {.org = "b", .replacement = "b"}, {.org = "c", .replacement = "q"},
+    {.org = "d", .replacement = "e"}, {.org = "e", .replacement = "z"},
+    {.org = "f", .replacement = "y"}, {.org = "g", .replacement = "o"},
+    {.org = "h", .replacement = "p"}, {.org = "i", .replacement = "u"},
+    {.org = "j", .replacement = "y"}, {.org = "k", .replacement = "t"},
+    {.org = "l", .replacement = "r"}, {.org = "m", .replacement = "w"},
+    {.org = "n", .replacement = "i"}, {.org = "o", .replacement = "a"},
+    {.org = "p", .replacement = "s"}, {.org = "q", .replacement = "d"},
+    {.org = "r", .replacement = "f"}, {.org = "s", .replacement = "g"},
+    {.org = "t", .replacement = "h"}, {.org = "u", .replacement = "j"},
+    {.org = "v", .replacement = "z"}, {.org = "w", .replacement = "x"},
+    {.org = "x", .replacement = "n"}, {.org = "y", .replacement = "l"},
+    {.org = "z", .replacement = "k"}, {.org = "", .replacement = ""}};
 
   strcpy(buf, "");
   strcpy(splwd, spells[si - 1]);

@@ -45,19 +45,19 @@ struct attack_hit_type {
 
 /* Weapon attack texts */
 static const struct attack_hit_type attack_hit_text[] = {
-  {"hit", "hits"},       /* TYPE_HIT      */
-  {"pound", "pounds"},   /* TYPE_BLUDGEON */
-  {"pierce", "pierces"}, /* TYPE_PIERCE   */
-  {"slash", "slashes"},  /* TYPE_SLASH    */
-  {"whip", "whips"},     /* TYPE_WHIP     */
-  {"claw", "claws"},     /* TYPE_CLAW     */
-  {"bite", "bites"},     /* TYPE_BITE     */
-  {"sting", "stings"},   /* TYPE_STING    */
-  {"crush", "crushes"},  /* TYPE_CRUSH    */
-  {"cleave", "cleaves"},
-  {"stab", "stabs"},
-  {"smash", "smashes"},
-  {"smite", "smites"},
+  {.singular = "hit", .plural = "hits"},       /* TYPE_HIT      */
+  {.singular = "pound", .plural = "pounds"},   /* TYPE_BLUDGEON */
+  {.singular = "pierce", .plural = "pierces"}, /* TYPE_PIERCE   */
+  {.singular = "slash", .plural = "slashes"},  /* TYPE_SLASH    */
+  {.singular = "whip", .plural = "whips"},     /* TYPE_WHIP     */
+  {.singular = "claw", .plural = "claws"},     /* TYPE_CLAW     */
+  {.singular = "bite", .plural = "bites"},     /* TYPE_BITE     */
+  {.singular = "sting", .plural = "stings"},   /* TYPE_STING    */
+  {.singular = "crush", .plural = "crushes"},  /* TYPE_CRUSH    */
+  {.singular = "cleave", .plural = "cleaves"},
+  {.singular = "stab", .plural = "stabs"},
+  {.singular = "smash", .plural = "smashes"},
+  {.singular = "smite", .plural = "smites"},
 };
 
 /* The Fight related routines */
@@ -697,47 +697,61 @@ static void dam_message(int dam, struct char_data* ch, struct char_data* victim,
       const char* to_victim;
   } dam_weapons[] = {
 
-    {"$n misses $N.", /*    0    */
-      "You miss $N.", "$n misses you."},
+    {.to_room = "$n misses $N.", /*    0    */
+      .to_char = "You miss $N.",
+      .to_victim = "$n misses you."},
 
-    {"$n's #w whispers by $N's head.", "Your #w whispers by $N's head.",
-      "$n's #w whispers by your head."},
+    {.to_room = "$n's #w whispers by $N's head.",
+      .to_char = "Your #w whispers by $N's head.",
+      .to_victim = "$n's #w whispers by your head."},
 
-    {"$n bruises $N with $s #w.", /*  1.. 2  */
-      "You bruise $N as you #w $M.", "$n bruises you as $e #W you."},
+    {.to_room = "$n bruises $N with $s #w.", /*  1.. 2  */
+      .to_char = "You bruise $N as you #w $M.",
+      .to_victim = "$n bruises you as $e #W you."},
 
-    {"$n tickles $N with $s #w.", "You tickles $N as you #w $M.",
-      "$n tickles you as $e #W you."},
+    {.to_room = "$n tickles $N with $s #w.",
+      .to_char = "You tickles $N as you #w $M.",
+      .to_victim = "$n tickles you as $e #W you."},
 
-    {"$n barely #W $N.", /*  3.. 4  */
-      "You barely #w $N.", "$n barely #W you."},
+    {.to_room = "$n barely #W $N.", /*  3.. 4  */
+      .to_char = "You barely #w $N.",
+      .to_victim = "$n barely #W you."},
 
-    {"$n #W $N.", /*  5.. 6  */
-      "You #w $N.", "$n #W you."},
+    {.to_room = "$n #W $N.", /*  5.. 6  */
+      .to_char = "You #w $N.",
+      .to_victim = "$n #W you."},
 
-    {"$n #W $N hard.", /*  7..10  */
-      "You #w $N hard.", "$n #W you hard."},
+    {.to_room = "$n #W $N hard.", /*  7..10  */
+      .to_char = "You #w $N hard.",
+      .to_victim = "$n #W you hard."},
 
-    {"$n #W $N very hard.", /* 11..14  */
-      "You #w $N very hard.", "$n #W you very hard."},
+    {.to_room = "$n #W $N very hard.", /* 11..14  */
+      .to_char = "You #w $N very hard.",
+      .to_victim = "$n #W you very hard."},
 
-    {"$n #W $N extremely well.", /* 15..20  */
-      "You #w $N extremely well.", "$n #W you extremely well."},
+    {.to_room = "$n #W $N extremely well.", /* 15..20  */
+      .to_char = "You #w $N extremely well.",
+      .to_victim = "$n #W you extremely well."},
 
-    {"$n's #w strikes $N extremely hard.", "Your #w strikes $N extremely hard.",
-      "$n's #w strikes you extremely hard."},
+    {.to_room = "$n's #w strikes $N extremely hard.",
+      .to_char = "Your #w strikes $N extremely hard.",
+      .to_victim = "$n's #w strikes you extremely hard."},
 
-    {"$n massacres $N with $s #w.", /* > 20    */
-      "You massacre $N with your #w.", "$n massacres you with $s #w."},
+    {.to_room = "$n massacres $N with $s #w.", /* > 20    */
+      .to_char = "You massacre $N with your #w.",
+      .to_victim = "$n massacres you with $s #w."},
 
-    {"$n ANNIHILATES $N with $s #w.", "You ANNIHILATE $N with your #w.",
-      "$n ANNIHILATES you with $s #w."},
+    {.to_room = "$n ANNIHILATES $N with $s #w.",
+      .to_char = "You ANNIHILATE $N with your #w.",
+      .to_victim = "$n ANNIHILATES you with $s #w."},
 
-    {"$n OBLITERATES $N with $s #w.", "You OBLITERATE $N with your #w.",
-      "$n OBLITERATES you with $s #w."},
+    {.to_room = "$n OBLITERATES $N with $s #w.",
+      .to_char = "You OBLITERATE $N with your #w.",
+      .to_victim = "$n OBLITERATES you with $s #w."},
 
-    {"$n DISINTEGRATES $N with $s #w.", "You DISINTIGRATE $N with your #w.",
-      "$n DISINTEGRATES you with $s #w."}};
+    {.to_room = "$n DISINTEGRATES $N with $s #w.",
+      .to_char = "You DISINTIGRATE $N with your #w.",
+      .to_victim = "$n DISINTEGRATES you with $s #w."}};
 
   w_type -= TYPE_HIT; /* Change to base of table with text */
 

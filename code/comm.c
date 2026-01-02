@@ -1286,7 +1286,7 @@ void coma(int s) {
 /* sleep while the load is too high */
 void coma(int s) {
   fd_set input_set;
-  static struct timeval timeout = {60, 0};
+  static struct timeval timeout = {.tv_sec = 60, .tv_usec = 0};
   int conn = 0;
 
   vlog("Entering comatose state.");

@@ -17,163 +17,163 @@ struct special_proc_entry {
  ******************************************************************** */
 
 static const struct special_proc_entry mob_specials[] = {
-  {1, puff},
-  {2, Ringwraith},
-  {3, tormentor},
-  {4, Inquisitor},
-  {6, tormentor},
-  {14, bounty_hunter},
-  {15, bounty_hunter},
-  {16, bounty_hunter},
-  {17, bounty_hunter},
-  {18, bounty_hunter},
-  {19, bounty_hunter},
-  {25, magic_user},
-  {30, MageGuildMaster},
-  {31, ClericGuildMaster},
-  {32, ThiefGuildMaster},
-  {33, WarriorGuildMaster},
-  {34, MageGuildMaster},
-  {35, ClericGuildMaster},
-  {50, i_am_police},
-  {51, i_am_police},
-  {52, i_am_police},
-  {53, i_am_police},
-  {36, ThiefGuildMaster},
-  {37, WarriorGuildMaster},
-  {29902, AntiGuildMaster},
-  {29904, RangerGuildMaster},
-  {29905, PaladinGuildMaster},
-  {199, AGGRESSIVE},
-  {200, AGGRESSIVE},
-  {1699, postmaster},
+  {.vnum = 1, .proc = puff},
+  {.vnum = 2, .proc = Ringwraith},
+  {.vnum = 3, .proc = tormentor},
+  {.vnum = 4, .proc = Inquisitor},
+  {.vnum = 6, .proc = tormentor},
+  {.vnum = 14, .proc = bounty_hunter},
+  {.vnum = 15, .proc = bounty_hunter},
+  {.vnum = 16, .proc = bounty_hunter},
+  {.vnum = 17, .proc = bounty_hunter},
+  {.vnum = 18, .proc = bounty_hunter},
+  {.vnum = 19, .proc = bounty_hunter},
+  {.vnum = 25, .proc = magic_user},
+  {.vnum = 30, .proc = MageGuildMaster},
+  {.vnum = 31, .proc = ClericGuildMaster},
+  {.vnum = 32, .proc = ThiefGuildMaster},
+  {.vnum = 33, .proc = WarriorGuildMaster},
+  {.vnum = 34, .proc = MageGuildMaster},
+  {.vnum = 35, .proc = ClericGuildMaster},
+  {.vnum = 50, .proc = i_am_police},
+  {.vnum = 51, .proc = i_am_police},
+  {.vnum = 52, .proc = i_am_police},
+  {.vnum = 53, .proc = i_am_police},
+  {.vnum = 36, .proc = ThiefGuildMaster},
+  {.vnum = 37, .proc = WarriorGuildMaster},
+  {.vnum = 29902, .proc = AntiGuildMaster},
+  {.vnum = 29904, .proc = RangerGuildMaster},
+  {.vnum = 29905, .proc = PaladinGuildMaster},
+  {.vnum = 199, .proc = AGGRESSIVE},
+  {.vnum = 200, .proc = AGGRESSIVE},
+  {.vnum = 1699, .proc = postmaster},
   /*
   **  D&D standard
   */
 
-  {210, snake},        /* spider */
-  {211, fighter},      /* gnoll  */
-  {220, fighter},      /* fighter */
-  {221, fighter},      /* bugbear */
-  {223, ghoul},        /* ghoul */
-  {226, fighter},      /* ogre */
-  {236, ghoul},        /* ghast */
-  {227, snake},        /* spider */
-  {230, BreathWeapon}, /* baby black */
-  {232, blink},        /* blink dog */
-  {233, BreathWeapon}, /* baby blue */
-  {234, cleric},       /* cleric */
-  {239, shadow},       /* shadow    */
-  {240, snake},        /* toad      */
-  {243, BreathWeapon}, /* teenage white */
-  {247, fighter},      /* minotaur */
-  {251, CarrionCrawler},
-  {261, fighter},
-  {271, regenerator},
-  {248, snake},      /* snake       */
-  {249, snake},      /* snake       */
-  {250, snake},      /* snake       */
-  {257, magic_user}, /* magic_user  */
+  {.vnum = 210, .proc = snake},        /* spider */
+  {.vnum = 211, .proc = fighter},      /* gnoll  */
+  {.vnum = 220, .proc = fighter},      /* fighter */
+  {.vnum = 221, .proc = fighter},      /* bugbear */
+  {.vnum = 223, .proc = ghoul},        /* ghoul */
+  {.vnum = 226, .proc = fighter},      /* ogre */
+  {.vnum = 236, .proc = ghoul},        /* ghast */
+  {.vnum = 227, .proc = snake},        /* spider */
+  {.vnum = 230, .proc = BreathWeapon}, /* baby black */
+  {.vnum = 232, .proc = blink},        /* blink dog */
+  {.vnum = 233, .proc = BreathWeapon}, /* baby blue */
+  {.vnum = 234, .proc = cleric},       /* cleric */
+  {.vnum = 239, .proc = shadow},       /* shadow    */
+  {.vnum = 240, .proc = snake},        /* toad      */
+  {.vnum = 243, .proc = BreathWeapon}, /* teenage white */
+  {.vnum = 247, .proc = fighter},      /* minotaur */
+  {.vnum = 251, .proc = CarrionCrawler},
+  {.vnum = 261, .proc = fighter},
+  {.vnum = 271, .proc = regenerator},
+  {.vnum = 248, .proc = snake},      /* snake       */
+  {.vnum = 249, .proc = snake},      /* snake       */
+  {.vnum = 250, .proc = snake},      /* snake       */
+  {.vnum = 257, .proc = magic_user}, /* magic_user  */
 
-  {650, monk},
-  {651, monk},
-  {652, monk},
-  {653, monk},
-  {654, monk},
-  {655, monk},
-  {656, monk},
-  {657, monk},
-  {658, monk},
-  {659, monk},
-  {660, monk},
-  {661, monk},
-  {662, monk},
-  {663, monk},
-  {664, monk},
-  {665, monk},
-  {666, monk},
-  {667, monk},
-  {668, monk},
-  {669, monk},
-  {670, monk},
-  {671, monk},
-  {672, monk},
-  {673, monk},
-  {674, monk},
-  {675, monk},
-  {676, monk},
-  {677, monk},
-  {678, monk},
-  {679, monk},
-  {680, monk},
-  {681, monk},
-  {682, monk},
-  {683, monk},
-  {684, monk},
-  {685, monk},
-  {686, monk},
-  {687, monk},
-  {688, monk},
-  {689, monk},
-  {690, monk},
-  {691, monk_master},
+  {.vnum = 650, .proc = monk},
+  {.vnum = 651, .proc = monk},
+  {.vnum = 652, .proc = monk},
+  {.vnum = 653, .proc = monk},
+  {.vnum = 654, .proc = monk},
+  {.vnum = 655, .proc = monk},
+  {.vnum = 656, .proc = monk},
+  {.vnum = 657, .proc = monk},
+  {.vnum = 658, .proc = monk},
+  {.vnum = 659, .proc = monk},
+  {.vnum = 660, .proc = monk},
+  {.vnum = 661, .proc = monk},
+  {.vnum = 662, .proc = monk},
+  {.vnum = 663, .proc = monk},
+  {.vnum = 664, .proc = monk},
+  {.vnum = 665, .proc = monk},
+  {.vnum = 666, .proc = monk},
+  {.vnum = 667, .proc = monk},
+  {.vnum = 668, .proc = monk},
+  {.vnum = 669, .proc = monk},
+  {.vnum = 670, .proc = monk},
+  {.vnum = 671, .proc = monk},
+  {.vnum = 672, .proc = monk},
+  {.vnum = 673, .proc = monk},
+  {.vnum = 674, .proc = monk},
+  {.vnum = 675, .proc = monk},
+  {.vnum = 676, .proc = monk},
+  {.vnum = 677, .proc = monk},
+  {.vnum = 678, .proc = monk},
+  {.vnum = 679, .proc = monk},
+  {.vnum = 680, .proc = monk},
+  {.vnum = 681, .proc = monk},
+  {.vnum = 682, .proc = monk},
+  {.vnum = 683, .proc = monk},
+  {.vnum = 684, .proc = monk},
+  {.vnum = 685, .proc = monk},
+  {.vnum = 686, .proc = monk},
+  {.vnum = 687, .proc = monk},
+  {.vnum = 688, .proc = monk},
+  {.vnum = 689, .proc = monk},
+  {.vnum = 690, .proc = monk},
+  {.vnum = 691, .proc = monk_master},
 
   /*
   **  Abyss part II
   */
-  {25126, magic_user},   /* Vascar */
-  {25127, cleric},       /* ralthar */
-  {25128, fighter},      /*draco */
-  {25131, Demon},        /*Balrog */
-  {25134, BreathWeapon}, /*rainbow d. */
-  {25147, fighter},
-  {25148, magic_user},
-  {25149, thief},
-  {25150, cleric},
-  {25154, snake}, /*wyvern*/
-  {25156, janitor},
-  {25158, magic_user},
-  {25159, magic_user},
-  {25160, magic_user},
-  {25161, fighter},
-  {25162, magic_user},
-  {25164, cleric},
-  {25165, cleric},
-  {25166, magic_user},
-  {25168, magic_user},
+  {.vnum = 25126, .proc = magic_user},   /* Vascar */
+  {.vnum = 25127, .proc = cleric},       /* ralthar */
+  {.vnum = 25128, .proc = fighter},      /*draco */
+  {.vnum = 25131, .proc = Demon},        /*Balrog */
+  {.vnum = 25134, .proc = BreathWeapon}, /*rainbow d. */
+  {.vnum = 25147, .proc = fighter},
+  {.vnum = 25148, .proc = magic_user},
+  {.vnum = 25149, .proc = thief},
+  {.vnum = 25150, .proc = cleric},
+  {.vnum = 25154, .proc = snake}, /*wyvern*/
+  {.vnum = 25156, .proc = janitor},
+  {.vnum = 25158, .proc = magic_user},
+  {.vnum = 25159, .proc = magic_user},
+  {.vnum = 25160, .proc = magic_user},
+  {.vnum = 25161, .proc = fighter},
+  {.vnum = 25162, .proc = magic_user},
+  {.vnum = 25164, .proc = cleric},
+  {.vnum = 25165, .proc = cleric},
+  {.vnum = 25166, .proc = magic_user},
+  {.vnum = 25168, .proc = magic_user},
   /*
   **   shire
   */
-  {1000, magic_user},
-  {1010, fighter},
-  {1011, fighter},
-  {1012, fighter},
-  {1014, fighter},
-  {1015, fighter},
-  {1016, fighter},
-  {1017, fighter},
-  {1001, fighter},
-  {1023, fighter},
-  {1031, receptionist},
-  {1701, monk},
+  {.vnum = 1000, .proc = magic_user},
+  {.vnum = 1010, .proc = fighter},
+  {.vnum = 1011, .proc = fighter},
+  {.vnum = 1012, .proc = fighter},
+  {.vnum = 1014, .proc = fighter},
+  {.vnum = 1015, .proc = fighter},
+  {.vnum = 1016, .proc = fighter},
+  {.vnum = 1017, .proc = fighter},
+  {.vnum = 1001, .proc = fighter},
+  {.vnum = 1023, .proc = fighter},
+  {.vnum = 1031, .proc = receptionist},
+  {.vnum = 1701, .proc = monk},
 
-  {1702, monk},
-  {1703, monk},
-  {1704, monk},
-  {1705, monk},
-  {1706, monk},
-  {1707, monk},
-  {1708, monk},
-  {1709, monk},
-  {1710, monk},
-  {1711, monk},
-  {1712, monk},
-  {1713, monk},
-  {1714, monk},
-  {1715, monk},
-  {1716, monk},
-  {1717, monk},
-  {1718, monk},
+  {.vnum = 1702, .proc = monk},
+  {.vnum = 1703, .proc = monk},
+  {.vnum = 1704, .proc = monk},
+  {.vnum = 1705, .proc = monk},
+  {.vnum = 1706, .proc = monk},
+  {.vnum = 1707, .proc = monk},
+  {.vnum = 1708, .proc = monk},
+  {.vnum = 1709, .proc = monk},
+  {.vnum = 1710, .proc = monk},
+  {.vnum = 1711, .proc = monk},
+  {.vnum = 1712, .proc = monk},
+  {.vnum = 1713, .proc = monk},
+  {.vnum = 1714, .proc = monk},
+  {.vnum = 1715, .proc = monk},
+  {.vnum = 1716, .proc = monk},
+  {.vnum = 1717, .proc = monk},
+  {.vnum = 1718, .proc = monk},
   /*
   **  cacaodemons
       { 20, fighter},
@@ -185,255 +185,255 @@ static const struct special_proc_entry mob_specials[] = {
   /*
   **  G1
   */
-  {9213, CarrionCrawler},
-  {9208, cleric},
-  {9217, BreathWeapon},
+  {.vnum = 9213, .proc = CarrionCrawler},
+  {.vnum = 9208, .proc = cleric},
+  {.vnum = 9217, .proc = BreathWeapon},
   /*
   **  chessboard
   */
-  {1401, fighter},
-  {1404, fighter},
-  {1406, fighter},
-  {1457, fighter},
-  {1460, fighter},
-  {1462, fighter},
-  {1499, sisyphus},
-  {1471, paramedics},
-  {1470, jabberwocky},
-  {1472, flame},
-  {1437, banana},
-  {1495, delivery_elf},
-  {1493, delivery_beast},
+  {.vnum = 1401, .proc = fighter},
+  {.vnum = 1404, .proc = fighter},
+  {.vnum = 1406, .proc = fighter},
+  {.vnum = 1457, .proc = fighter},
+  {.vnum = 1460, .proc = fighter},
+  {.vnum = 1462, .proc = fighter},
+  {.vnum = 1499, .proc = sisyphus},
+  {.vnum = 1471, .proc = paramedics},
+  {.vnum = 1470, .proc = jabberwocky},
+  {.vnum = 1472, .proc = flame},
+  {.vnum = 1437, .proc = banana},
+  {.vnum = 1495, .proc = delivery_elf},
+  {.vnum = 1493, .proc = delivery_beast},
 
   /*
   The Undead Temple
   */
-  {28801, cleric},
-  {28802, fighter},
-  {28806, AGGRESSIVE},
-  {28808, cleric},
-  {28809, fighter},
-  {28811, fighter},
-  {28813, arch_vampire},
+  {.vnum = 28801, .proc = cleric},
+  {.vnum = 28802, .proc = fighter},
+  {.vnum = 28806, .proc = AGGRESSIVE},
+  {.vnum = 28808, .proc = cleric},
+  {.vnum = 28809, .proc = fighter},
+  {.vnum = 28811, .proc = fighter},
+  {.vnum = 28813, .proc = arch_vampire},
 
   /*
   Batopr
   */
-  {28701, bouncer},
-  {28705, magic_user},
-  {28708, cleric},
-  {28711, fighter},
-  {28722, toilet_thing},
-  {28724, dishboy},
-  {28729, game_wizard},
-  {28742, fighter},
-  {28743, gilbert},
-  {28744, fighter},
-  {28745, magic_user},
-  {28746, fighter},
-  {28748, magic_user},
-  {11335, fighter},
-  {11340, magic_user},
-  {3008, thief},
-  {3009, thief},
+  {.vnum = 28701, .proc = bouncer},
+  {.vnum = 28705, .proc = magic_user},
+  {.vnum = 28708, .proc = cleric},
+  {.vnum = 28711, .proc = fighter},
+  {.vnum = 28722, .proc = toilet_thing},
+  {.vnum = 28724, .proc = dishboy},
+  {.vnum = 28729, .proc = game_wizard},
+  {.vnum = 28742, .proc = fighter},
+  {.vnum = 28743, .proc = gilbert},
+  {.vnum = 28744, .proc = fighter},
+  {.vnum = 28745, .proc = magic_user},
+  {.vnum = 28746, .proc = fighter},
+  {.vnum = 28748, .proc = magic_user},
+  {.vnum = 11335, .proc = fighter},
+  {.vnum = 11340, .proc = magic_user},
+  {.vnum = 3008, .proc = thief},
+  {.vnum = 3009, .proc = thief},
 
   /*
   Evils area
   */
 
-  {28401, web_slinger},
-  {28402, magic_user},
-  {28403, magic_user},
-  {28404, snake},
-  {28405, snake},
-  {28448, dragon},
-  {28449, AbbarachDragon},
+  {.vnum = 28401, .proc = web_slinger},
+  {.vnum = 28402, .proc = magic_user},
+  {.vnum = 28403, .proc = magic_user},
+  {.vnum = 28404, .proc = snake},
+  {.vnum = 28405, .proc = snake},
+  {.vnum = 28448, .proc = dragon},
+  {.vnum = 28449, .proc = AbbarachDragon},
 
   /*
   Marvel world
   */
-  {29001, fighter},
-  {29002, magic_user},
-  {29003, mega_regenerator},
-  {29004, web_slinger},
-  {29005, magneto},
-  {29006, fighter},
-  {29008, sheriff},
-  {29010, prof_x},
-  {29011, magic_user},
-  {29012, fighter},
-  {29013, zombie_hater},
-  {29014, storm},
-  {29017, elektro},
-  {29021, fighter},
-  {29022, juggernaut},
-  {29024, fighter},
-  {29025, fighter},
-  {29026, fighter},
-  {29027, fighter},
-  {29028, bow_shooter},
-  {29029, fighter},
-  {29030, fighter},
-  {29031, iceman},
-  {29033, nightcrawler},
-  {29039, janitor},
-  {29040, replicant},
-  {29044, fido},
-  {29954, dragon},
+  {.vnum = 29001, .proc = fighter},
+  {.vnum = 29002, .proc = magic_user},
+  {.vnum = 29003, .proc = mega_regenerator},
+  {.vnum = 29004, .proc = web_slinger},
+  {.vnum = 29005, .proc = magneto},
+  {.vnum = 29006, .proc = fighter},
+  {.vnum = 29008, .proc = sheriff},
+  {.vnum = 29010, .proc = prof_x},
+  {.vnum = 29011, .proc = magic_user},
+  {.vnum = 29012, .proc = fighter},
+  {.vnum = 29013, .proc = zombie_hater},
+  {.vnum = 29014, .proc = storm},
+  {.vnum = 29017, .proc = elektro},
+  {.vnum = 29021, .proc = fighter},
+  {.vnum = 29022, .proc = juggernaut},
+  {.vnum = 29024, .proc = fighter},
+  {.vnum = 29025, .proc = fighter},
+  {.vnum = 29026, .proc = fighter},
+  {.vnum = 29027, .proc = fighter},
+  {.vnum = 29028, .proc = bow_shooter},
+  {.vnum = 29029, .proc = fighter},
+  {.vnum = 29030, .proc = fighter},
+  {.vnum = 29031, .proc = iceman},
+  {.vnum = 29033, .proc = nightcrawler},
+  {.vnum = 29039, .proc = janitor},
+  {.vnum = 29040, .proc = replicant},
+  {.vnum = 29044, .proc = fido},
+  {.vnum = 29954, .proc = dragon},
 
   /*
   **  New Thalos
   */
-  {3600, MageGuildMaster},
-  {3601, ClericGuildMaster},
-  {3602, WarriorGuildMaster},
-  {3603, ThiefGuildMaster},
-  {3604, receptionist_for_outlaws},
+  {.vnum = 3600, .proc = MageGuildMaster},
+  {.vnum = 3601, .proc = ClericGuildMaster},
+  {.vnum = 3602, .proc = WarriorGuildMaster},
+  {.vnum = 3603, .proc = ThiefGuildMaster},
+  {.vnum = 3604, .proc = receptionist_for_outlaws},
 #if 0
   { 3606, BattleOfEvermoreSinger },
 #endif
-  {3619, fighter},
-  {3620, fighter},
-  {3632, fighter},
-  {3634, fighter},
-  {3636, fighter},
-  {3639, fighter},    /* caramon */
-  {3641, cleric},     /* curley g. */
-  {3640, magic_user}, /* raist */
-  {3656, NewThalosGuildGuard},
-  {3657, NewThalosGuildGuard},
-  {3658, NewThalosGuildGuard},
-  {3659, NewThalosGuildGuard},
-  {3661, SultanGuard},    /* wandering */
-  {3662, SultanGuard},    /* not */
-  {3682, SultanGuard},    /* royal */
-  {3670, BreathWeapon},   /* Cryohydra */
-  {3674, BreathWeapon},   /* Behir */
-  {3675, BreathWeapon},   /* Chimera */
-  {3676, BreathWeapon},   /* Couatl */
-  {3681, cleric},         /* High priest */
-  {3689, NewThalosMayor}, /* Guess */
-  {3644, fido},
-  {3635, thief},
+  {.vnum = 3619, .proc = fighter},
+  {.vnum = 3620, .proc = fighter},
+  {.vnum = 3632, .proc = fighter},
+  {.vnum = 3634, .proc = fighter},
+  {.vnum = 3636, .proc = fighter},
+  {.vnum = 3639, .proc = fighter},    /* caramon */
+  {.vnum = 3641, .proc = cleric},     /* curley g. */
+  {.vnum = 3640, .proc = magic_user}, /* raist */
+  {.vnum = 3656, .proc = NewThalosGuildGuard},
+  {.vnum = 3657, .proc = NewThalosGuildGuard},
+  {.vnum = 3658, .proc = NewThalosGuildGuard},
+  {.vnum = 3659, .proc = NewThalosGuildGuard},
+  {.vnum = 3661, .proc = SultanGuard},    /* wandering */
+  {.vnum = 3662, .proc = SultanGuard},    /* not */
+  {.vnum = 3682, .proc = SultanGuard},    /* royal */
+  {.vnum = 3670, .proc = BreathWeapon},   /* Cryohydra */
+  {.vnum = 3674, .proc = BreathWeapon},   /* Behir */
+  {.vnum = 3675, .proc = BreathWeapon},   /* Chimera */
+  {.vnum = 3676, .proc = BreathWeapon},   /* Couatl */
+  {.vnum = 3681, .proc = cleric},         /* High priest */
+  {.vnum = 3689, .proc = NewThalosMayor}, /* Guess */
+  {.vnum = 3644, .proc = fido},
+  {.vnum = 3635, .proc = thief},
   /*
   **  Skexie
   */
-  {15813, magic_user},
-  {15815, magic_user},
-  {15820, magic_user},
-  {15821, vampire},
-  {15844, cleric},
-  {15847, fighter},
-  {15831, fighter},
-  {15832, fighter},
-  {15822, fighter},
-  {15819, fighter},
-  {15805, fighter},
+  {.vnum = 15813, .proc = magic_user},
+  {.vnum = 15815, .proc = magic_user},
+  {.vnum = 15820, .proc = magic_user},
+  {.vnum = 15821, .proc = vampire},
+  {.vnum = 15844, .proc = cleric},
+  {.vnum = 15847, .proc = fighter},
+  {.vnum = 15831, .proc = fighter},
+  {.vnum = 15832, .proc = fighter},
+  {.vnum = 15822, .proc = fighter},
+  {.vnum = 15819, .proc = fighter},
+  {.vnum = 15805, .proc = fighter},
   /*
   **  Challenge
   */
-  {15858, BreathWeapon},
-  {15861, magic_user},
-  {15862, magic_user},
-  {15863, fighter},
-  {15864, sisyphus},
+  {.vnum = 15858, .proc = BreathWeapon},
+  {.vnum = 15861, .proc = magic_user},
+  {.vnum = 15862, .proc = magic_user},
+  {.vnum = 15863, .proc = fighter},
+  {.vnum = 15864, .proc = sisyphus},
 
   /*
   **   Zombie's
   */
 
-  {23001, fighter}, /* Bob */
+  {.vnum = 23001, .proc = fighter}, /* Bob */
 
   /*
   **  abyss
   */
-  {25000, magic_user}, /* Demi-lich  */
-  {25001, Keftab},
-  {25009, BreathWeapon},    /* hydra */
-  {25002, vampire},         /* Crimson */
-  {25003, StormGiant},      /* MistDaemon */
-  {25006, StormGiant},      /* Storm giant */
-  {25014, StormGiant},      /* DeathKnight */
-  {25009, BreathWeapon},    /* hydra */
-  {25017, AbyssGateKeeper}, /* Abyss Gate Keeper */
-  {25013, fighter},         /* kalas */
+  {.vnum = 25000, .proc = magic_user}, /* Demi-lich  */
+  {.vnum = 25001, .proc = Keftab},
+  {.vnum = 25009, .proc = BreathWeapon},    /* hydra */
+  {.vnum = 25002, .proc = vampire},         /* Crimson */
+  {.vnum = 25003, .proc = StormGiant},      /* MistDaemon */
+  {.vnum = 25006, .proc = StormGiant},      /* Storm giant */
+  {.vnum = 25014, .proc = StormGiant},      /* DeathKnight */
+  {.vnum = 25009, .proc = BreathWeapon},    /* hydra */
+  {.vnum = 25017, .proc = AbyssGateKeeper}, /* Abyss Gate Keeper */
+  {.vnum = 25013, .proc = fighter},         /* kalas */
 
   /*
   **  Paladin's guild
   */
-  {25100, PaladinGuildGuard},
-  {25101, PaladinGuildGuard},
+  {.vnum = 25100, .proc = PaladinGuildGuard},
+  {.vnum = 25101, .proc = PaladinGuildGuard},
 
   /*
   **  Abyss Fire Giants
   */
-  {25500, fighter},
-  {25501, fighter},
-  {25502, fighter},
-  {25505, fighter},
-  {25504, BreathWeapon},
-  {25503, cleric},
+  {.vnum = 25500, .proc = fighter},
+  {.vnum = 25501, .proc = fighter},
+  {.vnum = 25502, .proc = fighter},
+  {.vnum = 25505, .proc = fighter},
+  {.vnum = 25504, .proc = BreathWeapon},
+  {.vnum = 25503, .proc = cleric},
 
   /*
   **  Temple Labrynth
   */
 
-  {10900, temple_labrynth_liar},
-  {10901, temple_labrynth_liar},
-  {10902, temple_labrynth_sentry},
+  {.vnum = 10900, .proc = temple_labrynth_liar},
+  {.vnum = 10901, .proc = temple_labrynth_liar},
+  {.vnum = 10902, .proc = temple_labrynth_sentry},
   /*
   **  Gypsy Village
   */
 
-  {16106, fido},
-  {16107, CaravanGuildGuard},
-  {16108, CaravanGuildGuard},
-  {16109, CaravanGuildGuard},
-  {16110, CaravanGuildGuard},
-  {16111, WarriorGuildMaster},
-  {16112, MageGuildMaster},
-  {16113, ThiefGuildMaster},
-  {16114, ClericGuildMaster},
-  {16122, receptionist},
-  {16105, StatTeller},
+  {.vnum = 16106, .proc = fido},
+  {.vnum = 16107, .proc = CaravanGuildGuard},
+  {.vnum = 16108, .proc = CaravanGuildGuard},
+  {.vnum = 16109, .proc = CaravanGuildGuard},
+  {.vnum = 16110, .proc = CaravanGuildGuard},
+  {.vnum = 16111, .proc = WarriorGuildMaster},
+  {.vnum = 16112, .proc = MageGuildMaster},
+  {.vnum = 16113, .proc = ThiefGuildMaster},
+  {.vnum = 16114, .proc = ClericGuildMaster},
+  {.vnum = 16122, .proc = receptionist},
+  {.vnum = 16105, .proc = StatTeller},
 
   /*
   **  Draagdim
   */
 
-  {2500, NudgeNudge}, /* jailer */
+  {.vnum = 2500, .proc = NudgeNudge}, /* jailer */
   /*
   **  mordilnia
   */
-  {18200, magic_user},
-  {18205, receptionist},
-  {18206, MageGuildMaster},
-  {18207, ClericGuildMaster},
-  {18208, ThiefGuildMaster},
-  {18209, WarriorGuildMaster},
-  {18210, MordGuildGuard}, /*18266 3*/
-  {18211, MordGuildGuard}, /*18276 1*/
-  {18212, MordGuildGuard}, /*18272 0*/
-  {18213, MordGuildGuard}, /*18256 2*/
-  {18215, MordGuard},
-  {18216, janitor},
-  {18217, fido},
-  {18221, fighter},
-  {18222, MordGuard},
-  {18223, MordGuard},
+  {.vnum = 18200, .proc = magic_user},
+  {.vnum = 18205, .proc = receptionist},
+  {.vnum = 18206, .proc = MageGuildMaster},
+  {.vnum = 18207, .proc = ClericGuildMaster},
+  {.vnum = 18208, .proc = ThiefGuildMaster},
+  {.vnum = 18209, .proc = WarriorGuildMaster},
+  {.vnum = 18210, .proc = MordGuildGuard}, /*18266 3*/
+  {.vnum = 18211, .proc = MordGuildGuard}, /*18276 1*/
+  {.vnum = 18212, .proc = MordGuildGuard}, /*18272 0*/
+  {.vnum = 18213, .proc = MordGuildGuard}, /*18256 2*/
+  {.vnum = 18215, .proc = MordGuard},
+  {.vnum = 18216, .proc = janitor},
+  {.vnum = 18217, .proc = fido},
+  {.vnum = 18221, .proc = fighter},
+  {.vnum = 18222, .proc = MordGuard},
+  {.vnum = 18223, .proc = MordGuard},
 
   /*
   **  Graecia:
   */
-  {13779, magic_user},
-  {13784, magic_user},
-  {13785, magic_user},
-  {13787, magic_user},
-  {13789, magic_user},
-  {13791, magic_user},
-  {13793, magic_user},
-  {13795, magic_user},
-  {13797, magic_user},
+  {.vnum = 13779, .proc = magic_user},
+  {.vnum = 13784, .proc = magic_user},
+  {.vnum = 13785, .proc = magic_user},
+  {.vnum = 13787, .proc = magic_user},
+  {.vnum = 13789, .proc = magic_user},
+  {.vnum = 13791, .proc = magic_user},
+  {.vnum = 13793, .proc = magic_user},
+  {.vnum = 13795, .proc = magic_user},
+  {.vnum = 13797, .proc = magic_user},
 
 #if 0
 /*
@@ -467,10 +467,10 @@ static const struct special_proc_entry mob_specials[] = {
   /*
   **  Bay Isle
   */
-  {16610, Demon},
-  {16620, BreathWeapon},
-  {16640, cleric},
-  {16650, cleric},
+  {.vnum = 16610, .proc = Demon},
+  {.vnum = 16620, .proc = BreathWeapon},
+  {.vnum = 16640, .proc = cleric},
+  {.vnum = 16650, .proc = cleric},
 
 #if 0
   {16630, PortalGuard_X},
@@ -479,77 +479,77 @@ static const struct special_proc_entry mob_specials[] = {
   /*
   **  King's Mountain
   */
-  {16700, BreathWeapon},
-  {16702, shadow},
-  {16703, magic_user},
-  {16709, vampire},
-  {16710, Devil},
-  {16711, Devil},
-  {16712, Devil},
-  {16713, ghoul},
-  {16714, ghoul},
-  {16715, wraith},
-  {16717, fighter},
-  {16720, Devil},
-  {16721, Devil},
-  {16724, Devil},
-  {16725, magic_user},
-  {16726, cleric},
-  {16727, Devil},
-  {16728, Devil},
-  {16730, Devil},
-  {16731, Devil},
-  {16732, Demon},
-  {16733, Demon},
-  {16734, Demon},
-  {16735, Demon},
-  {16736, cleric},
-  {16738, BreathWeapon},
+  {.vnum = 16700, .proc = BreathWeapon},
+  {.vnum = 16702, .proc = shadow},
+  {.vnum = 16703, .proc = magic_user},
+  {.vnum = 16709, .proc = vampire},
+  {.vnum = 16710, .proc = Devil},
+  {.vnum = 16711, .proc = Devil},
+  {.vnum = 16712, .proc = Devil},
+  {.vnum = 16713, .proc = ghoul},
+  {.vnum = 16714, .proc = ghoul},
+  {.vnum = 16715, .proc = wraith},
+  {.vnum = 16717, .proc = fighter},
+  {.vnum = 16720, .proc = Devil},
+  {.vnum = 16721, .proc = Devil},
+  {.vnum = 16724, .proc = Devil},
+  {.vnum = 16725, .proc = magic_user},
+  {.vnum = 16726, .proc = cleric},
+  {.vnum = 16727, .proc = Devil},
+  {.vnum = 16728, .proc = Devil},
+  {.vnum = 16730, .proc = Devil},
+  {.vnum = 16731, .proc = Devil},
+  {.vnum = 16732, .proc = Demon},
+  {.vnum = 16733, .proc = Demon},
+  {.vnum = 16734, .proc = Demon},
+  {.vnum = 16735, .proc = Demon},
+  {.vnum = 16736, .proc = cleric},
+  {.vnum = 16738, .proc = BreathWeapon},
   /*
   **  Mages Tower
   */
-  {1500, shadow},
-  {1504, magic_user},
-  {1506, magic_user},
-  {1507, magic_user},
-  {1508, magic_user},
-  {1510, magic_user},
-  {1514, magic_user},
-  {1515, magic_user},
-  {1516, magic_user},
-  {1517, magic_user},
-  {1518, magic_user},
-  {1520, magic_user},
-  {1521, magic_user},
-  {1522, magic_user},
-  {1523, magic_user},
-  {1524, magic_user},
-  {1525, magic_user},
-  {1526, magic_user},
-  {1527, magic_user},
-  {1528, magic_user},
-  {1529, magic_user},
-  {1530, magic_user},
-  {1531, magic_user},
-  {1532, magic_user},
-  {1533, magic_user},
-  {1534, magic_user},
-  {1537, magic_user},
-  {1538, magic_user},
-  {1540, magic_user},
-  {1541, magic_user},
-  {1548, magic_user},
-  {1549, magic_user},
-  {1552, magic_user},
-  {1553, magic_user},
-  {1554, magic_user},
-  {1556, magic_user},
-  {1557, magic_user},
-  {1559, magic_user},
-  {1560, magic_user},
-  {1562, magic_user},
-  {1564, magic_user},
-  {1565, magic_user},
+  {.vnum = 1500, .proc = shadow},
+  {.vnum = 1504, .proc = magic_user},
+  {.vnum = 1506, .proc = magic_user},
+  {.vnum = 1507, .proc = magic_user},
+  {.vnum = 1508, .proc = magic_user},
+  {.vnum = 1510, .proc = magic_user},
+  {.vnum = 1514, .proc = magic_user},
+  {.vnum = 1515, .proc = magic_user},
+  {.vnum = 1516, .proc = magic_user},
+  {.vnum = 1517, .proc = magic_user},
+  {.vnum = 1518, .proc = magic_user},
+  {.vnum = 1520, .proc = magic_user},
+  {.vnum = 1521, .proc = magic_user},
+  {.vnum = 1522, .proc = magic_user},
+  {.vnum = 1523, .proc = magic_user},
+  {.vnum = 1524, .proc = magic_user},
+  {.vnum = 1525, .proc = magic_user},
+  {.vnum = 1526, .proc = magic_user},
+  {.vnum = 1527, .proc = magic_user},
+  {.vnum = 1528, .proc = magic_user},
+  {.vnum = 1529, .proc = magic_user},
+  {.vnum = 1530, .proc = magic_user},
+  {.vnum = 1531, .proc = magic_user},
+  {.vnum = 1532, .proc = magic_user},
+  {.vnum = 1533, .proc = magic_user},
+  {.vnum = 1534, .proc = magic_user},
+  {.vnum = 1537, .proc = magic_user},
+  {.vnum = 1538, .proc = magic_user},
+  {.vnum = 1540, .proc = magic_user},
+  {.vnum = 1541, .proc = magic_user},
+  {.vnum = 1548, .proc = magic_user},
+  {.vnum = 1549, .proc = magic_user},
+  {.vnum = 1552, .proc = magic_user},
+  {.vnum = 1553, .proc = magic_user},
+  {.vnum = 1554, .proc = magic_user},
+  {.vnum = 1556, .proc = magic_user},
+  {.vnum = 1557, .proc = magic_user},
+  {.vnum = 1559, .proc = magic_user},
+  {.vnum = 1560, .proc = magic_user},
+  {.vnum = 1562, .proc = magic_user},
+  {.vnum = 1564, .proc = magic_user},
+  {.vnum = 1565, .proc = magic_user},
   /*
   **  Marvel World
   */
@@ -558,7 +558,7 @@ static const struct special_proc_entry mob_specials[] = {
   **  Forest of Rhowyn
   */
 
-  {13901, ThrowerMob},
+  {.vnum = 13901, .proc = ThrowerMob},
 
 #if 0
 /*
@@ -593,181 +593,181 @@ static const struct special_proc_entry mob_specials[] = {
   **  Main City
   */
 
-  {29898, craps_table_man},
-  {29901, aunt_bee},
-  {29899, sheriff},
-  {3000, magic_user},
-  {3060, cityguard},
-  {3067, cityguard},
-  {3061, janitor},
-  {3063, fighter},
-  {3062, fido},
-  {3066, fido},
-  {3005, receptionist},
-  {3020, MageGuildMaster},
-  {3021, ClericGuildMaster},
-  {3022, ThiefGuildMaster},
-  {3023, WarriorGuildMaster},
+  {.vnum = 29898, .proc = craps_table_man},
+  {.vnum = 29901, .proc = aunt_bee},
+  {.vnum = 29899, .proc = sheriff},
+  {.vnum = 3000, .proc = magic_user},
+  {.vnum = 3060, .proc = cityguard},
+  {.vnum = 3067, .proc = cityguard},
+  {.vnum = 3061, .proc = janitor},
+  {.vnum = 3063, .proc = fighter},
+  {.vnum = 3062, .proc = fido},
+  {.vnum = 3066, .proc = fido},
+  {.vnum = 3005, .proc = receptionist},
+  {.vnum = 3020, .proc = MageGuildMaster},
+  {.vnum = 3021, .proc = ClericGuildMaster},
+  {.vnum = 3022, .proc = ThiefGuildMaster},
+  {.vnum = 3023, .proc = WarriorGuildMaster},
 
-  {3007, MidgaardCitizen}, /* Sailor */
-  {3024, guild_guard},
-  {3025, guild_guard},
-  {3026, guild_guard},
-  {3027, guild_guard},
-  {29950, guild_guard},
-  {29951, guild_guard},
-  {29952, guild_guard},
-  {29953, guild_guard},
-  {3070, RepairGuy},
-  {3071, RepairGuy},
-  {3069, cityguard}, /* post guard */
-  {3068, new_ninja_master},
-  {3073, loremaster},
-  {3074, hunter},
+  {.vnum = 3007, .proc = MidgaardCitizen}, /* Sailor */
+  {.vnum = 3024, .proc = guild_guard},
+  {.vnum = 3025, .proc = guild_guard},
+  {.vnum = 3026, .proc = guild_guard},
+  {.vnum = 3027, .proc = guild_guard},
+  {.vnum = 29950, .proc = guild_guard},
+  {.vnum = 29951, .proc = guild_guard},
+  {.vnum = 29952, .proc = guild_guard},
+  {.vnum = 29953, .proc = guild_guard},
+  {.vnum = 3070, .proc = RepairGuy},
+  {.vnum = 3071, .proc = RepairGuy},
+  {.vnum = 3069, .proc = cityguard}, /* post guard */
+  {.vnum = 3068, .proc = new_ninja_master},
+  {.vnum = 3073, .proc = loremaster},
+  {.vnum = 3074, .proc = hunter},
 
   /*
   **  Lower city
   */
-  {3143, mayor},
+  {.vnum = 3143, .proc = mayor},
   /*
   **   Hammor's Stuff
   */
-  {3900, eric_johnson},
-  {3901, andy_wilcox},
-  {3950, zombie_master},
-  {3952, BreathWeapon},
+  {.vnum = 3900, .proc = eric_johnson},
+  {.vnum = 3901, .proc = andy_wilcox},
+  {.vnum = 3950, .proc = zombie_master},
+  {.vnum = 3952, .proc = BreathWeapon},
 
   /*
   **  MORIA
   */
-  {4000, snake},
-  {4001, snake},
-  {4053, snake},
+  {.vnum = 4000, .proc = snake},
+  {.vnum = 4001, .proc = snake},
+  {.vnum = 4053, .proc = snake},
 
-  {4103, thief},
-  {4100, magic_user},
-  {4101, regenerator},
-  {4102, snake},
+  {.vnum = 4103, .proc = thief},
+  {.vnum = 4100, .proc = magic_user},
+  {.vnum = 4101, .proc = regenerator},
+  {.vnum = 4102, .proc = snake},
 
   /*
   **  Pyramid
   */
 
-  {5308, RustMonster},
-  {5303, vampire},
+  {.vnum = 5308, .proc = RustMonster},
+  {.vnum = 5303, .proc = vampire},
 
   /*
   **  Arctica
   */
-  {6801, BreathWeapon},
-  {6802, BreathWeapon},
-  {6815, magic_user},
-  {6821, snake},
-  {6824, BreathWeapon},
-  {6825, thief},
+  {.vnum = 6801, .proc = BreathWeapon},
+  {.vnum = 6802, .proc = BreathWeapon},
+  {.vnum = 6815, .proc = magic_user},
+  {.vnum = 6821, .proc = snake},
+  {.vnum = 6824, .proc = BreathWeapon},
+  {.vnum = 6825, .proc = thief},
 
   /*
   ** SEWERS
   */
-  {7009, fighter},
-  {7006, snake},
-  {7008, snake},
-  {7042, magic_user},   /* naga       */
-  {7040, BreathWeapon}, /* Red    */
-  {7041, magic_user},   /* sea hag    */
-  {7200, magic_user},   /* mindflayer */
-  {7201, magic_user},   /* senior     */
-  {7202, magic_user},   /* junior     */
+  {.vnum = 7009, .proc = fighter},
+  {.vnum = 7006, .proc = snake},
+  {.vnum = 7008, .proc = snake},
+  {.vnum = 7042, .proc = magic_user},   /* naga       */
+  {.vnum = 7040, .proc = BreathWeapon}, /* Red    */
+  {.vnum = 7041, .proc = magic_user},   /* sea hag    */
+  {.vnum = 7200, .proc = magic_user},   /* mindflayer */
+  {.vnum = 7201, .proc = magic_user},   /* senior     */
+  {.vnum = 7202, .proc = magic_user},   /* junior     */
 
   /*
   ** FOREST
   */
 
-  {6111, magic_user}, /* tree */
-  {6113, snake},
-  {6114, snake},
-  {6112, BreathWeapon}, /* green */
-  {6910, magic_user},
+  {.vnum = 6111, .proc = magic_user}, /* tree */
+  {.vnum = 6113, .proc = snake},
+  {.vnum = 6114, .proc = snake},
+  {.vnum = 6112, .proc = BreathWeapon}, /* green */
+  {.vnum = 6910, .proc = magic_user},
 
   /*
   **  Great Eastern Desert
   */
-  {5000, thief},        /* rag. dervish */
-  {5002, snake},        /* coral snake */
-  {5003, snake},        /* scorpion    */
-  {5004, snake},        /* purple worm  */
-  {5014, cleric},       /* myconoid */
-  {5005, BreathWeapon}, /* brass */
+  {.vnum = 5000, .proc = thief},        /* rag. dervish */
+  {.vnum = 5002, .proc = snake},        /* coral snake */
+  {.vnum = 5003, .proc = snake},        /* scorpion    */
+  {.vnum = 5004, .proc = snake},        /* purple worm  */
+  {.vnum = 5014, .proc = cleric},       /* myconoid */
+  {.vnum = 5005, .proc = BreathWeapon}, /* brass */
 
   /*
   **  Drow (edition 1)
   */
-  {5010, magic_user}, /* dracolich */
-  {5104, cleric},
-  {5103, magic_user}, /* drow mage */
-  {5107, cleric},     /* drow mat. mot */
-  {5108, magic_user}, /* drow mat. mot */
-  {5109, cleric},     /* yochlol */
+  {.vnum = 5010, .proc = magic_user}, /* dracolich */
+  {.vnum = 5104, .proc = cleric},
+  {.vnum = 5103, .proc = magic_user}, /* drow mage */
+  {.vnum = 5107, .proc = cleric},     /* drow mat. mot */
+  {.vnum = 5108, .proc = magic_user}, /* drow mat. mot */
+  {.vnum = 5109, .proc = cleric},     /* yochlol */
 
   /*
   **   Thalos
   */
-  {5200, magic_user}, /* beholder    */
+  {.vnum = 5200, .proc = magic_user}, /* beholder    */
 
   /*
   **  Zoo
   */
-  {9021, snake}, /* Gila Monster */
+  {.vnum = 9021, .proc = snake}, /* Gila Monster */
 
   /*
   **   Gonge area
   */
-  {23012, magic_user},
-  {23013, cleric},
-  {23014, cleric},
-  {23016, magic_user},
-  {23017, magic_user},
-  {23018, magic_user},
+  {.vnum = 23012, .proc = magic_user},
+  {.vnum = 23013, .proc = cleric},
+  {.vnum = 23014, .proc = cleric},
+  {.vnum = 23016, .proc = magic_user},
+  {.vnum = 23017, .proc = magic_user},
+  {.vnum = 23018, .proc = magic_user},
   /*
   **  Castle Python
   */
 
-  {11016, receptionist},
-  {11017, NudgeNudge},
+  {.vnum = 11016, .proc = receptionist},
+  {.vnum = 11017, .proc = NudgeNudge},
 
   /*
   **  miscellaneous
   */
-  {9061, vampire}, /* vampiress  */
+  {.vnum = 9061, .proc = vampire}, /* vampiress  */
 
   /*
   **  White Plume Mountain
   */
 
-  {17004, magic_user},  /* gnyosphinx   */
-  {17017, magic_user},  /* ogre magi   */
-  {17014, ghoul},       /* ghoul  */
-  {17009, geyser},      /* geyser  */
-  {17011, vampire},     /* vampire Amelia  */
-  {17002, wraith},      /* wight*/
-  {17005, shadow},      /* shadow */
-  {17010, green_slime}, /* green slime */
+  {.vnum = 17004, .proc = magic_user},  /* gnyosphinx   */
+  {.vnum = 17017, .proc = magic_user},  /* ogre magi   */
+  {.vnum = 17014, .proc = ghoul},       /* ghoul  */
+  {.vnum = 17009, .proc = geyser},      /* geyser  */
+  {.vnum = 17011, .proc = vampire},     /* vampire Amelia  */
+  {.vnum = 17002, .proc = wraith},      /* wight*/
+  {.vnum = 17005, .proc = shadow},      /* shadow */
+  {.vnum = 17010, .proc = green_slime}, /* green slime */
 
   /*
   **  Arachnos
   */
-  {20001, snake},      /* Young (large) spider */
-  {20003, snake},      /* wolf (giant) spider  */
-  {20005, snake},      /* queen wasp      */
-  {20006, snake},      /* drone spider    */
-  {20010, snake},      /* bird spider     */
-  {20009, magic_user}, /* quasit         */
-  {20014, magic_user}, /* Arachnos        */
-  {20015, magic_user}, /* Ki Rin          */
+  {.vnum = 20001, .proc = snake},      /* Young (large) spider */
+  {.vnum = 20003, .proc = snake},      /* wolf (giant) spider  */
+  {.vnum = 20005, .proc = snake},      /* queen wasp      */
+  {.vnum = 20006, .proc = snake},      /* drone spider    */
+  {.vnum = 20010, .proc = snake},      /* bird spider     */
+  {.vnum = 20009, .proc = magic_user}, /* quasit         */
+  {.vnum = 20014, .proc = magic_user}, /* Arachnos        */
+  {.vnum = 20015, .proc = magic_user}, /* Ki Rin          */
 
-  {20002, BreathWeapon}, /* Yevaud */
-  {20017, BreathWeapon}, /* Elder  */
-  {20016, BreathWeapon}, /* Baby   */
+  {.vnum = 20002, .proc = BreathWeapon}, /* Yevaud */
+  {.vnum = 20017, .proc = BreathWeapon}, /* Elder  */
+  {.vnum = 20016, .proc = BreathWeapon}, /* Baby   */
 
 #if 0
 /*
@@ -788,18 +788,18 @@ static const struct special_proc_entry mob_specials[] = {
   /*
   **   Abbarach
   */
-  {27001, magic_user},
-  {27002, magic_user},
-  {27003, magic_user},
-  {27004, magic_user},
-  {27005, magic_user},
-  {27006, Tytan},
-  {27007, replicant},
-  {27016, BreathWeapon},
-  {27014, magic_user},
-  {27017, magic_user},
-  {27018, magic_user},
-  {27019, magic_user},
+  {.vnum = 27001, .proc = magic_user},
+  {.vnum = 27002, .proc = magic_user},
+  {.vnum = 27003, .proc = magic_user},
+  {.vnum = 27004, .proc = magic_user},
+  {.vnum = 27005, .proc = magic_user},
+  {.vnum = 27006, .proc = Tytan},
+  {.vnum = 27007, .proc = replicant},
+  {.vnum = 27016, .proc = BreathWeapon},
+  {.vnum = 27014, .proc = magic_user},
+  {.vnum = 27017, .proc = magic_user},
+  {.vnum = 27018, .proc = magic_user},
+  {.vnum = 27019, .proc = magic_user},
 };
 
 static const size_t num_mob_specials =
@@ -831,16 +831,16 @@ struct obj_proc_entry {
 };
 
 static const struct obj_proc_entry obj_specials[] = {
-  {3095, board},
-  {3097, board},
-  {3098, board},
-  {3099, board},
-  {25102, board},
-  {29992, jive_box},
-  {21122, nodrop},
-  {21130, soap},
-  {7215, warMaker},
-  {16754, orbOfDestruction},
+  {.vnum = 3095, .proc = board},
+  {.vnum = 3097, .proc = board},
+  {.vnum = 3098, .proc = board},
+  {.vnum = 3099, .proc = board},
+  {.vnum = 25102, .proc = board},
+  {.vnum = 29992, .proc = jive_box},
+  {.vnum = 21122, .proc = nodrop},
+  {.vnum = 21130, .proc = soap},
+  {.vnum = 7215, .proc = warMaker},
+  {.vnum = 16754, .proc = orbOfDestruction},
 };
 
 static const size_t num_obj_specials =
@@ -863,57 +863,57 @@ void assign_objects() {
 }
 
 static const struct special_proc_entry room_specials[] = {
-  {99, Donation},
-  {666, dump},
-  {1750, monk_challenge_prep_room},
-  {1751, monk_challenge_room},
-  {3030, dump},
-  {3196, hospital},
-  {3197, hospital_entrance},
-  {13518, Fountain},
-  {13547, dump},
-  {28283, mag_room},
-  {11014, Fountain},
-  {23067, Fountain},
-  {5234, Fountain},
-  {3141, Fountain},
-  {3606, Fountain},
-  {3014, Fountain},
-  {13530, pet_shops},
-  {2999, board_room_entrance},
-  {100, mirror_room},
-  {11301, mirror_room},
-  {18999, train_station},
-  {8600, train_station},
-  {27835, House},
-  {27836, House},
-  {27845, House},
-  {29991, House},
-  {27910, House},
-  {27915, House},
-  {27920, House},
-  {27921, House},
-  {27923, House},
-  {27925, House},
-  {27930, House},
-  {27935, House},
-  {27940, House},
-  {27985, House},
-  {27945, House},
-  {27950, House},
-  {27955, House},
-  {27956, House},
-  {27960, House},
-  {27965, House},
-  {27970, House},
-  {27975, House},
-  {27980, House},
-  {27990, House},
-  {29993, House},
-  {29992, House},
-  {2000, bank},
-  {13521, bank},
-  {3199, metahospital},
+  {.vnum = 99, .proc = Donation},
+  {.vnum = 666, .proc = dump},
+  {.vnum = 1750, .proc = monk_challenge_prep_room},
+  {.vnum = 1751, .proc = monk_challenge_room},
+  {.vnum = 3030, .proc = dump},
+  {.vnum = 3196, .proc = hospital},
+  {.vnum = 3197, .proc = hospital_entrance},
+  {.vnum = 13518, .proc = Fountain},
+  {.vnum = 13547, .proc = dump},
+  {.vnum = 28283, .proc = mag_room},
+  {.vnum = 11014, .proc = Fountain},
+  {.vnum = 23067, .proc = Fountain},
+  {.vnum = 5234, .proc = Fountain},
+  {.vnum = 3141, .proc = Fountain},
+  {.vnum = 3606, .proc = Fountain},
+  {.vnum = 3014, .proc = Fountain},
+  {.vnum = 13530, .proc = pet_shops},
+  {.vnum = 2999, .proc = board_room_entrance},
+  {.vnum = 100, .proc = mirror_room},
+  {.vnum = 11301, .proc = mirror_room},
+  {.vnum = 18999, .proc = train_station},
+  {.vnum = 8600, .proc = train_station},
+  {.vnum = 27835, .proc = House},
+  {.vnum = 27836, .proc = House},
+  {.vnum = 27845, .proc = House},
+  {.vnum = 29991, .proc = House},
+  {.vnum = 27910, .proc = House},
+  {.vnum = 27915, .proc = House},
+  {.vnum = 27920, .proc = House},
+  {.vnum = 27921, .proc = House},
+  {.vnum = 27923, .proc = House},
+  {.vnum = 27925, .proc = House},
+  {.vnum = 27930, .proc = House},
+  {.vnum = 27935, .proc = House},
+  {.vnum = 27940, .proc = House},
+  {.vnum = 27985, .proc = House},
+  {.vnum = 27945, .proc = House},
+  {.vnum = 27950, .proc = House},
+  {.vnum = 27955, .proc = House},
+  {.vnum = 27956, .proc = House},
+  {.vnum = 27960, .proc = House},
+  {.vnum = 27965, .proc = House},
+  {.vnum = 27970, .proc = House},
+  {.vnum = 27975, .proc = House},
+  {.vnum = 27980, .proc = House},
+  {.vnum = 27990, .proc = House},
+  {.vnum = 29993, .proc = House},
+  {.vnum = 29992, .proc = House},
+  {.vnum = 2000, .proc = bank},
+  {.vnum = 13521, .proc = bank},
+  {.vnum = 3199, .proc = metahospital},
 };
 
 static const size_t num_room_specials =
