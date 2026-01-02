@@ -12,8 +12,8 @@ struct obj_data;
    trap damage types...
 */
 
-#define TRAP_DAM_SLEEP -3
-#define TRAP_DAM_TELEPORT -2
+#define TRAP_DAM_SLEEP (-3)
+#define TRAP_DAM_TELEPORT (-2)
 #define TRAP_DAM_FIRE SPELL_FIREBALL
 #define TRAP_DAM_COLD SPELL_FROST_BREATH
 #define TRAP_DAM_ACID SPELL_ACID_BLAST

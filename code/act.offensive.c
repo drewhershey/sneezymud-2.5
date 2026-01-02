@@ -12,7 +12,7 @@
 #include "games.h"
 #include "handler.h"
 #include "interpreter.h"
-#include "limits.h"
+#include "char_limits.h"
 #include "multiclass.h"
 #include "object_flags.h"
 #include "opinion.h"

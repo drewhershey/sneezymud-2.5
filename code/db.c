@@ -21,7 +21,7 @@
 #include "handler.h"
 #include "hash.h"
 #include "interpreter.h"
-#include "limits.h"
+#include "char_limits.h"
 #include "mail.h"
 #include "memory_macros.h"
 #include "multiclass.h"

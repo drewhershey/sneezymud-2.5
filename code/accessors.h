@@ -3,7 +3,7 @@
 #include "bit_ops.h"
 #include "character_flags.h"
 #include "game_constants.h"
-#include "limits.h"
+#include "char_limits.h"
 #include "object_flags.h"
 #include "room_flags.h"
 

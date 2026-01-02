@@ -17,7 +17,7 @@
 #include "game_constants.h"
 #include "handler.h"
 #include "interpreter.h"
-#include "limits.h"
+#include "char_limits.h"
 #include "memory_macros.h"
 #include "multiclass.h"
 #include "object_flags.h"
@@ -4108,7 +4108,7 @@ static void spell_enchant_weapon(signed char level, struct char_data* ch,
   int i = 0;
 
   assert(ch && obj);
-  static_assert(MAX_OBJ_AFFECT >= 2, "");
+  static_assert(MAX_OBJ_AFFECT >= 2);
 
   if ((GET_ITEM_TYPE(obj) == ITEM_WEAPON) &&
       !IS_SET(obj->obj_flags.extra_flags, ITEM_MAGIC)) {

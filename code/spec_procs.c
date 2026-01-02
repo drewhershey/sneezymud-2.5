@@ -18,7 +18,7 @@
 #include "db.h"
 #include "handler.h"
 #include "interpreter.h"
-#include "limits.h"
+#include "char_limits.h"
 #include "memory_macros.h"
 #include "multiclass.h"
 #include "opinion.h"
@@ -9503,7 +9503,8 @@ int ghostsoldier(struct char_data* ch, int cmd, const char* /*arg*/) {
   max_good = -1001;
   good = nullptr;
 
-  for (tch = real_roomp(ch->in_room)->people; tch != nullptr; tch = tch->next_in_room) {
+  for (tch = real_roomp(ch->in_room)->people; tch != nullptr;
+    tch = tch->next_in_room) {
     if (!(mob_index[tch->nr].func.mob_f ==
           ghostsoldier) && /* Another ghost soldier? */
         !(mob_index[tch->nr].func.mob_f == keystone) && /* The ghost captain? */

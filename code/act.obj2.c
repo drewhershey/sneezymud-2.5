@@ -16,7 +16,7 @@
 #include "game_constants.h"
 #include "handler.h"
 #include "interpreter.h"
-#include "limits.h"
+#include "char_limits.h"
 #include "memory_macros.h"
 #include "multiclass.h"
 #include "object_flags.h"
