@@ -8,7 +8,7 @@ int breath_weapon(struct char_data* ch, struct char_data* target, int mana_cost,
 char* how_good(int percent);
 
 /* Used by spell_parser.c affect_update() for breath weapon effect ticks */
-typedef void (*bweapon_fn)(signed char, struct char_data*, const char*, int,
+using bweapon_fn = void (*)(signed char, struct char_data*, const char*, int,
   struct char_data*, struct obj_data*);
 
 /* Indexed by (spell_id - FIRST_BREATH_WEAPON) */

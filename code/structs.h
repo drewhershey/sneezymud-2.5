@@ -60,7 +60,7 @@ struct char_list {
     struct char_list* next;
 };
 
-typedef struct {
+using Opinion = struct {
     struct char_list* clist;
     int sex;        /*number 1=male,2=female,3=both,4=neut,5=m&n,6=f&n,7=all*/
     int race;       /*number */
@@ -68,7 +68,7 @@ typedef struct {
     int vnum;       /* # */
     int evil;       /* align < evil = attack */
     int good;       /* align > good = attack */
-} Opinion;
+};
 
 struct extra_descr_data {
     char* keyword;                 /* Keyword in look/examine          */
@@ -421,11 +421,11 @@ struct char_data {
     struct char_poofin_data poof;
 };
 
-typedef union {
+using ProcFn = union {
     int (*mob_f)(struct char_data*, int, const char*);
     int (*obj_f)(struct char_data*, int, const char*, struct obj_data*);
     int (*room_f)(struct char_data*, int, const char*);
-} ProcFn;
+};
 
 /* ======================================================================== */
 

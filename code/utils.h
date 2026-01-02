@@ -206,9 +206,9 @@ struct hunting_data {
     struct char_data** victim;
 };
 
-typedef int (*mob_in_room_pred_t)(int room, struct hunting_data* data);
-typedef int (*obj_on_ground_pred_t)(int room, char* data);
-typedef int (*is_target_room_pred_t)(int room, int target_room);
+using mob_in_room_pred_t = int (*)(int room, struct hunting_data* data);
+using obj_on_ground_pred_t = int (*)(int room, char* data);
+using is_target_room_pred_t = int (*)(int room, int target_room);
 
 enum FindPathType {
   FIND_MOB_IN_ROOM,

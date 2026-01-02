@@ -17,10 +17,10 @@
 #include <stdint.h>
 
 /* Fixed-size types matching original 32-bit binary format */
-typedef int32_t compat_time;   /* time_t was 32-bit */
-typedef int32_t compat_long;   /* long was 32-bit */
-typedef uint32_t compat_ulong; /* unsigned long was 32-bit */
-typedef int32_t compat_ptr;    /* pointers were 32-bit (placeholder in files) */
+using compat_time = int32_t;   /* time_t was 32-bit */
+using compat_long = int32_t;   /* long was 32-bit */
+using compat_ulong = uint32_t; /* unsigned long was 32-bit */
+using compat_ptr = int32_t;    /* pointers were 32-bit (placeholder in files) */
 
 /* Conversion macros for clarity */
 #define TIME_TO_COMPAT(t) ((compat_time)(t))

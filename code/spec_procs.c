@@ -3286,7 +3286,7 @@ static void free_victims(struct breath_victim* head) {
   }
 }
 
-typedef void (*breath_fn)(signed char level, struct char_data* caster, int type,
+using breath_fn = void (*)(signed char level, struct char_data* caster, int type,
   struct char_data* tar_ch);
 
 int breath_weapon(struct char_data* ch, struct char_data* target,
@@ -3487,7 +3487,7 @@ int BreathWeapon(struct char_data* ch, int cmd, const char* /*arg*/) {
 }
 
 /* Used by spell_parser.c affect_update() for breath weapon effect ticks */
-typedef void (*bweapon_fn)(signed char, struct char_data*, const char*, int,
+using bweapon_fn = void (*)(signed char, struct char_data*, const char*, int,
   struct char_data*, struct obj_data*);
 
 // Wrapper functions for bweapons[] array. These adapt the 4-arg internal breath

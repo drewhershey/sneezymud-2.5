@@ -23,11 +23,11 @@
     (result) = (type*)_temp;                                   \
   } while (0)
 
-typedef struct {
+using alloc_result = struct {
     void* ptr;
     size_t count;
     size_t size;
-} alloc_result;
+};
 
 [[nodiscard]] static inline alloc_result alloc_or_die(size_t count,
   size_t size) {

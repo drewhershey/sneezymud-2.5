@@ -94,15 +94,15 @@ static_assert(sizeof(struct header_block_type_d) == 100,
 static_assert(sizeof(struct data_block_type_d) == 100,
   "Data block must be exactly 100 bytes");
 
-typedef struct header_block_type_d header_block_type;
-typedef struct data_block_type_d data_block_type;
+using header_block_type = struct header_block_type_d;
+using data_block_type = struct data_block_type_d;
 
 struct position_list_type_d {
     long position;
     struct position_list_type_d* next;
 };
 
-typedef struct position_list_type_d position_list_type;
+using position_list_type = struct position_list_type_d;
 
 struct mail_index_type_d {
     char recipient[NAME_SIZE + 1];  /* who the mail is for */
@@ -110,4 +110,4 @@ struct mail_index_type_d {
     struct mail_index_type_d* next;
 };
 
-typedef struct mail_index_type_d mail_index_type;
+using mail_index_type = struct mail_index_type_d;
