@@ -8,6 +8,8 @@
 #include <sys/param.h>
 #include <time.h>
 
+#include <algorithm>
+
 #include "accessors.h"
 #include "bit_ops.h"
 #include "board.h"
@@ -616,9 +618,7 @@ struct room_data* allocate_room(int room_number) {
     return nullptr;
   }
 
-  if (room_number > top_of_world) {
-    top_of_world = room_number;
-  }
+  top_of_world = std::max(room_number, top_of_world);
 
   struct room_data* room = room_find(room_db, room_number);
 
@@ -2027,9 +2027,7 @@ char* fread_string(FILE* fl) {
     // Move point to second-to-last char, checking bounds
     char* point = buf + strlen(buf) - 2;
 
-    if (point < buf) {
-      point = buf;
-    }
+    point = std::max<char*>(point, buf);
 
     // Skip whitespace, ensuring we don't go before start of buffer
     while (point >= buf && (isspace(*point) != 0)) {
@@ -2288,9 +2286,7 @@ void reset_char(struct char_data* ch) {
 
   /* AC adjustment */
   GET_AC(ch) += dex_app[GET_DEX(ch)].defensive;
-  if (GET_AC(ch) > 100) {
-    GET_AC(ch) = 100;
-  }
+  GET_AC(ch) = std::min<short>(GET_AC(ch), 100);
 
   GET_HITROLL(ch) = 0;
   GET_DAMROLL(ch) = 0;
@@ -2371,9 +2367,7 @@ void reset_char(struct char_data* ch) {
   if (HasClass(ch, CLASS_MONK) == 0) {
     GET_AC(ch) += dex_app[GET_DEX(ch)].defensive;
   }
-  if (GET_AC(ch) > 100) {
-    GET_AC(ch) = 100;
-  }
+  GET_AC(ch) = std::min<short>(GET_AC(ch), 100);
 
   for (i = 0; i < 5; i++) {
     ch->specials.apply_saving_throw[i] = 20 - (GetMaxLevel(ch) / 2);

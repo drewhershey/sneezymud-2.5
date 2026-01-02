@@ -8,6 +8,8 @@
 #include <strings.h>
 #include <sys/param.h>
 
+#include <algorithm>
+
 #include "accessors.h"
 #include "area.h"
 #include "comm.h"
@@ -3952,9 +3954,7 @@ int magic_user(struct char_data* ch, int cmd, const char* /*arg*/) {
   **  check your own problems:
   */
 
-  if (lspell < 1) {
-    lspell = 1;
-  }
+  lspell = std::max<signed char>(lspell, 1);
 
   if (IS_AFFECTED(ch, AFF_BLIND) && (lspell > 15)) {
     act("$n utters the words 'Let me see the light!'.", 1, ch, nullptr, nullptr,
@@ -4309,9 +4309,7 @@ int cleric(struct char_data* ch, int cmd, const char* /*arg*/) {
 
   lspell = number(0, GetMaxLevel(ch));
 
-  if (lspell < 1) {
-    lspell = 1;
-  }
+  lspell = std::max<signed char>(lspell, 1);
 
   /*
     first -- hit a foe, or help yourself?
@@ -7993,9 +7991,7 @@ int magic_user2(struct char_data* ch, int cmd, const char* /*arg*/) {
 
   lspell = number(0, GetMaxLevel(ch)); /* gen number from 0 to level */
 
-  if (lspell < 1) {
-    lspell = 1;
-  }
+  lspell = std::max<signed char>(lspell, 1);
 
   switch (lspell) {
     case 1:

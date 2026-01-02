@@ -5,6 +5,8 @@
 #include <string.h>
 #include <sys/param.h>
 
+#include <algorithm>
+
 #include "accessors.h"
 #include "bit_ops.h"
 #include "character_flags.h"
@@ -204,9 +206,7 @@ static void spell_vampiric_touch(signed char level, struct char_data* ch,
 
     GET_HIT(ch) += hitp;
 
-    if (GET_HIT(ch) >= hit_limit(ch)) {
-      GET_HIT(ch) = hit_limit(ch);
-    }
+    GET_HIT(ch) = std::min<int>(GET_HIT(ch), hit_limit(ch));
 
     SetVictFighting(ch, victim);
 
@@ -1108,9 +1108,7 @@ static void spell_green_slime(signed char level, struct char_data* ch,
   assert((level >= 1) && (level <= ABS_MAX_LVL));
 
   hpch = GET_MAX_HIT(ch);
-  if (hpch < 10) {
-    hpch = 10;
-  }
+  hpch = std::max(hpch, 10);
 
   dam = (hpch / 10);
 
@@ -3106,9 +3104,7 @@ static void spell_synostodweomer(struct char_data* ch,
 
   GET_ALIGNMENT(ch) += (hitp / 2);
 
-  if (GET_ALIGNMENT(ch) > 1000) {
-    GET_ALIGNMENT(ch) = 1000;
-  }
+  GET_ALIGNMENT(ch) = std::min(GET_ALIGNMENT(ch), 1000);
 
   update_pos(victim);
   update_pos(ch);

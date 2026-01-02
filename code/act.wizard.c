@@ -5,6 +5,8 @@
 #include <sys/param.h>
 #include <time.h>
 
+#include <algorithm>
+
 #include "accessors.h"
 #include "bit_ops.h"
 #include "board.h"
@@ -2926,9 +2928,7 @@ static void gain_exp_regardless(struct char_data* ch, int gain,
     if (gain < 0) {
       GET_EXP(ch) += gain;
     }
-    if (GET_EXP(ch) < 0) {
-      GET_EXP(ch) = 0;
-    }
+    GET_EXP(ch) = std::max(GET_EXP(ch), 0);
   }
   if (is_altered != 0) {
     set_title(ch);

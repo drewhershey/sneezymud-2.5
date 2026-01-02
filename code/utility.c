@@ -9,6 +9,8 @@
 #include <sys/param.h>
 #include <time.h>
 
+#include <algorithm>
+
 #include "accessors.h"
 #include "area.h"
 #include "bit_ops.h"
@@ -1519,9 +1521,7 @@ int GetApprox(int num, int perc) {
   float fadj = NAN;
 
   adj = 100 - perc;
-  if (adj < 0) {
-    adj = 0;
-  }
+  adj = std::max(adj, 0);
   adj *= 2; /* percentage of play (+- x%) */
 
   r = number(1, adj);

@@ -7,6 +7,8 @@
 #include <sys/param.h>
 #include <time.h>
 
+#include <algorithm>
+
 #include "accessors.h"
 #include "bit_ops.h"
 #include "character_flags.h"
@@ -2548,9 +2550,7 @@ void do_consider(struct char_data* ch, const char* argument, int /*cmd*/) {
         TO_CHAR);
     }
 
-    if (learn > 95) {
-      learn = 95;
-    }
+    learn = std::min(learn, 95);
 
     if (learn == 0) {
       return;

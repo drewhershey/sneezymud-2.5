@@ -4,6 +4,8 @@
 #include <string.h>
 #include <sys/param.h>
 
+#include <algorithm>
+
 #include "comm.h"
 #include "db.h"
 #include "game_constants.h"
@@ -190,9 +192,7 @@ void weather_change(void) {
 }
 
 void ChangeWeather(int change) {
-  if (change < 0) {
-    change = 0;
-  }
+  change = std::max(change, 0);
   if (change > 7) {
     change = 6;
   }

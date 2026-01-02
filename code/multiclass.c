@@ -2,6 +2,8 @@
 #include "bit_ops.h"
 #include "character_flags.h"
 #include "multiclass.h"
+
+#include <algorithm>
 #include "structs.h"
 #include "utils.h"
 
@@ -245,9 +247,7 @@ int GetMaxLevel(struct char_data* ch) {
   int i = 0;
 
   for (i = MAGE_LEVEL_IND; i <= RANGER_LEVEL_IND; i++) {
-    if (GET_LEVEL(ch, i) > max) {
-      max = GET_LEVEL(ch, i);
-    }
+    max = std::max<int>(GET_LEVEL(ch, i), max);
   }
 
   return (max);

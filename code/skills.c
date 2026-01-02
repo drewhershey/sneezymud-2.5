@@ -4,6 +4,8 @@
 #include <string.h>
 #include <sys/param.h>
 
+#include <algorithm>
+
 #include "accessors.h"
 #include "bit_ops.h"
 #include "character_flags.h"
@@ -754,9 +756,7 @@ static void slam_into_wall(struct char_data* ch,
   sprintf(buf, "$n crashes against the %s with no effect\n\r", doorname);
   act(buf, 0, ch, nullptr, nullptr, TO_ROOM);
   GET_HIT(ch) -= number(1, 10) * 2;
-  if (GET_HIT(ch) < 0) {
-    GET_HIT(ch) = 0;
-  }
+  GET_HIT(ch) = std::max<short>(GET_HIT(ch), 0);
   GET_POS(ch) = POSITION_STUNNED;
 }
 

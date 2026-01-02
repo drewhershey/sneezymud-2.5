@@ -2,6 +2,8 @@
 #include <string.h>
 #include <sys/param.h>
 
+#include <algorithm>
+
 #include "accessors.h"
 #include "bit_ops.h"
 #include "character_flags.h"
@@ -462,14 +464,10 @@ static void drop_level(struct char_data* ch, int char_class) {
 
   GET_LEVEL(ch, lin_class) -= 1;
 
-  if (GET_LEVEL(ch, lin_class) < 1) {
-    GET_LEVEL(ch, lin_class) = 1;
-  }
+  GET_LEVEL(ch, lin_class) = std::max<signed char>(GET_LEVEL(ch, lin_class), 1);
 
   ch->points.max_hit -= MAX(1, add_hp);
-  if (ch->points.max_hit < 1) {
-    ch->points.max_hit = 1;
-  }
+  ch->points.max_hit = std::max<short>(ch->points.max_hit, 1);
 
   ch->specials.spells_to_learn -= MAX(2, wis_app[GET_WIS(ch)].bonus);
 
@@ -543,9 +541,7 @@ void gain_exp(struct char_data* ch, int gain) {
 
     if (gain < 0) {
       GET_EXP(ch) += gain;
-      if (GET_EXP(ch) < 0) {
-        GET_EXP(ch) = 0;
-      }
+      GET_EXP(ch) = std::max(GET_EXP(ch), 0);
     }
   }
 }

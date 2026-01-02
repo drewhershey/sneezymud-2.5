@@ -5,6 +5,8 @@
 #include <string.h>
 #include <sys/param.h>
 
+#include <algorithm>
+
 #include "accessors.h"
 #include "bit_ops.h"
 #include "character_flags.h"
@@ -1748,9 +1750,7 @@ void perform_violence(int /*pulse*/) {
           /* work through all of their attacks, until there is not
              a full attack left */
 
-          if (x > 6.0) {
-            x = 6.0;
-          }
+          x = std::min<double>(x, 6.0);
 
           while (x > 0.999) {
             if (ch->specials.fighting != nullptr) {
@@ -1778,9 +1778,7 @@ void perform_violence(int /*pulse*/) {
         } else {
           x = ch->mult_att;
 
-          if (x > 6.0) {
-            x = 6.0;
-          }
+          x = std::min<double>(x, 6.0);
 
           while (x > 0.999) {
             if (ch->specials.fighting != nullptr) {

@@ -15,6 +15,8 @@
 #include <time.h>
 #include <unistd.h>
 
+#include <algorithm>
+
 #include "accessors.h"
 #include "bit_ops.h"
 #include "character_flags.h"
@@ -421,24 +423,12 @@ int game_loop(int s) {
                                   (float)GET_MAX_MANA(point->character));
             current_moves = 10 * ((float)GET_MOVE(point->character) /
                                    (float)GET_MAX_MOVE(point->character));
-            if (current_hit < 0) {
-              current_hit = 0;
-            }
-            if (current_mana < 0) {
-              current_mana = 0;
-            }
-            if (current_moves < 0) {
-              current_moves = 0;
-            }
-            if (current_hit > 10) {
-              current_hit = 10;
-            }
-            if (current_mana > 10) {
-              current_mana = 10;
-            }
-            if (current_moves > 10) {
-              current_moves = 10;
-            }
+            current_hit = std::max(current_hit, 0);
+            current_mana = std::max(current_mana, 0);
+            current_moves = std::max(current_moves, 0);
+            current_hit = std::min(current_hit, 10);
+            current_mana = std::min(current_mana, 10);
+            current_moves = std::min(current_moves, 10);
             missing_hit = 10 - current_hit;
             missing_mana = 10 - current_mana;
             missing_moves = 10 - current_moves;
@@ -929,9 +919,7 @@ int new_descriptor(int s) {
     close(desc);
     return (0);
   }
-  if (desc > maxdesc) {
-    maxdesc = desc;
-  }
+  maxdesc = std::max(desc, maxdesc);
 
   CREATE(newd, struct descriptor_data, 1);
 

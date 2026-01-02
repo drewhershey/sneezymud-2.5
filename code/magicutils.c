@@ -1,6 +1,8 @@
 #include <math.h>
 #include <sys/param.h>
 
+#include <algorithm>
+
 #include "accessors.h"
 #include "character_flags.h"
 #include "handler.h"
@@ -40,9 +42,7 @@ void SwitchStuff(struct char_data* giver, struct char_data* taker) {
    *   hit point ratio
    */
 
-  if (GET_HIT(taker) > GET_HIT(giver)) {
-    GET_HIT(taker) = GET_HIT(giver);
-  }
+  GET_HIT(taker) = std::min(GET_HIT(taker), GET_HIT(giver));
 
   /*
    * experience

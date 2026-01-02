@@ -5,6 +5,8 @@
 #include <string.h>
 #include <sys/param.h>
 
+#include <algorithm>
+
 #include "accessors.h"
 #include "bit_ops.h"
 #include "character_flags.h"
@@ -862,12 +864,8 @@ struct obj_data* unequip_char(struct char_data* ch, int pos) {
   }
 
   affect_total(ch);
-  if (GET_MANA(ch) >= mana_limit(ch)) {
-    GET_MANA(ch) = mana_limit(ch);
-  }
-  if (GET_HIT(ch) >= hit_limit(ch)) {
-    GET_HIT(ch) = hit_limit(ch);
-  }
+  GET_MANA(ch) = std::min<int>(GET_MANA(ch), mana_limit(ch));
+  GET_HIT(ch) = std::min<int>(GET_HIT(ch), hit_limit(ch));
 
   return (obj);
 }

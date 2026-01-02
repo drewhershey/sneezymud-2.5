@@ -4,6 +4,8 @@
 #include <string.h>
 #include <sys/param.h>
 
+#include <algorithm>
+
 #include "accessors.h"
 #include "bit_ops.h"
 #include "character_flags.h"
@@ -368,9 +370,8 @@ void do_pour(struct char_data* ch, const char* argument, int /*cmd*/) {
     name_from_drinkcon(from_obj);
   }
 
-  if (from_obj->obj_flags.value[1] > from_obj->obj_flags.value[0]) {
-    from_obj->obj_flags.value[1] = from_obj->obj_flags.value[0];
-  }
+  from_obj->obj_flags.value[1] =
+    std::min(from_obj->obj_flags.value[1], from_obj->obj_flags.value[0]);
 
   /* Then the poison boogie */
   to_obj->obj_flags.value[3] = static_cast<int>(
