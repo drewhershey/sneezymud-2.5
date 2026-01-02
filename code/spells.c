@@ -887,7 +887,7 @@ static void spell_magic_missile(signed char level, struct char_data* ch,
   assert(victim && ch);
   assert((level >= 1) && (level <= ABS_MAX_LVL));
 
-  dam = number((int)(level / 2) + 1, 4) + (level / 2);
+  dam = number((level / 2) + 1, 4) + (level / 2);
 
   if (affected_by_spell(victim, SPELL_SHIELD) != 0) {
     dam = 0;
@@ -6465,7 +6465,7 @@ void spell_animate_dead(signed char level, struct char_data* ch,
   */
 
   mob->points.max_hit = dice((level + 1), 8);
-  mob->points.hit = (int)(mob->points.max_hit / 2);
+  mob->points.hit = (mob->points.max_hit / 2);
 
   for (k = MAGE_LEVEL_IND; k <= RANGER_LEVEL_IND; k++) {
     mob->player.level[k] = ch->player.level[k];

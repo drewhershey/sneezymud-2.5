@@ -924,7 +924,7 @@ void SetHunting(struct char_data* ch, struct char_data* tch) {
 #endif
 
   persist = GetMaxLevel(ch);
-  persist *= (int)GET_ALIGNMENT(ch) / 100;
+  persist *= GET_ALIGNMENT(ch) / 100;
 
   if (persist < 0) {
     persist = -persist;

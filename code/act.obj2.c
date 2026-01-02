@@ -149,16 +149,16 @@ void do_drink(struct char_data* ch, const char* argument, int /*cmd*/) {
       }
 
       gain_condition(ch, DRUNK,
-        ((int)drink_aff[temp->obj_flags.value[2]][DRUNK] * amount) / 4);
+        (drink_aff[temp->obj_flags.value[2]][DRUNK] * amount) / 4);
 
       if (GET_COND(ch, FULL) >= 0) {
         gain_condition(ch, FULL,
-          ((int)drink_aff[temp->obj_flags.value[2]][FULL] * amount) / 4);
+          (drink_aff[temp->obj_flags.value[2]][FULL] * amount) / 4);
       }
 
       if (GET_COND(ch, THIRST) >= 0) {
         gain_condition(ch, THIRST,
-          ((int)drink_aff[temp->obj_flags.value[2]][THIRST] * amount) / 4);
+          (drink_aff[temp->obj_flags.value[2]][THIRST] * amount) / 4);
       }
 
       if (GET_COND(ch, DRUNK) > 10) {
@@ -414,14 +414,11 @@ void do_sip(struct char_data* ch, const char* argument, int /*cmd*/) {
   sprintf(buf, "It tastes like %s.\n\r", drinks[temp->obj_flags.value[2]]);
   send_to_char(buf, ch);
 
-  gain_condition(ch, DRUNK,
-    (int)(drink_aff[temp->obj_flags.value[2]][DRUNK] / 4));
+  gain_condition(ch, DRUNK, (drink_aff[temp->obj_flags.value[2]][DRUNK] / 4));
 
-  gain_condition(ch, FULL,
-    (int)(drink_aff[temp->obj_flags.value[2]][FULL] / 4));
+  gain_condition(ch, FULL, (drink_aff[temp->obj_flags.value[2]][FULL] / 4));
 
-  gain_condition(ch, THIRST,
-    (int)(drink_aff[temp->obj_flags.value[2]][THIRST] / 4));
+  gain_condition(ch, THIRST, (drink_aff[temp->obj_flags.value[2]][THIRST] / 4));
 
   if (!IS_SET(temp->obj_flags.value[3], DRINK_PERM) ||
       (temp->obj_flags.value[0] > 19)) {

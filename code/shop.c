@@ -262,15 +262,15 @@ static void shopping_sell(const char* arg, struct char_data* ch,
 
   if ((ITEM_TYPE(temp1) == ITEM_WAND) || (ITEM_TYPE(temp1) == ITEM_STAFF)) {
     if (temp1->obj_flags.value[1] != 0) {
-      cost = cost * (float)(temp1->obj_flags.value[2] /
-                            (float)temp1->obj_flags.value[1]);
+      cost =
+        cost * (temp1->obj_flags.value[2] / (float)temp1->obj_flags.value[1]);
     } else {
       cost = 0;
     }
   } else if (ITEM_TYPE(temp1) == ITEM_ARMOR) {
     if (temp1->obj_flags.value[1] != 0) {
-      cost = cost * (float)(temp1->obj_flags.value[0] /
-                            (float)(temp1->obj_flags.value[1]));
+      cost =
+        cost * (temp1->obj_flags.value[0] / (float)(temp1->obj_flags.value[1]));
     } else {
       cost = 0;
     }
